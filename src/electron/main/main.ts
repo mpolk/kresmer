@@ -9,6 +9,7 @@
 import * as path from 'path';
 import { app, BrowserWindow } from 'electron';
 import Settings from './settings';
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");
 
 const isDev = process.env.npm_lifecycle_event === "app:dev";
