@@ -1,38 +1,48 @@
-import { join } from 'path';
-import {
-    app,
-    BrowserWindow
-} from 'electron';
+/***************************************************************************\
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
+ * -----------------------------------------------------------------------
+ *                           Electron main script
+ ***************************************************************************/
 
-const isDev = process.env.npm_lifecycle_event === "app:dev" ? true : false;
+import * as path from 'path';
+import { app, BrowserWindow } from 'electron';
+import Settings from './settings';
+const packageJson = require("../../../package.json");
+
+const isDev = process.env.npm_lifecycle_event === "app:dev";
+
+export const userPrefs = new Settings({
+    fileName: "user-prefs.json", 
+    defaults: {window: {width: 800, height: 600}}
+});
 
 function createWindow() {
     // Create the browser window.
-    const mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
-        webPreferences: {
-            preload: join(__dirname, '../preload/preload.js'),
-        },
-    });
+    const mainWindow = new BrowserWindow(userPrefs.get("window"));
 
     // and load the index.html of the app.
-    mainWindow.loadURL(
-        isDev ?
-        'http://localhost:5173' :
-        'file://' + join(__dirname, '../../index.html')
-    );
-    // Open the DevTools.
+    const url = isDev ?
+        `http://localhost:${packageJson.config.port}` :
+        'file://' + path.join(__dirname, '../../index.html');
+    mainWindow.loadURL(url);
+
     if (isDev) {
         mainWindow.webContents.openDevTools();
-    }
-}
+    }//if
+
+    mainWindow.on('resize', () => {
+        userPrefs.set('window', mainWindow.getBounds());
+    });
+    
+}//createWindow
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    createWindow()
+    createWindow();
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.

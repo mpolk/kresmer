@@ -1,9 +1,12 @@
 {
-  "name": "vite-vue3-electron-ts-template",
+  "name": "kresmer",
   "private": true,
   "version": "0.0.0",
   "author": "Your Name",
   "main": "dist/electron/main/main.js",
+  "config": {
+    "port": 5173
+  },
   "scripts": {
     "vite:dev": "vite",
     "vite:build": "vue-tsc --noEmit && vite build",
@@ -16,7 +19,7 @@
     "app:preview": "npm run vite:build && tsc && electron ."
   },
   "build": {
-    "appId": "YourAppID",
+    "appId": "kresmer",
     "asar": true,
     "directories": {
       "buildResources": "assets",
