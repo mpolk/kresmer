@@ -3,7 +3,6 @@
     "composite": true,
     "module": "esnext",
     "moduleResolution": "node",
-    "rootDir": "src/electron"
   },
   "include": ["vite.config.ts"]
 }

@@ -23,9 +23,8 @@ function createWindow() {
     // Create the browser window
     const windowOptions = {
         ...userPrefs.get("window"),
-        icon: nativeImage.createFromPath(path.join(__dirname, "../assets/logo.png")),
+        icon: nativeImage.createFromPath(path.join(__dirname, "../../logo.png")),
     }
-    console.debug(windowOptions.icon.getSize(), windowOptions.icon.isEmpty());
     const mainWindow = new BrowserWindow(windowOptions);
 
     // and load the index.html of the app.
