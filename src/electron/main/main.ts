@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import * as path from 'path';
-import { app, BrowserWindow, nativeImage } from 'electron';
+import { app, BrowserWindow } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");
