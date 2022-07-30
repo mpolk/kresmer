@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *                           Electron main script
+ *                      Electron node.js main script
  ***************************************************************************/
 
 import * as path from 'path';
@@ -23,7 +23,7 @@ function createWindow() {
     // Create the browser window
     const windowOptions = {
         ...userPrefs.get("window"),
-        icon: nativeImage.createFromPath(path.join(__dirname, "../../logo.png")),
+        icon: path.join(__dirname, "../../logo.png"),
     }
     const mainWindow = new BrowserWindow(windowOptions);
 
