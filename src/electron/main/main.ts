@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import * as path from 'path';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, nativeImage } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");
@@ -20,8 +20,13 @@ export const userPrefs = new Settings({
 });
 
 function createWindow() {
-    // Create the browser window.
-    const mainWindow = new BrowserWindow(userPrefs.get("window"));
+    // Create the browser window
+    const windowOptions = {
+        ...userPrefs.get("window"),
+        icon: nativeImage.createFromPath(path.join(__dirname, "../assets/logo.png")),
+    }
+    console.debug(windowOptions.icon.getSize(), windowOptions.icon.isEmpty());
+    const mainWindow = new BrowserWindow(windowOptions);
 
     // and load the index.html of the app.
     const url = isDev ?

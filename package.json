@@ -42,14 +42,13 @@
       ]
     },
     "win": {
-      "target": [
-        {
+      "icon": "./src/assets/logo.ico",
+      "target": [{
           "target": "nsis",
           "arch": [
             "x64"
           ]
-        }
-      ],
+      }],
       "artifactName": "${productName}_${version}.${ext}"
     },
     "nsis": {
@@ -57,6 +56,10 @@
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false
+    },
+    "linux": {
+      "icon": "./src/assets/logo.png",
+      "category": "Network, Design"
     }
   },
   "dependencies": {
