@@ -11,15 +11,29 @@ import NetworkComponentClass from "./NetworkComponentClass";
 
 export default class NetworkComponent {
     
-    public constructor(_class: NetworkComponentClass | string)
+    public constructor(
+        _class: NetworkComponentClass | string,
+        options?: {
+            props?: Record<string, any>,
+            content?: any, 
+        }
+    )
     {
         if (_class instanceof NetworkComponentClass)
             this._class = _class;
         else 
             this._class = NetworkComponentClass.registeredClasses[_class];
+        this.props = options?.props;
+        this.content = options?.content;
     }//ctor
 
     protected _class: NetworkComponentClass;
     getClass() {return this._class}
     getVueName() {return this._class.getVueName()}
+
+    protected props?: Record<string, any>;
+    getProps() {return this.props}
+
+    protected content: any;
+    getContent() {return this.content}
 }//NetworkComponent

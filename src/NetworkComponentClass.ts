@@ -7,16 +7,24 @@
  * (either an equipment unit or a link)
  ***************************************************************************/
 
-export default class NetworkComponentClass {
-    private _name: string;
-    public get name() {return this._name}
-    private _template: string;
-    public get template() {return this._template}
+import { ComponentPropsOptions } from "vue";
 
-    public constructor(name: string, template: string)
+export default class NetworkComponentClass {
+    private name: string;
+    getName() {return this.name}
+    private template: string;
+    getTemplate() {return this.template}
+    private props?: ComponentPropsOptions;
+    getProps() {return this.props}
+
+    public constructor(name: string, params: {
+        template: string,
+        props?: ComponentPropsOptions,
+    })
     {
-        this._name = name;
-        this._template = template;
+        this.name = name;
+        this.template = params.template;
+        this.props = params.props;
     }//ctor
 
     static readonly registeredClasses: Record<string, NetworkComponentClass> = {};

@@ -31,9 +31,10 @@
     {
         instance.appContext.app.component(componentClass.getVueName(), 
         {
-            template: componentClass.template,
+            template: componentClass.getTemplate(),
+            props: componentClass.getProps(),
         });
-        NetworkComponentClass.registeredClasses[componentClass.name] = componentClass;
+        NetworkComponentClass.registeredClasses[componentClass.getName()] = componentClass;
         return this;
     }//registerNetworkComponentClass
 
@@ -61,7 +62,8 @@
         <component v-for="(component, i) in networkComponents" 
                    :is="component.getVueName()"
                    :key="`networkComponent${i}`"
-                   />
+                   v-bind="component.getProps()"
+                   >{{component.getContent()}}</component>
     </svg>
 </template>
 
