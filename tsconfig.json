@@ -17,7 +17,7 @@
     // "rootDir": "src/electron",
     // "outDir": "dist/electron",
   },
-  "include": ["src/electron/**/*"],
+  "include": ["src/**/*"],
   "references": [
     {"path": "./tsconfig.node.json"},
   ]

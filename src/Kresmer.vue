@@ -4,18 +4,68 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *                          The main component
+ *                        The main Vue component
 <*************************************************************************** -->
 
 <script setup lang="ts">
+    /**
+     * The main Kresmer Vue component acting as a container for the whole drawing
+     */
+
+    import { getCurrentInstance, reactive } from 'vue';
+    import NetworkComponent from './NetworkComponent';
+    import NetworkComponentClass from './NetworkComponentClass';
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const instance = getCurrentInstance()!;
+    const networkComponents = reactive<NetworkComponent[]>([]);
+
+    /**
+     * Registers a Network Component Class in the Kresmer and registers
+     * the corresponding new component in the Vue application
+     * 
+     * @param componentClass A Network Component Class to register
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function registerNetworkComponentClass(this: any, componentClass: NetworkComponentClass) 
+    {
+        instance.appContext.app.component(componentClass.getVueName(), 
+        {
+            template: componentClass.template,
+        });
+        NetworkComponentClass.registeredClasses[componentClass.name] = componentClass;
+        return this;
+    }//registerNetworkComponentClass
+
+
+    /**
+     * Adds a new Network Component to the content of the drawing
+     * @param component A Network Component to add
+     */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    function addNetworkComponent(this: any, component: NetworkComponent)
+    {
+        networkComponents.push(component);
+        return this;
+    }//addNetworkComponent
+
+
+    defineExpose({
+        registerNetworkComponentClass,
+        addNetworkComponent,
+    })//defineExpose
 </script>
 
 <template>
     <svg class="kresmer" ref="svg">
         <rect x="20" y="20" width="400" height="100" 
                 fill="yellow" stroke="black" stroke-width="5px" stroke-opacity="0.5"/>
-        <text x="30" y="40">Вот такой вот Кресмер</text>
-</svg>
+        <text x="30" y="40">Вот такой вот Кресмер!</text>
+        <component v-for="(component, i) in networkComponents" 
+                   :is="component.getVueName()"
+                   :key="`networkComponent${i}`"
+                   />
+    </svg>
 </template>
 
 

@@ -12,8 +12,8 @@
     "vite:dev": "vite --port ${npm_package_config_port}",
     "vite:build": "run-p type-check build-only",
     "vite:preview": "vite preview --port ${npm_package_config_port}",
-    "ts": "tsc",
-    "watch": "tsc -w",
+    "ts": "tsc -p tsconfig.electron.json",
+    "watch": "tsc -p tsconfig.electron.json -w",
     "test:e2e": "start-server-and-test preview http://localhost:${npm_package_config_port}/ 'cypress open --e2e'",
     "test:e2e:ci": "start-server-and-test preview http://localhost:${npm_package_config_port}/ 'cypress run --e2e'",
     "test:unit": "cypress open --component",
@@ -21,9 +21,9 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint -c .eslintrc --ext .ts ./src",
-    "app:dev": "tsc && concurrently vite \" electron .\" \"tsc -w\"",
-    "app:build": "npm run vite:build && tsc && electron-builder",
-    "app:preview": "npm run vite:build && tsc && electron ."
+    "app:dev": "npm run ts && concurrently vite \" electron .\" \"npm run watch\"",
+    "app:build": "npm run vite:build && npm run ts && electron-builder",
+    "app:preview": "npm run vite:build && npm run ts && electron ."
   },
   "build": {
     "appId": "kresmer",
