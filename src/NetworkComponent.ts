@@ -9,22 +9,33 @@
 
 import NetworkComponentClass from "./NetworkComponentClass";
 
+/**
+ * Network Component - a generic network element instance 
+ * (either an equipment unit or a link)
+ */
 export default class NetworkComponent {
-    
+    /**
+     * 
+     * @param _class The class this component should belong 
+     *               (either NetworkComponent class instance or its name)
+     * @param args Instance creation arguments:
+     *             props: translates to the vue-component props
+     *             content: translates to the vue-component content (unnamed slot)
+     */
     public constructor(
         _class: NetworkComponentClass | string,
-        options?: {
+        args?: {
             props?: Record<string, any>,
             content?: any, 
         }
-    )
-    {
+    ) {
         if (_class instanceof NetworkComponentClass)
             this._class = _class;
         else 
             this._class = NetworkComponentClass.registeredClasses[_class];
-        this.props = options?.props;
-        this.content = options?.content;
+        this.props = args?.props;
+        this.content = args?.content;
+        this.id = NetworkComponent.nextID++;
     }//ctor
 
     protected _class: NetworkComponentClass;
@@ -36,4 +47,8 @@ export default class NetworkComponent {
 
     protected content: any;
     getContent() {return this.content}
+
+    protected id: number;
+    getID() {return this.id}
+    protected static nextID = 1;
 }//NetworkComponent

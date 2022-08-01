@@ -18,7 +18,25 @@
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const instance = getCurrentInstance()!;
-    const networkComponents = reactive<NetworkComponent[]>([]);
+
+    class NetworkComponentPlacement {
+        component: NetworkComponent;
+        origin: {x: number, y: number};
+
+        constructor(
+            component: NetworkComponent,
+            params: {
+                origin: {x: number, y: number};
+            }
+        ) {
+            this.component = component;
+            this.origin = params.origin;
+        }//ctor
+    }//NetworkComponentPlacement
+    /**
+     * Components currently placed to the drawing
+     */
+    const networkComponents = reactive<Record<string, NetworkComponentPlacement>>({});
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
@@ -44,26 +62,28 @@
      * @param component A Network Component to add
      */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function addNetworkComponent(this: any, component: NetworkComponent)
+    function placeNetworkComponent(this: any, component: NetworkComponent,
+                                   origin: {x: number, y: number})
     {
-        networkComponents.push(component);
+        networkComponents[component.getID()] = new NetworkComponentPlacement(
+            component, {origin});
         return this;
-    }//addNetworkComponent
+    }//placeNetworkComponent
 
 
     defineExpose({
         registerNetworkComponentClass,
-        addNetworkComponent,
+        placeNetworkComponent,
     })//defineExpose
 </script>
 
 <template>
     <svg class="kresmer" ref="svg">
-        <component v-for="(component, i) in networkComponents" 
-                   :is="component.getVueName()"
-                   :key="`networkComponent${i}`"
-                   v-bind="component.getProps()"
-                   >{{component.getContent()}}</component>
+        <component v-for="(placement, id) in networkComponents" 
+                   :is="placement.component.getVueName()"
+                   :key="`networkComponent${id}`"
+                   v-bind="{...placement.component.getProps(), ...placement.origin}"
+                >{{placement.component.getContent()}}</component>
     </svg>
 </template>
 
