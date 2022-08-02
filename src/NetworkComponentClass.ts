@@ -4,14 +4,14 @@
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  * Network Component Class - a generic network element class
- * (either an equipment unit or a link)
+ * (the word "class" here means a runtime class, not a Typescript one)
  ***************************************************************************/
 
 import { ComponentPropsOptions } from "vue";
 
 /**
  * Network Component Class - a generic network element class
- * (either an equipment unit or a link)
+ * (the word "class" here means a runtime class, not a Typescript one)
  */
 export default class NetworkComponentClass {
     /**

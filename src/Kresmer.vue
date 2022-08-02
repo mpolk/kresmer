@@ -14,29 +14,16 @@
 
     import { getCurrentInstance, reactive } from 'vue';
     import NetworkComponent from './NetworkComponent';
+    import NetworkComponentLocation from './NetworkComponentLocation';
     import NetworkComponentClass from './NetworkComponentClass';
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const instance = getCurrentInstance()!;
 
-    class NetworkComponentPlacement {
-        component: NetworkComponent;
-        origin: {x: number, y: number};
-
-        constructor(
-            component: NetworkComponent,
-            params: {
-                origin: {x: number, y: number};
-            }
-        ) {
-            this.component = component;
-            this.origin = params.origin;
-        }//ctor
-    }//NetworkComponentPlacement
     /**
      * Components currently placed to the drawing
      */
-    const networkComponents = reactive<Record<string, NetworkComponentPlacement>>({});
+    const networkComponents = reactive<Record<string, NetworkComponentLocation>>({});
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
@@ -50,7 +37,11 @@
         instance.appContext.app.component(componentClass.getVueName(), 
         {
             template: componentClass.getTemplate(),
-            props: componentClass.getProps(),
+            props: {
+                ...componentClass.getProps(),
+                originX: {type: Number, required: true},
+                originY: {type: Number, required: true},
+            },
         });
         NetworkComponentClass.registeredClasses[componentClass.getName()] = componentClass;
         return this;
@@ -65,11 +56,23 @@
     function placeNetworkComponent(this: any, component: NetworkComponent,
                                    origin: {x: number, y: number})
     {
-        networkComponents[component.getID()] = new NetworkComponentPlacement(
+        networkComponents[component.getID()] = new NetworkComponentLocation(
             component, {origin});
         return this;
     }//placeNetworkComponent
 
+    /**
+     * Outputs an attribute list for the network component
+     * @param location A component location
+     */
+    function componentAttrs(location: NetworkComponentLocation)
+    {
+        return {
+            ...location.component.getProps(), 
+            "origin-x": location.origin.x,
+            "origin-y": location.origin.y,
+        };
+    }//componentAttrs
 
     defineExpose({
         registerNetworkComponentClass,
@@ -79,11 +82,11 @@
 
 <template>
     <svg class="kresmer" ref="svg">
-        <component v-for="(placement, id) in networkComponents" 
-                   :is="placement.component.getVueName()"
+        <component v-for="(location, id) in networkComponents" 
+                   :is="location.component.getVueName()"
                    :key="`networkComponent${id}`"
-                   v-bind="{...placement.component.getProps(), ...placement.origin}"
-                >{{placement.component.getContent()}}</component>
+                   v-bind="componentAttrs(location)"
+                >{{location.component.getContent()}}</component>
     </svg>
 </template>
 

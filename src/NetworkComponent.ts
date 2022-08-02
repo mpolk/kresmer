@@ -4,14 +4,12 @@
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  * Network Component - a generic network element instance 
- * (either an equipment unit or a link)
  ***************************************************************************/
 
 import NetworkComponentClass from "./NetworkComponentClass";
 
 /**
  * Network Component - a generic network element instance 
- * (either an equipment unit or a link)
  */
 export default class NetworkComponent {
     /**
