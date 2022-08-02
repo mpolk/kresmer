@@ -6,9 +6,8 @@
  *                        Front-end main script
  ***************************************************************************/
 
-import { createApp } from 'vue';
 import initApp from './init';
-import Kresmer from './Kresmer.vue';
+import Kresmer from './Kresmer';
 
-export const kresmer = createApp(Kresmer).mount('#kresmer') as InstanceType<typeof Kresmer>;
+export const kresmer = new Kresmer('#kresmer');
 initApp();

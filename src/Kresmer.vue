@@ -4,76 +4,19 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *                        The main Vue component
+ * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    /**
-     * The main Kresmer Vue component acting as a container for the whole drawing
-     */
-
-    import { getCurrentInstance, reactive } from 'vue';
-    import NetworkComponent from './NetworkComponent';
+    import { PropType } from 'vue';
     import NetworkComponentLocation from './NetworkComponentLocation';
-    import NetworkComponentClass from './NetworkComponentClass';
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const instance = getCurrentInstance()!;
-
-    /**
-     * Components currently placed to the drawing
-     */
-    const networkComponents = reactive<Record<string, NetworkComponentLocation>>({});
-
-    /**
-     * Registers a Network Component Class in the Kresmer and registers
-     * the corresponding new component in the Vue application
-     * 
-     * @param componentClass A Network Component Class to register
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function registerNetworkComponentClass(this: any, componentClass: NetworkComponentClass) 
-    {
-        instance.appContext.app.component(componentClass.getVueName(), 
-        {
-            template: componentClass.getTemplate(),
-            props: {
-                ...componentClass.getProps(),
-                originX: {type: Number, required: true},
-                originY: {type: Number, required: true},
-            },
-        });
-        registeredClasses[componentClass.getName()] = componentClass;
-        return this;
-    }//registerNetworkComponentClass
-
-    /**
-     * A singleton list of all Component Classes, registerd by Kresmer
-     */
-    const registeredClasses: Record<string, NetworkComponentClass> = {};
-    /**
-     * Returns the registered Network Component Class with the given name
-     * if exists or "undefined" otherwise
-     * @param className Class name
-     */
-    function getNetworkComponentClass(className: string)
-    {
-        return registeredClasses[className];
-    }//getNetworkComponentClass
-
-
-    /**
-     * Adds a new Network Component to the content of the drawing
-     * @param component A Network Component to add
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    function placeNetworkComponent(this: any, component: NetworkComponent,
-                                   origin: {x: number, y: number})
-    {
-        networkComponents[component.getID()] = new NetworkComponentLocation(
-            component, {origin});
-        return this;
-    }//placeNetworkComponent
+    defineProps({
+        networkComponents: {
+            type: Object as PropType<Record<string, NetworkComponentLocation>>, 
+            required: true
+        }
+    })
 
     /**
      * Outputs an attribute list for the network component
@@ -87,12 +30,6 @@
             "origin-y": location.origin.y,
         };
     }//componentAttrs
-
-    defineExpose({
-        registerNetworkComponentClass,
-        getNetworkComponentClass,
-        placeNetworkComponent,
-    })//defineExpose
 </script>
 
 <template>
