@@ -47,10 +47,6 @@ export default class NetworkComponentClass {
     }//ctor
 
     /**
-     * A singleton list of all Component Classes, registerd by Kresmer
-     */
-    static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
-    /**
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
      */

@@ -43,9 +43,23 @@
                 originY: {type: Number, required: true},
             },
         });
-        NetworkComponentClass.registeredClasses[componentClass.getName()] = componentClass;
+        registeredClasses[componentClass.getName()] = componentClass;
         return this;
     }//registerNetworkComponentClass
+
+    /**
+     * A singleton list of all Component Classes, registerd by Kresmer
+     */
+    const registeredClasses: Record<string, NetworkComponentClass> = {};
+    /**
+     * Returns the registered Network Component Class with the given name
+     * if exists or "undefined" otherwise
+     * @param className Class name
+     */
+    function getNetworkComponentClass(className: string)
+    {
+        return registeredClasses[className];
+    }//getNetworkComponentClass
 
 
     /**
@@ -76,6 +90,7 @@
 
     defineExpose({
         registerNetworkComponentClass,
+        getNetworkComponentClass,
         placeNetworkComponent,
     })//defineExpose
 </script>

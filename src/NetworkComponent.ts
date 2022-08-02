@@ -6,6 +6,7 @@
  * Network Component - a generic network element instance 
  ***************************************************************************/
 
+import {kresmer} from './main';
 import NetworkComponentClass from "./NetworkComponentClass";
 
 /**
@@ -30,7 +31,7 @@ export default class NetworkComponent {
         if (_class instanceof NetworkComponentClass)
             this._class = _class;
         else 
-            this._class = NetworkComponentClass.registeredClasses[_class];
+            this._class = kresmer.getNetworkComponentClass(_class);
         this.props = args?.props;
         this.content = args?.content;
         this.id = NetworkComponent.nextID++;
