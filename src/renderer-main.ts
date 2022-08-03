@@ -15,9 +15,9 @@ export const kresmer = new Kresmer('#kresmer');
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
 { 
     kresmer.loadLibrary(libData);
+    initApp();
 });
 
 console.debug("Main window renderer: I am ready")
 window.electronAPI.signalReadiness();
 
-initApp();

@@ -11,6 +11,7 @@ import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
 import NetworkComponentLocation from "./NetworkComponentLocation";
 import NetworkComponentClass from "./NetworkComponentClass";
+import LibraryParser from "./LibraryParser";
 
 /**
  * The main class implementing the most of the Kresmer public API
@@ -72,7 +73,13 @@ export default class Kresmer {
       */
      public loadLibrary(libData: string)
      {
-        console.debug(`Loaded library from data: '${libData}'`);
+        console.debug("Loading library...");
+        const parser = new LibraryParser();
+        for (const element of parser.parseXML(libData)) {
+            console.debug(element);
+            if (element instanceof NetworkComponentClass)
+                this.registerNetworkComponentClass(element);
+        }//for
      }//loadLibrary
  
 

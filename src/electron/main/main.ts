@@ -7,6 +7,7 @@
  ***************************************************************************/
 
 import * as path from 'path';
+import * as fs from 'fs';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -44,12 +45,19 @@ function createWindow() {
         userPrefs.set('window', mainWindow.getBounds());
     });
 
-    ipcMain.on('renderer-ready', () => {
-        console.debug("We've heard that the main window renderer is ready!")
-        mainWindow.webContents.send("load-library", "Вот такая библиотека...");
-    });
+    ipcMain.on('renderer-ready', () => {initApp(mainWindow)});
     
 }//createWindow
+
+
+// Initializing the application when it is ready to be initialized
+function initApp(mainWindow: BrowserWindow)
+{
+    console.debug("We've heard that the main window renderer is ready!");
+    const libData = fs.readFileSync("./stdlib.krel", "utf-8");
+    mainWindow.webContents.send("load-library", libData);
+}//initApp
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.

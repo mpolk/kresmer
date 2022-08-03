@@ -15,6 +15,22 @@ import { ComponentPropsOptions } from "vue";
  */
 export default class NetworkComponentClass {
     /**
+     * @param name Class name
+     * @param params Class creation parameters:
+     *               template: Template for the Vue-component for this class
+     *               props: Props definition of the Vue-component for this class
+     */
+     public constructor(name: string, params: {
+        template: string,
+        props?: ComponentPropsOptions,
+    })
+    {
+        this.name = name;
+        this.template = params.template;
+        this.props = params.props;
+    }//ctor
+
+    /**
      * Class name
      */
     private name: string;
@@ -29,22 +45,6 @@ export default class NetworkComponentClass {
      */
     private props?: ComponentPropsOptions;
     getProps() {return this.props}
-
-    /**
-     * @param name Class name
-     * @param params Class creation parameters:
-     *               template: Template for the Vue-component for this class
-     *               props: Props definition of the Vue-component for this class
-     */
-    public constructor(name: string, params: {
-        template: string,
-        props?: ComponentPropsOptions,
-    })
-    {
-        this.name = name;
-        this.template = params.template;
-        this.props = params.props;
-    }//ctor
 
     /**
      * Returns the name of the vue-component for this class
