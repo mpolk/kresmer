@@ -31,16 +31,16 @@ export default class Kresmer {
 
 
     /**
-     * Components currently placed to the drawing
+     * A singleton list of all Component Classes, registerd by Kresmer
      */
-    private readonly networkComponents = reactive<Record<string, NetworkComponentLocation>>({});
+     private static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
 
-     /**
-      * Registers a Network Component Class in the Kresmer and registers
-      * the corresponding new component in the Vue application
-      * 
-      * @param componentClass A Network Component Class to register
-      */
+    /**
+     * Registers a Network Component Class in the Kresmer and registers
+     * the corresponding new component in the Vue application
+     * 
+     * @param componentClass A Network Component Class to register
+     */
     public registerNetworkComponentClass(componentClass: NetworkComponentClass) 
     {
         this.appKresmer.component(componentClass.getVueName(), 
@@ -55,22 +55,31 @@ export default class Kresmer {
         Kresmer.registeredClasses[componentClass.getName()] = componentClass;
         return this;
     }//registerNetworkComponentClass
- 
-    /**
-     * A singleton list of all Component Classes, registerd by Kresmer
-     */
-     private static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
 
-     /**
-      * Returns the registered Network Component Class with the given name
-      * if exists or "undefined" otherwise
-      * @param className Class name
-      */
+    /**
+     * Returns the registered Network Component Class with the given name
+     * if exists or "undefined" otherwise
+     * @param className Class name
+     */
      public static getNetworkComponentClass(className: string)
      {
          return Kresmer.registeredClasses[className];
      }//getNetworkComponentClass
+
+     /**
+      * Loads a component class library from the raw XML data
+      * @param libData Library data
+      */
+     public loadLibrary(libData: string)
+     {
+        console.debug(`Loaded library from data: '${libData}'`);
+     }//loadLibrary
  
+
+    /**
+     * Components currently placed to the drawing
+     */
+     private readonly networkComponents = reactive<Record<string, NetworkComponentLocation>>({});
 
     /**
      * Adds a new Network Component to the content of the drawing

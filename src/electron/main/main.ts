@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import * as path from 'path';
-import { app, BrowserWindow } from 'electron';
+import { app, BrowserWindow, ipcMain } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");
@@ -24,7 +24,10 @@ function createWindow() {
     const windowOptions = {
         ...userPrefs.get("window"),
         icon: path.join(__dirname, "../../logo.png"),
-    }
+        webPreferences: {
+            preload: path.join(__dirname, 'preload.js')
+        }
+    }//windowOptions
     const mainWindow = new BrowserWindow(windowOptions);
 
     // and load the index.html of the app.
@@ -39,6 +42,11 @@ function createWindow() {
 
     mainWindow.on('resize', () => {
         userPrefs.set('window', mainWindow.getBounds());
+    });
+
+    ipcMain.on('renderer-ready', () => {
+        console.debug("We've heard that the main window renderer is ready!")
+        mainWindow.webContents.send("load-library", "Вот такая библиотека...");
     });
     
 }//createWindow
