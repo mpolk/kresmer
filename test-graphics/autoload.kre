@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kresmer-drawing name="autoload">
+    <component class="YellowRectangle">
+        <props>
+            <prop name="width">700</prop>
+            <prop name="height">50</prop>
+            <prop name="fill">lightgreen</prop>
+        </props>
+        <origin x="30" y="30"/>
+    </component>
+
+    <component class="Text">
+        <content>Ось такий от Кресмер...\n(чомусь зелений, а не жовтий)'</content>
+        <origin x="50" y="60"/>
+    </component>
+</kresmer-drawing>

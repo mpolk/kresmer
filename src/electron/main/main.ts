@@ -45,17 +45,25 @@ function createWindow() {
         userPrefs.set('window', mainWindow.getBounds());
     });
 
-    ipcMain.on('renderer-ready', () => {initApp(mainWindow)});
+    ipcMain.on('renderer-ready', (_event, stage: number) => {initApp(mainWindow, stage)});
     
 }//createWindow
 
 
 // Initializing the application when it is ready to be initialized
-function initApp(mainWindow: BrowserWindow)
+function initApp(mainWindow: BrowserWindow, stage: number)
 {
-    console.debug("We've heard that the main window renderer is ready!");
-    const libData = fs.readFileSync("./stdlib.krel", "utf-8");
-    mainWindow.webContents.send("load-library", libData);
+    console.debug(`We've heard that the main window renderer is now ready (stage ${stage})`);
+    switch (stage) {
+        case 0: {
+            const libData = fs.readFileSync("./stdlib.krel", "utf-8");
+            mainWindow.webContents.send("load-library", libData);
+            break;
+        }
+        case 1:
+            mainWindow.webContents.send("load-drawing", '');
+            break;
+    }//switch
 }//initApp
 
 

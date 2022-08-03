@@ -11,9 +11,17 @@
  console.debug("Setting up electron API for the renderer...");
  contextBridge.exposeInMainWorld('electronAPI', {
 
-    signalReadiness: () => {ipcRenderer.send('renderer-ready')},
+    signalReadiness: (stage: number) => {
+        console.debug(`Main window renderer: I am ready (stage ${stage})`);
+        ipcRenderer.send('renderer-ready', stage);
+    },
+
     onLoadLibrary: (callback: (event: IpcRendererEvent, libData: string) => void) => {
         ipcRenderer.on('load-library', callback);
+    },
+    
+    onLoadDrawing: (callback: (event: IpcRendererEvent, drawingData: string) => void) => {
+        ipcRenderer.on('load-drawing', callback);
     },
 
  });

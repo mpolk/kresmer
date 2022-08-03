@@ -9,8 +9,9 @@
  import {IpcRendererEvent} from 'electron';
 
 export interface IElectronAPI {
-    signalReadiness: () => Promise<void>,
+    signalReadiness: (stage: number) => Promise<void>,
     onLoadLibrary: (callback: (event: IpcRendererEvent, libData: string) => void) => void,
+    onLoadDrawing: (callback: (event: IpcRendererEvent, drawingData: string) => void) => void,
 }//IElectronAPI
 
 declare global {

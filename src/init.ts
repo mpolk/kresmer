@@ -8,7 +8,7 @@
 
 import {kresmer} from "./renderer-main";
 import NetworkComponent from './NetworkComponent';
-import NetworkComponentClass from './NetworkComponentClass';
+//import NetworkComponentClass from './NetworkComponentClass';
 
 export default function initApp()
 {
