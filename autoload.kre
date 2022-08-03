@@ -10,7 +10,7 @@
     </component>
 
     <component class="Text">
-        <content>Ось такий от Кресмер...\n(чомусь зелений, а не жовтий)'</content>
+        <content>Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</content>
         <origin x="50" y="60"/>
     </component>
 </kresmer-drawing>

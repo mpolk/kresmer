@@ -12,6 +12,7 @@ import NetworkComponent from "./NetworkComponent";
 import NetworkComponentLocation from "./NetworkComponentLocation";
 import NetworkComponentClass from "./NetworkComponentClass";
 import LibraryParser from "./LibraryParser";
+import DrawingParser from "./DrawingParser";
 
 /**
  * The main class implementing the most of the Kresmer public API
@@ -100,4 +101,30 @@ export default class Kresmer {
         return this;
     }//placeNetworkComponent
 
+    /**
+     * Adds a new Network Component to the content of the drawing
+     * @param location A Network Component to add
+     */
+    public addPositionedNetworkComponent(location: NetworkComponentLocation)
+    {
+        this.networkComponents[location.component.getID()] = location;
+        return this;
+    }//addPositionedNetworkComponent
+
+
+    /**
+     * Loads a component class library from the raw XML data
+     * @param dwgData Library data
+     */
+    public loadDrawing(dwgData: string)
+    {
+        console.debug("Loading drawing...");
+        const parser = new DrawingParser();
+        for (const element of parser.parseXML(dwgData)) {
+            console.debug(element);
+            if (element instanceof NetworkComponentLocation)
+                this.addPositionedNetworkComponent(element);
+        }//for
+    }//loadDrawing
+ 
 }//Kresmer

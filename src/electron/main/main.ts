@@ -60,9 +60,14 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             mainWindow.webContents.send("load-library", libData);
             break;
         }
-        case 1:
-            mainWindow.webContents.send("load-drawing", '');
+        case 1: {
+            const autoload = "./autoload.kre";
+            if (fs.existsSync(autoload)) {
+                const dwgData = fs.readFileSync(autoload, "utf-8");
+                mainWindow.webContents.send("load-drawing", dwgData);
+            }//if
             break;
+        }
     }//switch
 }//initApp
 

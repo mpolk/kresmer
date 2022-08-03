@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { IpcRendererEvent } from 'electron';
-import initApp from './init';
+// import initApp from './init';
 import Kresmer from './Kresmer';
 
 export const kresmer = new Kresmer('#kresmer');
@@ -18,9 +18,11 @@ window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) =>
     window.electronAPI.signalReadiness(1);
 });
 
-window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, _drawingData: string) => 
+window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string) => 
 { 
-    initApp();
+    kresmer.loadDrawing(drawingData);
+    window.electronAPI.signalReadiness(2);
+    // initApp();
 });
 
 window.electronAPI.signalReadiness(0);
