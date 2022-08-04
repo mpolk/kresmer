@@ -5,7 +5,7 @@
             <xs:sequence>
                 <xs:element name="component" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:sequence>
+                        <xs:all>
                             <xs:element name="props" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
@@ -28,7 +28,7 @@
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="content" minOccurs="0" type="xs:string" />
-                        </xs:sequence>
+                        </xs:all>
                         <xs:attribute name="class" use="required" />
                     </xs:complexType>
                 </xs:element>

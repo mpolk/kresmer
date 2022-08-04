@@ -20,7 +20,7 @@ export default class LibraryParser {
      * of the parsed library elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string)
+    public *parseXML(rawData: string): Generator<NetworkComponentClass|ParsingException>
     {
         console.debug('Parsing library XML...');
         const domParser = new DOMParser();
@@ -36,10 +36,17 @@ export default class LibraryParser {
             if (node instanceof Element) {
                 switch (node.nodeName) {
                     case "component-class":
-                        yield this.parseComponentClassNode(node);
+                        try {
+                            yield this.parseComponentClassNode(node);
+                        } catch (exc) {
+                            if (exc instanceof ParsingException)
+                                yield exc;
+                            else
+                                throw exc;
+                        }//catch
                         break;
                     default:
-                        throw new LibraryParsingException(
+                        yield new LibraryParsingException(
                             `Invalid top-level node in library: "${node.nodeName}"`);
                 }//switch
             }//if
@@ -71,7 +78,7 @@ export default class LibraryParser {
         if (!template) 
             throw new LibraryParsingException(
                 `Component class without template`,
-                `Component class ${className}`);
+                {source: `Component class ${className}`});
 
         return new NetworkComponentClass(className, {template, props})
     }//parseComponentClassNode
@@ -115,7 +122,7 @@ export default class LibraryParser {
                             _default = child.getAttribute("default");
                         if (!propName)
                             throw new LibraryParsingException("Prop without a name",
-                                `Component class ${node.parentElement?.getAttribute("name")}`);
+                                {source: `Component class ${node.parentElement?.getAttribute("name")}`});
 
                         switch (type) {
                             case "String":
@@ -140,7 +147,7 @@ export default class LibraryParser {
                                 break;
                             default:
                                 throw new LibraryParsingException(`Invalid prop type: ${prop.type}`,
-                                    `Component class ${node.parentElement?.getAttribute("name")}`);
+                                    {source: `Component class ${node.parentElement?.getAttribute("name")}`});
                         }//switch
 
                         switch (required) {
@@ -165,10 +172,12 @@ export default class LibraryParser {
 
 }//LibraryParser
 
-
+import { KresmerExceptionSeverity } from "../KresmerException";
 export class LibraryParsingException extends ParsingException {
-    constructor(message: string, source?: string)
-    {
-        super("Library loading: " + message, source);
+    constructor(message: string, options?: {
+        severity?: KresmerExceptionSeverity,
+        source?: string,
+    }) {
+        super("Library loading: " + message, options);
     }//ctor
 }//LibraryParsingException

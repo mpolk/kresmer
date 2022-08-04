@@ -72,15 +72,21 @@ export default class Kresmer {
       * Loads a component class library from the raw XML data
       * @param libData Library data
       */
-     public loadLibrary(libData: string)
+     public loadLibrary(libData: string): boolean
      {
         console.debug("Loading library...");
         const parser = new LibraryParser();
+        let wereErrors = false;
         for (const element of parser.parseXML(libData)) {
             //console.debug(element);
-            if (element instanceof NetworkComponentClass)
+            if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
+            } else {
+                console.error(`${element.message}\nSource: ${element.source}`);
+                wereErrors = true;
+            }//if
         }//for
+        return !wereErrors;
      }//loadLibrary
  
 
@@ -116,15 +122,21 @@ export default class Kresmer {
      * Loads a component class library from the raw XML data
      * @param dwgData Library data
      */
-    public loadDrawing(dwgData: string)
+    public loadDrawing(dwgData: string): boolean
     {
         console.debug("Loading drawing...");
         const parser = new DrawingParser();
+        let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
-            if (element instanceof NetworkComponentLocation)
+            if (element instanceof NetworkComponentLocation) {
                 this.addPositionedNetworkComponent(element);
+            } else {
+                console.error(`${element.message}\nSource: ${element.source}`);
+                wereErrors = true;
+            }//if
         }//for
+        return !wereErrors;
     }//loadDrawing
  
 }//Kresmer

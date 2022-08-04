@@ -11,13 +11,4 @@ import KresmerException from "../KresmerException";
 /**
  * App level exceptions generated during library or drawing file parsing
  */
-export default class ParsingException extends KresmerException
-{
-    constructor(message: string, source?: string)
-    {
-        super(message);
-        this.source = source;
-    }//ctor
-
-    readonly source?: string;
-}//ParsingException
+export default class ParsingException extends KresmerException {}

@@ -5,7 +5,7 @@
             <xs:sequence>
                 <xs:element name="component-class" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:sequence>
+                        <xs:all>
                             <xs:element name="template">
                                 <xs:complexType>
                                     <xs:sequence minOccurs="0">
@@ -15,10 +15,10 @@
                                                 <xs:attribute name="v--y" use="required" />
                                                 <xs:attribute name="v--width" use="required" />
                                                 <xs:attribute name="v--height" use="required" />
-                                                <xs:attribute name="v--fill" use="required" />
-                                                <xs:attribute name="stroke" use="required" />
-                                                <xs:attribute name="stroke-width" use="required" />
-                                                <xs:attribute name="stroke-opacity" type="xs:decimal" use="required" />
+                                                <xs:attribute name="v--fill" />
+                                                <xs:attribute name="stroke" />
+                                                <xs:attribute name="stroke-width" />
+                                                <xs:attribute name="stroke-opacity" type="xs:decimal" />
                                             </xs:complexType>
                                         </xs:element>
                                         <xs:element name="text" minOccurs="0">
@@ -28,6 +28,8 @@
                                                 </xs:sequence>
                                                 <xs:attribute name="v--x" use="required" />
                                                 <xs:attribute name="v--y" use="required" />
+                                                <xs:attribute name="v--fill" />
+                                                <xs:attribute name="v--font-size" />
                                             </xs:complexType>
                                         </xs:element>
                                     </xs:sequence>
@@ -47,7 +49,7 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
-                        </xs:sequence>
+                        </xs:all>
                         <xs:attribute name="name" use="required" />
                     </xs:complexType>
                 </xs:element>

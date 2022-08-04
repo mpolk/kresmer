@@ -16,7 +16,8 @@ export const kresmer = new Kresmer('#kresmer');
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
 { 
     try {
-        kresmer.loadLibrary(libData);
+        if (!kresmer.loadLibrary(libData))
+            alert("There were errors during library load (see the log)");
     } catch (exc) {
         if (exc instanceof ParsingException) {
             alert(exc.message);
@@ -31,7 +32,8 @@ window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) =>
 window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string) => 
 { 
     try {
-        kresmer.loadDrawing(drawingData);
+        if (!kresmer.loadDrawing(drawingData))
+            alert("There were errors during drawing load (see the log)");
     } catch (exc) {
         if (exc instanceof ParsingException) {
             alert(exc.message);

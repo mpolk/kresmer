@@ -13,9 +13,26 @@
         </props>
     </component-class>
 
+    <component-class name="Rectangle">
+        <template>  
+            <rect v--x="originX" v--y="originY" v--width="width" v--height="height" 
+                  v--fill="fill"></rect>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true"/>
+            <prop name="height" type="Number" required="true"/>
+            <prop name="fill" type="String" default="yellow"/>
+        </props>
+    </component-class>
+
+
     <component-class name="Text">
         <template>  
-            <text v--x="originX" v--y="originY"><slot></slot></text>
+            <text v--x="originX" v--y="originY" v--fill="color" v--font-size="fontSize"><slot></slot></text>
         </template>
+        <props>
+            <prop name="color" type="String" />
+            <prop name="font-size" type="String" />
+        </props>
     </component-class>
 </kresmer-library>

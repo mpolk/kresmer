@@ -3,7 +3,7 @@
 <kresmer-drawing name="autoload">
     <component class="YellowRectangle">
         <props>
-            <prop name="width">700</prop>
+            <prop name="width">450</prop>
             <prop name="height">50</prop>
             <prop name="fill">lightgreen</prop>
         </props>
@@ -13,5 +13,41 @@
     <component class="Text">
         <origin x="50" y="60"/>
         <content>Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</content>
+    </component>
+
+    <component class="Rectangle">
+        <props>
+            <prop name="width">450</prop>
+            <prop name="height">25</prop>
+            <prop name="fill">blue</prop>
+        </props>
+        <origin x="30" y="90"/>
+    </component>
+
+    <component class="Rectangle">
+        <props>
+            <prop name="width">450</prop>
+            <prop name="height">25</prop>
+            <prop name="fill">yellow</prop>
+        </props>
+        <origin x="30" y="115"/>
+    </component>
+
+    <component class="Text">
+        <origin x="100" y="120"/>
+        <content>А це справжний Кресмер</content>
+        <props>
+            <prop name="color">white</prop>
+            <prop name="font-size">24</prop>
+        </props>
+    </component>
+
+    <component class="Text">
+        <origin x="101" y="121"/>
+        <content>А це справжний Кресмер</content>
+        <props>
+            <prop name="color">blue</prop>
+            <prop name="font-size">24</prop>
+        </props>
     </component>
 </kresmer-drawing>

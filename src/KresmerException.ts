@@ -11,9 +11,24 @@
  */
 export default class KresmerException {
     public readonly message: string;
+    public readonly severity: KresmerExceptionSeverity;
+    public readonly source?: string;
 
-    constructor(message: string)
-    {
+    constructor(message: string, options?: {
+        severity?: KresmerExceptionSeverity,
+        source?: string,
+    }) {
         this.message = message;
+        if (options) {
+            if (options.severity)
+                this.severity = options.severity;
+            else
+                this.severity = "error";
+        } else {
+            this.severity = "error";
+        }//if
+        this.source = options?.source;
     }//ctor
 }//KresmerException
+
+export type KresmerExceptionSeverity = "error" | "warning";

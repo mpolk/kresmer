@@ -11,6 +11,7 @@ import NetworkComponent from "../NetworkComponent";
 import NetworkComponentClass from "../NetworkComponentClass";
 import NetworkComponentLocation from "../NetworkComponentLocation";
 import ParsingException from "./ParsingException";
+import { KresmerExceptionSeverity } from "../KresmerException";
 
 /**
  * Drawing file parser
@@ -22,7 +23,7 @@ export default class DrawingParser {
      * of the parsed drawing elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string)
+    public *parseXML(rawData: string): Generator<NetworkComponentLocation|ParsingException>
     {
         console.debug('Parsing drawing XML...');
         const domParser = new DOMParser();
@@ -33,18 +34,23 @@ export default class DrawingParser {
             throw new DrawingParsingException(
                 `Invalid drawing root element: ${root?.nodeName}`);
 
-        for (let i = 0; i < root.childNodes.length; i++) {
-            const node = root.childNodes[i];
-            if (node instanceof Element) {
-                switch (node.nodeName) {
-                    case "component":
+        for (let i = 0; i < root.children.length; i++) {
+            const node = root.children[i];
+            switch (node.nodeName) {
+                case "component":
+                    try {
                         yield this.parseComponentNode(node);
-                        break;
-                    default:
-                        throw new DrawingParsingException(
-                            `Invalid top-level node in drawing: "${node.nodeName}"`);
-                }//switch
-            }//if
+                    } catch (exc) {
+                        if (exc instanceof ParsingException)
+                            yield exc;
+                        else
+                            throw exc;
+                    }//catch
+                    break;
+                default:
+                    yield new DrawingParsingException(
+                        `Invalid top-level node in drawing: "${node.nodeName}"`);
+            }//switch
         }//for
     }//parseXML
 
@@ -76,11 +82,11 @@ export default class DrawingParser {
                         const x = child.getAttribute('x');
                         if (x === null)
                             throw new DrawingParsingException("No origin-x specified",
-                                `Component class=${className}`);
+                            {source: `Component class=${className}`});
                         const y = child.getAttribute('y');
                         if (y === null)
                             throw new DrawingParsingException("No origin-y specified",
-                                `Component class=${className}`);
+                            {source: `Component class=${className}`});
                         origin.x = parseInt(x);
                         origin.y = parseInt(y);
                         break;
@@ -91,7 +97,7 @@ export default class DrawingParser {
 
         if (typeof origin.x !== "number" || typeof origin.y !== "number")
             throw new DrawingParsingException(`Invalid component origin: ${origin}`,
-                `Component class=${className}`);
+            {source: `Component class=${className}`});
 
         const component = new NetworkComponent(className, {props, content});
         return new NetworkComponentLocation(component, 
@@ -116,13 +122,13 @@ export default class DrawingParser {
                         const propName = child.getAttribute("name");
                         if (!propName)
                             throw new DrawingParsingException("Prop without a name",
-                                `Component ${node.parentElement?.getAttribute("name")}`);
+                            {source: `Component ${node.parentElement?.getAttribute("name")}`});
                         const value = child.innerHTML.trim();
                         const classProp = classProps[propName];
                         if (!classProp)
                             throw new DrawingParsingException(
-                                `Class ${componentClass} has no prop ${propName}, but the component supplies some`,
-                                `Component ${node.parentElement?.getAttribute("name")}`);
+                                `Class "${componentClass.getName()}" has no prop "${propName}", but the component supplies some`,
+                                {source: `Component ${node.parentElement?.getAttribute("name")}`});
             
                         // eslint-disable-next-line @typescript-eslint/no-explicit-any
                         switch ((classProp as any).type) {
@@ -148,10 +154,11 @@ export default class DrawingParser {
 }//DrawingParser
 
 
-
 export class DrawingParsingException extends ParsingException {
-    constructor(message: string, source?: string)
-    {
-        super("Drawing loading: " + message, source);
+    constructor(message: string, options?: {
+        severity?: KresmerExceptionSeverity,
+        source?: string,
+    }) {
+        super("Drawing loading: " + message, options);
     }//ctor
 }//DrawingParsingException
