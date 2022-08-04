@@ -6,8 +6,9 @@
  *                          Drawing file parser
 \**************************************************************************/
 
-import NetworkComponent from "./NetworkComponent";
-import NetworkComponentLocation from "./NetworkComponentLocation";
+import NetworkComponent from "../NetworkComponent";
+import NetworkComponentLocation from "../NetworkComponentLocation";
+import ParsingException from "./ParsingException";
 
 export default class DrawingParser {
 
@@ -95,3 +96,12 @@ export default class DrawingParser {
     }//parseProps
 
 }//DrawingParser
+
+
+
+export class DrawingParsingException extends ParsingException {
+    constructor(message: string, source?: string)
+    {
+        super("Drawing loading: " + message, source);
+    }//ctor
+}//DrawingParsingException

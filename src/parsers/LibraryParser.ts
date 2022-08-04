@@ -6,8 +6,9 @@
  *                     Component library parser
 \**************************************************************************/
 
-import { ComponentPropsOptions } from "vue";
-import NetworkComponentClass from "./NetworkComponentClass";
+import { ComponentPropsOptions, Prop } from "vue";
+import NetworkComponentClass from "../NetworkComponentClass";
+import ParsingException from "./ParsingException";
 
 export default class LibraryParser {
 
@@ -19,34 +20,36 @@ export default class LibraryParser {
         const root = dom.firstChild;
 
         if (root?.nodeName !== "kresmer-library")
-            throw `Invalid library root element: ${root?.nodeName}`;
+            throw new LibraryParsingException(
+                `Invalid library root element: ${root?.nodeName}`);
 
         for (let i = 0; i < root.childNodes.length; i++) {
             const node = root.childNodes[i];
-            switch (node.nodeName) {
-                case "component-class":
-                    yield this.parseComponentClassNode(node);
-                    break;
-                case "#text":
-                    break;
-                default:
-                    throw `Invalid top-level node in library: "${node.nodeName}"`;
-            }//switch
+            if (node instanceof Element) {
+                switch (node.nodeName) {
+                    case "component-class":
+                        yield this.parseComponentClassNode(node);
+                        break;
+                    default:
+                        throw new LibraryParsingException(
+                            `Invalid top-level node in library: "${node.nodeName}"`);
+                }//switch
+            }//if
         }//for
     }//parseXML
 
 
-    private parseComponentClassNode(node: Node)
+    private parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
         if (!className) 
-            throw "Component class without name";
+            throw new LibraryParsingException("Component class without name");
 
         let template: string | null = null;
         let props: ComponentPropsOptions = {};
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
-            if (child.nodeType === node.ELEMENT_NODE) {
+            if (child instanceof Element) {
                 switch (child.nodeName) {
                     case "template":
                         template = child.innerHTML.trim().replace(/v--/g, ":");
@@ -58,60 +61,62 @@ export default class LibraryParser {
         }//for
 
         if (!template) 
-            throw `Component ${className} class without template`;
+            throw new LibraryParsingException(
+                `Component class without template`,
+                `Component class ${className}`);
 
         return new NetworkComponentClass(className, {template, props})
     }//parseComponentClassNode
 
 
-    private parseProps(node: Node)
+    private parseProps(node: Element)
     {
         const props: ComponentPropsOptions = {};
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
-            if (child.nodeType === node.ELEMENT_NODE) {
+            if (child instanceof Element) {
                 switch (child.nodeName) {
                     case "prop": {
                         const propName = child.getAttribute("name");
-                        const prop = {
-                            type: child.getAttribute("type"),
-                            required: child.getAttribute("required"),
-                            default: child.getAttribute("default"),
-                        };
+                        const prop: Prop<unknown, unknown> = {};
+                        const type = child.getAttribute("type");
+                        const required = child.getAttribute("requred"),
+                            _default = child.getAttribute("default");
                         if (!propName)
-                            throw "Prop without name";
-                        if (prop.default == null)
-                            delete prop.default;
+                            throw new LibraryParsingException("Prop without a name",
+                                `Component class ${node.parentElement?.getAttribute("name")}`);
 
-                        switch (prop.type) {
+                        switch (type) {
                             case "String":
                                 prop.type = String;
+                                if (_default != null)
+                                    prop.default = _default;
                                 break;
                             case "Number":
                                 prop.type = Number;
-                                if (prop.default)
-                                    prop.default = parseFloat(prop.default);
+                                if (_default != null)
+                                    prop.default = parseFloat(_default);
                                 break;
                             case "Object":
                                 prop.type = Object;
-                                if (prop.default)
-                                    prop.default = JSON.parse(prop.default);
+                                if (_default != null)
+                                    prop.default = JSON.parse(_default);
                                 break;
                             case "Array":
                                 prop.type = Array;
-                                if (prop.default)
-                                    prop.default = JSON.parse(prop.default);
+                                if (_default != null)
+                                    prop.default = JSON.parse(_default);
                                 break;
                             default:
-                                throw `Invalid prop type: ${prop.type}`;
+                                throw new LibraryParsingException(`Invalid prop type: ${prop.type}`,
+                                    `Component class ${node.parentElement?.getAttribute("name")}`);
                         }//switch
 
-                        switch (prop.required) {
+                        switch (required) {
                             case "true": case "false":
-                                prop.required = prop.required === "true";
+                                prop.required = (required === "true");
                                 break;
                             case null: case undefined:
-                                delete prop.required;
                                 break;
                             default:
                                 throw `Invalid prop "required" attribute: ${prop.required}`;
@@ -128,3 +133,11 @@ export default class LibraryParser {
     }//parseProps
 
 }//LibraryParser
+
+
+export class LibraryParsingException extends ParsingException {
+    constructor(message: string, source?: string)
+    {
+        super("Library loading: " + message, source);
+    }//ctor
+}//LibraryParsingException

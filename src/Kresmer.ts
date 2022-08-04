@@ -11,8 +11,8 @@ import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
 import NetworkComponentLocation from "./NetworkComponentLocation";
 import NetworkComponentClass from "./NetworkComponentClass";
-import LibraryParser from "./LibraryParser";
-import DrawingParser from "./DrawingParser";
+import LibraryParser from "./parsers/LibraryParser";
+import DrawingParser from "./parsers/DrawingParser";
 
 /**
  * The main class implementing the most of the Kresmer public API
