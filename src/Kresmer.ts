@@ -77,7 +77,7 @@ export default class Kresmer {
         console.debug("Loading library...");
         const parser = new LibraryParser();
         for (const element of parser.parseXML(libData)) {
-            console.debug(element);
+            //console.debug(element);
             if (element instanceof NetworkComponentClass)
                 this.registerNetworkComponentClass(element);
         }//for
@@ -121,7 +121,7 @@ export default class Kresmer {
         console.debug("Loading drawing...");
         const parser = new DrawingParser();
         for (const element of parser.parseXML(dwgData)) {
-            console.debug(element);
+            //console.debug(element);
             if (element instanceof NetworkComponentLocation)
                 this.addPositionedNetworkComponent(element);
         }//for

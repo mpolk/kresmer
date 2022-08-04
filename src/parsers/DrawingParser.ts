@@ -6,12 +6,19 @@
  *                          Drawing file parser
 \**************************************************************************/
 
+import Kresmer from "../Kresmer";
 import NetworkComponent from "../NetworkComponent";
+import NetworkComponentClass from "../NetworkComponentClass";
 import NetworkComponentLocation from "../NetworkComponentLocation";
 import ParsingException from "./ParsingException";
 
 export default class DrawingParser {
 
+    /**
+     * Parses a drawing file contents and yields the sequence 
+     * of the parsed drawing elements
+     * @param rawData XML-data to parse
+     */
     public *parseXML(rawData: string)
     {
         console.debug('Parsing drawing XML...');
@@ -44,6 +51,9 @@ export default class DrawingParser {
         const className = node.getAttribute("class");
         if (!className) 
             throw new DrawingParsingException("Component class without class");
+        const componentClass = Kresmer.getNetworkComponentClass(className);
+        if (!componentClass) 
+            throw new DrawingParsingException(`Unknown component class "${componentClass}"`);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let props: Record<string, any> = {};
@@ -54,7 +64,7 @@ export default class DrawingParser {
             if (child instanceof Element) {
                 switch (child.nodeName) {
                     case "props":
-                        props = this.parseProps(child);
+                        props = this.parseProps(child, componentClass);
                         break;
                     case "content":
                         content = child.innerHTML.trim();
@@ -86,10 +96,15 @@ export default class DrawingParser {
     }//parseComponentNode
 
 
-    private parseProps(node: Element)
+    private parseProps(node: Element, componentClass: NetworkComponentClass)
     {
+        const classProps = componentClass.getProps();
+        if (!classProps)
+            throw new DrawingParsingException(
+                `Class ${componentClass} has no props, but the component supplies some`);
+                
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const props: Record<string, any> = {};
+        const props: Record<string, string|number|object|any[]> = {};
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
             if (child instanceof Element) {
@@ -100,7 +115,24 @@ export default class DrawingParser {
                             throw new DrawingParsingException("Prop without a name",
                                 `Component ${node.parentElement?.getAttribute("name")}`);
                         const value = child.innerHTML.trim();
-                        props[propName] = value;
+                        const classProp = classProps[propName];
+                        if (!classProp)
+                            throw new DrawingParsingException(
+                                `Class ${componentClass} has no prop ${propName}, but the component supplies some`,
+                                `Component ${node.parentElement?.getAttribute("name")}`);
+            
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        switch ((classProp as any).type) {
+                            case String:
+                                props[propName] = value;
+                                break;
+                            case Number:
+                                props[propName] = parseFloat(value);
+                                break;
+                            case Object: case Array:
+                                props[propName] = JSON.parse(value);
+                                break;
+                            }//switch
                         break;
                     }
                 }//switch

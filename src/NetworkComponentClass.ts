@@ -7,7 +7,7 @@
  * (the word "class" here means a runtime class, not a Typescript one)
  ***************************************************************************/
 
-import { ComponentPropsOptions } from "vue";
+import { ComponentObjectPropsOptions } from "vue";
 
 /**
  * Network Component Class - a generic network element class
@@ -22,7 +22,7 @@ export default class NetworkComponentClass {
      */
      public constructor(name: string, params: {
         template: string,
-        props?: ComponentPropsOptions,
+        props?: ComponentObjectPropsOptions,
     })
     {
         this.name = name;
@@ -43,7 +43,7 @@ export default class NetworkComponentClass {
     /**
      * Props definition of the Vue-component for this class
      */
-    private props?: ComponentPropsOptions;
+    private props?: ComponentObjectPropsOptions;
     getProps() {return this.props}
 
     /**
