@@ -21,7 +21,7 @@ export default class NetworkComponentClass {
      *               props: Props definition of the Vue-component for this class
      */
      public constructor(name: string, params: {
-        template: string,
+        template: string | Element,
         props?: ComponentObjectPropsOptions,
     })
     {
@@ -38,7 +38,7 @@ export default class NetworkComponentClass {
     /**
      * Template for the Vue-component for this class
      */
-    private template: string;
+    private template: string | Element;
     getTemplate() {return this.template}
     /**
      * Props definition of the Vue-component for this class

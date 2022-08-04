@@ -53,14 +53,14 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without name");
 
-        let template: string | null = null;
+        let template: Element | undefined;
         let props: ComponentPropsOptions = {};
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
             if (child instanceof Element) {
                 switch (child.nodeName) {
                     case "template":
-                        template = child.innerHTML.trim().replace(/v--/g, ":");
+                        template = this.parseTemplate(child);
                         break;
                     case "props":
                         props = this.parseProps(child);
@@ -75,6 +75,29 @@ export default class LibraryParser {
 
         return new NetworkComponentClass(className, {template, props})
     }//parseComponentClassNode
+
+
+    private parseTemplate(node: Element)
+    {
+        for (const attrName of node.getAttributeNames()) {
+            if (attrName.startsWith("v--")) {
+                const attrValue = node.getAttribute(attrName);
+                const newAttrName = attrName.replace("v--", ":");
+                if (attrValue)
+                    node.setAttribute(newAttrName, attrValue);
+                else
+                    node.setAttribute(newAttrName, "");
+                node.removeAttribute(attrName);
+            }//if
+        }//for
+
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            this.parseTemplate(child);
+        }//for
+
+        return node;
+    }//parseTemplate
 
 
     private parseProps(node: Element)
