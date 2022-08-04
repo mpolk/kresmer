@@ -27,7 +27,7 @@ export default class DrawingParser {
         console.debug('Parsing drawing XML...');
         const domParser = new DOMParser();
         const dom = domParser.parseFromString(rawData, "text/xml") as XMLDocument;
-        const root = dom.firstChild;
+        const root = dom.firstElementChild;
 
         if (root?.nodeName !== "kresmer-drawing")
             throw new DrawingParsingException(

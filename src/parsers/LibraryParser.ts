@@ -25,7 +25,7 @@ export default class LibraryParser {
         console.debug('Parsing library XML...');
         const domParser = new DOMParser();
         const dom = domParser.parseFromString(rawData, "text/xml") as XMLDocument;
-        const root = dom.firstChild;
+        const root = dom.firstElementChild;
 
         if (root?.nodeName !== "kresmer-library")
             throw new LibraryParsingException(
