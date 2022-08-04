@@ -12,6 +12,9 @@ import NetworkComponentClass from "../NetworkComponentClass";
 import NetworkComponentLocation from "../NetworkComponentLocation";
 import ParsingException from "./ParsingException";
 
+/**
+ * Drawing file parser
+ */
 export default class DrawingParser {
 
     /**

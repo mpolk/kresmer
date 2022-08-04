@@ -10,8 +10,16 @@ import { ComponentPropsOptions, Prop } from "vue";
 import NetworkComponentClass from "../NetworkComponentClass";
 import ParsingException from "./ParsingException";
 
+/**
+ * Component library parser
+ */
 export default class LibraryParser {
 
+    /**
+     * Parses a library file contents and yields the sequence 
+     * of the parsed library elements
+     * @param rawData XML-data to parse
+     */
     public *parseXML(rawData: string)
     {
         console.debug('Parsing library XML...');
