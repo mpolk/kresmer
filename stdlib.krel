@@ -38,8 +38,8 @@
 
     <component-class name="BorderedKresmer">
         <template>
-            <svg v--x="originX" v--y="originY">
-                <g transform="rotate(45 100 150)">
+            <svg v--x="originX" v--y="originY" style="overflow: visible; border: solid red 1px">
+                <g transform="rotate(45 100 150)" style="border: solid red 1px">
                     <rect x="0" y="0" v--width="width" v--height="height" 
                         v--fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
                     <text x="20" y="30" v--fill="color" v--font-size="fontSize">{{text}}</text>
