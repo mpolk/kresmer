@@ -35,12 +35,15 @@
     </component>
 
     <component class="Text">
-        <origin x="50" y="180" />
+        <origin x="50" y="300" />
         <props>
             <prop name="font-size">32</prop>
             <prop name="color">darkgreen</prop>
             <prop name="font-family">sans-serif</prop>
         </props>
         <content>А это просто текст, как на заборе</content>
+        <transform>
+            <rotate angle="-10" />
+        </transform>
     </component>
 </kresmer-drawing>

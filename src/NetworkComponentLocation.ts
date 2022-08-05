@@ -21,7 +21,7 @@ export class Transform {
             if (this.rotate.x !== undefined)
                 chunks.push(`rotate(${this.rotate.angle} ${this.rotate.x} ${this.rotate.y})`);
             else
-                chunks.push(`rotate(${this.rotate.angle}`);
+                chunks.push(`rotate(${this.rotate.angle})`);
         }//if
 
         return chunks.join(' ');
