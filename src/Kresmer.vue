@@ -28,6 +28,7 @@
             ...location.component.getProps(), 
             "origin-x": location.origin.x,
             "origin-y": location.origin.y,
+            "transform": location.transform?.toCSS(),
         };
     }//componentAttrs
 </script>

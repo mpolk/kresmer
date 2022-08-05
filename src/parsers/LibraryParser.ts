@@ -37,7 +37,7 @@ export default class LibraryParser {
                 switch (node.nodeName) {
                     case "component-class":
                         try {
-                            yield this.parseComponentClassNode(node);
+                            yield this.parseComponentClassNode(node, dom);
                         } catch (exc) {
                             if (exc instanceof ParsingException)
                                 yield exc;
@@ -54,7 +54,7 @@ export default class LibraryParser {
     }//parseXML
 
 
-    private parseComponentClassNode(node: Element)
+    private parseComponentClassNode(node: Element, dom: XMLDocument)
     {
         const className = node.getAttribute("name");
         if (!className) 
@@ -67,7 +67,7 @@ export default class LibraryParser {
             if (child instanceof Element) {
                 switch (child.nodeName) {
                     case "template":
-                        template = this.parseTemplate(child);
+                        template = this.parseTemplate(child, dom);
                         break;
                     case "props":
                         props = this.parseProps(child);
@@ -84,7 +84,7 @@ export default class LibraryParser {
     }//parseComponentClassNode
 
 
-    private parseTemplate(node: Element)
+    private parseTemplate(node: Element, dom?: XMLDocument)
     {
         for (const attrName of node.getAttributeNames()) {
             if (attrName.startsWith("v--")) {
@@ -102,6 +102,25 @@ export default class LibraryParser {
             const child = node.children[i];
             this.parseTemplate(child);
         }//for
+
+        if (dom) {
+            const svg = dom.createElement("svg");
+            svg.setAttribute(":x", "originX");
+            svg.setAttribute(":y", "originY");
+            svg.setAttribute("style", "overflow: visible");
+
+            const g = dom.createElement("g");
+            svg.appendChild(g);
+            g.setAttribute(":transform", "transform");
+
+            const n = node.childNodes.length;
+            for (let i = 0; i < n; i++) {
+                const child = node.childNodes[0];
+                g.appendChild(child);
+            }//for
+            
+            node.appendChild(svg);
+        }//if
 
         return node;
     }//parseTemplate

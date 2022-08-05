@@ -9,7 +9,7 @@
 import { App, createApp, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
-import NetworkComponentLocation from "./NetworkComponentLocation";
+import NetworkComponentLocation, { Origin, Transform } from "./NetworkComponentLocation";
 import NetworkComponentClass from "./NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
@@ -50,8 +50,10 @@ export default class Kresmer {
             template: componentClass.getTemplate(),
             props: {
                 ...componentClass.getProps(),
+                content: {type: String},
                 originX: {type: Number, required: true},
                 originY: {type: Number, required: true},
+                transform: {type: String},
             },
         });
         Kresmer.registeredClasses[componentClass.getName()] = componentClass;
@@ -100,10 +102,10 @@ export default class Kresmer {
      * @param component A Network Component to add
      */
     public placeNetworkComponent(component: NetworkComponent,
-                                 origin: {x: number, y: number})
+                                 origin: Origin, transform: Transform)
     {
         this.networkComponents[component.getID()] = new NetworkComponentLocation(
-            component, {origin});
+            component, {origin, transform});
         return this;
     }//placeNetworkComponent
 

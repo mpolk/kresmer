@@ -164,14 +164,25 @@ export default class DrawingParser {
 
     private parseTransform(node: Element)
     {
-        const transform: Transform = {};
+        const transform = new Transform();
 
         for (let i = 0; i < node.childElementCount; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "rotate": {
-                    // const chunks = child.textContent?.trim().split();
-                    // transform.rotate?.angle = parseFloat(chunks[0]);
+                    const angle = child.getAttribute("angle");
+                    const x = child.getAttribute("x");
+                    const y = child.getAttribute("y");
+                    if (angle === null)
+                        throw new DrawingParsingException(
+                            '"rotate" element must have an "angle" attibute',
+                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                            );
+                    transform.rotate = {angle: parseFloat(angle)};
+                    if (x !== null && y !== null) {
+                        transform.rotate.x = parseFloat(x);
+                        transform.rotate.y = parseFloat(y);
+                    }//if
                     break;
                 }
             }//switch

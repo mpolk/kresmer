@@ -29,7 +29,9 @@
             <prop name="text">Ще один Кресмер</prop>
         </props>
         <origin x="300" y="100"/>
-        <transform rotate="45 100 150" />
+        <transform>
+            <rotate angle="45" x="100" y="150"/>
+        </transform>
     </component>
 
     <component class="Text">
@@ -39,6 +41,6 @@
             <prop name="color">darkgreen</prop>
             <prop name="font-family">sans-serif</prop>
         </props>
-        А это просто текст, как на заборе
+        <content>А это просто текст, как на заборе</content>
     </component>
 </kresmer-drawing>
