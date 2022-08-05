@@ -97,7 +97,16 @@ export default class DrawingParser {
 
         if (typeof origin.x !== "number" || typeof origin.y !== "number")
             throw new DrawingParsingException(`Invalid component origin: ${origin}`,
-            {source: `Component class=${className}`});
+                {source: `Component class=${className}`});
+
+        if (content === undefined) {
+            content = "";
+            for (let i = 0; i < node.childNodes.length; i++) {
+                const child = node.childNodes[i];
+                if (child.nodeType === node.TEXT_NODE)
+                    content += child.textContent;
+            }//for
+        }//if
 
         const component = new NetworkComponent(className, {props, content});
         return new NetworkComponentLocation(component, 

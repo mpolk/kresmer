@@ -1,54 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="kresmer-drawing.xsd"?>
 <kresmer-drawing name="autoload">
-    <component class="YellowRectangle">
+    <component class="BorderedKresmer">
         <props>
             <prop name="width">450</prop>
             <prop name="height">50</prop>
             <prop name="fill">lightgreen</prop>
+            <prop name="text">Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</prop>
         </props>
         <origin x="30" y="30"/>
     </component>
 
-    <component class="Text">
-        <origin x="50" y="60"/>
-        <content>Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</content>
-    </component>
-
-    <component class="Rectangle">
+    <component class="PatrioticKresmer">
         <props>
             <prop name="width">450</prop>
-            <prop name="height">25</prop>
-            <prop name="fill">blue</prop>
+            <prop name="height">50</prop>
+            <prop name="text">А це справжний Кресмер</prop>
+            <prop name="font-size">24</prop>
+            <prop name="font-family">sans-serif</prop>
         </props>
         <origin x="30" y="90"/>
-    </component>
-
-    <component class="Rectangle">
-        <props>
-            <prop name="width">450</prop>
-            <prop name="height">25</prop>
-            <prop name="fill">yellow</prop>
-        </props>
-        <origin x="30" y="115"/>
-    </component>
-
-    <component class="Text">
-        <origin x="100" y="120"/>
-        <content>А це справжний Кресмер</content>
-        <props>
-            <prop name="color">white</prop>
-            <prop name="font-size">24</prop>
-        </props>
-    </component>
-
-    <component class="Text">
-        <origin x="101" y="121"/>
-        <content>А це справжний Кресмер</content>
-        <props>
-            <prop name="color">blue</prop>
-            <prop name="font-size">24</prop>
-        </props>
     </component>
 
     <component class="BorderedKresmer">
@@ -58,5 +29,16 @@
             <prop name="text">Ще один Кресмер</prop>
         </props>
         <origin x="300" y="100"/>
+        <transform rotate="45 100 150" />
+    </component>
+
+    <component class="Text">
+        <origin x="50" y="180" />
+        <props>
+            <prop name="font-size">32</prop>
+            <prop name="color">darkgreen</prop>
+            <prop name="font-family">sans-serif</prop>
+        </props>
+        А это просто текст, как на заборе
     </component>
 </kresmer-drawing>

@@ -9,14 +9,20 @@
 
 import NetworkComponent from "./NetworkComponent";
 
+export type Origin = {x: number, y: number};
+export type Transform = {
+    rotate?: {angle: number, x?: number, y?: number},
+}//Transform
 export default  class NetworkComponentLocation {
     component: NetworkComponent;
-    origin: {x: number, y: number};
+    origin: Origin;
+    transform?: Transform;
 
     constructor(
         component: NetworkComponent,
         params: {
-            origin: {x: number, y: number};
+            origin: Origin,
+            transform?: Transform,
         }
     ) {
         this.component = component;

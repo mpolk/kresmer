@@ -28,21 +28,22 @@
 
     <component-class name="Text">
         <template>  
-            <text v--x="originX" v--y="originY" v--fill="color" v--font-size="fontSize"><slot></slot></text>
+            <text v--x="originX" v--y="originY" v--fill="color" v--font-size="fontSize" v--font-family="fontFamily"><slot></slot></text>
         </template>
         <props>
             <prop name="color" type="String" />
             <prop name="font-size" type="String" />
+            <prop name="font-family" type="String" />
         </props>
     </component-class>
 
     <component-class name="BorderedKresmer">
         <template>
-            <svg v--x="originX" v--y="originY" style="overflow: visible; border: solid red 1px">
-                <g transform="rotate(45 100 150)" style="border: solid red 1px">
+            <svg v--x="originX" v--y="originY" style="overflow: visible">
+                <g transform="rotate(45 100 150)">
                     <rect x="0" y="0" v--width="width" v--height="height" 
                         v--fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
-                    <text x="20" y="30" v--fill="color" v--font-size="fontSize">{{text}}</text>
+                    <text x="20" y="30" v--fill="textColor" v--font-size="fontSize" v--font-family="fontFamily">{{text}}</text>
                 </g>
             </svg>
         </template>
@@ -51,6 +52,29 @@
             <prop name="height" type="Number" required="true"/>
             <prop name="fill" type="String" default="yellow"/>
             <prop name="text" type="String"/>
+            <prop name="textColor" type="String" default="black"/>
+            <prop name="font-size" type="String" />
+            <prop name="font-family" type="String" />
+        </props>
+    </component-class>
+
+    <component-class name="PatrioticKresmer">
+        <template>
+            <svg v--x="originX" v--y="originY" style="overflow: visible">
+                <g>
+                    <rect x="0" y="0" v--width="width" v--height="height/2" fill="blue"/>
+                    <rect x="0" v--y="height/2" v--width="width" v--height="height/2" fill="yellow"/>
+                    <text v--x="width*0.2" v--y="height/1.7" fill="white" v--font-size="fontSize" v--font-family="fontFamily">{{text}}</text>
+                    <text v--x="width*0.2 + 1" v--y="height/1.7 + 1" fill="blue" v--font-size="fontSize" v--font-family="fontFamily">{{text}}</text>
+                </g>
+            </svg>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true"/>
+            <prop name="height" type="Number" required="true"/>
+            <prop name="text" type="String"/>
+            <prop name="font-size" type="String" />
+            <prop name="font-family" type="String" />
         </props>
     </component-class>
 </kresmer-library>
