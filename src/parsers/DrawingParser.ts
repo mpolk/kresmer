@@ -9,7 +9,7 @@
 import Kresmer from "../Kresmer";
 import NetworkComponent from "../NetworkComponent";
 import NetworkComponentClass from "../NetworkComponentClass";
-import NetworkComponentLocation from "../NetworkComponentLocation";
+import NetworkComponentLocation, { Transform } from "../NetworkComponentLocation";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 
@@ -67,32 +67,35 @@ export default class DrawingParser {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let props: Record<string, any> = {};
         let content: string | undefined;
+        let transform: Transform | undefined;
         const origin: {x?: number, y?: number} = {};
-        for (let i = 0; i < node.childNodes.length; i++) {
-            const child = node.childNodes[i];
-            if (child instanceof Element) {
-                switch (child.nodeName) {
-                    case "props":
-                        props = this.parseProps(child, componentClass);
-                        break;
-                    case "content":
-                        content = child.innerHTML.trim();
-                        break;
-                    case "origin": {
-                        const x = child.getAttribute('x');
-                        if (x === null)
-                            throw new DrawingParsingException("No origin-x specified",
-                            {source: `Component class=${className}`});
-                        const y = child.getAttribute('y');
-                        if (y === null)
-                            throw new DrawingParsingException("No origin-y specified",
-                            {source: `Component class=${className}`});
-                        origin.x = parseInt(x);
-                        origin.y = parseInt(y);
-                        break;
-                    }
-                }//switch
-            }//if
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "props":
+                    props = this.parseProps(child, componentClass);
+                    break;
+                case "content":
+                    content = child.innerHTML.trim();
+                    break;
+                case "origin": {
+                    const x = child.getAttribute('x');
+                    if (x === null)
+                        throw new DrawingParsingException("No origin-x specified",
+                        {source: `Component class=${className}`});
+                    const y = child.getAttribute('y');
+                    if (y === null)
+                        throw new DrawingParsingException("No origin-y specified",
+                        {source: `Component class=${className}`});
+                    origin.x = parseInt(x);
+                    origin.y = parseInt(y);
+                    break;
+                }
+                case "transform" : {
+                    transform = this.parseTransform(child);
+                    break;
+                }
+            }//switch
         }//for
 
         if (typeof origin.x !== "number" || typeof origin.y !== "number")
@@ -110,7 +113,7 @@ export default class DrawingParser {
 
         const component = new NetworkComponent(className, {props, content});
         return new NetworkComponentLocation(component, 
-            {origin: {x: origin.x, y: origin.y}});
+            {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode
 
 
@@ -123,42 +126,59 @@ export default class DrawingParser {
                 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const props: Record<string, string|number|object|any[]> = {};
-        for (let i = 0; i < node.childNodes.length; i++) {
-            const child = node.childNodes[i];
-            if (child instanceof Element) {
-                switch (child.nodeName) {
-                    case "prop": {
-                        const propName = child.getAttribute("name");
-                        if (!propName)
-                            throw new DrawingParsingException("Prop without a name",
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "prop": {
+                    const propName = child.getAttribute("name");
+                    if (!propName)
+                        throw new DrawingParsingException("Prop without a name",
+                        {source: `Component ${node.parentElement?.getAttribute("name")}`});
+                    const value = child.innerHTML.trim();
+                    const classProp = classProps[propName];
+                    if (!classProp)
+                        throw new DrawingParsingException(
+                            `Class "${componentClass.getName()}" has no prop "${propName}", but the component supplies some`,
                             {source: `Component ${node.parentElement?.getAttribute("name")}`});
-                        const value = child.innerHTML.trim();
-                        const classProp = classProps[propName];
-                        if (!classProp)
-                            throw new DrawingParsingException(
-                                `Class "${componentClass.getName()}" has no prop "${propName}", but the component supplies some`,
-                                {source: `Component ${node.parentElement?.getAttribute("name")}`});
-            
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        switch ((classProp as any).type) {
-                            case String:
-                                props[propName] = value;
-                                break;
-                            case Number:
-                                props[propName] = parseFloat(value);
-                                break;
-                            case Object: case Array:
-                                props[propName] = JSON.parse(value);
-                                break;
-                            }//switch
-                        break;
-                    }
-                }//switch
-            }//if
+        
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                    switch ((classProp as any).type) {
+                        case String:
+                            props[propName] = value;
+                            break;
+                        case Number:
+                            props[propName] = parseFloat(value);
+                            break;
+                        case Object: case Array:
+                            props[propName] = JSON.parse(value);
+                            break;
+                        }//switch
+                    break;
+                }
+            }//switch
         }//for
 
         return props;
     }//parseProps
+
+
+    private parseTransform(node: Element)
+    {
+        const transform: Transform = {};
+
+        for (let i = 0; i < node.childElementCount; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "rotate": {
+                    // const chunks = child.textContent?.trim().split();
+                    // transform.rotate?.angle = parseFloat(chunks[0]);
+                    break;
+                }
+            }//switch
+        }//for
+
+        return transform;
+    }//parseTransform
 
 }//DrawingParser
 
