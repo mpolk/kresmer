@@ -28,6 +28,19 @@
                                 </xs:complexType>
                             </xs:element>
                             <xs:element name="content" minOccurs="0" type="xs:string" />
+                            <xs:element name="transform" minOccurs="0">
+                                <xs:complexType>
+                                    <xs:all>
+                                        <xs:element name="rotate" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:attribute name="angle" type="xs:float" use="required"/>
+                                                <xs:attribute name="x" type="xs:float"/>
+                                                <xs:attribute name="y" type="xs:float"/>
+                                            </xs:complexType>
+                                        </xs:element>
+                                    </xs:all>
+                                </xs:complexType>
+                            </xs:element>
                         </xs:all>
                         <xs:attribute name="class" use="required" />
                     </xs:complexType>
