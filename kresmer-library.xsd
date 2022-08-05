@@ -11,25 +11,34 @@
                                     <xs:sequence minOccurs="0">
                                         <xs:element name="rect" minOccurs="0">
                                             <xs:complexType>
-                                                <xs:attribute name="v--x" use="required" />
-                                                <xs:attribute name="v--y" use="required" />
-                                                <xs:attribute name="v--width" use="required" />
-                                                <xs:attribute name="v--height" use="required" />
+                                                <xs:attribute name="v--x" />
+                                                <xs:attribute name="v--y" />
+                                                <xs:attribute name="v--width"  />
+                                                <xs:attribute name="v--height" />
                                                 <xs:attribute name="v--fill" />
+                                                <xs:attribute name="x" />
+                                                <xs:attribute name="y" />
+                                                <xs:attribute name="width"  />
+                                                <xs:attribute name="height" />
+                                                <xs:attribute name="fill" />
                                                 <xs:attribute name="stroke" />
                                                 <xs:attribute name="stroke-width" />
                                                 <xs:attribute name="stroke-opacity" type="xs:decimal" />
                                             </xs:complexType>
                                         </xs:element>
                                         <xs:element name="text" minOccurs="0">
-                                            <xs:complexType>
+                                            <xs:complexType mixed="true">
                                                 <xs:sequence>
                                                     <xs:element name="slot" />
                                                 </xs:sequence>
-                                                <xs:attribute name="v--x" use="required" />
-                                                <xs:attribute name="v--y" use="required" />
+                                                <xs:attribute name="v--x" />
+                                                <xs:attribute name="v--y" />
                                                 <xs:attribute name="v--fill" />
+                                                <xs:attribute name="x" />
+                                                <xs:attribute name="y" />
+                                                <xs:attribute name="fill" />
                                                 <xs:attribute name="v--font-size" />
+                                                <xs:attribute name="v--font-family" />
                                             </xs:complexType>
                                         </xs:element>
                                     </xs:sequence>
