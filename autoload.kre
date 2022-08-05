@@ -50,4 +50,13 @@
             <prop name="font-size">24</prop>
         </props>
     </component>
+
+    <component class="BorderedKresmer">
+        <props>
+            <prop name="width">200</prop>
+            <prop name="height">50</prop>
+            <prop name="text">Ще один Кресмер</prop>
+        </props>
+        <origin x="300" y="100"/>
+    </component>
 </kresmer-drawing>

@@ -35,4 +35,22 @@
             <prop name="font-size" type="String" />
         </props>
     </component-class>
+
+    <component-class name="BorderedKresmer">
+        <template>
+            <svg v--x="originX" v--y="originY">
+                <g transform="rotate(45 100 150)">
+                    <rect x="0" y="0" v--width="width" v--height="height" 
+                        v--fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
+                    <text x="20" y="30" v--fill="color" v--font-size="fontSize">{{text}}</text>
+                </g>
+            </svg>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true"/>
+            <prop name="height" type="Number" required="true"/>
+            <prop name="fill" type="String" default="yellow"/>
+            <prop name="text" type="String"/>
+        </props>
+    </component-class>
 </kresmer-library>
