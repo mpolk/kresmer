@@ -119,7 +119,7 @@ export default class DrawingParser {
 
     private parseProps(node: Element, componentClass: NetworkComponentClass)
     {
-        const classProps = componentClass.getProps();
+        const classProps = componentClass.props;
         if (!classProps)
             throw new DrawingParsingException(
                 `Class ${componentClass} has no props, but the component supplies some`);
@@ -138,7 +138,7 @@ export default class DrawingParser {
                     const classProp = classProps[propName];
                     if (!classProp)
                         throw new DrawingParsingException(
-                            `Class "${componentClass.getName()}" has no prop "${propName}", but the component supplies some`,
+                            `Class "${componentClass.name}" has no prop "${propName}", but the component supplies some`,
                             {source: `Component ${node.parentElement?.getAttribute("name")}`});
         
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any

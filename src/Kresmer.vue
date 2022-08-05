@@ -25,7 +25,7 @@
     function componentAttrs(location: NetworkComponentLocation)
     {
         return {
-            ...location.component.getProps(), 
+            ...location.component.props, 
             "origin": location.origin,
             "transform": location.transform?.toCSS(),
         };
@@ -35,10 +35,10 @@
 <template>
     <svg class="kresmer" ref="svg">
         <component v-for="(location, id) in networkComponents" 
-                   :is="location.component.getVueName()"
+                   :is="location.component.vueName"
                    :key="`networkComponent${id}`"
                    v-bind="componentAttrs(location)"
-                >{{location.component.getContent()}}</component>
+                >{{location.component.content}}</component>
     </svg>
 </template>
 

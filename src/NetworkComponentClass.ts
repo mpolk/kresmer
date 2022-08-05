@@ -20,7 +20,7 @@ export default class NetworkComponentClass {
      *               template: Template for the Vue-component for this class
      *               props: Props definition of the Vue-component for this class
      */
-     public constructor(name: string, params: {
+    public constructor(name: string, params: {
         template: string | Element,
         props?: ComponentObjectPropsOptions,
     })
@@ -33,22 +33,19 @@ export default class NetworkComponentClass {
     /**
      * Class name
      */
-    private name: string;
-    getName() {return this.name}
+    readonly name: string;
     /**
      * Template for the Vue-component for this class
      */
-    private template: string | Element;
-    getTemplate() {return this.template}
+    readonly template: string | Element;
     /**
      * Props definition of the Vue-component for this class
      */
-    private props?: ComponentObjectPropsOptions;
-    getProps() {return this.props}
+    readonly props?: ComponentObjectPropsOptions;
 
     /**
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
      */
-    getVueName() {return "NetworkComponent_" + this.name}
+    get vueName() {return "NetworkComponent_" + this.name}
 }//NetworkComponentClass

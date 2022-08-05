@@ -41,21 +41,18 @@ export default class NetworkComponent {
     }//ctor
 
     /** Component class */
-    protected _class: NetworkComponentClass;
+    readonly _class: NetworkComponentClass;
     getClass() {return this._class}
     /** Return the vue-component name corresponding to this network component */
-    getVueName() {return this._class.getVueName()}
+    get vueName() {return this._class.vueName}
 
     /** Data passed to the vue-component props */
-    protected props?: PropType;
-    getProps() {return this.props}
+    readonly props?: PropType;
 
     /** Data passed to the vue-component content (unnamed slot) */
-    protected content: ContentType;
-    getContent() {return this.content}
+    readonly content: ContentType;
 
     /** A unique ID for this component instance */
-    protected id: number;
-    getID() {return this.id}
+    readonly id: number;
     protected static nextID = 1;
 }//NetworkComponent

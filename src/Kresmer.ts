@@ -45,16 +45,16 @@ export default class Kresmer {
      */
     public registerNetworkComponentClass(componentClass: NetworkComponentClass) 
     {
-        this.appKresmer.component(componentClass.getVueName(), 
+        this.appKresmer.component(componentClass.vueName, 
         {
-            template: componentClass.getTemplate(),
+            template: componentClass.template,
             props: {
-                ...componentClass.getProps(),
+                ...componentClass.props,
                 origin: {type: Object, required: true},
                 transform: {type: String},
             },
         });
-        Kresmer.registeredClasses[componentClass.getName()] = componentClass;
+        Kresmer.registeredClasses[componentClass.name] = componentClass;
         return this;
     }//registerNetworkComponentClass
 
@@ -102,7 +102,7 @@ export default class Kresmer {
     public placeNetworkComponent(component: NetworkComponent,
                                  origin: Origin, transform: Transform)
     {
-        this.networkComponents[component.getID()] = new NetworkComponentLocation(
+        this.networkComponents[component.id] = new NetworkComponentLocation(
             component, {origin, transform});
         return this;
     }//placeNetworkComponent
@@ -113,7 +113,7 @@ export default class Kresmer {
      */
     public addPositionedNetworkComponent(location: NetworkComponentLocation)
     {
-        this.networkComponents[location.component.getID()] = location;
+        this.networkComponents[location.component.id] = location;
         return this;
     }//addPositionedNetworkComponent
 
