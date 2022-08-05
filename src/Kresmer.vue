@@ -26,8 +26,7 @@
     {
         return {
             ...location.component.getProps(), 
-            "origin-x": location.origin.x,
-            "origin-y": location.origin.y,
+            "origin": location.origin,
             "transform": location.transform?.toCSS(),
         };
     }//componentAttrs

@@ -105,8 +105,8 @@ export default class LibraryParser {
 
         if (dom) {
             const svg = dom.createElement("svg");
-            svg.setAttribute(":x", "originX");
-            svg.setAttribute(":y", "originY");
+            svg.setAttribute(":x", "origin.x");
+            svg.setAttribute(":y", "origin.y");
             svg.setAttribute("style", "overflow: visible");
 
             const g = dom.createElement("g");
@@ -118,7 +118,7 @@ export default class LibraryParser {
                 const child = node.childNodes[0];
                 g.appendChild(child);
             }//for
-            
+
             node.appendChild(svg);
         }//if
 

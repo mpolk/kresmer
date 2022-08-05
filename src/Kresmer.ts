@@ -50,9 +50,7 @@ export default class Kresmer {
             template: componentClass.getTemplate(),
             props: {
                 ...componentClass.getProps(),
-                content: {type: String},
-                originX: {type: Number, required: true},
-                originY: {type: Number, required: true},
+                origin: {type: Object, required: true},
                 transform: {type: String},
             },
         });
