@@ -100,7 +100,7 @@ export default class Kresmer {
      * @param component A Network Component to add
      */
     public placeNetworkComponent(component: NetworkComponent,
-                                 origin: Origin, transform: Transform)
+                                 origin: Origin, transform?: Transform)
     {
         this.networkComponents[component.id] = new NetworkComponentLocation(
             component, {origin, transform});

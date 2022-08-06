@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { IpcRendererEvent } from 'electron';
-// import initApp from './init';
+import initApp from './init';
 import Kresmer from './Kresmer';
 import ParsingException from './parsers/ParsingException';
 
@@ -43,7 +43,7 @@ window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string)
         }//if
     }//catch
     window.electronAPI.signalReadiness(2);
-    // initApp();
+    initApp();
 });
 
 window.electronAPI.signalReadiness(0);
