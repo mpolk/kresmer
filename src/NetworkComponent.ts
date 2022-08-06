@@ -27,6 +27,7 @@ export default class NetworkComponent {
     public constructor(
         _class: NetworkComponentClass | string,
         args?: {
+            name?: string,
             props?: PropType,
             content?: ContentType, 
         }
@@ -38,6 +39,7 @@ export default class NetworkComponent {
         this.props = args?.props;
         this.content = args?.content;
         this.id = NetworkComponent.nextID++;
+        this._name = args?.name;
     }//ctor
 
     /** Component class */
@@ -55,4 +57,14 @@ export default class NetworkComponent {
     /** A unique ID for this component instance */
     readonly id: number;
     protected static nextID = 1;
+
+    /** A name for component lookup*/
+    readonly _name?: string;
+    get name()
+    {
+        if (this._name)
+            return this._name;
+        else
+            return `Component${this.id}`;
+    }//name
 }//NetworkComponent

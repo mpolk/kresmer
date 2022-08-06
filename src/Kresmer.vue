@@ -30,6 +30,12 @@
             "transform": location.transform?.toCSS(),
         };
     }//componentAttrs
+
+    // Event handlers
+    function onMouseDown(event: MouseEvent)
+    {
+        console.debug(event);
+    }//onMouseDown
 </script>
 
 <template>
@@ -38,6 +44,7 @@
                    :is="location.component.vueName"
                    :key="`networkComponent${id}`"
                    v-bind="componentAttrs(location)"
+                   @mousedown="onMouseDown"
                 >{{location.component.content}}</component>
     </svg>
 </template>
