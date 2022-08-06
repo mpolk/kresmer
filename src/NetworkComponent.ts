@@ -8,6 +8,7 @@
 
 import Kresmer from './Kresmer';
 import NetworkComponentClass from "./NetworkComponentClass";
+import { NetworkElement } from './NetworkElement';
 
 type PropType = Record<string, any>;
 type ContentType = any;
@@ -15,7 +16,7 @@ type ContentType = any;
 /**
  * Network Component - a generic network element instance 
  */
-export default class NetworkComponent {
+export default class NetworkComponent extends NetworkElement {
     /**
      * 
      * @param _class The class this component should belong 
@@ -32,6 +33,8 @@ export default class NetworkComponent {
             content?: ContentType, 
         }
     ) {
+        super();
+        
         if (_class instanceof NetworkComponentClass)
             this._class = _class;
         else 

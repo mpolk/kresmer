@@ -52,6 +52,8 @@ export default class Kresmer {
                 ...componentClass.props,
                 origin: {type: Object, required: true},
                 transform: {type: String},
+                componentId: {type: Number},
+                componentName: {type: String},
             },
         });
         Kresmer.registeredClasses[componentClass.name] = componentClass;

@@ -32,10 +32,17 @@
     }//componentAttrs
 
     // Event handlers
-    function onMouseDown(event: MouseEvent)
+    function onMouseDown(event: MouseEvent, 
+                         elementType: "component"|"link", 
+                         elementID: number)
     {
-        console.debug(event);
+        console.debug(`${event} ${elementType} ${elementID}`);
+        switch (elementType) {
+            case "component":
+
+        }//switch
     }//onMouseDown
+
 </script>
 
 <template>
@@ -43,8 +50,10 @@
         <component v-for="(location, id) in networkComponents" 
                    :is="location.component.vueName"
                    :key="`networkComponent${id}`"
+                   :component-id="location.component.id"
+                   :component-name="location.component.name"
                    v-bind="componentAttrs(location)"
-                   @mousedown="onMouseDown"
+                   @mousedown="onMouseDown($event, 'component', location.component.id)"
                 >{{location.component.content}}</component>
     </svg>
 </template>
