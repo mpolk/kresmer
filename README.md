@@ -1,4 +1,4 @@
-# Vite+Vue3+Electron+Typescript template
+# "Kreslennya Merezh" - network diagram editor and viewer
 
 ![screenshot](./src/assets/screenshot.png)
 
