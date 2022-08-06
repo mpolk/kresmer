@@ -67,7 +67,7 @@ export default class LibraryParser {
             if (child instanceof Element) {
                 switch (child.nodeName) {
                     case "template":
-                        template = this.parseTemplate(child, dom);
+                        template = this.parseTemplate(child, true);
                         break;
                     case "props":
                         props = this.parseProps(child);
@@ -84,7 +84,7 @@ export default class LibraryParser {
     }//parseComponentClassNode
 
 
-    private parseTemplate(node: Element, dom?: XMLDocument)
+    private parseTemplate(node: Element, onTop?: boolean)
     {
         for (const attrName of node.getAttributeNames()) {
             if (attrName.startsWith("v--")) {
@@ -103,7 +103,8 @@ export default class LibraryParser {
             this.parseTemplate(child);
         }//for
 
-        if (dom) {
+        if (onTop) {
+            const dom = node.ownerDocument;
             const svg = dom.createElement("svg");
             svg.setAttribute(":x", "origin.x");
             svg.setAttribute(":y", "origin.y");

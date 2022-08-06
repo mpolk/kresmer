@@ -48,4 +48,40 @@ export default class NetworkComponentClass {
      * @returns The vue-component name
      */
     get vueName() {return "NetworkComponent_" + this.name}
+
+
+    private prepareTemplate(template: string | Element)
+    {
+        if (template instanceof Element)
+            return this.prepareTemplateDOM(template);
+        else
+            return this.prepareTemplateStr(template);
+    }//prepareTemplate
+
+    private prepareTemplateDOM(templateNode: Element)
+    {
+        const dom = templateNode.ownerDocument;
+        const svg = dom.createElement("svg");
+        svg.setAttribute(":x", "origin.x");
+        svg.setAttribute(":y", "origin.y");
+        svg.setAttribute("style", "overflow: visible");
+
+        const g = dom.createElement("g");
+        svg.appendChild(g);
+        g.setAttribute(":transform", "transform");
+
+        const n = templateNode.childNodes.length;
+        for (let i = 0; i < n; i++) {
+            const child = templateNode.childNodes[0];
+            g.appendChild(child);
+        }//for
+
+        templateNode.appendChild(svg);
+        return templateNode;
+    }//prepareTemplateDOM
+
+    private prepareTemplateStr(templateStr: string)
+    {
+        return templateStr;
+    }//prepareTemplateStr
 }//NetworkComponentClass
