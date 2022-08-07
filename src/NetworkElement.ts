@@ -8,5 +8,5 @@
  ***************************************************************************/
 
 export abstract class NetworkElement {
-    protected isHighlighted = false;
+    isHighlighted = false;
 }//NetworkElement

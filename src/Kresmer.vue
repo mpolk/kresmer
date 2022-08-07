@@ -9,39 +9,26 @@
 
 <script setup lang="ts">
     import { PropType } from 'vue';
+    import Kresmer from './Kresmer';
     import NetworkComponentLocation from './NetworkComponentLocation';
 
-    defineProps({
+    const props = defineProps({
+        controller: {
+            type: Object as PropType<Kresmer>, 
+            required: true
+        },
         networkComponents: {
             type: Object as PropType<Record<string, NetworkComponentLocation>>, 
             required: true
         }
     })
 
-    /**
-     * Outputs an attribute list for the network component
-     * @param location A component location
-     */
-    function componentAttrs(location: NetworkComponentLocation)
-    {
-        return {
-            ...location.component.props, 
-            "origin": location.origin,
-            "transform": location.transform?.toCSS(),
-        };
-    }//componentAttrs
-
     // Event handlers
-    function onMouseDown(event: MouseEvent, 
-                         elementType: "component"|"link", 
-                         elementID: number)
+    function onMouseDownInComponent(event: MouseEvent, componentID: number)
     {
-        console.debug(`${event} ${elementType} ${elementID}`);
-        switch (elementType) {
-            case "component":
-
-        }//switch
-    }//onMouseDown
+        console.debug(`${event} ${componentID}`);
+        props.controller.getComponentById(componentID).isHighlighted = true;
+    }//onMouseDownInComponent
 
 </script>
 
@@ -52,8 +39,11 @@
                    :key="`networkComponent${id}`"
                    :component-id="location.component.id"
                    :component-name="location.component.name"
-                   v-bind="componentAttrs(location)"
-                   @mousedown="onMouseDown($event, 'component', location.component.id)"
+                   :origin="location.origin"
+                   :transform="location.transform?.toCSS()"
+                   v-bind="location.component.props"
+                   :is-highlighted="location.component.isHighlighted"
+                   @mousedown="onMouseDownInComponent($event, location.component.id)"
                 >{{location.component.content}}</component>
     </svg>
 </template>

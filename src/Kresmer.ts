@@ -27,7 +27,10 @@ export default class Kresmer {
 
     constructor(mountPoint: string|HTMLElement)
     {
-        this.appKresmer = createApp(KresmerVue, {networkComponents: this.networkComponents});
+        this.appKresmer = createApp(KresmerVue, {
+            controller: this,
+            networkComponents: this.networkComponents,
+        });
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
 
@@ -54,6 +57,7 @@ export default class Kresmer {
                 transform: {type: String},
                 componentId: {type: Number},
                 componentName: {type: String},
+                isHighlihted: {type: Boolean, default: false},
             },
         });
         Kresmer.registeredClasses[componentClass.name] = componentClass;
@@ -140,5 +144,16 @@ export default class Kresmer {
         }//for
         return !wereErrors;
     }//loadDrawing
+
+
+    /**
+     * Searches for the NetworkComponent with the specified ID
+     * @param id An ID of the component to search for
+     * @returns The component if found or "undefined" otherwise
+     */
+    public getComponentById(id: number)
+    {
+        return this.networkComponents[id].component;
+    }//getComponentById
  
 }//Kresmer

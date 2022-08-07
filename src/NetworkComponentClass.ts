@@ -72,6 +72,7 @@ export default class NetworkComponentClass {
         svg.setAttribute(":x", "origin.x");
         svg.setAttribute(":y", "origin.y");
         svg.setAttribute("style", "overflow: visible");
+        svg.setAttribute(":class", "{highlighted: isHighlighted}");
 
         const g = dom.createElement("g");
         svg.appendChild(g);
@@ -90,7 +91,7 @@ export default class NetworkComponentClass {
     private prepareTemplateStr(templateStr: string)
     {
         return `\
-<svg :x="origin.x" :y="origin.y" style="overflow: visible">
+<svg :x="origin.x" :y="origin.y" style="overflow: visible" :class="{highlighted: isHighlighted}">
     <g :transform="transform">
         ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}
     </g>
