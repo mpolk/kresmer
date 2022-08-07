@@ -36,9 +36,15 @@
 
     function onMouseOutFromComponent(event: MouseEvent, componentID: number)
     {
+        console.debug(event);
+        let el = event.relatedTarget;
+        while (el instanceof Element) {
+            if (el.id == componentID.toString())
+                return;
+            el = el.parentElement;
+        }//while
         props.controller.getComponentById(componentID).isHighlighted = false;
     }//onMouseOutFromComponent
-
 </script>
 
 <template>
@@ -47,12 +53,13 @@
                    :is="location.component.vueName"
                    :key="`networkComponent${id}`"
                    :component-id="location.component.id"
+                   :id="location.component.id"
                    :component-name="location.component.name"
                    :origin="location.origin"
                    :transform="location.transform?.toCSS()"
                    v-bind="location.component.props"
                    :is-highlighted="location.component.isHighlighted"
-                   @mousedown="onMouseDownInComponent($event, location.component.id)"
+                   @mousedown.prevent="onMouseDownInComponent($event, location.component.id)"
                    @mouseup="onMouseUpInComponent($event, location.component.id)"
                    @mouseout="onMouseOutFromComponent($event, location.component.id)"
                 >{{location.component.content}}</component>
