@@ -66,7 +66,7 @@
         height: 100%;
 
         svg.highlighted {
-            stroke: red;
+            outline: thin red solid;
         }
     }
 </style>
