@@ -26,9 +26,18 @@
     // Event handlers
     function onMouseDownInComponent(event: MouseEvent, componentID: number)
     {
-        console.debug(`${event} ${componentID}`);
         props.controller.getComponentById(componentID).isHighlighted = true;
     }//onMouseDownInComponent
+
+    function onMouseUpInComponent(event: MouseEvent, componentID: number)
+    {
+        props.controller.getComponentById(componentID).isHighlighted = false;
+    }//onMouseUpInComponent
+
+    function onMouseOutFromComponent(event: MouseEvent, componentID: number)
+    {
+        props.controller.getComponentById(componentID).isHighlighted = false;
+    }//onMouseOutFromComponent
 
 </script>
 
@@ -44,14 +53,20 @@
                    v-bind="location.component.props"
                    :is-highlighted="location.component.isHighlighted"
                    @mousedown="onMouseDownInComponent($event, location.component.id)"
+                   @mouseup="onMouseUpInComponent($event, location.component.id)"
+                   @mouseout="onMouseOutFromComponent($event, location.component.id)"
                 >{{location.component.content}}</component>
     </svg>
 </template>
 
 
-<style>
+<style lang="scss">
     svg.kresmer {
         width: 100%;
         height: 100%;
+
+        svg.highlighted {
+            stroke: red;
+        }
     }
 </style>

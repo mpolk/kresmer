@@ -43,12 +43,14 @@
     },
     "win": {
       "icon": "./src/assets/logo.ico",
-      "target": [{
+      "target": [
+        {
           "target": "nsis",
           "arch": [
             "x64"
           ]
-      }],
+        }
+      ],
       "artifactName": "${productName}_${version}.${ext}"
     },
     "nsis": {
@@ -64,6 +66,7 @@
   },
   "dependencies": {
     "pinia": "^2.0.16",
+    "sass": "^1.54.3",
     "vue": "^3.2.37",
     "vue-router": "^4.1.2"
   },
