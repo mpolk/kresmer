@@ -65,8 +65,11 @@
         width: 100%;
         height: 100%;
 
-        svg.highlighted {
-            outline: thin red solid;
+        svg.network-component {
+            overflow: visible;
+            &.highlighted {
+                outline: thin red solid;
+            }
         }
     }
 </style>
