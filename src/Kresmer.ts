@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, reactive } from "vue";
+import { App, createApp, reactive, ref } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
 import NetworkComponentLocation, { Origin, Transform } from "./NetworkComponentLocation";
@@ -50,6 +50,10 @@ export default class Kresmer {
     {
         this.appKresmer.component(componentClass.vueName, 
         {
+            setup() {
+                const svg = ref();
+                return {svg};
+            },
             template: componentClass.template,
             props: {
                 ...componentClass.props,
@@ -155,5 +159,16 @@ export default class Kresmer {
     {
         return this.networkComponents[id].component;
     }//getComponentById
- 
+
+
+    /**
+     * Searches for the NetworkComponentLocation with the specified ID
+     * @param id An ID of the component to search for
+     * @returns The component location if found or "undefined" otherwise
+     */
+     public getComponentLocationById(id: number)
+     {
+         return this.networkComponents[id];
+     }//getComponentLoavtionById
+  
 }//Kresmer

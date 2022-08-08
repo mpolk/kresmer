@@ -69,11 +69,11 @@ export default class NetworkComponentClass {
     {
         const dom = templateNode.ownerDocument;
         const svg = dom.createElement("svg");
+        svg.setAttribute("ref", "svg");
         svg.setAttribute(":x", "origin.x");
         svg.setAttribute(":y", "origin.y");
         svg.setAttribute("class", "network-component");
         svg.setAttribute(":class", "{highlighted: isHighlighted}");
-        svg.setAttribute("draggable", "true");
 
         const g = dom.createElement("g");
         svg.appendChild(g);
@@ -92,9 +92,8 @@ export default class NetworkComponentClass {
     private prepareTemplateStr(templateStr: string)
     {
         return `\
-<svg :x="origin.x" :y="origin.y" 
+<svg ref="svg" :x="origin.x" :y="origin.y" 
      class="network-component" :class="{highlighted: isHighlighted}"
-     draggable="true"
     >
     <g :transform="transform">
         ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}

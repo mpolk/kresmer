@@ -135,6 +135,11 @@ export default class LibraryParser {
                                 if (_default != null)
                                     prop.default = parseFloat(_default);
                                 break;
+                            case "Boolean":
+                                prop.type = Boolean;
+                                if (_default != null)
+                                    prop.default = _default == "true";
+                                break;
                             case "Object":
                                 prop.type = Object;
                                 if (_default != null)

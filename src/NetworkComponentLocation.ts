@@ -29,7 +29,7 @@ export class Transform {
 }//Transform
 
 export default  class NetworkComponentLocation {
-    component: NetworkComponent;
+    readonly component: NetworkComponent;
     origin: Origin;
     transform?: Transform;
 
@@ -44,4 +44,19 @@ export default  class NetworkComponentLocation {
         this.origin = params.origin;
         this.transform = params.transform;
     }//ctor
+
+
+    public startDrag(event: MouseEvent)
+    {
+        this.component.isHighlighted = true;
+    }//startDrag
+
+    public drag(event: MouseEvent)
+    {
+    }//drag
+
+    public endDrag(event: MouseEvent)
+    {
+        this.component.isHighlighted = false;
+    }//endDrag
 }//NetworkComponentLocation

@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType } from 'vue';
+    import { PropType, ref } from 'vue';
     import Kresmer from './Kresmer';
     import NetworkComponentLocation from './NetworkComponentLocation';
 
@@ -23,45 +23,50 @@
         }
     })
 
+    const networkComponentVues = ref();
+
     // Event handlers
     function onMouseDownInComponent(event: MouseEvent, componentID: number)
     {
-        props.controller.getComponentById(componentID).isHighlighted = true;
+        props.controller.getComponentLocationById(componentID).startDrag(event);
     }//onMouseDownInComponent
 
     function onMouseUpInComponent(event: MouseEvent, componentID: number)
     {
-        props.controller.getComponentById(componentID).isHighlighted = false;
+        props.controller.getComponentLocationById(componentID).endDrag(event);
     }//onMouseUpInComponent
 
-    function onMouseOutFromComponent(event: MouseEvent, componentID: number)
+    function onMouseMoveInComponent(event: MouseEvent, componentID: number)
     {
-        console.debug(event);
-        let el = event.relatedTarget;
-        while (el instanceof Element) {
-            if (el.id == componentID.toString())
-                return;
-            el = el.parentElement;
-        }//while
-        props.controller.getComponentById(componentID).isHighlighted = false;
-    }//onMouseOutFromComponent
+        if (event.buttons)
+            props.controller.getComponentLocationById(componentID).drag(event);
+    }//onMouseMoveInComponent
+
+    function onMouseLeaveComponent(event: MouseEvent, componentID: number)
+    {
+        props.controller.getComponentLocationById(componentID).endDrag(event);
+    }//onMouseLeaveComponent
+
+    defineExpose({networkComponentVues});
 </script>
 
 <template>
     <svg class="kresmer" ref="svg">
-        <component v-for="(location, id) in networkComponents" 
+        <component v-for="location in networkComponents" 
                    :is="location.component.vueName"
-                   :key="`networkComponent${id}`"
+                   :key="`networkComponent${location.component.id}`"
                    :component-id="location.component.id"
                    :id="location.component.id"
+                   ref="networkComponentVues"
                    :component-name="location.component.name"
                    :origin="location.origin"
                    :transform="location.transform?.toCSS()"
                    v-bind="location.component.props"
                    :is-highlighted="location.component.isHighlighted"
                    @mousedown.prevent="onMouseDownInComponent($event, location.component.id)"
-                   @mouseup="onMouseUpInComponent($event, location.component.id)"
-                   @mouseout="onMouseOutFromComponent($event, location.component.id)"
+                   @mouseup.prevent="onMouseUpInComponent($event, location.component.id)"
+                   @mousemove.prevent="onMouseMoveInComponent($event, location.component.id)"
+                   @mouseleave.prevent="onMouseLeaveComponent($event, location.component.id)"
                 >{{location.component.content}}</component>
     </svg>
 </template>
@@ -74,6 +79,7 @@
 
         svg.network-component {
             overflow: visible;
+            cursor: default;
             &.highlighted {
                 outline: thin red solid;
             }
