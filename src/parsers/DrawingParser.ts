@@ -18,6 +18,13 @@ import { KresmerExceptionSeverity } from "../KresmerException";
  */
 export default class DrawingParser {
 
+    readonly kresmer: Kresmer;
+    
+    constructor(kresmer: Kresmer)
+    {
+        this.kresmer = kresmer;
+    }//ctor
+
     /**
      * Parses a drawing file contents and yields the sequence 
      * of the parsed drawing elements
@@ -112,7 +119,7 @@ export default class DrawingParser {
         }//if
 
         const component = new NetworkComponent(className, {props, content});
-        return new NetworkComponentLocation(component, 
+        return new NetworkComponentLocation(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode
 

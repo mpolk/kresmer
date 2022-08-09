@@ -9,7 +9,7 @@
 import { App, createApp, reactive, ref } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
-import NetworkComponentLocation, { Origin, Transform } from "./NetworkComponentLocation";
+import NetworkComponentLocation, { Position, Transform } from "./NetworkComponentLocation";
 import NetworkComponentClass from "./NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
@@ -110,10 +110,10 @@ export default class Kresmer {
      * @param component A Network Component to add
      */
     public placeNetworkComponent(component: NetworkComponent,
-                                 origin: Origin, transform?: Transform)
+                                 origin: Position, transform?: Transform)
     {
         this.networkComponents[component.id] = new NetworkComponentLocation(
-            component, {origin, transform});
+            this, component, {origin, transform});
         return this;
     }//placeNetworkComponent
 
@@ -135,7 +135,7 @@ export default class Kresmer {
     public loadDrawing(dwgData: string): boolean
     {
         console.debug("Loading drawing...");
-        const parser = new DrawingParser();
+        const parser = new DrawingParser(this);
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
@@ -171,4 +171,13 @@ export default class Kresmer {
          return this.networkComponents[id];
      }//getComponentLoavtionById
   
+
+     /**
+      * Returns the root SVG element
+      */
+     public get rootSVG()
+     {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return this.vueKresmer.svg!;
+     }//rootSVG
 }//Kresmer

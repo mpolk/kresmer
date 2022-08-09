@@ -23,7 +23,7 @@
         }
     })
 
-    const networkComponentVues = ref();
+    const rootSVG = ref<SVGGraphicsElement>();
 
     // Event handlers
     function onMouseDownInComponent(event: MouseEvent, componentID: number)
@@ -47,17 +47,16 @@
         props.controller.getComponentLocationById(componentID).endDrag(event);
     }//onMouseLeaveComponent
 
-    defineExpose({networkComponentVues});
+    defineExpose({svg: rootSVG});
 </script>
 
 <template>
-    <svg class="kresmer" ref="svg">
+    <svg class="kresmer" ref="rootSVG">
         <component v-for="location in networkComponents" 
                    :is="location.component.vueName"
                    :key="`networkComponent${location.component.id}`"
                    :component-id="location.component.id"
                    :id="location.component.id"
-                   ref="networkComponentVues"
                    :component-name="location.component.name"
                    :origin="location.origin"
                    :transform="location.transform?.toCSS()"
