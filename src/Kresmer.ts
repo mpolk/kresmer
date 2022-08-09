@@ -62,6 +62,7 @@ export default class Kresmer {
                 componentId: {type: Number},
                 componentName: {type: String},
                 isHighlighted: {type: Boolean, default: false},
+                isTopmost: {type: Boolean, default: false},
             },
         });
         Kresmer.registeredClasses[componentClass.name] = componentClass;

@@ -9,4 +9,5 @@
 
 export abstract class NetworkElement {
     isHighlighted = false;
+    isTopmost = false;
 }//NetworkElement

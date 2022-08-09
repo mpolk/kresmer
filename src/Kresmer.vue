@@ -62,6 +62,7 @@
                    :transform="location.transform?.toCSS()"
                    v-bind="location.component.props"
                    :is-highlighted="location.component.isHighlighted"
+                   :is-topmost="location.component.isTopmost"
                    @mousedown.prevent="onMouseDownInComponent($event, location.component.id)"
                    @mouseup.prevent="onMouseUpInComponent($event, location.component.id)"
                    @mousemove.prevent="onMouseMoveInComponent($event, location.component.id)"
