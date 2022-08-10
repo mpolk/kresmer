@@ -73,7 +73,7 @@ export default class NetworkComponentClass {
         svg.setAttribute(":x", "origin.x");
         svg.setAttribute(":y", "origin.y");
         svg.setAttribute("class", "network-component");
-        svg.setAttribute(":class", "{highlighted: isHighlighted}");
+        svg.setAttribute(":class", "{highlighted: isHighlighted, dragged: isDragged, beingRotated: isBeingRotated}");
 
         const g = dom.createElement("g");
         svg.appendChild(g);
@@ -95,7 +95,7 @@ export default class NetworkComponentClass {
         return `\
 <svg ref="svg" :x="origin.x" :y="origin.y" 
      class="network-component" 
-     :class="{highlighted: isHighlighted}"
+     :class="{highlighted: isHighlighted, dragged: isDragged, beingRotated: isBeingRotated}"
     >
     <g :transform="transform" transform-origin="center, center">
         ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}

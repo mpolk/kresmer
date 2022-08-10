@@ -35,7 +35,8 @@ export default  class NetworkComponentLocation {
     readonly component: NetworkComponent;
     origin: Position;
     transform?: Transform;
-    private isDragged = false;
+    public isDragged = false;
+    public isBeingRotated = false;
     private dragStartPos?: Position;
     private savedMousePos?: Position;
     zIndex = -1;
@@ -74,7 +75,6 @@ export default  class NetworkComponentLocation {
     {
         if (event.buttons === 1) {
             this.component.isHighlighted = true;
-            this.component.isTopmost = true;
             this.dragStartPos = this.positionCT(this.origin);
             this.savedMousePos = this.getMousePosition(event);
             this.isDragged = true;
@@ -97,7 +97,6 @@ export default  class NetworkComponentLocation {
     public endDrag(_event: MouseEvent)
     {
         this.component.isHighlighted = false;
-        this.component.isTopmost = false;
         this.isDragged = false;
         this.restoreComponentZPosition();
     }//endDrag

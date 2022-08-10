@@ -66,7 +66,8 @@
                    :transform="location.transform?.toCSS()"
                    v-bind="location.component.props"
                    :is-highlighted="location.component.isHighlighted"
-                   :is-topmost="location.component.isTopmost"
+                   :is-dragged="location.isDragged"
+                   :is-being-rotated="location.isBeingRotated"
                    @mousedown.prevent="onMouseDownInComponent($event, location.component.id)"
                    @mouseup.prevent="onMouseUpInComponent($event, location.component.id)"
                    @mousemove.prevent="onMouseMoveInComponent($event, location.component.id)"
@@ -84,8 +85,13 @@
         svg.network-component {
             overflow: visible;
             cursor: default;
-            &.highlighted {
+
+            &.dragged {
                 outline: thin red solid;
+            }
+            
+            &.beingRotated {
+                outline: thin blue solid;
             }
         }
     }
