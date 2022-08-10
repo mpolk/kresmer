@@ -72,12 +72,14 @@ export default  class NetworkComponentLocation {
 
     public startDrag(event: MouseEvent)
     {
-        this.component.isHighlighted = true;
-        this.component.isTopmost = true;
-        this.dragStartPos = this.positionCT(this.origin);
-        this.savedMousePos = this.getMousePosition(event);
-        this.isDragged = true;
-        this.bringComponentToTop();
+        if (event.buttons === 1) {
+            this.component.isHighlighted = true;
+            this.component.isTopmost = true;
+            this.dragStartPos = this.positionCT(this.origin);
+            this.savedMousePos = this.getMousePosition(event);
+            this.isDragged = true;
+            this.bringComponentToTop();
+        }//if
     }//startDrag
 
     public drag(event: MouseEvent)

@@ -42,7 +42,7 @@
 
     function onMouseMoveInComponent(event: MouseEvent, componentID: number)
     {
-        if (event.buttons)
+        if (event.buttons & 1)
             props.controller.getComponentLocationById(componentID).drag(event);
     }//onMouseMoveInComponent
 
