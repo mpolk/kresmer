@@ -78,6 +78,7 @@ export default class NetworkComponentClass {
         const g = dom.createElement("g");
         svg.appendChild(g);
         g.setAttribute(":transform", "transform");
+        g.setAttribute("transform-origin", "center, center");
 
         const n = templateNode.childNodes.length;
         for (let i = 0; i < n; i++) {
@@ -96,7 +97,7 @@ export default class NetworkComponentClass {
      class="network-component" 
      :class="{highlighted: isHighlighted}"
     >
-    <g :transform="transform">
+    <g :transform="transform" transform-origin="center, center">
         ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}
     </g>
 </svg>
