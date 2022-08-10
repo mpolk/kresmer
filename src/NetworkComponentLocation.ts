@@ -31,12 +31,15 @@ export class Transform {
 }//Transform
 
 export default  class NetworkComponentLocation {
+    readonly kresmer: Kresmer;
     readonly component: NetworkComponent;
     origin: Position;
     transform?: Transform;
     private isDragged = false;
     private dragStartPos?: Position;
     private savedMousePos?: Position;
+    zIndex = -1;
+    savedZIndex = -1;
 
     constructor(
         kresmer: Kresmer,
@@ -46,49 +49,66 @@ export default  class NetworkComponentLocation {
             transform?: Transform,
         }
     ) {
+        this.kresmer = kresmer;
         this.component = component;
         this.origin = params.origin;
         this.transform = params.transform;
     }//ctor
 
 
-    private clientTransformPosition(pos: Position) {
+    private positionCT(pos: Position) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const CTM = kresmer.rootSVG.getScreenCTM()!;
         return {
           x: (pos.x - CTM.e) / CTM.a,
           y: (pos.y - CTM.f) / CTM.d
         };
-    }//getMousePosition
+    }//positionCT
 
 
     private getMousePosition(event: MouseEvent) {
-        return this.clientTransformPosition({x: event.clientX, y: event.clientY});
+        return this.positionCT({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
     public startDrag(event: MouseEvent)
     {
         this.component.isHighlighted = true;
         this.component.isTopmost = true;
-        this.dragStartPos = this.clientTransformPosition(this.origin);
+        this.dragStartPos = this.positionCT(this.origin);
         this.savedMousePos = this.getMousePosition(event);
         this.isDragged = true;
+        this.bringComponentToTop();
     }//startDrag
 
     public drag(event: MouseEvent)
     {
         if (this.isDragged) {
             const mousePos = this.getMousePosition(event);
-            // const mousePos = {x: event.clientX, y: event.clientY};
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.origin.x = mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x;
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.origin.y = mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y;
         }//if
     }//drag
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endDrag(_event: MouseEvent)
     {
         this.component.isHighlighted = false;
         this.component.isTopmost = false;
         this.isDragged = false;
+        this.restoreComponentZPosition();
     }//endDrag
+
+
+    public bringComponentToTop()
+    {
+       this.savedZIndex = this.zIndex;
+       this.zIndex = Number.MAX_SAFE_INTEGER;
+    }//bringComponentToTop
+
+    public restoreComponentZPosition()
+    {
+       this.zIndex = this.savedZIndex;
+    }//bringComponentToTop
 }//NetworkComponentLocation

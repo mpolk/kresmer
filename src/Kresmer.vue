@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType, ref } from 'vue';
+    import { PropType, ref, computed } from 'vue';
     import Kresmer from './Kresmer';
     import NetworkComponentLocation from './NetworkComponentLocation';
 
@@ -24,6 +24,10 @@
     })
 
     const rootSVG = ref<SVGGraphicsElement>();
+
+    const networkComponentsSorted = computed(() => {
+        return Object.values(props.networkComponents).sort((c1, c2) => c1.zIndex - c2.zIndex)
+    })
 
     // Event handlers
     function onMouseDownInComponent(event: MouseEvent, componentID: number)
@@ -52,7 +56,7 @@
 
 <template>
     <svg class="kresmer" ref="rootSVG">
-        <component v-for="location in networkComponents" 
+        <component v-for="location in networkComponentsSorted" 
                    :is="location.component.vueName"
                    :key="`networkComponent${location.component.id}`"
                    :component-id="location.component.id"

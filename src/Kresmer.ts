@@ -113,9 +113,9 @@ export default class Kresmer {
     public placeNetworkComponent(component: NetworkComponent,
                                  origin: Position, transform?: Transform)
     {
-        this.networkComponents[component.id] = new NetworkComponentLocation(
+        const location = new NetworkComponentLocation(
             this, component, {origin, transform});
-        return this;
+        return this.addPositionedNetworkComponent(location);
     }//placeNetworkComponent
 
     /**
