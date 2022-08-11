@@ -54,9 +54,11 @@ export default class Kresmer {
         {
             setup() {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const svg = ref<SVGElement>()!;
+                const svg = ref<SVGGraphicsElement>()!;
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const trGroup = ref<SVGGraphicsElement>()!;
 
-                return {svg};
+                return {svg, trGroup};
             },
             template: componentClass.template,
             props: {

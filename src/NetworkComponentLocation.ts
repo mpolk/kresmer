@@ -112,13 +112,16 @@ export default  class NetworkComponentLocation {
     }//bringComponentToTop
 
 
-    public enterTransformMode(event:  MouseEvent)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public enterTransformMode(_event:  MouseEvent)
     {
         this.isBeingTransformed = true;
+        this.bringComponentToTop();
     }//enterTransformMode
 
     public resetMode()
     {
         this.isBeingTransformed = false;
+        this.restoreComponentZPosition();
     }//resetMode
 }//NetworkComponentLocation

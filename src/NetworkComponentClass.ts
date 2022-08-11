@@ -77,6 +77,7 @@ export default class NetworkComponentClass {
 
         const g = dom.createElement("g");
         svg.appendChild(g);
+        g.setAttribute("ref", "trGroup");
         g.setAttribute(":transform", "transform");
         g.setAttribute("transform-origin", "center, center");
 
@@ -104,7 +105,7 @@ export default class NetworkComponentClass {
      class="network-component" 
      :class="{highlighted: isHighlighted, dragged: isDragged, beingTransformed: isBeingTransformed}"
     >
-    <g :transform="transform" transform-origin="center, center">
+    <g ref="trGroup" :transform="transform" transform-origin="center, center">
         ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}
     </g>
     <TransformBox v-if="isBeingTransformed" :svg="svg" ref="trBox"/>

@@ -10,24 +10,21 @@
 import { PropType, computed } from 'vue';
 
     const props = defineProps({
-        svg: {type: Object as PropType<SVGElement>, required: true},
+        svg: {type: Object as PropType<SVGGraphicsElement>, required: true},
     })
 
     const bBox = computed(() => {
-        const bBox = props.svg.getBoundingClientRect();
-        bBox.x = 0; bBox.y = 0;
-        return bBox;
+        return props.svg.getBBox({stroke: true});
     })//bBox
 
 </script>
 
 <template>
-    <rect :x="bBox.x" :y="bBox.x" :width="bBox.width" :height="bBox.height" class="tr-box"/>
+    <rect v-bind="bBox" class="tr-box"/>
 </template>
 
 <style>
     .tr-box {
-        opacity: 1 !important;
         stroke: blue;
         fill: none;
     }
