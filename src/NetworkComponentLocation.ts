@@ -36,11 +36,11 @@ export default  class NetworkComponentLocation {
     origin: Position;
     transform?: Transform;
     public isDragged = false;
-    public isBeingRotated = false;
+    public isBeingTransformed = false;
     private dragStartPos?: Position;
     private savedMousePos?: Position;
-    zIndex = -1;
-    savedZIndex = -1;
+    public zIndex = -1;
+    private savedZIndex = -1;
 
     constructor(
         kresmer: Kresmer,
@@ -73,13 +73,11 @@ export default  class NetworkComponentLocation {
 
     public startDrag(event: MouseEvent)
     {
-        if (event.buttons === 1) {
-            this.component.isHighlighted = true;
-            this.dragStartPos = this.positionCT(this.origin);
-            this.savedMousePos = this.getMousePosition(event);
-            this.isDragged = true;
-            this.bringComponentToTop();
-        }//if
+        this.component.isHighlighted = true;
+        this.dragStartPos = this.positionCT(this.origin);
+        this.savedMousePos = this.getMousePosition(event);
+        this.isDragged = true;
+        this.bringComponentToTop();
     }//startDrag
 
     public drag(event: MouseEvent)
@@ -112,4 +110,10 @@ export default  class NetworkComponentLocation {
     {
        this.zIndex = this.savedZIndex;
     }//bringComponentToTop
+
+
+    public enterTransformMode(event:  MouseEvent)
+    {
+        this.isBeingTransformed = true;
+    }//enterTransformMode
 }//NetworkComponentLocation

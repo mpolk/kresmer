@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, reactive, ref } from "vue";
+import { App, computed, createApp, reactive, ref } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
 import NetworkComponentLocation, { Position, Transform } from "./NetworkComponentLocation";
@@ -38,7 +38,7 @@ export default class Kresmer {
     /**
      * A singleton list of all Component Classes, registerd by Kresmer
      */
-     private static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
+    private static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
@@ -51,8 +51,16 @@ export default class Kresmer {
         this.appKresmer.component(componentClass.vueName, 
         {
             setup() {
-                const svg = ref();
-                return {svg};
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                const svg = ref<SVGElement>()!;
+
+                const bBox = computed(() => {
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    const bBox = svg.value!.getBoundingClientRect();
+                    return bBox;
+                })//bBox
+
+                return {svg, bBox};
             },
             template: componentClass.template,
             props: {
@@ -63,7 +71,7 @@ export default class Kresmer {
                 componentName: {type: String},
                 isHighlighted: {type: Boolean, default: false},
                 isDragged: {type: Boolean, default: false},
-                isBeingRotated: {type: Boolean, default: false},
+                isBeingTransformed: {type: Boolean, default: false},
             },
         });
         Kresmer.registeredClasses[componentClass.name] = componentClass;

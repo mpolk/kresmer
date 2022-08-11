@@ -73,7 +73,7 @@ export default class NetworkComponentClass {
         svg.setAttribute(":x", "origin.x");
         svg.setAttribute(":y", "origin.y");
         svg.setAttribute("class", "network-component");
-        svg.setAttribute(":class", "{highlighted: isHighlighted, dragged: isDragged, beingRotated: isBeingRotated}");
+        svg.setAttribute(":class", "{highlighted: isHighlighted, dragged: isDragged, beingTransformed: isBeingTransformed}");
 
         const g = dom.createElement("g");
         svg.appendChild(g);
@@ -87,6 +87,17 @@ export default class NetworkComponentClass {
         }//for
 
         templateNode.appendChild(svg);
+
+        const trBox = dom.createElement("rect");
+        trBox.setAttribute("v-if", "isBeingTransformed");
+        trBox.setAttribute(":x", "bBox.x");
+        trBox.setAttribute(":y", "bBox.y");
+        trBox.setAttribute(":width", "bBox.width");
+        trBox.setAttribute(":height", "bBox.height");
+        trBox.setAttribute("class", "tr-box");
+        trBox.setAttribute("ref", "trBox");
+        svg.appendChild(trBox);
+        
         return templateNode;
     }//prepareTemplateDOM
 
@@ -95,11 +106,12 @@ export default class NetworkComponentClass {
         return `\
 <svg ref="svg" :x="origin.x" :y="origin.y" 
      class="network-component" 
-     :class="{highlighted: isHighlighted, dragged: isDragged, beingRotated: isBeingRotated}"
+     :class="{highlighted: isHighlighted, dragged: isDragged, beingTransformed: isBeingTransformed}"
     >
     <g :transform="transform" transform-origin="center, center">
         ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}
     </g>
+    <rect v-if="isBeingTransformed" :x="bBox.x" :y="bBox.x" :width="bBox.width" :height="bBox.height" class="tr-box" ref="trBox"/>
 </svg>
 `;
     }//prepareTemplateStr

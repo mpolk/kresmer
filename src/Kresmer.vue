@@ -32,7 +32,11 @@
     // Event handlers
     function onMouseDownInComponent(event: MouseEvent, componentID: number)
     {
-        props.controller.getComponentLocationById(componentID).startDrag(event);
+        if (event.buttons === 1) {
+            props.controller.getComponentLocationById(componentID).startDrag(event);
+        } else if (event.buttons & 2) {
+            props.controller.getComponentLocationById(componentID).enterTransformMode(event);
+        }//if
     }//onMouseDownInComponent
 
     function onMouseUpInComponent(event: MouseEvent, componentID: number)
@@ -67,7 +71,7 @@
                    v-bind="location.component.props"
                    :is-highlighted="location.component.isHighlighted"
                    :is-dragged="location.isDragged"
-                   :is-being-rotated="location.isBeingRotated"
+                   :is-being-transformed="location.isBeingTransformed"
                    @mousedown.prevent="onMouseDownInComponent($event, location.component.id)"
                    @mouseup.prevent="onMouseUpInComponent($event, location.component.id)"
                    @mousemove.prevent="onMouseMoveInComponent($event, location.component.id)"
@@ -90,9 +94,14 @@
                 outline: thin red solid;
             }
             
-            &.beingRotated {
-                outline: thin blue solid;
-            }
+            // &.beingTransformed {
+            //     // outline: thin blue solid;
+            // }
+        }
+
+        .tr-box {
+            stroke: blue;
+            fill: none;
         }
     }
 </style>
