@@ -86,17 +86,13 @@ export default class NetworkComponentClass {
             g.appendChild(child);
         }//for
 
-        templateNode.appendChild(svg);
-
-        const trBox = dom.createElement("rect");
+        const trBox = dom.createElement("TransformBox");
         trBox.setAttribute("v-if", "isBeingTransformed");
-        trBox.setAttribute(":x", "bBox.x");
-        trBox.setAttribute(":y", "bBox.y");
-        trBox.setAttribute(":width", "bBox.width");
-        trBox.setAttribute(":height", "bBox.height");
-        trBox.setAttribute("class", "tr-box");
+        trBox.setAttribute(":svg", "svg");
         trBox.setAttribute("ref", "trBox");
         svg.appendChild(trBox);
+
+        templateNode.appendChild(svg);
         
         return templateNode;
     }//prepareTemplateDOM
@@ -111,7 +107,7 @@ export default class NetworkComponentClass {
     <g :transform="transform" transform-origin="center, center">
         ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}
     </g>
-    <rect v-if="isBeingTransformed" :x="bBox.x" :y="bBox.x" :width="bBox.width" :height="bBox.height" class="tr-box" ref="trBox"/>
+    <TransformBox v-if="isBeingTransformed" :svg="svg" ref="trBox"/>
 </svg>
 `;
     }//prepareTemplateStr

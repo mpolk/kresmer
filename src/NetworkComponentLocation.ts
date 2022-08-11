@@ -57,7 +57,7 @@ export default  class NetworkComponentLocation {
     }//ctor
 
 
-    private positionCT(pos: Position) {
+    public static positionCT(pos: Position) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const CTM = kresmer.rootSVG.getScreenCTM()!;
         return {
@@ -68,13 +68,13 @@ export default  class NetworkComponentLocation {
 
 
     private getMousePosition(event: MouseEvent) {
-        return this.positionCT({x: event.clientX, y: event.clientY});
+        return NetworkComponentLocation.positionCT({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
     public startDrag(event: MouseEvent)
     {
         this.component.isHighlighted = true;
-        this.dragStartPos = this.positionCT(this.origin);
+        this.dragStartPos = NetworkComponentLocation.positionCT(this.origin);
         this.savedMousePos = this.getMousePosition(event);
         this.isDragged = true;
         this.bringComponentToTop();
@@ -116,4 +116,9 @@ export default  class NetworkComponentLocation {
     {
         this.isBeingTransformed = true;
     }//enterTransformMode
+
+    public resetMode()
+    {
+        this.isBeingTransformed = false;
+    }//resetMode
 }//NetworkComponentLocation

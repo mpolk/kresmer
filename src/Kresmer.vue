@@ -32,10 +32,12 @@
     // Event handlers
     function onMouseDownInComponent(event: MouseEvent, componentID: number)
     {
+        const componentClicked = props.controller.getComponentLocationById(componentID);
+        props.controller.resetAllComponentMode(componentClicked);
         if (event.buttons === 1) {
-            props.controller.getComponentLocationById(componentID).startDrag(event);
+            componentClicked.startDrag(event);
         } else if (event.buttons & 2) {
-            props.controller.getComponentLocationById(componentID).enterTransformMode(event);
+            componentClicked.enterTransformMode(event);
         }//if
     }//onMouseDownInComponent
 
@@ -55,11 +57,17 @@
         props.controller.getComponentLocationById(componentID).endDrag(event);
     }//onMouseLeaveComponent
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    function onMouseDownOnCanvas(_event: MouseEvent)
+    {
+        props.controller.resetAllComponentMode();
+    }//onMouseDownOnCanvas
+
     defineExpose({svg: rootSVG});
 </script>
 
 <template>
-    <svg class="kresmer" ref="rootSVG">
+    <svg class="kresmer" ref="rootSVG" @mousedown.prevent="onMouseDownOnCanvas($event)">
         <component v-for="location in networkComponentsSorted" 
                    :is="location.component.vueName"
                    :key="`networkComponent${location.component.id}`"
@@ -72,7 +80,7 @@
                    :is-highlighted="location.component.isHighlighted"
                    :is-dragged="location.isDragged"
                    :is-being-transformed="location.isBeingTransformed"
-                   @mousedown.prevent="onMouseDownInComponent($event, location.component.id)"
+                   @mousedown.prevent.stop="onMouseDownInComponent($event, location.component.id)"
                    @mouseup.prevent="onMouseUpInComponent($event, location.component.id)"
                    @mousemove.prevent="onMouseMoveInComponent($event, location.component.id)"
                    @mouseleave.prevent="onMouseLeaveComponent($event, location.component.id)"
@@ -94,14 +102,9 @@
                 outline: thin red solid;
             }
             
-            // &.beingTransformed {
-            //     // outline: thin blue solid;
-            // }
-        }
-
-        .tr-box {
-            stroke: blue;
-            fill: none;
+            &.beingTransformed > g {
+                opacity: 0.4;
+            }
         }
     }
 </style>

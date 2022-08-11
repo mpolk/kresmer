@@ -13,6 +13,7 @@ import NetworkComponentLocation, { Position, Transform } from "./NetworkComponen
 import NetworkComponentClass from "./NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
+import TransformBox from "./TransformBox.vue"
 
 /**
  * The main class implementing the most of the Kresmer public API
@@ -31,6 +32,7 @@ export default class Kresmer {
             controller: this,
             networkComponents: this.networkComponents,
         });
+        this.appKresmer.component("TransformBox", TransformBox);
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
 
@@ -54,13 +56,7 @@ export default class Kresmer {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 const svg = ref<SVGElement>()!;
 
-                const bBox = computed(() => {
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    const bBox = svg.value!.getBoundingClientRect();
-                    return bBox;
-                })//bBox
-
-                return {svg, bBox};
+                return {svg};
             },
             template: componentClass.template,
             props: {
@@ -190,4 +186,17 @@ export default class Kresmer {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.vueKresmer.svg!;
      }//rootSVG
+
+
+     /**
+      * Resets the mode (transform etc.) for all network modes excpet the one specified
+      */
+     public resetAllComponentMode(except?: NetworkComponentLocation)
+     {
+        for (const id in this.networkComponents) {
+            const location = this.networkComponents[id];
+            if (location !== except)
+                location.resetMode();
+        }//for
+     }//resetAllComponentMode
 }//Kresmer
