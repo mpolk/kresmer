@@ -6,12 +6,18 @@
  * --------------------------------------------------------------------------
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
-
-<script setup lang="ts">
+<script lang="ts">
     import { PropType, ref, computed } from 'vue';
     import Kresmer from './Kresmer';
     import NetworkComponentLocation from './NetworkComponentLocation';
+    import NetworkComponentHolder from './NetworkComponentHolder.vue';
 
+    export default {
+        components: { NetworkComponentHolder },
+    }
+</script>
+
+<script setup lang="ts">
     const props = defineProps({
         controller: {
             type: Object as PropType<Kresmer>, 
@@ -68,15 +74,11 @@
 
 <template>
     <svg class="kresmer" ref="rootSVG" @mousedown.prevent="onMouseDownOnCanvas($event)">
-        <component v-for="location in networkComponentsSorted" 
-                   :is="location.component.vueName"
+        <NetworkComponentHolder v-for="location in networkComponentsSorted" 
                    :key="`networkComponent${location.component.id}`"
-                   :component-id="location.component.id"
                    :id="location.component.id"
-                   :component-name="location.component.name"
                    :origin="location.origin"
                    :transform="location.transform?.toCSS()"
-                   v-bind="location.component.props"
                    :is-highlighted="location.component.isHighlighted"
                    :is-dragged="location.isDragged"
                    :is-being-transformed="location.isBeingTransformed"
@@ -84,7 +86,15 @@
                    @mouseup.prevent="onMouseUpInComponent($event, location.component.id)"
                    @mousemove.prevent="onMouseMoveInComponent($event, location.component.id)"
                    @mouseleave.prevent="onMouseLeaveComponent($event, location.component.id)"
-                >{{location.component.content}}</component>
+                >
+            <component :is="location.component.vueName"
+                   :component-id="location.component.id"
+                   :component-name="location.component.name"
+                   v-bind="location.component.props"
+                >
+                {{location.component.content}}
+            </component>
+        </NetworkComponentHolder>
     </svg>
 </template>
 

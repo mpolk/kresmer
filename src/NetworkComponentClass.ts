@@ -47,7 +47,13 @@ export default class NetworkComponentClass {
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
      */
-    get vueName() {return "Kre:" + this.name}
+    get vueName() {return "Kre0:" + this.name}
+
+    /**
+     * Returns the name of the holder vue-component for this class
+     * @returns The holder vue-component name
+     */
+    get vueHolderName() {return "Kre:" + this.name}
 
 
     /**
@@ -67,49 +73,11 @@ export default class NetworkComponentClass {
 
     private prepareTemplateDOM(templateNode: Element)
     {
-        const dom = templateNode.ownerDocument;
-        const svg = dom.createElement("svg");
-        svg.setAttribute("ref", "svg");
-        svg.setAttribute(":x", "origin.x");
-        svg.setAttribute(":y", "origin.y");
-        svg.setAttribute("class", "network-component");
-        svg.setAttribute(":class", "{highlighted: isHighlighted, dragged: isDragged, beingTransformed: isBeingTransformed}");
-
-        const g = dom.createElement("g");
-        svg.appendChild(g);
-        g.setAttribute("ref", "trGroup");
-        g.setAttribute(":transform", "transform");
-        g.setAttribute("transform-origin", "center, center");
-
-        const n = templateNode.childNodes.length;
-        for (let i = 0; i < n; i++) {
-            const child = templateNode.childNodes[0];
-            g.appendChild(child);
-        }//for
-
-        const trBox = dom.createElement("TransformBox");
-        trBox.setAttribute("v-if", "isBeingTransformed");
-        trBox.setAttribute(":svg", "svg");
-        trBox.setAttribute("ref", "trBox");
-        svg.appendChild(trBox);
-
-        templateNode.appendChild(svg);
-        
         return templateNode;
     }//prepareTemplateDOM
 
     private prepareTemplateStr(templateStr: string)
     {
-        return `\
-<svg ref="svg" :x="origin.x" :y="origin.y" 
-     class="network-component" 
-     :class="{highlighted: isHighlighted, dragged: isDragged, beingTransformed: isBeingTransformed}"
-    >
-    <g ref="trGroup" :transform="transform" transform-origin="center, center">
-        ${templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1")}
-    </g>
-    <TransformBox v-if="isBeingTransformed" :svg="svg" ref="trBox"/>
-</svg>
-`;
+        return templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1");
     }//prepareTemplateStr
 }//NetworkComponentClass

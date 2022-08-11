@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, reactive, ref } from "vue";
+import { App, computed, createApp, reactive, PropType } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
 import NetworkComponentLocation, { Position, Transform } from "./NetworkComponentLocation";
@@ -14,6 +14,7 @@ import NetworkComponentClass from "./NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./TransformBox.vue"
+import NetworkComponentHolder from "./NetworkComponentHolder.vue";
 
 /**
  * The main class implementing the most of the Kresmer public API
@@ -32,7 +33,8 @@ export default class Kresmer {
             controller: this,
             networkComponents: this.networkComponents,
         });
-        this.appKresmer.component("TransformBox", TransformBox);
+        this.appKresmer.component("TransformBox", TransformBox)
+            .component("NetworkComponentHolder", NetworkComponentHolder);
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
 
@@ -52,26 +54,50 @@ export default class Kresmer {
     {
         this.appKresmer.component(componentClass.vueName, 
         {
-            setup() {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const svg = ref<SVGGraphicsElement>()!;
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                const trGroup = ref<SVGGraphicsElement>()!;
-
-                return {svg, trGroup};
-            },
             template: componentClass.template,
             props: {
                 ...componentClass.props,
-                origin: {type: Object, required: true},
-                transform: {type: String},
                 componentId: {type: Number},
                 componentName: {type: String},
+            },
+        });
+
+        this.appKresmer.component(componentClass.vueHolderName, 
+            {
+                setup(props) {
+                    const componentProps = computed(() => {
+                        const pr = {...props};
+                        delete pr["origin"];
+                        return pr;
+                    });
+                    return {componentProps};
+                },
+                template: `\
+                    <NetworkComponentHolder 
+                            :origin="origin"
+                            :transform="transform?.toCSS()"
+                            :is-highlighted="isHighlighted"
+                            :is-dragged="isDragged"
+                            :is-being-transformed="isBeingTransformed"
+                            >
+                        <component is="${componentClass.vueName}" v-bind="componentProps">
+                            <slot></slot>
+                        </component>
+                    </NetworkComponentHolder>
+`,
+            props: {
+                ...componentClass.props,
+                componentId: {type: Number},
+                componentName: {type: String},
+                origin: {type: Object as PropType<Position>, required: true},
+                transform: {type: String},
+                svg: {type: Object as PropType<SVGGraphicsElement>},
                 isHighlighted: {type: Boolean, default: false},
                 isDragged: {type: Boolean, default: false},
                 isBeingTransformed: {type: Boolean, default: false},
             },
         });
+
         Kresmer.registeredClasses[componentClass.name] = componentClass;
         return this;
     }//registerNetworkComponentClass
