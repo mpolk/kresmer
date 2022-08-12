@@ -26,7 +26,7 @@ export default class NetworkComponentClass {
     })
     {
         this.name = name;
-        this.template = this.prepareTemplate(params.template);
+        this.template = params.template;
         this.props = params.props;
     }//ctor
 
@@ -54,30 +54,4 @@ export default class NetworkComponentClass {
      * @returns The holder vue-component name
      */
     get vueHolderName() {return "Kre:" + this.name}
-
-
-    /**
-     * Adds outer SVG tags around the user-provided template data.
-     * Also patches the user template to replace XML-compatible Vue-attributes
-     * ("v--*") with their actual form (":*").
-     * @param template The source template
-     * @returns The patched template embedded in the outer SVG element
-     */
-    private prepareTemplate(template: string | Element)
-    {
-        if (template instanceof Element)
-            return this.prepareTemplateDOM(template);
-        else
-            return this.prepareTemplateStr(template);
-    }//prepareTemplate
-
-    private prepareTemplateDOM(templateNode: Element)
-    {
-        return templateNode;
-    }//prepareTemplateDOM
-
-    private prepareTemplateStr(templateStr: string)
-    {
-        return templateStr.replace(/v--([-a-zA-Z0-9]+=)/g, ":$1");
-    }//prepareTemplateStr
 }//NetworkComponentClass

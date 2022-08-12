@@ -9,6 +9,7 @@
 import { ComponentPropsOptions, Prop } from "vue";
 import NetworkComponentClass from "../NetworkComponentClass";
 import ParsingException from "./ParsingException";
+import { KresmerExceptionSeverity } from "../KresmerException";
 
 /**
  * Component library parser
@@ -37,7 +38,7 @@ export default class LibraryParser {
                 switch (node.nodeName) {
                     case "component-class":
                         try {
-                            yield this.parseComponentClassNode(node, dom);
+                            yield this.parseComponentClassNode(node);
                         } catch (exc) {
                             if (exc instanceof ParsingException)
                                 yield exc;
@@ -54,7 +55,7 @@ export default class LibraryParser {
     }//parseXML
 
 
-    private parseComponentClassNode(node: Element, dom: XMLDocument)
+    private parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
         if (!className) 
@@ -67,7 +68,7 @@ export default class LibraryParser {
             if (child instanceof Element) {
                 switch (child.nodeName) {
                     case "template":
-                        template = this.parseTemplate(child);
+                        template = child;
                         break;
                     case "props":
                         props = this.parseProps(child);
@@ -84,29 +85,6 @@ export default class LibraryParser {
     }//parseComponentClassNode
 
 
-    private parseTemplate(node: Element)
-    {
-        for (const attrName of node.getAttributeNames()) {
-            if (attrName.startsWith("v--")) {
-                const attrValue = node.getAttribute(attrName);
-                const newAttrName = attrName.replace("v--", ":");
-                if (attrValue)
-                    node.setAttribute(newAttrName, attrValue);
-                else
-                    node.setAttribute(newAttrName, "");
-                node.removeAttribute(attrName);
-            }//if
-        }//for
-
-        for (let i = 0; i < node.children.length; i++) {
-            const child = node.children[i];
-            this.parseTemplate(child);
-        }//for
-
-        return node;
-    }//parseTemplate
-
-
     private parseProps(node: Element)
     {
         const props: ComponentPropsOptions = {};
@@ -118,7 +96,7 @@ export default class LibraryParser {
                         const propName = child.getAttribute("name");
                         const prop: Prop<unknown, unknown> = {};
                         const type = child.getAttribute("type");
-                        const required = child.getAttribute("requred"),
+                        const required = child.getAttribute("required"),
                             _default = child.getAttribute("default");
                         if (!propName)
                             throw new LibraryParsingException("Prop without a name",
@@ -177,7 +155,6 @@ export default class LibraryParser {
 
 }//LibraryParser
 
-import { KresmerExceptionSeverity } from "../KresmerException";
 export class LibraryParsingException extends ParsingException {
     constructor(message: string, options?: {
         severity?: KresmerExceptionSeverity,

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:element name="kresmer-library">
         <xs:complexType>
             <xs:sequence>
@@ -12,6 +13,7 @@
                                         <xs:choice maxOccurs="unbounded">
                                             <xs:element name="rect" minOccurs="0">
                                                 <xs:complexType>
+                                                    <!-- <xs:attribute ref="v-bind:x"/> -->
                                                     <xs:attribute name="v--x" />
                                                     <xs:attribute name="v--y" />
                                                     <xs:attribute name="v--width"  />
@@ -25,6 +27,7 @@
                                                     <xs:attribute name="stroke" />
                                                     <xs:attribute name="stroke-width" />
                                                     <xs:attribute name="stroke-opacity" type="xs:decimal" />
+                                                    <xs:anyAttribute namespace="v-bind"/>
                                                 </xs:complexType>
                                             </xs:element>
                                             <xs:element name="text" minOccurs="0">
@@ -40,6 +43,7 @@
                                                     <xs:attribute name="fill" />
                                                     <xs:attribute name="v--font-size" />
                                                     <xs:attribute name="v--font-family" />
+                                                    <xs:anyAttribute namespace="v-bind"/>
                                                 </xs:complexType>
                                             </xs:element>
                                         </xs:choice>
