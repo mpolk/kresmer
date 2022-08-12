@@ -8,9 +8,9 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { PropType, ref } from 'vue';
-    import { Position } from './NetworkComponentLocation';
+    import { ref, computed, onMounted, getCurrentInstance } from 'vue';
     import TransformBox from './TransformBox.vue';
+    import { NetworkComponentHolderProps } from "./NetworkComponentLocation";
 
     export default {
         components: { TransformBox },
@@ -18,29 +18,43 @@
 </script>
 
 <script setup lang="ts">
-    defineProps({
-        origin: {type: Object as PropType<Position>, required: true},
-        transform: {type: String},
-        svg: {type: Object as PropType<SVGGraphicsElement>},
-        isHighlighted: {type: Boolean, default: false},
-        isDragged: {type: Boolean, default: false},
-        isBeingTransformed: {type: Boolean, default: false},
-    })
+    defineProps(NetworkComponentHolderProps);
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const svg = ref<SVGGraphicsElement>()!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const trGroup = ref<SVGGraphicsElement>()!;
+
+    const bBox = computed(() => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        return svg.value?.getBBox({stroke: true});
+    })//bBox
+
+    const center = computed(() => {
+        const r = bBox.value;
+        if (r)
+            return {x: r.x + r.width/2, y: r.y + r.height/2};
+        else
+            return {x: "center", y: "center"};
+    })//center
+
+    onMounted(() => {
+        getCurrentInstance()?.proxy?.$forceUpdate();
+    })
 </script>
 
 <template>
-    <svg ref="svg" :x="origin.x" :y="origin.y" 
+    <svg ref="svg" :x="origin!.x" :y="origin!.y" 
         class="network-component" 
-        :class="{highlighted: isHighlighted, dragged: isDragged, beingTransformed: isBeingTransformed}"
+        :class="{
+            highlighted: isHighlighted, 
+            dragged: isDragged, 
+            beingTransformed: isBeingTransformed
+        }"
         >
-        <g ref="trGroup" :transform="transform" transform-origin="center, center">
+        <g ref="trGroup" :transform="transform">
             <slot></slot>
         </g>
-        <TransformBox v-if="isBeingTransformed" :svg="svg" ref="trBox"/>
+        <TransformBox v-if="isBeingTransformed" :svg="svg" :b-box="bBox" ref="trBox"/>
     </svg>
 </template>

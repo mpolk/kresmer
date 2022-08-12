@@ -7,13 +7,23 @@
  * location data
  ***************************************************************************/
 
+import { PropType } from "vue";
 import Kresmer from "./Kresmer";
 import NetworkComponent from "./NetworkComponent";
 import { kresmer } from "./renderer-main";
 
 export type Position = {x: number, y: number};
-export class Transform {
-    rotate?: {angle: number, x?: number, y?: number};
+export type Rotation = {angle: number, x?: number, y?: number};
+export interface ITransform {
+    rotate?: Rotation;
+}
+export class Transform implements ITransform {
+    rotate?: Rotation;
+
+    constructor(init?: ITransform)
+    {
+        this.rotate = init?.rotate;
+    }//ctor
 
     public toCSS() 
     {
@@ -29,6 +39,16 @@ export class Transform {
         return chunks.join(' ');
     }//toCSS
 }//Transform
+
+
+export const NetworkComponentHolderProps = {
+    origin: {type: Object as PropType<Position>, required: true},
+    transform: {type: String},
+    svg: {type: Object as PropType<SVGGraphicsElement>},
+    isHighlighted: {type: Boolean, default: false},
+    isDragged: {type: Boolean, default: false},
+    isBeingTransformed: {type: Boolean, default: false},
+}//NetworkComponentHolderProps
 
 export default  class NetworkComponentLocation {
     readonly kresmer: Kresmer;

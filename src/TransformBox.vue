@@ -7,15 +7,11 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-import { PropType, computed } from 'vue';
+import { PropType } from 'vue';
 
     const props = defineProps({
-        svg: {type: Object as PropType<SVGGraphicsElement>, required: true},
+        bBox: {type: Object as PropType<DOMRect>, required: true},
     })
-
-    const bBox = computed(() => {
-        return props.svg.getBBox({stroke: true});
-    })//bBox
 
 </script>
 

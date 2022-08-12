@@ -15,6 +15,7 @@ import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponentHolder.vue";
+import { NetworkComponentHolderProps } from "./NetworkComponentLocation";
 
 /**
  * The main class implementing the most of the Kresmer public API
@@ -52,22 +53,24 @@ export default class Kresmer {
      */
     public registerNetworkComponentClass(componentClass: NetworkComponentClass) 
     {
-        this.appKresmer.component(componentClass.vueName, 
-        {
-            template: componentClass.template,
-            props: {
-                ...componentClass.props,
-                componentId: {type: Number},
-                componentName: {type: String},
-            },
-        });
-
-        this.appKresmer.component(componentClass.vueHolderName, 
+        this.appKresmer
+            .component(componentClass.vueName, 
+            {
+                template: componentClass.template,
+                props: {
+                    ...componentClass.props,
+                    componentId: {type: Number},
+                    componentName: {type: String},
+                },
+            })
+            .component(componentClass.vueHolderName, 
             {
                 setup(props) {
                     const componentProps = computed(() => {
                         const pr = {...props};
-                        delete pr["origin"];
+                        for (const key of Object.keys(NetworkComponentHolderProps)) {
+                            delete pr[key];
+                        }//for
                         return pr;
                     });
                     return {componentProps};
@@ -83,20 +86,14 @@ export default class Kresmer {
                         <component is="${componentClass.vueName}" v-bind="componentProps">
                             <slot></slot>
                         </component>
-                    </NetworkComponentHolder>
-`,
-            props: {
-                ...componentClass.props,
-                componentId: {type: Number},
-                componentName: {type: String},
-                origin: {type: Object as PropType<Position>, required: true},
-                transform: {type: String},
-                svg: {type: Object as PropType<SVGGraphicsElement>},
-                isHighlighted: {type: Boolean, default: false},
-                isDragged: {type: Boolean, default: false},
-                isBeingTransformed: {type: Boolean, default: false},
-            },
-        });
+                    </NetworkComponentHolder>`,
+                props: {
+                    ...componentClass.props,
+                    ...NetworkComponentHolderProps,
+                    componentId: {type: Number},
+                    componentName: {type: String},
+                },
+            });
 
         Kresmer.registeredClasses[componentClass.name] = componentClass;
         return this;

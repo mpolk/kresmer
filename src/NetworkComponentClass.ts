@@ -47,7 +47,7 @@ export default class NetworkComponentClass {
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
      */
-    get vueName() {return "Kre0:" + this.name}
+    get vueName() {return "_Kre:" + this.name}
 
     /**
      * Returns the name of the holder vue-component for this class
