@@ -3,8 +3,8 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Network Component Location - a generic network element instance 
- * location data
+ * Network Component Controller - a generic network element instance 
+ * controller, responsible for its placement, transformations etc
  ***************************************************************************/
 
 import { PropType } from "vue";
@@ -50,7 +50,7 @@ export const NetworkComponentHolderProps = {
     isBeingTransformed: {type: Boolean, default: false},
 }//NetworkComponentHolderProps
 
-export default  class NetworkComponentLocation {
+export default class NetworkComponentController {
     readonly kresmer: Kresmer;
     readonly component: NetworkComponent;
     origin: Position;
@@ -88,13 +88,13 @@ export default  class NetworkComponentLocation {
 
 
     private getMousePosition(event: MouseEvent) {
-        return NetworkComponentLocation.positionCT({x: event.clientX, y: event.clientY});
+        return NetworkComponentController.positionCT({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
     public startDrag(event: MouseEvent)
     {
         this.component.isHighlighted = true;
-        this.dragStartPos = NetworkComponentLocation.positionCT(this.origin);
+        this.dragStartPos = NetworkComponentController.positionCT(this.origin);
         this.savedMousePos = this.getMousePosition(event);
         this.isDragged = true;
         this.bringComponentToTop();
@@ -144,4 +144,4 @@ export default  class NetworkComponentLocation {
         this.isBeingTransformed = false;
         this.restoreComponentZPosition();
     }//resetMode
-}//NetworkComponentLocation
+}//NetworkComponentController

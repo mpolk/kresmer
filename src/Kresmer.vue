@@ -9,7 +9,7 @@
 <script lang="ts">
     import { PropType, ref, computed } from 'vue';
     import Kresmer from './Kresmer';
-    import NetworkComponentLocation from './NetworkComponentLocation';
+    import NetworkComponentController from './NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponentHolder.vue';
 
     export default {
@@ -24,7 +24,7 @@
             required: true
         },
         networkComponents: {
-            type: Object as PropType<Record<string, NetworkComponentLocation>>, 
+            type: Object as PropType<Record<string, NetworkComponentController>>, 
             required: true
         }
     })
@@ -38,7 +38,7 @@
     // Event handlers
     function onMouseDownInComponent(event: MouseEvent, componentID: number)
     {
-        const componentClicked = props.controller.getComponentLocationById(componentID);
+        const componentClicked = props.controller.getComponentControllerById(componentID);
         props.controller.resetAllComponentMode(componentClicked);
         if (event.buttons === 1) {
             componentClicked.startDrag(event);
@@ -49,18 +49,18 @@
 
     function onMouseUpInComponent(event: MouseEvent, componentID: number)
     {
-        props.controller.getComponentLocationById(componentID).endDrag(event);
+        props.controller.getComponentControllerById(componentID).endDrag(event);
     }//onMouseUpInComponent
 
     function onMouseMoveInComponent(event: MouseEvent, componentID: number)
     {
         if (event.buttons & 1)
-            props.controller.getComponentLocationById(componentID).drag(event);
+            props.controller.getComponentControllerById(componentID).drag(event);
     }//onMouseMoveInComponent
 
     function onMouseLeaveComponent(event: MouseEvent, componentID: number)
     {
-        props.controller.getComponentLocationById(componentID).endDrag(event);
+        props.controller.getComponentControllerById(componentID).endDrag(event);
     }//onMouseLeaveComponent
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -74,25 +74,25 @@
 
 <template>
     <svg class="kresmer" ref="rootSVG" @mousedown.prevent="onMouseDownOnCanvas($event)">
-        <NetworkComponentHolder v-for="location in networkComponentsSorted" 
-                   :key="`networkComponent${location.component.id}`"
-                   :id="location.component.id"
-                   :origin="location.origin"
-                   :transform="location.transform?.toCSS()"
-                   :is-highlighted="location.component.isHighlighted"
-                   :is-dragged="location.isDragged"
-                   :is-being-transformed="location.isBeingTransformed"
-                   @mousedown.prevent.stop="onMouseDownInComponent($event, location.component.id)"
-                   @mouseup.prevent="onMouseUpInComponent($event, location.component.id)"
-                   @mousemove.prevent="onMouseMoveInComponent($event, location.component.id)"
-                   @mouseleave.prevent="onMouseLeaveComponent($event, location.component.id)"
+        <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
+                   :key="`networkComponent${controller.component.id}`"
+                   :id="controller.component.id"
+                   :origin="controller.origin"
+                   :transform="controller.transform?.toCSS()"
+                   :is-highlighted="controller.component.isHighlighted"
+                   :is-dragged="controller.isDragged"
+                   :is-being-transformed="controller.isBeingTransformed"
+                   @mousedown.prevent.stop="onMouseDownInComponent($event, controller.component.id)"
+                   @mouseup.prevent="onMouseUpInComponent($event, controller.component.id)"
+                   @mousemove.prevent="onMouseMoveInComponent($event, controller.component.id)"
+                   @mouseleave.prevent="onMouseLeaveComponent($event, controller.component.id)"
                 >
-            <component :is="location.component.vueName"
-                   :component-id="location.component.id"
-                   :component-name="location.component.name"
-                   v-bind="location.component.props"
+            <component :is="controller.component.vueName"
+                   :component-id="controller.component.id"
+                   :component-name="controller.component.name"
+                   v-bind="controller.component.props"
                 >
-                {{location.component.content}}
+                {{controller.component.content}}
             </component>
         </NetworkComponentHolder>
     </svg>

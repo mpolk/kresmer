@@ -9,13 +9,13 @@
 import { App, computed, createApp, reactive, PropType } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent";
-import NetworkComponentLocation, { Position, Transform } from "./NetworkComponentLocation";
+import NetworkComponentController, { Position, Transform } from "./NetworkComponentController";
 import NetworkComponentClass from "./NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponentHolder.vue";
-import { NetworkComponentHolderProps } from "./NetworkComponentLocation";
+import { NetworkComponentHolderProps } from "./NetworkComponentController";
 
 /**
  * The main class implementing the most of the Kresmer public API
@@ -134,7 +134,7 @@ export default class Kresmer {
     /**
      * Components currently placed to the drawing
      */
-     private readonly networkComponents = reactive<Record<string, NetworkComponentLocation>>({});
+     private readonly networkComponents = reactive<Record<string, NetworkComponentController>>({});
 
     /**
      * Adds a new Network Component to the content of the drawing
@@ -143,18 +143,18 @@ export default class Kresmer {
     public placeNetworkComponent(component: NetworkComponent,
                                  origin: Position, transform?: Transform)
     {
-        const location = new NetworkComponentLocation(
+        const controller = new NetworkComponentController(
             this, component, {origin, transform});
-        return this.addPositionedNetworkComponent(location);
+        return this.addPositionedNetworkComponent(controller);
     }//placeNetworkComponent
 
     /**
      * Adds a new Network Component to the content of the drawing
-     * @param location A Network Component to add
+     * @param controller A Network Component to add
      */
-    public addPositionedNetworkComponent(location: NetworkComponentLocation)
+    public addPositionedNetworkComponent(controller: NetworkComponentController)
     {
-        this.networkComponents[location.component.id] = location;
+        this.networkComponents[controller.component.id] = controller;
         return this;
     }//addPositionedNetworkComponent
 
@@ -170,7 +170,7 @@ export default class Kresmer {
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
-            if (element instanceof NetworkComponentLocation) {
+            if (element instanceof NetworkComponentController) {
                 this.addPositionedNetworkComponent(element);
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
@@ -193,11 +193,11 @@ export default class Kresmer {
 
 
     /**
-     * Searches for the NetworkComponentLocation with the specified ID
+     * Searches for the NetworkComponentController with the specified ID
      * @param id An ID of the component to search for
-     * @returns The component location if found or "undefined" otherwise
+     * @returns The component controller if found or "undefined" otherwise
      */
-     public getComponentLocationById(id: number)
+     public getComponentControllerById(id: number)
      {
          return this.networkComponents[id];
      }//getComponentLoavtionById
@@ -216,12 +216,12 @@ export default class Kresmer {
      /**
       * Resets the mode (transform etc.) for all network modes excpet the one specified
       */
-     public resetAllComponentMode(except?: NetworkComponentLocation)
+     public resetAllComponentMode(except?: NetworkComponentController)
      {
         for (const id in this.networkComponents) {
-            const location = this.networkComponents[id];
-            if (location !== except)
-                location.resetMode();
+            const controller = this.networkComponents[id];
+            if (controller !== except)
+                controller.resetMode();
         }//for
      }//resetAllComponentMode
 }//Kresmer

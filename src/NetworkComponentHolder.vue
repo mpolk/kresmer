@@ -10,7 +10,7 @@
 <script lang="ts">
     import { ref, computed, onMounted, getCurrentInstance } from 'vue';
     import TransformBox from './TransformBox.vue';
-    import { NetworkComponentHolderProps } from "./NetworkComponentLocation";
+    import { NetworkComponentHolderProps } from "./NetworkComponentController";
 
     export default {
         components: { TransformBox },

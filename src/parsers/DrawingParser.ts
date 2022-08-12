@@ -9,7 +9,7 @@
 import Kresmer from "../Kresmer";
 import NetworkComponent from "../NetworkComponent";
 import NetworkComponentClass from "../NetworkComponentClass";
-import NetworkComponentLocation, { Transform } from "../NetworkComponentLocation";
+import NetworkComponentController, { Transform } from "../NetworkComponentController";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 
@@ -30,7 +30,7 @@ export default class DrawingParser {
      * of the parsed drawing elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string): Generator<NetworkComponentLocation|ParsingException>
+    public *parseXML(rawData: string): Generator<NetworkComponentController|ParsingException>
     {
         console.debug('Parsing drawing XML...');
         const domParser = new DOMParser();
@@ -119,7 +119,7 @@ export default class DrawingParser {
         }//if
 
         const component = new NetworkComponent(className, {props, content});
-        return new NetworkComponentLocation(this.kresmer, component, 
+        return new NetworkComponentController(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode
 
