@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:v-bind="v-bind" xmlns:Kre="Kre">
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
+    <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
+
+    <xs:element name="embedded-component" xmlns="Kre"></xs:element>
+
+    <xs:attribute name="v-for"/>
+    
     <xs:element name="kresmer-library">
         <xs:complexType>
             <xs:sequence>
@@ -9,17 +15,19 @@
                         <xs:all>
                             <xs:element name="template">
                                 <xs:complexType>
+                                    <xs:openContent mode="interleave">
+                                        <xs:any namespace="Kre"/>
+                                    </xs:openContent>
                                     <xs:sequence minOccurs="0">
                                         <xs:choice maxOccurs="unbounded">
                                             <xs:element name="rect" minOccurs="0">
                                                 <xs:complexType>
-                                                    <!-- <xs:attribute ref="v-bind:x"/> -->
-                                                    <xs:attribute name="v--x" />
-                                                    <xs:attribute name="v--y" />
-                                                    <xs:attribute name="v--width"  />
-                                                    <xs:attribute name="v--height" />
-                                                    <xs:attribute name="v--fill" />
-                                                    <xs:attribute name="x" />
+                                                    <xs:attribute ref="v-bind:x"/>
+                                                    <xs:attribute ref="v-bind:y" />
+                                                    <xs:attribute ref="v-bind:width"  />
+                                                    <xs:attribute ref="v-bind:height" />
+                                                    <xs:attribute ref="v-bind:fill" />
+                                                    <xs:attribute name="x"/>
                                                     <xs:attribute name="y" />
                                                     <xs:attribute name="width"  />
                                                     <xs:attribute name="height" />
@@ -27,7 +35,7 @@
                                                     <xs:attribute name="stroke" />
                                                     <xs:attribute name="stroke-width" />
                                                     <xs:attribute name="stroke-opacity" type="xs:decimal" />
-                                                    <xs:anyAttribute namespace="v-bind"/>
+                                                    <xs:attribute ref="v-for"/>
                                                 </xs:complexType>
                                             </xs:element>
                                             <xs:element name="text" minOccurs="0">
@@ -35,15 +43,19 @@
                                                     <xs:sequence>
                                                         <xs:element name="slot" minOccurs="0"/>
                                                     </xs:sequence>
-                                                    <xs:attribute name="v--x" />
-                                                    <xs:attribute name="v--y" />
-                                                    <xs:attribute name="v--fill" />
                                                     <xs:attribute name="x" />
+                                                    <xs:attribute ref="v-bind:x"/>
                                                     <xs:attribute name="y" />
+                                                    <xs:attribute ref="v-bind:y" />
                                                     <xs:attribute name="fill" />
-                                                    <xs:attribute name="v--font-size" />
-                                                    <xs:attribute name="v--font-family" />
-                                                    <xs:anyAttribute namespace="v-bind"/>
+                                                    <xs:attribute ref="v-bind:fill" />
+                                                    <xs:attribute name="stroke" />
+                                                    <xs:attribute ref="v-bind:stroke" />
+                                                    <xs:attribute name="font-size" />
+                                                    <xs:attribute ref="v-bind:font-size" />
+                                                    <xs:attribute name="font-family" />
+                                                    <xs:attribute ref="v-bind:font-family" />
+                                                    <xs:attribute ref="v-for"/>
                                                 </xs:complexType>
                                             </xs:element>
                                         </xs:choice>

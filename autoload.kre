@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<?xml-model href="kresmer-drawing.xsd"?>
+<?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="autoload">
     <component class="BorderedKresmer">
         <props>
