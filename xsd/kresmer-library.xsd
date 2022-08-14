@@ -3,9 +3,42 @@
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
 
-    <xs:element name="embedded-component" xmlns="Kre"></xs:element>
+    <xs:attributeGroup name="origin-attrs">
+        <xs:attribute name="x" type="xs:decimal"/>
+        <xs:attribute name="y" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:x"/>
+        <xs:attribute ref="v-bind:y"/>
+    </xs:attributeGroup>
 
-    <xs:attribute name="v-for"/>
+    <xs:attributeGroup name="presentation-attrs">
+        <xs:attribute name="stroke" type="xs:string" />
+        <xs:attribute name="stroke-width" />
+        <xs:attribute name="stroke-opacity" type="xs:decimal" />
+        <xs:attribute name="fill" type="xs:string"/>
+        <xs:attribute ref="v-bind:stroke"/>
+        <xs:attribute ref="v-bind:stroke-width" />
+        <xs:attribute ref="v-bind:stroke-opacity" />
+        <xs:attribute ref="v-bind:fill" />
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="dim-attrs">
+        <xs:attribute name="width"  />
+        <xs:attribute name="height" />
+        <xs:attribute ref="v-bind:width"  />
+        <xs:attribute ref="v-bind:height" />
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="font-attrs">
+        <xs:attribute name="font-size" />
+        <xs:attribute ref="v-bind:font-size" />
+        <xs:attribute name="font-family" />
+        <xs:attribute ref="v-bind:font-family" />
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="vue-directives">
+        <xs:attribute name="v-for"/>
+        <xs:attribute name="v-if"/>
+    </xs:attributeGroup>
     
     <xs:element name="kresmer-library">
         <xs:complexType>
@@ -15,27 +48,14 @@
                         <xs:all>
                             <xs:element name="template">
                                 <xs:complexType>
-                                    <xs:openContent mode="interleave">
-                                        <xs:any namespace="Kre"/>
-                                    </xs:openContent>
                                     <xs:sequence minOccurs="0">
                                         <xs:choice maxOccurs="unbounded">
                                             <xs:element name="rect" minOccurs="0">
                                                 <xs:complexType>
-                                                    <xs:attribute ref="v-bind:x"/>
-                                                    <xs:attribute ref="v-bind:y" />
-                                                    <xs:attribute ref="v-bind:width"  />
-                                                    <xs:attribute ref="v-bind:height" />
-                                                    <xs:attribute ref="v-bind:fill" />
-                                                    <xs:attribute name="x"/>
-                                                    <xs:attribute name="y" />
-                                                    <xs:attribute name="width"  />
-                                                    <xs:attribute name="height" />
-                                                    <xs:attribute name="fill" />
-                                                    <xs:attribute name="stroke" />
-                                                    <xs:attribute name="stroke-width" />
-                                                    <xs:attribute name="stroke-opacity" type="xs:decimal" />
-                                                    <xs:attribute ref="v-for"/>
+                                                    <xs:attributeGroup ref="origin-attrs"/>
+                                                    <xs:attributeGroup ref="dim-attrs"/>
+                                                    <xs:attributeGroup ref="presentation-attrs"/>
+                                                    <xs:attributeGroup ref="vue-directives"/>
                                                 </xs:complexType>
                                             </xs:element>
                                             <xs:element name="text" minOccurs="0">
@@ -43,21 +63,13 @@
                                                     <xs:sequence>
                                                         <xs:element name="slot" minOccurs="0"/>
                                                     </xs:sequence>
-                                                    <xs:attribute name="x" />
-                                                    <xs:attribute ref="v-bind:x"/>
-                                                    <xs:attribute name="y" />
-                                                    <xs:attribute ref="v-bind:y" />
-                                                    <xs:attribute name="fill" />
-                                                    <xs:attribute ref="v-bind:fill" />
-                                                    <xs:attribute name="stroke" />
-                                                    <xs:attribute ref="v-bind:stroke" />
-                                                    <xs:attribute name="font-size" />
-                                                    <xs:attribute ref="v-bind:font-size" />
-                                                    <xs:attribute name="font-family" />
-                                                    <xs:attribute ref="v-bind:font-family" />
-                                                    <xs:attribute ref="v-for"/>
+                                                    <xs:attributeGroup ref="origin-attrs"/>
+                                                    <xs:attributeGroup ref="presentation-attrs"/>
+                                                    <xs:attributeGroup ref="font-attrs"/>
+                                                    <xs:attributeGroup ref="vue-directives"/>
                                                 </xs:complexType>
                                             </xs:element>
+                                            <xs:any namespace="Kre" processContents="skip"/>
                                         </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>
