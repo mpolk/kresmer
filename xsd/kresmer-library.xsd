@@ -50,6 +50,7 @@
                                 <xs:complexType>
                                     <xs:sequence minOccurs="0">
                                         <xs:choice maxOccurs="unbounded">
+
                                             <xs:element name="rect" minOccurs="0">
                                                 <xs:complexType>
                                                     <xs:attributeGroup ref="origin-attrs"/>
@@ -58,6 +59,7 @@
                                                     <xs:attributeGroup ref="vue-directives"/>
                                                 </xs:complexType>
                                             </xs:element>
+
                                             <xs:element name="text" minOccurs="0">
                                                 <xs:complexType mixed="true">
                                                     <xs:sequence>
@@ -69,11 +71,13 @@
                                                     <xs:attributeGroup ref="vue-directives"/>
                                                 </xs:complexType>
                                             </xs:element>
+
                                             <xs:any namespace="Kre" processContents="skip"/>
                                         </xs:choice>
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
+    
                             <xs:element name="props" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
