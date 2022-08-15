@@ -55,6 +55,6 @@
         <g ref="trGroup" :transform="transform">
             <slot></slot>
         </g>
-        <TransformBox v-if="isBeingTransformed" :svg="svg" :b-box="bBox" ref="trBox"/>
+        <TransformBox v-if="isBeingTransformed" :b-box="bBox!" ref="trBox"/>
     </svg>
 </template>
