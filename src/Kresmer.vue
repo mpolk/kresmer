@@ -9,8 +9,8 @@
 <script lang="ts">
     import { PropType, ref, computed } from 'vue';
     import Kresmer from './Kresmer';
-    import NetworkComponentController from './NetworkComponentController';
-    import NetworkComponentHolder from './NetworkComponentHolder.vue';
+    import NetworkComponentController from './NetworkComponent/NetworkComponentController';
+    import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
 
     export default {
         components: { NetworkComponentHolder },

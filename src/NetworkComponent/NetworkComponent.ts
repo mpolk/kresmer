@@ -6,9 +6,9 @@
  * Network Component - a generic network element instance 
  ***************************************************************************/
 
-import Kresmer from './Kresmer';
+import Kresmer from '../Kresmer';
 import NetworkComponentClass from "./NetworkComponentClass";
-import { NetworkElement } from './NetworkElement';
+import { NetworkElement } from '../NetworkElement';
 
 type PropType = Record<string, any>;
 type ContentType = any;

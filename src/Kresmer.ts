@@ -6,16 +6,16 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, computed, createApp, reactive, PropType } from "vue";
+import { App, computed, createApp, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
-import NetworkComponent from "./NetworkComponent";
-import NetworkComponentController, { Position, Transform } from "./NetworkComponentController";
-import NetworkComponentClass from "./NetworkComponentClass";
+import NetworkComponent from "./NetworkComponent/NetworkComponent";
+import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentController";
+import { Position, Transform } from "./Transform";
+import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./TransformBox.vue"
-import NetworkComponentHolder from "./NetworkComponentHolder.vue";
-import { NetworkComponentHolderProps } from "./NetworkComponentController";
+import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
 
 /**
  * The main class implementing the most of the Kresmer public API

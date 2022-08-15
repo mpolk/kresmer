@@ -8,38 +8,10 @@
  ***************************************************************************/
 
 import { PropType } from "vue";
-import Kresmer from "./Kresmer";
+import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
-import { kresmer } from "./renderer-main";
-
-export type Position = {x: number, y: number};
-export type Rotation = {angle: number, x?: number, y?: number};
-export interface ITransform {
-    rotate?: Rotation;
-}
-export class Transform implements ITransform {
-    rotate?: Rotation;
-
-    constructor(init?: ITransform)
-    {
-        this.rotate = init?.rotate;
-    }//ctor
-
-    public toCSS() 
-    {
-        const chunks: string[] = [];
-
-        if (this.rotate) {
-            if (this.rotate.x !== undefined)
-                chunks.push(`rotate(${this.rotate.angle} ${this.rotate.x} ${this.rotate.y})`);
-            else
-                chunks.push(`rotate(${this.rotate.angle})`);
-        }//if
-
-        return chunks.join(' ');
-    }//toCSS
-}//Transform
-
+import { kresmer } from "../renderer-main";
+import { Position, Transform } from "../Transform";
 
 export const NetworkComponentHolderProps = {
     origin: {type: Object as PropType<Position>, required: true},

@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import { ComponentPropsOptions, Prop } from "vue";
-import NetworkComponentClass from "../NetworkComponentClass";
+import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 
