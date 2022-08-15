@@ -8,9 +8,9 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, computed, onMounted, getCurrentInstance } from 'vue';
+    import { ref, computed, PropType } from 'vue';
     import TransformBox from '../Transform/TransformBox.vue';
-    import { NetworkComponentHolderProps } from "./NetworkComponentController";
+    import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
 
     export default {
         components: { TransformBox },
@@ -18,7 +18,10 @@
 </script>
 
 <script setup lang="ts">
-    defineProps(NetworkComponentHolderProps);
+    const props = defineProps({
+        ...NetworkComponentHolderProps,
+        controller: {type: Object as PropType<NetworkComponentController>},
+    });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const svg = ref<SVGGraphicsElement>()!;
@@ -26,7 +29,6 @@
     const trGroup = ref<SVGGraphicsElement>()!;
 
     const bBox = computed(() => {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return svg.value?.getBBox({stroke: true});
     })//bBox
 
@@ -38,9 +40,18 @@
             return {x: "center", y: "center"};
     })//center
 
-    onMounted(() => {
-        getCurrentInstance()?.proxy?.$forceUpdate();
-    })
+
+    function onTransformBoxClick(event: MouseEvent) {
+        if (props.controller) {
+            props.controller.onTransformBoxClick(event);
+        }//if
+    }//onTransformBoxClick
+
+    function onTransformBoxRightClick(event: MouseEvent) {
+        if (props.controller) {
+            props.controller.onTransformBoxRightClick(event);
+        }//if
+    }//onTransformBoxRightClick
 </script>
 
 <template>
@@ -55,6 +66,10 @@
         <g ref="trGroup" :transform="transform">
             <slot></slot>
         </g>
-        <TransformBox v-if="isBeingTransformed" :b-box="bBox!" ref="trBox"/>
+        <TransformBox v-if="isBeingTransformed" :b-box="bBox!" :transform-mode="transformMode" 
+                      ref="trBox"
+                      @box-clicked="onTransformBoxClick"
+                      @box-right-clicked="onTransformBoxRightClick"
+                      />
     </svg>
 </template>

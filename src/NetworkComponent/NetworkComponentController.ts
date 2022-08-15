@@ -20,7 +20,10 @@ export const NetworkComponentHolderProps = {
     isHighlighted: {type: Boolean, default: false},
     isDragged: {type: Boolean, default: false},
     isBeingTransformed: {type: Boolean, default: false},
+    transformMode: {type: String as PropType<TransformMode>},
 }//NetworkComponentHolderProps
+
+export type TransformMode = "scaling" | "x-scaling" | "y-scaling" | "rotation";
 
 export default class NetworkComponentController {
     readonly kresmer: Kresmer;
@@ -29,6 +32,8 @@ export default class NetworkComponentController {
     transform?: Transform;
     public isDragged = false;
     public isBeingTransformed = false;
+    public transformMode: TransformMode = "scaling";
+
     private dragStartPos?: Position;
     private savedMousePos?: Position;
     public zIndex = -1;
@@ -116,4 +121,17 @@ export default class NetworkComponentController {
         this.isBeingTransformed = false;
         this.restoreComponentZPosition();
     }//resetMode
+
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public onTransformBoxClick(_event: MouseEvent)
+    {
+        this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
+    }//onTransformBoxClick
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public onTransformBoxRightClick(_event: MouseEvent)
+    {
+        this.isBeingTransformed = false;
+    }//onTransformBoxRightClick
 }//NetworkComponentController

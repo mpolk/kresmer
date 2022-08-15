@@ -77,11 +77,13 @@
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :id="controller.component.id"
+                   :controller="controller"
                    :origin="controller.origin"
                    :transform="controller.transform?.toCSS()"
                    :is-highlighted="controller.component.isHighlighted"
                    :is-dragged="controller.isDragged"
                    :is-being-transformed="controller.isBeingTransformed"
+                   :transform-mode="controller.transformMode"
                    @mousedown.prevent.stop="onMouseDownInComponent($event, controller.component.id)"
                    @mouseup.prevent="onMouseUpInComponent($event, controller.component.id)"
                    @mousemove.prevent="onMouseMoveInComponent($event, controller.component.id)"
@@ -113,7 +115,7 @@
             }
             
             &.beingTransformed > g {
-                opacity: 0.4;
+                opacity: 0.6;
             }
         }
     }
