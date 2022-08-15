@@ -10,11 +10,11 @@ import { App, computed, createApp, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentController";
-import { Position, Transform } from "./Transform";
+import { Position, Transform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
-import TransformBox from "./TransformBox.vue"
+import TransformBox from "./Transform/TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
 
 /**

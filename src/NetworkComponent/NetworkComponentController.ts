@@ -11,7 +11,7 @@ import { PropType } from "vue";
 import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
 import { kresmer } from "../renderer-main";
-import { Position, Transform } from "../Transform";
+import { Position, Transform } from "../Transform/Transform";
 
 export const NetworkComponentHolderProps = {
     origin: {type: Object as PropType<Position>, required: true},

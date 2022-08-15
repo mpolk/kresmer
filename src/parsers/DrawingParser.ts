@@ -10,7 +10,7 @@ import Kresmer from "../Kresmer";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
-import { Transform } from "../Transform";
+import { Transform } from "../Transform/Transform";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 
