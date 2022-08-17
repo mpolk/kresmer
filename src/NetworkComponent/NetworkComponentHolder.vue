@@ -32,14 +32,6 @@
         return svg.value?.getBBox({stroke: true});
     })//bBox
 
-    const center = computed(() => {
-        const r = bBox.value;
-        if (r)
-            return {x: r.x + r.width/2, y: r.y + r.height/2};
-        else
-            return {x: "center", y: "center"};
-    })//center
-
 
     function onTransformBoxClick(event: MouseEvent) {
         if (props.controller) {
@@ -66,10 +58,22 @@
         <g ref="trGroup" :transform="transform">
             <slot></slot>
         </g>
-        <TransformBox v-if="isBeingTransformed" :b-box="bBox!" :transform-mode="transformMode" 
-                      ref="trBox"
+        <TransformBox v-if="transformMode" :transform-mode="transformMode" 
+                      ref="trBox" :b-box="bBox!"
                       @box-clicked="onTransformBoxClick"
                       @box-right-clicked="onTransformBoxRightClick"
                       />
     </svg>
 </template>
+
+<style lang="scss">
+    svg.network-component {
+            &.dragged {
+                outline: thin red solid;
+            }
+            
+            &.beingTransformed > g {
+                opacity: 0.5;
+            }
+    }
+</style>

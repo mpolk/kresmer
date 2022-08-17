@@ -23,7 +23,7 @@ export const NetworkComponentHolderProps = {
     transformMode: {type: String as PropType<TransformMode>},
 }//NetworkComponentHolderProps
 
-export type TransformMode = "scaling" | "x-scaling" | "y-scaling" | "rotation";
+export type TransformMode = undefined | "scaling" | "x-scaling" | "y-scaling" | "rotation";
 
 export default class NetworkComponentController {
     readonly kresmer: Kresmer;
@@ -32,7 +32,7 @@ export default class NetworkComponentController {
     transform?: Transform;
     public isDragged = false;
     public isBeingTransformed = false;
-    public transformMode: TransformMode = "scaling";
+    public transformMode?: TransformMode;
 
     private dragStartPos?: Position;
     private savedMousePos?: Position;
@@ -112,13 +112,15 @@ export default class NetworkComponentController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public enterTransformMode(_event:  MouseEvent)
     {
-        this.isBeingTransformed = true;
+        // this.isBeingTransformed = true;
+        this.transformMode = "scaling";
         this.bringComponentToTop();
     }//enterTransformMode
 
     public resetMode()
     {
-        this.isBeingTransformed = false;
+        // this.isBeingTransformed = false;
+        this.transformMode = undefined;
         this.restoreComponentZPosition();
     }//resetMode
 
@@ -126,12 +128,13 @@ export default class NetworkComponentController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onTransformBoxClick(_event: MouseEvent)
     {
-        this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
+        // just ignore
     }//onTransformBoxClick
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onTransformBoxRightClick(_event: MouseEvent)
     {
-        this.isBeingTransformed = false;
+        this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
     }//onTransformBoxRightClick
+
 }//NetworkComponentController

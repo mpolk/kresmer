@@ -109,14 +109,6 @@
         svg.network-component {
             overflow: visible;
             cursor: default;
-
-            &.dragged {
-                outline: thin red solid;
-            }
-            
-            &.beingTransformed > g {
-                opacity: 0.6;
-            }
         }
     }
 </style>
