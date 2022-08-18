@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { computed, PropType } from 'vue';
+    import { computed, PropType, ref } from 'vue';
     import NetworkComponentController, { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position } from './Transform';
 
@@ -34,22 +34,23 @@
         return {x: rect.x + rect.width/2, y: rect.y + rect.height/2};
     })//center
 
-    let mousePos: Position;
+    const mousePos = ref<Position>();
     function onMouseMove(event: MouseEvent)
     {
-        mousePos =  NetworkComponentController.positionCT(event);
+        mousePos.value =  NetworkComponentController.positionCT(event);
     }//onMouseMove
 
     const cursor = computed(() => {
         const rect = props.bBox;
-        if (!mousePos)
+        const pos = mousePos.value;
+        if (!pos)
             return 'default';
-        if (mousePos.x >= rect.width * 0.25 && mousePos.x <= rect.width * 0.75 &&
-            mousePos.y >= rect.height * 0.25 && mousePos.y <= rect.height * 0.75)
+        if (pos.x >= rect.width * 0.25 && pos.x <= rect.width * 0.75 &&
+            pos.y >= rect.height * 0.25 && pos.y <= rect.height * 0.75)
             return 'default';
-        if (mousePos.x >= rect.width * 0.25 && mousePos.x <= rect.width * 0.75)
+        if (pos.x >= rect.width * 0.25 && pos.x <= rect.width * 0.75)
             return 'ew-resize';
-        if (mousePos.y >= rect.height * 0.25 && mousePos.y <= rect.height * 0.75)
+        if (pos.y >= rect.height * 0.25 && pos.y <= rect.height * 0.75)
             return 'ns-resize';
         return 'default';
     })//cursor
