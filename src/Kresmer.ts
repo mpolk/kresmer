@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, computed, createApp, reactive } from "vue";
+import { App, computed, createApp, InjectionKey, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentController";
@@ -27,6 +27,8 @@ export default class Kresmer {
     readonly appKresmer: App;
     /** Kresmer vue-component itself */
     readonly vueKresmer: InstanceType<typeof KresmerVue>;
+    /** A symbolic key for the Kresmer instance injection */
+    static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
 
     constructor(mountPoint: string|HTMLElement)
     {

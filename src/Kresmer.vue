@@ -29,7 +29,7 @@
         }
     });
 
-    provide('kresmer', readonly(props.controller));
+    provide(Kresmer.injectionKey, props.controller);
     const rootSVG = ref<SVGGraphicsElement>();
 
     const networkComponentsSorted = computed(() => {

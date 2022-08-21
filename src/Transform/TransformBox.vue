@@ -18,7 +18,7 @@
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const kresmer = inject<Kresmer>('kresmer')!;
+    const kresmer = inject(Kresmer.injectionKey)!;
 
     const inRotationMode = computed(() => props.transformMode === "rotation");
 
@@ -41,7 +41,7 @@
     const mousePos = ref<Position>();
     function onMouseMove(event: MouseEvent)
     {
-        mousePos.value =  kresmer.applyScreenCTM(event);
+        mousePos.value =  {x: event.clientX, y: event.clientY};
     }//onMouseMove
 
     const cursor = computed(() => {
