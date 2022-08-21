@@ -7,7 +7,7 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed } from 'vue';
+    import { PropType, ref, computed, provide, readonly } from 'vue';
     import Kresmer from './Kresmer';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
@@ -27,8 +27,9 @@
             type: Object as PropType<Record<string, NetworkComponentController>>, 
             required: true
         }
-    })
+    });
 
+    provide('kresmer', readonly(props.controller));
     const rootSVG = ref<SVGGraphicsElement>();
 
     const networkComponentsSorted = computed(() => {

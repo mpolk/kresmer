@@ -10,7 +10,6 @@
 import { PropType } from "vue";
 import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
-import { kresmer } from "../renderer-main";
 import { Position, Transform } from "../Transform/Transform";
 
 export const NetworkComponentHolderProps = {
@@ -54,25 +53,15 @@ export default class NetworkComponentController {
     }//ctor
 
 
-    public static positionCT(pos: Position) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const CTM = kresmer.rootSVG.getScreenCTM()!;
-        return {
-          x: (pos.x - CTM.e) / CTM.a,
-          y: (pos.y - CTM.f) / CTM.d
-        };
-    }//positionCT
-
-
     private getMousePosition(event: MouseEvent) {
-        return NetworkComponentController.positionCT({x: event.clientX, y: event.clientY});
+        return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
     public startDrag(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.component.isHighlighted = true;
-        this.dragStartPos = NetworkComponentController.positionCT(this.origin);
+        this.dragStartPos = this.kresmer.applyScreenCTM(this.origin);
         this.savedMousePos = this.getMousePosition(event);
         this.isDragged = true;
         this.bringComponentToTop();

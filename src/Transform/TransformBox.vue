@@ -7,14 +7,18 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { computed, PropType, ref } from 'vue';
-    import NetworkComponentController, { TransformMode } from '../NetworkComponent/NetworkComponentController';
+    import { computed, inject, PropType, ref } from 'vue';
+    import Kresmer from '../Kresmer';
+    import { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position } from './Transform';
 
     const props = defineProps({
         bBox: {type: Object as PropType<DOMRect>, required: true},
         transformMode: {type: String as PropType<TransformMode>},
-    })
+    });
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const kresmer = inject<Kresmer>('kresmer')!;
 
     const inRotationMode = computed(() => props.transformMode === "rotation");
 
@@ -37,7 +41,7 @@
     const mousePos = ref<Position>();
     function onMouseMove(event: MouseEvent)
     {
-        mousePos.value =  NetworkComponentController.positionCT(event);
+        mousePos.value =  kresmer.applyScreenCTM(event);
     }//onMouseMove
 
     const cursor = computed(() => {

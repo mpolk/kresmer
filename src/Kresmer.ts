@@ -197,31 +197,47 @@ export default class Kresmer {
      * @param id An ID of the component to search for
      * @returns The component controller if found or "undefined" otherwise
      */
-     public getComponentControllerById(id: number)
-     {
-         return this.networkComponents[id];
-     }//getComponentLoavtionById
+    public getComponentControllerById(id: number)
+    {
+        return this.networkComponents[id];
+    }//getComponentLoavtionById
   
 
-     /**
-      * Returns the root SVG element
-      */
-     public get rootSVG()
-     {
+    /**
+     * Returns the root SVG element
+     */
+    public get rootSVG()
+    {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.vueKresmer.svg!;
-     }//rootSVG
+    }//rootSVG
 
 
-     /**
-      * Resets the mode (transform etc.) for all network modes excpet the one specified
-      */
-     public resetAllComponentMode(except?: NetworkComponentController)
-     {
+    /**
+     * Resets the mode (transform etc.) for all network modes except the one specified
+     */
+    public resetAllComponentMode(except?: NetworkComponentController)
+    {
         for (const id in this.networkComponents) {
             const controller = this.networkComponents[id];
             if (controller !== except)
                 controller.resetMode();
         }//for
-     }//resetAllComponentMode
+    }//resetAllComponentMode
+
+
+    /**
+     * Applies Client-to-Viewport transfotm matrix to the specified position
+     * @param pos The position (x, y) to transform
+     * @returns The transformed position
+     */
+    public applyScreenCTM(pos: Position) {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const CTM = this.rootSVG.getScreenCTM()!;
+        return {
+          x: (pos.x - CTM.e) / CTM.a,
+          y: (pos.y - CTM.f) / CTM.d
+        };
+    }//applyScreenCTM
+
 }//Kresmer
