@@ -36,32 +36,6 @@
     })
 
     // Event handlers
-    function onMouseDownInComponent(event: MouseEvent, componentID: number)
-    {
-        const componentClicked = props.controller.getComponentControllerById(componentID);
-        props.controller.resetAllComponentMode(componentClicked);
-        if (event.buttons === 1) {
-            componentClicked.startDrag(event);
-        } else if (event.buttons & 2) {
-            componentClicked.enterTransformMode(event);
-        }//if
-    }//onMouseDownInComponent
-
-    function onMouseUpInComponent(event: MouseEvent, componentID: number)
-    {
-        props.controller.getComponentControllerById(componentID).endDrag(event);
-    }//onMouseUpInComponent
-
-    function onMouseMoveInComponent(event: MouseEvent, componentID: number)
-    {
-        if (event.buttons & 1)
-            props.controller.getComponentControllerById(componentID).drag(event);
-    }//onMouseMoveInComponent
-
-    function onMouseLeaveComponent(event: MouseEvent, componentID: number)
-    {
-        props.controller.getComponentControllerById(componentID).endDrag(event);
-    }//onMouseLeaveComponent
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function onMouseDownOnCanvas(_event: MouseEvent)
@@ -84,10 +58,6 @@
                    :is-dragged="controller.isDragged"
                    :is-being-transformed="controller.isBeingTransformed"
                    :transform-mode="controller.transformMode"
-                   @mousedown.prevent.stop="onMouseDownInComponent($event, controller.component.id)"
-                   @mouseup.prevent="onMouseUpInComponent($event, controller.component.id)"
-                   @mousemove.prevent="onMouseMoveInComponent($event, controller.component.id)"
-                   @mouseleave.prevent="onMouseLeaveComponent($event, controller.component.id)"
                 >
             <component :is="controller.component.vueName"
                    :component-id="controller.component.id"

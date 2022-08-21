@@ -70,6 +70,7 @@ export default class NetworkComponentController {
 
     public startDrag(event: MouseEvent)
     {
+        this.kresmer.resetAllComponentMode(this);
         this.component.isHighlighted = true;
         this.dragStartPos = NetworkComponentController.positionCT(this.origin);
         this.savedMousePos = this.getMousePosition(event);
@@ -113,6 +114,7 @@ export default class NetworkComponentController {
     public enterTransformMode(_event:  MouseEvent)
     {
         // this.isBeingTransformed = true;
+        this.kresmer.resetAllComponentMode(this);
         this.transformMode = "scaling";
         this.bringComponentToTop();
     }//enterTransformMode

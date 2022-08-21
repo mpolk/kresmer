@@ -32,6 +32,30 @@
         return svg.value?.getBBox({stroke: true});
     })//bBox
 
+    function onMouseDown(event: MouseEvent)
+    {
+        if (event.buttons === 1) {
+            props.controller?.startDrag(event);
+        } else if (event.buttons & 2) {
+            props.controller?.enterTransformMode(event);
+        }//if
+    }//onMouseDown
+
+    function onMouseUp(event: MouseEvent)
+    {
+        props.controller?.endDrag(event);
+    }//onMouseUp
+
+    function onMouseMove(event: MouseEvent)
+    {
+        if (event.buttons & 1)
+            props.controller?.drag(event);
+    }//onMouseMove
+
+    function onMouseLeave(event: MouseEvent)
+    {
+        props.controller?.endDrag(event);
+    }//onMouseLeave
 
     function onTransformBoxClick(event: MouseEvent) {
         if (props.controller) {
@@ -54,6 +78,10 @@
             dragged: isDragged, 
             beingTransformed: isBeingTransformed
         }"
+        @mousedown.prevent.stop="onMouseDown($event)"
+        @mouseup.prevent="onMouseUp($event)"
+        @mousemove.prevent="onMouseMove($event)"
+        @mouseleave.prevent="onMouseLeave($event)"
         >
         <g ref="trGroup" :transform="transform">
             <slot></slot>
