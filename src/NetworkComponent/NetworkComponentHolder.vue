@@ -71,7 +71,7 @@
 </script>
 
 <template>
-    <svg ref="svg" :x="origin!.x" :y="origin!.y" 
+    <svg ref="svg" v-bind="origin" 
         class="network-component" 
         :class="{
             highlighted: isHighlighted, 
@@ -86,7 +86,7 @@
         <g ref="trGroup" :transform="transform">
             <slot></slot>
         </g>
-        <TransformBox v-if="transformMode" :transform-mode="transformMode" 
+        <TransformBox v-if="transformMode" :origin="origin" :transform-mode="transformMode" 
                       ref="trBox" :b-box="bBox!"
                       @box-clicked="onTransformBoxClick"
                       @box-right-clicked="onTransformBoxRightClick"

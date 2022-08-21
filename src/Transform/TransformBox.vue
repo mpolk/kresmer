@@ -7,18 +7,15 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { computed, inject, PropType, ref } from 'vue';
-    import Kresmer from '../Kresmer';
+    import { computed, PropType } from 'vue';
     import { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position } from './Transform';
 
     const props = defineProps({
+        origin: {type: Object as PropType<Position>, required: true},
         bBox: {type: Object as PropType<DOMRect>, required: true},
         transformMode: {type: String as PropType<TransformMode>},
     });
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const kresmer = inject(Kresmer.injectionKey)!;
 
     const inRotationMode = computed(() => props.transformMode === "rotation");
 
@@ -38,26 +35,9 @@
         return {x: rect.x + rect.width/2, y: rect.y + rect.height/2};
     })//center
 
-    const mousePos = ref<Position>();
-    function onMouseMove(event: MouseEvent)
-    {
-        mousePos.value =  {x: event.clientX, y: event.clientY};
-    }//onMouseMove
-
-    const cursor = computed(() => {
-        const rect = props.bBox;
-        const pos = mousePos.value;
-        if (!pos)
-            return 'default';
-        if (pos.x >= rect.width * 0.25 && pos.x <= rect.width * 0.75 &&
-            pos.y >= rect.height * 0.25 && pos.y <= rect.height * 0.75)
-            return 'default';
-        if (pos.x >= rect.width * 0.25 && pos.x <= rect.width * 0.75)
-            return 'ew-resize';
-        if (pos.y >= rect.height * 0.25 && pos.y <= rect.height * 0.75)
-            return 'ns-resize';
-        return 'default';
-    })//cursor
+    const handleSize = computed(() => {
+        return Math.max(Math.min(props.bBox.width, props.bBox.height) * 0.15, 5);
+    });//handleSize
 
     const emit = defineEmits<{
         (event: "box-clicked", nativeEvent: MouseEvent): void,
@@ -67,22 +47,95 @@
 
 <template>
     <rect v-bind="bBox" class="tr-box" :class="{rotated: inRotationMode}" 
-          :style="`cursor: ${cursor}`"
           :rx="rx" 
           @click.prevent.stop="emit('box-clicked', $event)"
           @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
           @mousedown.stop=""
-          @mousemove="onMouseMove"
           />
-    <circle v-if="inRotationMode" 
-            :cx="center.x" :cy="center.y" :r="Math.min(bBox.width, bBox.height) * 0.25" 
-            class="hub"/>
+    <template v-if="inRotationMode">
+        <rect :x="bBox.x" :y="bBox.y" :width="bBox.width * 0.25" :height="bBox.height * 0.25" 
+            fill="transparent" style="cursor: nesw-resize" 
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width * 0.25" :y="bBox.y" :width="bBox.width * 0.5" :height="bBox.height" 
+            fill="transparent" style="cursor: ew-resize" 
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width * 0.75" :y="bBox.y" :width="bBox.width * 0.25" :height="bBox.height * 0.25" 
+            fill="transparent" style="cursor: nwse-resize" 
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.25" :width="bBox.width" :height="bBox.height * 0.5" 
+            fill="transparent" style="cursor: ns-resize" 
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.75" :width="bBox.width * 0.25" :height="bBox.height * 0.25" 
+            fill="transparent" style="cursor: nwse-resize" 
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width * 0.75" :y="bBox.y + bBox.height * 0.75" :width="bBox.width * 0.25" :height="bBox.height * 0.25" 
+            fill="transparent" style="cursor: nesw-resize" 
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <circle :cx="center.x" :cy="center.y" :r="Math.min(bBox.width, bBox.height) * 0.25" 
+            class="hub"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+    </template>
+    <template v-else>
+        <rect :x="bBox.x" :y="bBox.y" :width="handleSize" :height="handleSize" 
+            style="cursor: nwse-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y" 
+            :width="handleSize" :height="handleSize" 
+            style="cursor: ns-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y" 
+            :width="handleSize" :height="handleSize" 
+            style="cursor: nesw-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
+            :width="handleSize" :height="handleSize" 
+            style="cursor: ew-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x" :y="bBox.y + bBox.height - handleSize" 
+            :width="handleSize" :height="handleSize" 
+            style="cursor: nesw-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y + bBox.height - handleSize" 
+            :width="handleSize" :height="handleSize" 
+            style="cursor: ns-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
+            :width="handleSize" :height="handleSize" 
+            style="cursor: ew-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+        <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height - handleSize" 
+            :width="handleSize" :height="handleSize" 
+            style="cursor: nwse-resize" class="handle"
+            @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
+            />
+    </template>
 </template>
 
-<style>
+<style lang="scss">
     .tr-box {
         stroke: blue;
         stroke-width: 1.5px;
+        fill: lightblue;
+        fill-opacity: 0.3;
+    }
+
+    .handle {
+        stroke: blue;
+        stroke-width: 1px;
         fill: lightblue;
         fill-opacity: 0.3;
     }
