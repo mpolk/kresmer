@@ -32,6 +32,8 @@
         return svg.value?.getBBox({stroke: true});
     })//bBox
 
+    let dragStartEvent: MouseEvent | undefined;
+
     function onMouseDown(event: MouseEvent)
     {
         if (event.buttons === 1) {
@@ -56,6 +58,37 @@
     {
         props.controller?.endDrag(event);
     }//onMouseLeave
+
+    function onMouseDownInTransformBox(event: MouseEvent)
+    {
+        if (event.buttons === 1) {
+            dragStartEvent = event;
+        }//if
+    }//onMouseDownInTransformBox
+
+    function onMouseUpInTransformBox(event: MouseEvent)
+    {
+        dragStartEvent = undefined;
+        props.controller?.endDrag(event);
+    }//onMouseUpInTransformBox
+
+    function onMouseMoveInTransformBox(event: MouseEvent)
+    {
+        if (dragStartEvent) {
+            props.controller?.startDrag(dragStartEvent);
+            dragStartEvent = undefined;
+        }//if
+
+        if (event.buttons & 1) {
+            props.controller?.drag(event);
+        }//if
+    }//onMouseMoveInTransformBox
+
+    function onMouseLeaveFromTransformBox(event: MouseEvent)
+    {
+        dragStartEvent = undefined;
+        props.controller?.endDrag(event);
+    }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
         if (props.controller) {
@@ -88,6 +121,10 @@
         </g>
         <TransformBox v-if="transformMode" :origin="origin" :transform-mode="transformMode" 
                       ref="trBox" :b-box="bBox!"
+                      @mouse-down-in-box="onMouseDownInTransformBox"
+                      @mouse-move-in-box="onMouseMoveInTransformBox"
+                      @mouse-up-in-box="onMouseUpInTransformBox"
+                      @mouse-leave-from-box="onMouseLeaveFromTransformBox"
                       @box-clicked="onTransformBoxClick"
                       @box-right-clicked="onTransformBoxRightClick"
                       />

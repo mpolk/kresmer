@@ -81,21 +81,25 @@ export default class NetworkComponentController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endDrag(_event: MouseEvent)
     {
-        this.component.isHighlighted = false;
-        this.isDragged = false;
-        this.restoreComponentZPosition();
+        if (this.isDragged) {
+            this.component.isHighlighted = false;
+            this.isDragged = false;
+            this.restoreComponentZPosition();
+        }//if
     }//endDrag
 
 
     public bringComponentToTop()
     {
-       this.savedZIndex = this.zIndex;
-       this.zIndex = Number.MAX_SAFE_INTEGER;
+        if (this.zIndex < Number.MAX_SAFE_INTEGER) {
+            this.savedZIndex = this.zIndex;
+            this.zIndex = Number.MAX_SAFE_INTEGER;
+        }//if
     }//bringComponentToTop
 
     public restoreComponentZPosition()
     {
-       this.zIndex = this.savedZIndex;
+        this.zIndex = this.savedZIndex;
     }//bringComponentToTop
 
 

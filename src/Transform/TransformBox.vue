@@ -22,12 +22,7 @@
     const rx = computed(() => {
         if (!inRotationMode.value)
             return undefined;
-        let rx = Math.min(props.bBox.width, props.bBox.height);
-        if (rx < 5)
-            rx = 5;
-        if (rx > 8)
-            rx = 8;
-        return rx;
+        return Math.max(Math.min(props.bBox.width, props.bBox.height, 8), 5);
     });
 
     const center = computed(() => {
@@ -40,17 +35,25 @@
     });//handleSize
 
     const emit = defineEmits<{
+        (event: "mouse-down-in-box", nativeEvent: MouseEvent): void,
+        (event: "mouse-up-in-box", nativeEvent: MouseEvent): void,
+        (event: "mouse-move-in-box", nativeEvent: MouseEvent): void,
+        (event: "mouse-leave-from-box", nativeEvent: MouseEvent): void,
         (event: "box-clicked", nativeEvent: MouseEvent): void,
         (event: "box-right-clicked", nativeEvent: MouseEvent): void,
     }>();
+
 </script>
 
 <template>
     <rect v-bind="bBox" class="tr-box" :class="{rotated: inRotationMode}" 
           :rx="rx" 
+          @mousedown.stop="emit('mouse-down-in-box', $event)"
+          @mouseup.stop="emit('mouse-up-in-box', $event)"
+          @mousemove.stop="emit('mouse-move-in-box', $event)"
+          @mouseleave.stop="emit('mouse-leave-from-box', $event)"
           @click.prevent.stop="emit('box-clicked', $event)"
           @contextmenu.prevent.stop="emit('box-right-clicked', $event)"
-          @mousedown.stop=""
           />
     <template v-if="inRotationMode">
         <rect :x="bBox.x" :y="bBox.y" :width="bBox.width * 0.25" :height="bBox.height * 0.25" 
@@ -131,6 +134,7 @@
         stroke-width: 1.5px;
         fill: lightblue;
         fill-opacity: 0.3;
+        cursor: move;
     }
 
     .handle {
