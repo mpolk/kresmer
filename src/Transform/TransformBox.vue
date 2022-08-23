@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *    Ephemeral box showing at the time of a component transformation
+ *    Ephemeral box appearing at the time of a component transformation
 <*************************************************************************** -->
 
 <script setup lang="ts">
@@ -22,7 +22,7 @@
     const rx = computed(() => {
         if (!inRotationMode.value)
             return undefined;
-        return Math.max(Math.min(props.bBox.width, props.bBox.height, 8), 5);
+        return Math.max(Math.min(props.bBox.width * 0.2, props.bBox.height * 0.2), 5);
     });
 
     const center = computed(() => {
