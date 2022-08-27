@@ -69,23 +69,27 @@ export default class NetworkComponentController {
 
     public drag(event: MouseEvent)
     {
-        if (this.isDragged) {
-            const mousePos = this.getMousePosition(event);
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.origin.x = mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.origin.y = mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y;
-        }//if
+        if (!this.isDragged)
+            return false;
+            
+        const mousePos = this.getMousePosition(event);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.origin.x = mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.origin.y = mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y;
+        return true;
     }//drag
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endDrag(_event: MouseEvent)
     {
-        if (this.isDragged) {
-            this.component.isHighlighted = false;
-            this.isDragged = false;
-            this.restoreComponentZPosition();
-        }//if
+        if (!this.isDragged)
+            return false;
+
+        this.component.isHighlighted = false;
+        this.isDragged = false;
+        // this.restoreComponentZPosition();
+        return true;
     }//endDrag
 
 
@@ -123,13 +127,13 @@ export default class NetworkComponentController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onTransformBoxClick(_event: MouseEvent)
     {
-        // just ignore
+        this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
     }//onTransformBoxClick
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onTransformBoxRightClick(_event: MouseEvent)
     {
-        this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
+        // invoke context menu
     }//onTransformBoxRightClick
 
 }//NetworkComponentController

@@ -36,27 +36,33 @@
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1) {
-            props.controller?.startDrag(event);
-        } else if (event.buttons & 2) {
-            props.controller?.enterTransformMode(event);
+        if (event.buttons === 1 && !props.transformMode) {
+            event.preventDefault();
+            if (!event.ctrlKey)
+                props.controller?.startDrag(event);
+            else
+                props.controller?.enterTransformMode(event);
         }//if
     }//onMouseDown
 
     function onMouseUp(event: MouseEvent)
     {
-        props.controller?.endDrag(event);
+        !props.transformMode &&
+        props.controller?.endDrag(event) && 
+        props.controller?.restoreComponentZPosition();
     }//onMouseUp
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1)
+        if (event.buttons & 1 && !props.transformMode)
             props.controller?.drag(event);
     }//onMouseMove
 
     function onMouseLeave(event: MouseEvent)
     {
-        props.controller?.endDrag(event);
+        !props.transformMode &&
+        props.controller?.endDrag(event) && 
+        props.controller?.restoreComponentZPosition();
     }//onMouseLeave
 
     function onMouseDownInTransformBox(event: MouseEvent)
@@ -91,15 +97,11 @@
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
-        if (props.controller) {
-            props.controller.onTransformBoxClick(event);
-        }//if
+        props.controller?.onTransformBoxClick(event);
     }//onTransformBoxClick
 
     function onTransformBoxRightClick(event: MouseEvent) {
-        if (props.controller) {
-            props.controller.onTransformBoxRightClick(event);
-        }//if
+        props.controller?.onTransformBoxRightClick(event);
     }//onTransformBoxRightClick
 </script>
 
@@ -111,12 +113,13 @@
             dragged: isDragged, 
             beingTransformed: isBeingTransformed
         }"
-        @mousedown.prevent.stop="onMouseDown($event)"
-        @mouseup.prevent="onMouseUp($event)"
-        @mousemove.prevent="onMouseMove($event)"
-        @mouseleave.prevent="onMouseLeave($event)"
         >
-        <g ref="trGroup" :transform="transform">
+        <g ref="trGroup" :transform="transform"
+            @mousedown.prevent.stop="onMouseDown($event)"
+            @mouseup.prevent="onMouseUp($event)"
+            @mousemove.prevent="onMouseMove($event)"
+            @mouseleave.prevent="onMouseLeave($event)"
+            >
             <slot></slot>
         </g>
         <TransformBox v-if="transformMode" :origin="origin" :transform-mode="transformMode" 
