@@ -9,7 +9,7 @@
 
 <script lang="ts">
     import { ref, computed, PropType } from 'vue';
-    import TransformBox from '../Transform/TransformBox.vue';
+    import TransformBox, { TransformBoxZone } from '../Transform/TransformBox.vue';
     import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
 
     export default {
@@ -32,7 +32,8 @@
         return svg.value?.getBBox({stroke: true});
     })//bBox
 
-    let dragStartEvent: MouseEvent | undefined;
+    let transformStartEvent: MouseEvent | undefined;
+    let wasTransformed = false;
 
     function onMouseDown(event: MouseEvent)
     {
@@ -65,24 +66,25 @@
         props.controller?.restoreComponentZPosition();
     }//onMouseLeave
 
-    function onMouseDownInTransformBox(event: MouseEvent)
+    function onMouseDownInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
         if (event.buttons === 1) {
-            dragStartEvent = event;
+            transformStartEvent = event;
         }//if
     }//onMouseDownInTransformBox
 
-    function onMouseUpInTransformBox(event: MouseEvent)
+    function onMouseUpInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        dragStartEvent = undefined;
+        transformStartEvent = undefined;
         props.controller?.endDrag(event);
     }//onMouseUpInTransformBox
 
-    function onMouseMoveInTransformBox(event: MouseEvent)
+    function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        if (dragStartEvent) {
-            props.controller?.startDrag(dragStartEvent);
-            dragStartEvent = undefined;
+        if (transformStartEvent) {
+            props.controller?.startDrag(transformStartEvent);
+            transformStartEvent = undefined;
+            wasTransformed = true;
         }//if
 
         if (event.buttons & 1) {
@@ -90,14 +92,17 @@
         }//if
     }//onMouseMoveInTransformBox
 
-    function onMouseLeaveFromTransformBox(event: MouseEvent)
+    function onMouseLeaveFromTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        dragStartEvent = undefined;
+        transformStartEvent = undefined;
         props.controller?.endDrag(event);
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
-        props.controller?.onTransformBoxClick(event);
+        if (wasTransformed)
+            wasTransformed = false;
+        else
+            props.controller?.onTransformBoxClick(event);
     }//onTransformBoxClick
 
     function onTransformBoxRightClick(event: MouseEvent) {
@@ -124,12 +129,12 @@
         </g>
         <TransformBox v-if="transformMode" :origin="origin" :transform-mode="transformMode" 
                       ref="trBox" :b-box="bBox!"
-                      @mouse-down-in-box="onMouseDownInTransformBox"
-                      @mouse-move-in-box="onMouseMoveInTransformBox"
-                      @mouse-up-in-box="onMouseUpInTransformBox"
-                      @mouse-leave-from-box="onMouseLeaveFromTransformBox"
-                      @box-clicked="onTransformBoxClick"
-                      @box-right-clicked="onTransformBoxRightClick"
+                      @mouse-down="onMouseDownInTransformBox"
+                      @mouse-move="onMouseMoveInTransformBox"
+                      @mouse-up="onMouseUpInTransformBox"
+                      @mouse-leave="onMouseLeaveFromTransformBox"
+                      @box-click="onTransformBoxClick"
+                      @box-right-click="onTransformBoxRightClick"
                       />
     </svg>
 </template>
