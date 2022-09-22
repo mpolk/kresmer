@@ -97,11 +97,13 @@ export default class NetworkComponentController {
 
     public endTransform(event: MouseEvent)
     {
-        if (this.isDragged) {
-            return this.endDrag(event)
+        this.isDragged = false;
+        if (!this.isBeingTransformed) {
+            return false;
         }//if
 
-        return false;
+        this.isBeingTransformed = false;
+        return true;
     }//endTransform
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
