@@ -76,26 +76,39 @@
     function onMouseUpInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
         transformStartEvent = undefined;
-        props.controller?.endDrag(event);
+        props.controller?.endTransform(event);
     }//onMouseUpInTransformBox
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
         if (transformStartEvent) {
-            props.controller?.startDrag(transformStartEvent);
+            switch(zone) {
+                case "tr-box":
+                    props.controller?.startDrag(transformStartEvent);
+                    break;
+                case "rot-handle":
+                    props.controller?.startRotate(transformStartEvent);
+                    break;
+            }//switch
             transformStartEvent = undefined;
             wasTransformed = true;
         }//if
 
         if (event.buttons & 1) {
-            props.controller?.drag(event);
+            switch(zone) {
+                case "tr-box":
+                    props.controller?.drag(event);
+                    break;
+                case "rot-handle":
+                    props.controller?.rotate(event);
+                    break;
+            }//switch
         }//if
     }//onMouseMoveInTransformBox
 
     function onMouseLeaveFromTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        transformStartEvent = undefined;
-        props.controller?.endDrag(event);
+        onMouseUpInTransformBox(zone, event);
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
@@ -127,7 +140,7 @@
             >
             <slot></slot>
         </g>
-        <TransformBox v-if="transformMode" :origin="origin" :transform-mode="transformMode" 
+        <TransformBox v-if="transformMode" :origin="origin!" :transform-mode="transformMode" 
                       ref="trBox" :b-box="bBox!"
                       @mouse-down="onMouseDownInTransformBox"
                       @mouse-move="onMouseMoveInTransformBox"

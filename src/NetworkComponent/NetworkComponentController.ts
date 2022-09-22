@@ -80,16 +80,40 @@ export default class NetworkComponentController {
         return true;
     }//drag
 
+    public startRotate(event: MouseEvent)
+    {
+        this.kresmer.resetAllComponentMode(this);
+        this.isBeingTransformed = true;
+        this.bringComponentToTop();
+    }//startRotate
+
+    public rotate(event: MouseEvent)
+    {
+        if (!this.isBeingTransformed)
+            return false;
+            
+        return true;
+    }//rotate
+
+    public endTransform(event: MouseEvent)
+    {
+        if (this.isDragged) {
+            return this.endDrag(event)
+        }//if
+
+        return false;
+    }//endTransform
+
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endDrag(_event: MouseEvent)
     {
-        if (!this.isDragged)
-            return false;
+        if (this.isDragged) {
+            this.component.isHighlighted = false;
+            this.isDragged = false;
+            return true;
+        }//if
 
-        this.component.isHighlighted = false;
-        this.isDragged = false;
-        // this.restoreComponentZPosition();
-        return true;
+        return false;
     }//endDrag
 
 
