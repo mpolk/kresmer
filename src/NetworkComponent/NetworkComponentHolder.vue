@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, computed, PropType } from 'vue';
+    import { ref, PropType, onMounted } from 'vue';
     import TransformBox, { TransformBoxZone } from '../Transform/TransformBox.vue';
     import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
 
@@ -28,12 +28,16 @@
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const trGroup = ref<SVGGraphicsElement>()!;
 
-    const bBox = computed(() => {
-        return svg.value?.getBBox({stroke: true});
-    })//bBox
+    const applyRotation = ref(false);
+    const bBox = ref<SVGRect>();
+
+    onMounted(() => {
+        bBox.value = svg.value?.getBBox({stroke: true});
+        applyRotation.value = true;
+    })//onMounted
 
     let transformStartEvent: MouseEvent | undefined;
-    let wasTransformed = false;
+    let wasJustTransformed = false;
 
     function onMouseDown(event: MouseEvent)
     {
@@ -91,7 +95,7 @@
                     break;
             }//switch
             transformStartEvent = undefined;
-            wasTransformed = true;
+            wasJustTransformed = true;
         }//if
 
         if (event.buttons & 1) {
@@ -112,8 +116,8 @@
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
-        if (wasTransformed)
-            wasTransformed = false;
+        if (wasJustTransformed)
+            wasJustTransformed = false;
         else
             props.controller?.onTransformBoxClick(event);
     }//onTransformBoxClick
@@ -132,23 +136,23 @@
             beingTransformed: isBeingTransformed
         }"
         >
-        <g ref="trGroup" :transform="transform"
+        <g ref="trGroup" :transform="transform?.toAttr(applyRotation)"
             @mousedown.prevent.stop="onMouseDown($event)"
             @mouseup.prevent="onMouseUp($event)"
             @mousemove.prevent="onMouseMove($event)"
             @mouseleave.prevent="onMouseLeave($event)"
             >
             <slot></slot>
+            <TransformBox v-if="transformMode" :origin="origin!" :transform-mode="transformMode" 
+                ref="trBox" :b-box="bBox!"
+                @mouse-down="onMouseDownInTransformBox"
+                @mouse-move="onMouseMoveInTransformBox"
+                @mouse-up="onMouseUpInTransformBox"
+                @mouse-leave="onMouseLeaveFromTransformBox"
+                @box-click="onTransformBoxClick"
+                @box-right-click="onTransformBoxRightClick"
+                />
         </g>
-        <TransformBox v-if="transformMode" :origin="origin!" :transform-mode="transformMode" 
-                      ref="trBox" :b-box="bBox!"
-                      @mouse-down="onMouseDownInTransformBox"
-                      @mouse-move="onMouseMoveInTransformBox"
-                      @mouse-up="onMouseUpInTransformBox"
-                      @mouse-leave="onMouseLeaveFromTransformBox"
-                      @box-click="onTransformBoxClick"
-                      @box-right-click="onTransformBoxRightClick"
-                      />
     </svg>
 </template>
 

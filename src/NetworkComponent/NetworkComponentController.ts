@@ -14,7 +14,7 @@ import { Position, Transform } from "../Transform/Transform";
 
 export const NetworkComponentHolderProps = {
     origin: {type: Object as PropType<Position>, required: true},
-    transform: {type: String},
+    transform: {type: Object as PropType<Transform>},
     svg: {type: Object as PropType<SVGGraphicsElement>},
     isHighlighted: {type: Boolean, default: false},
     isDragged: {type: Boolean, default: false},

@@ -19,11 +19,11 @@
          this.rotate = init?.rotate;
      }//ctor
  
-     public toCSS() 
+     public toAttr(applyRotation: boolean) 
      {
          const chunks: string[] = [];
  
-         if (this.rotate) {
+         if (this.rotate && applyRotation) {
              if (this.rotate.x !== undefined)
                  chunks.push(`rotate(${this.rotate.angle} ${this.rotate.x} ${this.rotate.y})`);
              else
@@ -31,6 +31,6 @@
          }//if
  
          return chunks.join(' ');
-     }//toCSS
+     }//toAttr
  }//Transform
  

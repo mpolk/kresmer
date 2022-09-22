@@ -54,7 +54,7 @@
                    :id="controller.component.id"
                    :controller="controller"
                    :origin="controller.origin"
-                   :transform="controller.transform?.toCSS()"
+                   :transform="controller.transform"
                    :is-highlighted="controller.component.isHighlighted"
                    :is-dragged="controller.isDragged"
                    :is-being-transformed="controller.isBeingTransformed"
