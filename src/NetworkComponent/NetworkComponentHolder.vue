@@ -143,7 +143,8 @@
             @mouseleave.prevent="onMouseLeave($event)"
             >
             <slot></slot>
-            <TransformBox v-if="transformMode" :origin="origin!" :transform-mode="transformMode" 
+            <TransformBox v-if="transformMode" :origin="origin!" 
+                :transform="transform" :transform-mode="transformMode" 
                 ref="trBox" :b-box="bBox!"
                 @mouse-down="onMouseDownInTransformBox"
                 @mouse-move="onMouseMoveInTransformBox"
