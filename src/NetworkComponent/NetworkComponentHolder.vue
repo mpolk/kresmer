@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted } from 'vue';
+    import { ref, PropType, onMounted, computed, getCurrentInstance} from 'vue';
     import TransformBox, { TransformBoxZone } from '../Transform/TransformBox.vue';
     import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
 
@@ -30,6 +30,13 @@
 
     const applyRotation = ref(false);
     const bBox = ref<SVGRect>();
+
+    const center = computed(() => {
+        const rect = bBox.value;
+        if (!rect)
+            return undefined;
+        return {x: rect.x + rect.width/2, y: rect.y + rect.height/2};
+    })//center
 
     onMounted(() => {
         bBox.value = svg.value?.getBBox({stroke: true});
@@ -104,7 +111,8 @@
                     props.controller?.drag(event);
                     break;
                 case "rot-handle":
-                    props.controller?.rotate(event);
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    props.controller?.rotate(event, center.value!);
                     break;
             }//switch
         }//if
@@ -125,6 +133,8 @@
     function onTransformBoxRightClick(event: MouseEvent) {
         props.controller?.onTransformBoxRightClick(event);
     }//onTransformBoxRightClick
+
+    defineExpose({center});
 </script>
 
 <template>

@@ -10,6 +10,7 @@
 import { PropType } from "vue";
 import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
+import NetworkComponentHolder from "./NetworkComponentHolder.vue";
 import { Position, Transform } from "../Transform/Transform";
 
 export const NetworkComponentHolderProps = {
@@ -35,6 +36,7 @@ export default class NetworkComponentController {
 
     private dragStartPos?: Position;
     private savedMousePos?: Position;
+    private rotationStartAngle?: number;
     public zIndex = -1;
     private savedZIndex = -1;
 
@@ -83,15 +85,30 @@ export default class NetworkComponentController {
     public startRotate(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
+        if (!this.transform)
+            this.transform = new Transform;
+        if (!this.transform.rotate)
+            this.transform.rotate = {angle: 0};
+        this.rotationStartAngle = this.transform.rotate.angle;
+        this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
         this.bringComponentToTop();
     }//startRotate
 
-    public rotate(event: MouseEvent)
+    public rotate(event: MouseEvent, center: Position)
     {
         if (!this.isBeingTransformed)
             return false;
             
+        const mousePos = this.getMousePosition(event);
+        const r1 = {x: mousePos.x - center.x, y: mousePos.y - center.y};
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const r0 = {x: this.savedMousePos!.x - center.x, y: this.savedMousePos!.y - center.y};
+        const cosAngleDelta = (r0.x * r1.x + r0.y * r1.y) / 
+                              Math.sqrt((r0.x * r0.x + r0.y * r0.y) * (r1.x * r1.x + r1.y * r1.y));
+        const angleDelta = Math.acos(cosAngleDelta) / Math.PI * 180;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.transform!.rotate!.angle = this.rotationStartAngle! + angleDelta;
         return true;
     }//rotate
 
