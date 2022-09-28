@@ -177,19 +177,76 @@ export default class DrawingParser {
         for (let i = 0; i < node.childElementCount; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
+                case "translate": {
+                    const x = child.getAttribute("x");
+                    const y = child.getAttribute("y");
+                    if (x === null)
+                        throw new DrawingParsingException(
+                            '"translate" element must have an "x" attribute',
+                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                            );
+                    if (y === null)
+                        throw new DrawingParsingException(
+                            '"translate" element must have an "y" attribute',
+                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                            );
+                    const xf = parseFloat(x);
+                    if (xf === undefined)
+                        throw new DrawingParsingException(
+                            'invalid format of the "translate.x" attribute',
+                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                            );
+                    const yf = parseFloat(y);
+                    if (yf === undefined)
+                        throw new DrawingParsingException(
+                            'invalid format of the "translate.y" attribute',
+                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                            );
+                    transform.translate = {x: xf, y: yf};
+                    break;
+                }
+
                 case "rotate": {
                     const angle = child.getAttribute("angle");
                     const x = child.getAttribute("x");
                     const y = child.getAttribute("y");
                     if (angle === null)
                         throw new DrawingParsingException(
-                            '"rotate" element must have an "angle" attibute',
+                            '"rotate" element must have an "angle" attribute',
                             {source: `Component ${node.parentElement?.getAttribute("class")}`}
                             );
                     transform.rotate = {angle: parseFloat(angle)};
                     if (x !== null && y !== null) {
                         transform.rotate.x = parseFloat(x);
                         transform.rotate.y = parseFloat(y);
+                    }//if
+                    break;
+                }
+
+                case "scale": {
+                    const x = child.getAttribute("x");
+                    const y = child.getAttribute("y");
+                    if (x === null)
+                        throw new DrawingParsingException(
+                            '"scale" element must have an "x" attribute',
+                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                            );
+                    const xf = parseFloat(x);
+                    if (xf === undefined)
+                        throw new DrawingParsingException(
+                            'invalid format of the "scale.x" attribute',
+                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                            );
+                    if (y === null) {
+                        transform.scale = {x: xf};
+                    } else {
+                        const yf = parseFloat(y);
+                        if (yf === undefined)
+                            throw new DrawingParsingException(
+                                'invalid format of the "scale.y" attribute',
+                                {source: `Component ${node.parentElement?.getAttribute("class")}`}
+                                );
+                        transform.scale = {x: xf, y: yf};
                     }//if
                     break;
                 }

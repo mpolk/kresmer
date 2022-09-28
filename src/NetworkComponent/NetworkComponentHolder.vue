@@ -98,7 +98,8 @@
                     props.controller?.startDrag(transformStartEvent);
                     break;
                 case "rot-handle":
-                    props.controller?.startRotate(transformStartEvent);
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    props.controller?.startRotate(transformStartEvent, center.value!);
                     break;
             }//switch
             transformStartEvent = undefined;

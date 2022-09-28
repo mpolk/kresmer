@@ -82,13 +82,14 @@ export default class NetworkComponentController {
         return true;
     }//drag
 
-    public startRotate(event: MouseEvent)
+    public startRotate(event: MouseEvent, center: Position)
     {
         this.kresmer.resetAllComponentMode(this);
         if (!this.transform)
             this.transform = new Transform;
         if (!this.transform.rotate)
             this.transform.rotate = {angle: 0};
+        this.transform.setPivot(center);
         this.rotationStartAngle = this.transform.rotate.angle;
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
