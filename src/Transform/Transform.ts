@@ -31,10 +31,8 @@
             this.rotate = {angle: 0, ...pivot};
         } else {
             const oldPivot = {x: this.rotate.x, y: this.rotate.y};
-            if (!oldPivot.x)
-                oldPivot.x = 0;
-            if (!oldPivot.y)
-                oldPivot.y = 0;
+            oldPivot.x || (oldPivot.x = 0);
+            oldPivot.y || (oldPivot.y = 0);
             const r = {x: pivot.x - oldPivot.x, y: pivot.y - oldPivot.y};
             const fi = this.rotate.angle * Math.PI / 180;
             const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);

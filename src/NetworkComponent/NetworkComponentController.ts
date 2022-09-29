@@ -37,6 +37,8 @@ export default class NetworkComponentController {
     private dragStartPos?: Position;
     private savedMousePos?: Position;
     private rotationStartAngle?: number;
+    private rotationStartRadiusVector?: {x: number, y: number};
+    private rotationStartRadiusSq?: number;
     public zIndex = -1;
     private savedZIndex = -1;
 
@@ -85,13 +87,17 @@ export default class NetworkComponentController {
     public startRotate(event: MouseEvent, center: Position)
     {
         this.kresmer.resetAllComponentMode(this);
-        if (!this.transform)
-            this.transform = new Transform;
-        if (!this.transform.rotate)
-            this.transform.rotate = {angle: 0};
+        this.transform || (this.transform = new Transform);
+        this.transform.rotate || (this.transform.rotate = {angle: 0});
+        this.savedMousePos = this.getMousePosition(event);
         this.transform.setPivot(center);
         this.rotationStartAngle = this.transform.rotate.angle;
-        this.savedMousePos = this.getMousePosition(event);
+        this.rotationStartRadiusVector = {
+            x: this.savedMousePos.x - center.x - this.origin.x, 
+            y: this.savedMousePos.y - center.y - this.origin.y
+        };
+        this.rotationStartRadiusSq = this.rotationStartRadiusVector.x * this.rotationStartRadiusVector.x + 
+                                     this.rotationStartRadiusVector.y * this.rotationStartRadiusVector.y;
         this.isBeingTransformed = true;
         this.bringComponentToTop();
     }//startRotate
@@ -102,11 +108,11 @@ export default class NetworkComponentController {
             return false;
             
         const mousePos = this.getMousePosition(event);
-        const r1 = {x: mousePos.x - center.x, y: mousePos.y - center.y};
+        const r1 = {x: mousePos.x - center.x - this.origin.x, y: mousePos.y - center.y - this.origin.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const r0 = {x: this.savedMousePos!.x - center.x, y: this.savedMousePos!.y - center.y};
-        const cosAngleDelta = (r0.x * r1.x + r0.y * r1.y) / 
-                              Math.sqrt((r0.x * r0.x + r0.y * r0.y) * (r1.x * r1.x + r1.y * r1.y));
+        const cosAngleDelta = (this.rotationStartRadiusVector!.x * r1.x + this.rotationStartRadiusVector!.y * r1.y) / 
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            Math.sqrt(this.rotationStartRadiusSq! * (r1.x * r1.x + r1.y * r1.y));
         const angleDelta = Math.acos(cosAngleDelta) / Math.PI * 180;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.transform!.rotate!.angle = this.rotationStartAngle! + angleDelta;
