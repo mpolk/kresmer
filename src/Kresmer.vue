@@ -48,7 +48,10 @@
 </script>
 
 <template>
-    <svg class="kresmer" ref="rootSVG" @mousedown.prevent="onMouseDownOnCanvas($event)">
+    <svg class="kresmer" ref="rootSVG" 
+        @mousedown.prevent="onMouseDownOnCanvas($event)"
+        @mousemove.prevent=""
+        >
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :id="controller.component.id"
