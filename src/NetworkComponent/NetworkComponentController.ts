@@ -10,7 +10,6 @@
 import { PropType } from "vue";
 import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
-import NetworkComponentHolder from "./NetworkComponentHolder.vue";
 import { Position, Transform } from "../Transform/Transform";
 
 export const NetworkComponentHolderProps = {
@@ -38,7 +37,6 @@ export default class NetworkComponentController {
     private savedMousePos?: Position;
     private rotationStartAngle?: number;
     private rotationStartRadiusVector?: {x: number, y: number};
-    private rotationStartRadiusSq?: number;
     public zIndex = -1;
     private savedZIndex = -1;
 
@@ -96,8 +94,6 @@ export default class NetworkComponentController {
             x: this.savedMousePos.x - center.x - this.origin.x, 
             y: this.savedMousePos.y - center.y - this.origin.y
         };
-        this.rotationStartRadiusSq = this.rotationStartRadiusVector.x * this.rotationStartRadiusVector.x + 
-                                     this.rotationStartRadiusVector.y * this.rotationStartRadiusVector.y;
         this.isBeingTransformed = true;
         this.bringComponentToTop();
     }//startRotate
@@ -110,15 +106,14 @@ export default class NetworkComponentController {
         const mousePos = this.getMousePosition(event);
         const r1 = {x: mousePos.x - center.x - this.origin.x, y: mousePos.y - center.y - this.origin.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const cosAngleDelta = (this.rotationStartRadiusVector!.x * r1.x + this.rotationStartRadiusVector!.y * r1.y) / 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            Math.sqrt(this.rotationStartRadiusSq! * (r1.x * r1.x + r1.y * r1.y));
-        const angleDelta = Math.acos(cosAngleDelta) / Math.PI * 180;
+        const r0 = this.rotationStartRadiusVector!;
+        const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / Math.PI * 180;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.transform!.rotate!.angle = this.rotationStartAngle! + angleDelta;
         return true;
     }//rotate
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endTransform(event: MouseEvent)
     {
         this.isDragged = false;
@@ -131,7 +126,7 @@ export default class NetworkComponentController {
     }//endTransform
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endDrag(_event: MouseEvent)
+    public endDrag(event: MouseEvent)
     {
         if (this.isDragged) {
             this.component.isHighlighted = false;
