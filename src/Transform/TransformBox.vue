@@ -30,6 +30,7 @@
         bBox: {type: Object as PropType<DOMRect>, required: true},
         transform: {type: Object as PropType<Transform>},
         transformMode: {type: String as PropType<TransformMode>},
+        applyRotation: {type: Boolean, required: true},
     });
 
     const inRotationMode = computed(() => props.transformMode === "rotation");
@@ -98,73 +99,75 @@
 </script>
 
 <template>
-    <rect v-bind="bBox" class="tr-box" :class="{rotated: inRotationMode}" 
-        :rx="rx" 
-        @mousedown.stop="emit('mouse-down', 'tr-box', $event)"
-        @mouseup.stop="emit('mouse-up', 'tr-box', $event)"
-        @mousemove.stop="emit('mouse-move', 'tr-box', $event)"
-        @mouseleave.stop="emit('mouse-leave', 'tr-box', $event)"
-        @click.prevent.stop="emit('box-click', $event)"
-        @contextmenu.prevent.stop="emit('box-right-click', $event)"
-        />
-    <template v-if="!inRotationMode">
-        <rect :x="bBox.x" :y="bBox.y" :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(45)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-        <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y" 
-            :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(90)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-        <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y" 
-            :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(-45)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-        <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
-            :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(0)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-        <rect :x="bBox.x" :y="bBox.y + bBox.height - handleSize" 
-            :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(-45)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-        <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y + bBox.height - handleSize" 
-            :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(90)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-        <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
-            :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(0)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-        <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height - handleSize" 
-            :width="handleSize" :height="handleSize" 
-            :style="{cursor: bidirArrowCursor(45)}" class="handle"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-    </template>
-    <template v-else>
-        <rect :x="bBox.x" :y="bBox.y" :width="bBox.width" :height="bBox.height" 
-            fill="transparent" :style="{cursor: rotationArrowSvgCursor}" 
-            @mousedown.stop="emit('mouse-down', 'rot-handle', $event)"
-            @mouseup.stop="emit('mouse-up', 'rot-handle', $event)"
-            @mousemove.stop="emit('mouse-move', 'rot-handle', $event)"
-            @mouseleave.stop="emit('mouse-leave', 'rot-handle', $event)"
+    <g  :transform="transform?.toAttr(applyRotation)">
+        <rect v-bind="bBox" class="tr-box" :class="{rotated: inRotationMode}" 
+            :rx="rx" 
+            @mousedown.stop="emit('mouse-down', 'tr-box', $event)"
+            @mouseup.stop="emit('mouse-up', 'tr-box', $event)"
+            @mousemove.stop="emit('mouse-move', 'tr-box', $event)"
+            @mouseleave.stop="emit('mouse-leave', 'tr-box', $event)"
             @click.prevent.stop="emit('box-click', $event)"
             @contextmenu.prevent.stop="emit('box-right-click', $event)"
             />
-        <circle :cx="center.x" :cy="center.y" :r="Math.min(bBox.width, bBox.height) * 0.15" 
-            class="hub"
-            @mousedown.stop=""
-            @click.prevent.stop="emit('box-click', $event)"
-            @contextmenu.prevent.stop="emit('box-right-click', $event)"
-            />
-    </template>
+        <template v-if="!inRotationMode">
+            <rect :x="bBox.x" :y="bBox.y" :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(45)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y" 
+                :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y" 
+                :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
+                :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <rect :x="bBox.x" :y="bBox.y + bBox.height - handleSize" 
+                :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y + bBox.height - handleSize" 
+                :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
+                :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height - handleSize" 
+                :width="handleSize" :height="handleSize" 
+                :style="{cursor: bidirArrowCursor(45)}" class="handle"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+        </template>
+        <template v-else>
+            <rect :x="bBox.x" :y="bBox.y" :width="bBox.width" :height="bBox.height" 
+                fill="transparent" :style="{cursor: rotationArrowSvgCursor}" 
+                @mousedown.stop="emit('mouse-down', 'rot-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'rot-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'rot-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'rot-handle', $event)"
+                @click.prevent.stop="emit('box-click', $event)"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+            <circle :cx="center.x" :cy="center.y" :r="Math.min(bBox.width, bBox.height) * 0.15" 
+                class="hub"
+                @mousedown.stop=""
+                @click.prevent.stop="emit('box-click', $event)"
+                @contextmenu.prevent.stop="emit('box-right-click', $event)"
+                />
+        </template>
+    </g>
 </template>
 
 <style lang="scss">

@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted, computed, getCurrentInstance} from 'vue';
+    import { ref, PropType, onMounted, computed } from 'vue';
     import TransformBox, { TransformBoxZone } from '../Transform/TransformBox.vue';
     import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
 
@@ -147,24 +147,24 @@
             beingTransformed: isBeingTransformed
         }"
         >
-        <g ref="trGroup" :transform="transform?.toAttr(applyRotation)"
+        <g ref="trGroup" class="tr-group" :transform="transform?.toAttr(applyRotation)"
             @mousedown.prevent.stop="onMouseDown($event)"
             @mouseup.prevent="onMouseUp($event)"
             @mousemove.prevent="onMouseMove($event)"
             @mouseleave.prevent="onMouseLeave($event)"
             >
             <slot></slot>
-            <TransformBox v-if="transformMode" :origin="origin!" 
-                :transform="transform" :transform-mode="transformMode" 
-                ref="trBox" :b-box="bBox!"
-                @mouse-down="onMouseDownInTransformBox"
-                @mouse-move="onMouseMoveInTransformBox"
-                @mouse-up="onMouseUpInTransformBox"
-                @mouse-leave="onMouseLeaveFromTransformBox"
-                @box-click="onTransformBoxClick"
-                @box-right-click="onTransformBoxRightClick"
-                />
         </g>
+        <TransformBox v-if="transformMode" :origin="origin!" 
+            :transform="transform" :transform-mode="transformMode" :apply-rotation="applyRotation"
+            ref="trBox" :b-box="bBox!"
+            @mouse-down="onMouseDownInTransformBox"
+            @mouse-move="onMouseMoveInTransformBox"
+            @mouse-up="onMouseUpInTransformBox"
+            @mouse-leave="onMouseLeaveFromTransformBox"
+            @box-click="onTransformBoxClick"
+            @box-right-click="onTransformBoxRightClick"
+            />
     </svg>
 </template>
 
@@ -174,7 +174,7 @@
                 outline: thin red solid;
             }
             
-            &.beingTransformed > g {
+            &.beingTransformed > g.tr-group {
                 opacity: 0.5;
             }
     }
