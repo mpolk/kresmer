@@ -36,7 +36,6 @@ export default class NetworkComponentController {
     private dragStartPos?: Position;
     private savedMousePos?: Position;
     private rotationStartAngle?: number;
-    private rotationStartRadiusVector?: {x: number, y: number};
     public zIndex = -1;
     private savedZIndex = -1;
 
@@ -90,10 +89,6 @@ export default class NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.transform.setPivot(center);
         this.rotationStartAngle = this.transform.rotate.angle;
-        this.rotationStartRadiusVector = {
-            x: this.savedMousePos.x - center.x - this.origin.x, 
-            y: this.savedMousePos.y - center.y - this.origin.y
-        };
         this.isBeingTransformed = true;
         this.bringComponentToTop();
     }//startRotate
@@ -104,12 +99,25 @@ export default class NetworkComponentController {
             return false;
             
         const mousePos = this.getMousePosition(event);
-        const r1 = {x: mousePos.x - center.x - this.origin.x, y: mousePos.y - center.y - this.origin.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const r0 = this.rotationStartRadiusVector!;
+        const offset = this.transform!.translate ? this.transform!.translate : {x: 0, y: 0};
+        const r1 = {
+            x: mousePos.x - center.x - this.origin.x - offset.x, 
+            y: mousePos.y - center.y - this.origin.y - offset.y
+        };
+        const r0 = {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            x: this.savedMousePos!.x - center.x - this.origin.x - offset.x, 
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            y: this.savedMousePos!.y - center.y - this.origin.y - offset.y
+        };
         const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / Math.PI * 180;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.transform!.rotate!.angle = this.rotationStartAngle! + angleDelta;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (this.transform!.rotate!.angle! < 0) && (this.transform!.rotate!.angle += 360);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        (this.transform!.rotate!.angle! > 360) && (this.transform!.rotate!.angle -= 360);
         return true;
     }//rotate
 

@@ -33,11 +33,11 @@
             const oldPivot = {x: this.rotate.x, y: this.rotate.y};
             oldPivot.x || (oldPivot.x = 0);
             oldPivot.y || (oldPivot.y = 0);
-            const r = {x: pivot.x - oldPivot.x, y: pivot.y - oldPivot.y};
+            const r = {x: oldPivot.x - pivot.x, y: oldPivot.y - pivot.y};
             const fi = this.rotate.angle * Math.PI / 180;
             const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
             const r1 = {x: r.x * cosFi - r.y * sinFi, y: r.x * sinFi + r.y * cosFi};
-            const shift = {x: r1.x - r.x, y: r1.y - r.y};
+            const shift = {x: r.x - r1.x, y: r.y - r1.y};
             if (!this.translate)
                 this.translate = {...shift};
             else {
