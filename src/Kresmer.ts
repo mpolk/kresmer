@@ -35,8 +35,12 @@ export default class Kresmer {
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
             networkComponents: this.networkComponents,
+
+            onScaleChanged: this.onScaleChanged,
         });
-        this.appKresmer.component("TransformBox", TransformBox)
+
+        this.appKresmer
+            .component("TransformBox", TransformBox)
             .component("NetworkComponentHolder", NetworkComponentHolder);
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
@@ -242,4 +246,15 @@ export default class Kresmer {
         };
     }//applyScreenCTM
 
+
+    // Event handler hooks
+
+    /**
+     * Is called when the global drawing scale changed occurs
+     * @param newScale A new scale value
+     */
+    protected onScaleChanged(newScale: number)
+    {
+        console.debug(`Drawing scale changed to ${newScale}`);
+    }//onScaleChanged
 }//Kresmer

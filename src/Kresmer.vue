@@ -19,14 +19,13 @@
 
 <script setup lang="ts">
     const props = defineProps({
-        controller: {
-            type: Object as PropType<Kresmer>, 
-            required: true
-        },
+        controller: {type: Object as PropType<Kresmer>, required: true},
         networkComponents: {
             type: Object as PropType<Record<string, NetworkComponentController>>, 
             required: true
-        }
+        },
+        viewWidth: {type: Number, default: 1000},
+        viewHeight: {type: Number, default: 1000},
     });
 
     provide(Kresmer.injectionKey, props.controller);
@@ -36,6 +35,12 @@
         return Object.values(props.networkComponents).sort((c1, c2) => c1.zIndex - c2.zIndex)
     })
 
+    const scale = ref(1);
+
+    const emit = defineEmits<{
+        (event: "scale-changed", newScale: number): void,
+    }>();
+
     // Event handlers
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -44,13 +49,21 @@
         props.controller.resetAllComponentMode();
     }//onMouseDownOnCanvas
 
+    function onMouseWheel(event: WheelEvent)
+    {
+        scale.value *= Math.pow(1.1, event.deltaY * -0.01);
+        emit("scale-changed", scale.value);
+    }//onMouseWheel
+
     defineExpose({svg: rootSVG});
 </script>
 
 <template>
     <svg class="kresmer" ref="rootSVG" 
+        :viewBox="`0 0 ${viewWidth / scale} ${viewHeight / scale}`"
         @mousedown.prevent="onMouseDownOnCanvas($event)"
         @mousemove.prevent=""
+        @wheel.ctrl.prevent="onMouseWheel($event)"
         >
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
@@ -77,8 +90,8 @@
 
 <style lang="scss">
     svg.kresmer {
-        width: 100%;
-        height: 100%;
+        width: 100%; height: 100%;
+        overflow: scroll;
 
         svg.network-component {
             overflow: visible;
