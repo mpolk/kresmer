@@ -62,7 +62,7 @@ export default class NetworkComponentController {
     {
         this.kresmer.resetAllComponentMode(this);
         this.component.isHighlighted = true;
-        this.dragStartPos = this.kresmer.applyScreenCTM(this.origin);
+        this.dragStartPos = {...this.origin};
         this.savedMousePos = this.getMousePosition(event);
         this.isDragged = true;
         this.bringComponentToTop();
