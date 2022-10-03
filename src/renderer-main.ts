@@ -11,7 +11,7 @@ import { createApp, reactive } from 'vue';
 import initApp from './init';
 import Kresmer from './Kresmer';
 import ParsingException from './parsers/ParsingException';
-import StatusBar from './status-bar.vue';
+import StatusBar from './StatusBar.vue';
 
 export const kresmer = new Kresmer('#kresmer');
 

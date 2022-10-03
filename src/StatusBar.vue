@@ -47,7 +47,7 @@
         position: fixed;
         width: 100%;
         padding: 0.2rem 0.5rem;
-        font: status-bar;
+        font: status-bar; font-size: smaller;
         color: white;
         background-color: rgb(52, 122, 250);
     }
