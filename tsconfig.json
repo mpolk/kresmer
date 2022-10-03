@@ -16,6 +16,7 @@
     "outDir": "dist",
     // "rootDir": "src/electron",
     // "outDir": "dist/electron",
+    "declaration": true,
   },
   "include": ["src/**/*"],
   "references": [

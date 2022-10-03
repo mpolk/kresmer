@@ -7,11 +7,23 @@
  ***************************************************************************/
 
 import { IpcRendererEvent } from 'electron';
+import { createApp, reactive } from 'vue';
 import initApp from './init';
 import Kresmer from './Kresmer';
 import ParsingException from './parsers/ParsingException';
+import StatusBar from './status-bar.vue';
 
 export const kresmer = new Kresmer('#kresmer');
+
+const statusBarData = reactive({
+    drawingScale: 1,
+})//statusBarData
+
+export const vueStatusBar = createApp(StatusBar, {
+    displayData: statusBarData,
+}).mount("#statusBar");
+
+kresmer.setEventHandler("scale-changed", (newScale) => statusBarData.drawingScale = newScale);
 
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
 { 

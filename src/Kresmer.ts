@@ -17,9 +17,10 @@ import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./Transform/TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
 
+
 /**
  * The main class implementing the most of the Kresmer public API
- * Also acts as a proxy for the Kresmer vue-component
+ * Also acts as a proxy for the root vue-component of Kresmer
  */
 export default class Kresmer {
 
@@ -36,7 +37,7 @@ export default class Kresmer {
             controller: this,
             networkComponents: this.networkComponents,
 
-            onScaleChanged: this.onScaleChanged,
+            onScaleChanged: this.onScaleChanged.bind(this),
         });
 
         this.appKresmer
@@ -249,6 +250,16 @@ export default class Kresmer {
 
     // Event handler hooks
 
+    private externalHandlers: Record<string, (...args: unknown[]) => void> = {};
+
+    public setEventHandler(event: "scale-changed", handler: (newScale: number) => void): void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    public setEventHandler(event: string, handler: (...args: any[]) => void)
+    {
+        this.externalHandlers[event] = handler;
+    }//setEventHandler
+
+
     /**
      * Is called when the global drawing scale changed occurs
      * @param newScale A new scale value
@@ -256,5 +267,7 @@ export default class Kresmer {
     protected onScaleChanged(newScale: number)
     {
         console.debug(`Drawing scale changed to ${newScale}`);
+        if ("scale-changed" in this.externalHandlers)
+            this.externalHandlers["scale-changed"].call(this, newScale);
     }//onScaleChanged
 }//Kresmer
