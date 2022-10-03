@@ -29,16 +29,16 @@
 
     const drawingScale = computed(() => {
         if (props.displayData.drawingScale >= 1) {
-            return `${Math.round(props.displayData.drawingScale * 10) / 10}:1`;
+            return `${Math.round(props.displayData.drawingScale * 10) / 10} : 1`;
         } else {
-            return `1:${Math.round(10 / props.displayData.drawingScale) / 10}`;
+            return `1 : ${Math.round(10 / props.displayData.drawingScale) / 10}`;
         }//if
     })//drawingScale
 </script>
 
 <template>
     <div class="status-bar" :style="{bottom}">
-        Scale: {{drawingScale}}
+        Scale: ({{drawingScale}})
     </div>
 </template>
 
@@ -47,7 +47,7 @@
         position: fixed;
         width: 100%;
         padding: 0.2rem 0.5rem;
-        font-family: sans-serif;
+        font: status-bar;
         color: white;
         background-color: rgb(52, 122, 250);
     }

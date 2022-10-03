@@ -266,7 +266,7 @@ export default class Kresmer {
      */
     protected onScaleChanged(newScale: number)
     {
-        console.debug(`Drawing scale changed to ${newScale}`);
+        // console.debug(`Drawing scale changed to ${newScale}`);
         if ("scale-changed" in this.externalHandlers)
             this.externalHandlers["scale-changed"].call(this, newScale);
     }//onScaleChanged
