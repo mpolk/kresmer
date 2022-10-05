@@ -289,6 +289,20 @@ export default class Kresmer {
     public on(event: "scale-changed", handler: (newScale: number) => void): void;
 
     /**
+     * Sets a handler fired after a network component had been moved (dragged)
+     * @param event 
+     * @param handler 
+     */
+     public on(event: "network-component-moved", handler: (component: NetworkComponent) => void): void;
+
+    /**
+     * Sets a handler fired after a network component had been transformed
+     * @param event 
+     * @param handler 
+     */
+     public on(event: "network-component-transformed", handler: (component: NetworkComponent) => void): void;
+
+    /**
      * Sets a handler for the generic event
      * @param event An event to be handled
      * @param handler A handler for this event
@@ -308,6 +322,14 @@ export default class Kresmer {
         delete this.externalHandlers[event];
     }//off
 
+    /** Utility method that invokes an external handler for the specified event 
+     * if this handler was registered */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    protected invokeExternalHandler(event: string, ...args: any[])
+    {
+        if (event in this.externalHandlers)
+            this.externalHandlers[event].call(this, args);
+    }//invokeExternalHandler
 
     /**
      * Is called when the global drawing scale changed occurs
@@ -315,8 +337,24 @@ export default class Kresmer {
      */
     protected onScaleChanged(newScale: number)
     {
-        // console.debug(`Drawing scale changed to ${newScale}`);
-        if ("scale-changed" in this.externalHandlers)
-            this.externalHandlers["scale-changed"].call(this, newScale);
+        this.invokeExternalHandler("scale-changed", newScale);
     }//onScaleChanged
-}//Kresmer
+
+    /**
+     * Is called when a network component had been moved (dragged)
+     * @param component The component been moved
+     */
+    public onNetworkComponentMoved(component: NetworkComponent)
+    {
+        this.invokeExternalHandler("network-component-moved", component);
+    }//onNetworkComponentMoved
+
+    /**
+     * Is called when a network component had been transformed
+     * @param component The component been transformed
+     */
+    public onNetworkComponentTransformed(component: NetworkComponent)
+    {
+        this.invokeExternalHandler("network-component-transformed", component);
+    }//onNetworkComponenTransformed
+ }//Kresmer

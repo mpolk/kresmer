@@ -130,6 +130,7 @@ export default class NetworkComponentController {
         }//if
 
         this.isBeingTransformed = false;
+        this.kresmer.onNetworkComponentTransformed(this.component);
         return true;
     }//endTransform
 
@@ -139,6 +140,7 @@ export default class NetworkComponentController {
         if (this.isDragged) {
             this.component.isHighlighted = false;
             this.isDragged = false;
+            this.kresmer.onNetworkComponentMoved(this.component);
             return true;
         }//if
 
