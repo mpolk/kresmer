@@ -29,9 +29,9 @@
 
     const drawingScale = computed(() => {
         if (props.displayData.drawingScale >= 1) {
-            return `${Math.round(props.displayData.drawingScale * 10) / 10} : 1`;
+            return `${Math.round(props.displayData.drawingScale * 100) / 100} : 1`;
         } else {
-            return `1 : ${Math.round(10 / props.displayData.drawingScale) / 10}`;
+            return `1 : ${Math.round(100 / props.displayData.drawingScale) / 100}`;
         }//if
     })//drawingScale
 </script>

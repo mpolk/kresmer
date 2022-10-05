@@ -24,6 +24,8 @@
             type: Object as PropType<Record<string, NetworkComponentController>>, 
             required: true
         },
+        drawingWidth: {type: [Number, String], default: "100%"},
+        drawingHeight: {type: [Number, String], default: "100%"},
         viewWidth: {type: Number, default: 1000},
         viewHeight: {type: Number, default: 1000},
     });
@@ -36,6 +38,25 @@
     })
 
     const scale = ref(1);
+
+    const width = computed(() => {
+        const matches = props.drawingWidth.toString().match(/^([0-9.]+)(.+)$/);
+        if (!matches)
+            return undefined;
+
+        const n = parseFloat(matches[1]);
+        return `${n * scale.value}${matches[2]}`;
+    })//width
+
+    const height = computed(() => {
+        const matches = props.drawingHeight.toString().match(/^([0-9.]+)(.+)$/);
+        if (!matches)
+            return undefined;
+
+        const n = parseFloat(matches[1]);
+        return `${n * scale.value}${matches[2]}`;
+    })//height
+
 
     const emit = defineEmits<{
         (event: "scale-changed", newScale: number): void,
@@ -60,14 +81,14 @@
 
 <template>
     <svg class="kresmer" ref="rootSVG" 
-        :viewBox="`0 0 ${viewWidth / scale} ${viewHeight / scale}`"
+        :width = "width" :height="height"
+        :viewBox="`0 0 ${viewWidth} ${viewHeight}`"
         @mousedown.prevent="onMouseDownOnCanvas($event)"
         @mousemove.prevent=""
         @wheel.ctrl.prevent="onMouseWheel($event)"
         >
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
-                   :id="controller.component.id"
                    :controller="controller"
                    :origin="controller.origin"
                    :transform="controller.transform"
@@ -90,8 +111,8 @@
 
 <style lang="scss">
     svg.kresmer {
-        width: 100%; height: 100%;
-        overflow: scroll;
+        //width: 100%; height: 100%;
+        //overflow: scroll;
 
         svg.network-component {
             overflow: visible;

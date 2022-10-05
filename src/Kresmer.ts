@@ -31,11 +31,28 @@ export default class Kresmer {
     /** A symbolic key for the Kresmer instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
 
-    constructor(mountPoint: string|HTMLElement)
-    {
+    constructor(mountPoint: string|HTMLElement, options?: {
+        drawingWidth?: number | string,
+        drawingHeight?: number | string,
+        viewWidth?: number,
+        viewHeight?: number,
+    }) {
+        if (options?.drawingWidth)
+            this.drawingWidth = options.drawingWidth;
+        if (options?.drawingHeight)
+            this.drawingHeight = options.drawingHeight;
+        if (options?.viewWidth)
+            this.viewWidth = options.viewWidth;
+        if (options?.viewHeight)
+            this.viewHeight = options.viewHeight;
+            
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
             networkComponents: this.networkComponents,
+            drawingWidth: this.drawingWidth,
+            drawingHeight: this.drawingHeight,
+            viewWidth: this.viewWidth,
+            viewHeight: this.viewHeight,
 
             onScaleChanged: this.onScaleChanged.bind(this),
         });
@@ -47,10 +64,22 @@ export default class Kresmer {
     }//ctor
 
 
+    // Drawing geometry parameters
+    /** Sets the drawing width within the browser client area */
+    readonly drawingWidth: number|string = "100%";
+    /** Sets the drawing height within the browser client area */
+    readonly drawingHeight: number|string = "100%";
+    /** Sets the drawing area width in SVG logical units 
+     * (component sizes are measuring related this width) */
+    readonly viewWidth: number = 1000;
+    /** Sets the drawing area height in SVG logical units 
+    * (component sizes are measuring related this height) */
+    readonly viewHeight: number = 1000;
+
     /**
-     * A singleton list of all Component Classes, registerd by Kresmer
+     * A singleton list of all Component Classes, registered by Kresmer
      */
-    private static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
+    protected static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
