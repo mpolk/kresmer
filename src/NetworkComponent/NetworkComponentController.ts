@@ -178,17 +178,10 @@ export default class NetworkComponentController {
         this.restoreComponentZPosition();
     }//resetMode
 
-
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onTransformBoxClick(_event: MouseEvent)
     {
         this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
     }//onTransformBoxClick
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public onTransformBoxRightClick(_event: MouseEvent)
-    {
-        // invoke context menu
-    }//onTransformBoxRightClick
 
 }//NetworkComponentController

@@ -303,6 +303,15 @@ export default class Kresmer {
      public on(event: "network-component-transformed", handler: (component: NetworkComponent) => void): void;
 
     /**
+     * Sets a handler fired after a network component had been transformed
+     * @param event 
+     * @param handler 
+     */
+     public on(event: "component-right-click", handler: (component: NetworkComponent, 
+                                                         target: "component"|"transform-box", 
+                                                         nativeEvent: MouseEvent) => void): void;
+
+    /**
      * Sets a handler for the generic event
      * @param event An event to be handled
      * @param handler A handler for this event
@@ -357,4 +366,15 @@ export default class Kresmer {
     {
         this.invokeExternalHandler("network-component-transformed", component);
     }//onNetworkComponenTransformed
- }//Kresmer
+
+    /**
+     * Is called when a network component is right-clicked
+     * @param component The component been transformed
+     */
+    protected onComponentRightClick(component: NetworkComponent, 
+                                    target: "component"|"transform-box", 
+                                    nativeEvent: MouseEvent)
+    {
+        this.invokeExternalHandler("component-right-click", component, target, nativeEvent);
+    }//onComponentRightClick
+  }//Kresmer

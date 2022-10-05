@@ -10,6 +10,7 @@
 <script lang="ts">
     import { ref, PropType, onMounted, computed } from 'vue';
     import TransformBox, { TransformBoxZone } from '../Transform/TransformBox.vue';
+import NetworkComponent from './NetworkComponent';
     import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
 
     export default {
@@ -42,6 +43,11 @@
         bBox.value = svg.value?.getBBox({stroke: true});
         applyRotation.value = true;
     })//onMounted
+
+    const emit = defineEmits<{
+        (event: "right-click", component: NetworkComponent, 
+         target: "component" | "transform-box", nativeEvent: MouseEvent): void,
+    }>();
 
     let transformStartEvent: MouseEvent | undefined;
     let wasJustTransformed = false;
@@ -131,9 +137,10 @@
             props.controller?.onTransformBoxClick(event);
     }//onTransformBoxClick
 
-    function onTransformBoxRightClick(event: MouseEvent) {
-        props.controller?.onTransformBoxRightClick(event);
-    }//onTransformBoxRightClick
+    function onRightClick(event: MouseEvent, target: "component" | "transform-box") {
+        if (props.controller)
+            emit("right-click", props.controller.component, target, event);
+    }//onRightClick
 
     defineExpose({center});
 </script>
@@ -152,6 +159,7 @@
             @mouseup.prevent="onMouseUp($event)"
             @mousemove.prevent="onMouseMove($event)"
             @mouseleave.prevent="onMouseLeave($event)"
+            @contextmenu="onRightClick($event, 'component')"
             >
             <slot></slot>
         </g>
@@ -163,7 +171,7 @@
             @mouse-up="onMouseUpInTransformBox"
             @mouse-leave="onMouseLeaveFromTransformBox"
             @box-click="onTransformBoxClick"
-            @box-right-click="onTransformBoxRightClick"
+            @box-right-click="onRightClick($event, 'transform-box')"
             />
     </svg>
 </template>

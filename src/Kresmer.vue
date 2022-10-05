@@ -9,6 +9,7 @@
 <script lang="ts">
     import { PropType, ref, computed, provide } from 'vue';
     import Kresmer from './Kresmer';
+import NetworkComponent from './NetworkComponent/NetworkComponent';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
 
@@ -60,6 +61,8 @@
 
     const emit = defineEmits<{
         (event: "scale-changed", newScale: number): void,
+        (event: "component-right-click", component: NetworkComponent, 
+         target: "component" | "transform-box", nativeEvent: MouseEvent): void,
     }>();
 
     // Event handlers
@@ -75,6 +78,12 @@
         scale.value *= Math.pow(1.1, event.deltaY * -0.01);
         emit("scale-changed", scale.value);
     }//onMouseWheel
+
+    function onComponentRightClick(component: NetworkComponent, target: "component"|"transform-box", 
+                                   nativeEvent: MouseEvent)
+    {
+        emit("component-right-click", component, target, nativeEvent);
+    }//onComponentRightClick
 
     defineExpose({svg: rootSVG});
 </script>
@@ -96,6 +105,7 @@
                    :is-dragged="controller.isDragged"
                    :is-being-transformed="controller.isBeingTransformed"
                    :transform-mode="controller.transformMode"
+                   @right-click="onComponentRightClick"
                 >
             <component :is="controller.component.vueName"
                    :component-id="controller.component.id"
