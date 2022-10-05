@@ -299,6 +299,10 @@ export default class Kresmer {
         this.externalHandlers[event] = handler;
     }//on
 
+    /**
+     * Disables handling of the specified event
+     * @param event 
+     */
     public off(event: string)
     {
         delete this.externalHandlers[event];
