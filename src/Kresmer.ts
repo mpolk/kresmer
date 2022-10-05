@@ -279,14 +279,30 @@ export default class Kresmer {
 
     // Event handler hooks
 
-    private externalHandlers: Record<string, (...args: unknown[]) => void> = {};
+    protected externalHandlers: Record<string, (...args: unknown[]) => void> = {};
 
-    public setEventHandler(event: "scale-changed", handler: (newScale: number) => void): void;
+    /**
+     * Sets a handler fired after the drawing scale was changed
+     * @param event 
+     * @param handler 
+     */
+    public on(event: "scale-changed", handler: (newScale: number) => void): void;
+
+    /**
+     * Sets a handler for the generic event
+     * @param event An event to be handled
+     * @param handler A handler for this event
+     */
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public setEventHandler(event: string, handler: (...args: any[]) => void)
+    public on(event: string, handler: (...args: any[]) => void)
     {
         this.externalHandlers[event] = handler;
-    }//setEventHandler
+    }//on
+
+    public off(event: string)
+    {
+        delete this.externalHandlers[event];
+    }//off
 
 
     /**

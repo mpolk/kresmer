@@ -23,7 +23,7 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar");
 
-kresmer.setEventHandler("scale-changed", (newScale) => statusBarData.drawingScale = newScale);
+kresmer.on("scale-changed", (newScale) => statusBarData.drawingScale = newScale);
 
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
 { 
