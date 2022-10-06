@@ -293,14 +293,14 @@ export default class Kresmer {
      * @param event 
      * @param handler 
      */
-     public on(event: "network-component-moved", handler: (component: NetworkComponent) => void): void;
+     public on(event: "network-component-moved", handler: (controller: NetworkComponentController) => void): void;
 
     /**
      * Sets a handler fired after a network component had been transformed
      * @param event 
      * @param handler 
      */
-     public on(event: "network-component-transformed", handler: (component: NetworkComponent) => void): void;
+     public on(event: "network-component-transformed", handler: (controller: NetworkComponentController) => void): void;
 
     /**
      * Sets a handler fired after a network component had been transformed
@@ -353,18 +353,18 @@ export default class Kresmer {
      * Is called when a network component had been moved (dragged)
      * @param component The component been moved
      */
-    public onNetworkComponentMoved(component: NetworkComponent)
+    public onNetworkComponentMoved(controller: NetworkComponentController)
     {
-        this.invokeExternalHandler("network-component-moved", component);
+        this.invokeExternalHandler("network-component-moved", controller);
     }//onNetworkComponentMoved
 
     /**
      * Is called when a network component had been transformed
      * @param component The component been transformed
      */
-    public onNetworkComponentTransformed(component: NetworkComponent)
+    public onNetworkComponentTransformed(controller: NetworkComponentController)
     {
-        this.invokeExternalHandler("network-component-transformed", component);
+        this.invokeExternalHandler("network-component-transformed", controller);
     }//onNetworkComponenTransformed
 
     /**
