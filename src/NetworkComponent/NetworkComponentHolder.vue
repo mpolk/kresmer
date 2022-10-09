@@ -9,8 +9,9 @@
 
 <script lang="ts">
     import { ref, PropType, onMounted, computed } from 'vue';
-    import TransformBox, { TransformBoxZone } from '../Transform/TransformBox.vue';
-import NetworkComponent from './NetworkComponent';
+    import TransformBox from '../Transform/TransformBox.vue';
+    import { TransformBoxZone } from '../Transform/TransformBox';
+    import NetworkComponent from './NetworkComponent';
     import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
 
     export default {
@@ -103,6 +104,16 @@ import NetworkComponent from './NetworkComponent';
                 case "tr-box":
                     props.controller?.startDrag(transformStartEvent);
                     break;
+                case "nw-handle":
+                case "n-handle":
+                case "ne-handle":
+                case "w-handle":
+                case "e-handle":
+                case "sw-handle":
+                case "s-handle":
+                case "se-handle":
+                    props.controller?.startScale(transformStartEvent);
+                    break;
                 case "rot-handle":
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     props.controller?.startRotate(transformStartEvent, center.value!);
@@ -116,6 +127,17 @@ import NetworkComponent from './NetworkComponent';
             switch(zone) {
                 case "tr-box":
                     props.controller?.drag(event);
+                    break;
+                case "nw-handle":
+                case "n-handle":
+                case "ne-handle":
+                case "w-handle":
+                case "e-handle":
+                case "sw-handle":
+                case "s-handle":
+                case "se-handle":
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    props.controller?.scale(event, zone, bBox.value!);
                     break;
                 case "rot-handle":
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion

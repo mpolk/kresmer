@@ -11,6 +11,7 @@ import { PropType } from "vue";
 import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
 import { Position, Transform } from "../Transform/Transform";
+import { TransformBoxZone } from "../Transform/TransformBox";
 
 export const NetworkComponentHolderProps = {
     origin: {type: Object as PropType<Position>, required: true},
@@ -36,6 +37,8 @@ export default class NetworkComponentController {
     private dragStartPos?: Position;
     private savedMousePos?: Position;
     private rotationStartAngle?: number;
+    private savedScale?: {x: number, y: number};
+    private savedTranslation?: {x: number, y: number};
     public zIndex = -1;
     private savedZIndex = -1;
 
@@ -81,6 +84,7 @@ export default class NetworkComponentController {
         return true;
     }//drag
 
+    
     public startRotate(event: MouseEvent, center: Position)
     {
         this.kresmer.resetAllComponentMode(this);
@@ -121,6 +125,43 @@ export default class NetworkComponentController {
         return true;
     }//rotate
 
+
+    public startScale(event: MouseEvent)
+    {
+        this.kresmer.resetAllComponentMode(this);
+        this.transform || (this.transform = new Transform);
+        this.transform.scale || (this.transform.scale = {x: 1, y: 1});
+        this.transform.scale.y || (this.transform.scale.y = this.transform.scale.x);
+        this.transform.translate || (this.transform.translate = {x: 0, y: 0});
+        this.savedScale = {...this.transform.scale} as {x: number, y: number};
+        this.savedTranslation = {...this.transform.translate};
+        this.savedMousePos = this.getMousePosition(event);
+        this.isBeingTransformed = true;
+        this.bringComponentToTop();
+    }//startScale
+
+    public scale(event: MouseEvent, zone: TransformBoxZone, bBox: SVGRect)
+    {
+        if (!this.isBeingTransformed)
+            return false;
+            
+        const zonePrefix = zone.replace('-handle', '');
+        const mousePos = this.getMousePosition(event);
+        const delta = {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            x: (zonePrefix.includes('w') || zonePrefix.includes('e')) ? mousePos.x - this.savedMousePos!.x : 0,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            y: (zonePrefix.includes('n') || zonePrefix.includes('s')) ? mousePos.y - this.savedMousePos!.y : 0
+        };
+
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.transform!.scale!.x = this.savedScale!.x + delta.x / bBox.width;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.transform!.scale!.y = this.savedScale!.y + delta.y / bBox.height;
+        return true;
+    }//scale
+
+    
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endTransform(event: MouseEvent)
     {

@@ -7,8 +7,6 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    export type TransformBoxZone = "tr-box" | "h-handle" | "v-handle" | "corner-handle" | "rot-handle";
-
     const rotationArrowSvg = `\
 <svg xmlns="http://www.w3.org/2000/svg" 
     width="24px" height="24px" viewBox="0 0 24 24" fill="#000000">
@@ -24,6 +22,7 @@
     import svgToTinyDataUri from 'mini-svg-data-uri';
     import { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position, Transform } from './Transform';
+    import { TransformBoxZone } from "../Transform/TransformBox";
 
     const props = defineProps({
         origin: {type: Object as PropType<Position>, required: true},
@@ -95,7 +94,6 @@
         (event: "box-click", nativeEvent: MouseEvent): void,
         (event: "box-right-click", nativeEvent: MouseEvent): void,
     }>();
-
 </script>
 
 <template>
@@ -112,41 +110,73 @@
         <template v-if="!inRotationMode">
             <rect :x="bBox.x" :y="bBox.y" :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(45)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 'nw-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'nw-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'nw-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'nw-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
             <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y" 
                 :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 'n-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'n-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'n-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'n-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
             <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y" 
                 :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 'ne-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'ne-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'ne-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'ne-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
             <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
                 :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 'w-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'w-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'w-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'w-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
             <rect :x="bBox.x" :y="bBox.y + bBox.height - handleSize" 
                 :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 'sw-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'sw-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'sw-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'sw-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
             <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y + bBox.height - handleSize" 
                 :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 's-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 's-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 's-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 's-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
             <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
                 :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 'e-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'e-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'e-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'e-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
             <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height - handleSize" 
                 :width="handleSize" :height="handleSize" 
                 :style="{cursor: bidirArrowCursor(45)}" class="handle"
+                @mousedown.stop="emit('mouse-down', 'se-handle', $event)"
+                @mouseup.stop="emit('mouse-up', 'se-handle', $event)"
+                @mousemove.stop="emit('mouse-move', 'se-handle', $event)"
+                @mouseleave.stop="emit('mouse-leave', 'se-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
         </template>
