@@ -7,21 +7,10 @@
  * controller, responsible for its placement, transformations etc
  ***************************************************************************/
 
-import { PropType } from "vue";
 import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
 import { Position, Transform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
-
-export const NetworkComponentHolderProps = {
-    origin: {type: Object as PropType<Position>, required: true},
-    transform: {type: Object as PropType<Transform>},
-    svg: {type: Object as PropType<SVGGraphicsElement>},
-    isHighlighted: {type: Boolean, default: false},
-    isDragged: {type: Boolean, default: false},
-    isBeingTransformed: {type: Boolean, default: false},
-    transformMode: {type: String as PropType<TransformMode>},
-}//NetworkComponentHolderProps
 
 export type TransformMode = undefined | "scaling" | "x-scaling" | "y-scaling" | "rotation";
 

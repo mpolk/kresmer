@@ -12,8 +12,9 @@
     import TransformBox from '../Transform/TransformBox.vue';
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponent from './NetworkComponent';
-    import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
-import { Transform } from '../Transform/Transform';
+    import NetworkComponentController from "./NetworkComponentController";
+    import { NetworkComponentHolderProps } from "./NetworkComponentHolder.d";
+    import { Transform } from '../Transform/Transform';
 
     export default {
         components: { TransformBox },

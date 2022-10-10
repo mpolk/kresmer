@@ -9,7 +9,8 @@
 import { App, computed, createApp, InjectionKey, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
-import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentController";
+import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
+import { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentHolder.d";
 import { Position, Transform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
