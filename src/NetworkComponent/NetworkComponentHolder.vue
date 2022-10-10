@@ -13,6 +13,7 @@
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponent from './NetworkComponent';
     import NetworkComponentController, { NetworkComponentHolderProps } from "./NetworkComponentController";
+import { Transform } from '../Transform/Transform';
 
     export default {
         components: { TransformBox },
@@ -44,6 +45,13 @@
         bBox.value = svg.value?.getBBox({stroke: true});
         applyRotation.value = true;
     })//onMounted
+
+    const transform = computed(() => {
+        if (props.transform)
+            return props.transform;
+        else
+            return new Transform;
+    })//transform
 
     const emit = defineEmits<{
         (event: "right-click", component: NetworkComponent, 
@@ -180,7 +188,7 @@
             beingTransformed: isBeingTransformed
         }"
         >
-        <g ref="trGroup" class="tr-group" :transform="transform?.toAttr(applyRotation)"
+        <g ref="trGroup" class="tr-group" :transform="transform.toAttr(applyRotation)"
             @mousedown.prevent.stop="onMouseDown($event)"
             @mouseup.prevent="onMouseUp($event)"
             @mousemove.prevent="onMouseMove($event)"

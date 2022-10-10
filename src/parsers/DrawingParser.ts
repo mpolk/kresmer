@@ -75,7 +75,7 @@ export default class DrawingParser {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         let props: Record<string, any> = {};
         let content: string | undefined;
-        let transform: Transform | undefined;
+        let transform = new Transform;
         const origin: {x?: number, y?: number} = {};
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -215,7 +215,7 @@ export default class DrawingParser {
                             '"rotate" element must have an "angle" attribute',
                             {source: `Component ${node.parentElement?.getAttribute("class")}`}
                             );
-                    transform.rotate = {angle: parseFloat(angle)};
+                    transform.rotate = {angle: parseFloat(angle), x: 0, y: 0};
                     if (x !== null && y !== null) {
                         transform.rotate.x = parseFloat(x);
                         transform.rotate.y = parseFloat(y);
@@ -238,7 +238,7 @@ export default class DrawingParser {
                             {source: `Component ${node.parentElement?.getAttribute("class")}`}
                             );
                     if (y === null) {
-                        transform.scale = {x: xf};
+                        transform.scale = {x: xf, y: xf};
                     } else {
                         const yf = parseFloat(y);
                         if (yf === undefined)
