@@ -61,6 +61,7 @@
 
     let transformStartEvent: MouseEvent | undefined;
     let wasJustTransformed = false;
+    let lastActiveHandle: TransformBoxZone = "tr-box";
 
     function onMouseDown(event: MouseEvent)
     {
@@ -135,7 +136,12 @@
         if (event.buttons & 1) {
             switch(zone) {
                 case "tr-box":
-                    props.controller?.drag(event);
+                    if (props.controller?.isBeingTransformed && props.controller.transformMode == "scaling") {
+                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                        props.controller?.scale(event, lastActiveHandle, bBox.value!);
+                    } else {
+                        props.controller?.drag(event);
+                    }//if
                     break;
                 case "nw-handle":
                 case "n-handle":
@@ -145,6 +151,7 @@
                 case "sw-handle":
                 case "s-handle":
                 case "se-handle":
+                    lastActiveHandle = zone;
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     props.controller?.scale(event, zone, bBox.value!);
                     break;

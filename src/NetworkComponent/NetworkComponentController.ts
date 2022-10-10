@@ -78,9 +78,10 @@ export default class NetworkComponentController {
     {
         this.kresmer.resetAllComponentMode(this);
         this.savedMousePos = this.getMousePosition(event);
-        this.transform.setPivot(center);
+        this.transform.setPivot({x: center.x * this.transform.scale.x, y: center.y * this.transform.scale.y});
         this.rotationStartAngle = this.transform.rotate.angle;
         this.isBeingTransformed = true;
+        this.transformMode = "rotation";
         this.bringComponentToTop();
     }//startRotate
 
@@ -117,6 +118,7 @@ export default class NetworkComponentController {
         this.savedTranslation = {...this.transform.translate};
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
+        this.transformMode = "scaling";
         this.bringComponentToTop();
     }//startScale
 
@@ -166,6 +168,7 @@ export default class NetworkComponentController {
         }//if
 
         this.isBeingTransformed = false;
+        // this.transformMode = undefined;
         this.kresmer.onNetworkComponentTransformed(this);
         return true;
     }//endTransform
