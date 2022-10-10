@@ -148,16 +148,31 @@ export default class NetworkComponentController {
         const zonePrefix = zone.replace('-handle', '');
         const mousePos = this.getMousePosition(event);
         const delta = {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            x: (zonePrefix.includes('w') || zonePrefix.includes('e')) ? mousePos.x - this.savedMousePos!.x : 0,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            y: (zonePrefix.includes('n') || zonePrefix.includes('s')) ? mousePos.y - this.savedMousePos!.y : 0
+               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            x: zonePrefix.includes('w') ? this.savedMousePos!.x - mousePos.x :
+               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+               zonePrefix.includes('e') ? mousePos.x - this.savedMousePos!.x : 
+               0,
+               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            y: zonePrefix.includes('n') ? this.savedMousePos!.y - mousePos.y :
+               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+               zonePrefix.includes('s') ? mousePos.y - this.savedMousePos!.y : 
+               0
         };
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.transform!.scale!.x = this.savedScale!.x + delta.x / bBox.width;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.transform!.scale!.y = this.savedScale!.y + delta.y / bBox.height;
+
+        if (zonePrefix.includes('w')) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.transform!.translate!.x = this.savedTranslation!.x - delta.x;
+        }//if
+        if (zonePrefix.includes('n')) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.transform!.translate!.y = this.savedTranslation!.y - delta.y;
+        }//if
         return true;
     }//scale
 

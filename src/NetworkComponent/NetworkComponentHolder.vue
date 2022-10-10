@@ -149,7 +149,11 @@
 
     function onMouseLeaveFromTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        onMouseUpInTransformBox(zone, event);
+        switch (zone) {
+            case "tr-box":
+            case "rot-handle":
+                onMouseUpInTransformBox(zone, event);
+        }//switch
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
