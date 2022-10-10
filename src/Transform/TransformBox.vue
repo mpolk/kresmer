@@ -27,6 +27,7 @@
     const props = defineProps({
         origin: {type: Object as PropType<Position>, required: true},
         bBox: {type: Object as PropType<DOMRect>, required: true},
+        center: {type: Object as PropType<Position>, required: true},
         transform: {type: Object as PropType<Transform>},
         transformMode: {type: String as PropType<TransformMode>},
         applyRotation: {type: Boolean, required: true},
@@ -39,11 +40,6 @@
             return undefined;
         return Math.max(Math.min(props.bBox.width * 0.2, props.bBox.height * 0.2), 5);
     });
-
-    const center = computed(() => {
-        const rect = props.bBox;
-        return {x: rect.x + rect.width/2, y: rect.y + rect.height/2};
-    })//center
 
     const handleSize = computed(() => {
         return Math.max(Math.min(props.bBox.width, props.bBox.height) * 0.15, 5);

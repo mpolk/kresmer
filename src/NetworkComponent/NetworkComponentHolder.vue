@@ -37,7 +37,7 @@ import { Transform } from '../Transform/Transform';
     const center = computed(() => {
         const rect = bBox.value;
         if (!rect)
-            return undefined;
+            return {x: 0, y: 0};
         return {x: rect.x + rect.width/2, y: rect.y + rect.height/2};
     })//center
 
@@ -197,9 +197,9 @@ import { Transform } from '../Transform/Transform';
             >
             <slot></slot>
         </g>
-        <TransformBox v-if="transformMode" :origin="origin!" 
+        <TransformBox v-if="transformMode" ref="trBox" :origin="origin!" 
             :transform="transform" :transform-mode="transformMode" :apply-rotation="applyRotation"
-            ref="trBox" :b-box="bBox!"
+            :b-box="bBox!" :center="center"
             @mouse-down="onMouseDownInTransformBox"
             @mouse-move="onMouseMoveInTransformBox"
             @mouse-up="onMouseUpInTransformBox"
