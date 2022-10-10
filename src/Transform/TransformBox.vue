@@ -18,7 +18,7 @@
 </script>
 
 <script setup lang="ts">
-    import { computed, PropType } from 'vue';
+    import { computed, h, PropType } from 'vue';
     import svgToTinyDataUri from 'mini-svg-data-uri';
     import { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position, Transform } from './Transform';
@@ -28,7 +28,7 @@
         origin: {type: Object as PropType<Position>, required: true},
         bBox: {type: Object as PropType<DOMRect>, required: true},
         center: {type: Object as PropType<Position>, required: true},
-        transform: {type: Object as PropType<Transform>},
+        transform: {type: Object as PropType<Transform>, required: true},
         transformMode: {type: String as PropType<TransformMode>},
         applyRotation: {type: Boolean, required: true},
     });
@@ -45,10 +45,16 @@
         return Math.max(Math.min(props.bBox.width, props.bBox.height) * 0.15, 5);
     });//handleSize
 
+    const handleWidth = computed(() => {
+        return handleSize.value / props.transform.scale.x;
+    });//handleWidth
+
+    const handleHeight = computed(() => {
+        return handleSize.value / props.transform.scale.y;
+    });//handleHeight
+
     function bidirArrowCursor(rotationAngle: number) {
-        if (props.transform?.rotate?.angle) {
-            rotationAngle += props.transform.rotate.angle;
-        }//if
+        rotationAngle += props.transform.rotate.angle;
         
         const svg = `\
 <svg
@@ -95,7 +101,7 @@
 <template>
     <g  :transform="transform?.toAttr(applyRotation)">
         <rect v-bind="bBox" class="tr-box" :class="{rotated: inRotationMode}" 
-            :rx="rx" 
+            :rx="rx" vector-effect="non-scaling-stroke"
             @mousedown.stop="emit('mouse-down', 'tr-box', $event)"
             @mouseup.stop="emit('mouse-up', 'tr-box', $event)"
             @mousemove.stop="emit('mouse-move', 'tr-box', $event)"
@@ -104,71 +110,79 @@
             @contextmenu.prevent.stop="emit('box-right-click', $event)"
             />
         <template v-if="!inRotationMode">
-            <rect :x="bBox.x" :y="bBox.y" :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x" :y="bBox.y" :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(45)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'nw-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'nw-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'nw-handle', $event)"
                 @mouseleave.stop="emit('mouse-leave', 'nw-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y" 
-                :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x + bBox.width * 0.5 - handleWidth * 0.5" :y="bBox.y" 
+                :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'n-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'n-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'n-handle', $event)"
                 @mouseleave.stop="emit('mouse-leave', 'n-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y" 
-                :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x + bBox.width - handleWidth" :y="bBox.y" 
+                :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'ne-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'ne-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'ne-handle', $event)"
                 @mouseleave.stop="emit('mouse-leave', 'ne-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
-                :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.5 - handleHeight * 0.5" 
+                :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'w-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'w-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'w-handle', $event)"
                 @mouseleave.stop="emit('mouse-leave', 'w-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.x" :y="bBox.y + bBox.height - handleSize" 
-                :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x" :y="bBox.y + bBox.height - handleHeight" 
+                :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'sw-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'sw-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'sw-handle', $event)"
                 @mouseleave.stop="emit('mouse-leave', 'sw-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.x + bBox.width * 0.5 - handleSize * 0.5" :y="bBox.y + bBox.height - handleSize" 
-                :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x + bBox.width * 0.5 - handleWidth * 0.5" :y="bBox.y + bBox.height - handleHeight" 
+                :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 's-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 's-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 's-handle', $event)"
                 @mouseleave.stop="emit('mouse-leave', 's-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height * 0.5 - handleSize * 0.5" 
-                :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x + bBox.width - handleWidth" :y="bBox.y + bBox.height * 0.5 - handleHeight * 0.5" 
+                :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'e-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'e-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'e-handle', $event)"
                 @mouseleave.stop="emit('mouse-leave', 'e-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.x + bBox.width - handleSize" :y="bBox.y + bBox.height - handleSize" 
-                :width="handleSize" :height="handleSize" 
+            <rect :x="bBox.x + bBox.width - handleWidth" :y="bBox.y + bBox.height - handleHeight" 
+                :width="handleWidth" :height="handleHeight" 
                 :style="{cursor: bidirArrowCursor(45)}" class="handle"
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'se-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'se-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'se-handle', $event)"
@@ -179,6 +193,7 @@
         <template v-else>
             <rect :x="bBox.x" :y="bBox.y" :width="bBox.width" :height="bBox.height" 
                 fill="transparent" :style="{cursor: rotationArrowSvgCursor}" 
+                vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'rot-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'rot-handle', $event)"
                 @mousemove.stop="emit('mouse-move', 'rot-handle', $event)"
