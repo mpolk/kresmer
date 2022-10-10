@@ -29,7 +29,7 @@ export default class NetworkComponentController {
     readonly kresmer: Kresmer;
     readonly component: NetworkComponent;
     origin: Position;
-    transform?: Transform;
+    transform: Transform;
     public isDragged = false;
     public isBeingTransformed = false;
     public transformMode?: TransformMode;
@@ -53,7 +53,7 @@ export default class NetworkComponentController {
         this.kresmer = kresmer;
         this.component = component;
         this.origin = params.origin;
-        this.transform = params.transform;
+        this.transform = params.transform ? params.transform : new Transform;
     }//ctor
 
 
@@ -88,8 +88,6 @@ export default class NetworkComponentController {
     public startRotate(event: MouseEvent, center: Position)
     {
         this.kresmer.resetAllComponentMode(this);
-        this.transform || (this.transform = new Transform);
-        this.transform.rotate || (this.transform.rotate = {angle: 0});
         this.savedMousePos = this.getMousePosition(event);
         this.transform.setPivot(center);
         this.rotationStartAngle = this.transform.rotate.angle;
@@ -103,8 +101,7 @@ export default class NetworkComponentController {
             return false;
             
         const mousePos = this.getMousePosition(event);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const offset = this.transform!.translate ? this.transform!.translate : {x: 0, y: 0};
+        const offset = {...this.transform.translate};
         const r1 = {
             x: mousePos.x - center.x - this.origin.x - offset.x, 
             y: mousePos.y - center.y - this.origin.y - offset.y
@@ -117,11 +114,9 @@ export default class NetworkComponentController {
         };
         const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / Math.PI * 180;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform!.rotate!.angle = this.rotationStartAngle! + angleDelta;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        (this.transform!.rotate!.angle! < 0) && (this.transform!.rotate!.angle += 360);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        (this.transform!.rotate!.angle! > 360) && (this.transform!.rotate!.angle -= 360);
+        this.transform.rotate.angle = this.rotationStartAngle! + angleDelta;
+        (this.transform.rotate.angle < 0) && (this.transform.rotate.angle += 360);
+        (this.transform.rotate.angle > 360) && (this.transform.rotate.angle -= 360);
         return true;
     }//rotate
 
@@ -129,10 +124,6 @@ export default class NetworkComponentController {
     public startScale(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
-        this.transform || (this.transform = new Transform);
-        this.transform.scale || (this.transform.scale = {x: 1, y: 1});
-        this.transform.scale.y || (this.transform.scale.y = this.transform.scale.x);
-        this.transform.translate || (this.transform.translate = {x: 0, y: 0});
         this.savedScale = {...this.transform.scale} as {x: number, y: number};
         this.savedTranslation = {...this.transform.translate};
         this.savedMousePos = this.getMousePosition(event);
@@ -161,17 +152,17 @@ export default class NetworkComponentController {
         };
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform!.scale!.x = this.savedScale!.x + delta.x / bBox.width;
+        this.transform.scale.x = this.savedScale!.x + delta.x / bBox.width;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform!.scale!.y = this.savedScale!.y + delta.y / bBox.height;
+        this.transform.scale.y = this.savedScale!.y + delta.y / bBox.height;
 
         if (zonePrefix.includes('w')) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.transform!.translate!.x = this.savedTranslation!.x - delta.x;
+            this.transform.translate.x = this.savedTranslation!.x - delta.x;
         }//if
         if (zonePrefix.includes('n')) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.transform!.translate!.y = this.savedTranslation!.y - delta.y;
+            this.transform.translate.y = this.savedTranslation!.y - delta.y;
         }//if
         return true;
     }//scale
