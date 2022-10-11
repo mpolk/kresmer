@@ -3,8 +3,9 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Network Component Controller - a generic network element instance 
- * controller, responsible for its placement, transformations etc
+ * NetworkComponentController - a network component instance 
+ * controller, responsible for its placement on the drawing, moving, 
+ * transformations etc
  ***************************************************************************/
 
 import Kresmer from "../Kresmer";
@@ -12,7 +13,7 @@ import NetworkComponent from "./NetworkComponent";
 import { Position, Transform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
 
-export type TransformMode = undefined | "scaling" | "x-scaling" | "y-scaling" | "rotation";
+export type TransformMode = undefined | "scaling" | "rotation";
 
 export default class NetworkComponentController {
     readonly kresmer: Kresmer;
@@ -129,17 +130,19 @@ export default class NetworkComponentController {
             
         const zonePrefix = zone.replace('-handle', '');
         const mousePos = this.getMousePosition(event);
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const savedMousePos = this.savedMousePos!;
+        const dx0 = mousePos.x - savedMousePos.x;
+        const dy0 = mousePos.y - savedMousePos.y;
+        const fi = this.transform.rotate.angle * Math.PI / 180;
+        const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
+        const dx1 = dx0 * cosFi + dy0 * sinFi;
+        const dy1 = -dx0 * sinFi + dy0 * cosFi;
+        const dx2 = zonePrefix.includes('w') ? -dx1 : dx1;
+        const dy2 = zonePrefix.includes('n') ? -dy1 : dy1;
         const delta = {
-               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            x: zonePrefix.includes('w') ? this.savedMousePos!.x - mousePos.x :
-               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-               zonePrefix.includes('e') ? mousePos.x - this.savedMousePos!.x : 
-               0,
-               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            y: zonePrefix.includes('n') ? this.savedMousePos!.y - mousePos.y :
-               // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-               zonePrefix.includes('s') ? mousePos.y - this.savedMousePos!.y : 
-               0
+            x: zonePrefix.includes('w') || zonePrefix.includes('e') ? dx2 : 0,
+            y: zonePrefix.includes('n') || zonePrefix.includes('s') ? dy2 : 0
         };
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -147,13 +150,13 @@ export default class NetworkComponentController {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.transform.scale.y = this.savedScale!.y + delta.y / bBox.height;
 
-        if (zonePrefix.includes('w')) {
+        const dx3 = delta.x * cosFi - delta.y * sinFi;
+        const dy3 = delta.x * sinFi + delta.y * cosFi;
+        if (zonePrefix.includes('w') || zonePrefix.includes('n')) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.transform.translate.x = this.savedTranslation!.x - delta.x;
-        }//if
-        if (zonePrefix.includes('n')) {
+            this.transform.translate.x = this.savedTranslation!.x - dx3;
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.transform.translate.y = this.savedTranslation!.y - delta.y;
+            this.transform.translate.y = this.savedTranslation!.y - dy3;
         }//if
         return true;
     }//scale
