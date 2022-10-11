@@ -18,7 +18,7 @@
 </script>
 
 <script setup lang="ts">
-    import { computed, h, PropType } from 'vue';
+    import { computed, PropType } from 'vue';
     import svgToTinyDataUri from 'mini-svg-data-uri';
     import { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position, Transform } from './Transform';

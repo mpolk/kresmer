@@ -93,14 +93,14 @@ export default class NetworkComponentController {
         const mousePos = this.getMousePosition(event);
         const offset = {...this.transform.translate};
         const r1 = {
-            x: mousePos.x - center.x - this.origin.x - offset.x, 
-            y: mousePos.y - center.y - this.origin.y - offset.y
+            x: mousePos.x - center.x * this.transform.scale.x - this.origin.x - offset.x, 
+            y: mousePos.y - center.y * this.transform.scale.y - this.origin.y - offset.y
         };
         const r0 = {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            x: this.savedMousePos!.x - center.x - this.origin.x - offset.x, 
+            x: this.savedMousePos!.x - center.x * this.transform.scale.x - this.origin.x - offset.x, 
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            y: this.savedMousePos!.y - center.y - this.origin.y - offset.y
+            y: this.savedMousePos!.y - center.y * this.transform.scale.y - this.origin.y - offset.y
         };
         const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / Math.PI * 180;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
