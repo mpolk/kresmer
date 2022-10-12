@@ -132,6 +132,11 @@ export default class NetworkComponentController {
         const mousePos = this.getMousePosition(event);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const savedMousePos = this.savedMousePos!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const savedScale = this.savedScale!;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const savedTranslation = this.savedTranslation!;
+
         const dx0 = mousePos.x - savedMousePos.x;
         const dy0 = mousePos.y - savedMousePos.y;
         const fi = this.transform.rotate.angle * Math.PI / 180;
@@ -170,19 +175,26 @@ export default class NetworkComponentController {
                 break;
         }//switch
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.scale.x = this.savedScale!.x + dx1 / bBox.width;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.scale.y = this.savedScale!.y + dy1 / bBox.height;
+        this.transform.scale.x = savedScale.x + dx1 / bBox.width;
+        this.transform.scale.y = savedScale.y + dy1 / bBox.height;
 
-        const dx3 = dx1 * cosFi - dy1 * sinFi;
-        const dy3 = dx1 * sinFi + dy1 * cosFi;
-        if (zonePrefix.includes('w') || zonePrefix.includes('n')) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.transform.translate.x = this.savedTranslation!.x - dx3;
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.transform.translate.y = this.savedTranslation!.y - dy3;
-        }//if
+        const dx2 = dx1 * cosFi - dy1 * sinFi;
+        const dy2 = dx1 * sinFi + dy1 * cosFi;
+        switch (zonePrefix) {
+            case "nw":
+            case "n":
+            case "w":
+                this.transform.translate.x = savedTranslation.x - dx2;
+                this.transform.translate.y = savedTranslation.y - dy2;
+                break;
+            case "ne":
+                this.transform.translate.y = savedTranslation.y - dy2;
+                break;
+            case "sw":
+                this.transform.translate.x = savedTranslation.x - dx2;
+                break;
+        }//switch
+
         return true;
     }//scale
 
