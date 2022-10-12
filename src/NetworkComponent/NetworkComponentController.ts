@@ -178,22 +178,25 @@ export default class NetworkComponentController {
         this.transform.scale.x = savedScale.x + dx1 / bBox.width;
         this.transform.scale.y = savedScale.y + dy1 / bBox.height;
 
-        const dx2 = dx1 * cosFi - dy1 * sinFi;
-        const dy2 = dx1 * sinFi + dy1 * cosFi;
+        let dx2 = 0;
+        let dy2 = 0;
         switch (zonePrefix) {
             case "nw":
             case "n":
             case "w":
-                this.transform.translate.x = savedTranslation.x - dx2;
-                this.transform.translate.y = savedTranslation.y - dy2;
+                dx2 = dx1 * cosFi - dy1 * sinFi;
+                dy2 = dx1 * sinFi + dy1 * cosFi;
                 break;
             case "ne":
-                this.transform.translate.y = savedTranslation.y - dy2;
+                dy2 = dx1 * sinFi + dy1 * cosFi;
                 break;
             case "sw":
-                this.transform.translate.x = savedTranslation.x - dx2;
+                dx2 = dx1 * cosFi - dy1 * sinFi;
                 break;
         }//switch
+
+        this.transform.translate.x = savedTranslation.x - dx2;
+        this.transform.translate.y = savedTranslation.y - dy2;
 
         return true;
     }//scale
