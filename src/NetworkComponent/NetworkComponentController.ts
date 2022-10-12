@@ -136,22 +136,47 @@ export default class NetworkComponentController {
         const dy0 = mousePos.y - savedMousePos.y;
         const fi = this.transform.rotate.angle * Math.PI / 180;
         const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
-        const dx1 = dx0 * cosFi + dy0 * sinFi;
-        const dy1 = -dx0 * sinFi + dy0 * cosFi;
-        const dx2 = zonePrefix.includes('w') ? -dx1 : dx1;
-        const dy2 = zonePrefix.includes('n') ? -dy1 : dy1;
-        const delta = {
-            x: zonePrefix.includes('w') || zonePrefix.includes('e') ? dx2 : 0,
-            y: zonePrefix.includes('n') || zonePrefix.includes('s') ? dy2 : 0
-        };
+
+        let dx1 = 0; 
+        let dy1 = 0;
+        switch (zonePrefix) {
+            case "se":
+                dx1 =  dx0 * cosFi + dy0 * sinFi;
+                dy1 = -dx0 * sinFi + dy0 * cosFi;
+                break;
+            case "s":
+                dy1 = -dx0 * sinFi + dy0 * cosFi;
+                break;
+            case "e":
+                dx1 =  dx0 * cosFi + dy0 * sinFi;
+                break;
+            case "nw":
+                dx1 = -dx0 * cosFi - dy0 * sinFi;
+                dy1 =  dx0 * sinFi - dy0 * cosFi;
+                break;
+            case "n":
+                dy1 =  dx0 * sinFi - dy0 * cosFi;
+                break;
+            case "w":
+                dx1 = -dx0 * cosFi - dy0 * sinFi;
+                break;
+            case "ne":
+                dx1 =  dx0 * cosFi + dy0 * sinFi;
+                dy1 =  dx0 * sinFi - dy0 * cosFi;
+                break;
+            case "sw":
+                dx1 = -dx0 * cosFi - dy0 * sinFi;
+                dy1 = -dx0 * sinFi + dy0 * cosFi;
+                break;
+        }//switch
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.scale.x = this.savedScale!.x + delta.x / bBox.width;
+        this.transform.scale.x = this.savedScale!.x + dx1 / bBox.width;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.scale.y = this.savedScale!.y + delta.y / bBox.height;
+        this.transform.scale.y = this.savedScale!.y + dy1 / bBox.height;
 
-        const dx3 = delta.x * cosFi - delta.y * sinFi;
-        const dy3 = delta.x * sinFi + delta.y * cosFi;
+        const dx3 = dx1 * cosFi - dy1 * sinFi;
+        const dy3 = dx1 * sinFi + dy1 * cosFi;
         if (zonePrefix.includes('w') || zonePrefix.includes('n')) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.transform.translate.x = this.savedTranslation!.x - dx3;
