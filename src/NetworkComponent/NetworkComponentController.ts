@@ -188,10 +188,12 @@ export default class NetworkComponentController {
                 dy2 = dx1 * sinFi + dy1 * cosFi;
                 break;
             case "ne":
+                dx2 =              -dy1 * sinFi;
                 dy2 = dx1 * sinFi + dy1 * cosFi;
                 break;
             case "sw":
                 dx2 = dx1 * cosFi - dy1 * sinFi;
+                dy2 = -dx1 * sinFi;
                 break;
         }//switch
 
