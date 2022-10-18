@@ -78,7 +78,7 @@
     }//rotate
 
 
-    public changeScale(shift: Shift, direction: string, boxSize: BoxSize, 
+    public changeScale(shift: Shift, direction: string, bBoxSize: BoxSize, 
                        initialTransform: Transform)
     {
         const {x: dx0, y: dy0} = shift;
@@ -118,8 +118,8 @@
                 break;
         }//switch
 
-        this.scale.x = initialTransform.scale.x + dx1 / boxSize.width;
-        this.scale.y = initialTransform.scale.y + dy1 / boxSize.height;
+        this.scale.x = initialTransform.scale.x + dx1 / bBoxSize.width;
+        this.scale.y = initialTransform.scale.y + dy1 / bBoxSize.height;
 
         let dx2 = 0;
         let dy2 = 0;

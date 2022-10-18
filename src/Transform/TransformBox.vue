@@ -42,19 +42,11 @@
     });
 
     const handleBaseSize = computed(() => {
-        return Math.max(Math.min(props.bBox.width, props.bBox.height) * 0.15, 5);
+        return Math.min(props.bBox.width, props.bBox.height) * 0.2;
     });//handleBaseSize
 
-    // const handleWidth = computed(() => {
-    //     return handleBaseSize.value / props.transform.scale.x;
-    // });//handleWidth
-
-    // const handleHeight = computed(() => {
-    //     return handleBaseSize.value / props.transform.scale.y;
-    // });//handleHeight
-
     const hHandleH = computed(() => {
-        return handleBaseSize.value * 4 / props.transform.scale.x;
+        return props.bBox.width - 2 * vHandleH.value;
     });//hHandleH
 
     const hHandleV = computed(() => {
@@ -62,7 +54,7 @@
     });//hHandleV
 
     const vHandleV = computed(() => {
-        return handleBaseSize.value * 4 / props.transform.scale.y;
+        return props.bBox.height - 2 * hHandleV.value;
     });//vHandleV
 
     const vHandleH = computed(() => {
@@ -126,8 +118,8 @@
             @contextmenu.prevent.stop="emit('box-right-click', $event)"
             />
         <template v-if="!inRotationMode">
-            <rect x="0" y="0" :width="vHandleH" :height="hHandleV" 
-                :style="{cursor: bidirArrowCursor(45)}" class="handle"
+            <rect :x="bBox.x" :y="bBox.y" :width="vHandleH" :height="hHandleV" 
+                :style="{cursor: bidirArrowCursor(45)}" class="handle corner"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'nw-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'nw-handle', $event)"
@@ -135,9 +127,9 @@
                 @mouseleave.stop="emit('mouse-leave', 'nw-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.width * 0.5 - hHandleH * 0.5" y="0" 
+            <rect :x="bBox.x + bBox.width * 0.5 - hHandleH * 0.5" :y="bBox.y" 
                 :width="hHandleH" :height="hHandleV" 
-                :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                :style="{cursor: bidirArrowCursor(90)}" class="handle side"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'n-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'n-handle', $event)"
@@ -145,9 +137,9 @@
                 @mouseleave.stop="emit('mouse-leave', 'n-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.width - vHandleH" y="0" 
+            <rect :x="bBox.x + bBox.width - vHandleH" :y="bBox.y" 
                 :width="vHandleH" :height="hHandleV" 
-                :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                :style="{cursor: bidirArrowCursor(-45)}" class="handle corner"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'ne-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'ne-handle', $event)"
@@ -155,9 +147,9 @@
                 @mouseleave.stop="emit('mouse-leave', 'ne-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect x="0" :y="bBox.height * 0.5 - vHandleV * 0.5" 
+            <rect :x="bBox.x" :y="bBox.y + bBox.height * 0.5 - vHandleV * 0.5" 
                 :width="vHandleH" :height="vHandleV" 
-                :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                :style="{cursor: bidirArrowCursor(0)}" class="handle side"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'w-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'w-handle', $event)"
@@ -165,9 +157,9 @@
                 @mouseleave.stop="emit('mouse-leave', 'w-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect x="0" :y="bBox.height - hHandleV" 
+            <rect :x="bBox.x" :y="bBox.y + bBox.height - hHandleV" 
                 :width="vHandleH" :height="hHandleV" 
-                :style="{cursor: bidirArrowCursor(-45)}" class="handle"
+                :style="{cursor: bidirArrowCursor(-45)}" class="handle corner"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'sw-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'sw-handle', $event)"
@@ -175,9 +167,10 @@
                 @mouseleave.stop="emit('mouse-leave', 'sw-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.width * 0.5 - hHandleH * 0.5" :y="bBox.height - hHandleV" 
+            <rect :x="bBox.x + bBox.width * 0.5 - hHandleH * 0.5" 
+                :y="bBox.y + bBox.height - hHandleV" 
                 :width="hHandleH" :height="hHandleV" 
-                :style="{cursor: bidirArrowCursor(90)}" class="handle"
+                :style="{cursor: bidirArrowCursor(90)}" class="handle side"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 's-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 's-handle', $event)"
@@ -185,9 +178,10 @@
                 @mouseleave.stop="emit('mouse-leave', 's-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.width - vHandleH" :y="bBox.height * 0.5 - vHandleV * 0.5" 
+            <rect :x="bBox.x + bBox.width - vHandleH" 
+                :y="bBox.y + bBox.height * 0.5 - vHandleV * 0.5" 
                 :width="vHandleH" :height="vHandleV" 
-                :style="{cursor: bidirArrowCursor(0)}" class="handle"
+                :style="{cursor: bidirArrowCursor(0)}" class="handle side"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'e-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'e-handle', $event)"
@@ -195,9 +189,9 @@
                 @mouseleave.stop="emit('mouse-leave', 'e-handle', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <rect :x="bBox.width - vHandleH" :y="bBox.height - hHandleV" 
+            <rect :x="bBox.x + bBox.width - vHandleH" :y="bBox.y + bBox.height - hHandleV" 
                 :width="vHandleH" :height="hHandleV" 
-                :style="{cursor: bidirArrowCursor(45)}" class="handle"
+                :style="{cursor: bidirArrowCursor(45)}" class="handle corner"
                 vector-effect="non-scaling-stroke"
                 @mousedown.stop="emit('mouse-down', 'se-handle', $event)"
                 @mouseup.stop="emit('mouse-up', 'se-handle', $event)"
@@ -240,7 +234,12 @@
         stroke: blue;
         stroke-width: 1px;
         fill: lightblue;
-        fill-opacity: 0.3;
+        &.side {
+            fill-opacity: 0.3;
+        }
+        &.corner {
+            fill-opacity: 0.6;
+        }
     }
 
     .hub {
