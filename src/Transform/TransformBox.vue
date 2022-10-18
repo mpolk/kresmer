@@ -23,6 +23,7 @@
     import { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position, Transform } from './Transform';
     import { TransformBoxZone } from "../Transform/TransformBox";
+import { match } from 'assert';
 
     const props = defineProps({
         origin: {type: Object as PropType<Position>, required: true},
@@ -35,11 +36,31 @@
 
     const inRotationMode = computed(() => props.transformMode === "rotation");
 
-    const rx = computed(() => {
-        if (!inRotationMode.value)
-            return undefined;
-        return Math.max(Math.min(props.bBox.width * 0.2, props.bBox.height * 0.2), 5);
-    });
+    const cornerR = computed(() => 
+        inRotationMode.value ?
+            Math.max(Math.min(
+                props.bBox.width * props.transform.scale.x * 0.2, 
+                props.bBox.height * props.transform.scale.x * 0.2), 5) :
+            undefined
+    );
+
+    const cornerRx = computed(() => 
+        cornerR.value ? cornerR.value / props.transform.scale.x : undefined
+    );
+
+    const cornerRy = computed(() =>
+        cornerR.value ? cornerR.value / props.transform.scale.y : undefined
+    );
+
+    const hubR = computed(() => 
+        Math.min(
+            props.bBox.width * props.transform.scale.x, 
+            props.bBox.height * props.transform.scale.y
+        ) * 0.15
+    );
+
+    const hubRx = computed(() => hubR.value / props.transform.scale.x);
+    const hubRy = computed(() => hubR.value / props.transform.scale.y);
 
     const handleBaseSize = computed(() => {
         return Math.min(props.bBox.width, props.bBox.height) * 0.2;
@@ -109,7 +130,7 @@
 <template>
     <g  :transform="transform?.toAttr(applyRotation)">
         <rect v-bind="bBox" class="tr-box" :class="{rotated: inRotationMode}" 
-            :rx="rx" vector-effect="non-scaling-stroke"
+            :rx="cornerRx" :ry="cornerRy" vector-effect="non-scaling-stroke"
             @mousedown.stop="emit('mouse-down', 'tr-box', $event)"
             @mouseup.stop="emit('mouse-up', 'tr-box', $event)"
             @mousemove.stop="emit('mouse-move', 'tr-box', $event)"
@@ -211,7 +232,7 @@
                 @click.prevent.stop="emit('box-click', $event)"
                 @contextmenu.prevent.stop="emit('box-right-click', $event)"
                 />
-            <circle :cx="center.x" :cy="center.y" :r="Math.min(bBox.width, bBox.height) * 0.15" 
+            <ellipse :cx="center.x" :cy="center.y" :rx="hubRx" :ry="hubRy"
                 class="hub"
                 @mousedown.stop=""
                 @click.prevent.stop="emit('box-click', $event)"
