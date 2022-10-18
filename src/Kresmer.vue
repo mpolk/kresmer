@@ -96,6 +96,11 @@ import NetworkComponent from './NetworkComponent/NetworkComponent';
         @mousemove.prevent=""
         @wheel.ctrl.prevent="onMouseWheel($event)"
         >
+        <defs>
+            <filter id="kre:fltTrBoxHub">
+                <feBlend in="SourceGraphic" in2="BackgroundImage" mode="screen" />
+            </filter>
+        </defs>
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :controller="controller"

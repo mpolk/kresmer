@@ -23,7 +23,6 @@
     import { TransformMode } from '../NetworkComponent/NetworkComponentController';
     import { Position, Transform } from './Transform';
     import { TransformBoxZone } from "../Transform/TransformBox";
-import { match } from 'assert';
 
     const props = defineProps({
         origin: {type: Object as PropType<Position>, required: true},
@@ -266,7 +265,8 @@ import { match } from 'assert';
     .hub {
         stroke: none;
         //stroke-width: 1.5px;
-        fill: rgb(1, 89, 119);
+        fill: rgb(1, 88, 119);
         fill-opacity: 0.5;
+        filter: url("#kre:fltTrBoxHub");
     }
 </style>
