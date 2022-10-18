@@ -97,12 +97,8 @@ export default class NetworkComponentController {
         const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const r0 = {x: this.savedMousePos!.x - c.x, y: this.savedMousePos!.y - c.y};
-        const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / 
-                           Math.PI * 180;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.rotation.angle = this.savedTransform!.rotation.angle + angleDelta;
-        (this.transform.rotation.angle < 0) && (this.transform.rotation.angle += 360);
-        (this.transform.rotation.angle > 360) && (this.transform.rotation.angle -= 360);
+        this.transform.rotate(r1, r0, this.savedTransform!);
         return true;
     }//rotate
 
@@ -122,76 +118,12 @@ export default class NetworkComponentController {
         if (!this.isBeingTransformed)
             return false;
             
-        const zonePrefix = zone.replace('-handle', '');
         const mousePos = this.getMousePosition(event);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const savedMousePos = this.savedMousePos!;
+        const shift = {x: mousePos.x - savedMousePos.x, y: mousePos.y - savedMousePos.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const savedTransform = this.savedTransform!;
-
-        const dx0 = mousePos.x - savedMousePos.x;
-        const dy0 = mousePos.y - savedMousePos.y;
-        const fi = this.transform.rotation.angle * Math.PI / 180;
-        const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
-
-        let dx1 = 0; 
-        let dy1 = 0;
-        switch (zonePrefix) {
-            case "se":
-                dx1 =  dx0 * cosFi + dy0 * sinFi;
-                dy1 = -dx0 * sinFi + dy0 * cosFi;
-                break;
-            case "s":
-                dy1 = -dx0 * sinFi + dy0 * cosFi;
-                break;
-            case "e":
-                dx1 =  dx0 * cosFi + dy0 * sinFi;
-                break;
-            case "nw":
-                dx1 = -dx0 * cosFi - dy0 * sinFi;
-                dy1 =  dx0 * sinFi - dy0 * cosFi;
-                break;
-            case "n":
-                dy1 =  dx0 * sinFi - dy0 * cosFi;
-                break;
-            case "w":
-                dx1 = -dx0 * cosFi - dy0 * sinFi;
-                break;
-            case "ne":
-                dx1 =  dx0 * cosFi + dy0 * sinFi;
-                dy1 =  dx0 * sinFi - dy0 * cosFi;
-                break;
-            case "sw":
-                dx1 = -dx0 * cosFi - dy0 * sinFi;
-                dy1 = -dx0 * sinFi + dy0 * cosFi;
-                break;
-        }//switch
-
-        this.transform.scale.x = savedTransform.scale.x + dx1 / bBox.width;
-        this.transform.scale.y = savedTransform.scale.y + dy1 / bBox.height;
-
-        let dx2 = 0;
-        let dy2 = 0;
-        switch (zonePrefix) {
-            case "nw":
-            case "n":
-            case "w":
-                dx2 = dx1 * cosFi - dy1 * sinFi;
-                dy2 = dx1 * sinFi + dy1 * cosFi;
-                break;
-            case "ne":
-                dx2 =              -dy1 * sinFi;
-                dy2 = dx1 * sinFi + dy1 * cosFi;
-                break;
-            case "sw":
-                dx2 = dx1 * cosFi - dy1 * sinFi;
-                dy2 = -dx1 * sinFi;
-                break;
-        }//switch
-
-        this.transform.translation.x = savedTransform.translation.x - dx2;
-        this.transform.translation.y = savedTransform.translation.y - dy2;
-
+        this.transform.changeScale(shift, zone.replace('-handle', ''), bBox, this.savedTransform!);
         return true;
     }//scale
 
