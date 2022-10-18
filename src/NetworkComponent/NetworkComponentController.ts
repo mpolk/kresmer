@@ -26,9 +26,7 @@ export default class NetworkComponentController {
 
     private dragStartPos?: Position;
     private savedMousePos?: Position;
-    private rotationStartAngle?: number;
-    private savedScale?: {x: number, y: number};
-    private savedTranslation?: {x: number, y: number};
+    private savedTransform?: Transform;
     public zIndex = -1;
     private savedZIndex = -1;
 
@@ -80,7 +78,7 @@ export default class NetworkComponentController {
         this.kresmer.resetAllComponentMode(this);
         this.savedMousePos = this.getMousePosition(event);
         this.transform.setPivot({x: center.x * this.transform.scale.x, y: center.y * this.transform.scale.y});
-        this.rotationStartAngle = this.transform.rotate.angle;
+        this.savedTransform = new Transform(this.transform);
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
         this.bringComponentToTop();
@@ -92,20 +90,17 @@ export default class NetworkComponentController {
             return false;
             
         const mousePos = this.getMousePosition(event);
-        const offset = {...this.transform.translate};
-        const r1 = {
-            x: mousePos.x - center.x * this.transform.scale.x - this.origin.x - offset.x, 
-            y: mousePos.y - center.y * this.transform.scale.y - this.origin.y - offset.y
+        const c = {
+            x: center.x * this.transform.scale.x + this.origin.x + this.transform.translation.x, 
+            y: center.y * this.transform.scale.y + this.origin.y + this.transform.translation.y
         };
-        const r0 = {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            x: this.savedMousePos!.x - center.x * this.transform.scale.x - this.origin.x - offset.x, 
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            y: this.savedMousePos!.y - center.y * this.transform.scale.y - this.origin.y - offset.y
-        };
-        const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / Math.PI * 180;
+        const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.rotate.angle = this.rotationStartAngle! + angleDelta;
+        const r0 = {x: this.savedMousePos!.x - c.x, y: this.savedMousePos!.y - c.y};
+        const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / 
+                           Math.PI * 180;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.transform.rotate.angle = this.savedTransform!.rotate.angle + angleDelta;
         (this.transform.rotate.angle < 0) && (this.transform.rotate.angle += 360);
         (this.transform.rotate.angle > 360) && (this.transform.rotate.angle -= 360);
         return true;
@@ -115,8 +110,7 @@ export default class NetworkComponentController {
     public startScale(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
-        this.savedScale = {...this.transform.scale} as {x: number, y: number};
-        this.savedTranslation = {...this.transform.translate};
+        this.savedTransform = new Transform(this.transform);
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
         this.transformMode = "scaling";
@@ -133,9 +127,7 @@ export default class NetworkComponentController {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const savedMousePos = this.savedMousePos!;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const savedScale = this.savedScale!;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const savedTranslation = this.savedTranslation!;
+        const savedTransform = this.savedTransform!;
 
         const dx0 = mousePos.x - savedMousePos.x;
         const dy0 = mousePos.y - savedMousePos.y;
@@ -175,8 +167,8 @@ export default class NetworkComponentController {
                 break;
         }//switch
 
-        this.transform.scale.x = savedScale.x + dx1 / bBox.width;
-        this.transform.scale.y = savedScale.y + dy1 / bBox.height;
+        this.transform.scale.x = savedTransform.scale.x + dx1 / bBox.width;
+        this.transform.scale.y = savedTransform.scale.y + dy1 / bBox.height;
 
         let dx2 = 0;
         let dy2 = 0;
@@ -197,8 +189,8 @@ export default class NetworkComponentController {
                 break;
         }//switch
 
-        this.transform.translate.x = savedTranslation.x - dx2;
-        this.transform.translate.y = savedTranslation.y - dy2;
+        this.transform.translation.x = savedTransform.translation.x - dx2;
+        this.transform.translation.y = savedTransform.translation.y - dy2;
 
         return true;
     }//scale

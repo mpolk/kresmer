@@ -9,26 +9,20 @@
  export type Position = {x: number, y: number};
  export type Rotation = {angle: number, x: number, y: number};
  export interface ITransform {
-    translate?: {x: number, y: number};
+    translation?: {x: number, y: number};
     rotate?: Rotation;
     scale?: {x: number, y: number};
  }
  export class Transform implements ITransform {
-    translate: {x: number, y: number} = {x: 0, y: 0};
+    translation: {x: number, y: number} = {x: 0, y: 0};
     rotate: Rotation = {angle: 0, x: 0, y:0};
     scale: {x: number, y: number} = {x: 1, y: 1};
 
     constructor(init?: ITransform)
     {
-        if (init?.translate) {
-            this.translate = init.translate;
-        }//if
-        if (init?.rotate) {
-            this.rotate = init.rotate;
-        }//if
-        if (init?.scale) {
-            this.scale = init.scale;
-        }//if
+        init?.translation && (this.translation = {...init.translation});
+        init?.rotate && (this.rotate = {...init.rotate});
+        init?.scale && (this.scale = {...init.scale});
     }//ctor
 
     public setPivot(pivot: Position)
@@ -44,11 +38,11 @@
             const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
             const r1 = {x: r.x * cosFi - r.y * sinFi, y: r.x * sinFi + r.y * cosFi};
             const shift = {x: r.x - r1.x, y: r.y - r1.y};
-            if (!this.translate)
-                this.translate = {...shift};
+            if (!this.translation)
+                this.translation = {...shift};
             else {
-                this.translate.x += shift.x;
-                this.translate.y += shift.y;
+                this.translation.x += shift.x;
+                this.translation.y += shift.y;
             }//if
             this.rotate = {angle: this.rotate.angle, ...pivot};
         }//if
@@ -58,8 +52,8 @@
     {
         const chunks: string[] = [];
 
-        if (this.translate.x || this.translate.y) {
-            chunks.push(`translate(${this.translate.x} ${this.translate.y})`);
+        if (this.translation.x || this.translation.y) {
+            chunks.push(`translate(${this.translation.x} ${this.translation.y})`);
         }//if
 
         if (this.rotate.angle && applyRotation) {

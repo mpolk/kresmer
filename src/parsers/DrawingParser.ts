@@ -202,7 +202,7 @@ export default class DrawingParser {
                             'invalid format of the "translate.y" attribute',
                             {source: `Component ${node.parentElement?.getAttribute("class")}`}
                             );
-                    transform.translate = {x: xf, y: yf};
+                    transform.translation = {x: xf, y: yf};
                     break;
                 }
 
