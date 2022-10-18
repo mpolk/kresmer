@@ -76,7 +76,7 @@
 
     function onMouseWheel(event: WheelEvent)
     {
-        scale.value *= Math.pow(1.1, event.deltaY * -0.01);
+        scale.value *= Math.pow(1.05, event.deltaY * -0.01);
         emit("scale-changed", scale.value);
     }//onMouseWheel
 
