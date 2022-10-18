@@ -9,12 +9,13 @@
 <script lang="ts">
     import { PropType, ref, computed, provide } from 'vue';
     import Kresmer from './Kresmer';
-import NetworkComponent from './NetworkComponent/NetworkComponent';
+    import NetworkComponent from './NetworkComponent/NetworkComponent';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
+    import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
 
     export default {
-        components: { NetworkComponentHolder },
+        components: { NetworkComponentHolder, TransformBoxDefs: TransformBoxFilters },
     }
 </script>
 
@@ -97,9 +98,7 @@ import NetworkComponent from './NetworkComponent/NetworkComponent';
         @wheel.ctrl.prevent="onMouseWheel($event)"
         >
         <defs>
-            <filter id="kre:fltTrBoxHub">
-                <feBlend in="SourceGraphic" in2="BackgroundImage" mode="screen" />
-            </filter>
+            <TransformBoxFilters />
         </defs>
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
