@@ -70,7 +70,7 @@
     });//vHandleH
 
     function bidirArrowCursor(rotationAngle: number) {
-        rotationAngle += props.transform.rotate.angle;
+        rotationAngle += props.transform.rotation.angle;
         
         const svg = `\
 <svg

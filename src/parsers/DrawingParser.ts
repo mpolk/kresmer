@@ -215,10 +215,10 @@ export default class DrawingParser {
                             '"rotate" element must have an "angle" attribute',
                             {source: `Component ${node.parentElement?.getAttribute("class")}`}
                             );
-                    transform.rotate = {angle: parseFloat(angle), x: 0, y: 0};
+                    transform.rotation = {angle: parseFloat(angle), x: 0, y: 0};
                     if (x !== null && y !== null) {
-                        transform.rotate.x = parseFloat(x);
-                        transform.rotate.y = parseFloat(y);
+                        transform.rotation.x = parseFloat(x);
+                        transform.rotation.y = parseFloat(y);
                     }//if
                     break;
                 }

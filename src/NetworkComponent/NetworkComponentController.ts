@@ -100,9 +100,9 @@ export default class NetworkComponentController {
         const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / 
                            Math.PI * 180;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.rotate.angle = this.savedTransform!.rotate.angle + angleDelta;
-        (this.transform.rotate.angle < 0) && (this.transform.rotate.angle += 360);
-        (this.transform.rotate.angle > 360) && (this.transform.rotate.angle -= 360);
+        this.transform.rotation.angle = this.savedTransform!.rotation.angle + angleDelta;
+        (this.transform.rotation.angle < 0) && (this.transform.rotation.angle += 360);
+        (this.transform.rotation.angle > 360) && (this.transform.rotation.angle -= 360);
         return true;
     }//rotate
 
@@ -131,7 +131,7 @@ export default class NetworkComponentController {
 
         const dx0 = mousePos.x - savedMousePos.x;
         const dy0 = mousePos.y - savedMousePos.y;
-        const fi = this.transform.rotate.angle * Math.PI / 180;
+        const fi = this.transform.rotation.angle * Math.PI / 180;
         const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
 
         let dx1 = 0; 
