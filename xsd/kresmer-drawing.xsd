@@ -38,6 +38,12 @@
                                                 <xs:attribute name="y" type="xs:float"/>
                                             </xs:complexType>
                                         </xs:element>
+                                        <xs:element name="scale" minOccurs="0">
+                                            <xs:complexType>
+                                                <xs:attribute name="x" type="xs:float"/>
+                                                <xs:attribute name="y" type="xs:float"/>
+                                            </xs:complexType>
+                                        </xs:element>
                                     </xs:all>
                                 </xs:complexType>
                             </xs:element>

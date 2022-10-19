@@ -46,18 +46,13 @@
 
     /**
      * Generates an SVG "transform" attribute for this Transform
-     * @param applyRotation Specifies where to apply the rotation transform component
-     *                      along with other transform primitives. Normally the rotation
-     *                      should be applied, but at the component initialization time
-     *                      it should be turned off in order to generate the proper
-     *                      bounding box for the component.
      * @returns A string containing SVG transform attribute value
      */
-    public toAttr(applyRotation: boolean) 
+    public toAttr() 
     {
         const chunks: string[] = [];
 
-        if (this.rotation.angle && applyRotation) {
+        if (this.rotation.angle) {
             chunks.push(`rotate(${this.rotation.angle} ${this.rotation.x} ${this.rotation.y})`);
         }//if
 

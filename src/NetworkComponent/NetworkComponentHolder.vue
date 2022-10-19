@@ -32,7 +32,7 @@
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const trGroup = ref<SVGGraphicsElement>()!;
 
-    const applyRotation = ref(false);
+    const applyTransform = ref(false);
     const bBox = ref<SVGRect>();
 
     const center = computed(() => {
@@ -44,15 +44,24 @@
 
     onMounted(() => {
         bBox.value = svg.value?.getBBox({stroke: true});
-        applyRotation.value = true;
+        applyTransform.value = true;
     })//onMounted
 
     const transform = computed(() => {
-        if (props.transform)
+        if (props.transform && applyTransform.value)
             return props.transform;
         else
             return new Transform;
     })//transform
+
+    const transformAttr = computed(() => {
+        if (props.transform && applyTransform.value)
+            return props.transform.toAttr();
+        else
+            return undefined;
+    })//transformAttr
+
+    const transformOrigin = computed(() => `${center.value.x} ${center.value.y}`)
 
     const emit = defineEmits<{
         (event: "right-click", component: NetworkComponent, 
@@ -197,8 +206,7 @@
         }"
         >
         <g ref="trGroup" class="tr-group" 
-            :transform="transform.toAttr(applyRotation)" 
-            :transform-origin="`${center.x} ${center.y}`"
+            :transform="transformAttr" :transform-origin="transformOrigin"
             @mousedown.prevent.stop="onMouseDown($event)"
             @mouseup.prevent="onMouseUp($event)"
             @mousemove.prevent="onMouseMove($event)"
@@ -208,8 +216,8 @@
             <slot></slot>
         </g>
         <TransformBox v-if="transformMode" ref="trBox" :origin="origin!" 
-            :transform="transform" :transform-origin="`${center.x} ${center.y}`" 
-            :transform-mode="transformMode" :apply-rotation="applyRotation"
+            :transform="transform" :transform-origin="transformOrigin" 
+            :transform-mode="transformMode"
             :b-box="bBox!" :center="center"
             @mouse-down="onMouseDownInTransformBox"
             @mouse-move="onMouseMoveInTransformBox"

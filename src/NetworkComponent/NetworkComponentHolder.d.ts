@@ -8,6 +8,7 @@
  * Definitions
 \***************************************************************************/
 import { PropType } from "vue";
+import Transform, {TransformMode} from "../Transform/Transform";
 
 export const NetworkComponentHolderProps = {
     origin: {type: Object as PropType<Position>, required: true},

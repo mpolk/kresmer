@@ -30,6 +30,7 @@
         </props>
         <origin x="50" y="150"/>
         <transform>
+            <scale x="2"/>
             <rotate angle="45"/>
         </transform>
     </component>

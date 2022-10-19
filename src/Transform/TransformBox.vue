@@ -30,7 +30,6 @@
         center: {type: Object as PropType<Position>, required: true},
         transform: {type: Object as PropType<Transform>, required: true},
         transformMode: {type: String as PropType<TransformMode>},
-        applyRotation: {type: Boolean, required: true},
     });
 
     const inRotationMode = computed(() => props.transformMode === "rotation");
@@ -127,7 +126,7 @@
 </script>
 
 <template>
-    <g  :transform="transform?.toAttr(applyRotation)">
+    <g  :transform="transform?.toAttr()">
         <rect v-bind="bBox" class="tr-box" :class="{rotated: inRotationMode}" 
             :rx="cornerRx" :ry="cornerRy" vector-effect="non-scaling-stroke"
             @mousedown.stop="emit('mouse-down', 'tr-box', $event)"
