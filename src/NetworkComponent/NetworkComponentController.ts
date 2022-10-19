@@ -26,7 +26,6 @@ export default class NetworkComponentController {
 
     private dragStartPos?: Position;
     private savedMousePos?: Position;
-    private savedTransform?: Transform;
     public zIndex = -1;
     private savedZIndex = -1;
 
@@ -78,7 +77,7 @@ export default class NetworkComponentController {
         this.kresmer.resetAllComponentMode(this);
         this.savedMousePos = this.getMousePosition(event);
         this.transform.setPivot({x: center.x * this.transform.scale.x, y: center.y * this.transform.scale.y});
-        this.savedTransform = new Transform(this.transform);
+        this.transform.makeSnapshot();
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
         this.bringComponentToTop();
@@ -97,8 +96,7 @@ export default class NetworkComponentController {
         const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const r0 = {x: this.savedMousePos!.x - c.x, y: this.savedMousePos!.y - c.y};
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.rotate(r1, r0, this.savedTransform!);
+        this.transform.rotate(r1, r0);
         return true;
     }//rotate
 
@@ -106,7 +104,7 @@ export default class NetworkComponentController {
     public startScale(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
-        this.savedTransform = new Transform(this.transform);
+        this.transform.makeSnapshot();
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
         this.transformMode = "scaling";
@@ -122,8 +120,7 @@ export default class NetworkComponentController {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const savedMousePos = this.savedMousePos!;
         const shift = {x: mousePos.x - savedMousePos.x, y: mousePos.y - savedMousePos.y};
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.transform.changeScale(shift, zone.replace('-handle', ''), bBox, this.savedTransform!);
+        this.transform.changeScale(shift, zone.replace('-handle', ''), bBox);
         return true;
     }//scale
 
