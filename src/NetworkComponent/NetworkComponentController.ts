@@ -76,7 +76,7 @@ export default class NetworkComponentController {
     {
         this.kresmer.resetAllComponentMode(this);
         this.savedMousePos = this.getMousePosition(event);
-        this.transform.setPivot({x: center.x * this.transform.scale.x, y: center.y * this.transform.scale.y});
+        // this.transform.setPivot({x: center.x * this.transform.scale.x, y: center.y * this.transform.scale.y});
         this.transform.makeSnapshot();
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
@@ -90,8 +90,8 @@ export default class NetworkComponentController {
             
         const mousePos = this.getMousePosition(event);
         const c = {
-            x: center.x * this.transform.scale.x + this.origin.x + this.transform.translation.x, 
-            y: center.y * this.transform.scale.y + this.origin.y + this.transform.translation.y
+            x: center.x + this.origin.x + this.transform.translation.x, 
+            y: center.y + this.origin.y + this.transform.translation.y
         };
         const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -119,7 +119,7 @@ export default class NetworkComponentController {
         const mousePos = this.getMousePosition(event);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const savedMousePos = this.savedMousePos!;
-        const shift = {x: mousePos.x - savedMousePos.x, y: mousePos.y - savedMousePos.y};
+        const shift = {x: 2 * (mousePos.x - savedMousePos.x), y: 2 * (mousePos.y - savedMousePos.y)};
         this.transform.changeScale(shift, zone.replace('-handle', ''), bBox);
         return true;
     }//scale

@@ -180,7 +180,7 @@
         this.scale.x = this.operationStartTransform!.scale.x + dx1 / bBoxSize.width;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.scale.y = this.operationStartTransform!.scale.y + dy1 / bBoxSize.height;
-
+/* 
         let dx2 = 0;
         let dy2 = 0;
         switch (direction) {
@@ -204,6 +204,7 @@
         this.translation.x = this.operationStartTransform!.translation.x - dx2;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.translation.y = this.operationStartTransform!.translation.y - dy2;
+ */
     }//changeScale
 }//Transform
  

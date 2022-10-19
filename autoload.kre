@@ -28,14 +28,14 @@
             <prop name="height">50</prop>
             <prop name="text">Ще один Кресмер</prop>
         </props>
-        <origin x="50" y="100"/>
+        <origin x="50" y="150"/>
         <transform>
             <rotate angle="45"/>
         </transform>
     </component>
 
     <component class="Text">
-        <origin x="30" y="300" />
+        <origin x="30" y="250" />
         <props>
             <prop name="font-size">32</prop>
             <prop name="color">darkgreen</prop>

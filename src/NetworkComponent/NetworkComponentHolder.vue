@@ -196,7 +196,9 @@
             beingTransformed: isBeingTransformed
         }"
         >
-        <g ref="trGroup" class="tr-group" :transform="transform.toAttr(applyRotation)"
+        <g ref="trGroup" class="tr-group" 
+            :transform="transform.toAttr(applyRotation)" 
+            :transform-origin="`${center.x} ${center.y}`"
             @mousedown.prevent.stop="onMouseDown($event)"
             @mouseup.prevent="onMouseUp($event)"
             @mousemove.prevent="onMouseMove($event)"
@@ -206,7 +208,8 @@
             <slot></slot>
         </g>
         <TransformBox v-if="transformMode" ref="trBox" :origin="origin!" 
-            :transform="transform" :transform-mode="transformMode" :apply-rotation="applyRotation"
+            :transform="transform" :transform-origin="`${center.x} ${center.y}`" 
+            :transform-mode="transformMode" :apply-rotation="applyRotation"
             :b-box="bBox!" :center="center"
             @mouse-down="onMouseDownInTransformBox"
             @mouse-move="onMouseMoveInTransformBox"
