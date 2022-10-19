@@ -126,7 +126,7 @@
                     break;
                 case "rot-handle":
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    props.controller?.startRotate(transformStartEvent, center.value!);
+                    props.controller?.startRotate(transformStartEvent);
                     break;
             }//switch
             transformStartEvent = undefined;

@@ -20,7 +20,6 @@
   * from which the transformation is composed.
   */
  export interface ITransform {
-    translation?: Shift;
     rotation?: Rotation;
     scale?: Scale;
  }
@@ -32,7 +31,6 @@
  export class Transform implements ITransform {
     // Raw data for the Transform class. Consists  of three transformation primitives
     // from which the transformation is composed.
-    translation: Shift = {x: 0, y: 0};
     rotation: Rotation = {angle: 0, x: 0, y:0};
     scale: Scale = {x: 1, y: 1};
 
@@ -42,34 +40,9 @@
      */
     constructor(init?: ITransform)
     {
-        init?.translation && (this.translation = {...init.translation});
         init?.rotation && (this.rotation = {...init.rotation});
         init?.scale && (this.scale = {...init.scale});
     }//ctor
-
-    /**
-     * Set a rotation pivot to the specified position and adjusts the translation component
-     * to compensate the pivot change and prevent the component shift
-     * @param pivot Position to set the pivot to
-     */
-    public setPivot(pivot: Position)
-    {
-        const oldPivot = {x: this.rotation.x, y: this.rotation.y};
-        oldPivot.x || (oldPivot.x = 0);
-        oldPivot.y || (oldPivot.y = 0);
-        const r = {x: oldPivot.x - pivot.x, y: oldPivot.y - pivot.y};
-        const fi = this.rotation.angle * Math.PI / 180;
-        const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
-        const r1 = {x: r.x * cosFi - r.y * sinFi, y: r.x * sinFi + r.y * cosFi};
-        const shift = {x: r.x - r1.x, y: r.y - r1.y};
-        if (!this.translation)
-            this.translation = {...shift};
-        else {
-            this.translation.x += shift.x;
-            this.translation.y += shift.y;
-        }//if
-        this.rotation = {angle: this.rotation.angle, ...pivot};
-    }//setPivot
 
     /**
      * Generates an SVG "transform" attribute for this Transform
@@ -83,10 +56,6 @@
     public toAttr(applyRotation: boolean) 
     {
         const chunks: string[] = [];
-
-        if (this.translation.x || this.translation.y) {
-            chunks.push(`translate(${this.translation.x} ${this.translation.y})`);
-        }//if
 
         if (this.rotation.angle && applyRotation) {
             chunks.push(`rotate(${this.rotation.angle} ${this.rotation.x} ${this.rotation.y})`);
@@ -106,7 +75,6 @@
     public makeSnapshot()
     {
         this.operationStartTransform = {
-            translation: {...this.translation},
             rotation: {...this.rotation},
             scale: {...this.scale}
         };
@@ -180,31 +148,6 @@
         this.scale.x = this.operationStartTransform!.scale.x + dx1 / bBoxSize.width;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.scale.y = this.operationStartTransform!.scale.y + dy1 / bBoxSize.height;
-/* 
-        let dx2 = 0;
-        let dy2 = 0;
-        switch (direction) {
-            case "nw":
-            case "n":
-            case "w":
-                dx2 = dx1 * cosFi - dy1 * sinFi;
-                dy2 = dx1 * sinFi + dy1 * cosFi;
-                break;
-            case "ne":
-                dx2 =              -dy1 * sinFi;
-                dy2 = dx1 * sinFi + dy1 * cosFi;
-                break;
-            case "sw":
-                dx2 = dx1 * cosFi - dy1 * sinFi;
-                dy2 = -dx1 * sinFi;
-                break;
-        }//switch
-
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.translation.x = this.operationStartTransform!.translation.x - dx2;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.translation.y = this.operationStartTransform!.translation.y - dy2;
- */
     }//changeScale
 }//Transform
  

@@ -72,11 +72,10 @@ export default class NetworkComponentController {
     }//drag
 
     
-    public startRotate(event: MouseEvent, center: Position)
+    public startRotate(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.savedMousePos = this.getMousePosition(event);
-        // this.transform.setPivot({x: center.x * this.transform.scale.x, y: center.y * this.transform.scale.y});
         this.transform.makeSnapshot();
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
@@ -89,10 +88,7 @@ export default class NetworkComponentController {
             return false;
             
         const mousePos = this.getMousePosition(event);
-        const c = {
-            x: center.x + this.origin.x + this.transform.translation.x, 
-            y: center.y + this.origin.y + this.transform.translation.y
-        };
+        const c = {x: center.x + this.origin.x, y: center.y + this.origin.y};
         const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const r0 = {x: this.savedMousePos!.x - c.x, y: this.savedMousePos!.y - c.y};

@@ -177,35 +177,6 @@ export default class DrawingParser {
         for (let i = 0; i < node.childElementCount; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
-                case "translate": {
-                    const x = child.getAttribute("x");
-                    const y = child.getAttribute("y");
-                    if (x === null)
-                        throw new DrawingParsingException(
-                            '"translate" element must have an "x" attribute',
-                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
-                            );
-                    if (y === null)
-                        throw new DrawingParsingException(
-                            '"translate" element must have an "y" attribute',
-                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
-                            );
-                    const xf = parseFloat(x);
-                    if (xf === undefined)
-                        throw new DrawingParsingException(
-                            'invalid format of the "translate.x" attribute',
-                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
-                            );
-                    const yf = parseFloat(y);
-                    if (yf === undefined)
-                        throw new DrawingParsingException(
-                            'invalid format of the "translate.y" attribute',
-                            {source: `Component ${node.parentElement?.getAttribute("class")}`}
-                            );
-                    transform.translation = {x: xf, y: yf};
-                    break;
-                }
-
                 case "rotate": {
                     const angle = child.getAttribute("angle");
                     const x = child.getAttribute("x");
