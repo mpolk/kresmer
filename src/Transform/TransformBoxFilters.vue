@@ -8,6 +8,11 @@
 <*************************************************************************** -->
 
 <template>
+    <!-- Transform box itself when in rotation mode -->
+    <filter id="kre:fltTrBoxRotated">
+        <feBlend in="SourceGraphic" in2="BackgroundImage" mode="lighten" />
+    </filter>
+    <!-- Rotation hub (center) -->
     <filter id="kre:fltTrBoxHub">
         <feBlend in="SourceGraphic" in2="BackgroundImage" mode="screen" />
     </filter>

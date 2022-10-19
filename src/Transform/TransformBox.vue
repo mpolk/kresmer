@@ -38,7 +38,7 @@
         inRotationMode.value ?
             Math.max(Math.min(
                 props.bBox.width * props.transform.scale.x * 0.2, 
-                props.bBox.height * props.transform.scale.x * 0.2), 5) :
+                props.bBox.height * props.transform.scale.y * 0.2), 5) :
             undefined
     );
 
@@ -61,7 +61,9 @@
     const hubRy = computed(() => hubR.value / props.transform.scale.y);
 
     const handleBaseSize = computed(() => {
-        return Math.min(props.bBox.width, props.bBox.height) * 0.2;
+        return Math.min(
+            props.bBox.width * props.transform.scale.x, 
+            props.bBox.height * props.transform.scale.y) * 0.2;
     });//handleBaseSize
 
     const hHandleH = computed(() => {
@@ -247,6 +249,10 @@
         fill: lightblue;
         fill-opacity: 0.3;
         cursor: move;
+
+        &.rotated {
+            filter: url("#kre:fltTrBoxRotated");
+        }
     }
 
     .handle {
