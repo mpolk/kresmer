@@ -8,7 +8,8 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted, computed } from 'vue';
+    import { ref, PropType, onMounted, computed, inject } from 'vue';
+    import Kresmer from '../Kresmer';
     import TransformBox from '../Transform/TransformBox.vue';
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponent from './NetworkComponent';
@@ -27,6 +28,8 @@
         controller: {type: Object as PropType<NetworkComponentController>},
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const kresmer = inject(Kresmer.injectionKey)!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const svg = ref<SVGGraphicsElement>()!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -76,10 +79,12 @@
     {
         if (event.buttons === 1 && !props.transformMode) {
             event.preventDefault();
-            if (!event.ctrlKey)
+            if (!event.ctrlKey) {
+                kresmer.setHint("Drop the component where you want to leave it...");
                 props.controller?.startDrag(event);
-            else
+            } else {
                 props.controller?.enterTransformMode(event);
+            }//if
         }//if
     }//onMouseDown
 

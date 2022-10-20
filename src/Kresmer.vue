@@ -86,6 +86,16 @@
         emit("component-right-click", component, target, nativeEvent);
     }//onComponentRightClick
 
+    function onMouseEnter()
+    {
+        props.controller.setHint("Drag any component to move it or ctrl-click to transform it");
+    }//onMouseEnter
+
+    function onMouseLeave()
+    {
+        props.controller.setHint("");
+    }//onMouseLeave
+
     defineExpose({svg: rootSVG});
 </script>
 
@@ -96,6 +106,8 @@
         @mousedown.prevent="onMouseDownOnCanvas($event)"
         @mousemove.prevent=""
         @wheel.ctrl.prevent="onMouseWheel($event)"
+        @mouseenter="onMouseEnter"
+        @mouseleave="onMouseLeave"
         >
         <defs>
             <TransformBoxFilters />

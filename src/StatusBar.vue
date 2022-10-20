@@ -9,6 +9,7 @@
     import { computed, onMounted, PropType, ref } from 'vue';
 
     type DisplayData = {
+        hint: string,
         drawingScale: number,
     };
 
@@ -38,17 +39,31 @@
 
 <template>
     <div class="status-bar" :style="{bottom}">
-        Scale: ({{drawingScale}})
+        <div class="pane">
+            {{displayData.hint}}
+        </div>
+        <div class="pane right">
+            Scale: ({{drawingScale}})
+        </div>
     </div>
 </template>
 
-<style>
+<style lang="scss">
     .status-bar {
         position: fixed;
         width: 100%;
-        padding: 0.2rem 0.5rem;
-        font: status-bar; font-size: smaller;
+        padding: 0.2rem 0;
+        font: status-bar; font-size: small;
         color: white;
         background-color: rgb(52, 122, 250);
+
+        .pane {
+            display: inline-block;
+            padding: 0 0.5rem;
+
+            &.right {
+                float: right;
+            }
+        }
     }
 </style>

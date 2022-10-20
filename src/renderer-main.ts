@@ -16,6 +16,7 @@ import StatusBar from './StatusBar.vue';
 export const kresmer = new Kresmer('#kresmer');
 
 const statusBarData = reactive({
+    hint: "",
     drawingScale: 1,
 })//statusBarData
 
@@ -23,7 +24,10 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar");
 
-kresmer.on("scale-changed", (newScale) => statusBarData.drawingScale = newScale);
+kresmer
+    .on("scale-changed", (newScale) => statusBarData.drawingScale = newScale)
+    .on("hint", (hint) => statusBarData.hint = hint)
+    ;
 
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
 { 

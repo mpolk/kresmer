@@ -287,21 +287,21 @@ export default class Kresmer {
      * @param event 
      * @param handler 
      */
-    public on(event: "scale-changed", handler: (newScale: number) => void): void;
+    public on(event: "scale-changed", handler: (newScale: number) => void): Kresmer;
 
     /**
      * Sets a handler fired after a network component had been moved (dragged)
      * @param event 
      * @param handler 
      */
-     public on(event: "network-component-moved", handler: (controller: NetworkComponentController) => void): void;
+     public on(event: "network-component-moved", handler: (controller: NetworkComponentController) => void): Kresmer;
 
     /**
      * Sets a handler fired after a network component had been transformed
      * @param event 
      * @param handler 
      */
-     public on(event: "network-component-transformed", handler: (controller: NetworkComponentController) => void): void;
+     public on(event: "network-component-transformed", handler: (controller: NetworkComponentController) => void): Kresmer;
 
     /**
      * Sets a handler fired after a network component had been transformed
@@ -310,7 +310,14 @@ export default class Kresmer {
      */
      public on(event: "component-right-click", handler: (component: NetworkComponent, 
                                                          target: "component"|"transform-box", 
-                                                         nativeEvent: MouseEvent) => void): void;
+                                                         nativeEvent: MouseEvent) => void): Kresmer;
+
+    /**
+     * Sets a handler for the current situation hint setting
+     * @param event 
+     * @param handler 
+     */
+     public on(event: "hint", handler: (hint: string) => void): Kresmer;
 
     /**
      * Sets a handler for the generic event
@@ -321,6 +328,7 @@ export default class Kresmer {
     public on(event: string, handler: (...args: any[]) => void)
     {
         this.externalHandlers[event] = handler;
+        return this;
     }//on
 
     /**
@@ -330,6 +338,7 @@ export default class Kresmer {
     public off(event: string)
     {
         delete this.externalHandlers[event];
+        return this;
     }//off
 
     /** Utility method that invokes an external handler for the specified event 
@@ -338,7 +347,7 @@ export default class Kresmer {
     protected invokeExternalHandler(event: string, ...args: any[])
     {
         if (event in this.externalHandlers)
-            this.externalHandlers[event].call(this, args);
+            this.externalHandlers[event].apply(this, args);
     }//invokeExternalHandler
 
     /**
@@ -352,7 +361,7 @@ export default class Kresmer {
 
     /**
      * Is called when a network component had been moved (dragged)
-     * @param component The component been moved
+     * @param controller The controller of the component been moved
      */
     public onNetworkComponentMoved(controller: NetworkComponentController)
     {
@@ -361,7 +370,7 @@ export default class Kresmer {
 
     /**
      * Is called when a network component had been transformed
-     * @param component The component been transformed
+     * @param controller The controller of the component been transformed
      */
     public onNetworkComponentTransformed(controller: NetworkComponentController)
     {
@@ -378,4 +387,18 @@ export default class Kresmer {
     {
         this.invokeExternalHandler("component-right-click", component, target, nativeEvent);
     }//onComponentRightClick
-  }//Kresmer
+
+    /**
+     * Is called when Kresmer proposes a hint for the current situation to present to the user
+     * @param hint A hint to show
+     */
+     protected onHint(hint: string)
+     {
+         this.invokeExternalHandler("hint", hint);
+     }//onHint
+
+     public setHint(hint: string)
+     {
+        this.onHint(hint);
+     }//setHint
+   }//Kresmer
