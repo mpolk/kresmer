@@ -102,7 +102,8 @@
     public changeScale(r1: RadiusVector, r0: RadiusVector, direction: string, bBoxSize: BoxSize)
     {
         console.assert(this.operationStartTransform);
-        const {x: dx0, y: dy0} = {x: 2 * (r1.x - r0.x), y: 2 * (r1.y - r0.y)};
+        const dx0 = r1.x - r0.x;
+        const dy0 = r1.y - r0.y;
         const fi = this.rotation.angle * Math.PI / 180;
         const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
 
@@ -137,12 +138,17 @@
                 dx1 = -dx0 * cosFi - dy0 * sinFi;
                 dy1 = -dx0 * sinFi + dy0 * cosFi;
                 break;
+            case "*": {
+                const delta = Math.hypot(r1.x, r1.y) - Math.hypot(r0.x, r0.y);
+                dx1 = dy1 = delta;
+                break;
+            }
         }//switch
 
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.scale.x = this.operationStartTransform!.scale.x + dx1 / bBoxSize.width;
+        this.scale.x = this.operationStartTransform!.scale.x + 2 * dx1 / bBoxSize.width;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        this.scale.y = this.operationStartTransform!.scale.y + dy1 / bBoxSize.height;
+        this.scale.y = this.operationStartTransform!.scale.y + 2 * dy1 / bBoxSize.height;
     }//changeScale
 }//Transform
  

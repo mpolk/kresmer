@@ -119,7 +119,11 @@ export default class NetworkComponentController {
             return false;
             
         const {r1, r0} = this.makeRaduisVectors(event, center);
-        this.transform.changeScale(r1, r0, zone.replace('-handle', ''), bBox);
+        let direction = zone.replace('-handle', '');
+        if (direction.length > 1 && !event.shiftKey) {
+            direction = '*';
+        }//if
+        this.transform.changeScale(r1, r0, direction, bBox);
         return true;
     }//scale
 
