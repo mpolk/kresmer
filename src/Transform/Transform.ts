@@ -99,10 +99,10 @@
      * @param direction Resize direction (in the form "n" (north), "ne" (north-east) etc.)
      * @param bBoxSize Component bounding box sizes
      */
-    public changeScale(shift: Shift, direction: string, bBoxSize: BoxSize)
+    public changeScale(r1: RadiusVector, r0: RadiusVector, direction: string, bBoxSize: BoxSize)
     {
         console.assert(this.operationStartTransform);
-        const {x: dx0, y: dy0} = shift;
+        const {x: dx0, y: dy0} = {x: 2 * (r1.x - r0.x), y: 2 * (r1.y - r0.y)};
         const fi = this.rotation.angle * Math.PI / 180;
         const sinFi = Math.sin(fi); const cosFi = Math.cos(fi);
 

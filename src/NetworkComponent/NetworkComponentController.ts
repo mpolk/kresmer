@@ -87,14 +87,20 @@ export default class NetworkComponentController {
         if (!this.isBeingTransformed)
             return false;
             
+        const {r1, r0} = this.makeRaduisVectors(event, center);
+        this.transform.rotate(r1, r0);
+        return true;
+    }//rotate
+
+    private makeRaduisVectors(event: MouseEvent, center: Position)
+    {
         const mousePos = this.getMousePosition(event);
         const c = {x: center.x + this.origin.x, y: center.y + this.origin.y};
         const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const r0 = {x: this.savedMousePos!.x - c.x, y: this.savedMousePos!.y - c.y};
-        this.transform.rotate(r1, r0);
-        return true;
-    }//rotate
+        return {r1, r0};
+    }//makeRaduisVectors
 
 
     public startScale(event: MouseEvent)
@@ -107,16 +113,13 @@ export default class NetworkComponentController {
         this.bringComponentToTop();
     }//startScale
 
-    public scale(event: MouseEvent, zone: TransformBoxZone, bBox: SVGRect)
+    public scale(event: MouseEvent, zone: TransformBoxZone, bBox: SVGRect, center: Position)
     {
         if (!this.isBeingTransformed)
             return false;
             
-        const mousePos = this.getMousePosition(event);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const savedMousePos = this.savedMousePos!;
-        const shift = {x: 2 * (mousePos.x - savedMousePos.x), y: 2 * (mousePos.y - savedMousePos.y)};
-        this.transform.changeScale(shift, zone.replace('-handle', ''), bBox);
+        const {r1, r0} = this.makeRaduisVectors(event, center);
+        this.transform.changeScale(r1, r0, zone.replace('-handle', ''), bBox);
         return true;
     }//scale
 

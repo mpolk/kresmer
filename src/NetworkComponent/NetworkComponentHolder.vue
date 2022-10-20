@@ -147,7 +147,7 @@
                 case "tr-box":
                     if (props.controller?.isBeingTransformed && props.controller.transformMode == "scaling") {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        props.controller?.scale(event, lastActiveHandle, bBox.value!);
+                        props.controller?.scale(event, lastActiveHandle, bBox.value!, center.value!);
                     } else {
                         props.controller?.drag(event);
                     }//if
@@ -162,7 +162,7 @@
                 case "se-handle":
                     lastActiveHandle = zone;
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    props.controller?.scale(event, zone, bBox.value!);
+                    props.controller?.scale(event, zone, bBox.value!, center.value!);
                     break;
                 case "rot-handle":
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
