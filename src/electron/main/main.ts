@@ -6,8 +6,9 @@
  *                      Electron node.js main script
  ***************************************************************************/
 
-import * as path from 'path';
-import * as fs from 'fs';
+import path from 'path';
+import fs from 'fs';
+import process from 'process';
 import { app, BrowserWindow, ipcMain } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -61,7 +62,9 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             break;
         }
         case 1: {
-            const autoload = "./autoload.kre";
+            const argv = process.argv;
+            console.debug(`argv=${argv}`);
+            const autoload = argv[1] == "." ? argv[2] : argv[1];
             if (fs.existsSync(autoload)) {
                 const dwgData = fs.readFileSync(autoload, "utf-8");
                 mainWindow.webContents.send("load-drawing", dwgData);

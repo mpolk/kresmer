@@ -21,9 +21,9 @@
     "build-only": "vite build",
     "type-check": "vue-tsc --noEmit",
     "lint": "eslint -c .eslintrc.cjs --ext .ts ./src",
-    "app:dev": "npm run ts && concurrently vite \" electron .\" \"npm run watch\"",
+    "app:dev": "npm run ts && concurrently vite \" electron . autoload.kre\" \"npm run watch\"",
     "app:build": "npm run vite:build && npm run ts && electron-builder",
-    "app:preview": "npm run vite:build && npm run ts && electron ."
+    "app:preview": "npm run vite:build && npm run ts && electron . autoload.kre"
   },
   "build": {
     "appId": "kresmer",
