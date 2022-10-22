@@ -80,7 +80,6 @@
         if (event.buttons === 1 && !props.transformMode) {
             event.preventDefault();
             if (!event.ctrlKey) {
-                kresmer.setHint("Drop the component where you want to leave it...");
                 props.controller?.startDrag(event);
             } else {
                 props.controller?.enterTransformMode(event);

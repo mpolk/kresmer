@@ -88,12 +88,12 @@
 
     function onMouseEnter()
     {
-        props.controller.setHint("Drag any component to move it or ctrl-click to transform it");
+        props.controller.pushHint("Drag any component to move it or ctrl-click to transform it");
     }//onMouseEnter
 
     function onMouseLeave()
     {
-        props.controller.setHint("");
+        props.controller.popHint();
     }//onMouseLeave
 
     defineExpose({svg: rootSVG});

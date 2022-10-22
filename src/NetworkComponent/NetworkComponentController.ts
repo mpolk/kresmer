@@ -56,6 +56,7 @@ export default class NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isDragged = true;
         this.bringComponentToTop();
+        this.kresmer.pushHint("Drag and drop the component where you want to leave it...");
     }//startDrag
 
     public drag(event: MouseEvent)
@@ -71,6 +72,20 @@ export default class NetworkComponentController {
         return true;
     }//drag
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public endDrag(event: MouseEvent)
+    {
+        if (this.isDragged) {
+            this.component.isHighlighted = false;
+            this.isDragged = false;
+            this.kresmer.onNetworkComponentMoved(this);
+            this.kresmer.popHint();
+            return true;
+        }//if
+
+        return false;
+    }//endDrag
+
     
     public startRotate(event: MouseEvent)
     {
@@ -80,6 +95,7 @@ export default class NetworkComponentController {
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
         this.bringComponentToTop();
+        this.kresmer.pushHint("");
     }//startRotate
 
     public rotate(event: MouseEvent, center: Position)
@@ -110,6 +126,7 @@ export default class NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
         this.transformMode = "scaling";
+        this.kresmer.pushHint("");
         this.bringComponentToTop();
     }//startScale
 
@@ -139,21 +156,9 @@ export default class NetworkComponentController {
         this.isBeingTransformed = false;
         // this.transformMode = undefined;
         this.kresmer.onNetworkComponentTransformed(this);
+        this.kresmer.popHint();
         return true;
     }//endTransform
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endDrag(event: MouseEvent)
-    {
-        if (this.isDragged) {
-            this.component.isHighlighted = false;
-            this.isDragged = false;
-            this.kresmer.onNetworkComponentMoved(this);
-            return true;
-        }//if
-
-        return false;
-    }//endDrag
 
 
     public bringComponentToTop()
@@ -176,6 +181,7 @@ export default class NetworkComponentController {
         // this.isBeingTransformed = true;
         this.kresmer.resetAllComponentMode(this);
         this.transformMode = "scaling";
+        this.kresmer.pushHint(this.transformModeHint);
         this.bringComponentToTop();
     }//enterTransformMode
 
@@ -183,6 +189,7 @@ export default class NetworkComponentController {
     {
         // this.isBeingTransformed = false;
         this.transformMode = undefined;
+        this.kresmer.popHint();
         this.restoreComponentZPosition();
     }//resetMode
 
@@ -190,6 +197,14 @@ export default class NetworkComponentController {
     public onTransformBoxClick(_event: MouseEvent)
     {
         this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
+        this.kresmer.setHint(this.transformModeHint);
     }//onTransformBoxClick
+
+    private get transformModeHint()
+    {
+        return this.transformMode == "rotation" ?
+            "Rotate the component around the center mark or click to switch to the scaling mode" :
+            "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode";
+    }//transformModeHint
 
 }//NetworkComponentController

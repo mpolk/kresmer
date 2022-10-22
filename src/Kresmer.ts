@@ -278,6 +278,35 @@ export default class Kresmer {
     }//applyScreenCTM
 
 
+    // Hints: suggestions for the user that Kresmer sends to the host UI and which
+    // can be displayed in status bar or somewhere else
+    private hintStack: string[] = [];
+    private hint = "";
+    
+    /** Sets the current hint */
+    public setHint(hint: string)
+    {
+        this.hint = hint;
+        this.onHint(hint);
+    }//setHint
+    
+    /** Pushes the current hint to the stack and the sets a new one */
+    public pushHint(hint: string)
+    {
+        this.hintStack.push(this.hint);
+        this.hint = hint;
+        this.onHint(hint);
+    }//pushHint
+    
+    /** Pops a hint from the stack and the sets it as a current one */
+    public popHint()
+    {
+        const hint = this.hintStack.pop();
+        this.hint = hint ? hint : "";
+        this.onHint(this.hint);
+    }//popHint
+
+
     // Event handler hooks
 
     protected externalHandlers: Record<string, (...args: unknown[]) => void> = {};
@@ -396,9 +425,4 @@ export default class Kresmer {
      {
          this.invokeExternalHandler("hint", hint);
      }//onHint
-
-     public setHint(hint: string)
-     {
-        this.onHint(hint);
-     }//setHint
-   }//Kresmer
+}//Kresmer
