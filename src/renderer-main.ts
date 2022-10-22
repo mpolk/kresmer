@@ -45,11 +45,13 @@ window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) =>
     window.electronAPI.signalReadiness(1);
 });
 
-window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string) => 
+window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string, drawingName?: string) => 
 { 
     try {
         if (!kresmer.loadDrawing(drawingData))
             alert("There were errors during drawing load (see the log)");
+        else if (drawingName)
+            window.document.title = `${drawingName} - Kresmer`;
     } catch (exc) {
         if (exc instanceof ParsingException) {
             alert(exc.message);

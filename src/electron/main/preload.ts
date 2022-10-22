@@ -20,7 +20,7 @@
         ipcRenderer.on('load-library', callback);
     },
     
-    onLoadDrawing: (callback: (event: IpcRendererEvent, drawingData: string) => void) => {
+    onLoadDrawing: (callback: (event: IpcRendererEvent, drawingData: string, drawingName?: string) => void) => {
         ipcRenderer.on('load-drawing', callback);
     },
 

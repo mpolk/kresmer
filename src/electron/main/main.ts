@@ -25,6 +25,7 @@ function createWindow() {
     // Create the browser window
     const windowOptions = {
         ...userPrefs.get("window"),
+        title: "Kresmer",
         icon: path.join(__dirname, "../../logo.png"),
         webPreferences: {
             preload: path.join(__dirname, 'preload.js')
@@ -67,7 +68,8 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             const autoload = argv[1] == "." ? argv[2] : argv[1];
             if (fs.existsSync(autoload)) {
                 const dwgData = fs.readFileSync(autoload, "utf-8");
-                mainWindow.webContents.send("load-drawing", dwgData);
+                const fileName = path.basename(autoload);
+                mainWindow.webContents.send("load-drawing", dwgData, fileName);
             }//if
             break;
         }
