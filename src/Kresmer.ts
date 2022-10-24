@@ -8,6 +8,7 @@
 
 import { App, computed, createApp, InjectionKey, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
+import KresmerEventHandlers from "./KresmerEventHandlers";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentHolder.d";
@@ -23,7 +24,7 @@ import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vu
  * The main class implementing the most of the Kresmer public API
  * Also acts as a proxy for the root vue-component of Kresmer
  */
-export default class Kresmer {
+export default class Kresmer extends KresmerEventHandlers {
 
     /** Kresmer vue-component App */
     readonly appKresmer: App;
@@ -38,6 +39,7 @@ export default class Kresmer {
         viewWidth?: number,
         viewHeight?: number,
     }) {
+        super();
         if (options?.drawingWidth)
             this.drawingWidth = options.drawingWidth;
         if (options?.drawingHeight)
@@ -305,124 +307,4 @@ export default class Kresmer {
         this.hint = hint ? hint : "";
         this.onHint(this.hint);
     }//popHint
-
-
-    // Event handler hooks
-
-    protected externalHandlers: Record<string, (...args: unknown[]) => void> = {};
-
-    /**
-     * Sets a handler fired after the drawing scale was changed
-     * @param event 
-     * @param handler 
-     */
-    public on(event: "scale-changed", handler: (newScale: number) => void): Kresmer;
-
-    /**
-     * Sets a handler fired after a network component had been moved (dragged)
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "network-component-moved", handler: (controller: NetworkComponentController) => void): Kresmer;
-
-    /**
-     * Sets a handler fired after a network component had been transformed
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "network-component-transformed", handler: (controller: NetworkComponentController) => void): Kresmer;
-
-    /**
-     * Sets a handler fired after a network component had been transformed
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "component-right-click", handler: (component: NetworkComponent, 
-                                                         target: "component"|"transform-box", 
-                                                         nativeEvent: MouseEvent) => void): Kresmer;
-
-    /**
-     * Sets a handler for the current situation hint setting
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "hint", handler: (hint: string) => void): Kresmer;
-
-    /**
-     * Sets a handler for the generic event
-     * @param event An event to be handled
-     * @param handler A handler for this event
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public on(event: string, handler: (...args: any[]) => void)
-    {
-        this.externalHandlers[event] = handler;
-        return this;
-    }//on
-
-    /**
-     * Disables handling of the specified event
-     * @param event 
-     */
-    public off(event: string)
-    {
-        delete this.externalHandlers[event];
-        return this;
-    }//off
-
-    /** Utility method that invokes an external handler for the specified event 
-     * if this handler was registered */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    protected invokeExternalHandler(event: string, ...args: any[])
-    {
-        if (event in this.externalHandlers)
-            this.externalHandlers[event].apply(this, args);
-    }//invokeExternalHandler
-
-    /**
-     * Is called when the global drawing scale changed occurs
-     * @param newScale A new scale value
-     */
-    protected onScaleChanged(newScale: number)
-    {
-        this.invokeExternalHandler("scale-changed", newScale);
-    }//onScaleChanged
-
-    /**
-     * Is called when a network component had been moved (dragged)
-     * @param controller The controller of the component been moved
-     */
-    public onNetworkComponentMoved(controller: NetworkComponentController)
-    {
-        this.invokeExternalHandler("network-component-moved", controller);
-    }//onNetworkComponentMoved
-
-    /**
-     * Is called when a network component had been transformed
-     * @param controller The controller of the component been transformed
-     */
-    public onNetworkComponentTransformed(controller: NetworkComponentController)
-    {
-        this.invokeExternalHandler("network-component-transformed", controller);
-    }//onNetworkComponenTransformed
-
-    /**
-     * Is called when a network component is right-clicked
-     * @param component The component been transformed
-     */
-    protected onComponentRightClick(component: NetworkComponent, 
-                                    target: "component"|"transform-box", 
-                                    nativeEvent: MouseEvent)
-    {
-        this.invokeExternalHandler("component-right-click", component, target, nativeEvent);
-    }//onComponentRightClick
-
-    /**
-     * Is called when Kresmer proposes a hint for the current situation to present to the user
-     * @param hint A hint to show
-     */
-     protected onHint(hint: string)
-     {
-         this.invokeExternalHandler("hint", hint);
-     }//onHint
 }//Kresmer
