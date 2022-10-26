@@ -11,75 +11,32 @@
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
 
-/** Events an event handlers for the main Kresmer class */
+/** A list of Kresmer events along with correponding handler definitions */
+type KresmerEventHooks = {
+    "scale-changed": (newScale: number) => void;
+    "network-component-move-started": (controller: NetworkComponentController) => void;
+    "network-component-moved": (controller: NetworkComponentController) => void;
+    "network-component-entered-transform-mode": (controller: NetworkComponentController, 
+                                                 mode: TransformMode) => void;
+    "network-component-transform-started": (controller: NetworkComponentController) => void;
+    "network-component-transformed": (controller: NetworkComponentController) => void;
+    "network-component-exited-transform-mode": (controller: NetworkComponentController) => void;
+    "component-right-click": (component: NetworkComponent, 
+                              target: "component"|"transform-box", 
+                              nativeEvent: MouseEvent) => void;
+    "hint": (hint: string) => void;
+}//KresmerEventHooks
+
+/** Event names alone */
+export type KresmerEvent = keyof KresmerEventHooks;
+
+/** Event-related features for incorporating to the main Kresmer class */
 export default class KresmerEventHandlers {
 
-    protected externalHandlers: Record<string, (...args: unknown[]) => void> = {};
+    protected externalHandlers: Partial<Record<KresmerEvent, (...args: unknown[]) => void>> = {};
 
-    /**
-     * Sets a handler fired after the drawing scale was changed
-     * @param event 
-     * @param handler 
-     */
-    public on(event: "scale-changed", 
-              handler: (newScale: number) => void): KresmerEventHandlers;
-
-    /**
-     * Sets a handler fired after a network component move (dragging) started
-     * @param event 
-     * @param handler 
-     */
-    public on(event: "network-component-move-started", 
-              handler: (controller: NetworkComponentController) => void): KresmerEventHandlers;
-
-    /**
-     * Sets a handler fired after a network component had been moved (dragged)
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "network-component-moved", 
-               handler: (controller: NetworkComponentController) => void): KresmerEventHandlers;
-
-    /**
-     * Sets a handler fired after a network component transform started
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "network-component-transform-started", 
-               handler: (controller: NetworkComponentController) => void): KresmerEventHandlers;
-
-    /**
-     * Sets a handler fired after a network component had been transformed
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "network-component-transformed", 
-               handler: (controller: NetworkComponentController) => void): KresmerEventHandlers;
-
-    /**
-     * Sets a handler fired after a network component had been transformed
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "component-right-click", 
-               handler: (component: NetworkComponent, 
-                         target: "component"|"transform-box", 
-                         nativeEvent: MouseEvent) => void): KresmerEventHandlers;
-
-    /**
-     * Sets a handler for the current situation hint setting
-     * @param event 
-     * @param handler 
-     */
-     public on(event: "hint", handler: (hint: string) => void): KresmerEventHandlers;
-
-    /**
-     * Sets a handler for the generic event
-     * @param event An event to be handled
-     * @param handler A handler for this event
-     */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public on(event: string, handler: (...args: any[]) => void)
+    public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventHooks[Event]): KresmerEventHandlers;
+    public on<Event extends KresmerEvent>(event: Event, handler: (...args: unknown[]) => void)
     {
         this.externalHandlers[event] = handler;
         return this;
@@ -89,7 +46,7 @@ export default class KresmerEventHandlers {
      * Disables handling of the specified event
      * @param event 
      */
-    public off(event: string)
+    public off(event: KresmerEvent)
     {
         delete this.externalHandlers[event];
         return this;
@@ -97,11 +54,9 @@ export default class KresmerEventHandlers {
 
     /** Utility method that invokes an external handler for the specified event 
      * if this handler was registered */
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public invokeExternalHandler(event: string, ...args: any[])
+    public invokeExternalHandler(event: KresmerEvent, ...args: unknown[])
     {
-        if (event in this.externalHandlers)
-            this.externalHandlers[event].apply(this, args);
+        this.externalHandlers[event]?.apply(this, args);
     }//invokeExternalHandler
 
 
@@ -175,8 +130,8 @@ export default class KresmerEventHandlers {
 }//KresmerEventHandlers
 
 
-// Decorator for the event hadling methods defined in this class
-function overridableHandler(event: string)
+// Decorator for the event handling methods defined in this class
+function overridableHandler(event: keyof KresmerEventHooks)
 {
     return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
     {
