@@ -8,7 +8,7 @@
 
 import { App, computed, createApp, InjectionKey, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
-import KresmerEventHandlers from "./KresmerEventHandlers";
+import KresmerEventFeatures from "./KresmerEventHandlers";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentHolder.d";
@@ -24,7 +24,7 @@ import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vu
  * The main class implementing the most of the Kresmer public API
  * Also acts as a proxy for the root vue-component of Kresmer
  */
-export default class Kresmer extends KresmerEventHandlers {
+export default class Kresmer extends KresmerEventFeatures {
 
     /** Kresmer vue-component App */
     readonly appKresmer: App;

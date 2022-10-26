@@ -5,7 +5,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * ------------------------------------------------------------------------
- *             Events an event handlers for the main class
+ *   Event-related features for incorporating to the main Kresmer class
 \**************************************************************************/
 
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
@@ -31,11 +31,11 @@ type KresmerEventHooks = {
 export type KresmerEvent = keyof KresmerEventHooks;
 
 /** Event-related features for incorporating to the main Kresmer class */
-export default class KresmerEventHandlers {
+export default class KresmerEventFeatures {
 
     protected externalHandlers: Partial<Record<KresmerEvent, (...args: unknown[]) => void>> = {};
 
-    public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventHooks[Event]): KresmerEventHandlers;
+    public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventHooks[Event]): KresmerEventFeatures;
     public on<Event extends KresmerEvent>(event: Event, handler: (...args: unknown[]) => void)
     {
         this.externalHandlers[event] = handler;
@@ -127,15 +127,15 @@ export default class KresmerEventHandlers {
     @overridableHandler("hint")
     protected onHint(hint: string) {}
 
-}//KresmerEventHandlers
+}//KresmerEventFeatures
 
 
 // Decorator for the event handling methods defined in this class
-function overridableHandler(event: keyof KresmerEventHooks)
+function overridableHandler(event: KresmerEvent)
 {
     return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
     {
-        descriptor.value = function(this: KresmerEventHandlers, ...args: unknown[]) {
+        descriptor.value = function(this: KresmerEventFeatures, ...args: unknown[]) {
             this.invokeExternalHandler(event, ...args);
         }
     }
