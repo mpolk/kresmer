@@ -13,17 +13,17 @@ import NetworkComponentController, { TransformMode } from "./NetworkComponent/Ne
 
 /** A list of Kresmer events along with correponding handler definitions */
 type KresmerEventHooks = {
-    "scale-changed": (newScale: number) => void;
-    "network-component-move-started": (controller: NetworkComponentController) => void;
-    "network-component-moved": (controller: NetworkComponentController) => void;
-    "network-component-entered-transform-mode": (controller: NetworkComponentController, 
-                                                 mode: TransformMode) => void;
-    "network-component-transform-started": (controller: NetworkComponentController) => void;
-    "network-component-transformed": (controller: NetworkComponentController) => void;
-    "network-component-exited-transform-mode": (controller: NetworkComponentController) => void;
-    "component-right-click": (component: NetworkComponent, 
-                              target: "component"|"transform-box", 
-                              nativeEvent: MouseEvent) => void;
+    "drawing-scale":                    (newScale: number) => void;
+    "component-move-started":           (controller: NetworkComponentController) => void;
+    "component-moved":                  (controller: NetworkComponentController) => void;
+    "component-entered-transform-mode": (controller: NetworkComponentController, 
+                                         mode: TransformMode) => void;
+    "component-transform-started":      (controller: NetworkComponentController) => void;
+    "component-transformed":            (controller: NetworkComponentController) => void;
+    "component-exited-transform-mode":  (controller: NetworkComponentController) => void;
+    "component-right-click":            (component: NetworkComponent, 
+                                         target: "component"|"transform-box", 
+                                         nativeEvent: MouseEvent) => void;
     "hint": (hint: string) => void;
 }//KresmerEventHooks
 
@@ -33,8 +33,13 @@ export type KresmerEvent = keyof KresmerEventHooks;
 /** Event-related features for incorporating to the main Kresmer class */
 export default class KresmerEventFeatures {
 
+    /** The map (event => handler) */
     protected externalHandlers: Partial<Record<KresmerEvent, (...args: unknown[]) => void>> = {};
 
+    /** Sets up the handler for the specified event
+     * @param event The event to setup handler for
+     * @param handler The handler to set
+     */
     public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventHooks[Event]): KresmerEventFeatures;
     public on<Event extends KresmerEvent>(event: Event, handler: (...args: unknown[]) => void)
     {
@@ -64,52 +69,52 @@ export default class KresmerEventFeatures {
      * Is called when the global drawing scale changed occurs
      * @param newScale A new scale value
      */
-    @overridableHandler("scale-changed")
-    protected onScaleChanged(newScale: number) {}
+    @overridableHandler("drawing-scale")
+    protected onDrawingScale(newScale: number) {}
 
     /**
      * Is called when a network component move starts
      * @param controller The controller of the component starting to move
      */
-    @overridableHandler("network-component-move-started")
-    public onNetworkComponentMoveStart(controller: NetworkComponentController) {}
+    @overridableHandler("component-move-started")
+    public onComponentMoveStart(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component had been moved (dragged)
      * @param controller The controller of the component been moved
      */
-    @overridableHandler("network-component-moved")
-    public onNetworkComponentMoved(controller: NetworkComponentController) {}
+    @overridableHandler("component-moved")
+    public onComponentMoved(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component has entered transform mode
      * @param controller The controller of the component entered mode
      * @param mode Specific mode that was entered, i.e. "scaling"|"rotation"
      */
-    @overridableHandler("network-component-entered-transform-mode")
-    public onNetworkComponentEnteringTransformMode(controller: NetworkComponentController, 
+    @overridableHandler("component-entered-transform-mode")
+    public onComponentEnteringTransformMode(controller: NetworkComponentController, 
                                                    mode: TransformMode) {}
 
     /**
      * Is called when a network component transform starts
      * @param controller The controller of the component starting to transform
      */
-    @overridableHandler("network-component-transform-started")
-    public onNetworkComponentTransformStart(controller: NetworkComponentController) {}
+    @overridableHandler("component-transform-started")
+    public onComponentTransformStart(controller: NetworkComponentController) {}
   
     /**
      * Is called when a network component had been transformed
      * @param controller The controller of the component been transformed
      */
-    @overridableHandler("network-component-transformed")
-    public onNetworkComponentTransformed(controller: NetworkComponentController) {}
+    @overridableHandler("component-transformed")
+    public onComponentTransformed(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component has exited transform mode
      * @param controller The controller of the component entered mode
      */
-    @overridableHandler("network-component-exited-transform-mode")
-    public onNetworkComponentExitingTransformMode(controller: NetworkComponentController) {}
+    @overridableHandler("component-exited-transform-mode")
+    public onComponentExitingTransformMode(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component is right-clicked

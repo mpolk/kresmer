@@ -25,7 +25,7 @@ export const vueStatusBar = createApp(StatusBar, {
 }).mount("#statusBar");
 
 kresmer
-    .on("scale-changed", (newScale) => statusBarData.drawingScale = newScale)
+    .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
     .on("hint", (hint) => statusBarData.hint = hint)
     ;
 

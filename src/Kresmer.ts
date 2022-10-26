@@ -57,7 +57,7 @@ export default class Kresmer extends KresmerEventFeatures {
             viewWidth: this.viewWidth,
             viewHeight: this.viewHeight,
 
-            onScaleChanged: this.onScaleChanged.bind(this),
+            onDrawingScale: this.onDrawingScale.bind(this),
         });
 
         this.appKresmer

@@ -78,7 +78,7 @@ export default class NetworkComponentController {
         if (this.isDragged) {
             this.component.isHighlighted = false;
             this.isDragged = false;
-            this.kresmer.onNetworkComponentMoved(this);
+            this.kresmer.onComponentMoved(this);
             this.kresmer.popHint();
             return true;
         }//if
@@ -155,7 +155,7 @@ export default class NetworkComponentController {
 
         this.isBeingTransformed = false;
         // this.transformMode = undefined;
-        this.kresmer.onNetworkComponentTransformed(this);
+        this.kresmer.onComponentTransformed(this);
         this.kresmer.popHint();
         return true;
     }//endTransform
