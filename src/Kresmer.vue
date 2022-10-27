@@ -40,24 +40,32 @@
 
     const scale = ref(1);
 
-    const width = computed(() => {
-        const matches = props.drawingWidth.toString().match(/^([0-9.]+)(.+)$/);
+    function scaled(size: string|number)
+    {
+        const matches = size.toString().match(/^([0-9.]+)(.+)$/);
         if (!matches)
             return undefined;
 
         const n = parseFloat(matches[1]);
         return `${n * scale.value}${matches[2]}`;
-    })//width
+    }//scaled
 
-    const height = computed(() => {
-        const matches = props.drawingHeight.toString().match(/^([0-9.]+)(.+)$/);
+    function scaledOffset(size: string|number)
+    {
+        if (scale.value >= 1)
+            return 0;
+        const matches = size.toString().match(/^([0-9.]+)(.+)$/);
         if (!matches)
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * scale.value}${matches[2]}`;
-    })//height
+        return `${n * 0.5 * (1 - scale.value)}${matches[2]}`;
+    }//scaledOffset
 
+    const x = computed(() => scaledOffset(props.drawingWidth))
+    const y = computed(() => scaledOffset(props.drawingHeight))
+    const width = computed(() => scaled(props.drawingWidth))
+    const height = computed(() => scaled(props.drawingHeight))
 
     const emit = defineEmits<{
         (event: "drawing-scale", newScale: number): void,
@@ -83,7 +91,8 @@
         emit("drawing-scale", scale.value);
     }//onMouseWheel
 
-    function onComponentRightClick(controller: NetworkComponentController, target: "component"|"transform-box", 
+    function onComponentRightClick(controller: NetworkComponentController, 
+                                   target: "component"|"transform-box", 
                                    nativeEvent: MouseEvent)
     {
         emit("component-right-click", controller, target, nativeEvent);
@@ -114,7 +123,7 @@
 
 <template>
     <svg class="kresmer" ref="rootSVG" 
-        :width = "width" :height="height"
+        :style="{marginLeft: x, marginTop: y}" :width = "width" :height="height"
         :viewBox="`0 0 ${viewWidth} ${viewHeight}`"
         @mousedown.prevent="onMouseDownOnCanvas($event)"
         @mousemove.prevent=""
@@ -152,8 +161,9 @@
 
 <style lang="scss">
     svg.kresmer {
-        //width: 100%; height: 100%;
-        //overflow: scroll;
+        background-color: whitesmoke;
+        box-shadow: 0.5rem 0.5rem 0.5rem lightgray;
+        border: thin darkgray dotted;
 
         svg.network-component {
             overflow: visible;
