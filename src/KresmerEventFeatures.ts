@@ -8,10 +8,11 @@
  *   Event-related features for incorporating to the main Kresmer class
 \**************************************************************************/
 
+import KresmerException from "./KresmerException";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
 
 /** A list of Kresmer events along with correponding handler definitions */
-type KresmerEventHooks = {
+class KresmerEventHooks  {
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
@@ -33,10 +34,20 @@ type KresmerEventHooks = {
 export type KresmerEvent = keyof KresmerEventHooks;
 
 /** Event-related features for incorporating to the main Kresmer class */
+@checked
 export default class KresmerEventFeatures {
 
     /** The map (event => handler) */
-    protected externalHandlers: Partial<Record<KresmerEvent, (...args: unknown[]) => void>> = {};
+    protected readonly eventHooks = new KresmerEventHooks;
+
+    /* The following two auxiliary maps a used for internal KresmerEventFeatures testing
+       for completeness: whether all events have corresponding handler placeholders 
+       (i.e. empty protected methods) defined.
+       The first map collects all defined handler placeholders
+    */
+    static readonly _handlerPlaceholdersDefined: Partial<{[event in KresmerEvent]: boolean}> = {};
+    // The second one map contains all possible events
+    static readonly _allEvents = new KresmerEventHooks;
 
     /** Sets up the handler for the specified event
      * @param event The event to setup handler for
@@ -45,7 +56,7 @@ export default class KresmerEventFeatures {
     public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventHooks[Event]): KresmerEventFeatures;
     public on<Event extends KresmerEvent>(event: Event, handler: (...args: unknown[]) => void)
     {
-        this.externalHandlers[event] = handler;
+        this.eventHooks[event] = handler;
         return this;
     }//on
 
@@ -55,7 +66,7 @@ export default class KresmerEventFeatures {
      */
     public off(event: KresmerEvent)
     {
-        delete this.externalHandlers[event];
+        delete this.eventHooks[event];
         return this;
     }//off
 
@@ -156,8 +167,26 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
 {
     return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
     {
+        KresmerEventFeatures._handlerPlaceholdersDefined[event] = true;
         descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
-            this.externalHandlers[event]?.apply(this, args);
+            const handler = this.eventHooks[event];
+            if (handler)
+                (handler as (...args: unknown[]) => void)(...args);
         }
     }
 }//overridableHandler
+
+// Decorator checking if handler placeholers are defined for every event
+// (a kind of testing)
+function checked(target: typeof KresmerEventFeatures)
+{
+    const missedPlaceholders: string[] = [];
+    Object.getOwnPropertyNames(KresmerEventFeatures._allEvents).forEach(event => {
+        console.debug(event);
+        if (! (event in KresmerEventFeatures._handlerPlaceholdersDefined))
+            missedPlaceholders.push(event);
+    })//foreach
+    if (missedPlaceholders.length)
+        throw new KresmerException("Handler placeholders are not defined for the following events:" +
+            missedPlaceholders.join());
+}//checked
