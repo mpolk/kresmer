@@ -57,13 +57,6 @@ export default class KresmerEventFeatures {
         return this;
     }//off
 
-    /** Utility method that invokes an external handler for the specified event 
-     * if this handler was registered */
-    public invokeExternalHandler(event: KresmerEvent, ...args: unknown[])
-    {
-        this.externalHandlers[event]?.apply(this, args);
-    }//invokeExternalHandler
-
 
     /**
      * Is called when the global drawing scale changed occurs
@@ -136,12 +129,12 @@ export default class KresmerEventFeatures {
 
 
 // Decorator for the event handling methods defined in this class
-function overridableHandler(event: KresmerEvent)
+function overridableHandler<Event extends KresmerEvent>(event: Event)
 {
     return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
     {
-        descriptor.value = function(this: KresmerEventFeatures, ...args: unknown[]) {
-            this.invokeExternalHandler(event, ...args);
+        descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
+            this.externalHandlers[event]?.apply(this, args);
         }
     }
 }//overridableHandler
