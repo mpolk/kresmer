@@ -162,7 +162,7 @@ export default class KresmerEventFeatures {
 // Decorator for the event handling methods defined in this class
 function overridableHandler<Event extends KresmerEvent>(event: Event)
 {
-    return function(target: KresmerEventFeatures, propertyKey: string, descriptor: PropertyDescriptor)
+    return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
     {
         descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
             this.externalHandlers[event]?.apply(this, args);
