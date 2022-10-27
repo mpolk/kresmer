@@ -9,7 +9,6 @@
 <script lang="ts">
     import { PropType, ref, computed, provide } from 'vue';
     import Kresmer from './Kresmer';
-    import NetworkComponent from './NetworkComponent/NetworkComponent';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
@@ -62,10 +61,12 @@
 
     const emit = defineEmits<{
         (event: "drawing-scale", newScale: number): void,
-        (event: "component-right-click", component: NetworkComponent,
+        (event: "component-right-click", controller: NetworkComponentController,
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
         (event: "mouse-enter"): void,
         (event: "mouse-leave"): void,
+        (event: "component-mouse-enter", controller: NetworkComponentController): void,
+        (event: "component-mouse-leave", controller: NetworkComponentController): void,
     }>();
 
     // Event handlers
@@ -82,10 +83,10 @@
         emit("drawing-scale", scale.value);
     }//onMouseWheel
 
-    function onComponentRightClick(component: NetworkComponent, target: "component"|"transform-box", 
+    function onComponentRightClick(controller: NetworkComponentController, target: "component"|"transform-box", 
                                    nativeEvent: MouseEvent)
     {
-        emit("component-right-click", component, target, nativeEvent);
+        emit("component-right-click", controller, target, nativeEvent);
     }//onComponentRightClick
 
     function onMouseEnter()
@@ -97,6 +98,16 @@
     {
         emit("mouse-leave");
     }//onMouseLeave
+
+    function onComponentMouseEnter(controller: NetworkComponentController)
+    {
+        emit("component-mouse-enter", controller);
+    }//onComponentMouseEnter
+
+    function onComponentMouseLeave(controller: NetworkComponentController)
+    {
+        emit("component-mouse-leave", controller);
+    }//onComponentMouseLeave
 
     defineExpose({svg: rootSVG});
 </script>
@@ -124,6 +135,8 @@
                    :is-being-transformed="controller.isBeingTransformed"
                    :transform-mode="controller.transformMode"
                    @right-click="onComponentRightClick"
+                   @mouse-enter="onComponentMouseEnter"
+                   @mouse-leave="onComponentMouseLeave"
                 >
             <component :is="controller.component.vueName"
                    :component-id="controller.component.id"

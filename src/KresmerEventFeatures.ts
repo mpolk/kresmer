@@ -80,14 +80,12 @@ export default class KresmerEventFeatures {
 
     /**
      * Is called when the mouse cursor enters a drawing visible area
-     * @param controller The controller of the component
      */
     @overridableHandler("drawing-mouse-enter")
     public onDrawingMouseEnter() {}
 
     /**
      * Is called when the mouse cursor leaves a drawing visible area
-     * @param controller The controller of the component
      */
     @overridableHandler("drawing-mouse-leave")
     public onDrawingMouseLeave() {}
@@ -177,12 +175,11 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
 }//overridableHandler
 
 // Decorator checking if handler placeholers are defined for every event
-// (a kind of testing)
+// (a kind of self-testing)
 function checked(target: typeof KresmerEventFeatures)
 {
     const missedPlaceholders: string[] = [];
     Object.getOwnPropertyNames(KresmerEventFeatures._allEvents).forEach(event => {
-        console.debug(event);
         if (! (event in KresmerEventFeatures._handlerPlaceholdersDefined))
             missedPlaceholders.push(event);
     })//foreach

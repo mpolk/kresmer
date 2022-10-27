@@ -8,11 +8,9 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted, computed, inject } from 'vue';
-    import Kresmer from '../Kresmer';
+    import { ref, PropType, onMounted, computed } from 'vue';
     import TransformBox from '../Transform/TransformBox.vue';
     import { TransformBoxZone } from '../Transform/TransformBox';
-    import NetworkComponent from './NetworkComponent';
     import NetworkComponentController from "./NetworkComponentController";
     import { NetworkComponentHolderProps } from "./NetworkComponentHolder.d";
     import { Transform } from '../Transform/Transform';
@@ -28,8 +26,6 @@
         controller: {type: Object as PropType<NetworkComponentController>},
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const kresmer = inject(Kresmer.injectionKey)!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const svg = ref<SVGGraphicsElement>()!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -67,8 +63,10 @@
     const transformOrigin = computed(() => `${center.value.x} ${center.value.y}`)
 
     const emit = defineEmits<{
-        (event: "right-click", component: NetworkComponent, 
+        (event: "right-click", controller: NetworkComponentController, 
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
+        (event: "mouse-enter", controller?: NetworkComponentController): void,
+        (event: "mouse-leave", controller?: NetworkComponentController): void,
     }>();
 
     let transformStartEvent: MouseEvent | undefined;
@@ -100,8 +98,14 @@
             props.controller?.drag(event);
     }//onMouseMove
 
+    function onMouseEnter(event: MouseEvent)
+    {
+        emit("mouse-enter", props.controller);
+    }//onMouseLeave
+
     function onMouseLeave(event: MouseEvent)
     {
+        emit("mouse-leave", props.controller);
         !props.transformMode &&
         props.controller?.endDrag(event) && 
         props.controller?.restoreComponentZPosition();
@@ -194,7 +198,7 @@
 
     function onRightClick(event: MouseEvent, target: "component" | "transform-box") {
         if (props.controller)
-            emit("right-click", props.controller.component, target, event);
+            emit("right-click", props.controller, target, event);
     }//onRightClick
 
     defineExpose({center});
@@ -214,6 +218,7 @@
             @mousedown.prevent.stop="onMouseDown($event)"
             @mouseup.prevent="onMouseUp($event)"
             @mousemove.prevent="onMouseMove($event)"
+            @mouseenter.prevent="onMouseEnter($event)"
             @mouseleave.prevent="onMouseLeave($event)"
             @contextmenu="onRightClick($event, 'component')"
             >

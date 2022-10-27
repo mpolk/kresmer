@@ -60,6 +60,8 @@ export default class Kresmer extends KresmerEventFeatures {
             onDrawingScale: this.onDrawingScale.bind(this),
             onMouseEnter: this.onDrawingMouseEnter.bind(this),
             onMouseLeave: this.onDrawingMouseLeave.bind(this),
+            onComponentMouseEnter: this.onComponentMouseEnter.bind(this),
+            onComponentMouseLeave: this.onComponentMouseLeave.bind(this),
         });
 
         this.appKresmer
