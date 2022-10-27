@@ -8,7 +8,7 @@
 
 import { App, computed, createApp, InjectionKey, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
-import KresmerEventFeatures from "./KresmerEventHandlers";
+import KresmerEventFeatures from "./KresmerEventFeatures";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentHolder.d";
@@ -58,6 +58,8 @@ export default class Kresmer extends KresmerEventFeatures {
             viewHeight: this.viewHeight,
 
             onDrawingScale: this.onDrawingScale.bind(this),
+            onMouseEnter: this.onDrawingMouseEnter.bind(this),
+            onMouseLeave: this.onDrawingMouseLeave.bind(this),
         });
 
         this.appKresmer
@@ -279,32 +281,4 @@ export default class Kresmer extends KresmerEventFeatures {
         };
     }//applyScreenCTM
 
-
-    // Hints: suggestions for the user that Kresmer sends to the host UI and which
-    // can be displayed in status bar or somewhere else
-    private hintStack: string[] = [];
-    private hint = "";
-    
-    /** Sets the current hint */
-    public setHint(hint: string)
-    {
-        this.hint = hint;
-        this.onHint(hint);
-    }//setHint
-    
-    /** Pushes the current hint to the stack and the sets a new one */
-    public pushHint(hint: string)
-    {
-        this.hintStack.push(this.hint);
-        this.hint = hint;
-        this.onHint(hint);
-    }//pushHint
-    
-    /** Pops a hint from the stack and the sets it as a current one */
-    public popHint()
-    {
-        const hint = this.hintStack.pop();
-        this.hint = hint ? hint : "";
-        this.onHint(this.hint);
-    }//popHint
 }//Kresmer

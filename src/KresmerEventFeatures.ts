@@ -8,12 +8,15 @@
  *   Event-related features for incorporating to the main Kresmer class
 \**************************************************************************/
 
-import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
 
 /** A list of Kresmer events along with correponding handler definitions */
 type KresmerEventHooks = {
     "drawing-scale":                    (newScale: number) => void;
+    "drawing-mouse-enter":              () => void;
+    "drawing-mouse-leave":              () => void;
+    "component-mouse-enter":            (controller: NetworkComponentController) => void;
+    "component-mouse-leave":            (controller: NetworkComponentController) => void;
     "component-move-started":           (controller: NetworkComponentController) => void;
     "component-moved":                  (controller: NetworkComponentController) => void;
     "component-entered-transform-mode": (controller: NetworkComponentController, 
@@ -21,7 +24,7 @@ type KresmerEventHooks = {
     "component-transform-started":      (controller: NetworkComponentController) => void;
     "component-transformed":            (controller: NetworkComponentController) => void;
     "component-exited-transform-mode":  (controller: NetworkComponentController) => void;
-    "component-right-click":            (component: NetworkComponent, 
+    "component-right-click":            (controller: NetworkComponentController, 
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
     "hint": (hint: string) => void;
@@ -66,12 +69,40 @@ export default class KresmerEventFeatures {
     protected onDrawingScale(newScale: number) {}
 
     /**
+     * Is called when the mouse cursor enters a drawing visible area
+     * @param controller The controller of the component
+     */
+    @overridableHandler("drawing-mouse-enter")
+    public onDrawingMouseEnter() {}
+
+    /**
+     * Is called when the mouse cursor leaves a drawing visible area
+     * @param controller The controller of the component
+     */
+    @overridableHandler("drawing-mouse-leave")
+    public onDrawingMouseLeave() {}
+
+    /**
+     * Is called when the mouse cursor enters a network component visible area
+     * @param controller The controller of the component
+     */
+     @overridableHandler("component-mouse-enter")
+     public onComponentMouseEnter(controller: NetworkComponentController) {}
+ 
+     /**
+      * Is called when the mouse cursor leaves a network component visible area
+      * @param controller The controller of the component
+      */
+     @overridableHandler("component-mouse-leave")
+     public onComponentMouseLeave(controller: NetworkComponentController) {}
+  
+    /**
      * Is called when a network component move starts
      * @param controller The controller of the component starting to move
      */
     @overridableHandler("component-move-started")
     public onComponentMoveStart(controller: NetworkComponentController) {}
-
+ 
     /**
      * Is called when a network component had been moved (dragged)
      * @param controller The controller of the component been moved
@@ -114,7 +145,7 @@ export default class KresmerEventFeatures {
      * @param component The component been transformed
      */
     @overridableHandler("component-right-click")
-    protected onComponentRightClick(component: NetworkComponent, 
+    protected onComponentRightClick(controller: NetworkComponentController, 
                                     target: "component"|"transform-box", 
                                     nativeEvent: MouseEvent) {}
 
@@ -131,7 +162,7 @@ export default class KresmerEventFeatures {
 // Decorator for the event handling methods defined in this class
 function overridableHandler<Event extends KresmerEvent>(event: Event)
 {
-    return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
+    return function(target: KresmerEventFeatures, propertyKey: string, descriptor: PropertyDescriptor)
     {
         descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
             this.externalHandlers[event]?.apply(this, args);

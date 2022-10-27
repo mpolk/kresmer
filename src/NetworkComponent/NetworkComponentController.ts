@@ -56,7 +56,7 @@ export default class NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isDragged = true;
         this.bringComponentToTop();
-        this.kresmer.pushHint("Drag and drop the component where you want to leave it...");
+        this.kresmer.onComponentMoveStart(this);
     }//startDrag
 
     public drag(event: MouseEvent)
@@ -79,7 +79,6 @@ export default class NetworkComponentController {
             this.component.isHighlighted = false;
             this.isDragged = false;
             this.kresmer.onComponentMoved(this);
-            this.kresmer.popHint();
             return true;
         }//if
 
@@ -95,7 +94,7 @@ export default class NetworkComponentController {
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
         this.bringComponentToTop();
-        this.kresmer.pushHint("");
+        this.kresmer.onComponentTransformStart(this);
     }//startRotate
 
     public rotate(event: MouseEvent, center: Position)
@@ -126,7 +125,7 @@ export default class NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
         this.transformMode = "scaling";
-        this.kresmer.pushHint("");
+        this.kresmer.onComponentTransformStart(this);
         this.bringComponentToTop();
     }//startScale
 
@@ -156,7 +155,6 @@ export default class NetworkComponentController {
         this.isBeingTransformed = false;
         // this.transformMode = undefined;
         this.kresmer.onComponentTransformed(this);
-        this.kresmer.popHint();
         return true;
     }//endTransform
 
@@ -181,7 +179,7 @@ export default class NetworkComponentController {
         // this.isBeingTransformed = true;
         this.kresmer.resetAllComponentMode(this);
         this.transformMode = "scaling";
-        this.kresmer.pushHint(this.transformModeHint);
+        this.kresmer.onComponentEnteringTransformMode(this, this.transformMode);
         this.bringComponentToTop();
     }//enterTransformMode
 
@@ -189,7 +187,7 @@ export default class NetworkComponentController {
     {
         // this.isBeingTransformed = false;
         this.transformMode = undefined;
-        this.kresmer.popHint();
+        this.kresmer.onComponentExitingTransformMode(this);
         this.restoreComponentZPosition();
     }//resetMode
 
@@ -197,7 +195,7 @@ export default class NetworkComponentController {
     public onTransformBoxClick(_event: MouseEvent)
     {
         this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
-        this.kresmer.setHint(this.transformModeHint);
+        this.kresmer.onComponentEnteringTransformMode(this, this.transformMode);
     }//onTransformBoxClick
 
     private get transformModeHint()

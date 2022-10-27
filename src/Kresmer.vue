@@ -62,8 +62,10 @@
 
     const emit = defineEmits<{
         (event: "drawing-scale", newScale: number): void,
-        (event: "component-right-click", component: NetworkComponent, 
+        (event: "component-right-click", component: NetworkComponent,
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
+        (event: "mouse-enter"): void,
+        (event: "mouse-leave"): void,
     }>();
 
     // Event handlers
@@ -88,12 +90,12 @@
 
     function onMouseEnter()
     {
-        props.controller.pushHint("Drag any component to move it or ctrl-click to transform it");
+        emit("mouse-enter");
     }//onMouseEnter
 
     function onMouseLeave()
     {
-        props.controller.popHint();
+        emit("mouse-leave");
     }//onMouseLeave
 
     defineExpose({svg: rootSVG});
