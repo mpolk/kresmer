@@ -65,8 +65,8 @@
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
         (event: "mouse-enter"): void,
         (event: "mouse-leave"): void,
-        (event: "component-mouse-enter", controller: NetworkComponentController): void,
-        (event: "component-mouse-leave", controller: NetworkComponentController): void,
+        (event: "component-mouse-enter", controller?: NetworkComponentController): void,
+        (event: "component-mouse-leave", controller?: NetworkComponentController): void,
     }>();
 
     // Event handlers
