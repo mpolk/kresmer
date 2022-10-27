@@ -27,7 +27,6 @@ type KresmerEventHooks = {
     "component-right-click":            (controller: NetworkComponentController, 
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
-    "hint": (hint: string) => void;
 }//KresmerEventHooks
 
 /** Event names alone */
@@ -148,13 +147,6 @@ export default class KresmerEventFeatures {
     protected onComponentRightClick(controller: NetworkComponentController, 
                                     target: "component"|"transform-box", 
                                     nativeEvent: MouseEvent) {}
-
-    /**
-     * Is called when Kresmer proposes a hint for the current situation to present to the user
-     * @param hint A hint to show
-     */
-    @overridableHandler("hint")
-    protected onHint(hint: string) {}
 
 }//KresmerEventFeatures
 

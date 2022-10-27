@@ -28,19 +28,16 @@ export const vueStatusBar = createApp(StatusBar, {
 
 kresmer
     .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
-    .on("drawing-mouse-enter", () => hints.push("Drag any component to move it or ctrl-click to transform it"))
+    .on("drawing-mouse-enter", () => hints.push(Hints.global))
     .on("drawing-mouse-leave", () => hints.pop())
-    .on("component-move-started", () => hints.push("Drag and drop the component where you want to leave it..."))
+    .on("component-move-started", () => hints.push(Hints.onDrag))
     .on("component-moved", () => hints.pop())
     .on("component-transform-started", () => hints.push(""))
     .on("component-transformed", () => hints.pop())
-    .on("component-entered-transform-mode", (controller, mode) => hints.push(
-        mode == "rotation" ?
-            "Rotate the component around the center mark or click to switch to the scaling mode" :
-            "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode"
-        ))
+    .on("component-entered-transform-mode", (_, mode) => hints.push(mode == "rotation" ? 
+                                                                        Hints.onRotation : 
+                                                                        Hints.onScaling))
     .on("component-exited-transform-mode", () => hints.pop())
-    .on("hint", (hint) => hints.setHint(hint))
     ;
 
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 

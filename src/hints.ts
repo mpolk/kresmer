@@ -34,4 +34,9 @@ export default class Hints {
         this.setHint(hint ? hint : "");
     }//pop
 
+    // Specific hints
+    static global = "Drag any component to move it or ctrl-click to transform it";
+    static onDrag = "Drop the component where you want to leave it...";
+    static onRotation = "Rotate the component around the center mark or click to switch to the scaling mode";
+    static onScaling = "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode";
 }//Hints
