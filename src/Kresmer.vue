@@ -108,12 +108,12 @@
         emit("mouse-leave");
     }//onMouseLeave
 
-    function onComponentMouseEnter(controller: NetworkComponentController)
+    function onComponentMouseEnter(controller?: NetworkComponentController)
     {
         emit("component-mouse-enter", controller);
     }//onComponentMouseEnter
 
-    function onComponentMouseLeave(controller: NetworkComponentController)
+    function onComponentMouseLeave(controller?: NetworkComponentController)
     {
         emit("component-mouse-leave", controller);
     }//onComponentMouseLeave
