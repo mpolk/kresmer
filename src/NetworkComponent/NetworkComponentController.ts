@@ -194,15 +194,10 @@ export default class NetworkComponentController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onTransformBoxClick(_event: MouseEvent)
     {
+        if (this.transformMode)
+            this.kresmer.onComponentExitingTransformMode(this);
         this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
         this.kresmer.onComponentEnteringTransformMode(this, this.transformMode);
     }//onTransformBoxClick
-
-    private get transformModeHint()
-    {
-        return this.transformMode == "rotation" ?
-            "Rotate the component around the center mark or click to switch to the scaling mode" :
-            "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode";
-    }//transformModeHint
 
 }//NetworkComponentController
