@@ -57,6 +57,7 @@
                                                     <xs:attributeGroup ref="dim-attrs"/>
                                                     <xs:attributeGroup ref="presentation-attrs"/>
                                                     <xs:attributeGroup ref="vue-directives"/>
+                                                    <xs:attribute name="vector-effect"/>
                                                 </xs:complexType>
                                             </xs:element>
 
