@@ -47,4 +47,13 @@
             <rotate angle="-10" />
         </transform>
     </component>
+
+    <component class="ExtremeSwitch">
+        <origin x="30" y="600" />
+        <props>
+            <prop name="width">400</prop>
+            <prop name="height">50</prop>
+            <prop name="line-color">white</prop>
+        </props>
+    </component>
 </kresmer-drawing>
