@@ -28,6 +28,8 @@ export const vueStatusBar = createApp(StatusBar, {
 
 kresmer
     .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
+    .on("drawing-mouse-leave", () => hints.reset())
+    .on("mode-reset", () => hints.reset())
     .on("component-mouse-enter", () => hints.push(Hints.onComponentMouseEnter))
     .on("component-mouse-leave", () => hints.pop())
     .on("component-move-started", () => hints.push(Hints.onDrag))

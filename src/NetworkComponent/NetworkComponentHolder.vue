@@ -105,10 +105,10 @@
 
     function onMouseLeave(event: MouseEvent)
     {
-        emit("mouse-leave", props.controller);
+            emit("mouse-leave", props.controller);
         !props.transformMode &&
-        props.controller?.endDrag(event) && 
-        props.controller?.restoreComponentZPosition();
+            props.controller?.endDrag(event) && 
+            props.controller?.restoreComponentZPosition();
     }//onMouseLeave
 
     function onMouseDownInTransformBox(zone: TransformBoxZone, event: MouseEvent)
@@ -120,8 +120,10 @@
 
     function onMouseUpInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        transformStartEvent = undefined;
-        props.controller?.endTransform(event);
+        if (transformStartEvent)
+            transformStartEvent = undefined;
+        else
+            props.controller?.endTransform(event);
     }//onMouseUpInTransformBox
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
@@ -215,26 +217,26 @@
         >
         <g ref="trGroup" class="tr-group" 
             :transform="transformAttr" :transform-origin="transformOrigin"
-            @mousedown.prevent.stop="onMouseDown($event)"
-            @mouseup.prevent="onMouseUp($event)"
-            @mousemove.prevent="onMouseMove($event)"
-            @mouseenter.prevent="onMouseEnter($event)"
-            @mouseleave.prevent="onMouseLeave($event)"
+            @mousedown.stop="onMouseDown($event)"
+            @mouseup.stop="onMouseUp($event)"
+            @mousemove.stop="onMouseMove($event)"
+            @mouseenter.stop="onMouseEnter($event)"
+            @mouseleave.stop="onMouseLeave($event)"
             @contextmenu="onRightClick($event, 'component')"
             >
-            <slot></slot>
-        </g>
-        <TransformBox v-if="transformMode" ref="trBox" :origin="origin!" 
-            :transform="transform" :transform-origin="transformOrigin" 
-            :transform-mode="transformMode"
-            :b-box="bBox!" :center="center"
-            @mouse-down="onMouseDownInTransformBox"
-            @mouse-move="onMouseMoveInTransformBox"
-            @mouse-up="onMouseUpInTransformBox"
-            @mouse-leave="onMouseLeaveFromTransformBox"
-            @box-click="onTransformBoxClick"
-            @box-right-click="onRightClick($event, 'transform-box')"
-            />
+            <g class="network-component-slot"><slot></slot></g>
+            <TransformBox v-if="transformMode" ref="trBox" :origin="origin!" 
+                :transform="transform" :transform-origin="transformOrigin" 
+                :transform-mode="transformMode"
+                :b-box="bBox!" :center="center"
+                @mouse-down="onMouseDownInTransformBox"
+                @mouse-move="onMouseMoveInTransformBox"
+                @mouse-up="onMouseUpInTransformBox"
+                @mouse-leave="onMouseLeaveFromTransformBox"
+                @box-click="onTransformBoxClick"
+                @box-right-click="onRightClick($event, 'transform-box')"
+                />
+            </g>
     </svg>
 </template>
 
@@ -244,7 +246,7 @@
                 outline: thin red solid;
             }
             
-            &.beingTransformed > g.tr-group {
+            &.beingTransformed .network-component-slot {
                 opacity: 0.5;
             }
     }

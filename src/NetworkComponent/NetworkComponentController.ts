@@ -187,7 +187,7 @@ export default class NetworkComponentController {
     {
         // this.isBeingTransformed = false;
         this.transformMode = undefined;
-        this.kresmer.onComponentExitingTransformMode(this);
+        //this.kresmer.onComponentExitingTransformMode(this);
         this.restoreComponentZPosition();
     }//resetMode
 

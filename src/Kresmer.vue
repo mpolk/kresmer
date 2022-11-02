@@ -83,6 +83,7 @@
     function onMouseDownOnCanvas(_event: MouseEvent)
     {
         props.controller.resetAllComponentMode();
+        props.controller.onModeReset();
     }//onMouseDownOnCanvas
 
     function onMouseWheel(event: WheelEvent)

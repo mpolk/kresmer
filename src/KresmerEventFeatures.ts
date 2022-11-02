@@ -28,6 +28,7 @@ class KresmerEventHooks  {
     "component-right-click":            (controller: NetworkComponentController, 
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
+    "mode-reset":                       () => void;
 }//KresmerEventHooks
 
 /** Event names alone */
@@ -157,6 +158,12 @@ export default class KresmerEventFeatures {
                                     target: "component"|"transform-box", 
                                     nativeEvent: MouseEvent) {}
 
+    /**
+     * Is called when mode reset was performed for all components
+     */
+     @overridableHandler("mode-reset")
+     public onModeReset() {}
+ 
 }//KresmerEventFeatures
 
 
