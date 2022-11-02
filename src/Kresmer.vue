@@ -123,7 +123,8 @@
 
 <template>
     <svg class="kresmer" ref="rootSVG" 
-        :style="{marginLeft: x, marginTop: y}" :width = "width" :height="height"
+        :style="{marginLeft: x, marginTop: y, marginRight: 0, marginBottom: 0}" 
+        :width = "width" :height="height"
         :viewBox="`0 0 ${viewWidth} ${viewHeight}`"
         @mousedown.prevent="onMouseDownOnCanvas($event)"
         @mousemove.prevent=""
@@ -163,7 +164,7 @@
     svg.kresmer {
         background-color: whitesmoke;
         box-shadow: 0.5rem 0.5rem 0.5rem lightgray;
-        border: thin darkgray dotted;
+        outline: thin darkgray dotted;
 
         svg.network-component {
             overflow: visible;
