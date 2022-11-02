@@ -17,15 +17,15 @@ export default class Hints {
     /** Sets the current hint */
     public setHint(hint: string)
     {
-        console.debug(`Hints.setHint("${hint}")`);
+        // console.debug(`Hints.setHint("${hint}")`);
         statusBarData.hint = this.currentHint = hint;
     }//setHint
     
     /** Pushes the current hint to the stack and the sets a new one */
     public push(hint: string)
     {
-        console.debug(`Hints.push("${hint}")`);
-        console.trace();
+        // console.debug(`Hints.push("${hint}")`);
+        // console.trace();
         this.hintStack.push(this.currentHint);
         this.setHint(hint);
     }//push
@@ -33,16 +33,16 @@ export default class Hints {
     /** Pops a hint from the stack and the sets it as a current one */
     public pop()
     {
-        console.debug(`Hints.pop()`);
-        console.trace();
+        // console.debug(`Hints.pop()`);
+        // console.trace();
         const hint = this.hintStack.pop();
         this.setHint(hint ? hint : "");
     }//pop
 
     public reset()
     {
-        console.debug(`Hints.reset()`);
-        console.trace();
+        // console.debug(`Hints.reset()`);
+        // console.trace();
         this.hintStack = [];
         this.setHint("");
     }//reset
