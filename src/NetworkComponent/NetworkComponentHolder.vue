@@ -105,10 +105,10 @@
 
     function onMouseLeave(event: MouseEvent)
     {
-            emit("mouse-leave", props.controller);
+        emit("mouse-leave", props.controller);
         !props.transformMode &&
-            props.controller?.endDrag(event) && 
-            props.controller?.restoreComponentZPosition();
+        props.controller?.endDrag(event) && 
+        props.controller?.restoreComponentZPosition();
     }//onMouseLeave
 
     function onMouseDownInTransformBox(zone: TransformBoxZone, event: MouseEvent)
@@ -123,7 +123,7 @@
         if (transformStartEvent)
             transformStartEvent = undefined;
         else
-            props.controller?.endTransform(event);
+            props.controller?.endTransform(event) || props.controller?.endDrag(event);
     }//onMouseUpInTransformBox
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
@@ -184,11 +184,7 @@
 
     function onMouseLeaveFromTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        switch (zone) {
-            case "tr-box":
-            case "rot-handle":
-                onMouseUpInTransformBox(zone, event);
-        }//switch
+        onMouseUpInTransformBox(zone, event);
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {

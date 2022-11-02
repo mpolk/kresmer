@@ -147,13 +147,11 @@ export default class NetworkComponentController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endTransform(event: MouseEvent)
     {
-        this.isDragged = false;
         if (!this.isBeingTransformed) {
             return false;
         }//if
 
         this.isBeingTransformed = false;
-        // this.transformMode = undefined;
         this.kresmer.onComponentTransformed(this);
         return true;
     }//endTransform
