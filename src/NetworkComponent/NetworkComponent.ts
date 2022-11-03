@@ -10,9 +10,6 @@ import Kresmer from '../Kresmer';
 import NetworkComponentClass from "./NetworkComponentClass";
 import { NetworkElement } from '../NetworkElement';
 
-type PropType = Record<string, any>;
-type ContentType = any;
-
 /**
  * Network Component - a generic network element instance 
  */
@@ -30,8 +27,8 @@ export default class NetworkComponent extends NetworkElement {
         args: {
             kresmer: Kresmer,
             name?: string,
-            props?: PropType,
-            content?: ContentType, 
+            props?: Record<string, unknown>,
+            content?: unknown, 
         }
     ) {
         super(args.kresmer);
@@ -53,10 +50,10 @@ export default class NetworkComponent extends NetworkElement {
     get vueName() {return this._class.vueName}
 
     /** Data passed to the vue-component props */
-    readonly props?: PropType;
+    readonly props?: Record<string, unknown>;
 
     /** Data passed to the vue-component content (unnamed slot) */
-    readonly content: ContentType;
+    readonly content: unknown;
 
     /** A unique ID for this component instance */
     readonly id: number;
