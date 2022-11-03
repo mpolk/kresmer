@@ -9,9 +9,9 @@
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
 import Hints from './hints';
-import initApp from './init';
-import Kresmer from './Kresmer';
-import ParsingException from './parsers/ParsingException';
+import initApp from '../init';
+import Kresmer from '../Kresmer';
+import ParsingException from '../parsers/ParsingException';
 import StatusBar from './status-bar.vue';
 
 export const kresmer = new Kresmer('#kresmer');

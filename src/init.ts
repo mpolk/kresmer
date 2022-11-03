@@ -6,7 +6,7 @@
  *                    Front-end initialization script
  ***************************************************************************/
 
-import {kresmer} from "./renderer-main";
+import {kresmer} from "./electron/renderer-main";
 import NetworkComponent from './NetworkComponent/NetworkComponent';
 import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
 

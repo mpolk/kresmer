@@ -1,4 +1,4 @@
 {
     "extends": "./tsconfig.json",
-    "include": ["src/electron/**/*"],
+    "include": ["src/electron/**/*", "src/**/*"],
 }

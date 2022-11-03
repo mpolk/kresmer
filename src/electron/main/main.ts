@@ -36,7 +36,7 @@ function createWindow() {
     // and load the index.html of the app.
     const url = isDev ?
         `http://localhost:${packageJson.config.port}` :
-        'file://' + path.join(__dirname, '../../index.html');
+        'file://' + path.join(__dirname, '../index.html');
     mainWindow.loadURL(url);
 
     if (isDev) {
