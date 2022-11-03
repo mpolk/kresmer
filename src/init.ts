@@ -18,7 +18,7 @@ export default function initApp()
             <rect x="0" y="0" :width="width" :height="height" 
                     stroke="gold" stroke-width="8px" stroke-opacity="0.5"/>
             <text :x="width*0.25" :y="height*0.6" stroke="gold" :font-size="fontSize">{{text}}</text>
-            <Kre:Crown v-bind:origin="{x: 10, y: height*0.6}" v-bind:font-size="fontSize"/>
+            <Kre:Crown  x="10" v-bind:y="height*0.6" v-bind:font-size="fontSize"/>
             <text :x="width*0.75 + i*22" :y="height*0.6" fill="gold" :font-size="fontSize" v-for="i in 3">⚜</text>
             `,
             props: {

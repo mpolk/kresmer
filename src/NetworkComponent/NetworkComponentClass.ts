@@ -39,7 +39,7 @@ export default class NetworkComponentClass {
     /**
      * Template for the Vue-component for this class
      */
-    readonly template: string | Element;
+    public template: string | Element;
     /**
      * Props definition of the Vue-component for this class
      */
@@ -53,13 +53,13 @@ export default class NetworkComponentClass {
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
      */
-    get vueName() {return "_Kre:" + this.name}
+    get vueName() {return "Kre:" + this.name}
 
     /**
      * Returns the name of the holder vue-component for this class
      * @returns The holder vue-component name
      */
-    get holderVueName() {return "Kre:" + this.name}
+    get holderVueName() {return "_Kre:" + this.name}
 
     /**
      * Returns the name of the vue-component for this class defs

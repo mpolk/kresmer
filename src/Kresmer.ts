@@ -99,47 +99,19 @@ export default class Kresmer extends KresmerEventFeatures {
      */
     public registerNetworkComponentClass(componentClass: NetworkComponentClass) 
     {
-        this.appKresmer
-            .component(componentClass.vueName, 
-            {
-                template: componentClass.template,
-                props: {
-                    ...componentClass.props,
-                    componentId: {type: Number},
-                    componentName: {type: String},
-                },
-            })
-            .component(componentClass.holderVueName, 
-            {
-                setup(props) {
-                    const componentProps = computed(() => {
-                        const pr = {...props};
-                        for (const key of Object.keys(NetworkComponentHolderProps)) {
-                            delete pr[key];
-                        }//for
-                        return pr;
-                    });
-                    return {componentProps};
-                },
-                template: `\
-                    <NetworkComponentHolder 
-                            :origin="origin"
-                            :transform="transform?.toAttr()"
-                            :is-highlighted="isHighlighted"
-                            :is-dragged="isDragged"
-                            :is-being-transformed="isBeingTransformed"
-                            >
-                        <component is="${componentClass.vueName}" v-bind="componentProps">
-                            <slot></slot>
-                        </component>
-                    </NetworkComponentHolder>`,
-                props: {
-                    ...componentClass.props,
-                    ...NetworkComponentHolderProps,
-                    componentId: {type: Number},
-                    componentName: {type: String},
-                },
-            });
+        this.appKresmer.component(componentClass.vueName, 
+        {
+            template: componentClass.template,
+            props: {
+                ...componentClass.props,
+                componentId: {type: Number},
+                componentName: {type: String},
+                // the next two props are added just to relax Vue prop passing mechanism, which 
+                // does not like xmlns:* attributes leaked from DOMParser
+                "xmlns:Kre": {type: String},
+                "xmlns:v-bind": {type: String},
+            },
+        });
 
         if (componentClass.defs) {
             this.appKresmer.component(componentClass.defsVueName, 
@@ -186,7 +158,6 @@ export default class Kresmer extends KresmerEventFeatures {
         return !wereErrors;
      }//loadLibrary
  
-
     /**
      * Components currently placed to the drawing
      */
