@@ -6,12 +6,11 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, computed, createApp, InjectionKey, reactive } from "vue";
+import { App, createApp, InjectionKey, reactive } from "vue";
 import KresmerVue from "./Kresmer.vue";
 import KresmerEventFeatures from "./KresmerEventFeatures";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
-import { NetworkComponentHolderProps } from "./NetworkComponent/NetworkComponentHolder.d";
 import { Position, Transform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LibraryParser from "./parsers/LibraryParser";
