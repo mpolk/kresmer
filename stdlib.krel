@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-library.xsd"?>
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind">
+    <defs>
+        <text id="kre:std:Crown">👑</text>
+    </defs>
+
     <component-class name="YellowRectangle">
         <template>  
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" 
@@ -41,7 +45,8 @@
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" 
                 v-bind:fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
-            <text x="20" y="30" v-bind:fill="textColor" v-bind:font-size="fontSize" v-bind:font-family="fontFamily">{{text}}</text>
+            <use href="#kre:std:Crown" x="10" y="30" />
+            <text x="40" y="30" v-bind:fill="textColor" v-bind:font-size="fontSize" v-bind:font-family="fontFamily">{{text}}</text>
         </template>
         <props>
             <prop name="width" type="Number" required="true"/>

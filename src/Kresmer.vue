@@ -140,8 +140,9 @@
         >
         <defs>
             <TransformBoxFilters />
+            <component v-if="controller.defs" :is="'GlobalDefs'" />
             <template v-for="_class in networkComponentClasses">
-                <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"></component>
+                <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
         </defs>
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 

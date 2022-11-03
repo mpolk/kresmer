@@ -45,7 +45,7 @@ export default class NetworkComponentClass {
      */
     readonly props?: ComponentObjectPropsOptions;
     /**
-     * Template for the Vue-component for this class
+     * SVG Defs for this class
      */
     readonly defs?: string | Element;
 

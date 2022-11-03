@@ -10,6 +10,7 @@ import { ComponentPropsOptions, Prop } from "vue";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
+import { SVGDefs } from "../Kresmer";
 
 /**
  * Component library parser
@@ -21,7 +22,7 @@ export default class LibraryParser {
      * of the parsed library elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string): Generator<NetworkComponentClass|ParsingException>
+    public *parseXML(rawData: string): Generator<NetworkComponentClass|SVGDefs|ParsingException>
     {
         console.debug('Parsing library XML...');
         const domParser = new DOMParser();
@@ -45,6 +46,9 @@ export default class LibraryParser {
                             else
                                 throw exc;
                         }//catch
+                        break;
+                    case "defs":
+                        yield new SVGDefs(node);
                         break;
                     default:
                         yield new LibraryParsingException(

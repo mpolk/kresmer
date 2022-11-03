@@ -32,6 +32,8 @@ export default class Kresmer extends KresmerEventFeatures {
     readonly vueKresmer: InstanceType<typeof KresmerVue>;
     /** A symbolic key for the Kresmer instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
+    /** Global SVG Defs */
+    public defs?: string | Element;
 
     constructor(mountPoint: string|HTMLElement, options?: {
         drawingWidth?: number | string,
@@ -173,6 +175,9 @@ export default class Kresmer extends KresmerEventFeatures {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
+            } else if (element instanceof SVGDefs) {
+                this.defs = element.data;
+                this.appKresmer.component("GlobalDefs", {template: this.defs});
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
                 wereErrors = true;
@@ -292,3 +297,12 @@ export default class Kresmer extends KresmerEventFeatures {
     }//applyScreenCTM
 
 }//Kresmer
+
+/** A wrapper for the SVG Defs element */
+export class SVGDefs {
+    data: Element;
+    constructor(data: Element)
+    {
+        this.data = data;
+    }//ctor
+}//SVGDefs
