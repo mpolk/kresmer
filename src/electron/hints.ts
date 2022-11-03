@@ -4,7 +4,7 @@
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  *    User hints (i.e. suggestions for actions in the current situation)
- ***************************************************************************/
+\***************************************************************************/
 
 import {statusBarData} from './renderer-main';
 
