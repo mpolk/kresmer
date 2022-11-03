@@ -7,6 +7,14 @@
  * on the drawing 
  ***************************************************************************/
 
+import Kresmer from "./Kresmer";
+
 export abstract class NetworkElement {
+    protected kresmer: Kresmer;
     isHighlighted = false;
+
+    constructor(kresmer: Kresmer)
+    {
+        this.kresmer = kresmer;
+    }//ctor
 }//NetworkElement

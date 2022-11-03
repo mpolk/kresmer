@@ -68,7 +68,7 @@ export default class DrawingParser {
         const className = node.getAttribute("class");
         if (!className) 
             throw new DrawingParsingException("Component class without class");
-        const componentClass = Kresmer.getNetworkComponentClass(className);
+        const componentClass = this.kresmer.getNetworkComponentClass(className);
         if (!componentClass) 
             throw new DrawingParsingException(`Unknown component class "${componentClass}"`);
 
@@ -119,7 +119,7 @@ export default class DrawingParser {
             }//for
         }//if
 
-        const component = new NetworkComponent(className, {props, content});
+        const component = new NetworkComponent(className, {kresmer: this.kresmer, props, content});
         return new NetworkComponentController(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode

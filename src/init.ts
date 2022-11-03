@@ -30,6 +30,7 @@ export default function initApp()
             },
         }))
         .placeNetworkComponent(new NetworkComponent("GoldenKresmer", {
+                kresmer, 
                 props: {
                     width: 400,
                     height: 50,
@@ -40,14 +41,15 @@ export default function initApp()
             {x: 30, y: 310}
         )
         .placeNetworkComponent(new NetworkComponent("SilverKresmer", {
-            props: {
-                width: 400,
-                height: 50,
-                text: "Silver Kresmer",
-                fontSize: "32"
-            }
-        }), 
-        {x: 30, y: 380}
-    )
+                kresmer, 
+                props: {
+                    width: 400,
+                    height: 50,
+                    text: "Silver Kresmer",
+                    fontSize: "32"
+                }
+            }), 
+            {x: 30, y: 380}
+        )
 ;
 }//initApp

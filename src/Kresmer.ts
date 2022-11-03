@@ -53,7 +53,7 @@ export default class Kresmer extends KresmerEventFeatures {
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
             networkComponents: this.networkComponents,
-            networkComponentClasses: Kresmer.registeredClasses,
+            networkComponentClasses: this.registeredClasses,
             drawingWidth: this.drawingWidth,
             drawingHeight: this.drawingHeight,
             viewWidth: this.viewWidth,
@@ -86,9 +86,9 @@ export default class Kresmer extends KresmerEventFeatures {
     readonly viewHeight: number = 1000;
 
     /**
-     * A singleton list of all Component Classes, registered by Kresmer
+     * A list of all Component Classes, registered by Kresmer
      */
-    protected static readonly registeredClasses: Record<string, NetworkComponentClass> = {};
+    protected readonly registeredClasses: Record<string, NetworkComponentClass> = {};
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
@@ -119,7 +119,7 @@ export default class Kresmer extends KresmerEventFeatures {
             })
         }//if
 
-        Kresmer.registeredClasses[componentClass.name] = componentClass;
+        this.registeredClasses[componentClass.name] = componentClass;
         return this;
     }//registerNetworkComponentClass
 
@@ -128,9 +128,9 @@ export default class Kresmer extends KresmerEventFeatures {
      * if exists or "undefined" otherwise
      * @param className Class name
      */
-     public static getNetworkComponentClass(className: string)
+     public getNetworkComponentClass(className: string)
      {
-         return Kresmer.registeredClasses[className];
+         return this.registeredClasses[className];
      }//getNetworkComponentClass
 
      /**
