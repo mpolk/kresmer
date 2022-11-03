@@ -23,11 +23,13 @@ export default class NetworkComponentClass {
     public constructor(name: string, params: {
         template: string | Element,
         props?: ComponentObjectPropsOptions,
+        defs?: string | Element,
     })
     {
         this.name = name;
         this.template = params.template;
         this.props = params.props;
+        this.defs = params.defs;
     }//ctor
 
     /**
@@ -42,6 +44,10 @@ export default class NetworkComponentClass {
      * Props definition of the Vue-component for this class
      */
     readonly props?: ComponentObjectPropsOptions;
+    /**
+     * Template for the Vue-component for this class
+     */
+    readonly defs?: string | Element;
 
     /**
      * Returns the name of the vue-component for this class
@@ -53,5 +59,11 @@ export default class NetworkComponentClass {
      * Returns the name of the holder vue-component for this class
      * @returns The holder vue-component name
      */
-    get vueHolderName() {return "Kre:" + this.name}
-}//NetworkComponentClass
+    get holderVueName() {return "Kre:" + this.name}
+
+    /**
+     * Returns the name of the vue-component for this class defs
+     * @returns The vue-component name defs
+     */
+     get defsVueName() {return "Kre:" + this.name + ".defs"}
+    }//NetworkComponentClass

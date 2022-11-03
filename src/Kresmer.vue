@@ -9,6 +9,7 @@
 <script lang="ts">
     import { PropType, ref, computed, provide } from 'vue';
     import Kresmer from './Kresmer';
+    import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
@@ -23,6 +24,10 @@
         controller: {type: Object as PropType<Kresmer>, required: true},
         networkComponents: {
             type: Object as PropType<Record<string, NetworkComponentController>>, 
+            required: true
+        },
+        networkComponentClasses: {
+            type: Object as PropType<Record<string, NetworkComponentClass>>, 
             required: true
         },
         drawingWidth: {type: [Number, String], default: "100%"},
@@ -135,6 +140,9 @@
         >
         <defs>
             <TransformBoxFilters />
+            <template v-for="_class in networkComponentClasses">
+                <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"></component>
+            </template>
         </defs>
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"

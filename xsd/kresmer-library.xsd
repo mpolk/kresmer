@@ -5,27 +5,34 @@
 
     <xs:attributeGroup name="origin-attrs">
         <xs:attribute name="x" type="xs:decimal"/>
-        <xs:attribute name="y" type="xs:decimal"/>
         <xs:attribute ref="v-bind:x"/>
+        <xs:attribute name="y" type="xs:decimal"/>
         <xs:attribute ref="v-bind:y"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="presentation-attrs">
         <xs:attribute name="stroke" type="xs:string" />
-        <xs:attribute name="stroke-width" />
-        <xs:attribute name="stroke-opacity" type="xs:decimal" />
-        <xs:attribute name="fill" type="xs:string"/>
         <xs:attribute ref="v-bind:stroke"/>
         <xs:attribute ref="v-bind:stroke-width" />
+        <xs:attribute name="stroke-width" />
+        <xs:attribute name="stroke-opacity" type="xs:decimal" />
         <xs:attribute ref="v-bind:stroke-opacity" />
+        <xs:attribute name="fill" type="xs:string"/>
         <xs:attribute ref="v-bind:fill" />
+        <xs:attribute name="filter" type="xs:string"/>
+        <xs:attribute ref="v-bind:filter" />
     </xs:attributeGroup>
 
     <xs:attributeGroup name="dim-attrs">
         <xs:attribute name="width"  />
-        <xs:attribute name="height" />
         <xs:attribute ref="v-bind:width"  />
+        <xs:attribute name="height" />
         <xs:attribute ref="v-bind:height" />
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="point-attrs">
+        <xs:attribute name="points"></xs:attribute>
+        <xs:attribute ref="v-bind:points" />
     </xs:attributeGroup>
 
     <xs:attributeGroup name="font-attrs">
@@ -38,11 +45,16 @@
     <xs:attributeGroup name="vue-directives">
         <xs:attribute name="v-for"/>
         <xs:attribute name="v-if"/>
+        <xs:attribute name="v-else"/>
     </xs:attributeGroup>
     
     <xs:element name="kresmer-library">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="defs" minOccurs="0">
+                    <xs:complexType><xs:choice><xs:any processContents="lax"></xs:any></xs:choice></xs:complexType>
+                </xs:element>
+
                 <xs:element name="component-class" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:all>
@@ -55,6 +67,15 @@
                                                 <xs:complexType>
                                                     <xs:attributeGroup ref="origin-attrs"/>
                                                     <xs:attributeGroup ref="dim-attrs"/>
+                                                    <xs:attributeGroup ref="presentation-attrs"/>
+                                                    <xs:attributeGroup ref="vue-directives"/>
+                                                    <xs:attribute name="vector-effect"/>
+                                                </xs:complexType>
+                                            </xs:element>
+
+                                            <xs:element name="polyline" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:attributeGroup ref="point-attrs"/>
                                                     <xs:attributeGroup ref="presentation-attrs"/>
                                                     <xs:attributeGroup ref="vue-directives"/>
                                                     <xs:attribute name="vector-effect"/>
@@ -92,6 +113,10 @@
                                         </xs:element>
                                     </xs:sequence>
                                 </xs:complexType>
+                            </xs:element>
+
+                            <xs:element name="defs" minOccurs="0">
+                                <xs:complexType><xs:choice><xs:any processContents="lax"></xs:any></xs:choice></xs:complexType>
                             </xs:element>
                         </xs:all>
                         <xs:attribute name="name" use="required" />

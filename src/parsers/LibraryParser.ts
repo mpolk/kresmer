@@ -63,6 +63,7 @@ export default class LibraryParser {
 
         let template: Element | undefined;
         let props: ComponentPropsOptions = {};
+        let defs: Element | undefined;
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
             if (child instanceof Element) {
@@ -72,7 +73,11 @@ export default class LibraryParser {
                         break;
                     case "props":
                         props = this.parseProps(child);
-                }//switch
+                        break;
+                    case "defs":
+                        defs = child;
+                        break;
+                    }//switch
             }//if
         }//for
 
@@ -81,7 +86,7 @@ export default class LibraryParser {
                 `Component class without template`,
                 {source: `Component class ${className}`});
 
-        return new NetworkComponentClass(className, {template, props})
+        return new NetworkComponentClass(className, {template, props, defs})
     }//parseComponentClassNode
 
 

@@ -52,6 +52,7 @@ export default class Kresmer extends KresmerEventFeatures {
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
             networkComponents: this.networkComponents,
+            networkComponentClasses: Kresmer.registeredClasses,
             drawingWidth: this.drawingWidth,
             drawingHeight: this.drawingHeight,
             viewWidth: this.viewWidth,
@@ -106,7 +107,7 @@ export default class Kresmer extends KresmerEventFeatures {
                     componentName: {type: String},
                 },
             })
-            .component(componentClass.vueHolderName, 
+            .component(componentClass.holderVueName, 
             {
                 setup(props) {
                     const componentProps = computed(() => {
@@ -121,7 +122,7 @@ export default class Kresmer extends KresmerEventFeatures {
                 template: `\
                     <NetworkComponentHolder 
                             :origin="origin"
-                            :transform="transform?.toCSS()"
+                            :transform="transform?.toAttr()"
                             :is-highlighted="isHighlighted"
                             :is-dragged="isDragged"
                             :is-being-transformed="isBeingTransformed"
@@ -137,6 +138,13 @@ export default class Kresmer extends KresmerEventFeatures {
                     componentName: {type: String},
                 },
             });
+
+        if (componentClass.defs) {
+            this.appKresmer.component(componentClass.defsVueName, 
+            {
+                template: componentClass.defs,
+            })
+        }//if
 
         Kresmer.registeredClasses[componentClass.name] = componentClass;
         return this;

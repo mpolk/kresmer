@@ -1,12 +1,14 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="v-bind">
-  <xs:attribute name="x"/>
+  <xs:attribute name="x" />
   <xs:attribute name="y" />
   <xs:attribute name="width"  />
   <xs:attribute name="height" />
+  <xs:attribute name="points" />
   <xs:attribute name="fill" />
   <xs:attribute name="stroke" />
   <xs:attribute name="stroke-width" />
   <xs:attribute name="stroke-opacity" />
   <xs:attribute name="font-size" />
   <xs:attribute name="font-family" />
+  <xs:attribute name="filter" />
 </xs:schema>
