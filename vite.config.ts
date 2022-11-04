@@ -10,5 +10,13 @@ export default defineConfig({
     alias: {
       vue: "vue/dist/vue.esm-bundler.js",
     }
-  }
+  },
+
+  build: {
+    rollupOptions: {
+      input: {
+        app: "./index.electron.html"
+      }
+    }
+  }  
 })
