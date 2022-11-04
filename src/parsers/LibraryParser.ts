@@ -6,7 +6,7 @@
  *                     Component library parser
 \**************************************************************************/
 
-import { ComponentPropsOptions, Prop } from "vue";
+import { ComponentObjectPropsOptions, Prop } from "vue";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
@@ -65,7 +65,7 @@ export default class LibraryParser {
             throw new LibraryParsingException("Component class without name");
 
         let template: Element | undefined;
-        let props: ComponentPropsOptions = {};
+        let props: ComponentObjectPropsOptions = {};
         let defs: Element | undefined;
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
@@ -95,7 +95,7 @@ export default class LibraryParser {
 
     private parseProps(node: Element)
     {
-        const props: ComponentPropsOptions = {};
+        const props: ComponentObjectPropsOptions = {};
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
             if (child instanceof Element) {
@@ -105,7 +105,8 @@ export default class LibraryParser {
                         const prop: Prop<unknown, unknown> = {};
                         const type = child.getAttribute("type");
                         const required = child.getAttribute("required"),
-                            _default = child.getAttribute("default");
+                            _default = child.getAttribute("default"),
+                            choices = child.getAttribute("choices");
                         if (!propName)
                             throw new LibraryParsingException("Prop without a name",
                                 {source: `Component class ${node.parentElement?.getAttribute("name")}`});
@@ -150,6 +151,15 @@ export default class LibraryParser {
                             default:
                                 throw `Invalid prop "required" attribute: ${prop.required}`;
                         }//switch
+
+                        if (choices) {
+                            const validValues = choices.split(/ *, */);
+                            const validator = (value: unknown) => {
+                                return typeof value == "string" && validValues.includes(value);
+                            }//validator
+                            validator.validValues = validValues;
+                            prop.validator = validator;
+                        }//if
 
                         props[propName] = prop;
                         break;

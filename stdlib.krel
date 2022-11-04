@@ -125,6 +125,7 @@
             <prop name="height" type="Number" required="true"/>
             <prop name="color" type="String" default="lightgray"/>
             <prop name="line-color" type="String" default="gray"/>
+            <prop name="perspective" type="String" choices="left,right,center" default="center" />
         </props>
     </component-class>
 

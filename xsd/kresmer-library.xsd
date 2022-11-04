@@ -120,6 +120,7 @@
                                                 <xs:attribute name="type" use="required" />
                                                 <xs:attribute name="required" type="xs:boolean" />
                                                 <xs:attribute name="default" />
+                                                <xs:attribute name="choices" />
                                             </xs:complexType>
                                         </xs:element>
                                     </xs:sequence>
