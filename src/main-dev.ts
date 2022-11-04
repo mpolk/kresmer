@@ -1,81 +1,60 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /***************************************************************************\
  *                            👑 KresMer 👑
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *                        Front-end main script
+ *                  Front-end main script for development
  ***************************************************************************/
 
-import { IpcRendererEvent } from 'electron';
-import { createApp, reactive } from 'vue';
-import Hints from './electron/hints';
-import initApp from './init';
 import Kresmer from './Kresmer';
-import ParsingException from './parsers/ParsingException';
-import StatusBar from './electron/status-bar.vue';
+import NetworkComponent from './NetworkComponent/NetworkComponent';
+import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
 
-export const kresmer = new Kresmer('#kresmer');
+const kresmer = new Kresmer('#kresmer');
 
-export const hints = new Hints;
-export const statusBarData = reactive({
-    hint: "",
-    drawingScale: 1,
-})//statusBarData
+async function init() {
+    const stdlib = await (await fetch("stdlib.krel")).text();
+    kresmer.loadLibrary(stdlib!);
+    const autoload = await (await fetch("autoload.kre")).text();
+    kresmer.loadDrawing(autoload!);
 
-export const vueStatusBar = createApp(StatusBar, {
-    displayData: statusBarData,
-}).mount("#statusBar");
-
-kresmer
-    .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
-    .on("drawing-mouse-leave", () => hints.reset())
-    .on("mode-reset", () => hints.reset())
-    .on("component-mouse-enter", () => hints.push(Hints.onComponentMouseEnter))
-    .on("component-mouse-leave", () => hints.pop())
-    .on("component-move-started", () => hints.push(Hints.onDrag))
-    .on("component-moved", () => hints.pop())
-    .on("component-transform-started", () => hints.push(""))
-    .on("component-transformed", () => hints.pop())
-    .on("component-entered-transform-mode", (_, mode) => hints.push(mode == "rotation" ? 
-                                                                        Hints.onRotation : 
-                                                                        Hints.onScaling))
-    .on("component-exited-transform-mode", () => hints.pop())
-    ;
-
-window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
-{ 
-    try {
-        if (!kresmer.loadLibrary(libData))
-            alert("There were errors during library load (see the log)");
-    } catch (exc) {
-        if (exc instanceof ParsingException) {
-            alert(exc.message);
-            console.error(`${exc.message}\nSource: ${exc.source}`);
-        } else {
-            throw exc;
-        }//if
-    }//catch
-    window.electronAPI.signalReadiness(1);
-});
-
-window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string, drawingName?: string) => 
-{ 
-    try {
-        if (!kresmer.loadDrawing(drawingData))
-            alert("There were errors during drawing load (see the log)");
-        else if (drawingName)
-            window.document.title = `${drawingName} - Kresmer`;
-    } catch (exc) {
-        if (exc instanceof ParsingException) {
-            alert(exc.message);
-            console.error(`${exc.message}\nSource: ${exc.source}`);
-        } else {
-            throw exc;
-        }//if
-    }//catch
-    window.electronAPI.signalReadiness(2);
-    initApp();
-});
-
-window.electronAPI.signalReadiness(0);
-
+    kresmer
+        .registerNetworkComponentClass(new NetworkComponentClass("GoldenKresmer", {
+            template: `
+            <rect x="0" y="0" :width="width" :height="height" 
+                    stroke="gold" stroke-width="8px" stroke-opacity="0.5"/>
+            <text :x="width*0.25" :y="height*0.6" stroke="gold" :font-size="fontSize">{{text}}</text>
+            <Kre:Crown  x="10" v-bind:y="height*0.6" v-bind:font-size="fontSize"/>
+            <text :x="width*0.75 + i*22" :y="height*0.6" fill="gold" :font-size="fontSize" v-for="i in 3">⚜</text>
+            `,
+            props: {
+                width: {type: Number, required: true},
+                height: {type: Number, required: true},
+                fill: {type: String, default: "yellow"},
+                text: {type: String},
+                fontSize: {type: String},
+            },
+        }))
+        .placeNetworkComponent(new NetworkComponent("GoldenKresmer", {
+                props: {
+                    width: 400,
+                    height: 50,
+                    text: "Golden Kresmer",
+                    fontSize: "32"
+                }
+            }), 
+            {x: 30, y: 310}
+        )
+        .placeNetworkComponent(new NetworkComponent("SilverKresmer", {
+                props: {
+                    width: 400,
+                    height: 50,
+                    text: "Silver Kresmer",
+                    fontSize: "32"
+                }
+            }), 
+            {x: 30, y: 380}
+        )
+;}
+init();

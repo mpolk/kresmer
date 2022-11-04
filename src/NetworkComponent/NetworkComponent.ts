@@ -6,7 +6,6 @@
  * Network Component - a generic network element instance 
  ***************************************************************************/
 
-import Kresmer from '../Kresmer';
 import NetworkComponentClass from "./NetworkComponentClass";
 import { NetworkElement } from '../NetworkElement';
 
