@@ -9,7 +9,6 @@
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
 import Hints from './hints';
-import initApp from '../init';
 import Kresmer from '../Kresmer';
 import ParsingException from '../parsers/ParsingException';
 import StatusBar from './status-bar.vue';
@@ -74,7 +73,6 @@ window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string,
         }//if
     }//catch
     window.electronAPI.signalReadiness(2);
-    initApp();
 });
 
 window.electronAPI.signalReadiness(0);

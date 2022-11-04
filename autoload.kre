@@ -48,6 +48,16 @@
         </transform>
     </component>
 
+    <component class="SilverKresmer">
+        <origin x="30" y="380" />
+        <props>
+            <prop name="width">400</prop>
+            <prop name="height">50</prop>
+            <prop name="text">Silver Kresmer</prop>
+            <prop name="font-size">32</prop>
+        </props>
+    </component>
+
     <component class="ExtremeSwitch">
         <origin x="30" y="600" />
         <props>
