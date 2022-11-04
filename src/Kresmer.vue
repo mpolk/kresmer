@@ -140,7 +140,7 @@
         >
         <defs>
             <TransformBoxFilters />
-            <component v-if="controller.defs" :is="'GlobalDefs'" />
+            <component v-for="(_, i) in controller.defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
             <template v-for="_class in networkComponentClasses">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>

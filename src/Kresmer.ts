@@ -13,7 +13,7 @@ import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
-import LibraryParser from "./parsers/LibraryParser";
+import LibraryParser, { SVGDefs } from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./Transform/TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
@@ -32,7 +32,7 @@ export default class Kresmer extends KresmerEventFeatures {
     /** A symbolic key for the Kresmer instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
-    public defs?: string | Element;
+    public defs: Template[] = [];
 
     constructor(mountPoint: string|HTMLElement, options?: {
         drawingWidth?: number | string,
@@ -138,8 +138,8 @@ export default class Kresmer extends KresmerEventFeatures {
             if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
             } else if (element instanceof SVGDefs) {
-                this.defs = element.data;
-                this.appKresmer.component("GlobalDefs", {template: this.defs});
+                this.defs.push(element.data);
+                this.appKresmer.component(`GlobalDefs${this.defs.length - 1}`, {template: element.data});
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
                 wereErrors = true;
@@ -259,11 +259,5 @@ export default class Kresmer extends KresmerEventFeatures {
 
 }//Kresmer
 
-/** A wrapper for the SVG Defs element */
-export class SVGDefs {
-    data: Element;
-    constructor(data: Element)
-    {
-        this.data = data;
-    }//ctor
-}//SVGDefs
+/** Data for Vue templates */
+export type Template = Element | string;

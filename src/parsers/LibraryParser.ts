@@ -10,7 +10,6 @@ import { ComponentPropsOptions, Prop } from "vue";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
-import { SVGDefs } from "../Kresmer";
 
 /**
  * Component library parser
@@ -172,3 +171,12 @@ export class LibraryParsingException extends ParsingException {
         super("Library loading: " + message, options);
     }//ctor
 }//LibraryParsingException
+
+/** A wrapper for the SVG Defs element */
+export class SVGDefs {
+    data: Element;
+    constructor(data: Element)
+    {
+        this.data = data;
+    }//ctor
+}//SVGDefs

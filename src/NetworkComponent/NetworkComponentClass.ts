@@ -8,6 +8,7 @@
  ***************************************************************************/
 
 import { ComponentObjectPropsOptions } from "vue";
+import { Template } from "../Kresmer";
 
 /**
  * Network Component Class - a generic network element class
@@ -21,9 +22,9 @@ export default class NetworkComponentClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params: {
-        template: string | Element,
+        template: Template,
         props?: ComponentObjectPropsOptions,
-        defs?: string | Element,
+        defs?: Template,
     })
     {
         this.name = name;
