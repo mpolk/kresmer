@@ -24,19 +24,18 @@ export default class NetworkComponent extends NetworkElement {
      */
     public constructor(
         _class: NetworkComponentClass | string,
-        args: {
-            kresmer: Kresmer,
+        args?: {
             name?: string,
             props?: Record<string, unknown>,
             content?: unknown, 
         }
     ) {
-        super(args.kresmer);
+        super();
         
         if (_class instanceof NetworkComponentClass)
             this._class = _class;
         else 
-            this._class = this.kresmer.getNetworkComponentClass(_class);
+            this._class = NetworkComponentClass.getClass(_class);
         this.props = args?.props;
         this.content = args?.content;
         this.id = NetworkComponent.nextID++;

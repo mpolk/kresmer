@@ -123,15 +123,6 @@ export default class Kresmer extends KresmerEventFeatures {
         return this;
     }//registerNetworkComponentClass
 
-    /**
-     * Returns the registered Network Component Class with the given name
-     * if exists or "undefined" otherwise
-     * @param className Class name
-     */
-     public getNetworkComponentClass(className: string)
-     {
-         return this.registeredClasses[className];
-     }//getNetworkComponentClass
 
      /**
       * Loads a component class library from the raw XML data

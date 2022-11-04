@@ -30,7 +30,15 @@ export default class NetworkComponentClass {
         this.template = params.template;
         this.props = params.props;
         this.defs = params.defs;
+        NetworkComponentClass.allClasses[name] = this;
     }//ctor
+
+    private static allClasses: Record<string, NetworkComponentClass> = {};
+    /**
+     *  Returns the class with the given name (if exists)
+     *  @param name The name of the class to find
+     */
+    public static getClass(name: string) {return this.allClasses[name]}
 
     /**
      * Class name
@@ -66,4 +74,4 @@ export default class NetworkComponentClass {
      * @returns The vue-component name defs
      */
      get defsVueName() {return "Kre:" + this.name + ".defs"}
-    }//NetworkComponentClass
+}//NetworkComponentClass

@@ -30,7 +30,6 @@ export default function initApp()
             },
         }))
         .placeNetworkComponent(new NetworkComponent("GoldenKresmer", {
-                kresmer, 
                 props: {
                     width: 400,
                     height: 50,
@@ -41,7 +40,6 @@ export default function initApp()
             {x: 30, y: 310}
         )
         .placeNetworkComponent(new NetworkComponent("SilverKresmer", {
-                kresmer, 
                 props: {
                     width: 400,
                     height: 50,
