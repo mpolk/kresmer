@@ -151,4 +151,51 @@
         this.scale.y = this.operationStartTransform!.scale.y + 2 * dy1 / bBoxSize.height;
     }//changeScale
 }//Transform
+
+
+type Point = [number, number] | {x: number, y: number};
+type Points = (Point|Point[])[];
+type NormalizedPoint = [number, number];
+type ScaleFactor = number | [number, number] | {x: number, y: number};
+
+function normalizePoints(points: Points): NormalizedPoint[]
+{
+    const r: Point[] = [];
+    for (const p of points) {
+        if (Array.isArray(p) && (p.length !== 2 || typeof p[0] !== "number" || typeof p[1] !== "number")) {
+            r.push(...(p as Point[]));
+        } else {
+            r.push(p as Point);
+        }//if`
+    }//for
+    return r.map(p => {
+        if (Array.isArray(p)) {
+            return p;
+        } else {
+            return [p.x, p.y];
+        }
+    });
+}//normalizePoints
+
+export const TransformFunctons = {
+    $scale: function(factor: ScaleFactor, origin: Point = [0,0]) {
+        const {fx, fy} = (typeof factor === "number") ? {fx: factor, fy: factor} :
+            (Array.isArray(factor)) ? {fx: factor[0], fy: factor[1]} :
+            {fx: factor.x, fy: factor.y};
+
+        const {ox, oy} = 
+            (Array.isArray(origin)) ? {ox: origin[0], oy: origin[1]} :
+            {ox: origin.x, oy: origin.y};
+
+        return (...points: Points): Point[] =>
+            normalizePoints(points).map(p => [
+                fx * (p[0] - ox) + ox, 
+                fy * (p[1] - oy) + oy
+            ]);
+    },//$scale
+
+    $p: function(points: NormalizedPoint[]) {
+        return points.map(p => `${p[0]},${p[1]}`).join(' ');
+    },//$p
+}//TransformFunctons
  

@@ -11,7 +11,7 @@ import KresmerVue from "./Kresmer.vue";
 import KresmerEventFeatures from "./KresmerEventFeatures";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
-import { Position, Transform } from "./Transform/Transform";
+import { Position, Transform, TransformFunctons } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LibraryParser, { SVGDefs } from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
@@ -32,7 +32,7 @@ export default class Kresmer extends KresmerEventFeatures {
     /** A symbolic key for the Kresmer instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
-    public defs: Template[] = [];
+    public readonly defs: Template[] = [];
 
     constructor(mountPoint: string|HTMLElement, options?: {
         drawingWidth?: number | string,
@@ -67,8 +67,12 @@ export default class Kresmer extends KresmerEventFeatures {
         });
 
         this.appKresmer
+            // register the components used to construct the drawing
             .component("TransformBox", TransformBox)
-            .component("NetworkComponentHolder", NetworkComponentHolder);
+            .component("NetworkComponentHolder", NetworkComponentHolder)
+            // register the functions that can be used in templates
+            .config.globalProperties = {...TransformFunctons}
+            ;
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
 

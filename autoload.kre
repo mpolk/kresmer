@@ -63,7 +63,6 @@
         <props>
             <prop name="width">400</prop>
             <prop name="height">50</prop>
-            <prop name="line-color">white</prop>
         </props>
     </component>
 </kresmer-drawing>
