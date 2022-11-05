@@ -23,6 +23,11 @@
         <xs:attribute ref="v-bind:filter" />
     </xs:attributeGroup>
 
+    <xs:attributeGroup name="transform-attrs">
+        <xs:attribute name="transform" />
+        <xs:attribute ref="v-bind:transform"/>
+    </xs:attributeGroup>
+
     <xs:attributeGroup name="dim-attrs">
         <xs:attribute name="width"  />
         <xs:attribute ref="v-bind:width"  />
@@ -47,6 +52,64 @@
         <xs:attribute name="v-if"/>
         <xs:attribute name="v-else"/>
     </xs:attributeGroup>
+
+    <xs:group name="template-content">
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+
+                <xs:element name="rect" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="polyline" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="point-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="text" minOccurs="0">
+                    <xs:complexType mixed="true">
+                        <xs:sequence>
+                            <xs:element name="slot" minOccurs="0"/>
+                        </xs:sequence>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="font-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="use" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                        <xs:attribute name="href"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="g">
+                    <xs:complexType>
+                        <xs:group ref="template-content"></xs:group>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:any namespace="Kre" processContents="skip"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
     
     <xs:element name="kresmer-library">
         <xs:complexType>
@@ -60,54 +123,7 @@
                         <xs:all>
                             <xs:element name="template">
                                 <xs:complexType>
-                                    <xs:sequence minOccurs="0">
-                                        <xs:choice maxOccurs="unbounded">
-
-                                            <xs:element name="rect" minOccurs="0">
-                                                <xs:complexType>
-                                                    <xs:attributeGroup ref="origin-attrs"/>
-                                                    <xs:attributeGroup ref="dim-attrs"/>
-                                                    <xs:attributeGroup ref="presentation-attrs"/>
-                                                    <xs:attributeGroup ref="vue-directives"/>
-                                                    <xs:attribute name="vector-effect"/>
-                                                </xs:complexType>
-                                            </xs:element>
-
-                                            <xs:element name="polyline" minOccurs="0">
-                                                <xs:complexType>
-                                                    <xs:attributeGroup ref="point-attrs"/>
-                                                    <xs:attributeGroup ref="presentation-attrs"/>
-                                                    <xs:attributeGroup ref="vue-directives"/>
-                                                    <xs:attribute name="vector-effect"/>
-                                                </xs:complexType>
-                                            </xs:element>
-
-                                            <xs:element name="text" minOccurs="0">
-                                                <xs:complexType mixed="true">
-                                                    <xs:sequence>
-                                                        <xs:element name="slot" minOccurs="0"/>
-                                                    </xs:sequence>
-                                                    <xs:attributeGroup ref="origin-attrs"/>
-                                                    <xs:attributeGroup ref="presentation-attrs"/>
-                                                    <xs:attributeGroup ref="font-attrs"/>
-                                                    <xs:attributeGroup ref="vue-directives"/>
-                                                </xs:complexType>
-                                            </xs:element>
-
-                                            <xs:element name="use" minOccurs="0">
-                                                <xs:complexType>
-                                                    <xs:attributeGroup ref="origin-attrs"/>
-                                                    <xs:attributeGroup ref="dim-attrs"/>
-                                                    <xs:attributeGroup ref="presentation-attrs"/>
-                                                    <xs:attributeGroup ref="vue-directives"/>
-                                                    <xs:attribute name="vector-effect"/>
-                                                    <xs:attribute name="href"/>
-                                                </xs:complexType>
-                                            </xs:element>
-
-                                            <xs:any namespace="Kre" processContents="skip"/>
-                                        </xs:choice>
-                                    </xs:sequence>
+                                    <xs:group ref="template-content"></xs:group>
                                 </xs:complexType>
                             </xs:element>
     
@@ -128,7 +144,11 @@
                             </xs:element>
 
                             <xs:element name="defs" minOccurs="0">
-                                <xs:complexType><xs:choice><xs:any processContents="lax"></xs:any></xs:choice></xs:complexType>
+                                <xs:complexType>
+                                    <xs:choice>
+                                        <xs:any processContents="lax"></xs:any>
+                                    </xs:choice>
+                                </xs:complexType>
                             </xs:element>
                         </xs:all>
                         <xs:attribute name="name" use="required" />

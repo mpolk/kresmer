@@ -11,4 +11,5 @@
   <xs:attribute name="font-size" />
   <xs:attribute name="font-family" />
   <xs:attribute name="filter" />
+  <xs:attribute name="transform" />
 </xs:schema>
