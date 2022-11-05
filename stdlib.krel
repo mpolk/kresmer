@@ -116,13 +116,25 @@
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" vector-effect="non-scaling-stroke"
                 v-bind:fill="color" v-bind:stroke="lineColor" stroke-width="1px" />
-            <polyline v-bind:points="$p($scale([width,-0.2*width])([0,0], [0,1], [1,1], [1,0]))"
-                vector-effect="non-scaling-stroke"
-                v-bind:fill="color" v-bind:stroke="lineColor" stroke-width="1px" filter="url(#kre:switchTopFacetColor)"/>
-            <polyline v-bind:points="`${width*0.2},-${width*0.1} 
-                                      ${width*0.21},-${width*0.11}
-                                      ${width*0.21},-${width*0.105}
-                                     `" v-bind:fill="color"/>
+            <g v-bind:transform="`scale(${width} ${-0.2*width})`">
+                <polyline 
+                    v-bind:points="$p($3VectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
+                                                       ([0,0], [0,1], [1,1], [1,0]))"
+                    vector-effect="non-scaling-stroke"
+                    v-bind:stroke="lineColor" stroke-width="1px"
+                    v-bind:fill="color" filter="url(#kre:switchTopFacetColor)"/>
+                <polyline v-bind:points="$p($3VectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(
+                                  [0.1,0.5], [0.2,0.7], [0.2,0.6],
+                                  [0.4,0.6], [0.4,0.8], [0.3,0.8], [0.5,0.9],
+                                  [0.7,0.8], [0.6,0.8], [0.6,0.6],
+                                  [0.8,0.6], [0.8,0.7], [0.9,0.5],
+                                  [0.8,0.3], [0.8,0.4],
+                                  [0.6,0.4], [0.6,0.2], [0.7,0.2], [0.5,0.1],
+                                  [0.3,0.2], [0.4,0.2], [0.4,0.4],
+                                  [0.2,0.4], [0.2,0.3]
+                                  ))"
+                    v-bind:fill="color"/>
+            </g>
         </template>
         <props>
             <prop name="width" type="Number" required="true"/>

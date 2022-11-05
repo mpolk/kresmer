@@ -157,6 +157,7 @@ type Point = [number, number] | {x: number, y: number};
 type Points = (Point|Point[])[];
 type NormalizedPoint = [number, number];
 type ScaleFactor = number | [number, number] | {x: number, y: number};
+type ThreeVectorMatrix = {u: Point, v: Point, w: Point} | [number, number, number, number, number, number];
 
 function normalizePoints(points: Points): NormalizedPoint[]
 {
@@ -168,14 +169,17 @@ function normalizePoints(points: Points): NormalizedPoint[]
             r.push(p as Point);
         }//if`
     }//for
-    return r.map(p => {
-        if (Array.isArray(p)) {
-            return p;
-        } else {
-            return [p.x, p.y];
-        }
-    });
+    return r.map(normalizePoint);
 }//normalizePoints
+
+function normalizePoint(p: Point): NormalizedPoint
+{
+    if (Array.isArray(p)) {
+        return p;
+    } else {
+        return [p.x, p.y];
+    }//if
+}//normalizePoint
 
 export const TransformFunctons = {
     $scale: function(factor: ScaleFactor, origin: Point = [0,0]) {
@@ -193,6 +197,18 @@ export const TransformFunctons = {
                 fy * (p[1] - oy) + oy
             ]);
     },//$scale
+
+
+    $3VectorTransform: function(m: ThreeVectorMatrix) {
+        const [ux, uy, vx, vy, wx, wy] = Array.isArray(m) ? m : 
+            normalizePoint(m.u).concat(normalizePoint(m.v)).concat(normalizePoint(m.w));
+        return (...points: Points): Point[] =>
+            normalizePoints(points).map(p => [
+                ux * p[0] + vx * p[1] + wx * p[0] * p[1],
+                uy * p[0] + vy * p[1] + wy * p[0] * p[1]
+            ]);
+    },//$3VectorTransform
+
 
     $p: function(points: NormalizedPoint[]) {
         return points.map(p => `${p[0]},${p[1]}`).join(' ');
