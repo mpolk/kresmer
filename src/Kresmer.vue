@@ -160,7 +160,7 @@
                 >
             <component :is="controller.component.vueName"
                    :component-id="controller.component.id"
-                   :component-name="controller.component.name"
+                   :name="controller.component.name"
                    v-bind="controller.component.props"
                 >
                 {{controller.component.content}}

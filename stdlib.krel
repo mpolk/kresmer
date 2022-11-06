@@ -135,6 +135,7 @@
                                   ))"
                     v-bind:fill="color"/>
             </g>
+            <text v-bind:x="0" v-bind:y="0" v-bind:font-size="width/20">{{name}}</text>
         </template>
         <props>
             <prop name="width" type="Number" required="true"/>
@@ -147,7 +148,7 @@
 
     <component-class name="ExtremeSwitch">
         <template>
-            <Kre:Switch v-bind:width="width" v-bind:height="height" 
+            <Kre:Switch v-bind:name="name" v-bind:width="width" v-bind:height="height" 
                         color="magenta" v-bind:line-color="lineColor"/>
         </template>
         <props>

@@ -108,7 +108,7 @@ export default class Kresmer extends KresmerEventFeatures {
             props: {
                 ...componentClass.props,
                 componentId: {type: Number},
-                componentName: {type: String},
+                name: {type: String},
                 // the next two props are added just to relax Vue prop passing mechanism, which 
                 // does not like xmlns:* attributes leaked from DOMParser
                 "xmlns:Kre": {type: String},

@@ -133,7 +133,7 @@ export default class DrawingParser {
                 `Class ${componentClass} has no props, but the component supplies some`);
                 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const props: Record<string, string|number|object|any[]> = {};
+        const props: Record<string, string|number|object|boolean|any[]> = {};
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -143,19 +143,29 @@ export default class DrawingParser {
                         throw new DrawingParsingException("Prop without a name",
                         {source: `Component ${node.parentElement?.getAttribute("name")}`});
                     const value = child.innerHTML.trim();
-                    const classProp = classProps[propName];
-                    if (!classProp)
-                        throw new DrawingParsingException(
-                            `Class "${componentClass.name}" has no prop "${propName}", but the component supplies some`,
-                            {source: `Component ${node.parentElement?.getAttribute("name")}`});
+                    // eslint-disable-next-line @typescript-eslint/ban-types
+                    let propType: Function;
+                    if (propName === "name") {
+                        propType = String;
+                    } else {
+                        const classProp = classProps[propName];
+                        if (!classProp)
+                            throw new DrawingParsingException(
+                                `Class "${componentClass.name}" has no prop "${propName}", but the component supplies some`,
+                                {source: `Component ${node.parentElement?.getAttribute("name")}`});
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        propType = (classProp as any).type;
+                    }//if
         
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    switch ((classProp as any).type) {
+                    switch (propType) {
                         case String:
                             props[propName] = value;
                             break;
                         case Number:
                             props[propName] = parseFloat(value);
+                            break;
+                        case Boolean:
+                            props[propName] = Boolean(value);
                             break;
                         case Object: case Array:
                             props[propName] = JSON.parse(value);
