@@ -7,6 +7,7 @@
 \**************************************************************************/
 
 import { ComponentObjectPropsOptions, Prop } from "vue";
+import postcss, {Result as PostCSSResult, Rule as PostCSSRule, PluginCreator} from 'postcss';
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
@@ -21,7 +22,7 @@ export default class LibraryParser {
      * of the parsed library elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string): Generator<NetworkComponentClass|DefsLibNode|StyleLibNode|ParsingException>
+    public async *parseXML(rawData: string): AsyncGenerator<ParsedNode>
     {
         console.debug('Parsing library XML...');
         const domParser = new DOMParser();
@@ -50,7 +51,7 @@ export default class LibraryParser {
                         yield new DefsLibNode(node);
                         break;
                     case "style":
-                        yield new StyleLibNode(node.innerHTML);
+                        yield new StyleLibNode(await this.parseCSS(node.innerHTML));
                         break;
                     default:
                         yield new LibraryParsingException(
@@ -61,7 +62,7 @@ export default class LibraryParser {
     }//parseXML
 
 
-    private parseComponentClassNode(node: Element)
+    private async parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
         if (!className) 
@@ -70,7 +71,7 @@ export default class LibraryParser {
         let template: Element | undefined;
         let props: ComponentObjectPropsOptions = {};
         let defs: Element | undefined;
-        let style: string | undefined;
+        let style: PostCSSResult | undefined;
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
             if (child instanceof Element) {
@@ -85,7 +86,7 @@ export default class LibraryParser {
                         defs = child;
                         break;
                     case "style":
-                        style = child.innerHTML;
+                        style = await this.parseCSS(child.innerHTML);
                         break;
                     }//switch
             }//if
@@ -178,16 +179,27 @@ export default class LibraryParser {
         return props;
     }//parseProps
 
+
+    private parseCSS(css: string)
+    {
+        return postcss(postcssPlugin).process(css, {from: undefined})
+    }//parseCSS
+
 }//LibraryParser
 
-export class LibraryParsingException extends ParsingException {
-    constructor(message: string, options?: {
-        severity?: KresmerExceptionSeverity,
-        source?: string,
-    }) {
-        super("Library loading: " + message, options);
-    }//ctor
-}//LibraryParsingException
+// PostCSS plugin for parsing embedded CSS (<style> nodes)
+const postcssPlugin = () => ({
+    postcssPlugin: "kresmer-css-parser",
+
+    Rule(rule: PostCSSRule) {
+        // Scope all rules within the ".kresmer" class
+        // console.debug(`Rule: ${rule}`);
+        const selectors = rule.selectors.map(sel => `.kresmer ${sel}`);
+        rule.assign({selectors: selectors});
+    },
+})
+postcssPlugin.postcss = true as const;
+
 
 // Wrappers for the top-level library elements
 
@@ -200,9 +212,20 @@ export class DefsLibNode {
 }//DefsLibNode
 
 export class StyleLibNode {
-    data: string;
-    constructor(data: string)
+    data: PostCSSResult;
+    constructor(data: PostCSSResult)
     {
         this.data = data;
     }//ctor
 }//StyleLibNode
+
+type ParsedNode = NetworkComponentClass | DefsLibNode | StyleLibNode | ParsingException;
+
+export class LibraryParsingException extends ParsingException {
+    constructor(message: string, options?: {
+        severity?: KresmerExceptionSeverity,
+        source?: string,
+    }) {
+        super("Library loading: " + message, options);
+    }//ctor
+}//LibraryParsingException

@@ -67,10 +67,14 @@
         return `${n * 0.5 * (1 - scale.value)}${matches[2]}`;
     }//scaledOffset
 
-    const x = computed(() => scaledOffset(props.drawingWidth))
-    const y = computed(() => scaledOffset(props.drawingHeight))
-    const width = computed(() => scaled(props.drawingWidth))
-    const height = computed(() => scaled(props.drawingHeight))
+    const x = computed(() => scaledOffset(props.drawingWidth));
+    const y = computed(() => scaledOffset(props.drawingHeight));
+    const width = computed(() => scaled(props.drawingWidth));
+    const height = computed(() => scaled(props.drawingHeight));
+
+    const styles = computed(() => {
+        return `<style>${props.controller.styles.map(r => r.css).join(" ")}</style>`;
+    });
 
     const emit = defineEmits<{
         (event: "drawing-scale", newScale: number): void,
@@ -145,7 +149,7 @@
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
         </defs>
-        <defs v-if="controller.styles" v-html="`<style>${controller.styles}</style>`"></defs>
+        <defs v-if="controller.styles.length" v-html="styles"></defs>
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :controller="controller"

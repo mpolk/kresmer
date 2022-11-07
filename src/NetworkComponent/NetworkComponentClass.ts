@@ -8,6 +8,7 @@
  ***************************************************************************/
 
 import { ComponentObjectPropsOptions } from "vue";
+import {Result as PostCSSResult} from 'postcss';
 import { Template } from "../Kresmer";
 
 /**
@@ -25,7 +26,7 @@ export default class NetworkComponentClass {
         template: Template,
         props?: ComponentObjectPropsOptions,
         defs?: Template,
-        style?: string,
+        style?: PostCSSResult,
     })
     {
         this.name = name;
@@ -62,7 +63,7 @@ export default class NetworkComponentClass {
     /**
      * CSS styles defined in this class
      */
-     readonly style?: string;
+     readonly style?: PostCSSResult;
 
     /**
      * Returns the name of the vue-component for this class

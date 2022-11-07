@@ -7,6 +7,7 @@
 \**************************************************************************/
 
 import { App, createApp, InjectionKey, reactive } from "vue";
+import {Result as PostCSSResult} from 'postcss';
 import KresmerVue from "./Kresmer.vue";
 import KresmerEventFeatures from "./KresmerEventFeatures";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
@@ -34,7 +35,7 @@ export default class Kresmer extends KresmerEventFeatures {
     /** Global SVG Defs */
     public readonly defs: Template[] = [];
     /** CSS styles collected component libraries */
-    public styles = "";
+    public styles: PostCSSResult[] = [];
 
     constructor(mountPoint: string|HTMLElement, options?: {
         drawingWidth?: number | string,
@@ -126,7 +127,7 @@ export default class Kresmer extends KresmerEventFeatures {
         }//if
 
         if (componentClass.style) {
-            this.styles += componentClass.style;
+            this.styles.push(componentClass.style);
         }//if
 
         this.registeredClasses[componentClass.name] = componentClass;
@@ -138,12 +139,12 @@ export default class Kresmer extends KresmerEventFeatures {
       * Loads a component class library from the raw XML data
       * @param libData Library data
       */
-     public loadLibrary(libData: string): boolean
+     public async loadLibrary(libData: string): Promise<boolean>
      {
         console.debug("Loading library...");
         const parser = new LibraryParser();
         let wereErrors = false;
-        for (const element of parser.parseXML(libData)) {
+        for await (const element of parser.parseXML(libData)) {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
@@ -151,7 +152,7 @@ export default class Kresmer extends KresmerEventFeatures {
                 this.defs.push(element.data);
                 this.appKresmer.component(`GlobalDefs${this.defs.length - 1}`, {template: element.data});
             } else if (element instanceof StyleLibNode) {
-                this.styles += element.data;
+                this.styles.push(element.data);
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
                 wereErrors = true;
