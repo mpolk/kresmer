@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import { ComponentObjectPropsOptions, Prop } from "vue";
-import postcss, {Result as PostCSSResult, Rule as PostCSSRule, PluginCreator} from 'postcss';
+import postcss, {Result as PostCSSResult, Rule as PostCSSRule} from 'postcss';
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
