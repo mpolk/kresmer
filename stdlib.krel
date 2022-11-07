@@ -155,7 +155,7 @@
                         color="magenta" v-bind:line-color="lineColor"/>
         </template>
         <style>
-            .switch-name { fill: white; }
+            .switch-name { font-family: sans-serif; fill: white; text-shadow: 3px 3px 3px black; }
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>

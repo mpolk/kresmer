@@ -23,7 +23,7 @@
 <script setup lang="ts">
     const props = defineProps({
         ...NetworkComponentHolderProps,
-        controller: {type: Object as PropType<NetworkComponentController>},
+        controller: {type: Object as PropType<NetworkComponentController>, required: true},
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -206,6 +206,7 @@
     <svg ref="svg" v-bind="origin" 
         class="network-component" 
         :class="{
+            [controller.component._class.name]: true,
             highlighted: isHighlighted, 
             dragged: isDragged, 
             beingTransformed: isBeingTransformed

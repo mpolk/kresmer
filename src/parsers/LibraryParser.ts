@@ -86,7 +86,7 @@ export default class LibraryParser {
                         defs = child;
                         break;
                     case "style":
-                        style = await this.parseCSS(child.innerHTML);
+                        style = await this.parseCSS(child.innerHTML, className);
                         break;
                     }//switch
             }//if
@@ -180,25 +180,27 @@ export default class LibraryParser {
     }//parseProps
 
 
-    private parseCSS(css: string)
+    private parseCSS(css: string, additionalScope = "")
     {
+        const postcssPlugin = () => ({
+            postcssPlugin: "kresmer-css-parser",
+        
+            Rule(rule: PostCSSRule) {
+                // console.debug(`Rule: ${rule}`);
+
+                // Scope all rules within the ".kresmer" class and optionally with a component class
+                let scope = ".kresmer";
+                if (additionalScope)
+                    scope += ` .${additionalScope}`;
+                const selectors = rule.selectors.map(sel => `${scope} ${sel}`);
+                rule.assign({selectors: selectors});
+            },
+        });
+        postcssPlugin.postcss = true as const;
         return postcss(postcssPlugin).process(css, {from: undefined})
     }//parseCSS
 
 }//LibraryParser
-
-// PostCSS plugin for parsing embedded CSS (<style> nodes)
-const postcssPlugin = () => ({
-    postcssPlugin: "kresmer-css-parser",
-
-    Rule(rule: PostCSSRule) {
-        // Scope all rules within the ".kresmer" class
-        // console.debug(`Rule: ${rule}`);
-        const selectors = rule.selectors.map(sel => `.kresmer ${sel}`);
-        rule.assign({selectors: selectors});
-    },
-})
-postcssPlugin.postcss = true as const;
 
 
 // Wrappers for the top-level library elements
