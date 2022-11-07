@@ -3,6 +3,11 @@
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
 
+    <xs:attributeGroup name="general-attrs">
+        <xs:attribute name="id" type="xs:string" />
+        <xs:attribute ref="v-bind:id"/>
+    </xs:attributeGroup>
+
     <xs:attributeGroup name="origin-attrs">
         <xs:attribute name="x" type="xs:decimal"/>
         <xs:attribute ref="v-bind:x"/>
@@ -63,6 +68,7 @@
 
                 <xs:element name="rect" minOccurs="0">
                     <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
@@ -73,6 +79,7 @@
 
                 <xs:element name="polyline" minOccurs="0">
                     <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="point-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>
@@ -85,6 +92,7 @@
                         <xs:sequence>
                             <xs:element name="slot" minOccurs="0"/>
                         </xs:sequence>
+                        <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="text-attrs"/>
@@ -94,6 +102,7 @@
 
                 <xs:element name="use" minOccurs="0">
                     <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
@@ -106,6 +115,7 @@
                 <xs:element name="g">
                     <xs:complexType>
                         <xs:group ref="template-content"></xs:group>
+                        <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
                     </xs:complexType>
                 </xs:element>
@@ -120,7 +130,7 @@
             <xs:sequence>
                 <xs:element name="defs" minOccurs="0">
                     <xs:complexType>
-                        <xs:choice><xs:any processContents="lax"></xs:any></xs:choice>
+                        <xs:group ref="template-content"></xs:group>
                     </xs:complexType>
                 </xs:element>
 

@@ -1,4 +1,5 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="v-bind">
+  <xs:attribute name="id" />
   <xs:attribute name="x" />
   <xs:attribute name="y" />
   <xs:attribute name="width"  />
