@@ -144,7 +144,6 @@
             <prop name="width" type="Number" required="true"/>
             <prop name="height" type="Number" required="true"/>
             <prop name="color" type="String" default="lightgray"/>
-            <prop name="line-color" type="String" default="gray"/>
             <prop name="perspective" type="String" choices="left,right,center" default="center" />
         </props>
     </component-class>
@@ -152,7 +151,7 @@
     <component-class name="ExtremeSwitch">
         <template>
             <Kre:Switch v-bind:name="name" v-bind:width="width" v-bind:height="height" 
-                        color="magenta" v-bind:line-color="lineColor"/>
+                        color="magenta"/>
         </template>
         <style>
             .switch-name { font-family: sans-serif; fill: white; text-shadow: 3px 3px 3px black; }
@@ -160,7 +159,6 @@
         <props>
             <prop name="width" type="Number" required="true"/>
             <prop name="height" type="Number" required="true"/>
-            <prop name="line-color" type="String" default="gray"/>
         </props>
     </component-class>
 </kresmer-library>
