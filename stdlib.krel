@@ -136,10 +136,10 @@
                     v-bind:fill="color"/>
             </g>
             <text v-bind:x="width/2" v-bind:y="-width/12" v-bind:font-size="width/10" 
-                  text-anchor="middle" class="kre-switch-name">{{name}}</text>
+                  text-anchor="middle" class="kre-std-switch-name">{{name}}</text>
         </template>
         <style>
-            .kre-switch-name { font-family: sans-serif; fill: black; }
+            .kre-std-switch-name { font-family: sans-serif; fill: black; }
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
@@ -156,7 +156,7 @@
                         color="magenta" v-bind:line-color="lineColor"/>
         </template>
         <style>
-            .kre-switch-name { fill: white; }
+            .kre-std-switch-name { fill: white; }
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
