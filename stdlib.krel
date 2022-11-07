@@ -115,13 +115,12 @@
         </defs>
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" vector-effect="non-scaling-stroke"
-                v-bind:fill="color" v-bind:stroke="lineColor" stroke-width="1px" />
+                v-bind:fill="color" />
             <g v-bind:transform="`scale(${width} ${-0.2*width})`">
                 <polyline 
                     v-bind:points="$p($3VectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
                                                        ([0,0], [0,1], [1,1], [1,0]))"
                     vector-effect="non-scaling-stroke"
-                    v-bind:stroke="lineColor" stroke-width="1px"
                     v-bind:fill="color" filter="url(#kre:switchTopFacetColor)"/>
                 <polyline v-bind:points="$p($3VectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(
                                   [0.1,0.5], [0.2,0.7], [0.2,0.6],

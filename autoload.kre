@@ -58,10 +58,20 @@
         </props>
     </component>
 
-    <component class="ExtremeSwitch">
-        <origin x="30" y="600" />
+    <component class="Switch">
+        <origin x="30" y="700" />
         <props>
+            <prop name="color">darkcyan</prop>
             <prop name="name">dru-core</prop>
+            <prop name="width">400</prop>
+            <prop name="height">50</prop>
+        </props>
+    </component>
+
+    <component class="ExtremeSwitch">
+        <origin x="30" y="550" />
+        <props>
+            <prop name="name">core</prop>
             <prop name="width">400</prop>
             <prop name="height">50</prop>
         </props>
