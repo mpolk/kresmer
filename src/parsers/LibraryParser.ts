@@ -50,7 +50,7 @@ export default class LibraryParser {
                         yield new DefsLibNode(node);
                         break;
                     case "style":
-                        yield new StyleLibNode(node.outerHTML);
+                        yield new StyleLibNode(node.innerHTML);
                         break;
                     default:
                         yield new LibraryParsingException(
@@ -85,7 +85,7 @@ export default class LibraryParser {
                         defs = child;
                         break;
                     case "style":
-                        style = child.outerHTML;
+                        style = child.innerHTML;
                         break;
                     }//switch
             }//if
