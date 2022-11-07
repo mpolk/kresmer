@@ -21,6 +21,8 @@
         <xs:attribute ref="v-bind:fill" />
         <xs:attribute name="filter" type="xs:string"/>
         <xs:attribute ref="v-bind:filter" />
+        <xs:attribute name="class" type="xs:string"/>
+        <xs:attribute ref="v-bind:class" />
     </xs:attributeGroup>
 
     <xs:attributeGroup name="transform-attrs">
@@ -40,11 +42,13 @@
         <xs:attribute ref="v-bind:points" />
     </xs:attributeGroup>
 
-    <xs:attributeGroup name="font-attrs">
+    <xs:attributeGroup name="text-attrs">
         <xs:attribute name="font-size" />
         <xs:attribute ref="v-bind:font-size" />
         <xs:attribute name="font-family" />
         <xs:attribute ref="v-bind:font-family" />
+        <xs:attribute name="text-anchor" />
+        <xs:attribute ref="v-bind:text-anchor" />
     </xs:attributeGroup>
 
     <xs:attributeGroup name="vue-directives">
@@ -83,7 +87,7 @@
                         </xs:sequence>
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="font-attrs"/>
+                        <xs:attributeGroup ref="text-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>
                     </xs:complexType>
                 </xs:element>
@@ -115,7 +119,9 @@
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="defs" minOccurs="0">
-                    <xs:complexType><xs:choice><xs:any processContents="lax"></xs:any></xs:choice></xs:complexType>
+                    <xs:complexType>
+                        <xs:choice><xs:any processContents="lax"></xs:any></xs:choice>
+                    </xs:complexType>
                 </xs:element>
 
                 <xs:element name="component-class" maxOccurs="unbounded">
@@ -149,6 +155,10 @@
                                         <xs:any processContents="lax"></xs:any>
                                     </xs:choice>
                                 </xs:complexType>
+                            </xs:element>
+
+                            <xs:element name="style" minOccurs="0">
+                                <![CDATA[ ]]>
                             </xs:element>
                         </xs:all>
                         <xs:attribute name="name" use="required" />

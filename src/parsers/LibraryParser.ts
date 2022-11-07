@@ -21,7 +21,7 @@ export default class LibraryParser {
      * of the parsed library elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string): Generator<NetworkComponentClass|SVGDefs|ParsingException>
+    public *parseXML(rawData: string): Generator<NetworkComponentClass|DefsLibNode|StyleLibNode|ParsingException>
     {
         console.debug('Parsing library XML...');
         const domParser = new DOMParser();
@@ -47,7 +47,10 @@ export default class LibraryParser {
                         }//catch
                         break;
                     case "defs":
-                        yield new SVGDefs(node);
+                        yield new DefsLibNode(node);
+                        break;
+                    case "style":
+                        yield new StyleLibNode(node.outerHTML);
                         break;
                     default:
                         yield new LibraryParsingException(
@@ -67,6 +70,7 @@ export default class LibraryParser {
         let template: Element | undefined;
         let props: ComponentObjectPropsOptions = {};
         let defs: Element | undefined;
+        let style: string | undefined;
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
             if (child instanceof Element) {
@@ -80,6 +84,9 @@ export default class LibraryParser {
                     case "defs":
                         defs = child;
                         break;
+                    case "style":
+                        style = child.outerHTML;
+                        break;
                     }//switch
             }//if
         }//for
@@ -89,7 +96,7 @@ export default class LibraryParser {
                 `Component class without template`,
                 {source: `Component class ${className}`});
 
-        return new NetworkComponentClass(className, {template, props, defs})
+        return new NetworkComponentClass(className, {template, props, defs, style})
     }//parseComponentClassNode
 
 
@@ -182,11 +189,20 @@ export class LibraryParsingException extends ParsingException {
     }//ctor
 }//LibraryParsingException
 
-/** A wrapper for the SVG Defs element */
-export class SVGDefs {
+// Wrappers for the top-level library elements
+
+export class DefsLibNode {
     data: Element;
     constructor(data: Element)
     {
         this.data = data;
     }//ctor
-}//SVGDefs
+}//DefsLibNode
+
+export class StyleLibNode {
+    data: string;
+    constructor(data: string)
+    {
+        this.data = data;
+    }//ctor
+}//StyleLibNode

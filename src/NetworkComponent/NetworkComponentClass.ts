@@ -25,12 +25,14 @@ export default class NetworkComponentClass {
         template: Template,
         props?: ComponentObjectPropsOptions,
         defs?: Template,
+        style?: string,
     })
     {
         this.name = name;
         this.template = params.template;
         this.props = params.props;
         this.defs = params.defs;
+        this.style = params.style;
         NetworkComponentClass.allClasses[name] = this;
     }//ctor
 
@@ -57,6 +59,10 @@ export default class NetworkComponentClass {
      * SVG Defs for this class
      */
     readonly defs?: string | Element;
+    /**
+     * CSS styles defined in this class
+     */
+     readonly style?: string;
 
     /**
      * Returns the name of the vue-component for this class

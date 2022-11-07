@@ -145,6 +145,7 @@
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
         </defs>
+        <defs v-if="controller.styles" v-html="controller.styles"></defs>
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :controller="controller"

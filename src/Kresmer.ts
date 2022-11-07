@@ -13,7 +13,7 @@ import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
-import LibraryParser, { SVGDefs } from "./parsers/LibraryParser";
+import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./Transform/TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
@@ -33,6 +33,8 @@ export default class Kresmer extends KresmerEventFeatures {
     static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
     public readonly defs: Template[] = [];
+    /** CSS styles collected component libraries */
+    public styles = "";
 
     constructor(mountPoint: string|HTMLElement, options?: {
         drawingWidth?: number | string,
@@ -123,6 +125,10 @@ export default class Kresmer extends KresmerEventFeatures {
             })
         }//if
 
+        if (componentClass.style) {
+            this.styles += componentClass.style;
+        }//if
+
         this.registeredClasses[componentClass.name] = componentClass;
         return this;
     }//registerNetworkComponentClass
@@ -141,9 +147,11 @@ export default class Kresmer extends KresmerEventFeatures {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
-            } else if (element instanceof SVGDefs) {
+            } else if (element instanceof DefsLibNode) {
                 this.defs.push(element.data);
                 this.appKresmer.component(`GlobalDefs${this.defs.length - 1}`, {template: element.data});
+            } else if (element instanceof StyleLibNode) {
+                this.styles += element.data;
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
                 wereErrors = true;
