@@ -120,6 +120,15 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="filter">
+                    <xs:complexType>
+                        <xs:choice>
+                            <xs:any processContents="lax"></xs:any>
+                        </xs:choice>
+                        <xs:attributeGroup ref="general-attrs"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:any namespace="Kre" processContents="skip"/>
             </xs:choice>
         </xs:sequence>
@@ -161,9 +170,7 @@
 
                             <xs:element name="defs" minOccurs="0">
                                 <xs:complexType>
-                                    <xs:choice>
-                                        <xs:any processContents="lax"></xs:any>
-                                    </xs:choice>
+                                    <xs:group ref="template-content"></xs:group>
                                 </xs:complexType>
                             </xs:element>
 
