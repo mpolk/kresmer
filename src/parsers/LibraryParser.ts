@@ -22,7 +22,7 @@ export default class LibraryParser {
      * of the parsed library elements
      * @param rawData XML-data to parse
      */
-    public async *parseXML(rawData: string): AsyncGenerator<ParsedNode>
+    public *parseXML(rawData: string): Generator<ParsedNode>
     {
         console.debug('Parsing library XML...');
         const domParser = new DOMParser();
@@ -51,7 +51,7 @@ export default class LibraryParser {
                         yield new DefsLibNode(node);
                         break;
                     case "style":
-                        yield new StyleLibNode(await this.parseCSS(node.innerHTML));
+                        yield new StyleLibNode(this.parseCSS(node.innerHTML));
                         break;
                     default:
                         yield new LibraryParsingException(
@@ -62,7 +62,7 @@ export default class LibraryParser {
     }//parseXML
 
 
-    private async parseComponentClassNode(node: Element)
+    private parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
         if (!className) 
@@ -86,7 +86,7 @@ export default class LibraryParser {
                         defs = child;
                         break;
                     case "style":
-                        style = await this.parseCSS(child.innerHTML, className);
+                        style = this.parseCSS(child.innerHTML, className);
                         break;
                     }//switch
             }//if
@@ -182,22 +182,16 @@ export default class LibraryParser {
 
     private parseCSS(css: string, additionalScope = "")
     {
-        const postcssPlugin = () => ({
-            postcssPlugin: "kresmer-css-parser",
-        
-            Rule(rule: PostCSSRule) {
-                // console.debug(`Rule: ${rule}`);
+        const ast = postcss.parse(css, {from: undefined});
+        ast.walkRules((rule: PostCSSRule) => {
+            // Scope all rules within the ".kresmer" class and optionally with a component class
+            let scope = ".kresmer";
+            if (additionalScope)
+                scope += ` .${additionalScope}`;
+            rule.selectors = rule.selectors.map(sel => `${scope} ${sel}`);
+        })
 
-                // Scope all rules within the ".kresmer" class and optionally with a component class
-                let scope = ".kresmer";
-                if (additionalScope)
-                    scope += ` .${additionalScope}`;
-                const selectors = rule.selectors.map(sel => `${scope} ${sel}`);
-                rule.assign({selectors: selectors});
-            },
-        });
-        postcssPlugin.postcss = true as const;
-        return postcss(postcssPlugin).process(css, {from: undefined})
+        return ast.toResult();
     }//parseCSS
 
 }//LibraryParser

@@ -139,12 +139,12 @@ export default class Kresmer extends KresmerEventFeatures {
       * Loads a component class library from the raw XML data
       * @param libData Library data
       */
-     public async loadLibrary(libData: string): Promise<boolean>
+     public loadLibrary(libData: string): boolean
      {
         console.debug("Loading library...");
         const parser = new LibraryParser();
         let wereErrors = false;
-        for await (const element of parser.parseXML(libData)) {
+        for (const element of parser.parseXML(libData)) {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
