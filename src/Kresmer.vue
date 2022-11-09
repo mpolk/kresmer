@@ -73,7 +73,7 @@
     const height = computed(() => scaled(props.drawingHeight));
 
     const styles = computed(() => {
-        return `<style>${props.controller.styles.map(r => r.css).join(" ")}</style>`;
+        return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
     });
 
     const emit = defineEmits<{

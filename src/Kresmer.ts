@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import { App, createApp, InjectionKey, reactive } from "vue";
-import {Result as PostCSSResult} from 'postcss';
+import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import KresmerVue from "./Kresmer.vue";
 import KresmerEventFeatures from "./KresmerEventFeatures";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
@@ -35,7 +35,7 @@ export default class Kresmer extends KresmerEventFeatures {
     /** Global SVG Defs */
     public readonly defs: Template[] = [];
     /** CSS styles collected component libraries */
-    public styles: PostCSSResult[] = [];
+    public styles: PostCSSRoot[] = [];
 
     constructor(mountPoint: string|HTMLElement, options?: {
         drawingWidth?: number | string,
@@ -127,7 +127,7 @@ export default class Kresmer extends KresmerEventFeatures {
         }//if
 
         if (componentClass.style) {
-            this.styles.push(componentClass.style);
+            this.styles.push(this.scopeStyles(componentClass.style, componentClass.name));
         }//if
 
         this.registeredClasses[componentClass.name] = componentClass;
@@ -135,12 +135,12 @@ export default class Kresmer extends KresmerEventFeatures {
     }//registerNetworkComponentClass
 
 
-     /**
-      * Loads a component class library from the raw XML data
-      * @param libData Library data
-      */
-     public loadLibrary(libData: string): boolean
-     {
+    /**
+     * Loads a component class library from the raw XML data
+     * @param libData Library data
+     */
+    public loadLibrary(libData: string): boolean
+    {
         console.debug("Loading library...");
         const parser = new LibraryParser();
         let wereErrors = false;
@@ -152,14 +152,33 @@ export default class Kresmer extends KresmerEventFeatures {
                 this.defs.push(element.data);
                 this.appKresmer.component(`GlobalDefs${this.defs.length - 1}`, {template: element.data});
             } else if (element instanceof StyleLibNode) {
-                this.styles.push(element.data);
+                this.styles.push(this.scopeStyles(element.data));
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
                 wereErrors = true;
             }//if
         }//for
         return !wereErrors;
-     }//loadLibrary
+    }//loadLibrary
+
+    /**
+     * Adds global and component class scopes (optionally) to the CSS style definition
+     * @param ast Parsed CSS (Abstract Syntax Tree) to modify
+     * @param classScope A component class name to apply as a scope
+     * @returns Modified AST
+     */
+    private scopeStyles(ast: PostCSSRoot, classScope?: string)
+    {
+        ast.walkRules((rule: PostCSSRule) => {
+            // Scope all rules within the ".kresmer" class and optionally with a component class
+            let scope = ".kresmer";
+            if (classScope)
+                scope += ` .${classScope}`;
+            rule.selectors = rule.selectors.map(sel => `${scope} ${sel}`);
+        })
+
+        return ast;
+    }//scopeStyles
  
     /**
      * Components currently placed to the drawing

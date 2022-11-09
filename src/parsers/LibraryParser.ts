@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import { ComponentObjectPropsOptions, Prop } from "vue";
-import postcss, {Result as PostCSSResult, Rule as PostCSSRule} from 'postcss';
+import postcss, {Root as PostCSSRoot} from 'postcss';
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
@@ -71,7 +71,7 @@ export default class LibraryParser {
         let template: Element | undefined;
         let props: ComponentObjectPropsOptions = {};
         let defs: Element | undefined;
-        let style: PostCSSResult | undefined;
+        let style: PostCSSRoot | undefined;
         for (let i = 0; i < node.childNodes.length; i++) {
             const child = node.childNodes[i];
             if (child instanceof Element) {
@@ -86,7 +86,7 @@ export default class LibraryParser {
                         defs = child;
                         break;
                     case "style":
-                        style = this.parseCSS(child.innerHTML, className);
+                        style = this.parseCSS(child.innerHTML);
                         break;
                     }//switch
             }//if
@@ -180,18 +180,9 @@ export default class LibraryParser {
     }//parseProps
 
 
-    private parseCSS(css: string, additionalScope = "")
+    private parseCSS(css: string)
     {
-        const ast = postcss.parse(css, {from: undefined});
-        ast.walkRules((rule: PostCSSRule) => {
-            // Scope all rules within the ".kresmer" class and optionally with a component class
-            let scope = ".kresmer";
-            if (additionalScope)
-                scope += ` .${additionalScope}`;
-            rule.selectors = rule.selectors.map(sel => `${scope} ${sel}`);
-        })
-
-        return ast.toResult();
+        return postcss.parse(css, {from: undefined});
     }//parseCSS
 
 }//LibraryParser
@@ -208,8 +199,8 @@ export class DefsLibNode {
 }//DefsLibNode
 
 export class StyleLibNode {
-    data: PostCSSResult;
-    constructor(data: PostCSSResult)
+    data: PostCSSRoot;
+    constructor(data: PostCSSRoot)
     {
         this.data = data;
     }//ctor
