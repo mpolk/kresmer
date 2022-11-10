@@ -3,8 +3,16 @@
     "configurations": [
         {
             "type": "firefox",
+            "request": "launch",
+            "reAttach": true,
+            "name": "Firefox (Launch)",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "type": "firefox",
             "request": "attach",
-            "name": "Attach"
+            "name": "Firefox (Attach)"
         },
         {
         "name": "Debug Main Process",

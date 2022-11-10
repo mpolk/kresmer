@@ -190,10 +190,11 @@ export default class LibraryParser {
         const ast0 = new PostCSSRoot();
         for (const baseClassName of baseClassNames.split(/ *, */)) {
             const ast1 = NetworkComponentClass.getClass(baseClassName)?.style;
-            if (ast1)
+            if (ast1) {
                 this.mergeCSS(ast0, ast1);
+            }//if
         }//for
-        this.mergeCSS(ast0, ast.clone());
+        this.mergeCSS(ast0, ast);
         return ast0;
     }//parseCSS
 
@@ -207,8 +208,9 @@ export default class LibraryParser {
                 haveSuchRule = true;
                 return false;
             });
-            if (!haveSuchRule)
+            if (!haveSuchRule) {
                 ast0.append(rule1.clone());
+            }//if
         });
     }//mergeCSS
 
@@ -222,8 +224,9 @@ export default class LibraryParser {
                 haveSuchDecl = true;
                 return false;
             });
-            if (!haveSuchDecl)
+            if (!haveSuchDecl) {
                 rule0.append(decl1.clone());
+            }//if
         });
     }//mergeCSSRules
 
