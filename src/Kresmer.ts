@@ -6,18 +6,19 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed } from "vue";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import KresmerVue from "./Kresmer.vue";
 import KresmerEventFeatures from "./KresmerEventFeatures";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
-import { Position, Transform, TransformFunctons } from "./Transform/Transform";
+import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./Transform/TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
+import NetworkComponentAdapter from "./NetworkComponent/NetworkComponentAdapter.vue";
 
 
 /**
@@ -73,6 +74,7 @@ export default class Kresmer extends KresmerEventFeatures {
             // register the components used to construct the drawing
             .component("TransformBox", TransformBox)
             .component("NetworkComponentHolder", NetworkComponentHolder)
+            .component("NetworkComponentAdapter", NetworkComponentAdapter)
             // register the functions that can be used in templates
             .config.globalProperties = {...TransformFunctons}
             ;
@@ -112,6 +114,33 @@ export default class Kresmer extends KresmerEventFeatures {
                 ...componentClass.props,
                 componentId: {type: Number},
                 name: {type: String},
+                // the next two props are added just to relax Vue prop passing mechanism, which 
+                // does not like xmlns:* attributes leaked from DOMParser
+                "xmlns:Kre": {type: String},
+                "xmlns:v-bind": {type: String},
+            },
+        }).component(componentClass.adapterVueName, {
+            setup(props) {
+                const componentProps = computed(() => {
+                    const pr = {...props};
+                    for (const key of ["x", "y", "transform", "transformOrigin"]) {
+                        delete pr[key];
+                    }//for
+                    return pr;
+                });
+                return {componentProps};
+            },
+            template: `\
+                <NetworkComponentAdapter :x="x" :y="y" :transform="transform" :transform-origin="transformOrigin">
+                    <component :is="'${componentClass.vueName}'" v-bind="componentProps"/>
+                </NetworkComponentAdapter>`,
+            props: {
+                ...componentClass.props,
+                name: {type: String},
+                x: {type: Number, default: 0},
+                y: {type: Number, default: 0},
+                transform: {type: Object as PropType<ITransform>},
+                transformOrigin: {type: Object as PropType<Position>},
                 // the next two props are added just to relax Vue prop passing mechanism, which 
                 // does not like xmlns:* attributes leaked from DOMParser
                 "xmlns:Kre": {type: String},

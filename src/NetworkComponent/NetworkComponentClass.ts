@@ -51,7 +51,7 @@ export default class NetworkComponentClass {
     /**
      * Template for the Vue-component for this class
      */
-    public template: string | Element;
+    public template: Template;
     /**
      * Props definition of the Vue-component for this class
      */
@@ -59,7 +59,7 @@ export default class NetworkComponentClass {
     /**
      * SVG Defs for this class
      */
-    readonly defs?: string | Element;
+    readonly defs?: Template;
     /**
      * CSS styles defined in this class
      */
@@ -69,17 +69,17 @@ export default class NetworkComponentClass {
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
      */
-    get vueName() {return "Kre:" + this.name}
+    get vueName() {return "_Kre:" + this.name}
 
     /**
-     * Returns the name of the holder vue-component for this class
+     * Returns the name of the adapter vue-component for this class
      * @returns The holder vue-component name
      */
-    get holderVueName() {return "_Kre:" + this.name}
+    get adapterVueName() {return "Kre:" + this.name}
 
     /**
      * Returns the name of the vue-component for this class defs
      * @returns The vue-component name defs
      */
-     get defsVueName() {return "Kre:" + this.name + ".defs"}
+     get defsVueName() {return "_Kre:" + this.name + ".defs"}
 }//NetworkComponentClass
