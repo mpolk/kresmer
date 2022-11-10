@@ -169,7 +169,8 @@ export default class Kresmer extends KresmerEventFeatures {
      */
     private scopeStyles(ast: PostCSSRoot, classScope?: string)
     {
-        ast.walkRules((rule: PostCSSRule) => {
+        const ast1 = ast.clone();
+        ast1.walkRules((rule: PostCSSRule) => {
             // Scope all rules within the ".kresmer" class and optionally with a component class
             let scope = ".kresmer";
             if (classScope)
@@ -177,7 +178,7 @@ export default class Kresmer extends KresmerEventFeatures {
             rule.selectors = rule.selectors.map(sel => `${scope} ${sel}`);
         })
 
-        return ast;
+        return ast1;
     }//scopeStyles
  
     /**

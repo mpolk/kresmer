@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import { ComponentObjectPropsOptions, Prop } from "vue";
-import postcss, {Root as PostCSSRoot} from 'postcss';
+import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
@@ -86,7 +86,7 @@ export default class LibraryParser {
                         defs = child;
                         break;
                     case "style":
-                        style = this.parseCSS(child.innerHTML);
+                        style = this.parseCSS(child.innerHTML, child.getAttribute("extends"));
                         break;
                     }//switch
             }//if
@@ -180,10 +180,52 @@ export default class LibraryParser {
     }//parseProps
 
 
-    private parseCSS(css: string)
+    private parseCSS(css: string, baseClassNames?: string|null)
     {
-        return postcss.parse(css, {from: undefined});
+        const ast = postcss.parse(css, {from: undefined});
+        if (!baseClassNames) {
+            return ast;
+        }//if
+
+        const ast0 = new PostCSSRoot();
+        for (const baseClassName of baseClassNames.split(/ *, */)) {
+            const ast1 = NetworkComponentClass.getClass(baseClassName)?.style;
+            if (ast1)
+                this.mergeCSS(ast0, ast1);
+        }//for
+        this.mergeCSS(ast0, ast.clone());
+        return ast0;
     }//parseCSS
+
+
+    private mergeCSS(ast0: PostCSSRoot, ast1: PostCSSRoot)
+    {
+        ast1.walkRules((rule1: PostCSSRule) => {
+            let haveSuchRule = false;
+            ast0.walkRules(rule1.selector, rule0 => {
+                this.mergeCSSRules(rule0, rule1);
+                haveSuchRule = true;
+                return false;
+            });
+            if (!haveSuchRule)
+                ast0.append(rule1.clone());
+        });
+    }//mergeCSS
+
+
+    private mergeCSSRules(rule0: PostCSSRule, rule1: PostCSSRule)
+    {
+        rule1.walkDecls((decl1: PostCSSDeclaration) => {
+            let haveSuchDecl = false;
+            rule0.walkDecls(decl1.prop, decl0 => {
+                decl0.value = decl1.value;
+                haveSuchDecl = true;
+                return false;
+            });
+            if (!haveSuchDecl)
+                rule0.append(decl1.clone());
+        });
+    }//mergeCSSRules
 
 }//LibraryParser
 

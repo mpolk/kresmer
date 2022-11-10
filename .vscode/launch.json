@@ -1,6 +1,12 @@
 {
     "version": "0.2.0",
-    "configurations": [{
+    "configurations": [
+        {
+            "type": "firefox",
+            "request": "attach",
+            "name": "Attach"
+        },
+        {
         "name": "Debug Main Process",
         "type": "node",
         "request": "launch", 

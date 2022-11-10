@@ -153,8 +153,8 @@
             <Kre:Switch v-bind:name="name" v-bind:width="width" v-bind:height="height" 
                         color="magenta"/>
         </template>
-        <style>
-            .switch-name { font-family: sans-serif; fill: white; text-shadow: 3px 3px 3px black; }
+        <style extends="Switch">
+            .switch-name { fill: white; }
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
