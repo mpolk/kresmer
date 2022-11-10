@@ -114,7 +114,7 @@
             </filter>
         </defs>
         <template>
-            <rect x="0" y="0" v-bind:width="width" v-bind:height="height" vector-effect="non-scaling-stroke"
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="width/8" vector-effect="non-scaling-stroke"
                 v-bind:fill="color" />
             <g v-bind:transform="`scale(${width} ${-0.2*width})`">
                 <polyline 
@@ -142,7 +142,6 @@
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
             <prop name="color" type="String" default="lightgray"/>
             <prop name="perspective" type="String" choices="left,right,center" default="center" />
         </props>
@@ -150,29 +149,25 @@
 
     <component-class name="ExtremeSwitch">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:width="width" v-bind:height="height" 
-                        color="magenta"/>
+            <Kre:Switch v-bind:name="name" v-bind:width="width" color="magenta"/>
         </template>
         <style extends="Switch">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
         </props>
     </component-class>
 
     <component-class name="Catalyst">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:width="width" v-bind:height="height" 
-                        color="darkcyan"/>
+            <Kre:Switch v-bind:name="name" v-bind:width="width" color="darkcyan"/>
         </template>
         <style extends="Switch">
             .switch-name { fill: yellow; text-shadow: 3px 3px 3px black; }
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
         </props>
     </component-class>
 </kresmer-library>
