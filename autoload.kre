@@ -58,10 +58,9 @@
         </props>
     </component>
 
-    <component class="Switch">
+    <component class="Catalyst">
         <origin x="30" y="700" />
         <props>
-            <prop name="color">darkcyan</prop>
             <prop name="name">dru-core</prop>
             <prop name="width">400</prop>
             <prop name="height">50</prop>
