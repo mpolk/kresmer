@@ -19,10 +19,12 @@ class KresmerEventHooks  {
     "component-mouse-enter":            (controller: NetworkComponentController) => void;
     "component-mouse-leave":            (controller: NetworkComponentController) => void;
     "component-move-started":           (controller: NetworkComponentController) => void;
+    "component-being-moved":            (controller: NetworkComponentController) => void;
     "component-moved":                  (controller: NetworkComponentController) => void;
     "component-entered-transform-mode": (controller: NetworkComponentController, 
                                          mode: TransformMode) => void;
     "component-transform-started":      (controller: NetworkComponentController) => void;
+    "component-being-transformed":      (controller: NetworkComponentController) => void;
     "component-transformed":            (controller: NetworkComponentController) => void;
     "component-exited-transform-mode":  (controller: NetworkComponentController) => void;
     "component-right-click":            (controller: NetworkComponentController, 
@@ -113,12 +115,19 @@ export default class KresmerEventFeatures {
     public onComponentMoveStart(controller: NetworkComponentController) {}
  
     /**
+     * Is called when a network component is being moved (dragged)
+     * @param controller The controller of the component is being moved
+     */
+    @overridableHandler("component-being-moved")
+    public onComponentBeingMoved(controller: NetworkComponentController) {}
+ 
+    /**
      * Is called when a network component had been moved (dragged)
      * @param controller The controller of the component been moved
      */
-    @overridableHandler("component-moved")
-    public onComponentMoved(controller: NetworkComponentController) {}
-
+     @overridableHandler("component-moved")
+     public onComponentMoved(controller: NetworkComponentController) {}
+ 
     /**
      * Is called when a network component has entered transform mode
      * @param controller The controller of the component entered mode
@@ -136,12 +145,19 @@ export default class KresmerEventFeatures {
     public onComponentTransformStart(controller: NetworkComponentController) {}
   
     /**
+     * Is called when a network component is being transformed
+     * @param controller The controller of the component is being transformed
+     */
+    @overridableHandler("component-being-transformed")
+    public onComponentBeingTransformed(controller: NetworkComponentController) {}
+  
+    /**
      * Is called when a network component had been transformed
      * @param controller The controller of the component been transformed
      */
-    @overridableHandler("component-transformed")
-    public onComponentTransformed(controller: NetworkComponentController) {}
-
+     @overridableHandler("component-transformed")
+     public onComponentTransformed(controller: NetworkComponentController) {}
+ 
     /**
      * Is called when a network component has exited transform mode
      * @param controller The controller of the component entered mode

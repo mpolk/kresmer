@@ -12,6 +12,7 @@ import Hints from './hints';
 import Kresmer from '../Kresmer';
 import ParsingException from '../parsers/ParsingException';
 import StatusBar from './status-bar.vue';
+import NetworkComponentController from '../NetworkComponent/NetworkComponentController';
 
 export const kresmer = new Kresmer('#kresmer');
 
@@ -33,7 +34,9 @@ kresmer
     .on("component-mouse-leave", () => hints.pop())
     .on("component-move-started", () => hints.push(Hints.onDrag))
     .on("component-moved", () => hints.pop())
+    .on("component-being-moved", indicateComponentMove)
     .on("component-transform-started", () => hints.push(""))
+    .on("component-being-transformed", indicateComponentTransform)
     .on("component-transformed", () => hints.pop())
     .on("component-entered-transform-mode", (_, mode) => hints.push(mode == "rotation" ? 
                                                                         Hints.onRotation : 
@@ -76,4 +79,20 @@ window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string,
 });
 
 window.electronAPI.signalReadiness(0);
+
+function indicateComponentTransform(controller: NetworkComponentController)
+{
+    const hint = controller.transformMode === "rotation" ? 
+        controller.transform.rotation.angle.toFixed(0) + '°' :
+        `x:${controller.transform.scale.x.toFixed(controller.transform.scale.x < 10 ? 2 : 0)} \
+         y:${controller.transform.scale.y.toFixed(controller.transform.scale.y < 10 ? 2 : 0)}`;
+    hints.setHint(hint);
+}//indicateComponentTransform
+
+function indicateComponentMove(controller: NetworkComponentController)
+{
+    const hint = `x:${controller.origin.x.toFixed(0)} \
+                  y:${controller.origin.y.toFixed(0)}`;
+    hints.setHint(hint);
+}//indicateComponentMove
 

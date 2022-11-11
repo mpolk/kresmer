@@ -69,6 +69,7 @@ export default class NetworkComponentController {
         this.origin.x = mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.origin.y = mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y;
+        this.kresmer.onComponentBeingMoved(this);
         return true;
     }//drag
 
@@ -104,6 +105,7 @@ export default class NetworkComponentController {
             
         const {r1, r0} = this.makeRaduisVectors(event, center);
         this.transform.rotate(r1, r0);
+        this.kresmer.onComponentBeingTransformed(this);
         return true;
     }//rotate
 
@@ -140,6 +142,7 @@ export default class NetworkComponentController {
             direction = '*';
         }//if
         this.transform.changeScale(r1, r0, direction, bBox);
+        this.kresmer.onComponentBeingTransformed(this);
         return true;
     }//scale
 
