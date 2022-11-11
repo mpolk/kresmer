@@ -68,6 +68,8 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without name");
 
+        const autoInstanciate = node.getAttribute("instanciate") === "auto";
+
         let template: Element | undefined;
         let props: ComponentObjectPropsOptions = {};
         let defs: Element | undefined;
@@ -97,7 +99,7 @@ export default class LibraryParser {
                 `Component class without template`,
                 {source: `Component class ${className}`});
 
-        return new NetworkComponentClass(className, {template, props, defs, style})
+        return new NetworkComponentClass(className, {template, props, defs, style, autoInstanciate})
     }//parseComponentClassNode
 
 

@@ -19,6 +19,7 @@ import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./Transform/TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapter from "./NetworkComponent/NetworkComponentAdapter.vue";
+import ParsingException from "./parsers/ParsingException";
 
 
 /**
@@ -76,7 +77,7 @@ export default class Kresmer extends KresmerEventFeatures {
             .component("NetworkComponentHolder", NetworkComponentHolder)
             .component("NetworkComponentAdapter", NetworkComponentAdapter)
             // register the functions that can be used in templates
-            .config.globalProperties = {...TransformFunctons}
+            .config.globalProperties = {...GeneralTemplateFunctions, ...TransformFunctons}
             ;
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
@@ -107,6 +108,7 @@ export default class Kresmer extends KresmerEventFeatures {
      */
     public registerNetworkComponentClass(componentClass: NetworkComponentClass) 
     {
+        // Register a Vue-component for the class itself
         this.appKresmer.component(componentClass.vueName, 
         {
             template: componentClass.template,
@@ -119,6 +121,7 @@ export default class Kresmer extends KresmerEventFeatures {
                 "xmlns:Kre": {type: String},
                 "xmlns:v-bind": {type: String},
             },
+        // ...and the one for its adapter (used for component-in-component embedding)
         }).component(componentClass.adapterVueName, {
             setup(props) {
                 const componentProps = computed(() => {
@@ -148,6 +151,7 @@ export default class Kresmer extends KresmerEventFeatures {
             },
         });
 
+        // also register class's svg-definitions
         if (componentClass.defs) {
             this.appKresmer.component(componentClass.defsVueName, 
             {
@@ -155,11 +159,17 @@ export default class Kresmer extends KresmerEventFeatures {
             })
         }//if
 
+        // ...and its css-styles
         if (componentClass.style) {
             this.styles.push(this.scopeStyles(componentClass.style, componentClass.name));
         }//if
 
         this.registeredClasses[componentClass.name] = componentClass;
+
+        // automatically create a single component instance if required
+        if (componentClass.autoInstanciate) {
+            this.placeNetworkComponent(new NetworkComponent(componentClass.name), {x: 0, y: 0});
+        }//if
         return this;
     }//registerNetworkComponentClass
 
@@ -321,5 +331,22 @@ export default class Kresmer extends KresmerEventFeatures {
 
 }//Kresmer
 
-/** Data for Vue templates */
+/** Data type for Vue templates */
 export type Template = Element | string;
+
+/** General-purpose functions for using in component templates */
+export const GeneralTemplateFunctions = {
+    /** A dictionary for "global" values defined with $global function */
+    $$: {},
+
+    /**
+     * 
+     * @param name Defines a "global" value that may be accessed in any component template
+     * @param value 
+     */
+    $global: function(name: string, value: unknown)
+    {
+        if (!(name in GeneralTemplateFunctions.$$))
+            Object.defineProperty(GeneralTemplateFunctions.$$, name, {value});
+    }//$global
+}//GeneralTemplateFunctions

@@ -27,6 +27,7 @@ export default class NetworkComponentClass {
         props?: ComponentObjectPropsOptions,
         defs?: Template,
         style?: PostCSSRoot,
+        autoInstanciate?: boolean,
     })
     {
         this.name = name;
@@ -34,6 +35,7 @@ export default class NetworkComponentClass {
         this.props = params.props;
         this.defs = params.defs;
         this.style = params.style;
+        this.autoInstanciate = Boolean(params.autoInstanciate);
         NetworkComponentClass.allClasses[name] = this;
     }//ctor
 
@@ -63,7 +65,9 @@ export default class NetworkComponentClass {
     /**
      * CSS styles defined in this class
      */
-     readonly style?: PostCSSRoot;
+    readonly style?: PostCSSRoot;
+    /** Specifies that a single class instance should be created after the class is registered */
+    readonly autoInstanciate: boolean;
 
     /**
      * Returns the name of the vue-component for this class

@@ -181,6 +181,8 @@ function normalizePoint(p: Point): NormalizedPoint
     }//if
 }//normalizePoint
 
+
+/** Transform functions for using in component templates */
 export const TransformFunctons = {
     $scale: function(factor: ScaleFactor, origin: Point = [0,0]) {
         const {fx, fy} = (typeof factor === "number") ? {fx: factor, fy: factor} :
@@ -199,7 +201,7 @@ export const TransformFunctons = {
     },//$scale
 
 
-    $3VectorTransform: function(m: ThreeVectorMatrix) {
+    $ThreeVectorTransform: function(m: ThreeVectorMatrix) {
         const [ux, uy, vx, vy, wx, wy] = Array.isArray(m) ? m : 
             normalizePoint(m.u).concat(normalizePoint(m.v)).concat(normalizePoint(m.w));
         return (...points: Points): Point[] =>
@@ -207,7 +209,7 @@ export const TransformFunctons = {
                 ux * p[0] + vx * p[1] + wx * p[0] * p[1],
                 uy * p[0] + vy * p[1] + wy * p[0] * p[1]
             ]);
-    },//$3VectorTransform
+    },//$ThreeVectorTransform
 
 
     $p: function(points: NormalizedPoint[]) {
