@@ -140,7 +140,9 @@
                 break;
             case "*": {
                 const delta = Math.hypot(r1.x, r1.y) - Math.hypot(r0.x, r0.y);
-                dx1 = dy1 = delta;
+                const diag = Math.hypot(bBoxSize.width, bBoxSize.height);
+                dx1 = delta * bBoxSize.width / diag;
+                dy1 = delta * bBoxSize.height / diag;
                 break;
             }
         }//switch
