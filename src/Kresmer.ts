@@ -19,7 +19,6 @@ import DrawingParser from "./parsers/DrawingParser";
 import TransformBox from "./Transform/TransformBox.vue"
 import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapter from "./NetworkComponent/NetworkComponentAdapter.vue";
-import ParsingException from "./parsers/ParsingException";
 
 
 /**
@@ -44,6 +43,7 @@ export default class Kresmer extends KresmerEventFeatures {
         drawingHeight?: number | string,
         viewWidth?: number,
         viewHeight?: number,
+        isEditable?: boolean,
     }) {
         super();
         if (options?.drawingWidth)
@@ -54,6 +54,8 @@ export default class Kresmer extends KresmerEventFeatures {
             this.viewWidth = options.viewWidth;
         if (options?.viewHeight)
             this.viewHeight = options.viewHeight;
+        if (options?.isEditable !== undefined)
+            this.isEditable = options.isEditable;
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -63,6 +65,7 @@ export default class Kresmer extends KresmerEventFeatures {
             drawingHeight: this.drawingHeight,
             viewWidth: this.viewWidth,
             viewHeight: this.viewHeight,
+            isEditable: this.isEditable,
 
             onDrawingScale: this.onDrawingScale.bind(this),
             onMouseEnter: this.onDrawingMouseEnter.bind(this),
@@ -92,8 +95,10 @@ export default class Kresmer extends KresmerEventFeatures {
      * (component sizes are measuring related this width) */
     readonly viewWidth: number = 1000;
     /** Sets the drawing area height in SVG logical units 
-    * (component sizes are measuring related this height) */
+     * (component sizes are measuring related this height) */
     readonly viewHeight: number = 1000;
+    /** Determines whether the drawing is editable */
+    readonly isEditable: boolean = true;
 
     /**
      * A list of all Component Classes, registered by Kresmer

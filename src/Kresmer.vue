@@ -34,6 +34,7 @@
         drawingHeight: {type: [Number, String], default: "100%"},
         viewWidth: {type: Number, default: 1000},
         viewHeight: {type: Number, default: 1000},
+        isEditable: {type: Boolean, default: true},
     });
 
     provide(Kresmer.injectionKey, props.controller);
@@ -153,6 +154,7 @@
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :controller="controller"
+                   :is-editable="isEditable"
                    :origin="controller.origin"
                    :transform="controller.transform"
                    :is-highlighted="controller.component.isHighlighted"

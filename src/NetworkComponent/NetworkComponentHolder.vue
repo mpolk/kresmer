@@ -24,6 +24,7 @@
     const props = defineProps({
         ...NetworkComponentHolderProps,
         controller: {type: Object as PropType<NetworkComponentController>, required: true},
+        isEditable: {type: Boolean, required: true},
     });
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -75,7 +76,7 @@
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1 && !props.transformMode) {
+        if (event.buttons === 1 && !props.transformMode && props.isEditable) {
             event.preventDefault();
             if (!event.ctrlKey) {
                 props.controller?.startDrag(event);
@@ -87,6 +88,7 @@
 
     function onMouseUp(event: MouseEvent)
     {
+        props.isEditable &&
         !props.transformMode &&
         props.controller?.endDrag(event) && 
         props.controller?.restoreComponentZPosition();
@@ -94,7 +96,7 @@
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1 && !props.transformMode)
+        if (event.buttons & 1 && !props.transformMode && props.isEditable)
             props.controller?.drag(event);
     }//onMouseMove
 
@@ -106,6 +108,7 @@
     function onMouseLeave(event: MouseEvent)
     {
         emit("mouse-leave", props.controller);
+        props.isEditable &&
         !props.transformMode &&
         props.controller?.endDrag(event) && 
         props.controller?.restoreComponentZPosition();
@@ -122,13 +125,13 @@
     {
         if (transformStartEvent)
             transformStartEvent = undefined;
-        else
+        else if (props.isEditable)
             props.controller?.endTransform(event) || props.controller?.endDrag(event);
     }//onMouseUpInTransformBox
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        if (transformStartEvent) {
+        if (props.isEditable && transformStartEvent) {
             switch(zone) {
                 case "tr-box":
                     props.controller?.startDrag(transformStartEvent);
@@ -152,7 +155,7 @@
             wasJustTransformed = true;
         }//if
 
-        if (event.buttons & 1) {
+        if (props.isEditable && event.buttons & 1) {
             switch(zone) {
                 case "tr-box":
                     if (props.controller?.isBeingTransformed && props.controller.transformMode == "scaling") {
@@ -190,7 +193,7 @@
     function onTransformBoxClick(event: MouseEvent) {
         if (wasJustTransformed)
             wasJustTransformed = false;
-        else
+        else if (props.isEditable)
             props.controller?.onTransformBoxClick(event);
     }//onTransformBoxClick
 
