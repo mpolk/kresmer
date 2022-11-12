@@ -126,12 +126,13 @@
     <!-- Switch or router port -->
     <component-class name="Port">
         <template>
-            <rect v-bind:width="d" v-bind:height="d" stroke="gray" fill="transparent"/>
+            <rect v-bind:width="d" v-bind:height="d" fill="transparent" class="port-icon"/>
             <text v-bind:x="d/2" v-bind:y="d*0.9" text-anchor="middle" v-bind:font-size="d"
                   class="port-name">{{name}}</text>
         </template>
         <style>
             .port-name {font-family: sans-serif;}
+            .port-icon {stroke: gray;}
         </style>
         <props>
             <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
@@ -169,6 +170,7 @@
         </template>
         <style>
             .switch-name { font-family: sans-serif; fill: black; }
+            .port-name {fill: #4f4f4f;}
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
@@ -185,6 +187,7 @@
         </template>
         <style extends="Switch">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
+            .port-icon {stroke: #4f4f4f;}
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
@@ -197,6 +200,8 @@
         </template>
         <style extends="Switch">
             .switch-name { fill: yellow; text-shadow: 3px 3px 3px black; }
+            .port-icon {stroke: white; fill: #005757;}
+            .port-name {fill: white;}
         </style>
         <props>
             <prop name="width" type="Number" required="true"/>
