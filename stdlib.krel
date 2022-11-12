@@ -134,8 +134,7 @@
             .port-name {font-family: sans-serif;}
         </style>
         <props>
-            <!-- Diameter (or similar size parameter-->
-            <prop name="d" type="Number" required="true" />
+            <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
             <prop name="name" type="String" />
         </props>
     </component-class>
@@ -154,7 +153,8 @@
         </defs>
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="width/8" v-bind:fill="color" />
-            <Kre:Port v-bind:x="width/16"  v-bind:y="width*9/16" v-bind:d="width/16" v-bind:name="`1`"/>
+            <Kre:Port v-for="i in nPorts" v-bind:x="width*5/128*(2*i - 1)"  v-bind:y="width/32" v-bind:d="width/16" 
+                      v-bind:name="i"/>
             <g v-bind:transform="`scale(${width} ${-0.2*width})`">
                 <polyline 
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
@@ -171,6 +171,7 @@
             .switch-name { font-family: sans-serif; fill: black; }
         </style>
         <props>
+            <prop name="nPorts" type="Number" default="8" />
             <prop name="width" type="Number" required="true"/>
             <prop name="color" type="String" default="lightgray"/>
             <prop name="perspective" type="String" choices="left,right,center" default="center" />
