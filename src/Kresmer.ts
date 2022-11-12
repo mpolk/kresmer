@@ -122,7 +122,7 @@ export default class Kresmer extends KresmerEventFeatures {
             props: {
                 ...componentClass.props,
                 componentId: {type: Number},
-                name: {type: String},
+                name: {type: [String, Number]},
                 // the next two props are added just to relax Vue prop passing mechanism, which 
                 // does not like xmlns:* attributes leaked from DOMParser
                 "xmlns:Kre": {type: String},
@@ -147,11 +147,11 @@ export default class Kresmer extends KresmerEventFeatures {
                 </NetworkComponentAdapter>`,
             props: {
                 ...componentClass.props,
-                name: {type: String},
-                x: {type: Number, default: 0},
-                y: {type: Number, default: 0},
-                transform: {type: Object as PropType<ITransform>},
-                transformOrigin: {type: Object as PropType<Position>},
+                name: {type: [String, Number]},
+                x: {type: [Number, String] as PropType<number|string>, default: 0},
+                y: {type: [Number, String] as PropType<number|string>, default: 0},
+                transform: {type: [Object, String] as PropType<ITransform|string>},
+                transformOrigin: {type: [Object, String] as PropType<Position|string>},
                 // the next two props are added just to relax Vue prop passing mechanism, which 
                 // does not like xmlns:* attributes leaked from DOMParser
                 "xmlns:Kre": {type: String},

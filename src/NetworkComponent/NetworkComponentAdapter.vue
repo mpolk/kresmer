@@ -18,27 +18,50 @@
 <script setup lang="ts">
     const props = defineProps({
         componentClass: {type: String, required: true},
-        x: {type: Number, default: 0},
-        y: {type: Number, default: 0},
-        transform: {type: Object as PropType<ITransform>},
-        transformOrigin: {type: Object as PropType<Position>},
+        x: {type: [Number, String] as PropType<number|string>, default: 0},
+        y: {type: [Number, String] as PropType<number|string>, default: 0},
+        transform: {type: [Object, String] as PropType<ITransform|string>},
+        transformOrigin: {type: [Object, String] as PropType<Position|string>},
     });
 
     const transform = computed(() => {
-        let tr = `translate(${props.x} ${props.y})`;
+        let {x, y} = props;
+        typeof x === "string" && (x = parseFloat(x));
+        typeof y === "string" && (y = parseFloat(y));
+        if (typeof props.transform === "string") {
+            return `translate(${x} ${y}) ${props.transform}`;
+        }//if
+
+        const chunks: string[] = [];
+        if (props.x || props.y) {
+            chunks.push(`translate(${x} ${y})`);
+        }//if
 
         if (props.transform?.rotation) {
-            tr += ` rotation(${props.transform.rotation.angle} ${props.transform.rotation.x} ${props.transform.rotation.y})`;
+            // eslint-disable-next-line prefer-const
+            let {angle, x, y} = props.transform.rotation;
+            x || (x = 0);
+            y || (y = 0);
+            chunks.push(`rotate(${angle} ${x} ${y})`);
         }//if
 
         if (props.transform?.scale) {
-            tr += ` scale(${props.transform.scale.x} ${props.transform.scale.y})`;
+            let {x, y} = props.transform.scale;
+            x || (x = 1);
+            y || (y = x);
+            chunks.push(`scale(${x} ${y})`);
         }//if
-        return tr;
+
+        return chunks.join(" ");
     })//transform
 
-    const transformOrigin = computed(() => props.transformOrigin ? 
-        `${props.transformOrigin.x} ${props.transformOrigin.y}` : null);
+    const transformOrigin = computed(() => {
+        if (typeof props.transformOrigin === "string")
+            return props.transformOrigin;
+
+        return props.transformOrigin ? 
+            `${props.transformOrigin.x} ${props.transformOrigin.y}` : null;
+    })//transformOrigin
 </script>
 
 <template>
