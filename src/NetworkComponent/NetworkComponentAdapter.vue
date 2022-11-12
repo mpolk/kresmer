@@ -11,12 +11,13 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted, computed } from 'vue';
-    import { Transform, ITransform, Position } from '../Transform/Transform';
+    import { PropType, computed } from 'vue';
+    import { ITransform, Position } from '../Transform/Transform';
 </script>
 
 <script setup lang="ts">
     const props = defineProps({
+        componentClass: {type: String, required: true},
         x: {type: Number, default: 0},
         y: {type: Number, default: 0},
         transform: {type: Object as PropType<ITransform>},
@@ -41,7 +42,7 @@
 </script>
 
 <template>
-    <g :transform="transform" :transform-origin="transformOrigin">
+    <g :transform="transform" :transform-origin="transformOrigin" :class="componentClass">
         <slot></slot>
     </g>
 </template>

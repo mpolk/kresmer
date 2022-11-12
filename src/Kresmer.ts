@@ -141,7 +141,8 @@ export default class Kresmer extends KresmerEventFeatures {
                 return {componentProps};
             },
             template: `\
-                <NetworkComponentAdapter :x="x" :y="y" :transform="transform" :transform-origin="transformOrigin">
+                <NetworkComponentAdapter component-class="${componentClass.name}" 
+                                         :x="x" :y="y" :transform="transform" :transform-origin="transformOrigin">
                     <component :is="'${componentClass.vueName}'" v-bind="componentProps"/>
                 </NetworkComponentAdapter>`,
             props: {
