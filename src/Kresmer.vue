@@ -15,7 +15,7 @@
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
 
     export default {
-        components: { NetworkComponentHolder, TransformBoxDefs: TransformBoxFilters },
+        components: { NetworkComponentHolder, TransformBoxFilters },
     }
 </script>
 

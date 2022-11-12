@@ -16,20 +16,21 @@ import { Position, Transform, TransformFunctons, ITransform } from "./Transform/
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
-import TransformBox from "./Transform/TransformBox.vue"
-import NetworkComponentHolder from "./NetworkComponent/NetworkComponentHolder.vue";
-import NetworkComponentAdapter from "./NetworkComponent/NetworkComponentAdapter.vue";
+import TransformBoxVue from "./Transform/TransformBox.vue"
+import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
+import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
+import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 
 
 /**
  * The main class implementing the most of the Kresmer public API
- * Also acts as a proxy for the root vue-component of Kresmer
+ * Also acts as a proxy for the Kresmer's root vue-component
  */
 export default class Kresmer extends KresmerEventFeatures {
 
-    /** Kresmer vue-component App */
+    /** Kresmer's vue-component Application */
     readonly appKresmer: App;
-    /** Kresmer vue-component itself */
+    /** Kresmer's vue-component instance itself */
     readonly vueKresmer: InstanceType<typeof KresmerVue>;
     /** A symbolic key for the Kresmer instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
@@ -76,9 +77,10 @@ export default class Kresmer extends KresmerEventFeatures {
 
         this.appKresmer
             // register the components used to construct the drawing
-            .component("TransformBox", TransformBox)
-            .component("NetworkComponentHolder", NetworkComponentHolder)
-            .component("NetworkComponentAdapter", NetworkComponentAdapter)
+            .component("TransformBox", TransformBoxVue)
+            .component("NetworkComponentHolder", NetworkComponentHolderVue)
+            .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
+            .component("ConnectionPoint", ConnectionPointVue)
             // register the functions that can be used in templates
             .config.globalProperties = {...GeneralTemplateFunctions, ...TransformFunctons}
             ;
