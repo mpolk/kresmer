@@ -154,7 +154,7 @@
         </defs>
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" />
-            <Kre:Port v-for="i in nPorts" v-bind:x="width*5/128*(2*i - 1)" v-bind:y="width/32" v-bind:d="width/16" 
+            <Kre:Port v-for="i in nPorts" v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2" 
                       v-bind:name="i"/>
             <g v-bind:transform="`scale(${width} ${-0.2*width})`">
                 <polyline 
@@ -174,32 +174,33 @@
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
-            <prop name="width" type="Number" required="true"/>
+            <prop name="height" type="Number" required="true"/>
             <prop name="color" type="String" default="lightgray"/>
             <prop name="perspective" type="String" choices="left,right,center" default="center" />
         </props>
         <computed-props>
-            <computed-prop name="height">props.width/8</computed-prop>
+            <computed-prop name="width">props.height * (0.25 + 0.75*props.nPorts)</computed-prop>
         </computed-props>
     </component-class>
 
     <!-- Various breeds of the Switches -->
     <component-class name="ExtremeSwitch">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:width="width" color="magenta"/>
+            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts" color="magenta"/>
         </template>
         <style extends="Switch">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
             .port-icon {stroke: #4f4f4f;}
         </style>
         <props>
-            <prop name="width" type="Number" required="true"/>
+            <prop name="nPorts" type="Number" default="8" />
+            <prop name="height" type="Number" required="true"/>
         </props>
     </component-class>
 
     <component-class name="Catalyst">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:width="width" color="darkcyan"/>
+            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts" color="darkcyan"/>
         </template>
         <style extends="Switch">
             .switch-name { fill: yellow; text-shadow: 3px 3px 3px black; }
@@ -207,7 +208,8 @@
             .port-name {fill: white;}
         </style>
         <props>
-            <prop name="width" type="Number" required="true"/>
+            <prop name="nPorts" type="Number" default="8" />
+            <prop name="height" type="Number" required="true"/>
         </props>
     </component-class>
 </kresmer-library>

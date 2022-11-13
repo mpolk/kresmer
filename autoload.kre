@@ -62,7 +62,8 @@
         <origin x="30" y="550" />
         <props>
             <prop name="name">core</prop>
-            <prop name="width">400</prop>
+            <prop name="height">50</prop>
+            <prop name="nPorts">26</prop>
         </props>
     </component>
 
@@ -70,7 +71,7 @@
         <origin x="30" y="700" />
         <props>
             <prop name="name">dru-core</prop>
-            <prop name="width">400</prop>
+            <prop name="height">50</prop>
         </props>
     </component>
 
@@ -78,7 +79,7 @@
         <origin x="30" y="850" />
         <props>
             <prop name="name">dru-metro</prop>
-            <prop name="width">400</prop>
+            <prop name="height">50</prop>
         </props>
     </component>
 </kresmer-drawing>
