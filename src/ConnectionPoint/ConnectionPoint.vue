@@ -17,5 +17,5 @@
 </script>
 
 <template>
-    <circle :x="x" :y="y" :r="d/2" style="cursor: pointer" />
+    <circle :cx="x" :cy="y" :r="d/2" style="cursor: pointer; fill: transparent" />
 </template>
