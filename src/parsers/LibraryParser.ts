@@ -8,7 +8,7 @@
 
 import { ComponentObjectPropsOptions, Prop } from "vue";
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
+import NetworkComponentClass, {ComputedProps} from "../NetworkComponent/NetworkComponentClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 
@@ -72,6 +72,7 @@ export default class LibraryParser {
 
         let template: Element | undefined;
         let props: ComponentObjectPropsOptions = {};
+        let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         for (let i = 0; i < node.childNodes.length; i++) {
@@ -84,6 +85,9 @@ export default class LibraryParser {
                     case "props":
                         props = this.parseProps(child);
                         break;
+                    case "computed-props":
+                        computedProps = this.parseComputedProps(child);
+                        break;
                     case "defs":
                         defs = child;
                         break;
@@ -94,92 +98,119 @@ export default class LibraryParser {
             }//if
         }//for
 
-        if (!template) 
+        if (!template) {
             throw new LibraryParsingException(
                 `Component class without template`,
                 {source: `Component class ${className}`});
+        }//if
 
-        return new NetworkComponentClass(className, {template, props, defs, style, autoInstanciate})
+        return new NetworkComponentClass(className, {template, props, computedProps, defs, style, autoInstanciate})
     }//parseComponentClassNode
 
 
     private parseProps(node: Element)
     {
         const props: ComponentObjectPropsOptions = {};
-        for (let i = 0; i < node.childNodes.length; i++) {
-            const child = node.childNodes[i];
-            if (child instanceof Element) {
-                switch (child.nodeName) {
-                    case "prop": {
-                        const propName = child.getAttribute("name");
-                        const prop: Prop<unknown, unknown> = {};
-                        const type = child.getAttribute("type");
-                        const required = child.getAttribute("required"),
-                            _default = child.getAttribute("default"),
-                            choices = child.getAttribute("choices");
-                        if (!propName)
-                            throw new LibraryParsingException("Prop without a name",
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "prop": {
+                    const propName = child.getAttribute("name");
+                    const prop: Prop<unknown, unknown> = {};
+                    const type = child.getAttribute("type");
+                    const required = child.getAttribute("required"),
+                        _default = child.getAttribute("default"),
+                        choices = child.getAttribute("choices");
+                    if (!propName)
+                        throw new LibraryParsingException("Prop without a name",
+                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+
+                    switch (type) {
+                        case "String":
+                            prop.type = String;
+                            if (_default != null)
+                                prop.default = _default;
+                            break;
+                        case "Number":
+                            prop.type = Number;
+                            if (_default != null)
+                                prop.default = parseFloat(_default);
+                            break;
+                        case "Boolean":
+                            prop.type = Boolean;
+                            if (_default != null)
+                                prop.default = _default == "true";
+                            break;
+                        case "Object":
+                            prop.type = Object;
+                            if (_default != null)
+                                prop.default = JSON.parse(_default);
+                            break;
+                        case "Array":
+                            prop.type = Array;
+                            if (_default != null)
+                                prop.default = JSON.parse(_default);
+                            break;
+                        default:
+                            throw new LibraryParsingException(`Invalid prop type: ${prop.type}`,
                                 {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                    }//switch
 
-                        switch (type) {
-                            case "String":
-                                prop.type = String;
-                                if (_default != null)
-                                    prop.default = _default;
-                                break;
-                            case "Number":
-                                prop.type = Number;
-                                if (_default != null)
-                                    prop.default = parseFloat(_default);
-                                break;
-                            case "Boolean":
-                                prop.type = Boolean;
-                                if (_default != null)
-                                    prop.default = _default == "true";
-                                break;
-                            case "Object":
-                                prop.type = Object;
-                                if (_default != null)
-                                    prop.default = JSON.parse(_default);
-                                break;
-                            case "Array":
-                                prop.type = Array;
-                                if (_default != null)
-                                    prop.default = JSON.parse(_default);
-                                break;
-                            default:
-                                throw new LibraryParsingException(`Invalid prop type: ${prop.type}`,
-                                    {source: `Component class ${node.parentElement?.getAttribute("name")}`});
-                        }//switch
+                    switch (required) {
+                        case "true": case "false":
+                            prop.required = (required === "true");
+                            break;
+                        case null: case undefined:
+                            break;
+                        default:
+                            throw `Invalid prop "required" attribute: ${prop.required}`;
+                    }//switch
 
-                        switch (required) {
-                            case "true": case "false":
-                                prop.required = (required === "true");
-                                break;
-                            case null: case undefined:
-                                break;
-                            default:
-                                throw `Invalid prop "required" attribute: ${prop.required}`;
-                        }//switch
+                    if (choices) {
+                        const validValues = choices.split(/ *, */);
+                        const validator = (value: unknown) => {
+                            return typeof value == "string" && validValues.includes(value);
+                        }//validator
+                        validator.validValues = validValues;
+                        prop.validator = validator;
+                    }//if
 
-                        if (choices) {
-                            const validValues = choices.split(/ *, */);
-                            const validator = (value: unknown) => {
-                                return typeof value == "string" && validValues.includes(value);
-                            }//validator
-                            validator.validValues = validValues;
-                            prop.validator = validator;
-                        }//if
-
-                        props[propName] = prop;
-                        break;
-                    }
-                }//switch
-            }//if
+                    props[propName] = prop;
+                    break;
+                }
+            }//switch
         }//for
 
         return props;
     }//parseProps
+
+
+    private parseComputedProps(node: Element)
+    {
+        const computedProps: ComputedProps = {};
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "computed-prop": {
+                    const name = child.getAttribute("name");
+                    if (!name) {
+                        throw new LibraryParsingException("ComputedProp without the name",
+                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                    }//if
+                    const body = node.textContent?.trim();
+                    if (!body) {
+                        throw new LibraryParsingException("ComputedProp without the body",
+                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                    }//if
+                    const computedProp = {name, body};
+                    computedProps[name] = computedProp;
+                    break;
+                }
+            }//switch
+        }//for
+
+        return computedProps;
+    }//parseComputedProps
 
 
     private parseCSS(css: string, baseClassNames?: string|null)

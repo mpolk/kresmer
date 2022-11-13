@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive, PropType, computed } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef } from "vue";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import KresmerVue from "./Kresmer.vue";
 import KresmerEventFeatures from "./KresmerEventFeatures";
@@ -118,6 +118,15 @@ export default class Kresmer extends KresmerEventFeatures {
         // Register a Vue-component for the class itself
         this.appKresmer.component(componentClass.vueName, 
         {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            setup(props) {
+                const computedProps: Record<string, ComputedRef> = {};
+                for (const name in componentClass.computedProps) {
+                    const body = componentClass.computedProps[name].body;
+                    computedProps[name] = computed(eval(`() => (${body})`));
+                }//for
+                return computedProps;
+            },
             template: componentClass.template,
             props: {
                 ...componentClass.props,

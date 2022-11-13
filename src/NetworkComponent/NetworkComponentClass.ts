@@ -25,6 +25,7 @@ export default class NetworkComponentClass {
     public constructor(name: string, params: {
         template: Template,
         props?: ComponentObjectPropsOptions,
+        computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
         autoInstanciate?: boolean,
@@ -33,6 +34,7 @@ export default class NetworkComponentClass {
         this.name = name;
         this.template = params.template;
         this.props = params.props;
+        this.computedProps = params.computedProps;
         this.defs = params.defs;
         this.style = params.style;
         this.autoInstanciate = Boolean(params.autoInstanciate);
@@ -58,6 +60,10 @@ export default class NetworkComponentClass {
      * Props definition of the Vue-component for this class
      */
     readonly props?: ComponentObjectPropsOptions;
+    /**
+     * Computed props (aka just computed) definition of the Vue-component for this class
+     */
+    readonly computedProps?: ComputedProps;
     /**
      * SVG Defs for this class
      */
@@ -87,3 +93,11 @@ export default class NetworkComponentClass {
      */
      get defsVueName() {return "_Kre:" + this.name + ".defs"}
 }//NetworkComponentClass
+
+
+export interface ComputedProp {
+     name: string,
+     body: string,
+}//ComputedProp
+
+export type ComputedProps = Record<string, ComputedProp>;
