@@ -17,5 +17,6 @@
   <xs:attribute name="text-anchor" />
   <xs:attribute name="filter" />
   <xs:attribute name="transform" />
+  <xs:attribute name="transform-origin" />
   <xs:attribute name="class" />
 </xs:schema>

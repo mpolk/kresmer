@@ -151,7 +151,7 @@
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" />
             <Kre:Port v-for="i in nPorts" v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2" 
                       v-bind:name="i"/>
-            <g v-bind:transform="`scale(${width} ${-1.4*height})`">
+            <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-1.4*height})`">
                 <polyline 
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
                                                            ([0,0], [0,1], [1,1], [1,0]))"
@@ -160,13 +160,20 @@
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))"
                     v-bind:fill="color"/>
             </g>
-            <text v-bind:x="width/2" v-bind:y="-height*0.6" v-bind:font-size="height*0.75" 
+            <g v-if="perspective === 'right'" v-bind:transform="`scale(${width} ${-1.4*height}) skewX(20)`">
+                <polyline points="0,0 0,1 1,1 1,0" v-bind:fill="color" class="top-facet"/>
+                <polyline v-bind:points="$p($$.crossArrows)" v-bind:fill="color"/>
+            </g>
+            <rect v-if="perspective === 'right'" v-bind:x="width" y="0" v-bind:width="height*2.26" v-bind:height="height" 
+                  v-bind:fill="color" class="side-facet" transform="skewY(-32)" v-bind:transform-origin="`${width} 0`"/>
+            <text v-bind:x="nameX" v-bind:y="-height*0.55" v-bind:font-size="height*0.75" 
                   text-anchor="middle" class="switch-name">{{name}}</text>
         </template>
         <style>
             .switch-name { font-family: sans-serif; fill: black; }
             .port-icon { fill: #525252; }
             .top-facet { filter: brightness(0.7); }
+            .side-facet { filter: brightness(0.5); }
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
@@ -176,13 +183,18 @@
         </props>
         <computed-props>
             <computed-prop name="width">props.height * (0.25 + 0.75*props.nPorts)</computed-prop>
+            <computed-prop name="nameX">props.perspective === 'right' ? computedProps.width*0.7 :
+                                        props.perspective === 'left' ? computedProps.width.value*0.3 :
+                                        computedProps.width.value*0.5
+            </computed-prop>
         </computed-props>
     </component-class>
 
     <!-- Various breeds of the Switches -->
     <component-class name="ExtremeSwitch">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts" color="magenta"/>
+            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts" color="magenta"
+                        v-bind:perspective="perspective"/>
         </template>
         <style extends="Switch">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
@@ -191,12 +203,14 @@
         <props>
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true"/>
+            <prop name="perspective" type="String" choices="left,right,center" default="center" />
         </props>
     </component-class>
 
     <component-class name="Catalyst">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts" color="darkcyan"/>
+            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts" color="darkcyan"
+                        v-bind:perspective="perspective"/>
         </template>
         <style extends="Switch">
             .switch-name { fill: yellow; text-shadow: 3px 3px 3px black; }
@@ -206,6 +220,7 @@
         <props>
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true"/>
+            <prop name="perspective" type="String" choices="left,right,center" default="center" />
         </props>
     </component-class>
 </kresmer-library>

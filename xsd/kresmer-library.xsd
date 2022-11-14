@@ -35,6 +35,8 @@
     <xs:attributeGroup name="transform-attrs">
         <xs:attribute name="transform" />
         <xs:attribute ref="v-bind:transform"/>
+        <xs:attribute name="transform-origin" />
+        <xs:attribute ref="v-bind:transform-origin"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="dim-attrs">
@@ -74,6 +76,7 @@
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
@@ -133,6 +136,7 @@
                         <xs:group ref="template-content"></xs:group>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
                     </xs:complexType>
                 </xs:element>
 
