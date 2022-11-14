@@ -122,7 +122,8 @@ export default class Kresmer extends KresmerEventFeatures {
             setup(props) {
                 const computedProps: Record<string, ComputedRef> = {};
                 for (const name in componentClass.computedProps) {
-                    const body = componentClass.computedProps[name].body;
+                    const body = componentClass.computedProps[name].body
+                        .replaceAll(/(computedProps\.\w+)(?!\w*\.value)/g, "$1.value");
                     computedProps[name] = computed(eval(`() => (${body})`));
                 }//for
                 return computedProps;
