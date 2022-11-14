@@ -197,7 +197,7 @@ export default class LibraryParser {
                         throw new LibraryParsingException("ComputedProp without the name",
                             {source: `Component class ${node.parentElement?.getAttribute("name")}`});
                     }//if
-                    const body = node.textContent?.trim();
+                    const body = child.textContent?.trim();
                     if (!body) {
                         throw new LibraryParsingException("ComputedProp without the body",
                             {source: `Component class ${node.parentElement?.getAttribute("name")}`});
