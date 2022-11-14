@@ -1,9 +1,12 @@
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="v-bind">
   <xs:attribute name="id" />
+  <xs:attribute name="name" />
   <xs:attribute name="x" />
   <xs:attribute name="y" />
+  <xs:attribute name="d" />
   <xs:attribute name="width"  />
   <xs:attribute name="height" />
+  <xs:attribute name="dir" />
   <xs:attribute name="points" />
   <xs:attribute name="fill" />
   <xs:attribute name="stroke" />

@@ -13,9 +13,22 @@
         x: {type: Number, default: 0},
         y: {type: Number, default: 0},
         d: {type: Number, default: 0},
+        dir: {type: Number, default: 90},
     });
 </script>
 
 <template>
-    <circle :cx="x" :cy="y" :r="d/2" style="cursor: pointer; fill: transparent" />
+    <circle :cx="x" :cy="y" :r="d/2" class="connection-point" />
 </template>
+
+<style lang="scss">
+    .connection-point {
+        cursor: pointer; 
+        fill: transparent;
+        
+        &:hover {
+            fill: gray;
+            opacity: 0.5;
+        }
+    }
+</style>

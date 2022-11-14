@@ -4,6 +4,8 @@
     <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
 
     <xs:attributeGroup name="general-attrs">
+        <xs:attribute name="name" type="xs:string" />
+        <xs:attribute ref="v-bind:name"/>
         <xs:attribute name="id" type="xs:string" />
         <xs:attribute ref="v-bind:id"/>
     </xs:attributeGroup>
@@ -109,6 +111,20 @@
                         <xs:attributeGroup ref="vue-directives"/>
                         <xs:attribute name="vector-effect"/>
                         <xs:attribute name="href"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="connection-point" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attribute name="d" type="xs:decimal" />
+                        <xs:attribute ref="v-bind:d" />
+                        <xs:attribute name="dir" type="xs:decimal" />
+                        <xs:attribute ref="v-bind:dir" />
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
 

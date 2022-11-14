@@ -127,7 +127,7 @@
     <component-class name="Port">
         <template>
             <rect v-bind:width="d" v-bind:height="d" fill="transparent" class="port-icon"/>
-            <text v-bind:x="d/2" v-bind:y="d*0.9" text-anchor="middle" v-bind:font-size="d"
+            <text v-bind:x="d/2" v-bind:y="d*0.8" text-anchor="middle" v-bind:font-size="d*0.8"
                   class="port-name">{{name}}</text>
             <connection-point v-bind:name="name" v-bind:d="d" v-bind:x="d/2" v-bind:y="d/2"/>
         </template>
