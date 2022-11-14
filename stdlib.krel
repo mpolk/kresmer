@@ -126,14 +126,14 @@
     <!-- Switch or router port -->
     <component-class name="Port">
         <template>
-            <rect v-bind:width="d" v-bind:height="d" fill="transparent" class="port-icon"/>
+            <rect v-bind:width="d" v-bind:height="d" class="port-icon"/>
             <text v-bind:x="d/2" v-bind:y="d*0.8" text-anchor="middle" v-bind:font-size="d*0.8"
                   class="port-name">{{name}}</text>
-            <connection-point v-bind:name="name" v-bind:d="d" v-bind:x="d/2" v-bind:y="d/2"/>
+            <connection-point v-bind:name="name" v-bind:d="d*0.8" v-bind:x="d/2" v-bind:y="d/2"/>
         </template>
         <style>
-            .port-name {font-family: sans-serif;}
-            .port-icon {stroke: gray;}
+            .port-name {font-family: sans-serif; fill: white;}
+            .port-icon {stroke: white;}
         </style>
         <props>
             <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
@@ -143,35 +143,26 @@
 
     <!-- General switch -->
     <component-class name="Switch">
-        <defs>
-            <filter id="kre:switchTopFacetColor">
-                <feColorMatrix values="
-                    0.5 0   0   0 0
-                    0   0.5 0   0 0
-                    0   0   0.5 0 0
-                    0   0   0   1 0
-                "/>
-            </filter>
-        </defs>
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" />
             <Kre:Port v-for="i in nPorts" v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2" 
                       v-bind:name="i"/>
-            <g v-bind:transform="`scale(${width} ${-0.2*width})`">
+            <g v-bind:transform="`scale(${width} ${-1.4*height})`">
                 <polyline 
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
                                                            ([0,0], [0,1], [1,1], [1,0]))"
-                    v-bind:fill="color" filter="url(#kre:switchTopFacetColor)"/>
+                    v-bind:fill="color" class="top-facet"/>
                 <polyline 
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))"
                     v-bind:fill="color"/>
             </g>
-            <text v-bind:x="width/2" v-bind:y="-width/12" v-bind:font-size="width/10" 
+            <text v-bind:x="width/2" v-bind:y="-height*0.6" v-bind:font-size="height*0.75" 
                   text-anchor="middle" class="switch-name">{{name}}</text>
         </template>
         <style>
             .switch-name { font-family: sans-serif; fill: black; }
-            .port-name {fill: #4f4f4f;}
+            .port-icon { fill: #525252; }
+            .top-facet { filter: brightness(0.7); }
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
@@ -191,7 +182,7 @@
         </template>
         <style extends="Switch">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
-            .port-icon {stroke: #4f4f4f;}
+            .port-icon { stroke: #fde3fd; fill: #730c73; }
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />

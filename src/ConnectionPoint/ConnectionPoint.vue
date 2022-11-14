@@ -9,7 +9,7 @@
 <script setup lang="ts">
 
     const props = defineProps({
-        name: {type: String, required: true},
+        name: {type: [String,Number], required: true},
         x: {type: Number, default: 0},
         y: {type: Number, default: 0},
         d: {type: Number, default: 0},
@@ -18,17 +18,18 @@
 </script>
 
 <template>
-    <circle :cx="x" :cy="y" :r="d/2" class="connection-point" />
+    <circle :cx="x" :cy="y" :r="d/2" class="connection-point"/>
 </template>
 
 <style lang="scss">
     .connection-point {
         cursor: pointer; 
-        fill: transparent;
-        
+        fill: yellow;
+        opacity: 0;
+
         &:hover {
-            fill: gray;
             opacity: 0.5;
+            filter: url(#kre:fltCPHover);
         }
     }
 </style>

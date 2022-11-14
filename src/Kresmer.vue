@@ -13,9 +13,10 @@
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
+    import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
 
     export default {
-        components: { NetworkComponentHolder, TransformBoxFilters },
+        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters },
     }
 </script>
 
@@ -145,6 +146,7 @@
         >
         <defs>
             <TransformBoxFilters />
+            <ConnectionPointFilters />
             <component v-for="(_, i) in controller.defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
             <template v-for="_class in networkComponentClasses">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
