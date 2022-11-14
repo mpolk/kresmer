@@ -127,8 +127,8 @@
     <component-class name="Port">
         <template>
             <rect v-bind:width="d" v-bind:height="d" class="port-icon"/>
-            <polyline class="port-bottom" v-bind:points="`0,${d} ${d*0.15},${d*0.75} ${d*0.85},${d*0.75} ${d},${d}`"/>
-            <rect v-bind:x="d*0.15" v-bind:y="d*0.05" v-bind:width="d*0.7" v-bind:height="d*0.7" class="port-far-end"/>
+            <polyline class="port-icon port-bottom" v-bind:points="`0,${d} ${d*0.15},${d*0.75} ${d*0.85},${d*0.75} ${d},${d}`"/>
+            <rect v-bind:x="d*0.15" v-bind:y="d*0.05" v-bind:width="d*0.7" v-bind:height="d*0.7" class="port-icon port-far-end"/>
             <text v-bind:x="d/2" v-bind:y="d*0.8" text-anchor="middle" v-bind:font-size="d*0.8"
                   class="port-name">{{name}}</text>
             <connection-point v-bind:name="name" v-bind:d="d*0.8" v-bind:x="d/2" v-bind:y="d/2"/>
@@ -136,8 +136,8 @@
         <style>
             .port-name {font-family: sans-serif; fill: white;}
             .port-icon {stroke: white;}
-            .port-bottom {fill: white; fill-opacity: 0.2}
-            .port-far-end {fill: black; fill-opacity: 0.2}
+            .port-bottom {stroke: none!important; filter: brightness(1.4)}
+            .port-far-end {stroke: none!important; filter: brightness(0.7)}
         </style>
         <props>
             <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
