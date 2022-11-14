@@ -77,10 +77,11 @@
     </component>
 
     <component class="Switch">
-        <origin x="30" y="850" />
+        <origin x="100" y="850" />
         <props>
             <prop name="name">dru-metro</prop>
             <prop name="height">50</prop>
+            <prop name="perspective">left</prop>
         </props>
     </component>
 </kresmer-drawing>

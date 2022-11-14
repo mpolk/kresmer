@@ -166,6 +166,12 @@
             </g>
             <rect v-if="perspective === 'right'" v-bind:x="width" y="0" v-bind:width="height*2.26" v-bind:height="height" 
                   v-bind:fill="color" class="side-facet" transform="skewY(-32)" v-bind:transform-origin="`${width} 0`"/>
+            <g v-if="perspective === 'left'" v-bind:transform="`scale(${width} ${-1.4*height}) skewX(-20)`">
+                <polyline points="0,0 0,1 1,1 1,0" v-bind:fill="color" class="top-facet"/>
+                <polyline v-bind:points="$p($$.crossArrows)" v-bind:fill="color"/>
+            </g>
+            <rect v-if="perspective === 'left'" v-bind:x="-height*2.26" y="0" v-bind:width="height*2.26" 
+                  v-bind:height="height" v-bind:fill="color" class="side-facet" transform="skewY(32)"/>
             <text v-bind:x="nameX" v-bind:y="-height*0.55" v-bind:font-size="height*0.75" 
                   text-anchor="middle" class="switch-name">{{name}}</text>
         </template>
@@ -184,8 +190,8 @@
         <computed-props>
             <computed-prop name="width">props.height * (0.25 + 0.75*props.nPorts)</computed-prop>
             <computed-prop name="nameX">props.perspective === 'right' ? computedProps.width*0.7 :
-                                        props.perspective === 'left' ? computedProps.width.value*0.3 :
-                                        computedProps.width.value*0.5
+                                        props.perspective === 'left' ? computedProps.width*0.3 :
+                                        computedProps.width*0.5
             </computed-prop>
         </computed-props>
     </component-class>
