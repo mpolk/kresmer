@@ -10,6 +10,6 @@
 <template>
     <!-- Connection point when the mouse hovers over it -->
     <filter id="kre:fltCPHover">
-        <feBlend in="SourceGraphic" in2="BackgroundImage" mode="screen" />
+        <feBlend in="SourceGraphic" in2="BackgroundImage" mode="overlay" />
     </filter>
 </template>

@@ -25,11 +25,11 @@
     .connection-point {
         cursor: pointer; 
         fill: yellow;
-        opacity: 0;
+        fill-opacity: 0;
 
         &:hover {
-            opacity: 0.5;
-            filter: url(#kre:fltCPHover);
+            fill-opacity: 0.5;
+            // filter: url(#kre:fltCPHover);
         }
     }
 </style>

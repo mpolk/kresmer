@@ -127,6 +127,8 @@
     <component-class name="Port">
         <template>
             <rect v-bind:width="d" v-bind:height="d" class="port-icon"/>
+            <polyline class="port-bottom" v-bind:points="`0,${d} ${d*0.15},${d*0.75} ${d*0.85},${d*0.75} ${d},${d}`"/>
+            <rect v-bind:x="d*0.15" v-bind:y="d*0.05" v-bind:width="d*0.7" v-bind:height="d*0.7" class="port-far-end"/>
             <text v-bind:x="d/2" v-bind:y="d*0.8" text-anchor="middle" v-bind:font-size="d*0.8"
                   class="port-name">{{name}}</text>
             <connection-point v-bind:name="name" v-bind:d="d*0.8" v-bind:x="d/2" v-bind:y="d/2"/>
@@ -134,6 +136,8 @@
         <style>
             .port-name {font-family: sans-serif; fill: white;}
             .port-icon {stroke: white;}
+            .port-bottom {fill: white; fill-opacity: 0.2}
+            .port-far-end {fill: black; fill-opacity: 0.2}
         </style>
         <props>
             <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
@@ -182,7 +186,7 @@
         </template>
         <style extends="Switch">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
-            .port-icon { stroke: #fde3fd; fill: #730c73; }
+            .port-icon { stroke: #fde3fd; fill: #651065; }
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
