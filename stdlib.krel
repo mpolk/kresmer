@@ -126,18 +126,20 @@
     <!-- Switch or router port -->
     <component-class name="Port">
         <template>
-            <rect v-bind:width="d" v-bind:height="d" class="port-icon"/>
-            <polyline class="port-icon port-bottom" v-bind:points="`0,${d} ${d*0.15},${d*0.75} ${d*0.85},${d*0.75} ${d},${d}`"/>
-            <rect v-bind:x="d*0.15" v-bind:y="d*0.05" v-bind:width="d*0.7" v-bind:height="d*0.7" class="port-icon port-far-end"/>
+            <rect v-bind:width="d" v-bind:height="d" class="port-icon body"/>
+            <polyline class="port-icon bottom" 
+                      v-bind:points="`0,${d} ${d*0.15},${d*0.75} ${d*0.85},${d*0.75} ${d},${d}`"/>
+            <rect class="port-icon far-end" v-bind:x="d*0.15" v-bind:y="d*0.05" 
+                  v-bind:width="d*0.7" v-bind:height="d*0.7"/>
             <text v-bind:x="d/2" v-bind:y="d*0.8" text-anchor="middle" v-bind:font-size="d*0.8"
                   class="port-name">{{name}}</text>
             <connection-point v-bind:name="name" v-bind:d="d*0.8" v-bind:x="d/2" v-bind:y="d/2"/>
         </template>
         <style>
             .port-name {font-family: sans-serif; fill: white;}
-            .port-icon {stroke: white;}
-            .port-bottom {stroke: none!important; filter: brightness(1.4)}
-            .port-far-end {stroke: none!important; filter: brightness(0.7)}
+            .port-icon.body {stroke: white;}
+            .port-icon.bottom {filter: brightness(1.4)}
+            .port-icon.far-end {filter: brightness(0.7)}
         </style>
         <props>
             <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
@@ -164,7 +166,8 @@
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet"/>
                 <polyline v-bind:points="$p($$.crossArrows)" class="facet"/>
             </g>
-            <rect v-if="perspective === 'right'" v-bind:x="width" y="0" v-bind:width="height*2.26" v-bind:height="height" 
+            <rect v-if="perspective === 'right'" v-bind:x="width" y="0" 
+                  v-bind:width="height*2.26" v-bind:height="height" 
                   class="side facet" transform="skewY(-32)" v-bind:transform-origin="`${width} 0`"/>
             <g v-if="perspective === 'left'" v-bind:transform="`scale(${width} ${-1.4*height}) skewX(-20)`">
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet"/>
@@ -211,7 +214,8 @@
         <style extends="Switch">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
             .facet {fill: magenta;}
-            .port-icon { stroke: #fde3fd; fill: #651065; }
+            .port-icon { fill: #651065; }
+            .port-icon.body { stroke: #fde3fd; }
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
@@ -228,7 +232,7 @@
         <style extends="Switch">
             .switch-name { fill: yellow; text-shadow: 3px 3px 3px black; }
             .facet {fill: darkcyan;}
-            .port-icon {stroke: white; fill: #005757;}
+            .port-icon {fill: #005757;}
             .port-name {fill: white;}
         </style>
         <props>
