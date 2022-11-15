@@ -33,31 +33,29 @@ export default class LibraryParser {
             throw new LibraryParsingException(
                 `Invalid library root element: ${root?.nodeName}`);
 
-        for (let i = 0; i < root.childNodes.length; i++) {
-            const node = root.childNodes[i];
-            if (node instanceof Element) {
-                switch (node.nodeName) {
-                    case "component-class":
-                        try {
-                            yield this.parseComponentClassNode(node);
-                        } catch (exc) {
-                            if (exc instanceof ParsingException)
-                                yield exc;
-                            else
-                                throw exc;
-                        }//catch
-                        break;
-                    case "defs":
-                        yield new DefsLibNode(node);
-                        break;
-                    case "style":
-                        yield new StyleLibNode(this.parseCSS(node.innerHTML));
-                        break;
-                    default:
-                        yield new LibraryParsingException(
-                            `Invalid top-level node in library: "${node.nodeName}"`);
-                }//switch
-            }//if
+        for (let i = 0; i < root.children.length; i++) {
+            const node = root.children[i];
+            switch (node.nodeName) {
+                case "component-class":
+                    try {
+                        yield this.parseComponentClassNode(node);
+                    } catch (exc) {
+                        if (exc instanceof ParsingException)
+                            yield exc;
+                        else
+                            throw exc;
+                    }//catch
+                    break;
+                case "defs":
+                    yield new DefsLibNode(node);
+                    break;
+                case "style":
+                    yield new StyleLibNode(this.parseCSS(node.innerHTML));
+                    break;
+                default:
+                    yield new LibraryParsingException(
+                        `Invalid top-level node in library: "${node.nodeName}"`);
+            }//switch
         }//for
     }//parseXML
 
@@ -75,27 +73,25 @@ export default class LibraryParser {
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
-        for (let i = 0; i < node.childNodes.length; i++) {
-            const child = node.childNodes[i];
-            if (child instanceof Element) {
-                switch (child.nodeName) {
-                    case "template":
-                        template = child;
-                        break;
-                    case "props":
-                        props = this.parseProps(child);
-                        break;
-                    case "computed-props":
-                        computedProps = this.parseComputedProps(child);
-                        break;
-                    case "defs":
-                        defs = child;
-                        break;
-                    case "style":
-                        style = this.parseCSS(child.innerHTML, child.getAttribute("extends"));
-                        break;
-                    }//switch
-            }//if
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "template":
+                    template = child;
+                    break;
+                case "props":
+                    props = this.parseProps(child);
+                    break;
+                case "computed-props":
+                    computedProps = this.parseComputedProps(child);
+                    break;
+                case "defs":
+                    defs = child;
+                    break;
+                case "style":
+                    style = this.parseCSS(child.innerHTML, child.getAttribute("extends"));
+                    break;
+            }//switch
         }//for
 
         if (!template) {
