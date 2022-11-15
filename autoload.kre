@@ -72,6 +72,15 @@
         <props>
             <prop name="name">dru-core</prop>
             <prop name="height">50</prop>
+            <prop name="perspective">none</prop>
+        </props>
+    </component>
+
+    <component class="Catalyst">
+        <origin x="500" y="700" />
+        <props>
+            <prop name="name">dru-core</prop>
+            <prop name="height">50</prop>
             <prop name="perspective">right</prop>
         </props>
     </component>
