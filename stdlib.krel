@@ -233,7 +233,6 @@
             .switch-name { fill: yellow; text-shadow: 3px 3px 3px black; }
             .facet {fill: darkcyan;}
             .port-icon {fill: #005757;}
-            .port-name {fill: white;}
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
