@@ -3,10 +3,15 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- * A Vue component for rendering Network Connection Points 
+ * Network Connection Point (the location for a Link-to-Component or 
+ * Component-to-Component attachment) - presentation layer
 <*************************************************************************** -->
 
 <script setup lang="ts">
+    import { inject } from 'vue';
+    import NetworkComponent from '../NetworkComponent/NetworkComponent';
+    import ConnectionPoint from './ConnectionPoint';
+
 
     const props = defineProps({
         name: {type: [String,Number], required: true},
@@ -15,6 +20,11 @@
         d: {type: Number, default: 0},
         dir: {type: Number, default: 90},
     });
+
+    const model = new ConnectionPoint();
+    const component = inject(NetworkComponent.injectionKey)!;
+
+    component.connectionPoints[props.name] = model;
 </script>
 
 <template>

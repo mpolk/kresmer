@@ -8,10 +8,11 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted, computed } from 'vue';
+    import { ref, PropType, onMounted, computed, provide } from 'vue';
     import TransformBox from '../Transform/TransformBox.vue';
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponentController from "./NetworkComponentController";
+    import NetworkComponent from "./NetworkComponent";
     import { NetworkComponentHolderProps } from "./NetworkComponentHolder.d";
     import { Transform } from '../Transform/Transform';
 
@@ -31,6 +32,7 @@
     const svg = ref<SVGGraphicsElement>()!;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const trGroup = ref<SVGGraphicsElement>()!;
+    provide(NetworkComponent.injectionKey, props.controller.component);
 
     const applyTransform = ref(false);
     const bBox = ref<SVGRect>();

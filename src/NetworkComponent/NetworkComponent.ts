@@ -6,8 +6,10 @@
  * Network Component - a generic network element instance 
  ***************************************************************************/
 
+import { InjectionKey } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import { NetworkElement } from '../NetworkElement';
+import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
 
 /**
  * Network Component - a generic network element instance 
@@ -44,6 +46,8 @@ export default class NetworkComponent extends NetworkElement {
     /** Component class */
     readonly _class: NetworkComponentClass;
     getClass() {return this._class}
+    /** A symbolic key for the component instance injection */
+    static readonly injectionKey = Symbol() as InjectionKey<NetworkComponent>;
     /** Return the vue-component name corresponding to this network component */
     get vueName() {return this._class.vueName}
 
@@ -66,4 +70,6 @@ export default class NetworkComponent extends NetworkElement {
         else
             return `Component${this.id}`;
     }//name
+
+    readonly connectionPoints: Record<string, InstanceType<typeof ConnectionPoint>> = {};
 }//NetworkComponent
