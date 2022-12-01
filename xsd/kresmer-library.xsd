@@ -3,6 +3,202 @@
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
 
+    <!-- Library itself (the root element) -->
+    <xs:element name="kresmer-library">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element ref="defs" minOccurs="0"/>
+
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="component-class">
+                        <xs:complexType>
+                            <xs:all>
+                                <xs:element name="template">
+                                    <xs:complexType mixed="true">
+                                        <xs:group ref="svg-elements"/>
+                                    </xs:complexType>
+                                </xs:element>
+        
+                                <xs:element ref="props" minOccurs="0"/>
+                                <xs:element ref="computed-props" minOccurs="0"/>
+                                <xs:element ref="defs" minOccurs="0"/>
+                                <xs:element ref="style" minOccurs="0"/>
+                            </xs:all>
+
+                            <xs:attribute name="name" use="required" />
+                            <xs:attribute name="instantiate">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="auto"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
+                        </xs:complexType>
+                    </xs:element>
+
+                    <xs:element name="link-class">
+                        <xs:complexType>
+                            <xs:all>
+                                <xs:element ref="props" minOccurs="0"/>
+                                <xs:element ref="computed-props" minOccurs="0"/>
+                                <xs:element ref="defs" minOccurs="0"/>
+                                <xs:element ref="style" minOccurs="0"/>
+                            </xs:all>
+
+                            <xs:attribute name="name" use="required" />
+                            <xs:attribute name="type" type="linkType"/>
+                        </xs:complexType>
+                    </xs:element>
+                    
+                </xs:choice>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- SVG content (used mostly in templates) -->
+    <xs:group name="svg-elements">
+        <xs:sequence>
+            <xs:choice maxOccurs="unbounded">
+
+                <xs:element name="rect" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="polyline" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="point-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="text" minOccurs="0">
+                    <xs:complexType mixed="true">
+                        <xs:sequence>
+                            <xs:element name="slot" minOccurs="0"/>
+                        </xs:sequence>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="text-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="use" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                        <xs:attribute name="href"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="connection-point" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attribute name="d" type="xs:decimal" />
+                        <xs:attribute ref="v-bind:d" />
+                        <xs:attribute name="dir" type="xs:decimal" />
+                        <xs:attribute ref="v-bind:dir" />
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                        <xs:attribute name="type" type="linkType"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="g">
+                    <xs:complexType>
+                        <xs:group ref="svg-elements"></xs:group>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="filter">
+                    <xs:complexType>
+                        <xs:choice>
+                            <xs:any processContents="lax"/>
+                        </xs:choice>
+                        <xs:attributeGroup ref="general-attrs"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <!-- Embedded components -->
+                <xs:any namespace="Kre" processContents="lax"/>
+            </xs:choice>
+        </xs:sequence>
+    </xs:group>
+
+    <!-- Component props (translated to Vue props) -->
+    <xs:element name="props">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="prop" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="name" use="required" />
+                        <xs:attribute name="type" use="required" />
+                        <xs:attribute name="required" type="xs:boolean" />
+                        <xs:attribute name="default" />
+                        <xs:attribute name="choices" />
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Computed component props (translated to Vue component props) -->
+    <xs:element name="computed-props">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="computed-prop" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="name" use="required" />
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Local and global definitions (translated to SVG defs) -->
+    <xs:element name="defs">
+        <xs:complexType>
+            <xs:group ref="svg-elements"></xs:group>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Local and global styles (translated to CSS) -->
+    <xs:element name="style">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="extends"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Various attributes -->
     <xs:attributeGroup name="general-attrs">
         <xs:attribute name="name" type="xs:string" />
         <xs:attribute ref="v-bind:name"/>
@@ -66,195 +262,11 @@
         <xs:attribute name="v-else"/>
     </xs:attributeGroup>
 
-    <xs:group name="svg-elements">
-        <xs:sequence>
-            <xs:choice maxOccurs="unbounded">
-
-                <xs:element name="rect" minOccurs="0">
-                    <xs:complexType>
-                        <xs:attributeGroup ref="general-attrs"/>
-                        <xs:attributeGroup ref="origin-attrs"/>
-                        <xs:attributeGroup ref="dim-attrs"/>
-                        <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="transform-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
-                        <xs:attribute name="vector-effect"/>
-                    </xs:complexType>
-                </xs:element>
-
-                <xs:element name="polyline" minOccurs="0">
-                    <xs:complexType>
-                        <xs:attributeGroup ref="general-attrs"/>
-                        <xs:attributeGroup ref="point-attrs"/>
-                        <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
-                        <xs:attribute name="vector-effect"/>
-                    </xs:complexType>
-                </xs:element>
-
-                <xs:element name="text" minOccurs="0">
-                    <xs:complexType mixed="true">
-                        <xs:sequence>
-                            <xs:element name="slot" minOccurs="0"/>
-                        </xs:sequence>
-                        <xs:attributeGroup ref="general-attrs"/>
-                        <xs:attributeGroup ref="origin-attrs"/>
-                        <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="text-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
-                    </xs:complexType>
-                </xs:element>
-
-                <xs:element name="use" minOccurs="0">
-                    <xs:complexType>
-                        <xs:attributeGroup ref="general-attrs"/>
-                        <xs:attributeGroup ref="origin-attrs"/>
-                        <xs:attributeGroup ref="dim-attrs"/>
-                        <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
-                        <xs:attribute name="vector-effect"/>
-                        <xs:attribute name="href"/>
-                    </xs:complexType>
-                </xs:element>
-
-                <xs:element name="connection-point" minOccurs="0">
-                    <xs:complexType>
-                        <xs:attributeGroup ref="general-attrs"/>
-                        <xs:attributeGroup ref="origin-attrs"/>
-                        <xs:attribute name="d" type="xs:decimal" />
-                        <xs:attribute ref="v-bind:d" />
-                        <xs:attribute name="dir" type="xs:decimal" />
-                        <xs:attribute ref="v-bind:dir" />
-                        <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
-                        <xs:attribute name="vector-effect"/>
-                    </xs:complexType>
-                </xs:element>
-
-                <xs:element name="g">
-                    <xs:complexType>
-                        <xs:group ref="svg-elements"></xs:group>
-                        <xs:attributeGroup ref="general-attrs"/>
-                        <xs:attributeGroup ref="transform-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
-                    </xs:complexType>
-                </xs:element>
-
-                <xs:element name="filter">
-                    <xs:complexType>
-                        <xs:choice>
-                            <xs:any processContents="lax"/>
-                        </xs:choice>
-                        <xs:attributeGroup ref="general-attrs"/>
-                    </xs:complexType>
-                </xs:element>
-
-                <xs:any namespace="Kre" processContents="lax"/>
-            </xs:choice>
-        </xs:sequence>
-    </xs:group>
-
-    <xs:element name="props">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="prop" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:attribute name="name" use="required" />
-                        <xs:attribute name="type" use="required" />
-                        <xs:attribute name="required" type="xs:boolean" />
-                        <xs:attribute name="default" />
-                        <xs:attribute name="choices" />
-                    </xs:complexType>
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="computed-props">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="computed-prop" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:simpleContent>
-                            <xs:extension base="xs:string">
-                                <xs:attribute name="name" use="required" />
-                            </xs:extension>
-                        </xs:simpleContent>
-                    </xs:complexType>
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="defs">
-        <xs:complexType>
-            <xs:group ref="svg-elements"></xs:group>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="style">
-        <xs:complexType>
-            <xs:simpleContent>
-                <xs:extension base="xs:string">
-                    <xs:attribute name="extends"/>
-                </xs:extension>
-            </xs:simpleContent>
-        </xs:complexType>
-    </xs:element>
-
-    <xs:element name="kresmer-library">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element ref="defs" minOccurs="0"/>
-
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                    <xs:element name="component-class">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element name="template">
-                                    <xs:complexType mixed="true">
-                                        <xs:group ref="svg-elements"></xs:group>
-                                    </xs:complexType>
-                                </xs:element>
-        
-                                <xs:element ref="props" minOccurs="0"/>
-                                <xs:element ref="computed-props" minOccurs="0"/>
-                                <xs:element ref="defs" minOccurs="0"/>
-                                <xs:element ref="style" minOccurs="0"/>
-                            </xs:all>
-                            <xs:attribute name="name" use="required" />
-                            <xs:attribute name="instantiate">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:enumeration value="auto"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:attribute>
-                        </xs:complexType>
-                    </xs:element>
-
-                    <xs:element name="link-class">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element ref="props" minOccurs="0"/>
-                                <xs:element ref="computed-props" minOccurs="0"/>
-                                <xs:element ref="defs" minOccurs="0"/>
-                                <xs:element ref="style" minOccurs="0"/>
-                            </xs:all>
-                            <xs:attribute name="name" use="required" />
-                            <xs:attribute name="type">
-                                <xs:simpleType>
-                                    <xs:restriction base="xs:string">
-                                        <xs:enumeration value="logical"/>
-                                        <xs:enumeration value="copper"/>
-                                        <xs:enumeration value="fiber-optics"/>
-                                    </xs:restriction>
-                                </xs:simpleType>
-                            </xs:attribute>
-                        </xs:complexType>
-                    </xs:element>
-                </xs:choice>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:simpleType name="linkType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="logical"/>
+            <xs:enumeration value="copper"/>
+            <xs:enumeration value="fiber-optics"/>
+        </xs:restriction>
+    </xs:simpleType>
 </xs:schema>
