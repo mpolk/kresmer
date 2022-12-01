@@ -7,7 +7,15 @@
  * on the drawing 
  ***************************************************************************/
 
-
 export abstract class NetworkElement {
     isHighlighted = false;
 }//NetworkElement
+
+/** Network Component computed prop - translate to the common Vue computed property */
+export interface ComputedProp {
+    name: string,
+    body: string,
+}//ComputedProp
+
+/** Network Component computed props - translate to the common Vue computed properties */
+export type ComputedProps = Record<string, ComputedProp>;

@@ -8,7 +8,9 @@
 
 import { ComponentObjectPropsOptions, Prop } from "vue";
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import NetworkComponentClass, {ComputedProps} from "../NetworkComponent/NetworkComponentClass";
+import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
+import LinkClass from "../Link/LinkClass";
+import {ComputedProps} from "../NetworkElement";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 
@@ -280,7 +282,11 @@ export class StyleLibNode {
     }//ctor
 }//StyleLibNode
 
-type ParsedNode = NetworkComponentClass | DefsLibNode | StyleLibNode | ParsingException;
+type ParsedNode = NetworkComponentClass | 
+                  LinkClass |
+                  DefsLibNode | 
+                  StyleLibNode | 
+                  ParsingException;
 
 export class LibraryParsingException extends ParsingException {
     constructor(message: string, options?: {

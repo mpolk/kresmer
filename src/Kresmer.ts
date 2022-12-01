@@ -14,6 +14,7 @@ import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
+import LinkClass from "./Link/LinkClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"
@@ -192,6 +193,12 @@ export default class Kresmer extends KresmerEventFeatures {
     }//registerNetworkComponentClass
 
 
+    public registerLinkClass(linkClass: LinkClass)
+    {
+
+    }//registerLinkClass
+
+
     /**
      * Loads a component class library from the raw XML data
      * @param libData Library data
@@ -205,6 +212,8 @@ export default class Kresmer extends KresmerEventFeatures {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
+            } else if (element instanceof LinkClass) {
+                this.registerLinkClass(element);
             } else if (element instanceof DefsLibNode) {
                 this.defs.push(element.data);
                 this.appKresmer.component(`GlobalDefs${this.defs.length - 1}`, {template: element.data});
