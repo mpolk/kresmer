@@ -223,7 +223,13 @@
                                 <xs:element ref="style" minOccurs="0"/>
                             </xs:all>
                             <xs:attribute name="name" use="required" />
-                            <xs:attribute name="instanciate" type="xs:string"/>
+                            <xs:attribute name="instantiate">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="auto"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
                         </xs:complexType>
                     </xs:element>
 
@@ -236,7 +242,15 @@
                                 <xs:element ref="style" minOccurs="0"/>
                             </xs:all>
                             <xs:attribute name="name" use="required" />
-                            <xs:attribute name="type" type="xs:string" />
+                            <xs:attribute name="type">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="logical"/>
+                                        <xs:enumeration value="copper"/>
+                                        <xs:enumeration value="fiber-optics"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
                         </xs:complexType>
                     </xs:element>
                 </xs:choice>

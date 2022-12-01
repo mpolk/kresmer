@@ -78,7 +78,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
-        const autoInstanciate = node.getAttribute("instanciate") === "auto";
+        const autoInstanciate = node.getAttribute("instantiate") === "auto";
 
         let template: Element | undefined;
         let props: ComponentObjectPropsOptions = {};

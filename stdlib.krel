@@ -108,7 +108,7 @@
     <!--                       Something like real definitions                      -->
 
     <!-- Crossing arrows traditionally used to be drawn on the top of routers and switches -->
-    <component-class name="CrossArrows" instanciate="auto">
+    <component-class name="CrossArrows" instantiate="auto">
         <template>
             {{$global("crossArrows", [
                 [0.1,0.5], [0.2,0.7], [0.2,0.6],
