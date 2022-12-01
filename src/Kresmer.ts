@@ -310,14 +310,19 @@ export default class Kresmer extends KresmerEventFeatures {
     }//getComponentLoavtionById
   
 
-    /**
-     * Returns the root SVG element
-     */
-    public get rootSVG()
+    /** Returns the root SVG element */
+    public get rootSVG(): SVGGraphicsElement
     {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        return this.vueKresmer.svg!;
+        return this.vueKresmer.rootSVG!;
     }//rootSVG
+
+
+    /** Returns the whole drawing boundiing rectangle */
+    public get drawingRect(): DOMRect
+    {
+        return this.rootSVG.getBoundingClientRect();
+    }//drawingRect
 
 
     /**

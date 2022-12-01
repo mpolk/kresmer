@@ -8,27 +8,48 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject } from 'vue';
+    import { inject, onMounted, ref, toRefs } from 'vue';
+    import Kresmer from '../Kresmer';
     import NetworkComponent from '../NetworkComponent/NetworkComponent';
     import ConnectionPoint from './ConnectionPoint';
 
+    export interface ConnectionPointProps {
+        name: string|number,
+        x?: number,
+        y?: number,
+        d?: number,
+        dir?: number,
+    }//ConnectionPointProps
 
-    const props = defineProps({
-        name: {type: [String,Number], required: true},
-        x: {type: Number, default: 0},
-        y: {type: Number, default: 0},
-        d: {type: Number, default: 0},
-        dir: {type: Number, default: 90},
-    });
+    const props = withDefaults(defineProps<ConnectionPointProps>(), {x: 0, y: 0, d: 0, dir: 90});
 
-    const model = new ConnectionPoint();
+    const model = new ConnectionPoint(toRefs(props));
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const component = inject(NetworkComponent.injectionKey)!;
-
     component.connectionPoints[props.name] = model;
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const kresmer = inject(Kresmer.injectionKey)!;
+    const circle = ref<SVGCircleElement>();
+
+    onMounted(updatePos);
+    function updatePos()
+    {
+        const x = props.x + props.d/2;
+        const y = props.y + props.d/2;
+        const drawingRect = kresmer.drawingRect;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const matrix = circle.value!.getCTM()!;
+        const connectionCoords = {
+            x: (matrix.a * x) + (matrix.c * y) + matrix.e - drawingRect.left,
+            y: (matrix.b * x) + (matrix.d * y) + matrix.f - drawingRect.top,
+        };        
+        model.setConnectionCoords(connectionCoords);
+    }//updatePos
 </script>
 
 <template>
-    <circle :cx="x" :cy="y" :r="d/2" class="connection-point"/>
+    <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"/>
 </template>
 
 <style lang="scss">

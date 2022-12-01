@@ -130,7 +130,7 @@
         emit("component-mouse-leave", controller);
     }//onComponentMouseLeave
 
-    defineExpose({svg: rootSVG});
+    defineExpose({rootSVG});
 </script>
 
 <template>

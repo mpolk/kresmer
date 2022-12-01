@@ -7,5 +7,28 @@
  * Component-to-Component attachment) - data model layer
 \****************************************************************************/
 
+import { ToRefs } from "vue";
+import { Position } from "../Transform/Transform";
+
+export interface ConnectionPointProps  {
+    name: string|number,
+    x?: number,
+    y?: number,
+    d?: number,
+    dir?: number,
+}//ConnectionPointProps
+
 export default class ConnectionPoint {
+    props: ToRefs<ConnectionPointProps>;
+    connectionCoords?: Position;
+
+    constructor(props: ToRefs<ConnectionPointProps>)
+    {
+        this.props = props;
+    }//ctor
+
+    setConnectionCoords(coords: Position)
+    {
+        this.connectionCoords = coords;
+    }//setConnectionCoords
 }//ConnectionPoint

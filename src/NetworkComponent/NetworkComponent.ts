@@ -71,5 +71,6 @@ export default class NetworkComponent extends NetworkElement {
             return `Component${this.id}`;
     }//name
 
+    /** A collection of this component connection points indexed by their names */
     readonly connectionPoints: Record<string, InstanceType<typeof ConnectionPoint>> = {};
 }//NetworkComponent
