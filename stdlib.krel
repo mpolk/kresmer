@@ -240,4 +240,11 @@
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
     </component-class>
+
+    <!-- Various link types -->
+    <link-class name="UTP" type="copper">
+        <style>
+            .segment {stroke: black;}
+        </style>
+    </link-class>
 </kresmer-library>

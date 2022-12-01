@@ -66,7 +66,7 @@
         <xs:attribute name="v-else"/>
     </xs:attributeGroup>
 
-    <xs:group name="template-content">
+    <xs:group name="svg-elements">
         <xs:sequence>
             <xs:choice maxOccurs="unbounded">
 
@@ -133,7 +133,7 @@
 
                 <xs:element name="g">
                     <xs:complexType>
-                        <xs:group ref="template-content"></xs:group>
+                        <xs:group ref="svg-elements"></xs:group>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>
@@ -143,87 +143,103 @@
                 <xs:element name="filter">
                     <xs:complexType>
                         <xs:choice>
-                            <xs:any processContents="lax"></xs:any>
+                            <xs:any processContents="lax"/>
                         </xs:choice>
                         <xs:attributeGroup ref="general-attrs"/>
                     </xs:complexType>
                 </xs:element>
 
-                <xs:any namespace="Kre" processContents="skip"/>
+                <xs:any namespace="Kre" processContents="lax"/>
             </xs:choice>
         </xs:sequence>
     </xs:group>
-    
+
+    <xs:element name="props">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="prop" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="name" use="required" />
+                        <xs:attribute name="type" use="required" />
+                        <xs:attribute name="required" type="xs:boolean" />
+                        <xs:attribute name="default" />
+                        <xs:attribute name="choices" />
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="computed-props">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="computed-prop" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="name" use="required" />
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="defs">
+        <xs:complexType>
+            <xs:group ref="svg-elements"></xs:group>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="style">
+        <xs:complexType>
+            <xs:simpleContent>
+                <xs:extension base="xs:string">
+                    <xs:attribute name="extends"/>
+                </xs:extension>
+            </xs:simpleContent>
+        </xs:complexType>
+    </xs:element>
+
     <xs:element name="kresmer-library">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="defs" minOccurs="0">
-                    <xs:complexType>
-                        <xs:group ref="template-content"></xs:group>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element ref="defs" minOccurs="0"/>
 
-                <xs:element name="component-class" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:all>
-                            <xs:element name="template">
-                                <xs:complexType mixed="true">
-                                    <xs:group ref="template-content"></xs:group>
-                                </xs:complexType>
-                            </xs:element>
-    
-                            <xs:element name="props" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="prop" maxOccurs="unbounded">
-                                            <xs:complexType>
-                                                <xs:attribute name="name" use="required" />
-                                                <xs:attribute name="type" use="required" />
-                                                <xs:attribute name="required" type="xs:boolean" />
-                                                <xs:attribute name="default" />
-                                                <xs:attribute name="choices" />
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
-    
-                            <xs:element name="computed-props" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="computed-prop" maxOccurs="unbounded">
-                                            <xs:complexType>
-                                                <xs:simpleContent>
-                                                    <xs:extension base="xs:string">
-                                                        <xs:attribute name="name" use="required" />
-                                                    </xs:extension>
-                                                </xs:simpleContent>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
+                <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element name="component-class">
+                        <xs:complexType>
+                            <xs:all>
+                                <xs:element name="template">
+                                    <xs:complexType mixed="true">
+                                        <xs:group ref="svg-elements"></xs:group>
+                                    </xs:complexType>
+                                </xs:element>
+        
+                                <xs:element ref="props" minOccurs="0"/>
+                                <xs:element ref="computed-props" minOccurs="0"/>
+                                <xs:element ref="defs" minOccurs="0"/>
+                                <xs:element ref="style" minOccurs="0"/>
+                            </xs:all>
+                            <xs:attribute name="name" use="required" />
+                            <xs:attribute name="instanciate" type="xs:string"/>
+                        </xs:complexType>
+                    </xs:element>
 
-                            <xs:element name="defs" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:group ref="template-content"></xs:group>
-                                </xs:complexType>
-                            </xs:element>
-
-                            <xs:element name="style" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:simpleContent>
-                                        <xs:extension base="xs:string">
-                                            <xs:attribute name="extends"/>
-                                        </xs:extension>
-                                    </xs:simpleContent>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:all>
-                        <xs:attribute name="name" use="required" />
-                        <xs:attribute name="instanciate" type="xs:string"/>
-                    </xs:complexType>
-                </xs:element>
+                    <xs:element name="link-class">
+                        <xs:complexType>
+                            <xs:all>
+                                <xs:element ref="props" minOccurs="0"/>
+                                <xs:element ref="computed-props" minOccurs="0"/>
+                                <xs:element ref="defs" minOccurs="0"/>
+                                <xs:element ref="style" minOccurs="0"/>
+                            </xs:all>
+                            <xs:attribute name="name" use="required" />
+                            <xs:attribute name="type" type="xs:string" />
+                        </xs:complexType>
+                    </xs:element>
+                </xs:choice>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
