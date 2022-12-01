@@ -62,7 +62,7 @@ export default class Kresmer extends KresmerEventFeatures {
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
             networkComponents: this.networkComponents,
-            networkComponentClasses: this.registeredClasses,
+            networkComponentClasses: this.registeredComponentClasses,
             drawingWidth: this.drawingWidth,
             drawingHeight: this.drawingHeight,
             viewWidth: this.viewWidth,
@@ -106,7 +106,7 @@ export default class Kresmer extends KresmerEventFeatures {
     /**
      * A list of all Component Classes, registered by Kresmer
      */
-    protected readonly registeredClasses: Record<string, NetworkComponentClass> = {};
+    protected readonly registeredComponentClasses: Record<string, NetworkComponentClass> = {};
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
@@ -183,7 +183,7 @@ export default class Kresmer extends KresmerEventFeatures {
             this.styles.push(this.scopeStyles(componentClass.style, componentClass.name));
         }//if
 
-        this.registeredClasses[componentClass.name] = componentClass;
+        this.registeredComponentClasses[componentClass.name] = componentClass;
 
         // automatically create a single component instance if required
         if (componentClass.autoInstanciate) {
@@ -192,11 +192,35 @@ export default class Kresmer extends KresmerEventFeatures {
         return this;
     }//registerNetworkComponentClass
 
-
+    /**
+     * Register a Link Class in Kresmer
+     * @param linkClass A class to register
+     * @returns Kresmer itself
+     */
     public registerLinkClass(linkClass: LinkClass)
     {
 
+        // Register class's svg-definitions
+        if (linkClass.defs) {
+            this.appKresmer.component(linkClass.defsVueName, 
+            {
+                template: linkClass.defs,
+            })
+        }//if
+
+        // ...and its css-styles
+        if (linkClass.style) {
+            this.styles.push(this.scopeStyles(linkClass.style, linkClass.name));
+        }//if
+
+        this.registeredLinkClasses[linkClass.name] = linkClass;
+        return this;
     }//registerLinkClass
+
+    /**
+     * A list of all Link Classes, registered by Kresmer
+     */
+    protected readonly registeredLinkClasses: Record<string, LinkClass> = {};
 
 
     /**

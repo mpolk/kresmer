@@ -48,6 +48,16 @@ export default class LibraryParser {
                             throw exc;
                     }//catch
                     break;
+                case "link-class":
+                    try {
+                        yield this.parseLinkClassNode(node);
+                    } catch (exc) {
+                        if (exc instanceof ParsingException)
+                            yield exc;
+                        else
+                            throw exc;
+                    }//catch
+                    break;
                 case "defs":
                     yield new DefsLibNode(node);
                     break;
@@ -66,7 +76,7 @@ export default class LibraryParser {
     {
         const className = node.getAttribute("name");
         if (!className) 
-            throw new LibraryParsingException("Component class without name");
+            throw new LibraryParsingException("Component class without the name");
 
         const autoInstanciate = node.getAttribute("instanciate") === "auto";
 
@@ -106,6 +116,38 @@ export default class LibraryParser {
     }//parseComponentClassNode
 
 
+    private parseLinkClassNode(node: Element)
+    {
+        const className = node.getAttribute("name");
+        if (!className) 
+            throw new LibraryParsingException("Link class without the name");
+
+        let props: ComponentObjectPropsOptions = {};
+        let computedProps: ComputedProps = {};
+        let defs: Element | undefined;
+        let style: PostCSSRoot | undefined;
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "props":
+                    props = this.parseProps(child);
+                    break;
+                case "computed-props":
+                    computedProps = this.parseComputedProps(child);
+                    break;
+                case "defs":
+                    defs = child;
+                    break;
+                case "style":
+                    style = this.parseCSS(child.innerHTML, child.getAttribute("extends"));
+                    break;
+            }//switch
+        }//for
+
+        return new LinkClass(className, {props, computedProps, defs, style})
+    }//parseLinkClassNode
+
+
     private parseProps(node: Element)
     {
         const props: ComponentObjectPropsOptions = {};
@@ -120,7 +162,7 @@ export default class LibraryParser {
                         _default = child.getAttribute("default"),
                         choices = child.getAttribute("choices");
                     if (!propName)
-                        throw new LibraryParsingException("Prop without a name",
+                        throw new LibraryParsingException("Prop without the name",
                             {source: `Component class ${node.parentElement?.getAttribute("name")}`});
 
                     switch (type) {
