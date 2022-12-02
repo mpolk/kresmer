@@ -276,6 +276,7 @@ export default class Kresmer extends KresmerEventFeatures {
      * Components currently placed to the drawing
      */
     private readonly networkComponents = reactive<Record<string, NetworkComponentController>>({});
+    private readonly componentsByName: Record<string, number> = {};
 
     /**
      * Adds a new Network Component to the content of the drawing
@@ -296,6 +297,7 @@ export default class Kresmer extends KresmerEventFeatures {
     public addPositionedNetworkComponent(controller: NetworkComponentController)
     {
         this.networkComponents[controller.component.id] = controller;
+        this.componentsByName[controller.component.name] = controller.component.id;
         return this;
     }//addPositionedNetworkComponent
  
@@ -349,6 +351,17 @@ export default class Kresmer extends KresmerEventFeatures {
         return this.networkComponents[id].component;
     }//getComponentById
 
+
+    /**
+     * Searches for the NetworkComponent with the specified name
+     * @param name A name of the component to search for
+     * @returns The component if found or "undefined" otherwise
+     */
+    public getComponentByName(name: string)
+    {
+        return this.networkComponents[this.componentsByName[name]].component;
+    }//getComponentByName
+ 
 
     /**
      * Searches for the NetworkComponentController with the specified ID

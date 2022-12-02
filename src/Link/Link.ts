@@ -12,6 +12,7 @@ import { NetworkElement } from '../NetworkElement';
 import { Position } from "../Transform/Transform";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 import Kresmer from "../Kresmer";
+import KresmerException from "../KresmerException";
 // import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
 
 /**
@@ -41,10 +42,21 @@ export default class Link extends NetworkElement {
             let matches = args.from.match(/^\s*(\d+),\s*(\d+)\s*$/);
             if (matches) {
                 this.startPoint = {x: parseFloat(matches[1]), y: parseFloat(matches[2])};
-            }//if
-            matches = args.from.match(/^(\w+):(\w+)$/);
-            if (matches) {
-                //const component = kresmer.
+            } else {
+                matches = args.from.match(/^(\w+):(\w+)$/);
+                if (matches) {
+                    const component = kresmer.getComponentByName(matches[1]);
+                    if (!component) {
+                        throw new KresmerException(
+                            `Attempt to connect a link "${this.name}" to the non-existing component ${matches[1]}`);
+                    }//if
+                    const connectionPoint = component.connectionPoints[matches[2]];
+                    if (!connectionPoint) {
+                        throw new KresmerException(
+                            `Attempt to connect a link "${this.name}" to the non-existing connection point ${args.from}`);
+                    }//if
+                    this.startPointConnection = connectionPoint;
+                }//if
             }//if
         }//if
     }//ctor
