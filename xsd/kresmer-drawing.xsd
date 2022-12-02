@@ -3,25 +3,12 @@
     <xs:element name="kresmer-drawing">
         <xs:complexType>
             <xs:sequence>
+
                 <xs:element name="component" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:all>
 
-                            <xs:element name="props" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="prop" maxOccurs="unbounded">
-                                            <xs:complexType>
-                                                <xs:simpleContent>
-                                                    <xs:extension base="xs:string">
-                                                        <xs:attribute name="name" use="required" />
-                                                    </xs:extension>
-                                                </xs:simpleContent>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                </xs:complexType>
-                            </xs:element>
+                            <xs:element ref="props" minOccurs="0"/>                        
 
                             <xs:element name="origin">
                                 <xs:complexType>
@@ -57,8 +44,36 @@
                         <xs:anyAttribute processContents="lax"/>
                     </xs:complexType>
                 </xs:element>
+
+                <xs:element name="link">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element ref="props" minOccurs="0"/>                        
+                        </xs:all>
+                        
+                        <xs:attribute name="class" use="required" />
+                        <xs:anyAttribute processContents="lax"/>
+                    </xs:complexType>
+                </xs:element>
             </xs:sequence>
             <xs:attribute name="name" use="required" />
         </xs:complexType>
     </xs:element>
+
+    <xs:element name="props">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="prop" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="name" use="required" />
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
 </xs:schema>

@@ -3,21 +3,20 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Network Link Class - a network link class
+ * Network Component Class - a generic network element class
  * (the word "class" here means a runtime class, not a Typescript one)
  ***************************************************************************/
 
 import { ComponentObjectPropsOptions } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
-import { Template } from "../Kresmer";
-import { ComputedProps } from "../NetworkElement";
-import NetworkElementClass from "../NetworkElementClass";
- 
+import { Template } from "./Kresmer";
+import { ComputedProps } from "./NetworkElement";
+
 /**
- * Network Link Class - a generic network link class
+ * Network Component Class - a generic network element class
  * (the word "class" here means a runtime class, not a Typescript one)
  */
-export default class LinkClass extends NetworkElementClass {
+export default abstract class NetworkElementClass {
     /**
      * @param name Class name
      * @param params Class creation parameters:
@@ -31,26 +30,43 @@ export default class LinkClass extends NetworkElementClass {
         style?: PostCSSRoot,
     })
     {
-        super(name, params);
-        LinkClass.allClasses[name] = this;
+        this.name = name;
+        this.props = params.props;
+        this.computedProps = params.computedProps;
+        this.defs = params.defs;
+        this.style = params.style;
     }//ctor
 
-    private static allClasses: Record<string, LinkClass> = {};
     /**
-     *  Returns the class with the given name (if exists)
-     *  @param name The name of the class to find
+     * Class name
      */
-    public static getClass(name: string) {return this.allClasses[name]}
+    readonly name: string;
+    /**
+     * Props definition of the Vue-component for this class
+     */
+    readonly props?: ComponentObjectPropsOptions;
+    /**
+     * Computed props (aka just computed) definition of the Vue-component for this class
+     */
+    readonly computedProps?: ComputedProps;
+    /**
+     * SVG Defs for this class
+     */
+    readonly defs?: Template;
+    /**
+     * CSS styles defined in this class
+     */
+    readonly style?: PostCSSRoot;
 
     /**
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
      */
-    get vueName() {return "_Kre:link:" + this.name}
+    abstract get vueName(): string;
 
     /**
      * Returns the name of the vue-component for this class defs
      * @returns The vue-component name defs
      */
-     get defsVueName() {return "_Kre:link:" + this.name + ".defs"}
-}//LinkClass
+    abstract get defsVueName(): string;
+}//NetworkElementClass

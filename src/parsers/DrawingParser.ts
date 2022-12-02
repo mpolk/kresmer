@@ -7,9 +7,12 @@
 \**************************************************************************/
 
 import Kresmer from "../Kresmer";
+import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
+import Link from "../Link/Link";
+import LinkClass from "../Link/LinkClass";
 import { Transform } from "../Transform/Transform";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
@@ -31,7 +34,7 @@ export default class DrawingParser {
      * of the parsed drawing elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string): Generator<NetworkComponentController|ParsingException>
+    public *parseXML(rawData: string): Generator<ParsedNode>
     {
         console.debug('Parsing drawing XML...');
         const domParser = new DOMParser();
@@ -55,6 +58,16 @@ export default class DrawingParser {
                             throw exc;
                     }//catch
                     break;
+                case "link":
+                    try {
+                        yield this.parseLinkNode(node);
+                    } catch (exc) {
+                        if (exc instanceof ParsingException)
+                            yield exc;
+                        else
+                            throw exc;
+                    }//catch
+                    break;
                 default:
                     yield new DrawingParsingException(
                         `Invalid top-level node in drawing: "${node.nodeName}"`);
@@ -63,18 +76,18 @@ export default class DrawingParser {
     }//parseXML
 
 
-    private parseComponentNode(node: Element)
+    private parseComponentNode(node: Element): NetworkComponentController
     {
         const className = node.getAttribute("class");
         if (!className) 
-            throw new DrawingParsingException("Component class without class");
+            throw new DrawingParsingException("Component without the class");
         const componentClass = NetworkComponentClass.getClass(className);
         if (!componentClass) 
             throw new DrawingParsingException(`Unknown component class "${componentClass}"`);
 
         const propsFromAttributes: RawProps = {};
         for (const attrName of node.getAttributeNames()) {
-            if (typeof attrName === "string" && attrName !== "class") {
+            if (attrName !== "class") {
                 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 propsFromAttributes[attrName] = node.getAttribute(attrName)!;
             }//if
@@ -133,6 +146,42 @@ export default class DrawingParser {
     }//parseComponentNode
 
 
+    private parseLinkNode(node: Element): Link
+    {
+        const className = node.getAttribute("class");
+        if (!className) 
+            throw new DrawingParsingException("Link without the class");
+        const linkClass = LinkClass.getClass(className);
+        if (!linkClass) 
+            throw new DrawingParsingException(`Unknown link class "${linkClass}"`);
+
+        const propsFromAttributes: RawProps = {};
+        for (const attrName of node.getAttributeNames()) {
+            switch (attrName) {
+                case "class": case "from": case "to":
+                    break;
+                default:
+                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                    propsFromAttributes[attrName] = node.getAttribute(attrName)!;
+            }//switch
+        }//for
+
+        let propsFromChildNodes: RawProps = {};
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "props":
+                    propsFromChildNodes = this.parseProps(child);
+                    break;
+            }//switch
+        }//for
+
+        const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
+        const link = new Link(className, {props});
+        return link;
+    }//parseLinkNode
+
+
     private parseProps(node: Element): RawProps
     {
         const rawProps: RawProps = {};
@@ -158,17 +207,18 @@ export default class DrawingParser {
     }//parseProps
 
 
-    private normalizeProps(rawProps: RawProps, node: Element, componentClass: NetworkComponentClass): Props
+    private normalizeProps(rawProps: RawProps, node: Element, elementClass: NetworkElementClass): Props
     {
         const props: Props = {};
         if (Object.keys(rawProps).length  === 0) {
             return props;
         }//if
 
-        const classProps = componentClass.props;
-        if (!classProps)
+        const classProps = elementClass.props;
+        if (!classProps) {
             throw new DrawingParsingException(
-                `Class ${componentClass} has no props, but the component supplies some`);
+                `Class ${elementClass} has no props, but the instance supplies some`);
+        }//if
 
         for (let propName in rawProps) {
             const value = rawProps[propName];
@@ -183,8 +233,8 @@ export default class DrawingParser {
                     classProp = classProps[propName];
                     if (!classProp) {
                         throw new DrawingParsingException(
-                        `Class "${componentClass.name}" has no prop "${propName}", but the component supplies some`,
-                        {source: `Component ${node.getAttribute("name")}`});
+                            `Class "${elementClass.name}" has no prop "${propName}", but the instance supplies some`,
+                            {source: `Component ${node.getAttribute("name")}`});
                     }//if
                 }//if
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -275,6 +325,8 @@ export default class DrawingParser {
     }//parseTransform
 
 }//DrawingParser
+
+export type ParsedNode = NetworkComponentController|Link|ParsingException;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = Record<string, string|number|object|boolean|any[]>;

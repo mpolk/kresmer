@@ -21,6 +21,7 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
+import Link from "./Link/Link";
 
 
 /**
@@ -274,7 +275,7 @@ export default class Kresmer extends KresmerEventFeatures {
     /**
      * Components currently placed to the drawing
      */
-     private readonly networkComponents = reactive<Record<string, NetworkComponentController>>({});
+    private readonly networkComponents = reactive<Record<string, NetworkComponentController>>({});
 
     /**
      * Adds a new Network Component to the content of the drawing
@@ -297,7 +298,22 @@ export default class Kresmer extends KresmerEventFeatures {
         this.networkComponents[controller.component.id] = controller;
         return this;
     }//addPositionedNetworkComponent
+ 
+    /**
+     * Links currently placed to the drawing
+     */
+     private readonly links = reactive<Record<string, Link>>({});
 
+    /**
+     * Adds a new Link to the content of the drawing
+     * @param link A Link to add
+     */
+     public addLink(link: Link)
+     {
+         this.links[link.id] = link;
+         return this;
+     }//addLink
+ 
 
     /**
      * Loads a component class library from the raw XML data
@@ -312,6 +328,8 @@ export default class Kresmer extends KresmerEventFeatures {
             //console.debug(element);
             if (element instanceof NetworkComponentController) {
                 this.addPositionedNetworkComponent(element);
+            } else if (element instanceof Link) {
+                this.addLink(element);
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
                 wereErrors = true;

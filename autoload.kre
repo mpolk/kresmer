@@ -88,4 +88,6 @@
             <prop name="perspective">left</prop>
         </props>
     </component>
+
+    <link class="UTP" from="core:1" to="dru-core:10"></link>
 </kresmer-drawing>

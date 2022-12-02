@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Network Component Class - a generic network element class
+ * Network Component Class - a generic network component class
  * (the word "class" here means a runtime class, not a Typescript one)
  ***************************************************************************/
 
@@ -11,12 +11,13 @@ import { ComponentObjectPropsOptions } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
 import { ComputedProps } from "../NetworkElement";
+import NetworkElementClass from "../NetworkElementClass";
 
 /**
  * Network Component Class - a generic network element class
  * (the word "class" here means a runtime class, not a Typescript one)
  */
-export default class NetworkComponentClass {
+export default class NetworkComponentClass extends NetworkElementClass {
     /**
      * @param name Class name
      * @param params Class creation parameters:
@@ -32,12 +33,8 @@ export default class NetworkComponentClass {
         autoInstanciate?: boolean,
     })
     {
-        this.name = name;
+        super(name, params);
         this.template = params.template;
-        this.props = params.props;
-        this.computedProps = params.computedProps;
-        this.defs = params.defs;
-        this.style = params.style;
         this.autoInstanciate = Boolean(params.autoInstanciate);
         NetworkComponentClass.allClasses[name] = this;
     }//ctor
@@ -50,29 +47,9 @@ export default class NetworkComponentClass {
     public static getClass(name: string) {return this.allClasses[name]}
 
     /**
-     * Class name
-     */
-    readonly name: string;
-    /**
      * Template for the Vue-component for this class
      */
     public template: Template;
-    /**
-     * Props definition of the Vue-component for this class
-     */
-    readonly props?: ComponentObjectPropsOptions;
-    /**
-     * Computed props (aka just computed) definition of the Vue-component for this class
-     */
-    readonly computedProps?: ComputedProps;
-    /**
-     * SVG Defs for this class
-     */
-    readonly defs?: Template;
-    /**
-     * CSS styles defined in this class
-     */
-    readonly style?: PostCSSRoot;
     /** Specifies that a single class instance should be created after the class is registered */
     readonly autoInstanciate: boolean;
 
