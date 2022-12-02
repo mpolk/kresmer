@@ -10,7 +10,7 @@
 import { ComponentObjectPropsOptions } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import { ComputedProps } from "../NetworkElement";
+import { ComputedProps } from "../NetworkElementClass";
 import NetworkElementClass from "../NetworkElementClass";
 
 /**

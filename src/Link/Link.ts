@@ -29,40 +29,15 @@ export default class Link extends NetworkElement {
             props?: Record<string, unknown>,
         }
     ) {
-        super();
-        
-        if (_class instanceof LinkClass)
-            this._class = _class;
-        else 
-            this._class = LinkClass.getClass(_class);
-        this.props = args?.props;
-        this.id = Link.nextID++;
-        this._name = args?.name;
+        super(_class instanceof LinkClass ? _class : LinkClass.getClass(_class), args);
     }//ctor
 
-    /** Component class */
-    readonly _class: LinkClass;
-    getClass() {return this._class}
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Link>;
-    /** Return the vue-component name corresponding to this link */
-    get vueName() {return this._class.vueName}
-
-    /** Data passed to the vue-component props */
-    readonly props?: Record<string, unknown>;
-
-    /** A unique ID for this component instance */
-    readonly id: number;
-    protected static nextID = 1;
-
-    /** A name for component lookup*/
-    readonly _name?: string;
-    get name()
+    
+    getDefaultName()
     {
-        if (this._name)
-            return this._name;
-        else
-            return `Link${this.id}`;
-    }//name
+        return `Link${this.id}`;
+    }//getDefaultName
 
 }//Link

@@ -10,7 +10,6 @@
 import { ComponentObjectPropsOptions } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "./Kresmer";
-import { ComputedProps } from "./NetworkElement";
 
 /**
  * Network Component Class - a generic network element class
@@ -70,3 +69,12 @@ export default abstract class NetworkElementClass {
      */
     abstract get defsVueName(): string;
 }//NetworkElementClass
+
+/** Network Element computed prop - translate to the common Vue computed property */
+export interface ComputedProp {
+    name: string,
+    body: string,
+}//ComputedProp
+
+/** Network Component computed props - translate to the common Vue computed properties */
+export type ComputedProps = Record<string, ComputedProp>;

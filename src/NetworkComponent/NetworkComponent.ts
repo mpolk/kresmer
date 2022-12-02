@@ -31,45 +31,20 @@ export default class NetworkComponent extends NetworkElement {
             content?: unknown, 
         }
     ) {
-        super();
-        
-        if (_class instanceof NetworkComponentClass)
-            this._class = _class;
-        else 
-            this._class = NetworkComponentClass.getClass(_class);
-        this.props = args?.props;
+        super(_class instanceof NetworkComponentClass ? _class : NetworkComponentClass.getClass(_class), args);
         this.content = args?.content;
-        this.id = NetworkComponent.nextID++;
-        this._name = args?.name;
     }//ctor
 
-    /** Component class */
-    readonly _class: NetworkComponentClass;
-    getClass() {return this._class}
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkComponent>;
-    /** Return the vue-component name corresponding to this network component */
-    get vueName() {return this._class.vueName}
-
-    /** Data passed to the vue-component props */
-    readonly props?: Record<string, unknown>;
 
     /** Data passed to the vue-component content (unnamed slot) */
     readonly content: unknown;
 
-    /** A unique ID for this component instance */
-    readonly id: number;
-    protected static nextID = 1;
-
-    /** A name for component lookup*/
-    readonly _name?: string;
-    get name()
+    getDefaultName()
     {
-        if (this._name)
-            return this._name;
-        else
-            return `Component${this.id}`;
-    }//name
+        return `Component${this.id}`;
+    }//getDefaultName
 
     /** A collection of this component connection points indexed by their names */
     readonly connectionPoints: Record<string, InstanceType<typeof ConnectionPoint>> = {};

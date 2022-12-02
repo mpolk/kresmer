@@ -10,8 +10,7 @@
 import { ComponentObjectPropsOptions } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import { ComputedProps } from "../NetworkElement";
-import NetworkElementClass from "../NetworkElementClass";
+import NetworkElementClass, { ComputedProps } from "../NetworkElementClass";
  
 /**
  * Network Link Class - a generic network link class
