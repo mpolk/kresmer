@@ -72,8 +72,15 @@ export default class DrawingParser {
         if (!componentClass) 
             throw new DrawingParsingException(`Unknown component class "${componentClass}"`);
 
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        let props: Record<string, any> = {};
+        const propsFromAttributes: RawProps = {};
+        for (const attrName of node.getAttributeNames()) {
+            if (typeof attrName === "string" && attrName !== "class") {
+                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+                propsFromAttributes[attrName] = node.getAttribute(attrName)!;
+            }//if
+        }//for
+
+        let propsFromChildNodes: RawProps = {};
         let content: string | undefined;
         let transform = new Transform;
         const origin: {x?: number, y?: number} = {};
@@ -81,7 +88,7 @@ export default class DrawingParser {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "props":
-                    props = this.parseProps(child, componentClass);
+                    propsFromChildNodes = this.parseProps(child);
                     break;
                 case "content":
                     content = child.innerHTML.trim();
@@ -119,65 +126,95 @@ export default class DrawingParser {
             }//for
         }//if
 
+        const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, componentClass);
         const component = new NetworkComponent(className, {props, content});
         return new NetworkComponentController(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode
 
 
-    private parseProps(node: Element, componentClass: NetworkComponentClass)
+    private parseProps(node: Element): RawProps
     {
-        const classProps = componentClass.props;
-        if (!classProps)
-            throw new DrawingParsingException(
-                `Class ${componentClass} has no props, but the component supplies some`);
-                
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const props: Record<string, string|number|object|boolean|any[]> = {};
+        const rawProps: RawProps = {};
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "prop": {
                     const propName = child.getAttribute("name");
-                    if (!propName)
-                        throw new DrawingParsingException("Prop without a name",
-                        {source: `Component ${node.parentElement?.getAttribute("name")}`});
-                    const value = child.innerHTML.trim();
-                    // eslint-disable-next-line @typescript-eslint/ban-types
-                    let propType: Function;
-                    if (propName === "name") {
-                        propType = String;
-                    } else {
-                        const classProp = classProps[propName];
-                        if (!classProp)
-                            throw new DrawingParsingException(
-                                `Class "${componentClass.name}" has no prop "${propName}", but the component supplies some`,
-                                {source: `Component ${node.parentElement?.getAttribute("name")}`});
-                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                        propType = (classProp as any).type;
+                    if (!propName) {
+                        throw new DrawingParsingException("Prop without the name",
+                            {source: `Component ${node.parentElement?.getAttribute("name")}`});
                     }//if
-        
-                    switch (propType) {
-                        case String:
-                            props[propName] = value;
-                            break;
-                        case Number:
-                            props[propName] = parseFloat(value);
-                            break;
-                        case Boolean:
-                            props[propName] = Boolean(value);
-                            break;
-                        case Object: case Array:
-                            props[propName] = JSON.parse(value);
-                            break;
-                        }//switch
+                    const value = child.innerHTML.trim();
+                    rawProps[propName] = value;
                     break;
                 }
+                default: 
+                    throw new DrawingParsingException(`Unexpected content (${child.nodeName}) in <props>`,
+                        {source: `Component ${node.parentElement?.getAttribute("name")}`});
+            }//switch
+        }//for
+        return rawProps;
+    }//parseProps
+
+
+    private normalizeProps(rawProps: RawProps, node: Element, componentClass: NetworkComponentClass): Props
+    {
+        const props: Props = {};
+        if (Object.keys(rawProps).length  === 0) {
+            return props;
+        }//if
+
+        const classProps = componentClass.props;
+        if (!classProps)
+            throw new DrawingParsingException(
+                `Class ${componentClass} has no props, but the component supplies some`);
+
+        for (let propName in rawProps) {
+            const value = rawProps[propName];
+            // eslint-disable-next-line @typescript-eslint/ban-types
+            let propType: Function;
+            if (propName === "name") {
+                propType = String;
+            } else {
+                let classProp = classProps[propName];
+                if (!classProp) {
+                    propName = this.toCamelCase(propName);
+                    classProp = classProps[propName];
+                    if (!classProp) {
+                        throw new DrawingParsingException(
+                        `Class "${componentClass.name}" has no prop "${propName}", but the component supplies some`,
+                        {source: `Component ${node.getAttribute("name")}`});
+                    }//if
+                }//if
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                propType = (classProp as any).type;
+            }//if
+
+            switch (propType) {
+                case String:
+                    props[propName] = value;
+                    break;
+                case Number:
+                    props[propName] = parseFloat(value);
+                    break;
+                case Boolean:
+                    props[propName] = Boolean(value);
+                    break;
+                case Object: case Array:
+                    props[propName] = JSON.parse(value);
+                    break;
             }//switch
         }//for
 
         return props;
-    }//parseProps
+    }//normalizeProps
+
+
+    private toCamelCase(s: string): string
+    {
+        return s.replaceAll(/-([a-z])/g, (_, p1) => p1.toUpperCase());
+    }//toCamelCase
 
 
     private parseTransform(node: Element)
@@ -239,6 +276,9 @@ export default class DrawingParser {
 
 }//DrawingParser
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Props = Record<string, string|number|object|boolean|any[]>;
+type RawProps = Record<string, string>;
 
 export class DrawingParsingException extends ParsingException {
     constructor(message: string, options?: {

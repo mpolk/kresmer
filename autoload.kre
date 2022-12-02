@@ -58,13 +58,8 @@
         </props>
     </component>
 
-    <component class="ExtremeSwitch">
+    <component class="ExtremeSwitch" name="core" height="50" n-ports="26">
         <origin x="30" y="550" />
-        <props>
-            <prop name="name">core</prop>
-            <prop name="height">50</prop>
-            <prop name="nPorts">26</prop>
-        </props>
     </component>
 
     <component class="Catalyst">

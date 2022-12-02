@@ -6,6 +6,7 @@
                 <xs:element name="component" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:all>
+
                             <xs:element name="props" minOccurs="0">
                                 <xs:complexType>
                                     <xs:sequence>
@@ -21,13 +22,16 @@
                                     </xs:sequence>
                                 </xs:complexType>
                             </xs:element>
+
                             <xs:element name="origin">
                                 <xs:complexType>
                                     <xs:attribute name="x" type="xs:integer" use="required" />
                                     <xs:attribute name="y" type="xs:integer" use="required" />
                                 </xs:complexType>
                             </xs:element>
+
                             <xs:element name="content" minOccurs="0" type="xs:string" />
+
                             <xs:element name="transform" minOccurs="0">
                                 <xs:complexType>
                                     <xs:all>
@@ -48,7 +52,9 @@
                                 </xs:complexType>
                             </xs:element>
                         </xs:all>
+                        
                         <xs:attribute name="class" use="required" />
+                        <xs:anyAttribute processContents="lax"/>
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
