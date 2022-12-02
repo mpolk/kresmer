@@ -9,6 +9,9 @@
 import { InjectionKey } from "vue";
 import LinkClass from "./LinkClass";
 import { NetworkElement } from '../NetworkElement';
+import { Position } from "../Transform/Transform";
+import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
+import Kresmer from "../Kresmer";
 // import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
 
 /**
@@ -23,21 +26,39 @@ export default class Link extends NetworkElement {
      *             props: translates to the vue-component props
      */
     public constructor(
+        kresmer: Kresmer,
         _class: LinkClass | string,
         args?: {
             name?: string,
             props?: Record<string, unknown>,
+            from?: string,
+            to?: string,
         }
     ) {
-        super(_class instanceof LinkClass ? _class : LinkClass.getClass(_class), args);
+        super(kresmer, _class instanceof LinkClass ? _class : LinkClass.getClass(_class), args);
+
+        if (args?.from) {
+            let matches = args.from.match(/^\s*(\d+),\s*(\d+)\s*$/);
+            if (matches) {
+                this.startPoint = {x: parseFloat(matches[1]), y: parseFloat(matches[2])};
+            }//if
+            matches = args.from.match(/^(\w+):(\w+)$/);
+            if (matches) {
+                //const component = kresmer.
+            }//if
+        }//if
     }//ctor
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Link>;
-    
+
     getDefaultName()
     {
         return `Link${this.id}`;
     }//getDefaultName
+
+    // Endpoints (either connected or hanging)
+    startPoint?: Position; startPointConnection?: ConnectionPoint;
+    endPoint?: Position;   endPointConnection?: ConnectionPoint;
 
 }//Link

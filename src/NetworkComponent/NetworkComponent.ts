@@ -10,6 +10,7 @@ import { InjectionKey } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import { NetworkElement } from '../NetworkElement';
 import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
+import Kresmer from "../Kresmer";
 
 /**
  * Network Component - a generic network element instance 
@@ -24,6 +25,7 @@ export default class NetworkComponent extends NetworkElement {
      *             content: translates to the vue-component content (unnamed slot)
      */
     public constructor(
+        kresmer: Kresmer,
         _class: NetworkComponentClass | string,
         args?: {
             name?: string,
@@ -31,7 +33,7 @@ export default class NetworkComponent extends NetworkElement {
             content?: unknown, 
         }
     ) {
-        super(_class instanceof NetworkComponentClass ? _class : NetworkComponentClass.getClass(_class), args);
+        super(kresmer, _class instanceof NetworkComponentClass ? _class : NetworkComponentClass.getClass(_class), args);
         this.content = args?.content;
     }//ctor
 

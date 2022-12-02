@@ -188,7 +188,7 @@ export default class Kresmer extends KresmerEventFeatures {
 
         // automatically create a single component instance if required
         if (componentClass.autoInstanciate) {
-            this.placeNetworkComponent(new NetworkComponent(componentClass.name), {x: 0, y: 0});
+            this.placeNetworkComponent(new NetworkComponent(this, componentClass.name), {x: 0, y: 0});
         }//if
         return this;
     }//registerNetworkComponentClass

@@ -140,7 +140,7 @@ export default class DrawingParser {
         }//if
 
         const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, componentClass);
-        const component = new NetworkComponent(className, {props, content});
+        const component = new NetworkComponent(this.kresmer, className, {props, content});
         return new NetworkComponentController(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode
@@ -177,7 +177,7 @@ export default class DrawingParser {
         }//for
 
         const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
-        const link = new Link(className, {props});
+        const link = new Link(this.kresmer, className, {props});
         return link;
     }//parseLinkNode
 

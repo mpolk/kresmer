@@ -36,7 +36,7 @@ async function init() {
                 fontSize: {type: String},
             },
         }))
-        .placeNetworkComponent(new NetworkComponent("GoldenKresmer", {
+        .placeNetworkComponent(new NetworkComponent(kresmer, "GoldenKresmer", {
                 props: {
                     width: 400,
                     height: 50,

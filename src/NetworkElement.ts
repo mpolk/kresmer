@@ -7,6 +7,7 @@
  * on the drawing 
  ***************************************************************************/
 
+import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
 export abstract class NetworkElement {
     /**
@@ -17,6 +18,7 @@ export abstract class NetworkElement {
      *             props: translates to the vue-component props
      */
      public constructor(
+        kresmer: Kresmer,
         _class: NetworkElementClass,
         args?: {
             name?: string,
