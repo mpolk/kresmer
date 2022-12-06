@@ -43,7 +43,7 @@ export default class NetworkComponent extends NetworkElement {
     /** Data passed to the vue-component content (unnamed slot) */
     readonly content: unknown;
 
-    getDefaultName()
+    override getDefaultName()
     {
         return `Component${this.id}`;
     }//getDefaultName

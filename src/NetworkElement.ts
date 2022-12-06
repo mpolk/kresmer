@@ -25,13 +25,15 @@ export abstract class NetworkElement {
             props?: Record<string, unknown>,
         }
     ) {
+        this.kresmer = kresmer;
         this._class = _class;
         this.props = args?.props;
         this.id = NetworkElement.nextID++;
         this._name = args?.name;
     }//ctor
 
-    /** Component class */
+    readonly kresmer: Kresmer;
+    /** Element class */
     readonly _class: NetworkElementClass;
     getClass() {return this._class}
     /** Return the vue-component name corresponding to this link */

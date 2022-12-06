@@ -13,7 +13,6 @@ import { Position } from "../Transform/Transform";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 import Kresmer from "../Kresmer";
 import KresmerException from "../KresmerException";
-// import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
 
 /**
  * Network Component - a generic network element instance 
@@ -39,32 +38,45 @@ export default class Link extends NetworkElement {
         super(kresmer, _class instanceof LinkClass ? _class : LinkClass.getClass(_class), args);
 
         if (args?.from) {
-            let matches = args.from.match(/^\s*(\d+),\s*(\d+)\s*$/);
-            if (matches) {
-                this.startPoint = {x: parseFloat(matches[1]), y: parseFloat(matches[2])};
-            } else {
-                matches = args.from.match(/^(\w+):(\w+)$/);
-                if (matches) {
-                    const component = kresmer.getComponentByName(matches[1]);
-                    if (!component) {
-                        throw new KresmerException(
-                            `Attempt to connect a link "${this.name}" to the non-existing component ${matches[1]}`);
-                    }//if
-                    const connectionPoint = component.connectionPoints[matches[2]];
-                    if (!connectionPoint) {
-                        throw new KresmerException(
-                            `Attempt to connect a link "${this.name}" to the non-existing connection point ${args.from}`);
-                    }//if
-                    this.startPointConnection = connectionPoint;
-                }//if
-            }//if
+            ({freeEnd: this.startPoint, connectedEnd: this.startPointConnection} = this.parseEndpoint(args.from));
+        }//if
+        if (args?.to) {
+            ({freeEnd: this.endPoint, connectedEnd: this.endPointConnection} = this.parseEndpoint(args.to));
         }//if
     }//ctor
+
+
+    private parseEndpoint(strEndpoint: string): {freeEnd?: Position, connectedEnd?: ConnectionPoint}
+    {
+        let matches = strEndpoint.match(/^\s*(\d+),\s*(\d+)\s*$/);
+        if (matches) {
+            return {freeEnd: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}, connectedEnd: undefined};
+        } else {
+            matches = strEndpoint.match(/^(\w+):(\w+)$/);
+            if (matches) {
+                const component = this.kresmer.getComponentByName(matches[1]);
+                if (!component) {
+                    throw new KresmerException(
+                        `Attempt to connect a link "${this.name}" to the non-existing component ${matches[1]}`);
+                }//if
+                const connectionPoint = component.connectionPoints[matches[2]];
+                if (!connectionPoint) {
+                    throw new KresmerException(
+                        `Attempt to connect a link "${this.name}" to the non-existing connection point ${strEndpoint}`);
+                }//if
+                return {freeEnd: undefined, connectedEnd: connectionPoint};
+            } else {
+                throw new KresmerException(
+                    `Invalid link endpoint specification for the link "${this.name}": "${strEndpoint}"`);
+            }//if
+        }//if
+    }//parseEndpoint
+
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Link>;
 
-    getDefaultName()
+    override getDefaultName()
     {
         return `Link${this.id}`;
     }//getDefaultName
