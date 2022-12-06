@@ -14,9 +14,12 @@
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
+    import LinkVue from './Link/Link.vue';
+    import Link from './Link/Link';
+    import LinkClass from './Link/LinkClass';
 
     export default {
-        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters },
+        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, NetworkLink: LinkVue },
     }
 </script>
 
@@ -29,6 +32,14 @@
         },
         networkComponentClasses: {
             type: Object as PropType<Record<string, NetworkComponentClass>>, 
+            required: true
+        },
+        links: {
+            type: Object as PropType<Record<string, Link>>, 
+            required: true
+        },
+        linkClasses: {
+            type: Object as PropType<Record<string, LinkClass>>, 
             required: true
         },
         drawingWidth: {type: [Number, String], default: "100%"},
@@ -153,6 +164,7 @@
             </template>
         </defs>
         <defs v-if="controller.styles.length" v-html="styles"></defs>
+
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :controller="controller"
@@ -175,6 +187,8 @@
                 {{controller.component.content}}
             </component>
         </NetworkComponentHolder>
+
+        <NetworkLink v-for="link in links" :model="link" :key="`link${link.id}`" />
     </svg>
 </template>
 

@@ -244,7 +244,7 @@
     <!-- Various link types -->
     <link-class name="UTP" type="copper">
         <style>
-            .segment {stroke: black;}
+            .segment {stroke: black; stroke-width: 2px;}
         </style>
     </link-class>
 </kresmer-library>

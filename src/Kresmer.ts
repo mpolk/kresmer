@@ -64,6 +64,8 @@ export default class Kresmer extends KresmerEventFeatures {
             controller: this,
             networkComponents: this.networkComponents,
             networkComponentClasses: this.registeredComponentClasses,
+            links: this.links,
+            linkClasses: this.registeredLinkClasses,
             drawingWidth: this.drawingWidth,
             drawingHeight: this.drawingHeight,
             viewWidth: this.viewWidth,
