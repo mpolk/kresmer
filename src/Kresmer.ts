@@ -361,7 +361,10 @@ export default class Kresmer extends KresmerEventFeatures {
      */
     public getComponentByName(name: string)
     {
-        return this.networkComponents[this.componentsByName[name]].component;
+        const id = this.componentsByName[name];
+        if (id === undefined)
+            return undefined;
+        return this.networkComponents[id].component;
     }//getComponentByName
  
 

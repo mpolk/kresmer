@@ -140,7 +140,13 @@ export default class DrawingParser {
         }//if
 
         const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, componentClass);
-        const component = new NetworkComponent(this.kresmer, className, {props, content});
+        let componentName: string|undefined|null = node.getAttribute("name");
+        if ("name" in props) {
+            componentName = props["name"].toString();
+        } else if (!componentName) {
+            componentName = undefined;
+        }//if
+        const component = new NetworkComponent(this.kresmer, className, {name: componentName, props, content});
         return new NetworkComponentController(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode
@@ -177,7 +183,11 @@ export default class DrawingParser {
         }//for
 
         const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
-        const link = new Link(this.kresmer, className, {props});
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const from = node.hasAttribute("from") ? node.getAttribute("from")! : undefined;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const to = node.hasAttribute("to") ? node.getAttribute("to")! : undefined;
+        const link = new Link(this.kresmer, className, {props, from, to});
         return link;
     }//parseLinkNode
 

@@ -44,7 +44,7 @@
             x: (matrix.a * x) + (matrix.c * y) + matrix.e - drawingRect.left,
             y: (matrix.b * x) + (matrix.d * y) + matrix.f - drawingRect.top,
         };        
-        model.setConnectionCoords(connectionCoords);
+        model.setCoords(connectionCoords);
     }//updatePos
 </script>
 

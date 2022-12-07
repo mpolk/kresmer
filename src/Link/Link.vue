@@ -8,32 +8,17 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { computed, PropType } from 'vue';
+    import { computed, onBeforeMount, PropType } from 'vue';
     import Link from './Link';
 
     const props = defineProps({
         model: {type: Object as PropType<Link>, required: true},
     });
 
-    const startPoint = computed(() => {
-        if (props.model.startPoint) {
-            return props.model.startPoint;
-        } else if (props.model.startPointConnection) {
-            return props.model.startPointConnection.connectionCoords;
-        } else {
-            return {x: props.model.kresmer.drawingRect.width/2, y: props.model.kresmer.drawingRect.height/2};
-        }//if
-    });
+    onBeforeMount(props.model.initEndPoints);
 
-    const endPoint = computed(() => {
-        if (props.model.endPoint) {
-            return props.model.endPoint;
-        } else if (props.model.endPointConnection) {
-            return props.model.endPointConnection.connectionCoords;
-        } else {
-            return {x: props.model.kresmer.drawingRect.width/2, y: props.model.kresmer.drawingRect.height/2};
-        }//if
-    });
+    const startPoint = computed(() => props.model.startPoint.coords);
+    const endPoint = computed(() => props.model.endPoint.coords);
 </script>
 
 <template>

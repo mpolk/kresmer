@@ -20,15 +20,16 @@ export interface ConnectionPointProps  {
 
 export default class ConnectionPoint {
     props: ToRefs<ConnectionPointProps>;
-    connectionCoords?: Position;
+    coords: Position;
 
     constructor(props: ToRefs<ConnectionPointProps>)
     {
         this.props = props;
+        this.coords = {x: 0, y: 0};
     }//ctor
 
-    setConnectionCoords(coords: Position)
+    setCoords(coords: Position)
     {
-        this.connectionCoords = coords;
-    }//setConnectionCoords
+        this.coords = coords;
+    }//setCoords
 }//ConnectionPoint
