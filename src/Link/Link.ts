@@ -70,12 +70,8 @@ export default class Link extends NetworkElement {
     }//parseEndpoint
 
     readonly initEndPoints = () => {
-        if (this.from) {
-            this.parseEndpoint(this.from, this.startPoint);
-        }//if
-        if (this.to) {
-            this.parseEndpoint(this.to, this.endPoint);
-        }//if
+        this.from && this.parseEndpoint(this.from, this.startPoint);
+        this.to && this.parseEndpoint(this.to, this.endPoint);
     }//initEndPoints
 
 
@@ -93,12 +89,7 @@ export default class Link extends NetworkElement {
 
 }//Link
 
-/** Link EndPoint (either connected or hanging) */
-
-export interface ILinkEndPoint {
-    pos: Position|null;
-    conn: ConnectionPoint|null; 
-}//ILinkEndPoint
+/** Link EndPoint (either connected or free) */
 
 export class LinkEndPoint {
     private _isPinnedUp = false;
