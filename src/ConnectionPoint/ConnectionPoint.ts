@@ -7,7 +7,7 @@
  * Component-to-Component attachment) - data model layer
 \****************************************************************************/
 
-import { ToRefs } from "vue";
+import { reactive, ToRefs } from "vue";
 import { Position } from "../Transform/Transform";
 
 export interface ConnectionPointProps  {
@@ -19,17 +19,16 @@ export interface ConnectionPointProps  {
 }//ConnectionPointProps
 
 export default class ConnectionPoint {
-    props: ToRefs<ConnectionPointProps>;
-    coords: Position;
+    readonly props: ToRefs<ConnectionPointProps>;
+    readonly coords = reactive<Position>({x: 0, y: 0});
 
     constructor(props: ToRefs<ConnectionPointProps>)
     {
         this.props = props;
-        this.coords = {x: 0, y: 0};
     }//ctor
 
     setCoords(coords: Position)
     {
-        this.coords = coords;
+        ({x: this.coords.x, y: this.coords.y} = coords);
     }//setCoords
 }//ConnectionPoint

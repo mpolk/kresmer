@@ -8,22 +8,21 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { computed, onBeforeMount, PropType } from 'vue';
-    import Link from './Link';
+    import { onBeforeMount, PropType } from 'vue';
+    import Link, { LinkEndPoint } from './Link';
 
     const props = defineProps({
         model: {type: Object as PropType<Link>, required: true},
+        startPoint: {type: Object as PropType<LinkEndPoint>, required: true},
+        endPoint: {type: Object as PropType<LinkEndPoint>, required: true},
     });
 
     onBeforeMount(props.model.initEndPoints);
-
-    const startPoint = computed(() => props.model.startPoint.coords);
-    const endPoint = computed(() => props.model.endPoint.coords);
 </script>
 
 <template>
     <g :class="model._class.name">
-    <polyline :points="`${startPoint?.x},${startPoint?.y} ${endPoint?.x},${endPoint?.y}`"
+    <polyline :points="`${startPoint.coords.x},${startPoint.coords.y} ${endPoint.coords.x},${endPoint.coords.y}`"
           class="segment" />
     </g>
 </template>

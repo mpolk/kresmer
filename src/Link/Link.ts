@@ -43,11 +43,11 @@ export default class Link extends NetworkElement {
     readonly from?: string;
     readonly to?: string;
 
-    private parseEndpoint(strEndpoint: string): LinkEndPoint
+    private parseEndpoint(strEndpoint: string, endPoint: LinkEndPoint)
     {
         let matches = strEndpoint.match(/^\s*(\d+),\s*(\d+)\s*$/);
         if (matches) {
-            return new LinkEndPoint(this, {pos: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}, conn: null});
+            endPoint.pinUp({x: parseFloat(matches[1]), y: parseFloat(matches[2])});
         } else {
             matches = strEndpoint.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_]+)$/);
             if (matches) {
@@ -61,7 +61,7 @@ export default class Link extends NetworkElement {
                     throw new KresmerException(
                         `Attempt to connect a link "${this.name}" to the non-existing connection point ${strEndpoint}`);
                 }//if
-                return new LinkEndPoint(this, {pos: null, conn: connectionPoint});
+                endPoint.connect(connectionPoint);
             } else {
                 throw new KresmerException(
                     `Invalid link endpoint specification for the link "${this.name}": "${strEndpoint}"`);
@@ -71,10 +71,10 @@ export default class Link extends NetworkElement {
 
     readonly initEndPoints = () => {
         if (this.from) {
-            this.startPoint = this.parseEndpoint(this.from);
+            this.parseEndpoint(this.from, this.startPoint);
         }//if
         if (this.to) {
-            this.endPoint = this.parseEndpoint(this.to);
+            this.parseEndpoint(this.to, this.endPoint);
         }//if
     }//initEndPoints
 
@@ -100,24 +100,40 @@ export interface ILinkEndPoint {
     conn: ConnectionPoint|null; 
 }//ILinkEndPoint
 
-export class LinkEndPoint implements ILinkEndPoint { 
-    pos: Position|null;
-    conn: ConnectionPoint|null; 
+export class LinkEndPoint {
+    private _isPinnedUp = false;
+    private _isConnected = false;
+    pos?: Position;
+    conn?: ConnectionPoint; 
     link: Link;
 
-    constructor(link: Link, initData: ILinkEndPoint = {pos: null, conn: null})
+    constructor(link: Link)
     {
         this.link = link;
-        this.pos = initData.pos;
-        this.conn = initData.conn;
     }//ctor
+
+    pinUp(pos: Position)
+    {
+        this.pos = {...pos};
+        this._isPinnedUp = true;
+        this._isConnected = false;
+    }//pinUp
+
+    connect(connectionPoint: ConnectionPoint)
+    {
+        this.conn = connectionPoint;
+        this._isPinnedUp = false;
+        this._isConnected = true;
+    }//connect
 
     get coords(): Position
     {
-        if (this.pos) {
-            return this.pos;
-        } else if (this.conn?.coords?.x && this.conn?.coords?.y) {
-            return this.conn.coords;
+        if (this._isPinnedUp) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return this.pos!;
+        } else if (this._isConnected) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return this.conn!.coords;
         } else {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
         }//if

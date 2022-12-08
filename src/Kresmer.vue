@@ -188,7 +188,9 @@
             </component>
         </NetworkComponentHolder>
 
-        <NetworkLink v-for="link in links" :model="link" :key="`link${link.id}`" />
+        <NetworkLink v-for="link in links" :key="`link${link.id}`" 
+            :model="link" :start-point="link.startPoint" :end-point="link.endPoint"
+            />
     </svg>
 </template>
 
