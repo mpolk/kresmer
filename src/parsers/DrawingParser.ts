@@ -12,7 +12,7 @@ import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
 import Link from "../NetworkLink/NetworkLink";
-import LinkClass from "../NetworkLink/LinkClass";
+import LinkClass from "../NetworkLink/NetworkLinkClass";
 import { Transform } from "../Transform/Transform";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";

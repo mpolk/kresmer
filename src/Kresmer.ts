@@ -14,7 +14,7 @@ import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
-import LinkClass from "./NetworkLink/LinkClass";
+import LinkClass from "./NetworkLink/NetworkLinkClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
 import DrawingParser from "./parsers/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"

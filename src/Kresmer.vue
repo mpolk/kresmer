@@ -14,12 +14,12 @@
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
-    import LinkVue from './NetworkLink/Link.vue';
-    import Link from './NetworkLink/NetworkLink';
-    import LinkClass from './NetworkLink/LinkClass';
+    import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
+    import NetworkLink from './NetworkLink/NetworkLink';
+    import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
 
     export default {
-        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, NetworkLinkVue: LinkVue },
+        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, NetworkLinkVue },
     }
 </script>
 
@@ -35,11 +35,11 @@
             required: true
         },
         links: {
-            type: Object as PropType<Record<string, Link>>, 
+            type: Object as PropType<Record<string, NetworkLink>>, 
             required: true
         },
         linkClasses: {
-            type: Object as PropType<Record<string, LinkClass>>, 
+            type: Object as PropType<Record<string, NetworkLinkClass>>, 
             required: true
         },
         drawingWidth: {type: [Number, String], default: "100%"},

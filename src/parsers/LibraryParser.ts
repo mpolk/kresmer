@@ -9,7 +9,7 @@
 import { ComponentObjectPropsOptions, Prop } from "vue";
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
-import LinkClass from "../NetworkLink/LinkClass";
+import LinkClass from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";

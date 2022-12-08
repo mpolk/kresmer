@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { InjectionKey } from "vue";
-import LinkClass from "./LinkClass";
+import LinkClass from "./NetworkLinkClass";
 import { NetworkElement } from '../NetworkElement';
 import { Position } from "../Transform/Transform";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
