@@ -9,7 +9,7 @@
 
 <script setup lang="ts">
     import { onBeforeMount, PropType } from 'vue';
-    import Link, { LinkEndPoint } from './Link';
+    import Link, { LinkEndPoint } from './NetworkLink';
 
     const props = defineProps({
         model: {type: Object as PropType<Link>, required: true},

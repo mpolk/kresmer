@@ -14,12 +14,12 @@
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
-    import LinkVue from './Link/Link.vue';
-    import Link from './Link/Link';
-    import LinkClass from './Link/LinkClass';
+    import LinkVue from './NetworkLink/Link.vue';
+    import Link from './NetworkLink/NetworkLink';
+    import LinkClass from './NetworkLink/LinkClass';
 
     export default {
-        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, NetworkLink: LinkVue },
+        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, NetworkLinkVue: LinkVue },
     }
 </script>
 
@@ -188,7 +188,7 @@
             </component>
         </NetworkComponentHolder>
 
-        <NetworkLink v-for="link in links" :key="`link${link.id}`" 
+        <NetworkLinkVue v-for="link in links" :key="`link${link.id}`" 
             :model="link" :start-point="link.startPoint" :end-point="link.endPoint"
             />
     </svg>
