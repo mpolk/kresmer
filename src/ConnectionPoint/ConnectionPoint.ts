@@ -10,14 +10,6 @@
 import { reactive, ref } from "vue";
 import { Position } from "../Transform/Transform";
 
-export interface ConnectionPointProps  {
-    name: string|number,
-    x?: number,
-    y?: number,
-    d?: number,
-    dir?: number,
-}//ConnectionPointProps
-
 export default class ConnectionPoint {
     readonly coords = reactive<Position>({x: 0, y: 0});
     readonly posUpdateTrigger = ref(0);
