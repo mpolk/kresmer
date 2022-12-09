@@ -9,7 +9,7 @@
 import { InjectionKey } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import { NetworkElement } from '../NetworkElement';
-import ConnectionPoint from '../ConnectionPoint/ConnectionPoint';
+import ConnectionPointProxy from '../ConnectionPoint/ConnectionPointProxy';
 import Kresmer from "../Kresmer";
 
 /**
@@ -49,5 +49,5 @@ export default class NetworkComponent extends NetworkElement {
     }//getDefaultName
 
     /** A collection of this component connection points indexed by their names */
-    readonly connectionPoints: Record<string, InstanceType<typeof ConnectionPoint>> = {};
+    readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
 }//NetworkComponent

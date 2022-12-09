@@ -4,13 +4,13 @@
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
  * Network Connection Point (the location for a Link-to-Component or 
- * Component-to-Component attachment) - data model layer
+ * Component-to-Component attachment) - a proxy object
 \****************************************************************************/
 
 import { reactive, ref } from "vue";
 import { Position } from "../Transform/Transform";
 
-export default class ConnectionPoint {
+export default class ConnectionPointProxy {
     readonly coords = reactive<Position>({x: 0, y: 0});
     readonly posUpdateTrigger = ref(0);
 
@@ -23,4 +23,4 @@ export default class ConnectionPoint {
     {
         this.posUpdateTrigger.value++;
     }//updatePos
-}//ConnectionPoint
+}//ConnectionPointProxy

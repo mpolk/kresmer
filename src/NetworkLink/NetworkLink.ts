@@ -10,7 +10,7 @@ import { InjectionKey } from "vue";
 import LinkClass from "./NetworkLinkClass";
 import { NetworkElement } from '../NetworkElement';
 import { Position } from "../Transform/Transform";
-import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
+import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 import Kresmer from "../Kresmer";
 import KresmerException from "../KresmerException";
 
@@ -95,7 +95,7 @@ export class LinkEndPoint {
     private _isPinnedUp = false;
     private _isConnected = false;
     pos?: Position;
-    conn?: ConnectionPoint; 
+    conn?: ConnectionPointProxy; 
     link: Link;
 
     constructor(link: Link)
@@ -110,7 +110,7 @@ export class LinkEndPoint {
         this._isConnected = false;
     }//pinUp
 
-    connect(connectionPoint: ConnectionPoint)
+    connect(connectionPoint: ConnectionPointProxy)
     {
         this.conn = connectionPoint;
         this._isPinnedUp = false;

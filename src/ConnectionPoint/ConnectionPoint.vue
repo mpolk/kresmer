@@ -11,7 +11,7 @@
     import { inject, onMounted, ref, watch } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkComponent from '../NetworkComponent/NetworkComponent';
-    import ConnectionPoint from './ConnectionPoint';
+    import ConnectionPointProxy from './ConnectionPointProxy';
 
     const props = defineProps({
         name: {type: [String, Number], required: true},
@@ -21,10 +21,10 @@
         dir: {type: Number, default: 90},
     });
 
-    const model = new ConnectionPoint();
+    const proxy = new ConnectionPointProxy();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const component = inject(NetworkComponent.injectionKey)!;
-    component.connectionPoints[props.name] = model;
+    component.connectionPoints[props.name] = proxy;
 
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const kresmer = inject(Kresmer.injectionKey)!;
@@ -40,10 +40,10 @@
             x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - drawingRect.left,
             y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - drawingRect.top,
         };        
-        model.setCoords(connectionCoords);
+        proxy.setCoords(connectionCoords);
     }//updatePos
 
-    watch(model.posUpdateTrigger, updatePos);
+    watch(proxy.posUpdateTrigger, updatePos);
 </script>
 
 <template>
