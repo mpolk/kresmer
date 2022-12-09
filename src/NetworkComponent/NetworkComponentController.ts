@@ -79,6 +79,7 @@ export default class NetworkComponentController {
         if (this.isDragged) {
             this.component.isHighlighted = false;
             this.isDragged = false;
+            this.updateConnectionPoints();
             this.kresmer.onComponentMoved(this);
             return true;
         }//if
@@ -155,10 +156,17 @@ export default class NetworkComponentController {
         }//if
 
         this.isBeingTransformed = false;
+        this.updateConnectionPoints();
         this.kresmer.onComponentTransformed(this);
         return true;
     }//endTransform
 
+    private updateConnectionPoints()
+    {
+        for (const name in this.component.connectionPoints) {
+            this.component.connectionPoints[name].updatePos();
+        }//for
+    }//updateConnectionPoints
 
     public bringComponentToTop()
     {

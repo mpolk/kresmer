@@ -8,22 +8,20 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject, onMounted, ref, toRefs } from 'vue';
+    import { inject, onMounted, ref, watch } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkComponent from '../NetworkComponent/NetworkComponent';
     import ConnectionPoint from './ConnectionPoint';
 
-    export interface ConnectionPointProps {
-        name: string|number,
-        x?: number,
-        y?: number,
-        d?: number,
-        dir?: number,
-    }//ConnectionPointProps
+    const props = defineProps({
+        name: {type: [String, Number], required: true},
+        x: {type: Number, default: 0}, 
+        y: {type: Number, default: 0}, 
+        d: {type: Number, default: 0}, 
+        dir: {type: Number, default: 90},
+    });
 
-    const props = withDefaults(defineProps<ConnectionPointProps>(), {x: 0, y: 0, d: 0, dir: 90});
-
-    const model = new ConnectionPoint(toRefs(props));
+    const model = new ConnectionPoint();
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const component = inject(NetworkComponent.injectionKey)!;
     component.connectionPoints[props.name] = model;
@@ -44,6 +42,8 @@
         };        
         model.setCoords(connectionCoords);
     }//updatePos
+
+    watch(model.posUpdateTrigger, updatePos);
 </script>
 
 <template>
