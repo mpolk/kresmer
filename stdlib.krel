@@ -242,9 +242,9 @@
     </component-class>
 
     <!-- Various link types -->
-    <link-class name="UTP" type="copper">
+    <link-class name="twisted-pair" type="copper">
         <style>
-            .segment {stroke: black; stroke-width: 2px;}
+            .segment {stroke: darkred; stroke-width: 2px;}
         </style>
     </link-class>
 </kresmer-library>

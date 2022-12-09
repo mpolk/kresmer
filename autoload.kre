@@ -89,5 +89,5 @@
         </props>
     </component>
 
-    <link class="UTP" from="core:1" to="dru-core:8"></link>
+    <link class="twisted-pair" from="core:1" to="dru-core:8"/>
 </kresmer-drawing>

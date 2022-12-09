@@ -43,6 +43,15 @@ export default class Link extends NetworkElement {
     readonly from?: string;
     readonly to?: string;
 
+    // Endpoints (either connected or hanging)
+    startPoint = new LinkEndPoint(this);
+    endPoint = new LinkEndPoint(this);
+
+    readonly initEndPoints = () => {
+        this.from && this.parseEndpoint(this.from, this.startPoint);
+        this.to && this.parseEndpoint(this.to, this.endPoint);
+    }//initEndPoints
+
     private parseEndpoint(strEndpoint: string, endPoint: LinkEndPoint)
     {
         let matches = strEndpoint.match(/^\s*(\d+),\s*(\d+)\s*$/);
@@ -69,11 +78,6 @@ export default class Link extends NetworkElement {
         }//if
     }//parseEndpoint
 
-    readonly initEndPoints = () => {
-        this.from && this.parseEndpoint(this.from, this.startPoint);
-        this.to && this.parseEndpoint(this.to, this.endPoint);
-    }//initEndPoints
-
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Link>;
@@ -82,10 +86,6 @@ export default class Link extends NetworkElement {
     {
         return `Link${this.id}`;
     }//getDefaultName
-
-    // Endpoints (either connected or hanging)
-    startPoint = new LinkEndPoint(this);
-    endPoint = new LinkEndPoint(this);
 
 }//Link
 
