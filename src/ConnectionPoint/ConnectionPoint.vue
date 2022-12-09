@@ -35,14 +35,12 @@
     onMounted(updatePos);
     function updatePos()
     {
-        const x = props.x + props.d/2;
-        const y = props.y + props.d/2;
         const drawingRect = kresmer.drawingRect;
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const matrix = circle.value!.getCTM()!;
         const connectionCoords = {
-            x: (matrix.a * x) + (matrix.c * y) + matrix.e - drawingRect.left,
-            y: (matrix.b * x) + (matrix.d * y) + matrix.f - drawingRect.top,
+            x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - drawingRect.left,
+            y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - drawingRect.top,
         };        
         model.setCoords(connectionCoords);
     }//updatePos
