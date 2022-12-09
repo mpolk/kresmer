@@ -3,58 +3,61 @@
     <xs:element name="kresmer-drawing">
         <xs:complexType>
             <xs:sequence>
+                <xs:choice maxOccurs="unbounded">
 
-                <xs:element name="component" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:all>
+                    <xs:element name="component">
+                        <xs:complexType>
+                            <xs:all>
 
-                            <xs:element ref="props" minOccurs="0"/>                        
+                                <xs:element ref="props" minOccurs="0"/>                        
 
-                            <xs:element name="origin">
-                                <xs:complexType>
-                                    <xs:attribute name="x" type="xs:integer" use="required" />
-                                    <xs:attribute name="y" type="xs:integer" use="required" />
-                                </xs:complexType>
-                            </xs:element>
+                                <xs:element name="origin">
+                                    <xs:complexType>
+                                        <xs:attribute name="x" type="xs:integer" use="required" />
+                                        <xs:attribute name="y" type="xs:integer" use="required" />
+                                    </xs:complexType>
+                                </xs:element>
 
-                            <xs:element name="content" minOccurs="0" type="xs:string" />
+                                <xs:element name="content" minOccurs="0" type="xs:string" />
 
-                            <xs:element name="transform" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:all>
-                                        <xs:element name="rotate" minOccurs="0">
-                                            <xs:complexType>
-                                                <xs:attribute name="angle" type="xs:float" use="required"/>
-                                                <xs:attribute name="x" type="xs:float"/>
-                                                <xs:attribute name="y" type="xs:float"/>
-                                            </xs:complexType>
-                                        </xs:element>
-                                        <xs:element name="scale" minOccurs="0">
-                                            <xs:complexType>
-                                                <xs:attribute name="x" type="xs:float"/>
-                                                <xs:attribute name="y" type="xs:float"/>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:all>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:all>
-                        
-                        <xs:attribute name="class" use="required" />
-                        <xs:anyAttribute processContents="lax"/>
-                    </xs:complexType>
-                </xs:element>
+                                <xs:element name="transform" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:all>
+                                            <xs:element name="rotate" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:attribute name="angle" type="xs:float" use="required"/>
+                                                    <xs:attribute name="x" type="xs:float"/>
+                                                    <xs:attribute name="y" type="xs:float"/>
+                                                </xs:complexType>
+                                            </xs:element>
+                                            <xs:element name="scale" minOccurs="0">
+                                                <xs:complexType>
+                                                    <xs:attribute name="x" type="xs:float"/>
+                                                    <xs:attribute name="y" type="xs:float"/>
+                                                </xs:complexType>
+                                            </xs:element>
+                                        </xs:all>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:all>
+                            
+                            <xs:attribute name="class" use="required" />
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:complexType>
+                    </xs:element>
 
-                <xs:element name="link">
-                    <xs:complexType>
-                        <xs:all>
-                            <xs:element ref="props" minOccurs="0"/>                        
-                        </xs:all>
-                        
-                        <xs:attribute name="class" use="required" />
-                        <xs:anyAttribute processContents="lax"/>
-                    </xs:complexType>
-                </xs:element>
+                    <xs:element name="link">
+                        <xs:complexType>
+                            <xs:all>
+                                <xs:element ref="props" minOccurs="0"/>                        
+                            </xs:all>
+                            
+                            <xs:attribute name="class" use="required" />
+                            <xs:anyAttribute processContents="lax"/>
+                        </xs:complexType>
+                    </xs:element>
+
+                </xs:choice>
             </xs:sequence>
             <xs:attribute name="name" use="required" />
         </xs:complexType>
