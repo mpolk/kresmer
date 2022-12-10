@@ -48,9 +48,17 @@
 
                     <xs:element name="link">
                         <xs:complexType>
-                            <xs:all>
-                                <xs:element ref="props" minOccurs="0"/>                        
-                            </xs:all>
+                            <xs:sequence>
+                                <xs:element ref="props" minOccurs="0" maxOccurs="unbounded"/>
+
+                                <xs:element name="vertex" minOccurs="0" maxOccurs="unbounded">
+                                    <xs:complexType>
+                                        <xs:attribute name="x" type="xs:float"/>
+                                        <xs:attribute name="y" type="xs:float"/>
+                                        <xs:attribute name="connect" type="xs:string"/>
+                                    </xs:complexType>
+                                </xs:element>
+                            </xs:sequence>
                             
                             <xs:attribute name="class" use="required" />
                             <xs:anyAttribute processContents="lax"/>
