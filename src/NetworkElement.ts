@@ -9,7 +9,7 @@
 
 import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
-export abstract class NetworkElement {
+export default abstract class NetworkElement {
     /**
      * 
      * @param _class The class this Link should belong 

@@ -8,7 +8,7 @@
 
 import { InjectionKey } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
-import { NetworkElement } from '../NetworkElement';
+import NetworkElement from '../NetworkElement';
 import ConnectionPointProxy from '../ConnectionPoint/ConnectionPointProxy';
 import Kresmer from "../Kresmer";
 
