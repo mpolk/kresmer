@@ -10,7 +10,7 @@ import { InjectionKey } from "vue";
 import Kresmer from "../Kresmer";
 import KresmerException from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
-import LinkEndPoint from "./LinkEndPoint";
+import LinkVertex from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
 
 /**
@@ -43,15 +43,17 @@ export default class NetworkLink extends NetworkElement {
     readonly to?: string;
 
     // Endpoints (either connected or hanging)
-    startPoint = new LinkEndPoint(this);
-    endPoint = new LinkEndPoint(this);
+    startPoint = new LinkVertex(this);
+    endPoint = new LinkVertex(this);
+
+    vertices: LinkVertex[] = [];
 
     readonly initEndPoints = () => {
         this.from && this.parseEndpoint(this.from, this.startPoint);
         this.to && this.parseEndpoint(this.to, this.endPoint);
     }//initEndPoints
 
-    private parseEndpoint(strEndpoint: string, endPoint: LinkEndPoint)
+    private parseEndpoint(strEndpoint: string, endPoint: LinkVertex)
     {
         let matches = strEndpoint.match(/^\s*(\d+),\s*(\d+)\s*$/);
         if (matches) {

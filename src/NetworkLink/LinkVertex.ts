@@ -3,16 +3,16 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Link EndPoint (either connected or free)
+ * Link Vertex (either connected or free)
  ***************************************************************************/
 
 import { Position } from "../Transform/Transform";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 
-/** Link EndPoint (either connected or free) */
+/** Link Vertex (either connected or free) */
 
-export default class LinkEndPoint {
+export default class LinkVertex {
     private _isPinnedUp = false;
     private _isConnected = false;
     pos?: Position;
@@ -50,4 +50,4 @@ export default class LinkEndPoint {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
         }//if
     }//endPointCoords
-}//LinkEndPoint
+}//LinkVertex

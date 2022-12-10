@@ -10,12 +10,12 @@
 <script setup lang="ts">
     import { onBeforeMount, PropType } from 'vue';
     import NetworkLink from './NetworkLink';
-    import LinkEndPoint from './LinkEndPoint';
+    import LinkVertex from './LinkVertex';
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
-        startPoint: {type: Object as PropType<LinkEndPoint>, required: true},
-        endPoint: {type: Object as PropType<LinkEndPoint>, required: true},
+        startPoint: {type: Object as PropType<LinkVertex>, required: true},
+        endPoint: {type: Object as PropType<LinkVertex>, required: true},
     });
 
     onBeforeMount(props.model.initEndPoints);
