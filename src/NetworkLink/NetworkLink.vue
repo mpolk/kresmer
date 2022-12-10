@@ -8,22 +8,22 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { onBeforeMount, PropType } from 'vue';
+    import { computed, onBeforeMount, PropType } from 'vue';
     import NetworkLink from './NetworkLink';
-    import LinkVertex from './LinkVertex';
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
-        startPoint: {type: Object as PropType<LinkVertex>, required: true},
-        endPoint: {type: Object as PropType<LinkVertex>, required: true},
     });
 
-    onBeforeMount(props.model.initEndPoints);
+    onBeforeMount(props.model.initVertices);
+
+    const vertices = computed(() => props.model.vertices
+        .map((vertex) => `${vertex.coords.x},${vertex.coords.y}`)
+        .join(' '));
 </script>
 
 <template>
     <g :class="model._class.name">
-    <polyline :points="`${startPoint.coords.x},${startPoint.coords.y} ${endPoint.coords.x},${endPoint.coords.y}`"
-          class="segment" />
+        <polyline :points="vertices" class="segment" />
     </g>
 </template>

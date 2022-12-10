@@ -62,10 +62,10 @@
         <origin x="30" y="550" />
     </component>
 
-    <component class="Catalyst">
+    <component class="ExtremeSwitch">
         <origin x="30" y="700" />
         <props>
-            <prop name="name">dru-core</prop>
+            <prop name="name">metro</prop>
             <prop name="height">50</prop>
             <prop name="perspective">none</prop>
         </props>
@@ -92,4 +92,8 @@
     <link class="twisted-pair" from="core:1" to="dru-core:1"/>
     <link class="twisted-pair" from="core:2" to="dru-core:2"/>
     <link class="twisted-pair" from="core:3" to="dru-core:3"/>
+
+    <link class="twisted-pair" from="core:4" to="metro:1"/>
+    <link class="twisted-pair" from="core:5" to="metro:2"/>
+    <link class="twisted-pair" from="core:6" to="metro:3"/>
 </kresmer-drawing>

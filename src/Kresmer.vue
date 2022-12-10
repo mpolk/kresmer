@@ -189,7 +189,7 @@
         </NetworkComponentHolder>
 
         <NetworkLinkVue v-for="link in links" :key="`link${link.id}`" 
-            :model="link" :start-point="link.startPoint" :end-point="link.endPoint"
+            :model="link"
             />
     </svg>
 </template>

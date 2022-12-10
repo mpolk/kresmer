@@ -37,29 +37,28 @@ export default class NetworkLink extends NetworkElement {
         super(kresmer, _class instanceof NetworkLinkClass ? _class : NetworkLinkClass.getClass(_class), args);
         this.from = args?.from;
         this.to = args?.to;
+
+        for (let i = 0; i < 2; i++) {
+            this.vertices.push(new LinkVertex(this));
+        }//for
     }//ctor
 
     readonly from?: string;
     readonly to?: string;
-
-    // Endpoints (either connected or hanging)
-    startPoint = new LinkVertex(this);
-    endPoint = new LinkVertex(this);
-
     vertices: LinkVertex[] = [];
 
-    readonly initEndPoints = () => {
-        this.from && this.parseEndpoint(this.from, this.startPoint);
-        this.to && this.parseEndpoint(this.to, this.endPoint);
-    }//initEndPoints
+    readonly initVertices = () => {
+        this.from && this.initVertex(this.from, this.vertices[0]);
+        this.to && this.initVertex(this.to, this.vertices[this.vertices.length - 1]);
+    }//initVertices
 
-    private parseEndpoint(strEndpoint: string, endPoint: LinkVertex)
+    private initVertex(strData: string, vertex: LinkVertex)
     {
-        let matches = strEndpoint.match(/^\s*(\d+),\s*(\d+)\s*$/);
+        let matches = strData.match(/^\s*(\d+),\s*(\d+)\s*$/);
         if (matches) {
-            endPoint.pinUp({x: parseFloat(matches[1]), y: parseFloat(matches[2])});
+            vertex.pinUp({x: parseFloat(matches[1]), y: parseFloat(matches[2])});
         } else {
-            matches = strEndpoint.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_]+)$/);
+            matches = strData.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_]+)$/);
             if (matches) {
                 const component = this.kresmer.getComponentByName(matches[1]);
                 if (!component) {
@@ -69,15 +68,15 @@ export default class NetworkLink extends NetworkElement {
                 const connectionPoint = component.connectionPoints[matches[2]];
                 if (!connectionPoint) {
                     throw new KresmerException(
-                        `Attempt to connect a link "${this.name}" to the non-existing connection point ${strEndpoint}`);
+                        `Attempt to connect a link "${this.name}" to the non-existing connection point ${strData}`);
                 }//if
-                endPoint.connect(connectionPoint);
+                vertex.connect(connectionPoint);
             } else {
                 throw new KresmerException(
-                    `Invalid link endpoint specification for the link "${this.name}": "${strEndpoint}"`);
+                    `Invalid link vertex specification for the link "${this.name}": "${strData}"`);
             }//if
         }//if
-    }//parseEndpoint
+    }//initVertex
 
 
     /** A symbolic key for the component instance injection */
