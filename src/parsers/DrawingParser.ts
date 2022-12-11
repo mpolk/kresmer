@@ -11,11 +11,12 @@ import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
-import Link from "../NetworkLink/NetworkLink";
-import LinkClass from "../NetworkLink/NetworkLinkClass";
+import NetworkLink from "../NetworkLink/NetworkLink";
+import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
+import { LinkVertexInitParams } from "../NetworkLink/LinkVertex";
 import { Transform } from "../Transform/Transform";
 import ParsingException from "./ParsingException";
-import { KresmerExceptionSeverity } from "../KresmerException";
+import KresmerException, { KresmerExceptionSeverity } from "../KresmerException";
 
 /**
  * Drawing file parser
@@ -152,12 +153,12 @@ export default class DrawingParser {
     }//parseComponentNode
 
 
-    private parseLinkNode(node: Element): Link
+    private parseLinkNode(node: Element): NetworkLink
     {
         const className = node.getAttribute("class");
         if (!className) 
             throw new DrawingParsingException("Link without the class");
-        const linkClass = LinkClass.getClass(className);
+        const linkClass = NetworkLinkClass.getClass(className);
         if (!linkClass) 
             throw new DrawingParsingException(`Unknown link class "${linkClass}"`);
 
@@ -183,13 +184,31 @@ export default class DrawingParser {
         }//for
 
         const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const from = node.hasAttribute("from") ? node.getAttribute("from")! : undefined;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        const to = node.hasAttribute("to") ? node.getAttribute("to")! : undefined;
-        const link = new Link(this.kresmer, className, {props, from, to});
+        const from = this.parseLinkEndpoint(node.getAttribute("from"));
+        const to = this.parseLinkEndpoint(node.getAttribute("to"));
+        const link = new NetworkLink(this.kresmer, className, {props, from, to});
         return link;
     }//parseLinkNode
+
+
+    private parseLinkEndpoint(strData: string|null): LinkVertexInitParams
+    {
+        if (!strData)
+            return {};
+            
+        let matches = strData.match(/^\s*(\d+),\s*(\d+)\s*$/);
+        if (matches) {
+            return {pos: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}};
+        } else {
+            matches = strData.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_]+)$/);
+            if (matches) {
+                return {conn: {component: matches[1], connectionPoint: matches[2]}};
+            } else {
+                throw new KresmerException(
+                    `Invalid link vertex specification: "${strData}"`);
+            }//if
+        }//if
+    }//parseLinkEndpoint
 
 
     private parseProps(node: Element): RawProps
@@ -336,7 +355,7 @@ export default class DrawingParser {
 
 }//DrawingParser
 
-export type ParsedNode = NetworkComponentController|Link|ParsingException;
+export type ParsedNode = NetworkComponentController|NetworkLink|ParsingException;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = Record<string, string|number|object|boolean|any[]>;
