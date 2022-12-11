@@ -8,7 +8,6 @@
 
 import { InjectionKey } from "vue";
 import Kresmer from "../Kresmer";
-import KresmerException from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
@@ -32,10 +31,12 @@ export default class NetworkLink extends NetworkElement {
             props?: Record<string, unknown>,
             from?: LinkVertexInitParams,
             to?: LinkVertexInitParams,
+            vertices?: LinkVertexInitParams[],
         }
     ) {
         super(kresmer, _class instanceof NetworkLinkClass ? _class : NetworkLinkClass.getClass(_class), args);
         this.vertices.push(new LinkVertex(this, args?.from));
+        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(this, initParams)));
         this.vertices.push(new LinkVertex(this, args?.to));
     }//ctor
 
