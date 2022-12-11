@@ -244,7 +244,7 @@
     <!-- Various link types -->
     <link-class name="twisted-pair" type="copper">
         <style>
-            .segment {stroke: darkred; stroke-width: 2px;}
+            .segment {stroke: darkred; stroke-width: 2px; fill: none}
         </style>
     </link-class>
 </kresmer-library>

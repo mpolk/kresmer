@@ -174,11 +174,15 @@ export default class DrawingParser {
         }//for
 
         let propsFromChildNodes: RawProps = {};
+        const vertices: LinkVertexInitParams[] = [];
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "props":
                     propsFromChildNodes = this.parseProps(child);
+                    break;
+                case "vertex":
+                    vertices.push(this.parseLinkVertex(child));
                     break;
             }//switch
         }//for
@@ -186,7 +190,7 @@ export default class DrawingParser {
         const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
         const from = this.parseLinkEndpoint(node.getAttribute("from"));
         const to = this.parseLinkEndpoint(node.getAttribute("to"));
-        const link = new NetworkLink(this.kresmer, className, {props, from, to});
+        const link = new NetworkLink(this.kresmer, className, {props, from, to, vertices});
         return link;
     }//parseLinkNode
 
@@ -195,7 +199,7 @@ export default class DrawingParser {
     {
         if (!strData)
             return {};
-            
+
         let matches = strData.match(/^\s*(\d+),\s*(\d+)\s*$/);
         if (matches) {
             return {pos: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}};
@@ -209,6 +213,36 @@ export default class DrawingParser {
             }//if
         }//if
     }//parseLinkEndpoint
+
+
+    private parseLinkVertex(node: Element): LinkVertexInitParams
+    {
+        const x = node.getAttribute("x");
+        const y = node.getAttribute("y");
+        const connect = node.getAttribute("connect");
+        if ((x === null && y) || (y === null && x)) {
+            throw new ParsingException(`"x" and "y" attributes should present together \
+                                        in Vertex: ${node.parentElement?.toString()}`);
+        }//if
+        if (x !== null && connect) {
+            throw new ParsingException(`Position and connection attributes cannot present together \
+                                        in Vertex: ${node.parentElement?.toString()}`);
+        }//if
+        if (x === null && !connect) {
+            throw new ParsingException(`Either position or connection attributes should present \
+                                        in Vertex: ${node.parentElement?.toString()}`);
+        }//if
+        if (x !== null) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            return {pos: {x: parseFloat(x), y: parseFloat(y!)}};
+        }//if
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const [component, connectionPoint] = connect!.split(':');
+        if (!connectionPoint) {
+            throw new ParsingException(`Invalid connection point specification: "${connect}"`);
+        }//if
+        return {conn: {component, connectionPoint}};
+    }//parseLinkVertex
 
 
     private parseProps(node: Element): RawProps
