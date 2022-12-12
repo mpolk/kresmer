@@ -58,4 +58,5 @@ export default abstract class NetworkElement {
     abstract getDefaultName(): string;
 
     isHighlighted = false;
+    isSelected = false;
 }//NetworkElement

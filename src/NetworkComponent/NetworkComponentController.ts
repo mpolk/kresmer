@@ -20,6 +20,7 @@ export default class NetworkComponentController {
     readonly component: NetworkComponent;
     origin: Position;
     transform: Transform;
+    public isGoingToBeDragged = false;
     public isDragged = false;
     public isBeingTransformed = false;
     public transformMode?: TransformMode;
@@ -48,21 +49,32 @@ export default class NetworkComponentController {
         return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
+    public selectComponent()
+    {
+        this.component.isSelected = true;
+        this.component.isHighlighted = true;
+        this.kresmer.deselectAllComponents(this);
+    }//selectComponent
+
     public startDrag(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.component.isHighlighted = true;
         this.dragStartPos = {...this.origin};
         this.savedMousePos = this.getMousePosition(event);
-        this.isDragged = true;
+        this.isGoingToBeDragged = true;
         this.bringComponentToTop();
         this.kresmer.onComponentMoveStart(this);
     }//startDrag
 
     public drag(event: MouseEvent)
     {
-        if (!this.isDragged)
+        if (this.isGoingToBeDragged) {
+            this.isGoingToBeDragged = false;
+            this.isDragged = true;
+        } else if (!this.isDragged) {
             return false;
+        }//if
             
         const mousePos = this.getMousePosition(event);
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -197,6 +209,8 @@ export default class NetworkComponentController {
 
     public resetMode()
     {
+        this.component.isHighlighted = false;
+        this.component.isSelected = false;
         // this.isBeingTransformed = false;
         this.transformMode = undefined;
         //this.kresmer.onComponentExitingTransformMode(this);

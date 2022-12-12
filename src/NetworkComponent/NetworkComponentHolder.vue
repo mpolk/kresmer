@@ -68,8 +68,8 @@
     const emit = defineEmits<{
         (event: "right-click", controller: NetworkComponentController, 
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
-        (event: "mouse-enter", controller?: NetworkComponentController): void,
-        (event: "mouse-leave", controller?: NetworkComponentController): void,
+        (event: "mouse-enter", controller: NetworkComponentController): void,
+        (event: "mouse-leave", controller: NetworkComponentController): void,
     }>();
 
     let transformStartEvent: MouseEvent | undefined;
@@ -81,25 +81,30 @@
         if (event.buttons === 1 && !props.transformMode && props.isEditable) {
             event.preventDefault();
             if (!event.ctrlKey) {
-                props.controller?.startDrag(event);
+                props.controller.startDrag(event);
             } else {
-                props.controller?.enterTransformMode(event);
+                props.controller.enterTransformMode(event);
             }//if
         }//if
     }//onMouseDown
 
     function onMouseUp(event: MouseEvent)
     {
-        props.isEditable &&
-        !props.transformMode &&
-        props.controller?.endDrag(event) && 
-        props.controller?.restoreComponentZPosition();
+        if (props.isEditable && !props.transformMode && props.controller.endDrag(event)) { 
+            props.controller.restoreComponentZPosition();
+            return;
+        }//if
+
+        if (!props.transformMode) {
+            props.controller.selectComponent();
+        }//if
     }//onMouseUp
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1 && !props.transformMode && props.isEditable)
-            props.controller?.drag(event);
+        if (event.buttons & 1 && !props.transformMode && props.isEditable) {
+            props.controller.drag(event);
+        }//if
     }//onMouseMove
 
     function onMouseEnter(event: MouseEvent)
@@ -112,8 +117,8 @@
         emit("mouse-leave", props.controller);
         props.isEditable &&
         !props.transformMode &&
-        props.controller?.endDrag(event) && 
-        props.controller?.restoreComponentZPosition();
+        props.controller.endDrag(event) && 
+        props.controller.restoreComponentZPosition();
     }//onMouseLeave
 
     function onMouseDownInTransformBox(zone: TransformBoxZone, event: MouseEvent)
@@ -128,7 +133,7 @@
         if (transformStartEvent)
             transformStartEvent = undefined;
         else if (props.isEditable)
-            props.controller?.endTransform(event) || props.controller?.endDrag(event);
+            props.controller.endTransform(event) || props.controller.endDrag(event);
     }//onMouseUpInTransformBox
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
@@ -136,7 +141,7 @@
         if (props.isEditable && transformStartEvent) {
             switch(zone) {
                 case "tr-box":
-                    props.controller?.startDrag(transformStartEvent);
+                    props.controller.startDrag(transformStartEvent);
                     break;
                 case "nw-handle":
                 case "n-handle":
@@ -146,11 +151,11 @@
                 case "sw-handle":
                 case "s-handle":
                 case "se-handle":
-                    props.controller?.startScale(transformStartEvent);
+                    props.controller.startScale(transformStartEvent);
                     break;
                 case "rot-handle":
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    props.controller?.startRotate(transformStartEvent);
+                    props.controller.startRotate(transformStartEvent);
                     break;
             }//switch
             transformStartEvent = undefined;
@@ -160,11 +165,11 @@
         if (props.isEditable && event.buttons & 1) {
             switch(zone) {
                 case "tr-box":
-                    if (props.controller?.isBeingTransformed && props.controller.transformMode == "scaling") {
+                    if (props.controller.isBeingTransformed && props.controller.transformMode == "scaling") {
                         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                        props.controller?.scale(event, lastActiveHandle, bBox.value!, center.value!);
+                        props.controller.scale(event, lastActiveHandle, bBox.value!, center.value!);
                     } else {
-                        props.controller?.drag(event);
+                        props.controller.drag(event);
                     }//if
                     break;
                 case "nw-handle":
@@ -177,11 +182,11 @@
                 case "se-handle":
                     lastActiveHandle = zone;
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    props.controller?.scale(event, zone, bBox.value!, center.value!);
+                    props.controller.scale(event, zone, bBox.value!, center.value!);
                     break;
                 case "rot-handle":
                     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-                    props.controller?.rotate(event, center.value!);
+                    props.controller.rotate(event, center.value!);
                     break;
             }//switch
         }//if
@@ -196,12 +201,11 @@
         if (wasJustTransformed)
             wasJustTransformed = false;
         else if (props.isEditable)
-            props.controller?.onTransformBoxClick(event);
+            props.controller.onTransformBoxClick(event);
     }//onTransformBoxClick
 
     function onRightClick(event: MouseEvent, target: "component" | "transform-box") {
-        if (props.controller)
-            emit("right-click", props.controller, target, event);
+        emit("right-click", props.controller, target, event);
     }//onRightClick
 
     defineExpose({center});
@@ -213,6 +217,7 @@
         :class="{
             [controller.component._class.name]: true,
             highlighted: isHighlighted, 
+            selected: isSelected,
             dragged: isDragged, 
             beingTransformed: isBeingTransformed
         }"
@@ -244,12 +249,16 @@
 
 <style lang="scss">
     svg.network-component {
-            &.dragged {
-                outline: thin red solid;
-            }
-            
-            &.beingTransformed .network-component-slot {
-                opacity: 0.5;
-            }
+        &.selected {
+            outline: thin green solid;
+        }
+        
+        &.dragged {
+            outline: thin red solid;
+        }
+        
+        &.beingTransformed .network-component-slot {
+            opacity: 0.5;
+        }
     }
 </style>

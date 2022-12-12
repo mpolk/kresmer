@@ -395,7 +395,7 @@ export default class Kresmer extends KresmerEventFeatures {
 
 
     /**
-     * Resets the mode (transform etc.) for all network modes except the one specified
+     * Resets the mode (transform etc.) for all network component modes except the one specified
      */
     public resetAllComponentMode(except?: NetworkComponentController)
     {
@@ -405,6 +405,18 @@ export default class Kresmer extends KresmerEventFeatures {
                 controller.resetMode();
         }//for
     }//resetAllComponentMode
+
+    /** Deselect all component (probably except the one specified) */
+    public deselectAllComponents(except?: NetworkComponentController)
+    {
+        for (const id in this.networkComponents) {
+            const controller = this.networkComponents[id];
+            if (controller !== except) {
+                controller.component.isSelected = false;
+                controller.component.isHighlighted = false;
+            }//if
+        }//for
+    }//deselectAllComponents
 
 
     /**

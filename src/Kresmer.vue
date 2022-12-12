@@ -171,6 +171,7 @@
                    :is-editable="isEditable"
                    :origin="controller.origin"
                    :transform="controller.transform"
+                   :is-selected="controller.component.isSelected"
                    :is-highlighted="controller.component.isHighlighted"
                    :is-dragged="controller.isDragged"
                    :is-being-transformed="controller.isBeingTransformed"
