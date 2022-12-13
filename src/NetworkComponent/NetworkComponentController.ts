@@ -51,7 +51,7 @@ export default class NetworkComponentController {
 
     public selectComponent()
     {
-        this.kresmer.deselectAllComponents(this);
+        this.kresmer.deselectAllElements(this);
         this.component.isSelected = true;
     }//selectComponent
 

@@ -429,6 +429,23 @@ export default class Kresmer extends KresmerEventFeatures {
         }//for
     }//deselectAllLinks
 
+    /** Deselects all components (probably except the one specified) */
+    public deselectAllElements(except?: NetworkComponentController|NetworkLink)
+    {
+        for (const id in this.networkComponents) {
+            const controller = this.networkComponents[id];
+            if (controller !== except) {
+                controller.component.isSelected = false;
+            }//if
+        }//for
+        for (const id in this.links) {
+            const link = this.links[id];
+            if (link !== except) {
+                link.isSelected = false;
+            }//if
+        }//for
+    }//deselectAllElements
+
 
     /**
      * Applies Client-to-Viewport transfotm matrix to the specified position

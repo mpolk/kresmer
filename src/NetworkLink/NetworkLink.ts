@@ -56,7 +56,7 @@ export default class NetworkLink extends NetworkElement {
 
     public selectLink()
     {
-        this.kresmer.deselectAllLinks(this);
+        this.kresmer.deselectAllElements(this);
         this.isSelected = true;
     }//selectComponent
 
