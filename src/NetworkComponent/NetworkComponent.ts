@@ -50,4 +50,13 @@ export default class NetworkComponent extends NetworkElement {
 
     /** A collection of this component connection points indexed by their names */
     readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
+
+
+    override set isSelected(reallyIs: boolean) {
+        const shouldNotify = reallyIs != this.isSelected;
+        this.isSelected = reallyIs;
+        if (shouldNotify) {
+            this.kresmer.onComponentSelected(this, this.isSelected);
+        }//if
+    }//isSelected
 }//NetworkComponent

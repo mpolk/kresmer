@@ -413,7 +413,6 @@ export default class Kresmer extends KresmerEventFeatures {
             const controller = this.networkComponents[id];
             if (controller !== except) {
                 controller.component.isSelected = false;
-                controller.component.isHighlighted = false;
             }//if
         }//for
     }//deselectAllComponents

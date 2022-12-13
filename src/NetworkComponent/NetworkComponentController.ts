@@ -52,14 +52,12 @@ export default class NetworkComponentController {
     public selectComponent()
     {
         this.component.isSelected = true;
-        this.component.isHighlighted = true;
         this.kresmer.deselectAllComponents(this);
     }//selectComponent
 
     public startDrag(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
-        this.component.isHighlighted = true;
         this.dragStartPos = {...this.origin};
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
@@ -90,7 +88,6 @@ export default class NetworkComponentController {
     public endDrag(event: MouseEvent)
     {
         if (this.isDragged) {
-            this.component.isHighlighted = false;
             this.isDragged = false;
             this.updateConnectionPoints();
             this.kresmer.onComponentMoved(this);
@@ -209,7 +206,6 @@ export default class NetworkComponentController {
 
     public resetMode()
     {
-        this.component.isHighlighted = false;
         this.component.isSelected = false;
         // this.isBeingTransformed = false;
         this.transformMode = undefined;

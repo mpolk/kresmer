@@ -9,13 +9,16 @@
 \**************************************************************************/
 
 import KresmerException from "./KresmerException";
+import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
+import NetworkLink from "./NetworkLink/NetworkLink";
 
 /** A list of Kresmer events along with correponding handler definitions */
 class KresmerEventHooks  {
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
+    "component-selected":               (component: NetworkComponent, isSelected: boolean) => void;
     "component-mouse-enter":            (controller: NetworkComponentController) => void;
     "component-mouse-leave":            (controller: NetworkComponentController) => void;
     "component-move-started":           (controller: NetworkComponentController) => void;
@@ -31,6 +34,7 @@ class KresmerEventHooks  {
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
     "mode-reset":                       () => void;
+    "link-selected":                    (component: NetworkLink, isSelected: boolean) => void;
 }//KresmerEventHooks
 
 /** Event names alone */
@@ -94,12 +98,19 @@ export default class KresmerEventFeatures {
     public onDrawingMouseLeave() {}
 
     /**
+     * Is called when a network component is selected or deselected
+     * @param controller The controller of the component
+     */
+     @overridableHandler("component-selected")
+     public onComponentSelected(component: NetworkComponent, isSelected: boolean) {}
+
+    /**
      * Is called when the mouse cursor enters a network component visible area
      * @param controller The controller of the component
      */
-     @overridableHandler("component-mouse-enter")
-     public onComponentMouseEnter(controller: NetworkComponentController) {}
- 
+    @overridableHandler("component-mouse-enter")
+    public onComponentMouseEnter(controller: NetworkComponentController) {}
+
      /**
       * Is called when the mouse cursor leaves a network component visible area
       * @param controller The controller of the component
@@ -179,7 +190,14 @@ export default class KresmerEventFeatures {
      */
      @overridableHandler("mode-reset")
      public onModeReset() {}
- 
+
+    /**
+     * Is called when a network component is selected or deselected
+     * @param controller The controller of the component
+     */
+    @overridableHandler("link-selected")
+    public onLinkSelected(component: NetworkLink, isSelected: boolean) {}
+
 }//KresmerEventFeatures
 
 
