@@ -245,6 +245,7 @@
     <link-class name="twisted-pair" type="copper">
         <style>
             .segment {stroke: darkred; stroke-width: 2px; fill: none}
+            .segment.highlighted {stroke-width: 3px}
             .segment.selected {stroke-width: 4px}
         </style>
     </link-class>
