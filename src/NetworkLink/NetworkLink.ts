@@ -54,4 +54,17 @@ export default class NetworkLink extends NetworkElement {
         return `Link${this.id}`;
     }//getDefaultName
 
+    public selectLink()
+    {
+        this.kresmer.deselectAllLinks(this);
+        this.isSelected = true;
+    }//selectComponent
+
+    override set isSelected(reallyIs: boolean) {
+        const shouldNotify = reallyIs != this.isSelected;
+        this._isSelected = reallyIs;
+        if (shouldNotify) {
+            this.kresmer.onLinkSelected(this, this.isSelected);
+        }//if
+    }//isSelected
 }//NetworkLink

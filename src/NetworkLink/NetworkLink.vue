@@ -13,6 +13,7 @@
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
+        isSelected: {type: Boolean, default: false},
     });
 
     onBeforeMount(props.model.initVertices);
@@ -20,10 +21,17 @@
     const vertices = computed(() => props.model.vertices
         .map((vertex) => `${vertex.coords.x},${vertex.coords.y}`)
         .join(' '));
+
+    const linkClass = computed(() => {
+        return {
+            [props.model._class.name]: true,
+            selected: props.isSelected,
+        }
+    })
 </script>
 
 <template>
-    <g :class="model._class.name">
+    <g :class="linkClass" @click="model.selectLink()">
         <polyline :points="vertices" class="segment" />
     </g>
 </template>

@@ -22,6 +22,7 @@ import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import Link from "./NetworkLink/NetworkLink";
+import NetworkLink from "./NetworkLink/NetworkLink";
 
 
 /**
@@ -406,7 +407,7 @@ export default class Kresmer extends KresmerEventFeatures {
         }//for
     }//resetAllComponentMode
 
-    /** Deselect all component (probably except the one specified) */
+    /** Deselects all components (probably except the one specified) */
     public deselectAllComponents(except?: NetworkComponentController)
     {
         for (const id in this.networkComponents) {
@@ -416,6 +417,17 @@ export default class Kresmer extends KresmerEventFeatures {
             }//if
         }//for
     }//deselectAllComponents
+
+    /** Deselects all links (probably except the one specified) */
+    public deselectAllLinks(except?: NetworkLink)
+    {
+        for (const id in this.links) {
+            const link = this.links[id];
+            if (link !== except) {
+                link.isSelected = false;
+            }//if
+        }//for
+    }//deselectAllLinks
 
 
     /**

@@ -189,7 +189,7 @@
         </NetworkComponentHolder>
 
         <NetworkLinkVue v-for="link in links" :key="`link${link.id}`" 
-            :model="link"
+            :model="link" :is-selected="link.isSelected"
             />
     </svg>
 </template>

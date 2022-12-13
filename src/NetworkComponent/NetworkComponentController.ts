@@ -51,8 +51,8 @@ export default class NetworkComponentController {
 
     public selectComponent()
     {
-        this.component.isSelected = true;
         this.kresmer.deselectAllComponents(this);
+        this.component.isSelected = true;
     }//selectComponent
 
     public startDrag(event: MouseEvent)
