@@ -51,7 +51,7 @@ export default class NetworkComponent extends NetworkElement {
     /** A collection of this component connection points indexed by their names */
     readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
 
-
+    override get isSelected() {return this._isSelected}
     override set isSelected(reallyIs: boolean) {
         const shouldNotify = reallyIs != this.isSelected;
         this._isSelected = reallyIs;

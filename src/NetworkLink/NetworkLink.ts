@@ -60,6 +60,7 @@ export default class NetworkLink extends NetworkElement {
         this.isSelected = true;
     }//selectComponent
 
+    override get isSelected() {return this._isSelected}
     override set isSelected(reallyIs: boolean) {
         const shouldNotify = reallyIs != this.isSelected;
         this._isSelected = reallyIs;

@@ -27,11 +27,18 @@
             [props.model._class.name]: true,
             selected: props.isSelected,
         }
-    })
+    })//linkClass
+
+    const segmentClass = computed(() => {
+        return {
+            segment: true,
+            selected: props.isSelected,
+        }
+    })//segmentClass
 </script>
 
 <template>
     <g :class="linkClass" @click="model.selectLink()">
-        <polyline :points="vertices" class="segment" />
+        <polyline :points="vertices" :class="segmentClass" />
     </g>
 </template>
