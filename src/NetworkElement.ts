@@ -57,7 +57,7 @@ export default abstract class NetworkElement {
     }//name
     abstract getDefaultName(): string;
 
-    private _isSelected = false;
+    protected _isSelected = false;
     get isSelected() {return this._isSelected}
     set isSelected(reallyIs: boolean) {this._isSelected = reallyIs}
 }//NetworkElement

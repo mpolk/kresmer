@@ -54,7 +54,7 @@ export default class NetworkComponent extends NetworkElement {
 
     override set isSelected(reallyIs: boolean) {
         const shouldNotify = reallyIs != this.isSelected;
-        this.isSelected = reallyIs;
+        this._isSelected = reallyIs;
         if (shouldNotify) {
             this.kresmer.onComponentSelected(this, this.isSelected);
         }//if
