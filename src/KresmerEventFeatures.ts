@@ -8,6 +8,7 @@
  *   Event-related features for incorporating to the main Kresmer class
 \**************************************************************************/
 
+import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import KresmerException from "./KresmerException";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
@@ -40,7 +41,7 @@ class KresmerEventHooks  {
     "link-vertex-being-moved":          (vertex: LinkVertex) => void;
     "link-vertex-moved":                (vertex: LinkVertex) => void;
     "link-vertex-connected":            (vertex: LinkVertex) => void;
-    "link-vertex-disconnected":         (vertex: LinkVertex) => void;
+    "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPointProxy) => void;
 }//KresmerEventHooks
 
 /** Event names alone */
@@ -237,7 +238,7 @@ export default class KresmerEventFeatures {
      * @param controller The vertex been moved
      */
     @overridableHandler("link-vertex-disconnected")
-    public onLinkVertexDisconnected(vertex: LinkVertex) {}
+    public onLinkVertexDisconnected(vertex: LinkVertex, connectionPoint: ConnectionPointProxy) {}
 
 }//KresmerEventFeatures
 

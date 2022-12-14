@@ -47,7 +47,8 @@
 </script>
 
 <template>
-    <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"/>
+    <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"
+        :data-connection-point="`${component.name}:${name}`"/>
 </template>
 
 <style lang="scss">

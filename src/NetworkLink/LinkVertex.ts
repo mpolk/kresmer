@@ -18,6 +18,7 @@ export default class LinkVertex {
     private _isPinnedUp = false;
     get isPinnedUp() {return this._isPinnedUp}
     private _isConnected = false;
+    private wasConnected = false;
     get isConnected() {return this._isConnected}
     pos?: Position;
     conn?: ConnectionPointProxy; 
@@ -84,9 +85,11 @@ export default class LinkVertex {
         }//if
     }//endPointCoords
 
+
     private getMousePosition(event: MouseEvent) {
         return this.link.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
+
 
     public startDrag(event: MouseEvent)
     {
@@ -97,11 +100,15 @@ export default class LinkVertex {
         this.link.kresmer.onLinkVertexMoveStart(this);
     }//startDrag
 
+
     public drag(event: MouseEvent)
     {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
+            this._isPinnedUp = true;
+            this.wasConnected = this._isConnected;
+            this._isConnected = false;
         } else if (!this.isDragged) {
             return false;
         }//if
@@ -117,17 +124,44 @@ export default class LinkVertex {
         return true;
     }//drag
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+
     public endDrag(event: MouseEvent)
     {
-        if (this.isDragged) {
-            this.isDragged = false;
-            this.link.kresmer.onLinkVertexMoved(this);
-            return true;
+        if (!this.isDragged) {
+            return false;
         }//if
 
-        return false;
+        this.isDragged = false;
+        const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
+        for (const element of elementsUnderCursor) {
+            const connectionPointData = element.getAttribute("data-connection-point");
+            if (connectionPointData) {
+                const [componentName, connectionPointName] = connectionPointData.split(':');
+                const component = this.link.kresmer.getComponentByName(componentName);
+                const connectionPoint = component?.connectionPoints[connectionPointName];
+                if (connectionPoint) {
+                    this._isConnected = true;
+                    this._isPinnedUp = false;
+                    if (connectionPoint !== this.conn) {
+                        this.conn = connectionPoint;
+                        this.link.kresmer.onLinkVertexConnected(this);
+                    }//if
+                } else {
+                    console.error('Reference to undefined connection point "%s"', connectionPointData);
+                }//if
+                return true;
+            }//if
+        }//for
+
+        if (this.wasConnected) {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            this.link.kresmer.onLinkVertexDisconnected(this, this.conn!);
+            this.conn = undefined;
+        }//if
+        this.link.kresmer.onLinkVertexMoved(this);
+        return true;
     }//endDrag
+
 }//LinkVertex
 
 
