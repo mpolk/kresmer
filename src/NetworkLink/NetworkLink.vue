@@ -7,18 +7,20 @@
 <*************************************************************************** -->
 
 <script lang="ts">
+    import { computed, ref, onBeforeMount, PropType } from 'vue';
+    import NetworkLink from './NetworkLink';
     import LinkVertexVue from './LinkVertex.vue';
+    
     export default {
         components: {LinkVertexVue}
     }
 </script>
 
 <script setup lang="ts">
-    import { computed, ref, onBeforeMount, PropType } from 'vue';
-    import NetworkLink from './NetworkLink';
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
+        isEditable: {type: Boolean, required: true},
     });
 
     onBeforeMount(props.model.initVertices);
@@ -65,7 +67,7 @@
         <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle"/>
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
-                <link-vertex-vue :model="vertex"/>
+                <link-vertex-vue :model="vertex" :is-editable="isEditable"/>
             </template>
         </template>
     </g>

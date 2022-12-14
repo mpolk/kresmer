@@ -56,6 +56,10 @@
         return Object.values(props.networkComponents).sort((c1, c2) => c1.zIndex - c2.zIndex)
     })
 
+    const linksSorted = computed(() => {
+        return Object.values(props.links).sort((c1, c2) => c1.zIndex - c2.zIndex)
+    })
+
     const scale = ref(1);
 
     function scaled(size: string|number)
@@ -189,8 +193,9 @@
             </component>
         </NetworkComponentHolder>
 
-        <NetworkLinkVue v-for="link in links" :key="`link${link.id}`" 
+        <NetworkLinkVue v-for="link in linksSorted" :key="`link${link.id}`" 
             :model="link"
+            :is-editable="isEditable"
             />
     </svg>
 </template>

@@ -23,6 +23,11 @@ export default class LinkVertex {
     conn?: ConnectionPointProxy; 
     link: NetworkLink;
 
+    public isGoingToBeDragged = false;
+    public isDragged = false;
+    private dragStartPos?: Position;
+    private savedMousePos?: Position;
+
     constructor(link: NetworkLink, initParams?: LinkVertexInitParams) 
     {
         this.link = link;
@@ -78,6 +83,51 @@ export default class LinkVertex {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
         }//if
     }//endPointCoords
+
+    private getMousePosition(event: MouseEvent) {
+        return this.link.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
+    }//getMousePosition
+
+    public startDrag(event: MouseEvent)
+    {
+        this.dragStartPos = {...this.coords};
+        this.savedMousePos = this.getMousePosition(event);
+        this.isGoingToBeDragged = true;
+        this.link.bringToTop();
+        this.link.kresmer.onLinkVertexMoveStart(this);
+    }//startDrag
+
+    public drag(event: MouseEvent)
+    {
+        if (this.isGoingToBeDragged) {
+            this.isGoingToBeDragged = false;
+            this.isDragged = true;
+        } else if (!this.isDragged) {
+            return false;
+        }//if
+            
+        const mousePos = this.getMousePosition(event);
+        this.pos = {
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+            y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
+        }
+        this.link.kresmer.onLinkVertexBeingMoved(this);
+        return true;
+    }//drag
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public endDrag(event: MouseEvent)
+    {
+        if (this.isDragged) {
+            this.isDragged = false;
+            this.link.kresmer.onLinkVertexMoved(this);
+            return true;
+        }//if
+
+        return false;
+    }//endDrag
 }//LinkVertex
 
 

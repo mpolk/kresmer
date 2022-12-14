@@ -11,10 +11,49 @@
     import LinkVertex from './LinkVertex';
 
     const props = defineProps({
-        model: {type: Object as PropType<LinkVertex>, required: true}
+        model: {type: Object as PropType<LinkVertex>, required: true},
+        isEditable: {type: Boolean, required: true},
     })
+
+    function onMouseDown(event: MouseEvent)
+    {
+        if (event.buttons === 1 && props.isEditable) {
+            event.preventDefault();
+            props.model.startDrag(event);
+        }//if
+    }//onMouseDown
+
+    function onMouseUp(event: MouseEvent)
+    {
+        if (props.isEditable && props.model.endDrag(event)) { 
+            props.model.link.restoreZPosition();
+            return;
+        }//if
+
+        // props.model.link.selectLink();
+    }//onMouseUp
+
+    function onMouseMove(event: MouseEvent)
+    {
+        if (event.buttons & 1 && props.isEditable) {
+            props.model.drag(event);
+        }//if
+    }//onMouseMove
+
+    function onMouseLeave(event: MouseEvent)
+    {
+        props.isEditable &&
+        props.model.endDrag(event) && 
+        props.model.link.restoreZPosition();
+    }//onMouseLeave
 </script>
 
 <template>
-    <circle :cx="model.coords.x" :cy="model.coords.y" class="link vertex" style="cursor: move;"/>
+    <circle :cx="model.coords.x" :cy="model.coords.y" class="link vertex" style="cursor: move;"
+        :is-editable="isEditable"
+        @mousedown.stop="onMouseDown($event)"
+        @mouseup.stop="onMouseUp($event)"
+        @mousemove.stop="onMouseMove($event)"
+        @mouseleave.stop="onMouseLeave($event)"
+        />
 </template>

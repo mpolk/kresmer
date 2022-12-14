@@ -193,7 +193,7 @@ export default class NetworkComponentController {
     public restoreComponentZPosition()
     {
         this.zIndex = this.savedZIndex;
-    }//bringComponentToTop
+    }//restoreComponentZPosition
 
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -11,6 +11,7 @@
 import KresmerException from "./KresmerException";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
+import LinkVertex from "./NetworkLink/LinkVertex";
 import NetworkLink from "./NetworkLink/NetworkLink";
 
 /** A list of Kresmer events along with correponding handler definitions */
@@ -34,7 +35,12 @@ class KresmerEventHooks  {
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
     "mode-reset":                       () => void;
-    "link-selected":                    (component: NetworkLink, isSelected: boolean) => void;
+    "link-selected":                    (link: NetworkLink, isSelected: boolean) => void;
+    "link-vertex-move-started":         (vertex: LinkVertex) => void;
+    "link-vertex-being-moved":          (vertex: LinkVertex) => void;
+    "link-vertex-moved":                (vertex: LinkVertex) => void;
+    "link-vertex-connected":            (vertex: LinkVertex) => void;
+    "link-vertex-disconnected":         (vertex: LinkVertex) => void;
 }//KresmerEventHooks
 
 /** Event names alone */
@@ -196,7 +202,42 @@ export default class KresmerEventFeatures {
      * @param controller The controller of the component
      */
     @overridableHandler("link-selected")
-    public onLinkSelected(component: NetworkLink, isSelected: boolean) {}
+    public onLinkSelected(link: NetworkLink, isSelected: boolean) {}
+  
+    /**
+     * Is called when a network link vertex move starts
+     * @param controller The controller of the component starting to move
+     */
+    @overridableHandler("link-vertex-move-started")
+    public onLinkVertexMoveStart(vertex: LinkVertex) {}
+ 
+    /**
+     * Is called when a network link vertex is being moved (dragged)
+     * @param controller The vertex is being moved
+     */
+    @overridableHandler("link-vertex-being-moved")
+    public onLinkVertexBeingMoved(vertex: LinkVertex) {}
+ 
+    /**
+     * Is called when a network link vertex had been moved (dragged)
+     * @param controller The vertex been moved
+     */
+     @overridableHandler("link-vertex-moved")
+     public onLinkVertexMoved(vertex: LinkVertex) {}
+ 
+    /**
+     * Is called when a network link vertex had been connected to some connection point
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("link-vertex-connected")
+    public onLinkVertexConnected(vertex: LinkVertex) {}
+ 
+    /**
+     * Is called when a network link vertex had been disconnected from the connection point
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("link-vertex-disconnected")
+    public onLinkVertexDisconnected(vertex: LinkVertex) {}
 
 }//KresmerEventFeatures
 

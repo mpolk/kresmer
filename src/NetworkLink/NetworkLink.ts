@@ -40,6 +40,8 @@ export default class NetworkLink extends NetworkElement {
         this.vertices.push(new LinkVertex(this, args?.to));
     }//ctor
 
+    public zIndex = -1;
+    private savedZIndex = -1;
     vertices: LinkVertex[] = [];
 
     readonly initVertices = () => {
@@ -70,4 +72,17 @@ export default class NetworkLink extends NetworkElement {
             this.kresmer.onLinkSelected(this, this.isSelected);
         }//if
     }//isSelected
+
+    public bringToTop()
+    {
+        if (this.zIndex < Number.MAX_SAFE_INTEGER) {
+            this.savedZIndex = this.zIndex;
+            this.zIndex = Number.MAX_SAFE_INTEGER;
+        }//if
+    }//bringToTop
+
+    public restoreZPosition()
+    {
+        this.zIndex = this.savedZIndex;
+    }//restoreZPosition
 }//NetworkLink
