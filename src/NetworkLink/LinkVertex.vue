@@ -13,6 +13,7 @@
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
         isEditable: {type: Boolean, required: true},
+        isEndpoint: {type: Boolean, default: false},
     })
 
     function onMouseDown(event: MouseEvent)
@@ -49,7 +50,9 @@
 </script>
 
 <template>
-    <circle :cx="model.coords.x" :cy="model.coords.y" class="link vertex" style="cursor: move;"
+    <circle :cx="model.coords.x" :cy="model.coords.y" 
+        class="link vertex" :class="{connected: model.isConnected}"
+        style="cursor: move;"
         :is-editable="isEditable"
         @mousedown.stop="onMouseDown($event)"
         @mouseup.stop="onMouseUp($event)"
@@ -57,3 +60,14 @@
         @mouseleave.stop="onMouseLeave($event)"
         />
 </template>
+
+<style lang="scss">
+    .connected {
+        opacity: 0.5;
+        filter: invert(100%);
+
+        &:hover {
+            opacity: 0.9;
+        }
+    }
+</style>
