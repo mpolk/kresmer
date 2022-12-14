@@ -104,6 +104,7 @@
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function onMouseDownOnCanvas(_event: MouseEvent)
     {
+        props.controller.deselectAllElements();
         props.controller.resetAllComponentMode();
         props.controller.onModeReset();
     }//onMouseDownOnCanvas
@@ -189,7 +190,7 @@
         </NetworkComponentHolder>
 
         <NetworkLinkVue v-for="link in links" :key="`link${link.id}`" 
-            :model="link" :is-selected="link.isSelected"
+            :model="link"
             />
     </svg>
 </template>

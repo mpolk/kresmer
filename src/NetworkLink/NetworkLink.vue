@@ -1,4 +1,3 @@
-<!-- eslint-disable vue/multi-word-component-names -->
 <!-- **************************************************************************>
  *                            👑 KresMer 👑
  *       "Kreslennya Merezh" - network diagram editor and viewer
@@ -13,7 +12,6 @@
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
-        isSelected: {type: Boolean, default: false},
     });
 
     onBeforeMount(props.model.initVertices);
@@ -27,7 +25,7 @@
     const linkClass = computed(() => {
         return {
             [props.model._class.name]: true,
-            selected: props.isSelected,
+            selected: props.model.isSelected,
             highlighted: isHighlighted.value,
         }
     })//linkClass
@@ -35,7 +33,7 @@
     const segmentClass = computed(() => {
         return {
             segment: true,
-            selected: props.isSelected,
+            selected: props.model.isSelected,
             highlighted: isHighlighted.value,
         }
     })//segmentClass
@@ -49,5 +47,11 @@
         >
         <polyline :points="vertices" style="stroke-width: 8px; stroke: transparent; fill: transparent;" />
         <polyline :points="vertices" :class="segmentClass" />
+        <template v-if="model.isSelected">
+            <template v-for="(vertex, i) in props.model.vertices">
+                <circle v-if="i > 0 && i < props.model.vertices.length - 1" :key="`vertex${i}`"
+                    :cx="vertex.coords.x" :cy="vertex.coords.y" r="4px" class="vertex"/>
+            </template>
+        </template>
     </g>
 </template>
