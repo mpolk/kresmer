@@ -13,6 +13,8 @@ import Kresmer from '../Kresmer';
 import ParsingException from '../parsers/ParsingException';
 import StatusBar from './status-bar.vue';
 import NetworkComponentController from '../NetworkComponent/NetworkComponentController';
+import NetworkComponent from '../NetworkComponent/NetworkComponent';
+import NetworkLink from '../NetworkLink/NetworkLink';
 
 export const kresmer = new Kresmer('#kresmer');
 
@@ -42,6 +44,8 @@ kresmer
                                                                         Hints.onRotation : 
                                                                         Hints.onScaling))
     .on("component-exited-transform-mode", () => hints.pop())
+    .on("component-selected", onComponentSelected)
+    .on("link-selected", onLinkSelected)
     ;
 
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
@@ -96,3 +100,20 @@ function indicateComponentMove(controller: NetworkComponentController)
     hints.setHint(hint);
 }//indicateComponentMove
 
+function onComponentSelected(component: NetworkComponent, isSelected: boolean)
+{
+    if (isSelected) {
+        hints.push(`${component.name}: ${component.getClass().name}`);
+    } else {
+        hints.pop();
+    }//if
+}//onComponentSelected
+
+function onLinkSelected(link: NetworkLink, isSelected: boolean)
+{
+    if (isSelected) {
+        hints.push(`${link.name}: ${link.getClass().name}`);
+    } else {
+        hints.pop();
+    }//if
+}//onLinkSelected
