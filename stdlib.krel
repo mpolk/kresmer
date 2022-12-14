@@ -244,10 +244,11 @@
     <!-- Various link types -->
     <link-class name="twisted-pair" type="copper">
         <style>
-            .segment {stroke: darkred; stroke-width: 2px; fill: none}
-            .segment.highlighted {stroke-width: 3px}
-            .segment.selected {stroke-width: 4px}
-            .vertex {stroke: darkred; stroke-width: 4px; fill: white; r: 10px}
+            .link {stroke: #8c8c8c;}
+            .segment {stroke-width: 2px;}
+            .segment.highlighted {stroke: #525440; stroke-width: 3px}
+            .segment.selected {stroke: #525440; stroke-width: 4px}
+            .vertex {stroke: #525440; stroke-width: 4px; fill: white; r: 6px}
         </style>
     </link-class>
 </kresmer-library>

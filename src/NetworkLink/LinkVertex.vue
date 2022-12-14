@@ -16,5 +16,5 @@
 </script>
 
 <template>
-    <circle :cx="model.coords.x" :cy="model.coords.y" class="vertex"/>
+    <circle :cx="model.coords.x" :cy="model.coords.y" class="link vertex"/>
 </template>

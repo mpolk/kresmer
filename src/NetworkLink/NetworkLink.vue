@@ -32,6 +32,7 @@
     const linkClass = computed(() => {
         return {
             [props.model._class.name]: true,
+            link: true,
             selected: props.model.isSelected,
             highlighted: isHighlighted.value,
         }
@@ -39,6 +40,7 @@
 
     const segmentClass = computed(() => {
         return {
+            link: true,
             segment: true,
             selected: props.model.isSelected,
             highlighted: isHighlighted.value,
@@ -53,7 +55,7 @@
         @mouseleave="isHighlighted = false"
         >
         <polyline :points="vertices" style="stroke-width: 8px; stroke: transparent; fill: none;" />
-        <polyline :points="vertices" :class="segmentClass" />
+        <polyline :points="vertices" :class="segmentClass" style="fill: none;"/>
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices">
                 <link-vertex-vue v-if="i > 0 && i < props.model.vertices.length - 1" :key="`vertex${i}`"
