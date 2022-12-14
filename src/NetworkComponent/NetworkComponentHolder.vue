@@ -115,10 +115,10 @@
     function onMouseLeave(event: MouseEvent)
     {
         emit("mouse-leave", props.controller);
-        props.isEditable &&
-        !props.transformMode &&
-        props.controller.endDrag(event) && 
-        props.controller.restoreComponentZPosition();
+        // props.isEditable &&
+        // !props.transformMode &&
+        // props.controller.endDrag(event) && 
+        // props.controller.restoreComponentZPosition();
     }//onMouseLeave
 
     function onMouseDownInTransformBox(zone: TransformBoxZone, event: MouseEvent)
@@ -194,7 +194,7 @@
 
     function onMouseLeaveFromTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        onMouseUpInTransformBox(zone, event);
+        // onMouseUpInTransformBox(zone, event);
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
