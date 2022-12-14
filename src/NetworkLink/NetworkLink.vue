@@ -46,20 +46,25 @@
             highlighted: isHighlighted.value,
         }
     })//segmentClass
+
+    const segmentStyle = computed(() => {
+        return {
+            cursor: props.model.isSelected ? "default" : "pointer",
+        }
+    })//segmentClass
 </script>
 
 <template>
     <g :class="linkClass" 
-        @click.stop="model.selectLink()"
+        @click="model.selectLink()"
         @mouseenter="isHighlighted = true"
         @mouseleave="isHighlighted = false"
         >
-        <polyline :points="vertices" style="stroke-width: 8px; stroke: transparent; fill: none;" />
-        <polyline :points="vertices" :class="segmentClass" style="fill: none;"/>
+        <polyline :points="vertices" style="stroke-width: 8px; stroke: transparent; fill: none;" :style="segmentStyle" />
+        <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle"/>
         <template v-if="model.isSelected">
-            <template v-for="(vertex, i) in props.model.vertices">
-                <link-vertex-vue v-if="i > 0 && i < props.model.vertices.length - 1" :key="`vertex${i}`"
-                    :model="vertex"/>
+            <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
+                <link-vertex-vue :model="vertex"/>
             </template>
         </template>
     </g>

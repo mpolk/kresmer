@@ -150,7 +150,7 @@
         :style="{marginLeft: x, marginTop: y, marginRight: 0, marginBottom: 0}" 
         :width = "width" :height="height"
         :viewBox="`0 0 ${viewWidth} ${viewHeight}`"
-        @mousedown.prevent="onMouseDownOnCanvas($event)"
+        @mousedown.prevent.self="onMouseDownOnCanvas($event)"
         @mousemove.prevent=""
         @wheel.ctrl.prevent="onMouseWheel($event)"
         @mouseenter="onMouseEnter"
