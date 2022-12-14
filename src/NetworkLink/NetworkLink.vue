@@ -60,7 +60,8 @@
         @mouseenter="isHighlighted = true"
         @mouseleave="isHighlighted = false"
         >
-        <polyline :points="vertices" style="stroke-width: 8px; stroke: transparent; fill: none;" :style="segmentStyle" />
+        <polyline :points="vertices" class="padding" style="stroke: transparent; fill: none;" 
+            :style="segmentStyle" />
         <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle"/>
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
