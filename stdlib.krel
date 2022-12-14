@@ -247,6 +247,7 @@
             .segment {stroke: darkred; stroke-width: 2px; fill: none}
             .segment.highlighted {stroke-width: 3px}
             .segment.selected {stroke-width: 4px}
+            .vertex {stroke: darkred; stroke-width: 4px; fill: white; r: 10px}
         </style>
     </link-class>
 </kresmer-library>

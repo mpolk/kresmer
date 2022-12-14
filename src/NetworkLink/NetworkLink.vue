@@ -3,8 +3,15 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- * Network Component - a generic network element instance 
+ * Network Link - presentation code 
 <*************************************************************************** -->
+
+<script lang="ts">
+    import LinkVertexVue from './LinkVertex.vue';
+    export default {
+        components: {LinkVertexVue}
+    }
+</script>
 
 <script setup lang="ts">
     import { computed, ref, onBeforeMount, PropType } from 'vue';
@@ -41,16 +48,16 @@
 
 <template>
     <g :class="linkClass" 
-        @click="model.selectLink()"
+        @click.stop="model.selectLink()"
         @mouseenter="isHighlighted = true"
         @mouseleave="isHighlighted = false"
         >
-        <polyline :points="vertices" style="stroke-width: 8px; stroke: transparent; fill: transparent;" />
+        <polyline :points="vertices" style="stroke-width: 8px; stroke: transparent; fill: none;" />
         <polyline :points="vertices" :class="segmentClass" />
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices">
-                <circle v-if="i > 0 && i < props.model.vertices.length - 1" :key="`vertex${i}`"
-                    :cx="vertex.coords.x" :cy="vertex.coords.y" r="4px" class="vertex"/>
+                <link-vertex-vue v-if="i > 0 && i < props.model.vertices.length - 1" :key="`vertex${i}`"
+                    :model="vertex"/>
             </template>
         </template>
     </g>
