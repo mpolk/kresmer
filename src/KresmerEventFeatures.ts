@@ -61,7 +61,7 @@ export default class KresmerEventFeatures {
        The first map collects all defined handler placeholders
     */
     static readonly _placeholders: Partial<{[event in KresmerEvent]: string}> = {};
-    // The second one map contains all possible events
+    // The second one contains all possible events
     static readonly _allEvents = new KresmerEventHooks;
 
     /** Sets up the handler for the specified event

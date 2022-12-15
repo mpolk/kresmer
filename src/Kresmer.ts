@@ -72,14 +72,6 @@ export default class Kresmer extends KresmerEventFeatures {
             viewWidth: this.viewWidth,
             viewHeight: this.viewHeight,
             isEditable: this.isEditable,
-
-            onDrawingScale: (newScale: number) => {this.emit("drawing-scale", newScale)},
-            onMouseEnter: () => {this.emit("drawing-mouse-enter")},
-            onMouseLeave: () => {this.emit("drawing-mouse-leave")},
-            onComponentMouseEnter: (controller: NetworkComponentController) => 
-                                    {this.emit("component-mouse-enter", controller)},
-            onComponentMouseLeave: (controller: NetworkComponentController) => 
-                                    {this.emit("component-mouse-leave", controller)},
         });
 
         this.appKresmer

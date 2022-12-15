@@ -93,15 +93,6 @@
         return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
     });
 
-    const emit = defineEmits<{
-        (event: "drawing-scale", newScale: number): void,
-        (event: "component-right-click", controller: NetworkComponentController,
-         target: "component" | "transform-box", nativeEvent: MouseEvent): void,
-        (event: "mouse-enter"): void,
-        (event: "mouse-leave"): void,
-        (event: "component-mouse-enter", controller?: NetworkComponentController): void,
-        (event: "component-mouse-leave", controller?: NetworkComponentController): void,
-    }>();
 
     // Event handlers
 
@@ -116,34 +107,34 @@
     function onMouseWheel(event: WheelEvent)
     {
         scale.value *= Math.pow(1.05, event.deltaY * -0.01);
-        emit("drawing-scale", scale.value);
+        props.controller.emit("drawing-scale", scale.value);
     }//onMouseWheel
 
     function onComponentRightClick(controller: NetworkComponentController, 
                                    target: "component"|"transform-box", 
                                    nativeEvent: MouseEvent)
     {
-        emit("component-right-click", controller, target, nativeEvent);
+        props.controller.emit("component-right-click", controller, target, nativeEvent);
     }//onComponentRightClick
 
     function onMouseEnter()
     {
-        emit("mouse-enter");
+        props.controller.emit("drawing-mouse-enter");
     }//onMouseEnter
 
     function onMouseLeave()
     {
-        emit("mouse-leave");
+        props.controller.emit("drawing-mouse-leave");
     }//onMouseLeave
 
-    function onComponentMouseEnter(controller?: NetworkComponentController)
+    function onComponentMouseEnter(controller: NetworkComponentController)
     {
-        emit("component-mouse-enter", controller);
+        props.controller.emit("component-mouse-enter", controller);
     }//onComponentMouseEnter
 
-    function onComponentMouseLeave(controller?: NetworkComponentController)
+    function onComponentMouseLeave(controller: NetworkComponentController)
     {
-        emit("component-mouse-leave", controller);
+        props.controller.emit("component-mouse-leave", controller);
     }//onComponentMouseLeave
 
     defineExpose({rootSVG});
