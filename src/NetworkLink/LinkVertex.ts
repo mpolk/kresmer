@@ -97,7 +97,7 @@ export default class LinkVertex {
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
         this.link.bringToTop();
-        this.link.kresmer.onLinkVertexMoveStart(this);
+        this.link.kresmer.emit("link-vertex-move-started", this);
     }//startDrag
 
 
@@ -120,7 +120,7 @@ export default class LinkVertex {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
         }
-        this.link.kresmer.onLinkVertexBeingMoved(this);
+        this.link.kresmer.emit("link-vertex-being-moved", this);
         return true;
     }//drag
 
@@ -144,7 +144,7 @@ export default class LinkVertex {
                     this._isPinnedUp = false;
                     if (connectionPoint !== this.conn) {
                         this.conn = connectionPoint;
-                        this.link.kresmer.onLinkVertexConnected(this);
+                        this.link.kresmer.emit("link-vertex-connected", this);
                     }//if
                 } else {
                     console.error('Reference to undefined connection point "%s"', connectionPointData);
@@ -155,17 +155,17 @@ export default class LinkVertex {
 
         if (this.wasConnected) {
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            this.link.kresmer.onLinkVertexDisconnected(this, this.conn!);
+            this.link.kresmer.emit("link-vertex-disconnected", this, this.conn!);
             this.conn = undefined;
         }//if
-        this.link.kresmer.onLinkVertexMoved(this);
+        this.link.kresmer.emit("link-vertex-moved", this);
         return true;
     }//endDrag
 
 
     public onRightClick(event: MouseEvent)
     {
-        this.link.kresmer.onLinkVertexRightClick(this, event);
+        this.link.kresmer.emit("link-vertex-right-click", this, event);
     }//onRightClick
 
 }//LinkVertex

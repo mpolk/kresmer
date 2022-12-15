@@ -60,7 +60,7 @@ export default class KresmerEventFeatures {
        (i.e. empty protected methods) defined.
        The first map collects all defined handler placeholders
     */
-    static readonly _handlerPlaceholdersDefined: Partial<{[event in KresmerEvent]: boolean}> = {};
+    static readonly _placeholders: Partial<{[event in KresmerEvent]: string}> = {};
     // The second one map contains all possible events
     static readonly _allEvents = new KresmerEventHooks;
 
@@ -86,19 +86,21 @@ export default class KresmerEventFeatures {
     }//off
 
 
-    // /**
-    //  * Emits the specified event with the specified parameters
-    //  * @param event Event to emit
-    //  * @param args Arguments to pass to the handler
-    //  */
-    // public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventHooks[Event]>): void;
-    // public emit<Event extends KresmerEvent>(event: Event, ...args: unknown[])
-    // {
-    //     const handler = this.eventHooks[event];
-    //     if (handler) {
-    //         (handler as (...args: unknown[]) => void)(...args);
-    //     }//if
-    // }//emit
+    /**
+     * Emits the specified event with the specified parameters
+     * @param event Event to emit
+     * @param args Arguments to pass to the handler
+     */
+    public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventHooks[Event]>): void;
+    public emit<Event extends KresmerEvent>(event: Event, ...args: unknown[])
+    {
+        const placeholder = KresmerEventFeatures._placeholders[event] as keyof KresmerEventFeatures;
+        if (placeholder) {
+            (this[placeholder] as (...args: unknown[]) => void)(...args);
+        } else {
+            throw new KresmerException(`emit: invalid event id "${event}"`);
+        }//if
+    }//emit
 
 
     /**
@@ -112,55 +114,55 @@ export default class KresmerEventFeatures {
      * Is called when the mouse cursor enters a drawing visible area
      */
     @overridableHandler("drawing-mouse-enter")
-    public onDrawingMouseEnter() {}
+    protected onDrawingMouseEnter() {}
 
     /**
      * Is called when the mouse cursor leaves a drawing visible area
      */
     @overridableHandler("drawing-mouse-leave")
-    public onDrawingMouseLeave() {}
+    protected onDrawingMouseLeave() {}
 
     /**
      * Is called when a network component is selected or deselected
      * @param controller The controller of the component
      */
-     @overridableHandler("component-selected")
-     public onComponentSelected(component: NetworkComponent, isSelected: boolean) {}
+    @overridableHandler("component-selected")
+    protected onComponentSelected(component: NetworkComponent, isSelected: boolean) {}
 
     /**
      * Is called when the mouse cursor enters a network component visible area
      * @param controller The controller of the component
      */
     @overridableHandler("component-mouse-enter")
-    public onComponentMouseEnter(controller: NetworkComponentController) {}
+    protected onComponentMouseEnter(controller: NetworkComponentController) {}
 
      /**
       * Is called when the mouse cursor leaves a network component visible area
       * @param controller The controller of the component
       */
-     @overridableHandler("component-mouse-leave")
-     public onComponentMouseLeave(controller: NetworkComponentController) {}
+    @overridableHandler("component-mouse-leave")
+    protected onComponentMouseLeave(controller: NetworkComponentController) {}
   
     /**
      * Is called when a network component move starts
      * @param controller The controller of the component starting to move
      */
     @overridableHandler("component-move-started")
-    public onComponentMoveStart(controller: NetworkComponentController) {}
+    protected onComponentMoveStart(controller: NetworkComponentController) {}
  
     /**
      * Is called when a network component is being moved (dragged)
      * @param controller The controller of the component is being moved
      */
     @overridableHandler("component-being-moved")
-    public onComponentBeingMoved(controller: NetworkComponentController) {}
+    protected onComponentBeingMoved(controller: NetworkComponentController) {}
  
     /**
      * Is called when a network component had been moved (dragged)
      * @param controller The controller of the component been moved
      */
-     @overridableHandler("component-moved")
-     public onComponentMoved(controller: NetworkComponentController) {}
+    @overridableHandler("component-moved")
+    protected onComponentMoved(controller: NetworkComponentController) {}
  
     /**
      * Is called when a network component has entered transform mode
@@ -168,36 +170,36 @@ export default class KresmerEventFeatures {
      * @param mode Specific mode that was entered, i.e. "scaling"|"rotation"
      */
     @overridableHandler("component-entered-transform-mode")
-    public onComponentEnteringTransformMode(controller: NetworkComponentController, 
-                                                   mode: TransformMode) {}
+    protected onComponentEnteringTransformMode(controller: NetworkComponentController, 
+                                               mode: TransformMode) {}
 
     /**
      * Is called when a network component transform starts
      * @param controller The controller of the component starting to transform
      */
     @overridableHandler("component-transform-started")
-    public onComponentTransformStart(controller: NetworkComponentController) {}
+    protected onComponentTransformStart(controller: NetworkComponentController) {}
   
     /**
      * Is called when a network component is being transformed
      * @param controller The controller of the component is being transformed
      */
     @overridableHandler("component-being-transformed")
-    public onComponentBeingTransformed(controller: NetworkComponentController) {}
+    protected onComponentBeingTransformed(controller: NetworkComponentController) {}
   
     /**
      * Is called when a network component had been transformed
      * @param controller The controller of the component been transformed
      */
-     @overridableHandler("component-transformed")
-     public onComponentTransformed(controller: NetworkComponentController) {}
+    @overridableHandler("component-transformed")
+    protected onComponentTransformed(controller: NetworkComponentController) {}
  
     /**
      * Is called when a network component has exited transform mode
      * @param controller The controller of the component entered mode
      */
     @overridableHandler("component-exited-transform-mode")
-    public onComponentExitingTransformMode(controller: NetworkComponentController) {}
+    protected onComponentExitingTransformMode(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component is right-clicked
@@ -211,57 +213,57 @@ export default class KresmerEventFeatures {
     /**
      * Is called when mode reset was performed for all components
      */
-     @overridableHandler("mode-reset")
-     public onModeReset() {}
+    @overridableHandler("mode-reset")
+    protected onModeReset() {}
 
     /**
      * Is called when a network component is selected or deselected
      * @param controller The controller of the component
      */
     @overridableHandler("link-selected")
-    public onLinkSelected(link: NetworkLink, isSelected: boolean) {}
+    protected onLinkSelected(link: NetworkLink, isSelected: boolean) {}
   
     /**
      * Is called when a network link vertex move starts
      * @param controller The controller of the component starting to move
      */
     @overridableHandler("link-vertex-move-started")
-    public onLinkVertexMoveStart(vertex: LinkVertex) {}
+    protected onLinkVertexMoveStart(vertex: LinkVertex) {}
  
     /**
      * Is called when a network link vertex is being moved (dragged)
      * @param controller The vertex is being moved
      */
     @overridableHandler("link-vertex-being-moved")
-    public onLinkVertexBeingMoved(vertex: LinkVertex) {}
+    protected onLinkVertexBeingMoved(vertex: LinkVertex) {}
  
     /**
      * Is called when a network link vertex had been moved (dragged)
      * @param controller The vertex been moved
      */
-     @overridableHandler("link-vertex-moved")
-     public onLinkVertexMoved(vertex: LinkVertex) {}
+    @overridableHandler("link-vertex-moved")
+    protected onLinkVertexMoved(vertex: LinkVertex) {}
  
     /**
      * Is called when a network link vertex had been connected to some connection point
      * @param controller The vertex been moved
      */
     @overridableHandler("link-vertex-connected")
-    public onLinkVertexConnected(vertex: LinkVertex) {}
+    protected onLinkVertexConnected(vertex: LinkVertex) {}
  
     /**
      * Is called when a network link vertex had been disconnected from the connection point
      * @param controller The vertex been moved
      */
     @overridableHandler("link-vertex-disconnected")
-    public onLinkVertexDisconnected(vertex: LinkVertex, connectionPoint: ConnectionPointProxy) {}
+    protected onLinkVertexDisconnected(vertex: LinkVertex, connectionPoint: ConnectionPointProxy) {}
  
     /**
      * Is called upon right mouse click on the network link vertex
      * @param controller The vertex been moved
      */
     @overridableHandler("link-vertex-right-click")
-    public onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent) {}
+    protected onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent) {}
 
 }//KresmerEventFeatures
 
@@ -271,7 +273,7 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
 {
     return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
     {
-        KresmerEventFeatures._handlerPlaceholdersDefined[event] = true;
+        KresmerEventFeatures._placeholders[event] = propertyKey;
         descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
             const handler = this.eventHooks[event];
             if (handler) {
@@ -287,7 +289,7 @@ function checked(target: typeof KresmerEventFeatures)
 {
     const missedPlaceholders: string[] = [];
     Object.getOwnPropertyNames(KresmerEventFeatures._allEvents).forEach(event => {
-        if (! (event in KresmerEventFeatures._handlerPlaceholdersDefined))
+        if (! (event in KresmerEventFeatures._placeholders))
             missedPlaceholders.push(event);
     })//foreach
     if (missedPlaceholders.length)

@@ -64,7 +64,7 @@ export default class NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
         this.bringComponentToTop();
-        this.kresmer.onComponentMoveStart(this);
+        this.kresmer.emit("component-move-started", this);
     }//startDrag
 
     public drag(event: MouseEvent)
@@ -82,7 +82,7 @@ export default class NetworkComponentController {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.origin.y = mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y;
         this.updateConnectionPoints();
-        this.kresmer.onComponentBeingMoved(this);
+        this.kresmer.emit("component-being-moved", this);
         return true;
     }//drag
 
@@ -92,7 +92,7 @@ export default class NetworkComponentController {
         if (this.isDragged) {
             this.isDragged = false;
             this.updateConnectionPoints();
-            this.kresmer.onComponentMoved(this);
+            this.kresmer.emit("component-moved", this);
             return true;
         }//if
 
@@ -108,7 +108,7 @@ export default class NetworkComponentController {
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
         this.bringComponentToTop();
-        this.kresmer.onComponentTransformStart(this);
+        this.kresmer.emit("component-transform-started", this);
     }//startRotate
 
     public rotate(event: MouseEvent, center: Position)
@@ -119,7 +119,7 @@ export default class NetworkComponentController {
         const {r1, r0} = this.makeRaduisVectors(event, center);
         this.transform.rotate(r1, r0);
         this.updateConnectionPoints();
-        this.kresmer.onComponentBeingTransformed(this);
+        this.kresmer.emit("component-being-transformed", this);
         return true;
     }//rotate
 
@@ -141,7 +141,7 @@ export default class NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
         this.transformMode = "scaling";
-        this.kresmer.onComponentTransformStart(this);
+        this.kresmer.emit("component-transform-started", this);
         this.bringComponentToTop();
     }//startScale
 
@@ -157,7 +157,7 @@ export default class NetworkComponentController {
         }//if
         this.transform.changeScale(r1, r0, direction, bBox);
         this.updateConnectionPoints();
-        this.kresmer.onComponentBeingTransformed(this);
+        this.kresmer.emit("component-being-transformed", this);
         return true;
     }//scale
 
@@ -171,7 +171,7 @@ export default class NetworkComponentController {
 
         this.isBeingTransformed = false;
         this.updateConnectionPoints();
-        this.kresmer.onComponentTransformed(this);
+        this.kresmer.emit("component-transformed", this);
         return true;
     }//endTransform
 
@@ -202,7 +202,7 @@ export default class NetworkComponentController {
         // this.isBeingTransformed = true;
         this.kresmer.resetAllComponentMode(this);
         this.transformMode = "scaling";
-        this.kresmer.onComponentEnteringTransformMode(this, this.transformMode);
+        this.kresmer.emit("component-entered-transform-mode", this, this.transformMode);
         this.bringComponentToTop();
     }//enterTransformMode
 
@@ -218,10 +218,11 @@ export default class NetworkComponentController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onTransformBoxClick(_event: MouseEvent)
     {
-        if (this.transformMode)
-            this.kresmer.onComponentExitingTransformMode(this);
+        if (this.transformMode) {
+            this.kresmer.emit("component-exited-transform-mode", this);
+        }//if
         this.transformMode = this.transformMode == "rotation" ? "scaling" : "rotation";
-        this.kresmer.onComponentEnteringTransformMode(this, this.transformMode);
+        this.kresmer.emit("component-entered-transform-mode", this, this.transformMode);
     }//onTransformBoxClick
 
 }//NetworkComponentController

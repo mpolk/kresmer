@@ -56,7 +56,7 @@ export default class NetworkComponent extends NetworkElement {
         const shouldNotify = reallyIs != this.isSelected;
         this._isSelected = reallyIs;
         if (shouldNotify) {
-            this.kresmer.onComponentSelected(this, this.isSelected);
+            this.kresmer.emit("component-selected", this, this.isSelected);
         }//if
     }//isSelected
 }//NetworkComponent

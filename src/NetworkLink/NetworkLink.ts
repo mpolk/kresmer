@@ -69,7 +69,7 @@ export default class NetworkLink extends NetworkElement {
         const shouldNotify = reallyIs != this.isSelected;
         this._isSelected = reallyIs;
         if (shouldNotify) {
-            this.kresmer.onLinkSelected(this, this.isSelected);
+            this.kresmer.emit("link-selected", this, this.isSelected);
         }//if
     }//isSelected
 

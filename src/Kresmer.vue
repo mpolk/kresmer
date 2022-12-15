@@ -110,7 +110,7 @@
     {
         props.controller.deselectAllElements();
         props.controller.resetAllComponentMode();
-        props.controller.onModeReset();
+        props.controller.emit("mode-reset");
     }//onMouseDownOnCanvas
 
     function onMouseWheel(event: WheelEvent)
