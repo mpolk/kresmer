@@ -42,6 +42,7 @@ class KresmerEventHooks  {
     "link-vertex-moved":                (vertex: LinkVertex) => void;
     "link-vertex-connected":            (vertex: LinkVertex) => void;
     "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPointProxy) => void;
+    "link-vertex-right-click":          (vertex: LinkVertex, mouseEvent: MouseEvent) => void;
 }//KresmerEventHooks
 
 /** Event names alone */
@@ -83,6 +84,21 @@ export default class KresmerEventFeatures {
         delete this.eventHooks[event];
         return this;
     }//off
+
+
+    /**
+     * Emits the specified event with the specified parameters
+     * @param event Event to emit
+     * @param args Arguments to pass to the handler
+     */
+    public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventHooks[Event]>): void;
+    public emit<Event extends KresmerEvent>(event: Event, ...args: unknown[])
+    {
+        const handler = this.eventHooks[event];
+        if (handler) {
+            (handler as (...args: unknown[]) => void)(...args);
+        }//if
+    }//emit
 
 
     /**
@@ -239,6 +255,13 @@ export default class KresmerEventFeatures {
      */
     @overridableHandler("link-vertex-disconnected")
     public onLinkVertexDisconnected(vertex: LinkVertex, connectionPoint: ConnectionPointProxy) {}
+ 
+    /**
+     * Is called upon right mouse click on the network link vertex
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("link-vertex-right-click")
+    public onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent) {}
 
 }//KresmerEventFeatures
 

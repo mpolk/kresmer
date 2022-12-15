@@ -15,6 +15,7 @@ import StatusBar from './status-bar.vue';
 import NetworkComponentController from '../NetworkComponent/NetworkComponentController';
 import NetworkComponent from '../NetworkComponent/NetworkComponent';
 import NetworkLink from '../NetworkLink/NetworkLink';
+import LinkVertex from '../NetworkLink/LinkVertex';
 
 export const kresmer = new Kresmer('#kresmer');
 
@@ -46,6 +47,7 @@ kresmer
     .on("component-exited-transform-mode", () => hints.pop())
     .on("component-selected", onComponentSelected)
     .on("link-selected", onLinkSelected)
+    .on("link-vertex-right-click", onLinkVertexRightClick)
     ;
 
 window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
@@ -117,3 +119,8 @@ function onLinkSelected(link: NetworkLink, isSelected: boolean)
         hints.pop();
     }//if
 }//onLinkSelected
+
+function onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent)
+{
+    console.debug("Vertex right click: %s, %d,%d", vertex.link.name, mouseEvent.x, mouseEvent.y);
+}//onLinkVertexRightClick

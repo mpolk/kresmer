@@ -162,6 +162,12 @@ export default class LinkVertex {
         return true;
     }//endDrag
 
+
+    public onRightClick(event: MouseEvent)
+    {
+        this.link.kresmer.emit("link-vertex-right-click", this, event);
+    }//onRightClick
+
 }//LinkVertex
 
 

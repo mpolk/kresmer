@@ -47,6 +47,11 @@
         props.model.endDrag(event) && 
         props.model.link.restoreZPosition();
     }//onMouseLeave
+
+    function onRightClick(event: MouseEvent)
+    {
+        props.model.onRightClick(event);
+    }//onRightClick
 </script>
 
 <template>
@@ -58,6 +63,7 @@
         @mouseup.stop="onMouseUp($event)"
         @mousemove.stop="onMouseMove($event)"
         @mouseleave.stop="onMouseLeave($event)"
+        @contextmenu="onRightClick($event)"
         />
 </template>
 
