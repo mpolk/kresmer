@@ -13,8 +13,11 @@ import { app, BrowserWindow, ipcMain } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");
+import Menus, {ContextMenuID} from "./menus";
 
 const isDev = process.env.npm_lifecycle_event === "app:dev";
+
+export const menus = new Menus();
 
 export const userPrefs = new Settings({
     fileName: "user-prefs.json", 
@@ -47,8 +50,12 @@ function createWindow() {
         userPrefs.set('window', mainWindow.getBounds());
     });
 
+    ipcMain.on('context-menu', (_event, menuID: ContextMenuID, ...args: unknown[]) => {
+        console.debug("main: Context menu '%s'", menuID);
+        menus.contextMenu(menuID, args);
+    });
+
     ipcMain.on('renderer-ready', (_event, stage: number) => {initApp(mainWindow, stage)});
-    
 }//createWindow
 
 
@@ -59,7 +66,9 @@ function initApp(mainWindow: BrowserWindow, stage: number)
     switch (stage) {
         case 0: {
             const libData = fs.readFileSync("./stdlib.krel", "utf-8");
+            console.debug("Standard library loaded in memory");
             mainWindow.webContents.send("load-library", libData);
+            console.debug("Standard library loaded to Kresmer");
             break;
         }
         case 1: {

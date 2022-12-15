@@ -123,4 +123,6 @@ function onLinkSelected(link: NetworkLink, isSelected: boolean)
 function onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent)
 {
     console.debug("Vertex right click: %s, %d,%d", vertex.link.name, mouseEvent.x, mouseEvent.y);
+    /* const response = await */ window.electronAPI.showContextMenu("link-vertex");
+    // console.debug("Response: %s", response);
 }//onLinkVertexRightClick

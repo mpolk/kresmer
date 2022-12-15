@@ -6,7 +6,9 @@
  *                      Electron node.js preload script
  ***************************************************************************/
 
- import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { contextBridge, ipcMain, ipcRenderer, IpcRendererEvent } from 'electron';
+import { menus } from './main';
+import { ContextMenuID } from './menus';
 
  console.debug("Setting up electron API for the renderer...");
  contextBridge.exposeInMainWorld('electronAPI', {
@@ -22,6 +24,12 @@
     
     onLoadDrawing: (callback: (event: IpcRendererEvent, drawingData: string, drawingName?: string) => void) => {
         ipcRenderer.on('load-drawing', callback);
+    },
+
+    showContextMenu: (menuID: ContextMenuID) => {
+        console.debug("renderer: Context menu '%s'", menuID);
+        ipcRenderer.send('context-menu', menuID);
+        console.debug("renderer: sent 'context-menu' event");
     },
 
  });
