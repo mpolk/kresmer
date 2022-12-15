@@ -14,6 +14,7 @@ import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
 import LinkVertex from "./NetworkLink/LinkVertex";
 import NetworkLink from "./NetworkLink/NetworkLink";
+import {toCamelCase} from "./Utils";
 
 /** A list of Kresmer events along with correponding handler definitions */
 class KresmerEventHooks  {
@@ -148,7 +149,7 @@ export default class KresmerEventFeatures {
      * @param controller The controller of the component starting to move
      */
     @overridableHandler("component-move-started")
-    protected onComponentMoveStart(controller: NetworkComponentController) {}
+    protected onComponentMoveStarted(controller: NetworkComponentController) {}
  
     /**
      * Is called when a network component is being moved (dragged)
@@ -170,7 +171,7 @@ export default class KresmerEventFeatures {
      * @param mode Specific mode that was entered, i.e. "scaling"|"rotation"
      */
     @overridableHandler("component-entered-transform-mode")
-    protected onComponentEnteringTransformMode(controller: NetworkComponentController, 
+    protected onComponentEnteredTransformMode(controller: NetworkComponentController, 
                                                mode: TransformMode) {}
 
     /**
@@ -178,7 +179,7 @@ export default class KresmerEventFeatures {
      * @param controller The controller of the component starting to transform
      */
     @overridableHandler("component-transform-started")
-    protected onComponentTransformStart(controller: NetworkComponentController) {}
+    protected onComponentTransformStarted(controller: NetworkComponentController) {}
   
     /**
      * Is called when a network component is being transformed
@@ -199,7 +200,7 @@ export default class KresmerEventFeatures {
      * @param controller The controller of the component entered mode
      */
     @overridableHandler("component-exited-transform-mode")
-    protected onComponentExitingTransformMode(controller: NetworkComponentController) {}
+    protected onComponentExitedTransformMode(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component is right-clicked
@@ -228,7 +229,7 @@ export default class KresmerEventFeatures {
      * @param controller The controller of the component starting to move
      */
     @overridableHandler("link-vertex-move-started")
-    protected onLinkVertexMoveStart(vertex: LinkVertex) {}
+    protected onLinkVertexMoveStarted(vertex: LinkVertex) {}
  
     /**
      * Is called when a network link vertex is being moved (dragged)
@@ -273,6 +274,11 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
 {
     return function(target: unknown, propertyKey: string, descriptor: PropertyDescriptor)
     {
+        const properMethodName = toCamelCase("on-" + event);
+        if (propertyKey != properMethodName) {
+            throw new KresmerException(`Method name "${propertyKey}" does not match the event id ("${event}")`);
+        }//if
+
         KresmerEventFeatures._placeholders[event] = propertyKey;
         descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
             const handler = this.eventHooks[event];

@@ -17,6 +17,7 @@ import { LinkVertexInitParams } from "../NetworkLink/LinkVertex";
 import { Transform } from "../Transform/Transform";
 import ParsingException from "./ParsingException";
 import KresmerException, { KresmerExceptionSeverity } from "../KresmerException";
+import {toCamelCase} from "../Utils";
 
 /**
  * Drawing file parser
@@ -292,7 +293,7 @@ export default class DrawingParser {
             } else {
                 let classProp = classProps[propName];
                 if (!classProp) {
-                    propName = this.toCamelCase(propName);
+                    propName = toCamelCase(propName);
                     classProp = classProps[propName];
                     if (!classProp) {
                         throw new DrawingParsingException(
@@ -322,12 +323,6 @@ export default class DrawingParser {
 
         return props;
     }//normalizeProps
-
-
-    private toCamelCase(s: string): string
-    {
-        return s.replaceAll(/-([a-z])/g, (_, p1) => p1.toUpperCase());
-    }//toCamelCase
 
 
     private parseTransform(node: Element)
