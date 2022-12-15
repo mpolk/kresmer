@@ -51,7 +51,7 @@ function createWindow() {
     });
 
     ipcMain.on('context-menu', (_event, menuID: ContextMenuID, ...args: unknown[]) => {
-        console.debug("main: Context menu '%s'", menuID);
+        // console.debug("main: Context menu '%s'", menuID);
         menus.contextMenu(menuID, args);
     });
 

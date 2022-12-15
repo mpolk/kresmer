@@ -6,8 +6,7 @@
  *                      Electron node.js preload script
  ***************************************************************************/
 
-import { contextBridge, ipcMain, ipcRenderer, IpcRendererEvent } from 'electron';
-import { menus } from './main';
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { ContextMenuID } from './menus';
 
  console.debug("Setting up electron API for the renderer...");
@@ -27,9 +26,9 @@ import { ContextMenuID } from './menus';
     },
 
     showContextMenu: (menuID: ContextMenuID) => {
-        console.debug("renderer: Context menu '%s'", menuID);
+        // console.debug("renderer: Context menu '%s'", menuID);
         ipcRenderer.send('context-menu', menuID);
-        console.debug("renderer: sent 'context-menu' event");
+        // console.debug("renderer: sent 'context-menu' event");
     },
 
  });

@@ -17,9 +17,10 @@ export default class Menus {
 
     constructor()
     {
-        this.contextMenus = {"link-vertex": Menu.buildFromTemplate([
-            {label: "Adjust"},
-            {label: "Delete"},
+        this.contextMenus = {
+            "link-vertex": Menu.buildFromTemplate([
+                {label: "Adjust position", id: "adjust-vertex-position"},
+                {label: "Delete vertex", id: "delete-vertex"},
             ]),
         }
     }//ctor
