@@ -37,8 +37,8 @@
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const matrix = circle.value!.getCTM()!;
         const connectionCoords = {
-            x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - drawingRect.left,
-            y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - drawingRect.top,
+            x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - drawingRect.left - window.scrollX,
+            y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - drawingRect.top - window.scrollY,
         };        
         proxy.setCoords(connectionCoords);
     }//updatePos
