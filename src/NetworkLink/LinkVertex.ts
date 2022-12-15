@@ -165,7 +165,7 @@ export default class LinkVertex {
 
     public onRightClick(event: MouseEvent)
     {
-        this.link.kresmer.emit("link-vertex-right-click", this, event);
+        this.link.kresmer.onLinkVertexRightClick(this, event);
     }//onRightClick
 
 }//LinkVertex

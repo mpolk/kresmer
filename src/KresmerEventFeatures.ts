@@ -86,19 +86,19 @@ export default class KresmerEventFeatures {
     }//off
 
 
-    /**
-     * Emits the specified event with the specified parameters
-     * @param event Event to emit
-     * @param args Arguments to pass to the handler
-     */
-    public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventHooks[Event]>): void;
-    public emit<Event extends KresmerEvent>(event: Event, ...args: unknown[])
-    {
-        const handler = this.eventHooks[event];
-        if (handler) {
-            (handler as (...args: unknown[]) => void)(...args);
-        }//if
-    }//emit
+    // /**
+    //  * Emits the specified event with the specified parameters
+    //  * @param event Event to emit
+    //  * @param args Arguments to pass to the handler
+    //  */
+    // public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventHooks[Event]>): void;
+    // public emit<Event extends KresmerEvent>(event: Event, ...args: unknown[])
+    // {
+    //     const handler = this.eventHooks[event];
+    //     if (handler) {
+    //         (handler as (...args: unknown[]) => void)(...args);
+    //     }//if
+    // }//emit
 
 
     /**
@@ -274,10 +274,11 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
         KresmerEventFeatures._handlerPlaceholdersDefined[event] = true;
         descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
             const handler = this.eventHooks[event];
-            if (handler)
+            if (handler) {
                 (handler as (...args: unknown[]) => void)(...args);
-        }
-    }
+            }//if
+        }//function
+    }//function
 }//overridableHandler
 
 // Decorator checking if handler placeholers are defined for every event
@@ -290,6 +291,6 @@ function checked(target: typeof KresmerEventFeatures)
             missedPlaceholders.push(event);
     })//foreach
     if (missedPlaceholders.length)
-        throw new KresmerException("Handler placeholders are not defined for the following events:" +
+        throw new KresmerException("The following events have not handler placeholders defined:" +
             missedPlaceholders.join());
 }//checked
