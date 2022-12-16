@@ -9,7 +9,7 @@
 import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef } from "vue";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import KresmerVue from "./Kresmer.vue";
-import KresmerEventFeatures from "./KresmerEventFeatures";
+import KresmerEventHooks from "./KresmerEventHooks";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
@@ -29,7 +29,7 @@ import NetworkLink from "./NetworkLink/NetworkLink";
  * The main class implementing the most of the Kresmer public API
  * Also acts as a proxy for the Kresmer's root vue-component
  */
-export default class Kresmer extends KresmerEventFeatures {
+export default class Kresmer extends KresmerEventHooks {
 
     /** Kresmer's vue-component Application */
     readonly appKresmer: App;

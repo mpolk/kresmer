@@ -17,7 +17,7 @@ import NetworkLink from "./NetworkLink/NetworkLink";
 import {toCamelCase} from "./Utils";
 
 /** A list of Kresmer events along with correponding handler definitions */
-class KresmerEventHooks  {
+class KresmerEventFormats  {
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
@@ -44,17 +44,17 @@ class KresmerEventHooks  {
     "link-vertex-connected":            (vertex: LinkVertex) => void;
     "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPointProxy) => void;
     "link-vertex-right-click":          (vertex: LinkVertex, mouseEvent: MouseEvent) => void;
-}//KresmerEventHooks
+}//KresmerEventFormats
 
 /** Event names alone */
-export type KresmerEvent = keyof KresmerEventHooks;
+export type KresmerEvent = keyof KresmerEventFormats;
 
 /** Event-related features for incorporating to the main Kresmer class */
 @checked
-export default class KresmerEventFeatures {
+export default class KresmerEventHooks {
 
     /** The map (event => handler) */
-    protected readonly eventHooks = new KresmerEventHooks;
+    protected readonly eventHooks = new KresmerEventFormats;
 
     /* The following two auxiliary maps a used for internal KresmerEventFeatures testing
        for completeness: whether all events have corresponding handler placeholders 
@@ -63,13 +63,13 @@ export default class KresmerEventFeatures {
     */
     static readonly _placeholders: Partial<{[event in KresmerEvent]: string}> = {};
     // The second one contains all possible events
-    static readonly _allEvents = new KresmerEventHooks;
+    static readonly _allEvents = new KresmerEventFormats;
 
     /** Sets up the handler for the specified event
      * @param event The event to setup handler for
      * @param handler The handler to set
      */
-    public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventHooks[Event]): KresmerEventFeatures;
+    public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventFormats[Event]): KresmerEventHooks;
     public on<Event extends KresmerEvent>(event: Event, handler: (...args: unknown[]) => void)
     {
         this.eventHooks[event] = handler;
@@ -92,10 +92,10 @@ export default class KresmerEventFeatures {
      * @param event Event to emit
      * @param args Arguments to pass to the handler
      */
-    public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventHooks[Event]>): void;
+    public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventFormats[Event]>): void;
     public emit<Event extends KresmerEvent>(event: Event, ...args: unknown[])
     {
-        const placeholder = KresmerEventFeatures._placeholders[event] as keyof KresmerEventFeatures;
+        const placeholder = KresmerEventHooks._placeholders[event] as keyof KresmerEventHooks;
         if (placeholder) {
             (this[placeholder] as (...args: unknown[]) => void)(...args);
         } else {
@@ -266,7 +266,7 @@ export default class KresmerEventFeatures {
     @overridableHandler("link-vertex-right-click")
     protected onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent) {}
 
-}//KresmerEventFeatures
+}//KresmerEventHooks
 
 
 // Decorator for the event handling methods defined in this class
@@ -279,8 +279,8 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
             throw new KresmerException(`Method name "${propertyKey}" does not match the event id ("${event}")`);
         }//if
 
-        KresmerEventFeatures._placeholders[event] = propertyKey;
-        descriptor.value = function(this: KresmerEventFeatures, ...args: Parameters<KresmerEventHooks[Event]>) {
+        KresmerEventHooks._placeholders[event] = propertyKey;
+        descriptor.value = function(this: KresmerEventHooks, ...args: Parameters<KresmerEventFormats[Event]>) {
             const handler = this.eventHooks[event];
             if (handler) {
                 (handler as (...args: unknown[]) => void)(...args);
@@ -291,11 +291,11 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
 
 // Decorator checking if handler placeholers are defined for every event
 // (a kind of self-testing)
-function checked(target: typeof KresmerEventFeatures)
+function checked(target: typeof KresmerEventHooks)
 {
     const missedPlaceholders: string[] = [];
-    Object.getOwnPropertyNames(KresmerEventFeatures._allEvents).forEach(event => {
-        if (! (event in KresmerEventFeatures._placeholders))
+    Object.getOwnPropertyNames(KresmerEventHooks._allEvents).forEach(event => {
+        if (! (event in KresmerEventHooks._placeholders))
             missedPlaceholders.push(event);
     })//foreach
     if (missedPlaceholders.length)
