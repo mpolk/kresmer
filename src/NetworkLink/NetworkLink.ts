@@ -8,6 +8,7 @@
 
 import { InjectionKey } from "vue";
 import Kresmer from "../Kresmer";
+import KresmerException from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
@@ -86,4 +87,14 @@ export default class NetworkLink extends NetworkElement {
     {
         this.zIndex = this.savedZIndex;
     }//restoreZPosition
+
+    public deleteVertex(vertexNumber: number) {
+        if (this.vertices.length <= vertexNumber) {
+            throw new KresmerException(`Attempt to delete a non-existent vertex (${this.id}, ${vertexNumber})`);
+        }//if
+        this.vertices.splice(vertexNumber, 1);
+        for (let i = vertexNumber; i < this.vertices.length; i++) {
+            this.vertices[i].vertexNumber--;
+        }//for
+    }//deleteVertex
 }//NetworkLink

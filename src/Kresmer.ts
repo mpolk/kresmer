@@ -23,6 +23,7 @@ import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapt
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import Link from "./NetworkLink/NetworkLink";
 import NetworkLink from "./NetworkLink/NetworkLink";
+import KresmerException from "./KresmerException";
 
 
 /**
@@ -302,6 +303,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Links currently placed to the drawing
      */
      private readonly links = reactive<Record<string, Link>>({});
+     private readonly linksByName: Record<string, number> = {};
 
     /**
      * Adds a new Link to the content of the drawing
@@ -310,6 +312,7 @@ export default class Kresmer extends KresmerEventHooks {
      public addLink(link: Link)
      {
          this.links[link.id] = link;
+         this.linksByName[link.name] = link.id;
          return this;
      }//addLink
  
@@ -362,6 +365,31 @@ export default class Kresmer extends KresmerEventHooks {
             return undefined;
         return this.networkComponents[id].component;
     }//getComponentByName
+
+
+    /**
+     * Searches for the NetworkLink with the specified ID
+     * @param id An ID of the link to search for
+     * @returns The link if found or "undefined" otherwise
+     */
+    public getLinkById(id: number)
+    {
+        return this.links[id];
+    }//getLinkById
+
+
+    /**
+     * Searches for the NetworkLink with the specified name
+     * @param name A name of the link to search for
+     * @returns The link if found or "undefined" otherwise
+     */
+    public getLinkByName(name: string)
+    {
+        const id = this.linksByName[name];
+        if (id === undefined)
+            return undefined;
+        return this.links[id];
+    }//getLinkByName
  
 
     /**
@@ -455,6 +483,23 @@ export default class Kresmer extends KresmerEventHooks {
           y: (pos.y - CTM.f) / CTM.d
         };
     }//applyScreenCTM
+
+
+    // Externally available operations with the drawing objects
+
+    /**
+     * Deletes a link vertex
+     * @param linkName The link this vertexs belongs
+     * @param vertexNumber The seq number of the vertex to delete
+     */
+    public deleteLinkVertex(linkID: number, vertexNumber: number)
+    {
+        const link = this.getLinkById(linkID);
+        if (!link) {
+            throw new KresmerException(`Attempt to delete a vertex from the non-existent link (id=${linkID})`);
+        }//if
+        link.deleteVertex(vertexNumber);
+    }//deleteLinkVertex
 
 }//Kresmer
 

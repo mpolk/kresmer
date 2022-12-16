@@ -7,11 +7,16 @@
  ***************************************************************************/
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 
-export interface ContextMenuCommands {
-    "link-vertex": (linkName: string, vertexNumber: number) => void,
-}
+export interface ContextMenus {
+    "link-vertex": (linkID: number, vertexNumber: number) => void,
+}//ContextMenus
 
-export type ContextMenuID = keyof ContextMenuCommands;
+export type ContextMenuID = keyof ContextMenus;
+export interface ContextMenuCommands {
+    "delete-vertex": (linkID: number, vertexNumber: number) => void,
+}//ContextMenuCommands
+
+export type ContextMenuCommandID = keyof ContextMenuCommands;
 
 export default class Menus {
 

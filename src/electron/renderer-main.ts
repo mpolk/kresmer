@@ -55,6 +55,7 @@ const appCommandExecutor = new AppCommandExecutor;
 appCommandExecutor
     .on("load-library", loadLibrary)
     .on("load-drawing", loadDrawing)
+    .on("delete-vertex", deleteLinkVertex)
     ;
 
 window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
@@ -133,6 +134,10 @@ function onLinkSelected(link: NetworkLink, isSelected: boolean)
 
 function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent */)
 {
-    // console.debug("Vertex right click: %s, %d,%d", vertex.link.name, mouseEvent.x, mouseEvent.y);
-    window.electronAPI.showContextMenu("link-vertex", vertex.link.name, vertex.vertexNumber);
+    window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
 }//onLinkVertexRightClick
+
+function deleteLinkVertex(linkID: number, vertexNumber: number)
+{
+    kresmer.deleteLinkVertex(linkID, vertexNumber);
+}//deleteLinkVertex
