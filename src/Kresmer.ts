@@ -491,6 +491,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Deletes a link vertex
      * @param linkName The link this vertexs belongs
      * @param vertexNumber The seq number of the vertex to delete
+     * @returns True if the vertex was deleted or false otherwise
      */
     public deleteLinkVertex(linkID: number, vertexNumber: number)
     {
@@ -498,7 +499,7 @@ export default class Kresmer extends KresmerEventHooks {
         if (!link) {
             throw new KresmerException(`Attempt to delete a vertex from the non-existent link (id=${linkID})`);
         }//if
-        link.deleteVertex(vertexNumber);
+        return link.deleteVertex(vertexNumber);
     }//deleteLinkVertex
 
 }//Kresmer

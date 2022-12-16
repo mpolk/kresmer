@@ -12,15 +12,20 @@ export interface ContextMenus {
 }//ContextMenus
 
 export type ContextMenuID = keyof ContextMenus;
+
+type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
-    "delete-vertex": (linkID: number, vertexNumber: number) => void,
+    "adjust-vertex-position": ContextMenuHandler<"link-vertex">,
+    "delete-vertex": ContextMenuHandler<"link-vertex">,
 }//ContextMenuCommands
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
+type ContextMenuItemConstructorOptions = 
+    Omit<MenuItemConstructorOptions, "id"> & {id: ContextMenuCommandID};
 
 export default class Menus {
 
-    private readonly contextMenus: Record<ContextMenuID, MenuItemConstructorOptions[]> =
+    private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
         {
             "link-vertex": [
                 {label: "Adjust vertex position", id: "adjust-vertex-position"},

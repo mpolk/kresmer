@@ -92,9 +92,14 @@ export default class NetworkLink extends NetworkElement {
         if (this.vertices.length <= vertexNumber) {
             throw new KresmerException(`Attempt to delete a non-existent vertex (${this.id}, ${vertexNumber})`);
         }//if
+        if (this.vertices.length <= 2) {
+            console.error(`Attempt to delete the next-to-last vertex (${this.id}, ${vertexNumber})`);
+            return false;
+        }//if
         this.vertices.splice(vertexNumber, 1);
         for (let i = vertexNumber; i < this.vertices.length; i++) {
             this.vertices[i].vertexNumber--;
         }//for
+        return true;
     }//deleteVertex
 }//NetworkLink
