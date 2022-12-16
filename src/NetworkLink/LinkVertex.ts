@@ -14,6 +14,7 @@ import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 /** Link Vertex (either connected or free) */
 
 export default class LinkVertex {
+    vertexNumber: number;
     private initParams?: LinkVertexInitParams;
     private _isPinnedUp = false;
     get isPinnedUp() {return this._isPinnedUp}
@@ -29,9 +30,10 @@ export default class LinkVertex {
     private dragStartPos?: Position;
     private savedMousePos?: Position;
 
-    constructor(link: NetworkLink, initParams?: LinkVertexInitParams) 
+    constructor(link: NetworkLink, vertexNumber: number, initParams?: LinkVertexInitParams) 
     {
         this.link = link;
+        this.vertexNumber = vertexNumber;
         this.initParams = initParams;
     }//ctor
 

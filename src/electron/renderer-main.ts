@@ -84,6 +84,10 @@ window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string,
     window.electronAPI.signalReadiness(2);
 });
 
+window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
+    alert(command + " " + args.join(", "));
+});
+
 window.electronAPI.signalReadiness(0);
 
 function indicateComponentTransform(controller: NetworkComponentController)
@@ -120,8 +124,8 @@ function onLinkSelected(link: NetworkLink, isSelected: boolean)
     }//if
 }//onLinkSelected
 
-function onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent)
+function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent */)
 {
     // console.debug("Vertex right click: %s, %d,%d", vertex.link.name, mouseEvent.x, mouseEvent.y);
-    window.electronAPI.showContextMenu("link-vertex");
+    window.electronAPI.showContextMenu("link-vertex", vertex.link.name, vertex.vertexNumber);
 }//onLinkVertexRightClick

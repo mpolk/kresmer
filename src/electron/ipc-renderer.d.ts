@@ -13,6 +13,7 @@ export interface IElectronAPI {
     signalReadiness: (stage: number) => void,
     onLoadLibrary: (callback: (event: IpcRendererEvent, libData: string) => void) => void,
     onLoadDrawing: (callback: (event: IpcRendererEvent, drawingData: string, drawingName?: string) => void) => void,
+    onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => void,
     showContextMenu: (menuID: ContextMenuID, ...args: unknown[]) => void,
 }//IElectronAPI
 

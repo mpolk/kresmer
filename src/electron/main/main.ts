@@ -17,7 +17,7 @@ import Menus, {ContextMenuID} from "./menus";
 
 const isDev = process.env.npm_lifecycle_event === "app:dev";
 
-export const menus = new Menus();
+export let menus: Menus;
 
 export const userPrefs = new Settings({
     fileName: "user-prefs.json", 
@@ -35,6 +35,7 @@ function createWindow() {
         }
     }//windowOptions
     const mainWindow = new BrowserWindow(windowOptions);
+    menus = new Menus(mainWindow);
 
     // and load the index.html of the app.
     const url = isDev ?

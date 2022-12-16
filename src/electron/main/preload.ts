@@ -25,9 +25,13 @@ import { ContextMenuID } from './menus';
         ipcRenderer.on('load-drawing', callback);
     },
 
-    showContextMenu: (menuID: ContextMenuID) => {
+    onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => {
+        ipcRenderer.on('command', callback);
+    },
+
+    showContextMenu: (menuID: ContextMenuID, ...args: unknown[]) => {
         // console.debug("renderer: Context menu '%s'", menuID);
-        ipcRenderer.send('context-menu', menuID);
+        ipcRenderer.send('context-menu', menuID, ...args);
         // console.debug("renderer: sent 'context-menu' event");
     },
 

@@ -35,9 +35,10 @@ export default class NetworkLink extends NetworkElement {
         }
     ) {
         super(kresmer, _class instanceof NetworkLinkClass ? _class : NetworkLinkClass.getClass(_class), args);
-        this.vertices.push(new LinkVertex(this, args?.from));
-        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(this, initParams)));
-        this.vertices.push(new LinkVertex(this, args?.to));
+        let i = 0;
+        this.vertices.push(new LinkVertex(this, i++, args?.from));
+        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(this, i++, initParams)));
+        this.vertices.push(new LinkVertex(this, i++, args?.to));
     }//ctor
 
     public zIndex = -1;
