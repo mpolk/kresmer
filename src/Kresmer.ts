@@ -321,6 +321,7 @@ export default class Kresmer extends KresmerEventFeatures {
     public loadDrawing(dwgData: string): boolean
     {
         console.debug("Loading drawing...");
+        // console.debug(dwgData);
         const parser = new DrawingParser(this);
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {

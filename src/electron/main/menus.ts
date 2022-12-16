@@ -5,18 +5,20 @@
  * -----------------------------------------------------------------------
  *                      Menus for Electron application
  ***************************************************************************/
-import {BrowserWindow, ipcMain, Menu, MenuItemConstructorOptions} from "electron";
+import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 
-export type ContextMenuID = 
-    "link-vertex"
-    ;
+export interface ContextMenuCommands {
+    "link-vertex": (linkName: string, vertexNumber: number) => void,
+}
+
+export type ContextMenuID = keyof ContextMenuCommands;
 
 export default class Menus {
 
     private readonly contextMenus: Record<ContextMenuID, MenuItemConstructorOptions[]> =
         {
             "link-vertex": [
-                {label: "Adjust position", id: "adjust-vertex-position"},
+                {label: "Adjust vertex position", id: "adjust-vertex-position"},
                 {label: "Delete vertex", id: "delete-vertex"},
             ],
         }

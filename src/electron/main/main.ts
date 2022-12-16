@@ -14,6 +14,7 @@ import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");
 import Menus, {ContextMenuID} from "./menus";
+import { AppCommand, AppCommandFormats } from '../app-commands';
 
 const isDev = process.env.npm_lifecycle_event === "app:dev";
 
@@ -57,6 +58,7 @@ function createWindow() {
     });
 
     ipcMain.on('renderer-ready', (_event, stage: number) => {initApp(mainWindow, stage)});
+    return mainWindow;
 }//createWindow
 
 
@@ -68,7 +70,7 @@ function initApp(mainWindow: BrowserWindow, stage: number)
         case 0: {
             const libData = fs.readFileSync("./stdlib.krel", "utf-8");
             console.debug("Standard library loaded in memory");
-            mainWindow.webContents.send("load-library", libData);
+            sendAppCommand("load-library", libData);
             console.debug("Standard library loaded to Kresmer");
             break;
         }
@@ -79,19 +81,27 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             if (fs.existsSync(autoload)) {
                 const dwgData = fs.readFileSync(autoload, "utf-8");
                 const fileName = path.basename(autoload);
-                mainWindow.webContents.send("load-drawing", dwgData, fileName);
+                sendAppCommand("load-drawing", dwgData, fileName);
             }//if
             break;
         }
     }//switch
 }//initApp
 
+let mainWindow: BrowserWindow;
+
+export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: Parameters<AppCommandFormats[Command]>): void;
+export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: unknown[])
+{
+    mainWindow.webContents.send("command", command, ...args);
+}//sendAppCommand
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    createWindow();
+    mainWindow = createWindow();
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.

@@ -16,6 +16,7 @@ import NetworkComponentController from '../NetworkComponent/NetworkComponentCont
 import NetworkComponent from '../NetworkComponent/NetworkComponent';
 import NetworkLink from '../NetworkLink/NetworkLink';
 import LinkVertex from '../NetworkLink/LinkVertex';
+import { AppCommandExecutor } from './app-commands';
 
 export const kresmer = new Kresmer('#kresmer');
 
@@ -50,7 +51,19 @@ kresmer
     .on("link-vertex-right-click", onLinkVertexRightClick)
     ;
 
-window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) => 
+const appCommandExecutor = new AppCommandExecutor;
+appCommandExecutor
+    .on("load-library", loadLibrary)
+    .on("load-drawing", loadDrawing)
+    ;
+
+window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
+    appCommandExecutor.execute(command, ...args);
+});
+
+window.electronAPI.signalReadiness(0);
+
+function loadLibrary(libData: string)
 { 
     try {
         if (!kresmer.loadLibrary(libData))
@@ -64,9 +77,9 @@ window.electronAPI.onLoadLibrary((_event: IpcRendererEvent, libData: string) =>
         }//if
     }//catch
     window.electronAPI.signalReadiness(1);
-});
+}//loadLibrary
 
-window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string, drawingName?: string) => 
+function loadDrawing(drawingData: string, drawingName?: string)
 { 
     try {
         if (!kresmer.loadDrawing(drawingData))
@@ -82,13 +95,7 @@ window.electronAPI.onLoadDrawing((_event: IpcRendererEvent, drawingData: string,
         }//if
     }//catch
     window.electronAPI.signalReadiness(2);
-});
-
-window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
-    alert(command + " " + args.join(", "));
-});
-
-window.electronAPI.signalReadiness(0);
+}//loadDrawing
 
 function indicateComponentTransform(controller: NetworkComponentController)
 {

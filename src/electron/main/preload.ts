@@ -17,22 +17,12 @@ import { ContextMenuID } from './menus';
         ipcRenderer.send('renderer-ready', stage);
     },
 
-    onLoadLibrary: (callback: (event: IpcRendererEvent, libData: string) => void) => {
-        ipcRenderer.on('load-library', callback);
-    },
-    
-    onLoadDrawing: (callback: (event: IpcRendererEvent, drawingData: string, drawingName?: string) => void) => {
-        ipcRenderer.on('load-drawing', callback);
-    },
-
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => {
         ipcRenderer.on('command', callback);
     },
 
     showContextMenu: (menuID: ContextMenuID, ...args: unknown[]) => {
-        // console.debug("renderer: Context menu '%s'", menuID);
         ipcRenderer.send('context-menu', menuID, ...args);
-        // console.debug("renderer: sent 'context-menu' event");
     },
 
  });
