@@ -12,6 +12,7 @@ import KresmerException from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
+import { EditorOperation } from "../UndoStack";
 
 /**
  * Network Component - a generic network element instance 
@@ -93,13 +94,43 @@ export default class NetworkLink extends NetworkElement {
             throw new KresmerException(`Attempt to delete a non-existent vertex (${this.id}, ${vertexNumber})`);
         }//if
         if (this.vertices.length <= 2) {
-            console.error(`Attempt to delete the next-to-last vertex (${this.id}, ${vertexNumber})`);
+            console.info(`Attempt to delete the next-to-last vertex (${this.id}, ${vertexNumber})`);
             return false;
         }//if
-        this.vertices.splice(vertexNumber, 1);
-        for (let i = vertexNumber; i < this.vertices.length; i++) {
-            this.vertices[i].vertexNumber--;
-        }//for
+        const op = new DeleteVertexOp(this.vertices[vertexNumber]);
+        this.kresmer.undoStack.beginOperation(op);
+        op.exec();
+        this.kresmer.undoStack.commitOperation();
         return true;
     }//deleteVertex
+
 }//NetworkLink
+
+
+class DeleteVertexOp extends EditorOperation {
+    private vertex: LinkVertex;
+
+    constructor(vertex: LinkVertex)
+    {
+        super();
+        this.vertex = vertex;
+    }//ctor
+
+    undo(): void {
+        const link = this.vertex.link;
+        const vertexNumber = this.vertex.vertexNumber;
+        link.vertices.splice(vertexNumber, 0, this.vertex);
+        for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
+            link.vertices[i].vertexNumber++;
+        }//for
+    }//undo
+
+    exec(): void {
+        const link = this.vertex.link;
+        const vertexNumber = this.vertex.vertexNumber;
+        link.vertices.splice(vertexNumber, 1);
+        for (let i = vertexNumber; i < link.vertices.length; i++) {
+            link.vertices[i].vertexNumber--;
+        }//for
+    }//exec
+}//DeleteVertexOp

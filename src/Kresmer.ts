@@ -24,6 +24,7 @@ import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import Link from "./NetworkLink/NetworkLink";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
+import UndoStack from "./UndoStack";
 
 
 /**
@@ -101,6 +102,8 @@ export default class Kresmer extends KresmerEventHooks {
     readonly viewHeight: number = 1000;
     /** Determines whether the drawing is editable */
     readonly isEditable: boolean = true;
+    /** The stack for undoing editor operations */
+    readonly undoStack = new UndoStack;
 
     /**
      * A list of all Component Classes, registered by Kresmer
