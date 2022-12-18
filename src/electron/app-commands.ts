@@ -10,7 +10,9 @@ import { ContextMenuCommands } from "./main/menus";
 
 export interface AppCommandFormats extends ContextMenuCommands {
     "load-library": (libData: string) => void,
-    "load-drawing": (drawingData: string, drawingName?: string) => void
+    "load-drawing": (drawingData: string, drawingName?: string) => void,
+    "undo": () => void,
+    "redo": () => void,
 }//AppCommandFormats
 
 export type AppCommand = keyof AppCommandFormats;

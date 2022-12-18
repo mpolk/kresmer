@@ -9,7 +9,7 @@
 import path from 'path';
 import fs from 'fs';
 import process from 'process';
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserWindow, ipcMain, Menu } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");

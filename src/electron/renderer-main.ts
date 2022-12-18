@@ -55,6 +55,8 @@ const appCommandExecutor = new AppCommandExecutor;
 appCommandExecutor
     .on("load-library", loadLibrary)
     .on("load-drawing", loadDrawing)
+    .on("undo", () => {kresmer.undo()})
+    .on("redo", () => {kresmer.redo()})
     .on("delete-vertex", deleteLinkVertex)
     ;
 
