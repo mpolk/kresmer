@@ -102,8 +102,11 @@ export default class Kresmer extends KresmerEventHooks {
     readonly viewHeight: number = 1000;
     /** Determines whether the drawing is editable */
     readonly isEditable: boolean = true;
+
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack;
+    public undo() {this.undoStack.undo()}
+    public redo() {this.undoStack.redo()}
 
     /**
      * A list of all Component Classes, registered by Kresmer
