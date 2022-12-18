@@ -98,7 +98,7 @@ export default class NetworkLink extends NetworkElement {
             return false;
         }//if
         const op = new DeleteVertexOp(this.vertices[vertexNumber]);
-        this.kresmer.undoStack.beginOperation(op);
+        this.kresmer.undoStack.startOperation(op);
         op.exec();
         this.kresmer.undoStack.commitOperation();
         return true;
@@ -116,15 +116,6 @@ class DeleteVertexOp extends EditorOperation {
         this.vertex = vertex;
     }//ctor
 
-    undo(): void {
-        const link = this.vertex.link;
-        const vertexNumber = this.vertex.vertexNumber;
-        link.vertices.splice(vertexNumber, 0, this.vertex);
-        for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber++;
-        }//for
-    }//undo
-
     exec(): void {
         const link = this.vertex.link;
         const vertexNumber = this.vertex.vertexNumber;
@@ -133,4 +124,13 @@ class DeleteVertexOp extends EditorOperation {
             link.vertices[i].vertexNumber--;
         }//for
     }//exec
+
+    undo(): void {
+        const link = this.vertex.link;
+        const vertexNumber = this.vertex.vertexNumber;
+        link.vertices.splice(vertexNumber, 0, this.vertex);
+        for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
+            link.vertices[i].vertexNumber++;
+        }//for
+    }//undo
 }//DeleteVertexOp

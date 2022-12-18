@@ -10,17 +10,18 @@ import KresmerException from "./KresmerException";
 
 export default class UndoStack {
     private stack: EditorOperation[] = [];
-    private stackPointer = 0;
+    private stackPointer = -1;
+    private static readonly MAX_UNDOES = 100;
     private operationInProgress?: EditorOperation;
 
     /**
      * Marks the start of the specified editor operation
      * @param op The operation started
      */
-    beginOperation(op: EditorOperation)
+    startOperation(op: EditorOperation)
     {
         this.operationInProgress = op;
-    }//beginOperation
+    }//startOperation
 
     /**
      * Commits the currenly started operation
@@ -32,13 +33,17 @@ export default class UndoStack {
             throw new KresmerException("Undo stack: attempt to commit an operation without prior 'beginOperation'");
         }//if
 
-        if (this.stackPointer) {
-            this.stack.splice(0, this.stackPointer);
-            this.stackPointer = 0;
+        if (this.stackPointer < this.stack.length - 1) {
+            this.stack.splice(this.stackPointer, this.stack.length - 1 - this.stackPointer);
         }//if
 
         this.stack.push(this.operationInProgress);
         this.operationInProgress = undefined;
+        if (this.stack.length <= UndoStack.MAX_UNDOES) {
+            this.stackPointer++;
+        } else {
+            this.stack.splice(0, 1);
+        }//if
         return true;
     }//commitOperation
 
@@ -55,16 +60,16 @@ export default class UndoStack {
     /** Undoes the last operation (or the next after the last already undone ones) */
     undo()
     {
-        if (this.stackPointer < this.stack.length) {
-            this.stack[this.stackPointer++].undo();
+        if (this.stackPointer >= 0) {
+            this.stack[this.stackPointer--].undo();
         }//if
     }//undo
 
     /** Redoes the last undone operation (or the next after the last already redone ones) */
     redo()
     {
-        if (this.stackPointer > 0) {
-            this.stack[--this.stackPointer].redo();
+        if (this.stackPointer <= this.stack.length - 1) {
+            this.stack[++this.stackPointer].redo();
         }//if
     }//redo
 
