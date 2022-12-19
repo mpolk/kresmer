@@ -171,7 +171,8 @@ export default class LinkVertex {
                 } else {
                     console.error('Reference to undefined connection point "%s"', connectionPointData);
                 }//if
-                break;
+                this.link.kresmer.undoStack.commitOperation();
+                return true;
             }//if
         }//for
 
