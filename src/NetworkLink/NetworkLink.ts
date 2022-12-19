@@ -97,10 +97,7 @@ export default class NetworkLink extends NetworkElement {
             console.info(`Attempt to delete the next-to-last vertex (${this.id}, ${vertexNumber})`);
             return false;
         }//if
-        const op = new DeleteVertexOp(this.vertices[vertexNumber]);
-        this.kresmer.undoStack.startOperation(op);
-        op.exec();
-        this.kresmer.undoStack.commitOperation();
+        this.kresmer.undoStack.execAndCommit(new DeleteVertexOp(this.vertices[vertexNumber]));
         return true;
     }//deleteVertex
 
@@ -116,16 +113,17 @@ class DeleteVertexOp extends EditorOperation {
         this.vertex = vertex;
     }//ctor
 
-    exec(): void {
+    exec() {
         const link = this.vertex.link;
         const vertexNumber = this.vertex.vertexNumber;
         link.vertices.splice(vertexNumber, 1);
         for (let i = vertexNumber; i < link.vertices.length; i++) {
             link.vertices[i].vertexNumber--;
         }//for
+        return true;
     }//exec
 
-    undo(): void {
+    undo() {
         const link = this.vertex.link;
         const vertexNumber = this.vertex.vertexNumber;
         link.vertices.splice(vertexNumber, 0, this.vertex);
