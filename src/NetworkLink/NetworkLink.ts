@@ -118,7 +118,7 @@ class DeleteVertexOp extends EditorOperation {
         const vertexNumber = this.vertex.vertexNumber;
         link.vertices.splice(vertexNumber, 1);
         for (let i = vertexNumber; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber--;
+            link.vertices[i].vertexNumber = i;
         }//for
     }//exec
 
@@ -127,7 +127,7 @@ class DeleteVertexOp extends EditorOperation {
         const vertexNumber = this.vertex.vertexNumber;
         link.vertices.splice(vertexNumber, 0, this.vertex);
         for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber++;
+            link.vertices[i].vertexNumber = i;
         }//for
     }//undo
 }//DeleteVertexOp
