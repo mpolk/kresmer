@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType } from 'vue';
+    import { PropType, ref } from 'vue';
     import LinkVertex from './LinkVertex';
 
     const props = defineProps({
@@ -15,6 +15,11 @@
         isEditable: {type: Boolean, required: true},
         isEndpoint: {type: Boolean, default: false},
     })
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const circle = ref<HTMLElement>()!;
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const padding = ref<HTMLElement>()!;
 
     function onMouseDown(event: MouseEvent)
     {
@@ -43,6 +48,8 @@
 
     function onMouseLeave(event: MouseEvent)
     {
+        event.relatedTarget !== circle.value &&
+        event.relatedTarget !== padding.value &&
         props.isEditable &&
         props.model.endDrag(event) && 
         props.model.link.restoreZPosition();
@@ -55,7 +62,17 @@
 </script>
 
 <template>
-    <circle :cx="model.coords.x" :cy="model.coords.y" 
+    <circle v-if="model.isDragged" ref="padding"
+        :cx="model.coords.x" :cy="model.coords.y" 
+        class="link vertex padding"
+        style="cursor: move; stroke: none;"
+        :is-editable="isEditable"
+        @mouseup.stop="onMouseUp($event)"
+        @mousemove.stop="onMouseMove($event)"
+        @mouseleave.stop="onMouseLeave($event)"
+        />
+    <circle ref="circle"
+        :cx="model.coords.x" :cy="model.coords.y" 
         class="link vertex" :class="{connected: model.isConnected}"
         style="cursor: move;"
         :is-editable="isEditable"

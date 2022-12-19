@@ -250,6 +250,7 @@
             .segment.highlighted {stroke: #525440; stroke-width: 3px}
             .segment.selected {stroke: #525440; stroke-width: 4px}
             .vertex {stroke: #525440; stroke-width: 4px; fill: white; r: 6px}
+            .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
         </style>
     </link-class>
 </kresmer-library>
