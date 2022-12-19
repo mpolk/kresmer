@@ -68,7 +68,7 @@ export default class UndoStack {
     /** Redoes the last undone operation (or the next after the last already redone ones) */
     redo()
     {
-        if (this.stackPointer <= this.stack.length - 1) {
+        if (this.stackPointer < this.stack.length - 1) {
             this.stack[++this.stackPointer].redo();
         }//if
     }//redo

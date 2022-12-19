@@ -62,7 +62,7 @@ export default class Menus {
         label: 'Edit',
         submenu: [
           { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
-          { role: 'redo' },
+          { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
           { role: 'cut' },
           { role: 'copy' },
@@ -120,13 +120,7 @@ export default class Menus {
       {
         role: 'help',
         submenu: [
-          {
-            label: 'Learn More',
-            click: async () => {
-              const { shell } = require('electron')
-              await shell.openExternal('https://electronjs.org')
-            }
-          }
+          { role: 'about' },
         ]
       }
     ] as any
