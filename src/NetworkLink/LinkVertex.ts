@@ -10,6 +10,7 @@ import { Position } from "../Transform/Transform";
 import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
+import { EditorOperation } from "../UndoStack";
 
 /** Link Vertex (either connected or free) */
 
@@ -87,6 +88,24 @@ export default class LinkVertex {
         }//if
     }//endPointCoords
 
+    get extPos(): LinkVertexExtPos
+    {
+        return {
+            pos: this.pos,
+            conn: this.conn,
+            isPinnedUp: this._isPinnedUp,
+            isConnected: this._isConnected,
+        }
+    }//get extPos
+
+    set extPos(extPos: LinkVertexExtPos)
+    {
+        this.pos = extPos.pos;
+        this.conn = extPos.conn;
+        this._isPinnedUp = extPos.isPinnedUp;
+        this._isConnected = extPos.isConnected;
+    }//set extPos
+
 
     private getMousePosition(event: MouseEvent) {
         return this.link.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
@@ -100,6 +119,7 @@ export default class LinkVertex {
         this.isGoingToBeDragged = true;
         this.link.bringToTop();
         this.link.kresmer.emit("link-vertex-move-started", this);
+        this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
     }//startDrag
 
 
@@ -151,7 +171,7 @@ export default class LinkVertex {
                 } else {
                     console.error('Reference to undefined connection point "%s"', connectionPointData);
                 }//if
-                return true;
+                break;
             }//if
         }//for
 
@@ -161,6 +181,7 @@ export default class LinkVertex {
             this.conn = undefined;
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
+        this.link.kresmer.undoStack.commitOperation();
         return true;
     }//endDrag
 
@@ -172,11 +193,47 @@ export default class LinkVertex {
 
 }//LinkVertex
 
-
-export type LinkVertexInitParams = {
+// Auxiliary interfaces for initialization and position saving
+export interface LinkVertexInitParams  {
     pos?: Position, 
     conn?: {
         component: string, 
         connectionPoint: string
     }
 }//LinkVertexInitParams
+
+/** Extended Link Vertex position (includes its connection if it is connected) */
+interface LinkVertexExtPos {
+    pos?: Position;
+    conn?: ConnectionPointProxy; 
+    isPinnedUp: boolean,
+    isConnected: boolean,
+}//LinkVertexExtPos
+
+// Editor operations
+class VertexMoveOp extends EditorOperation {
+    constructor(vertex: LinkVertex)
+    {
+        super();
+        this.vertex = vertex;
+        this.oldPos = vertex.extPos;
+    }//ctor
+
+    private vertex: LinkVertex;
+    private oldPos: LinkVertexExtPos;
+    private newPos?: LinkVertexExtPos;
+
+    override onCommit()
+    {
+        this.newPos = this.vertex.extPos;
+    }//onCommit
+
+    override undo(): void {
+        this.vertex.extPos = this.oldPos;
+    }//undo
+
+    override exec(): void {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.vertex.extPos = this.newPos!;
+    }//exec
+}//VertexMoveOp

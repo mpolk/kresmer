@@ -43,6 +43,7 @@ export default class UndoStack {
             this.stack.splice(this.stackPointer, this.stack.length - 1 - this.stackPointer);
         }//if
 
+        op.onCommit();
         this.stack.push(op);
         this.operationInProgress = undefined;
         if (this.stack.length <= UndoStack.MAX_UNDOES) {
@@ -62,9 +63,11 @@ export default class UndoStack {
         this.operationInProgress = undefined;
     }//cancelOperation
 
+    /** Executes the operation and commits it a single step */
     execAndCommit(op: EditorOperation)
     {
-        op.exec() && this._commit(op);
+        op.exec();
+        this._commit(op);
     }//execAndCommit
 
     /** Undoes the last operation (or the next after the last already undone ones) */
@@ -88,6 +91,7 @@ export default class UndoStack {
 
 export abstract class EditorOperation {
     abstract undo(): void;
-    abstract exec(): boolean;
+    abstract exec(): void;
     redo() {this.exec()}
+    onCommit() {/* do nothing by default */}
 }//EditorOperation

@@ -120,7 +120,6 @@ class DeleteVertexOp extends EditorOperation {
         for (let i = vertexNumber; i < link.vertices.length; i++) {
             link.vertices[i].vertexNumber--;
         }//for
-        return true;
     }//exec
 
     undo() {
