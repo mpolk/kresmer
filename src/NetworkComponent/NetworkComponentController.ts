@@ -12,6 +12,7 @@ import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
 import { Position, Transform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
+import { EditorOperation } from "../UndoStack";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
@@ -65,6 +66,7 @@ export default class NetworkComponentController {
         this.isGoingToBeDragged = true;
         this.bringComponentToTop();
         this.kresmer.emit("component-move-started", this);
+        this.kresmer.undoStack.startOperation(new ComponentMoveOp(this));
     }//startDrag
 
     public drag(event: MouseEvent)
@@ -93,6 +95,7 @@ export default class NetworkComponentController {
             this.isDragged = false;
             this.updateConnectionPoints();
             this.kresmer.emit("component-moved", this);
+            this.kresmer.undoStack.commitOperation();
             return true;
         }//if
 
@@ -175,7 +178,7 @@ export default class NetworkComponentController {
         return true;
     }//endTransform
 
-    private updateConnectionPoints()
+    public updateConnectionPoints()
     {
         for (const name in this.component.connectionPoints) {
             this.component.connectionPoints[name].updatePos();
@@ -226,3 +229,34 @@ export default class NetworkComponentController {
     }//onTransformBoxClick
 
 }//NetworkComponentController
+
+
+// Editor operations
+class ComponentMoveOp extends EditorOperation {
+
+    constructor(controller: NetworkComponentController)
+    {
+        super();
+        this.controller = controller;
+        this.oldPos = {...controller.origin};
+    }//ctor
+
+    private controller: NetworkComponentController;
+    private oldPos: Position;
+    private newPos?: Position;
+
+    override onCommit(): void {
+        this.newPos = {...this.controller.origin};
+    }//onCommit
+
+    override exec(): void {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.controller.origin = {...this.newPos!};
+        this.controller.updateConnectionPoints();
+    }//exec
+
+    override undo(): void {
+        this.controller.origin = {...this.oldPos};
+        this.controller.updateConnectionPoints();
+    }//undo
+}//ComponentMoveOp

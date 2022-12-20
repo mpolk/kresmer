@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject, onMounted, ref, watch } from 'vue';
+    import { inject, onMounted, onUpdated, ref, watch, nextTick } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkComponent from '../NetworkComponent/NetworkComponent';
     import ConnectionPointProxy from './ConnectionPointProxy';
@@ -43,7 +43,7 @@
         proxy.setCoords(connectionCoords);
     }//updatePos
 
-    watch(proxy.posUpdateTrigger, updatePos);
+    watch(proxy.posUpdateTrigger, () => {nextTick(updatePos)});
 </script>
 
 <template>
