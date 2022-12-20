@@ -40,9 +40,24 @@
      */
     constructor(init?: ITransform)
     {
-        init?.rotation && (this.rotation = {...init.rotation});
-        init?.scale && (this.scale = {...init.scale});
+        init && (this.data = init);
     }//ctor
+
+    /** Get bare data */
+    get data(): ITransform
+    {
+        return {
+            rotation: this.rotation ? {...this.rotation} : undefined,
+            scale: this.scale? {...this.scale} : undefined,
+        }
+    }//get data
+
+    /** Modifies this Transform from the bare data */
+    set data(data: ITransform)
+    {
+        this.rotation = data.rotation ? {...data.rotation} : {angle: 0, x: 0, y:0};
+        this.scale = data.scale ? {...data.scale} : {x: 1, y: 1};
+    }//set data
 
     /**
      * Generates an SVG "transform" attribute for this Transform

@@ -10,7 +10,7 @@
 
 import Kresmer from "../Kresmer";
 import NetworkComponent from "./NetworkComponent";
-import { Position, Transform } from "../Transform/Transform";
+import { Position, Transform, ITransform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
 import { EditorOperation } from "../UndoStack";
 
@@ -110,6 +110,7 @@ export default class NetworkComponentController {
         this.transformMode = "rotation";
         this.bringComponentToTop();
         this.kresmer.emit("component-transform-started", this);
+        this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startRotate
 
     public rotate(event: MouseEvent, center: Position)
@@ -143,6 +144,7 @@ export default class NetworkComponentController {
         this.transformMode = "scaling";
         this.kresmer.emit("component-transform-started", this);
         this.bringComponentToTop();
+        this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startScale
 
     public scale(event: MouseEvent, zone: TransformBoxZone, bBox: SVGRect, center: Position)
@@ -172,6 +174,7 @@ export default class NetworkComponentController {
         this.isBeingTransformed = false;
         this.updateConnectionPoints();
         this.kresmer.emit("component-transformed", this);
+        this.kresmer.undoStack.commitOperation();
         return true;
     }//endTransform
 
@@ -256,3 +259,31 @@ class ComponentMoveOp extends EditorOperation {
         this.controller.updateConnectionPoints();
     }//undo
 }//ComponentMoveOp
+
+class ComponentTransformOp extends EditorOperation {
+
+    constructor(controller: NetworkComponentController)
+    {
+        super();
+        this.controller = controller;
+        this.oldTransform = controller.transform.data;
+    }//ctor
+
+    private controller: NetworkComponentController;
+    private oldTransform: ITransform;
+    private newTransform?: ITransform;
+
+    override onCommit(): void {
+        this.newTransform = this.controller.transform.data;
+    }//onCommit
+
+    override exec(): void {
+        this.controller.transform.data = this.newTransform!;
+        this.controller.updateConnectionPoints();
+    }//exec
+
+    override undo(): void {
+        this.controller.transform.data = this.oldTransform;
+        this.controller.updateConnectionPoints();
+    }//undo
+}//ComponentTransformOp
