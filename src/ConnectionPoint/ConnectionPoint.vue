@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject, onMounted, onUpdated, ref, watch, nextTick } from 'vue';
+    import { inject, onMounted, ref, watch, nextTick } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkComponent from '../NetworkComponent/NetworkComponent';
     import ConnectionPointProxy from './ConnectionPointProxy';
@@ -22,11 +22,9 @@
     });
 
     const proxy = new ConnectionPointProxy();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const component = inject(NetworkComponent.injectionKey)!;
     component.connectionPoints[props.name] = proxy;
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const kresmer = inject(Kresmer.injectionKey)!;
     const circle = ref<SVGCircleElement>();
 
@@ -34,7 +32,6 @@
     function updatePos()
     {
         const drawingRect = kresmer.drawingRect;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const matrix = circle.value!.getCTM()!;
         const connectionCoords = {
             x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - drawingRect.left - window.scrollX,

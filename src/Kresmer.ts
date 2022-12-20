@@ -412,7 +412,6 @@ export default class Kresmer extends KresmerEventHooks {
     /** Returns the root SVG element */
     public get rootSVG(): SVGGraphicsElement
     {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         return this.vueKresmer.rootSVG!;
     }//rootSVG
 
@@ -482,7 +481,6 @@ export default class Kresmer extends KresmerEventHooks {
      * @returns The transformed position
      */
     public applyScreenCTM(pos: Position) {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const CTM = this.rootSVG.getScreenCTM()!;
         return {
           x: (pos.x - CTM.e) / CTM.a,

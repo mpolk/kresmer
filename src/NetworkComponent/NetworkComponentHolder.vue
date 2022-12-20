@@ -28,9 +28,7 @@
         isEditable: {type: Boolean, required: true},
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const svg = ref<SVGGraphicsElement>()!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const trGroup = ref<SVGGraphicsElement>()!;
     provide(NetworkComponent.injectionKey, props.controller.component);
 
@@ -154,7 +152,6 @@
                     props.controller.startScale(transformStartEvent);
                     break;
                 case "rot-handle":
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     props.controller.startRotate(transformStartEvent);
                     break;
             }//switch
@@ -166,7 +163,6 @@
             switch(zone) {
                 case "tr-box":
                     if (props.controller.isBeingTransformed && props.controller.transformMode == "scaling") {
-                        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                         props.controller.scale(event, lastActiveHandle, bBox.value!, center.value!);
                     } else {
                         props.controller.drag(event);
@@ -181,11 +177,9 @@
                 case "s-handle":
                 case "se-handle":
                     lastActiveHandle = zone;
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     props.controller.scale(event, zone, bBox.value!, center.value!);
                     break;
                 case "rot-handle":
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     props.controller.rotate(event, center.value!);
                     break;
             }//switch

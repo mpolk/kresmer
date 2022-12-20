@@ -16,9 +16,7 @@
         isEndpoint: {type: Boolean, default: false},
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const circle = ref<HTMLElement>()!;
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const padding = ref<HTMLElement>()!;
 
     function onMouseDown(event: MouseEvent)

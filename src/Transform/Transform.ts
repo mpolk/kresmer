@@ -86,7 +86,6 @@
         console.assert(this.operationStartTransform);
         const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / 
                            Math.PI * 180;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.rotation.angle = this.operationStartTransform!.rotation.angle + angleDelta;
         (this.rotation.angle < 0) && (this.rotation.angle += 360);
         (this.rotation.angle > 360) && (this.rotation.angle -= 360);
@@ -147,9 +146,7 @@
             }
         }//switch
 
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.scale.x = this.operationStartTransform!.scale.x + 2 * dx1 / bBoxSize.width;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.scale.y = this.operationStartTransform!.scale.y + 2 * dy1 / bBoxSize.height;
     }//changeScale
 }//Transform

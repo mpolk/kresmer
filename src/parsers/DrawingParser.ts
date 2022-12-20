@@ -90,7 +90,6 @@ export default class DrawingParser {
         const propsFromAttributes: RawProps = {};
         for (const attrName of node.getAttributeNames()) {
             if (attrName !== "class") {
-                // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                 propsFromAttributes[attrName] = node.getAttribute(attrName)!;
             }//if
         }//for
@@ -169,7 +168,6 @@ export default class DrawingParser {
                 case "class": case "from": case "to":
                     break;
                 default:
-                    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
                     propsFromAttributes[attrName] = node.getAttribute(attrName)!;
             }//switch
         }//for
@@ -234,10 +232,8 @@ export default class DrawingParser {
                                         in Vertex: ${node.parentElement?.toString()}`);
         }//if
         if (x !== null) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return {pos: {x: parseFloat(x), y: parseFloat(y!)}};
         }//if
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const [component, connectionPoint] = connect!.split(':');
         if (!connectionPoint) {
             throw new ParsingException(`Invalid connection point specification: "${connect}"`);

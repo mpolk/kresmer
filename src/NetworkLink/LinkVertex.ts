@@ -78,10 +78,8 @@ export default class LinkVertex {
     get coords(): Position
     {
         if (this._isPinnedUp) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return this.pos!;
         } else if (this._isConnected) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             return this.conn!.coords;
         } else {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
@@ -137,9 +135,7 @@ export default class LinkVertex {
             
         const mousePos = this.getMousePosition(event);
         this.pos = {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
         }
         this.link.kresmer.emit("link-vertex-being-moved", this);
@@ -177,7 +173,6 @@ export default class LinkVertex {
         }//for
 
         if (this.wasConnected) {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             this.link.kresmer.emit("link-vertex-disconnected", this, this.conn!);
             this.conn = undefined;
         }//if
@@ -234,7 +229,6 @@ class VertexMoveOp extends EditorOperation {
     }//undo
 
     override exec(): void {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.vertex.extPos = this.newPos!;
     }//exec
 }//VertexMoveOp

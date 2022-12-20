@@ -79,9 +79,7 @@ export default class NetworkComponentController {
         }//if
             
         const mousePos = this.getMousePosition(event);
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.origin.x = mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.origin.y = mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y;
         this.updateConnectionPoints();
         this.kresmer.emit("component-being-moved", this);
@@ -131,7 +129,6 @@ export default class NetworkComponentController {
         const mousePos = this.getMousePosition(event);
         const c = {x: center.x + this.origin.x, y: center.y + this.origin.y};
         const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const r0 = {x: this.savedMousePos!.x - c.x, y: this.savedMousePos!.y - c.y};
         return {r1, r0};
     }//makeRaduisVectors
@@ -250,7 +247,6 @@ class ComponentMoveOp extends EditorOperation {
     }//onCommit
 
     override exec(): void {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         this.controller.origin = {...this.newPos!};
         this.controller.updateConnectionPoints();
     }//exec
