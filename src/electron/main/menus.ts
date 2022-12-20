@@ -5,8 +5,8 @@
  * -----------------------------------------------------------------------
  *                      Menus for Electron application
  ***************************************************************************/
-import {app, BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
-import { sendAppCommand } from "./main";
+import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
+import { openDrawing, sendAppCommand } from "./main";
 
 const isMac = process.platform === 'darwin'
 
@@ -35,25 +35,13 @@ export default class Menus {
     }//ctor
     
     private static readonly appMenuTemplate: MenuItemConstructorOptions[] = [
-      // { role: 'appMenu' }
-      ...(isMac ? [{
-        label: app.name,
-        submenu: [
-          { role: 'about' },
-          { type: 'separator' },
-          { role: 'services' },
-          { type: 'separator' },
-          { role: 'hide' },
-          { role: 'hideOthers' },
-          { role: 'unhide' },
-          { type: 'separator' },
-          { role: 'quit' }
-        ]
-      }] : []),
       // { role: 'fileMenu' }
       {
         label: 'File',
         submenu: [
+          {label: "Open drawing...", accelerator: "Control+O", click: () => openDrawing()},
+          {label: "Load library..."},
+          { type: 'separator' },
           isMac ? { role: 'close' } : { role: 'quit' }
         ]
       },
@@ -64,26 +52,7 @@ export default class Menus {
           { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
           { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
-          { role: 'cut' },
-          { role: 'copy' },
-          { role: 'paste' },
-          ...(isMac ? [
-            { role: 'pasteAndMatchStyle' },
-            { role: 'delete' },
-            { role: 'selectAll' },
-            { type: 'separator' },
-            {
-              label: 'Speech',
-              submenu: [
-                { role: 'startSpeaking' },
-                { role: 'stopSpeaking' }
-              ]
-            }
-          ] : [
-            { role: 'delete' },
-            { type: 'separator' },
-            { role: 'selectAll' }
-          ])
+          { role: 'delete' },
         ]
       },
       // { role: 'viewMenu' }
@@ -101,29 +70,13 @@ export default class Menus {
           { role: 'togglefullscreen' }
         ]
       },
-      // { role: 'windowMenu' }
-      {
-        label: 'Window',
-        submenu: [
-          { role: 'minimize' },
-          { role: 'zoom' },
-          ...(isMac ? [
-            { type: 'separator' },
-            { role: 'front' },
-            { type: 'separator' },
-            { role: 'window' }
-          ] : [
-            { role: 'close' }
-          ])
-        ]
-      },
       {
         role: 'help',
         submenu: [
           { role: 'about' },
         ]
       }
-    ] as any
+    ]// as MenuItemConstructorOptions[]
 
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
         {

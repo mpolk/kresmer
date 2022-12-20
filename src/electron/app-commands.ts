@@ -10,7 +10,12 @@ import { ContextMenuCommands } from "./main/menus";
 
 export interface AppCommandFormats extends ContextMenuCommands {
     "load-library": (libData: string) => void,
-    "load-drawing": (drawingData: string, drawingName?: string) => void,
+    "load-drawing": (drawingData: string, 
+                     options?: {
+                        drawingName?: string, 
+                        erasePreviousContent?: boolean,
+                        completionSignal?: number,
+                    }) => void,
     "undo": () => void,
     "redo": () => void,
 }//AppCommandFormats

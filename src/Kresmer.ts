@@ -326,11 +326,16 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Loads a component class library from the raw XML data
      * @param dwgData Library data
+     * @param erasePreviousContent Specifies whether the exisiting content should be deleting
      */
-    public loadDrawing(dwgData: string): boolean
+    public loadDrawing(dwgData: string, erasePreviousContent?: boolean): boolean
     {
         console.debug("Loading drawing...");
         // console.debug(dwgData);
+        if (erasePreviousContent) {
+            this.eraseContent();
+        }//if
+
         const parser = new DrawingParser(this);
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
@@ -346,6 +351,25 @@ export default class Kresmer extends KresmerEventHooks {
         }//for
         return !wereErrors;
     }//loadDrawing
+
+
+    /** Erases everything that is in the drawing now */
+    public eraseContent()
+    {
+        this.undoStack.reset();
+        for (const name in this.linksByName) {
+            delete this.linksByName[name];
+        }//for
+        for (const id in this.links) {
+            delete this.links[id];
+        }//for
+        for (const name in this.componentsByName) {
+            delete this.componentsByName[name];
+        }//for
+        for (const id in this.networkComponents) {
+            delete this.networkComponents[id];
+        }//for
+    }//eraseContent
 
 
     /**

@@ -86,6 +86,14 @@ export default class UndoStack {
         }//if
     }//redo
 
+    /** Clears the stack content and resets the stack to the initial state */
+    reset()
+    {
+        this.stackPointer = -1;
+        this.stack.splice(0, this.stack.length);
+        this.operationInProgress = undefined;
+    }//reset
+
 }//UndoStack
 
 

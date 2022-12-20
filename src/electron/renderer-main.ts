@@ -82,13 +82,18 @@ function loadLibrary(libData: string)
     window.electronAPI.signalReadiness(1);
 }//loadLibrary
 
-function loadDrawing(drawingData: string, drawingName?: string)
+function loadDrawing(drawingData: string, 
+                     options?: {
+                        drawingName?: string,
+                        erasePreviousContent?: boolean,
+                        completionSignal?: number,
+                    })
 { 
     try {
-        if (!kresmer.loadDrawing(drawingData))
+        if (!kresmer.loadDrawing(drawingData, options?.erasePreviousContent))
             alert("There were errors during drawing load (see the log)");
-        else if (drawingName)
-            window.document.title = `${drawingName} - Kresmer`;
+        else if (options?.drawingName)
+            window.document.title = `${options.drawingName} - Kresmer`;
     } catch (exc) {
         if (exc instanceof ParsingException) {
             alert(exc.message);
@@ -97,7 +102,9 @@ function loadDrawing(drawingData: string, drawingName?: string)
             throw exc;
         }//if
     }//catch
-    window.electronAPI.signalReadiness(2);
+    if (options?.completionSignal) {
+        window.electronAPI.signalReadiness(options.completionSignal);
+    }//if
 }//loadDrawing
 
 function indicateComponentTransform(controller: NetworkComponentController)

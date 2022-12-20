@@ -9,7 +9,7 @@
 import path from 'path';
 import fs from 'fs';
 import process from 'process';
-import { app, BrowserWindow, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../../package.json");
@@ -80,8 +80,8 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             const autoload = argv[1] == "." ? argv[2] : argv[1];
             if (fs.existsSync(autoload)) {
                 const dwgData = fs.readFileSync(autoload, "utf-8");
-                const fileName = path.basename(autoload);
-                sendAppCommand("load-drawing", dwgData, fileName);
+                const drawingName = path.basename(autoload);
+                sendAppCommand("load-drawing", dwgData, {drawingName, completionSignal: 2});
             }//if
             break;
         }
@@ -89,13 +89,6 @@ function initApp(mainWindow: BrowserWindow, stage: number)
 }//initApp
 
 let mainWindow: BrowserWindow;
-
-export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: Parameters<AppCommandFormats[Command]>): void;
-export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: unknown[])
-{
-    mainWindow.webContents.send("command", command, ...args);
-}//sendAppCommand
-
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -117,3 +110,36 @@ app.on('window-all-closed', () => {
         app.quit();
     }
 });
+
+
+export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: Parameters<AppCommandFormats[Command]>): void;
+export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: unknown[])
+{
+    mainWindow.webContents.send("command", command, ...args);
+}//sendAppCommand
+
+
+export async function openDrawing()
+{
+    // console.debug("About to show 'Open drawing dialog...'")
+    const filePath = dialog.showOpenDialogSync(mainWindow, {
+        title: "Open drawing file",
+        filters: [
+            {name: "Kresmer drawing files (*.kre)", extensions: ["kre"]},
+            {name: "All files (*.*)", extensions: ["*"]},
+        ]
+    });
+
+    if (filePath) {
+        const erasePreviousContent = (await dialog.showMessageBox(mainWindow, {
+            type: "question",
+            message: "Should the previous drawing content be erased before loading the new one?",
+            checkboxLabel: "erase existing content",
+            checkboxChecked: true,
+        })).checkboxChecked;
+
+        const dwgData = fs.readFileSync(filePath[0], "utf-8");
+        const drawingName = path.basename(filePath[0]);
+        sendAppCommand("load-drawing", dwgData, {drawingName, erasePreviousContent});
+    }//if
+}//openDrawing
