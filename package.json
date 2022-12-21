@@ -65,6 +65,8 @@
     }
   },
   "dependencies": {
+    "@popperjs/core": "^2.11.6",
+    "bootstrap": "^5.2.3",
     "pinia": "^2.0.16",
     "sass": "^1.54.3",
     "vue": "^3.2.37",
@@ -72,6 +74,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
+    "@types/bootstrap": "^5.2.6",
     "@types/node": "^18.8.0",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vue/eslint-config-typescript": "^11.0.0",

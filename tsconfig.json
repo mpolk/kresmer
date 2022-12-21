@@ -18,6 +18,7 @@
     // "rootDir": "src/electron",
     // "outDir": "dist/electron",
     "declaration": true,
+    "allowSyntheticDefaultImports": true,
   },
   "include": ["src/**/*"],
   "references": [
