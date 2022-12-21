@@ -33,17 +33,6 @@ import UndoStack from "./UndoStack";
  */
 export default class Kresmer extends KresmerEventHooks {
 
-    /** Kresmer's vue-component Application */
-    readonly appKresmer: App;
-    /** Kresmer's vue-component instance itself */
-    readonly vueKresmer: InstanceType<typeof KresmerVue>;
-    /** A symbolic key for the Kresmer instance injection */
-    static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
-    /** Global SVG Defs */
-    public readonly defs: Template[] = [];
-    /** CSS styles collected component libraries */
-    public styles: PostCSSRoot[] = [];
-
     constructor(mountPoint: string|HTMLElement, options?: {
         drawingWidth?: number | string,
         drawingHeight?: number | string,
@@ -52,16 +41,12 @@ export default class Kresmer extends KresmerEventHooks {
         isEditable?: boolean,
     }) {
         super();
-        if (options?.drawingWidth)
-            this.drawingWidth = options.drawingWidth;
-        if (options?.drawingHeight)
-            this.drawingHeight = options.drawingHeight;
-        if (options?.viewWidth)
-            this.viewWidth = options.viewWidth;
-        if (options?.viewHeight)
-            this.viewHeight = options.viewHeight;
-        if (options?.isEditable !== undefined)
-            this.isEditable = options.isEditable;
+        this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
+        options?.drawingWidth && (this.drawingWidth = options.drawingWidth);
+        options?.drawingHeight && (this.drawingHeight = options.drawingHeight);
+        options?.viewWidth && (this.viewWidth = options.viewWidth);
+        options?.viewHeight && (this.viewHeight = options.viewHeight);
+        options?.isEditable !== undefined && (this.isEditable = options.isEditable);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -89,6 +74,17 @@ export default class Kresmer extends KresmerEventHooks {
     }//ctor
 
 
+    /** Kresmer's vue-component Application */
+    readonly appKresmer: App;
+    /** Kresmer's vue-component instance itself */
+    readonly vueKresmer: InstanceType<typeof KresmerVue>;
+    /** A symbolic key for the Kresmer instance injection */
+    static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
+    /** Global SVG Defs */
+    public readonly defs: Template[] = [];
+    /** CSS styles collected component libraries */
+    public styles: PostCSSRoot[] = [];
+
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
     readonly drawingWidth: number|string = "100%";
@@ -102,6 +98,8 @@ export default class Kresmer extends KresmerEventHooks {
     readonly viewHeight: number = 1000;
     /** Determines whether the drawing is editable */
     readonly isEditable: boolean = true;
+    /** The element Kresmer was mounted on */
+    readonly mountPoint: HTMLElement;
 
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack;
@@ -440,7 +438,7 @@ export default class Kresmer extends KresmerEventHooks {
     }//rootSVG
 
 
-    /** Returns the whole drawing boundiing rectangle */
+    /** Returns the whole drawing bounding rectangle */
     public get drawingRect(): DOMRect
     {
         return this.rootSVG.getBoundingClientRect();

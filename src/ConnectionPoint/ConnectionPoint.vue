@@ -32,10 +32,13 @@
     function updatePos()
     {
         const drawingRect = kresmer.drawingRect;
+        const mountingRect = kresmer.mountPoint.getBoundingClientRect();
         const matrix = circle.value!.getCTM()!;
         const connectionCoords = {
-            x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - drawingRect.left - window.scrollX,
-            y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - drawingRect.top - window.scrollY,
+            x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
+               drawingRect.left + mountingRect.left /* - window.scrollX */,
+            y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - 
+               drawingRect.top + mountingRect.top /* - window.scrollY */,
         };        
         proxy.setCoords(connectionCoords);
     }//updatePos
