@@ -9,7 +9,7 @@
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
 import Hints from './hints';
-import Kresmer from '../Kresmer';
+import Kresmer, { DrawingMergeOptions } from '../Kresmer';
 import ParsingException from '../parsers/ParsingException';
 import StatusBar from './status-bar.vue';
 import NetworkComponentController from '../NetworkComponent/NetworkComponentController';
@@ -17,6 +17,7 @@ import NetworkComponent from '../NetworkComponent/NetworkComponent';
 import NetworkLink from '../NetworkLink/NetworkLink';
 import LinkVertex from '../NetworkLink/LinkVertex';
 import { AppCommandExecutor } from './app-commands';
+import DrawingMergeDialog from './drawing-merge-dialog.vue';
 
 export const kresmer = new Kresmer('#kresmer');
 
@@ -51,6 +52,9 @@ kresmer
     .on("link-vertex-right-click", onLinkVertexRightClick)
     ;
 
+const drawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
+    InstanceType<typeof DrawingMergeDialog>;
+
 const appCommandExecutor = new AppCommandExecutor;
 appCommandExecutor
     .on("load-library", loadLibrary)
@@ -82,15 +86,19 @@ function loadLibrary(libData: string)
     window.electronAPI.signalReadiness(1);
 }//loadLibrary
 
-function loadDrawing(drawingData: string, 
+async function loadDrawing(drawingData: string, 
                      options?: {
                         drawingName?: string,
-                        erasePreviousContent?: boolean,
+                        mergeOptions?: DrawingMergeOptions,
                         completionSignal?: number,
                     })
 { 
     try {
-        if (!kresmer.loadDrawing(drawingData, options?.erasePreviousContent))
+        if (!options?.mergeOptions) {
+            await drawingMergeDialog.show();
+        }//if
+
+        if (!kresmer.loadDrawing(drawingData, options?.mergeOptions))
             alert("There were errors during drawing load (see the log)");
         else if (options?.drawingName)
             window.document.title = `${options.drawingName} - Kresmer`;

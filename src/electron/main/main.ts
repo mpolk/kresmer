@@ -81,7 +81,12 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             if (fs.existsSync(autoload)) {
                 const dwgData = fs.readFileSync(autoload, "utf-8");
                 const drawingName = path.basename(autoload);
-                sendAppCommand("load-drawing", dwgData, {drawingName, completionSignal: 2});
+                sendAppCommand("load-drawing", dwgData, 
+                                {
+                                    drawingName, 
+                                    completionSignal: 2, 
+                                    mergeOptions: "ignore-duplicates"
+                                });
             }//if
             break;
         }
@@ -119,7 +124,7 @@ export function sendAppCommand<Command extends AppCommand>(command: Command, ...
 }//sendAppCommand
 
 
-export async function openDrawing()
+export function openDrawing()
 {
     // console.debug("About to show 'Open drawing dialog...'")
     const filePath = dialog.showOpenDialogSync(mainWindow, {
@@ -131,15 +136,8 @@ export async function openDrawing()
     });
 
     if (filePath) {
-        const erasePreviousContent = (await dialog.showMessageBox(mainWindow, {
-            type: "question",
-            message: "Should the previous drawing content be erased before loading the new one?",
-            checkboxLabel: "erase existing content",
-            checkboxChecked: true,
-        })).checkboxChecked;
-
         const dwgData = fs.readFileSync(filePath[0], "utf-8");
         const drawingName = path.basename(filePath[0]);
-        sendAppCommand("load-drawing", dwgData, {drawingName, erasePreviousContent});
+        sendAppCommand("load-drawing", dwgData, {drawingName});
     }//if
 }//openDrawing

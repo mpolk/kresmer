@@ -326,11 +326,11 @@ export default class Kresmer extends KresmerEventHooks {
      * @param dwgData Library data
      * @param erasePreviousContent Specifies whether the exisiting content should be deleting
      */
-    public loadDrawing(dwgData: string, erasePreviousContent?: boolean): boolean
+    public loadDrawing(dwgData: string, mergeOptions?: DrawingMergeOptions): boolean
     {
         console.debug("Loading drawing...");
         // console.debug(dwgData);
-        if (erasePreviousContent) {
+        if (mergeOptions === "erase-previous-content") {
             this.eraseContent();
         }//if
 
@@ -549,3 +549,11 @@ export const GeneralTemplateFunctions = {
             Object.defineProperty(GeneralTemplateFunctions.$$, name, {value});
     }//$global
 }//GeneralTemplateFunctions
+
+/** The way to perform drawing merge upon its loading */
+export type DrawingMergeOptions = 
+    "erase-previous-content" | 
+    "merge-duplicates" |
+    "rename-duplicates" |
+    "decline-duplicates" |
+    "ignore-duplicates";
