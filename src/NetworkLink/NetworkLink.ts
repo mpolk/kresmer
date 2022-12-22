@@ -45,10 +45,12 @@ export default class NetworkLink extends NetworkElement {
 
     public zIndex = -1;
     private savedZIndex = -1;
+    private verticesInitialized = false;
     vertices: LinkVertex[] = [];
 
     readonly initVertices = () => {
         this.vertices.forEach(vertex => vertex.init());
+        this.verticesInitialized = true;
     }//initVertices
 
     /** A symbolic key for the component instance injection */
@@ -58,6 +60,15 @@ export default class NetworkLink extends NetworkElement {
     {
         return `Link${this.id}`;
     }//getDefaultName
+
+    toString()
+    {
+        let str = `${this.name}: ${this.getClass().name}`;
+        if (this.verticesInitialized) {
+            str += ` (${this.vertices[0]} => ${this.vertices[this.vertices.length - 1]})`;
+        }//if
+        return str;
+    }//toString
 
     public selectLink()
     {

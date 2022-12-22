@@ -49,6 +49,9 @@ kresmer
     .on("component-exited-transform-mode", () => hints.pop())
     .on("component-selected", onComponentSelected)
     .on("link-selected", onLinkSelected)
+    .on("link-vertex-moved", onLinkVertexMutated)
+    .on("link-vertex-connected", onLinkVertexMutated)
+    .on("link-vertex-disconnected", onLinkVertexMutated)
     .on("link-vertex-right-click", onLinkVertexRightClick)
     ;
 
@@ -138,7 +141,7 @@ function indicateComponentMove(controller: NetworkComponentController)
 function onComponentSelected(component: NetworkComponent, isSelected: boolean)
 {
     if (isSelected) {
-        hints.push(`${component.name}: ${component.getClass().name}`);
+        hints.push(`${component}`);
     } else {
         hints.pop();
     }//if
@@ -147,7 +150,7 @@ function onComponentSelected(component: NetworkComponent, isSelected: boolean)
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
 {
     if (isSelected) {
-        hints.push(`${link.name}: ${link.getClass().name}`);
+        hints.push(`${link}`);
     } else {
         hints.pop();
     }//if
@@ -157,6 +160,11 @@ function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent *
 {
     window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
 }//onLinkVertexRightClick
+
+function onLinkVertexMutated(vertex: LinkVertex)
+{
+    hints.setHint(`${vertex.link}`);
+}//onLinkVertexMutated
 
 function deleteLinkVertex(linkID: number, vertexNumber: number)
 {

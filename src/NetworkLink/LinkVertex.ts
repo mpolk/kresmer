@@ -15,13 +15,22 @@ import { EditorOperation } from "../UndoStack";
 /** Link Vertex (either connected or free) */
 
 export default class LinkVertex {
+
+    constructor(link: NetworkLink, vertexNumber: number, initParams?: LinkVertexInitParams) 
+    {
+        this.link = link;
+        this.vertexNumber = vertexNumber;
+        this.initParams = initParams;
+    }//ctor
+
     vertexNumber: number;
     initParams?: LinkVertexInitParams;
     private _isPinnedUp = false;
     get isPinnedUp() {return this._isPinnedUp}
     private _isConnected = false;
-    private wasConnected = false;
     get isConnected() {return this._isConnected}
+    private wasConnected = false;
+
     pos?: Position;
     conn?: ConnectionPointProxy; 
     link: NetworkLink;
@@ -31,12 +40,16 @@ export default class LinkVertex {
     private dragStartPos?: Position;
     private savedMousePos?: Position;
 
-    constructor(link: NetworkLink, vertexNumber: number, initParams?: LinkVertexInitParams) 
+    toString()
     {
-        this.link = link;
-        this.vertexNumber = vertexNumber;
-        this.initParams = initParams;
-    }//ctor
+        if (this._isConnected) {
+            return `${this.initParams?.conn?.component}:${this.initParams?.conn?.connectionPoint}`;
+        } else if (this._isPinnedUp) {
+            return `(${this.pos!.x.toFixed()}, ${this.pos!.y.toFixed()})`
+        } else {
+            return "()";
+        }//if
+    }//toString
 
     /** Postponned part of the initialization delayed until after all components are mounted */
     init()
@@ -162,6 +175,10 @@ export default class LinkVertex {
                     this._isPinnedUp = false;
                     if (connectionPoint !== this.conn) {
                         this.conn = connectionPoint;
+                        if (!this.initParams) {
+                            this.initParams = {};
+                        }//if
+                        this.initParams.conn = {component: componentName, connectionPoint: connectionPointName};
                         this.link.kresmer.emit("link-vertex-connected", this);
                     }//if
                 } else {
