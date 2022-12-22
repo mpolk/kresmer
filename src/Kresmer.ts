@@ -334,13 +334,55 @@ export default class Kresmer extends KresmerEventHooks {
             this.eraseContent();
         }//if
 
+        const componentRenames = new Map<string, string>();
+
         const parser = new DrawingParser(this);
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
             if (element instanceof NetworkComponentController) {
+                const componentName = element.component.name;
+                if (componentName in this.componentsByName) {
+                    switch (mergeOptions) {
+                        case "merge-duplicates":
+                            continue;
+                        case "rename-duplicates":
+                            for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
+                                const newName = `${componentName}.${i}`;
+                                if (!(newName in this.componentsByName)) {
+                                    componentRenames.set(componentName, newName);
+                                    element.component.name = newName;
+                                    break;
+                                }//if
+                            }//for
+                            break;
+                    }//switch
+                }//if
                 this.addPositionedNetworkComponent(element);
             } else if (element instanceof Link) {
+                for (const vertex of element.vertices) {
+                    const componentName = vertex.initParams?.conn?.component;
+                    if (componentName && componentRenames.has(componentName)) {
+                        vertex.initParams!.conn!.component = componentRenames.get(componentName)!;
+                    }//if
+                }//for
+
+                const linkName = element.name;
+                if (linkName in this.linksByName) {
+                    switch (mergeOptions) {
+                        case "merge-duplicates":
+                            continue;
+                        case "rename-duplicates":
+                            for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
+                                const newName = `${linkName}.${i}`;
+                                if (!(newName in this.linksByName)) {
+                                    element.name = newName;
+                                    break;
+                                }//if
+                            }//for
+                            break;
+                    }//switch
+                }//if
                 this.addLink(element);
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
@@ -555,5 +597,4 @@ export type DrawingMergeOptions =
     "erase-previous-content" | 
     "merge-duplicates" |
     "rename-duplicates" |
-    "decline-duplicates" |
     "ignore-duplicates";

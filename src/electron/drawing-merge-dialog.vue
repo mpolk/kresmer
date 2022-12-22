@@ -88,10 +88,10 @@
                     </label>
                 </div>
                 <div class="form-check">
-                    <input class="form-check-input" type="radio" id="rbDeclineDuplicates" name="mergeOptions"
-                           value="decline-duplicates" v-model="result" @click="showWarning = false">
-                    <label class="form-check-label" for="rbDeclineDuplicates">
-                        Decline duplicates
+                    <input class="form-check-input" type="radio" id="rbRenameDuplicates" name="mergeOptions"
+                           value="rename-duplicates" v-model="result" @click="showWarning = false">
+                    <label class="form-check-label" for="rbRenameDuplicates">
+                        Rename duplicates
                     </label>
                 </div>
                 <div class="form-check">

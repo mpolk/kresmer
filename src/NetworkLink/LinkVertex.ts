@@ -16,7 +16,7 @@ import { EditorOperation } from "../UndoStack";
 
 export default class LinkVertex {
     vertexNumber: number;
-    private initParams?: LinkVertexInitParams;
+    initParams?: LinkVertexInitParams;
     private _isPinnedUp = false;
     get isPinnedUp() {return this._isPinnedUp}
     private _isConnected = false;

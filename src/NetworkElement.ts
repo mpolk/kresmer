@@ -47,7 +47,7 @@ export default abstract class NetworkElement {
     readonly props?: Record<string, unknown>;
 
     /** A name for component lookup*/
-    readonly _name?: string;
+    private _name?: string;
     get name()
     {
         if (this._name)
@@ -55,6 +55,10 @@ export default abstract class NetworkElement {
         else
             return this.getDefaultName();
     }//name
+    set name(newName: string)
+    {
+        this._name = newName;
+    }//set name
     abstract getDefaultName(): string;
 
     protected _isSelected = false;
