@@ -18,7 +18,7 @@ export type ContextMenuID = keyof ContextMenus;
 
 type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
-    "adjust-vertex-position": ContextMenuHandler<"link-vertex">,
+    "align-vertex": ContextMenuHandler<"link-vertex">,
     "delete-vertex": ContextMenuHandler<"link-vertex">,
 }//ContextMenuCommands
 
@@ -81,7 +81,7 @@ export default class Menus {
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
         {
             "link-vertex": [
-                {label: "Adjust vertex position", id: "adjust-vertex-position"},
+                {label: "Align vertex (double-click)", id: "align-vertex"},
                 {label: "Delete vertex", id: "delete-vertex"},
             ],
         }

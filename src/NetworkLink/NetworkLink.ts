@@ -100,6 +100,7 @@ export default class NetworkLink extends NetworkElement {
         this.zIndex = this.savedZIndex;
     }//restoreZPosition
 
+
     public deleteVertex(vertexNumber: number) {
         if (this.vertices.length <= vertexNumber) {
             throw new KresmerException(`Attempt to delete a non-existent vertex (${this.id}, ${vertexNumber})`);
@@ -111,6 +112,19 @@ export default class NetworkLink extends NetworkElement {
         this.kresmer.undoStack.execAndCommit(new DeleteVertexOp(this.vertices[vertexNumber]));
         return true;
     }//deleteVertex
+
+
+    public alignVertex(vertexNumber: number)
+    {
+        if (vertexNumber === 0 || vertexNumber >= this.vertices.length) {
+            console.warn(`Cannot align an endpoint (${this.name}:${vertexNumber})`);
+            return;
+        }//if
+        const vertex = this.vertices[vertexNumber];
+        const predecessor = this.vertices[vertexNumber - 1];
+        const successor = this.vertices[vertexNumber + 1];
+        vertex.align(predecessor, successor);
+    }//alignVertex
 
 }//NetworkLink
 

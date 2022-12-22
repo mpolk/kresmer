@@ -66,6 +66,7 @@ appCommandExecutor
     .on("undo", () => {kresmer.undo(); setWindowTitle();})
     .on("redo", () => {kresmer.redo(); setWindowTitle();})
     .on("delete-vertex", deleteLinkVertex)
+    .on("align-vertex", alignLinkVertex)
     ;
 
 window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
@@ -200,3 +201,9 @@ function deleteLinkVertex(linkID: number, vertexNumber: number)
     kresmer.deleteLinkVertex(linkID, vertexNumber);
     setWindowTitle();
 }//deleteLinkVertex
+
+function alignLinkVertex(linkID: number, vertexNumber: number)
+{
+    kresmer.alignLinkVertex(linkID, vertexNumber);
+    setWindowTitle();
+}//alignLinkVertex

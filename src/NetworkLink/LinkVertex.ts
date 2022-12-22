@@ -204,6 +204,28 @@ export default class LinkVertex {
         this.link.kresmer.emit("link-vertex-right-click", this, event);
     }//onRightClick
 
+
+    public align(predecessor: LinkVertex, successor: LinkVertex)
+    {
+        if (this._isConnected) {
+            console.warn(`Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`);
+            return;
+        }//if
+
+        this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
+        const l1 = Math.hypot(this.coords.x - predecessor.coords.x, this.coords.y - successor.coords.y);
+        const l2 = Math.hypot(this.coords.y - predecessor.coords.y, this.coords.x - successor.coords.x);
+        let newX: number; let newY: number;
+        if (l1 < l2) {
+            newX = predecessor.coords.x; newY = successor.coords.y;
+        } else {
+            newX = successor.coords.x; newY = predecessor.coords.y;
+        }//if
+        this.pinUp({x: newX, y: newY});
+        this.link.kresmer.undoStack.commitOperation();
+        this.link.kresmer.emit("link-vertex-moved", this);
+    }//align
+
 }//LinkVertex
 
 // Auxiliary interfaces for initialization and position saving
