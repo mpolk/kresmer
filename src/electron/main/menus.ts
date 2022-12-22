@@ -6,7 +6,7 @@
  *                      Menus for Electron application
  ***************************************************************************/
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
-import { openDrawing, sendAppCommand } from "./main";
+import { openDrawing, loadLibrary, sendAppCommand } from "./main";
 
 const isMac = process.platform === 'darwin'
 
@@ -40,7 +40,7 @@ export default class Menus {
         label: 'File',
         submenu: [
           {label: "Open drawing...", accelerator: "Control+O", click: () => openDrawing()},
-          {label: "Load library..."},
+          {label: "Load library...", accelerator: "Control+L", click: () => loadLibrary()},
           { type: 'separator' },
           isMac ? { role: 'close' } : { role: 'quit' }
         ]

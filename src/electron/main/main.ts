@@ -70,7 +70,7 @@ function initApp(mainWindow: BrowserWindow, stage: number)
         case 0: {
             const libData = fs.readFileSync("./stdlib.krel", "utf-8");
             console.debug("Standard library loaded in memory");
-            sendAppCommand("load-library", libData);
+            sendAppCommand("load-library", libData, 1);
             console.debug("Standard library loaded to Kresmer");
             break;
         }
@@ -141,3 +141,21 @@ export function openDrawing()
         sendAppCommand("load-drawing", dwgData, {drawingName});
     }//if
 }//openDrawing
+
+
+export function loadLibrary()
+{
+    // console.debug("About to show 'Open drawing dialog...'")
+    const filePath = dialog.showOpenDialogSync(mainWindow, {
+        title: "Load libary...",
+        filters: [
+            {name: "Kresmer library files (*.krel)", extensions: ["krel"]},
+            {name: "All files (*.*)", extensions: ["*"]},
+        ]
+    });
+
+    if (filePath) {
+        const libData = fs.readFileSync(filePath[0], "utf-8");
+        sendAppCommand("load-library", libData);
+    }//if
+}//loadLibrary

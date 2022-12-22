@@ -10,7 +10,7 @@ import { ContextMenuCommands } from "./main/menus";
 import { DrawingMergeOptions } from "../Kresmer";
 
 export interface AppCommandFormats extends ContextMenuCommands {
-    "load-library": (libData: string) => void,
+    "load-library": (libData: string, completionSignal?: number) => void,
     "load-drawing": (drawingData: string, 
                      options?: {
                         drawingName?: string, 

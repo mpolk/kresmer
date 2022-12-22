@@ -74,11 +74,14 @@ window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args
 
 window.electronAPI.signalReadiness(0);
 
-function loadLibrary(libData: string)
+function loadLibrary(libData: string, completionSignal?: number)
 { 
     try {
-        if (!kresmer.loadLibrary(libData))
+        if (!kresmer.loadLibrary(libData)) {
             alert("There were errors during library load (see the log)");
+        } else if (completionSignal === undefined) {
+            alert("Library loaded successfully");
+        }//if
     } catch (exc) {
         if (exc instanceof ParsingException) {
             alert(exc.message);
@@ -87,7 +90,10 @@ function loadLibrary(libData: string)
             throw exc;
         }//if
     }//catch
-    window.electronAPI.signalReadiness(1);
+
+    if (completionSignal !== undefined) {
+        window.electronAPI.signalReadiness(completionSignal);
+    }//if
 }//loadLibrary
 
 async function loadDrawing(drawingData: string, 

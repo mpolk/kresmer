@@ -152,11 +152,11 @@ export default class Kresmer extends KresmerEventHooks {
         }).component(componentClass.adapterVueName, {
             setup(props) {
                 const componentProps = computed(() => {
-                    const pr = {...props};
+                    const prop = {...props};
                     for (const key of ["x", "y", "transform", "transformOrigin"]) {
-                        delete pr[key];
+                        delete prop[key];
                     }//for
-                    return pr;
+                    return prop;
                 });
                 return {componentProps};
             },
