@@ -57,6 +57,11 @@
     {
         props.model.onRightClick(event);
     }//onRightClick
+
+    function onDoubleClick()
+    {
+        props.model.align();
+    }//onDoubleClick
 </script>
 
 <template>
@@ -79,6 +84,7 @@
         @mousemove.stop="onMouseMove($event)"
         @mouseleave.stop="onMouseLeave($event)"
         @contextmenu="onRightClick($event)"
+        @dblclick="onDoubleClick()"
         />
 </template>
 

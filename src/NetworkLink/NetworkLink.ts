@@ -116,14 +116,7 @@ export default class NetworkLink extends NetworkElement {
 
     public alignVertex(vertexNumber: number)
     {
-        if (vertexNumber === 0 || vertexNumber >= this.vertices.length) {
-            console.warn(`Cannot align an endpoint (${this.name}:${vertexNumber})`);
-            return;
-        }//if
-        const vertex = this.vertices[vertexNumber];
-        const predecessor = this.vertices[vertexNumber - 1];
-        const successor = this.vertices[vertexNumber + 1];
-        vertex.align(predecessor, successor);
+        this.vertices[vertexNumber].align();
     }//alignVertex
 
 }//NetworkLink

@@ -51,6 +51,13 @@ export default class LinkVertex {
         }//if
     }//toString
 
+
+    get isEndpoint()
+    {
+        return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;
+    }//isEndpoint
+
+
     /** Postponned part of the initialization delayed until after all components are mounted */
     init()
     {
@@ -205,26 +212,42 @@ export default class LinkVertex {
     }//onRightClick
 
 
-    public align(predecessor: LinkVertex, successor: LinkVertex)
+    public align()
     {
         if (this._isConnected) {
             console.warn(`Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`);
             return;
         }//if
+        if (this.isEndpoint) {
+            console.warn(`Cannot align an endpoint (${this.link.name}:${this.vertexNumber})`);
+            return;
+        }//if
+        const predecessor = this.link.vertices[this.vertexNumber - 1];
+        const successor = this.link.vertices[this.vertexNumber + 1];
 
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
+        const newPos = this.alignBetweenTwoPositions(predecessor, successor);
+        if (newPos) {
+            this.pinUp(newPos);
+            this.link.kresmer.undoStack.commitOperation();
+            this.link.kresmer.emit("link-vertex-moved", this);
+        } else {
+            this.link.kresmer.undoStack.cancelOperation();
+        }//if
+    }//align
+
+    private alignBetweenTwoPositions(predecessor: LinkVertex, successor: LinkVertex)
+    {
         const l1 = Math.hypot(this.coords.x - predecessor.coords.x, this.coords.y - successor.coords.y);
         const l2 = Math.hypot(this.coords.y - predecessor.coords.y, this.coords.x - successor.coords.x);
-        let newX: number; let newY: number;
+        let x: number; let y: number;
         if (l1 < l2) {
-            newX = predecessor.coords.x; newY = successor.coords.y;
+            x = predecessor.coords.x; y = successor.coords.y;
         } else {
-            newX = successor.coords.x; newY = predecessor.coords.y;
+            x = successor.coords.x; y = predecessor.coords.y;
         }//if
-        this.pinUp({x: newX, y: newY});
-        this.link.kresmer.undoStack.commitOperation();
-        this.link.kresmer.emit("link-vertex-moved", this);
-    }//align
+        return {x, y};
+    }//alignBetweenTwoPositions
 
 }//LinkVertex
 
