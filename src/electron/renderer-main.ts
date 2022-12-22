@@ -94,11 +94,15 @@ async function loadDrawing(drawingData: string,
                     })
 { 
     try {
-        if (!options?.mergeOptions) {
-            await drawingMergeDialog.show();
+        let mergeOptions: DrawingMergeOptions|null|undefined = options?.mergeOptions;
+        if (!options?.mergeOptions && !mergeOptions) {
+            mergeOptions = await drawingMergeDialog.show();
+            if (!mergeOptions) {
+                return;
+            }//if
         }//if
 
-        if (!kresmer.loadDrawing(drawingData, options?.mergeOptions))
+        if (!kresmer.loadDrawing(drawingData, mergeOptions))
             alert("There were errors during drawing load (see the log)");
         else if (options?.drawingName)
             window.document.title = `${options.drawingName} - Kresmer`;
