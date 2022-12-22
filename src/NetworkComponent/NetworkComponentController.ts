@@ -92,8 +92,8 @@ export default class NetworkComponentController {
         if (this.isDragged) {
             this.isDragged = false;
             this.updateConnectionPoints();
-            this.kresmer.emit("component-moved", this);
             this.kresmer.undoStack.commitOperation();
+            this.kresmer.emit("component-moved", this);
             return true;
         }//if
 
@@ -173,8 +173,8 @@ export default class NetworkComponentController {
 
         this.isBeingTransformed = false;
         this.updateConnectionPoints();
-        this.kresmer.emit("component-transformed", this);
         this.kresmer.undoStack.commitOperation();
+        this.kresmer.emit("component-transformed", this);
         return true;
     }//endTransform
 

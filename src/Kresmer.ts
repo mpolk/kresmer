@@ -106,6 +106,12 @@ export default class Kresmer extends KresmerEventHooks {
     public undo() {this.undoStack.undo()}
     public redo() {this.undoStack.redo()}
 
+    /** Shows whether the content was modified comparing to the last data loading */
+    public get isDirty()
+    {
+        return this.undoStack.canUndo;
+    }//isDirty
+
     /**
      * A list of all Component Classes, registered by Kresmer
      */
@@ -389,6 +395,8 @@ export default class Kresmer extends KresmerEventHooks {
                 wereErrors = true;
             }//if
         }//for
+
+        this.undoStack.reset();
         return !wereErrors;
     }//loadDrawing
 

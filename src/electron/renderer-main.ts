@@ -20,6 +20,7 @@ import { AppCommandExecutor } from './app-commands';
 import DrawingMergeDialog from './drawing-merge-dialog.vue';
 
 export const kresmer = new Kresmer('#kresmer');
+let drawingName = "";
 
 export const hints = new Hints;
 export const statusBarData = reactive({
@@ -38,11 +39,11 @@ kresmer
     .on("component-mouse-enter", () => hints.push(Hints.onComponentMouseEnter))
     .on("component-mouse-leave", () => hints.pop())
     .on("component-move-started", () => hints.push(Hints.onDrag))
-    .on("component-moved", () => hints.pop())
+    .on("component-moved", onComponentMutated)
     .on("component-being-moved", indicateComponentMove)
     .on("component-transform-started", () => hints.push(""))
     .on("component-being-transformed", indicateComponentTransform)
-    .on("component-transformed", () => hints.pop())
+    .on("component-transformed", onComponentMutated)
     .on("component-entered-transform-mode", (_, mode) => hints.push(mode == "rotation" ? 
                                                                         Hints.onRotation : 
                                                                         Hints.onScaling))
@@ -62,8 +63,8 @@ const appCommandExecutor = new AppCommandExecutor;
 appCommandExecutor
     .on("load-library", loadLibrary)
     .on("load-drawing", loadDrawing)
-    .on("undo", () => {kresmer.undo()})
-    .on("redo", () => {kresmer.redo()})
+    .on("undo", () => {kresmer.undo(); setWindowTitle();})
+    .on("redo", () => {kresmer.redo(); setWindowTitle();})
     .on("delete-vertex", deleteLinkVertex)
     ;
 
@@ -108,7 +109,7 @@ async function loadDrawing(drawingData: string,
         if (!kresmer.loadDrawing(drawingData, mergeOptions))
             alert("There were errors during drawing load (see the log)");
         else if (options?.drawingName)
-            window.document.title = `${options.drawingName} - Kresmer`;
+            drawingName = options?.drawingName;
     } catch (exc) {
         if (exc instanceof ParsingException) {
             alert(exc.message);
@@ -117,10 +118,24 @@ async function loadDrawing(drawingData: string,
             throw exc;
         }//if
     }//catch
+
+    setWindowTitle();
     if (options?.completionSignal) {
         window.electronAPI.signalReadiness(options.completionSignal);
     }//if
 }//loadDrawing
+
+function setWindowTitle()
+{
+    let title = "Kresmer";
+    if (drawingName) {
+        title = `${drawingName} - Kresmer`;
+    }//if
+    if (kresmer.isDirty) {
+        title = `*${title}`;
+    }//if
+    window.document.title = title;
+}//setWindowTitle
 
 function indicateComponentTransform(controller: NetworkComponentController)
 {
@@ -147,6 +162,13 @@ function onComponentSelected(component: NetworkComponent, isSelected: boolean)
     }//if
 }//onComponentSelected
 
+function onComponentMutated(controller: NetworkComponentController)
+{
+    hints.pop();
+    hints.setHint(`${controller.component}`);
+    setWindowTitle();
+}//onComponentMutated
+
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
 {
     if (isSelected) {
@@ -164,9 +186,11 @@ function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent *
 function onLinkVertexMutated(vertex: LinkVertex)
 {
     hints.setHint(`${vertex.link}`);
+    setWindowTitle();
 }//onLinkVertexMutated
 
 function deleteLinkVertex(linkID: number, vertexNumber: number)
 {
     kresmer.deleteLinkVertex(linkID, vertexNumber);
+    setWindowTitle();
 }//deleteLinkVertex

@@ -44,8 +44,8 @@ export default class UndoStack {
         }//if
 
         op.onCommit();
-        this.stack.push(op);
         this.operationInProgress = undefined;
+        this.stack.push(op);
         if (this.stack.length <= UndoStack.MAX_UNDOES) {
             this.stackPointer++;
         } else {
@@ -70,7 +70,7 @@ export default class UndoStack {
         this._commit(op);
     }//execAndCommit
 
-    /** Undoes the last operation (or the next after the last already undone ones) */
+    /** Undoes the last operation (or the next after the last of already undone ones) */
     undo()
     {
         if (this.stackPointer >= 0) {
@@ -78,7 +78,13 @@ export default class UndoStack {
         }//if
     }//undo
 
-    /** Redoes the last undone operation (or the next after the last already redone ones) */
+    /** Shows whether there are operations to undo */
+    get canUndo()
+    {
+        return this.stackPointer >= 0;
+    }//canUndo
+
+    /** Redoes the last undone operation (or the next after the last of already redone ones) */
     redo()
     {
         if (this.stackPointer < this.stack.length - 1) {

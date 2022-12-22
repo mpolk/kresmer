@@ -179,22 +179,22 @@ export default class LinkVertex {
                             this.initParams = {};
                         }//if
                         this.initParams.conn = {component: componentName, connectionPoint: connectionPointName};
-                        this.link.kresmer.emit("link-vertex-connected", this);
                     }//if
                 } else {
                     console.error('Reference to undefined connection point "%s"', connectionPointData);
                 }//if
                 this.link.kresmer.undoStack.commitOperation();
+                this.link.kresmer.emit("link-vertex-connected", this);
                 return true;
             }//if
         }//for
 
+        this.link.kresmer.undoStack.commitOperation();
         if (this.wasConnected) {
             this.link.kresmer.emit("link-vertex-disconnected", this, this.conn!);
             this.conn = undefined;
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
-        this.link.kresmer.undoStack.commitOperation();
         return true;
     }//endDrag
 
