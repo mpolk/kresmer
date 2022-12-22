@@ -12,6 +12,7 @@ export default class UndoStack {
     private stack: EditorOperation[] = [];
     private stackPointer = -1;
     private static readonly MAX_UNDOES = 100;
+    private _wasTruncated = false;
     private operationInProgress?: EditorOperation;
 
     /**
@@ -50,6 +51,7 @@ export default class UndoStack {
             this.stackPointer++;
         } else {
             this.stack.splice(0, 1);
+            this._wasTruncated = true;
         }//if
     }//_commit
 
@@ -98,8 +100,14 @@ export default class UndoStack {
         this.stackPointer = -1;
         this.stack.splice(0, this.stack.length);
         this.operationInProgress = undefined;
+        this._wasTruncated = false;
     }//reset
 
+    /** Shows  whether the stack was truncated because of undo overlimit */
+    get wasTruncated()
+    {
+        return this._wasTruncated;
+    }//wasTruncated
 }//UndoStack
 
 
