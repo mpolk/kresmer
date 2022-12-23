@@ -12,6 +12,14 @@ import { reactive, ref } from "vue";
 import { Position } from "../Transform/Transform";
 
 export default class ConnectionPointProxy {
+    constructor(dir: number)
+    {
+        this.dir = dir;
+    }//ctor
+
+    /** Preferable direction for connection (angle from x-axis) */
+    readonly dir: number;
+
     /** Absolute coordinates of the connection point */
     readonly coords = reactive<Position>({x: 0, y: 0});
 

@@ -21,7 +21,7 @@
         dir: {type: Number, default: 90},
     });
 
-    const proxy = new ConnectionPointProxy();
+    const proxy = new ConnectionPointProxy(props.dir);
     const component = inject(NetworkComponent.injectionKey)!;
     component.connectionPoints[props.name] = proxy;
 

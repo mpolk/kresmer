@@ -226,7 +226,12 @@ export default class LinkVertex {
         const successor = this.link.vertices[this.vertexNumber + 1];
 
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
-        const newPos = this.alignBetweenTwoPositions(predecessor, successor);
+        const newPos = 
+            (predecessor._isConnected && predecessor.isEndpoint && (!successor._isConnected || !successor.isEndpoint)) ?
+            this.alignBetweenConnectionAndPosition(predecessor, successor) :
+            (successor._isConnected && successor.isEndpoint && (!predecessor._isConnected || !predecessor.isEndpoint)) ?
+                this.alignBetweenConnectionAndPosition(successor, predecessor) :
+                this.alignBetweenTwoPositions(predecessor, successor);
         if (newPos) {
             this.pinUp(newPos);
             this.link.kresmer.undoStack.commitOperation();
@@ -248,6 +253,57 @@ export default class LinkVertex {
         }//if
         return {x, y};
     }//alignBetweenTwoPositions
+
+    private alignBetweenConnectionAndPosition(connected: LinkVertex, positioned: LinkVertex)
+    {
+        const c = connected.coords;
+        const p = positioned.coords;
+        const dir = connected.conn!.dir % 360;
+        switch (dir) {
+            case 0:
+                return (p.x > c.x) ? {x: p.x, y: c.y} : null;
+            case 90:
+                return (p.y > c.y) ? {x: c.x, y: p.y} : null;
+            case 180:
+                return (p.x < c.x) ? {x: p.x, y: c.y} : null;
+            case 270:
+                return (p.y < c.y) ? {x: c.x, y: p.y} : null;
+            default: {
+                const k = Math.tan(dir/90 * Math.PI);
+                let sx: number; let sy: number;
+                if (dir < 90) {
+                    sx = 1; sy = 1;
+                } else if (dir < 180) {
+                    sx = -1; sy = 1;
+                } else if (dir < 270) {
+                    sx = -1; sy = -1;
+                } else {
+                    sx = 1; sy = -1;
+                }//if
+                let dx = Number.POSITIVE_INFINITY;
+                let dy = Number.POSITIVE_INFINITY;
+                let newPosX: Position;
+                let newPosY: Position;
+                if (Math.sign(p.x - c.x) === sx) {
+                    dx = p.x - c.x;
+                    newPosX = {x: p.x, y: c.y + k * dx};
+                }//if
+                if (Math.sign(p.y - c.y) === sy) {
+                    dy = p.y - c.y;
+                    newPosY = {x: c.x + dy / k, y: p.y};
+                }//if
+                if (Math.abs(dx) < Math.abs(dy)) {
+                    return newPosX!;
+                } else if (Math.abs(dx) > Math.abs(dy) || Number.isFinite(dy)) {
+                    return newPosY!;
+                } else {
+                    return null;
+                }//if
+            }//default
+        }//switch
+    }//alignBetweenConnectionAndPosition
+
+    
 
 }//LinkVertex
 
