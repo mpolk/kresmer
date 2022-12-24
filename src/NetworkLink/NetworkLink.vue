@@ -27,10 +27,6 @@
 
     const isHighlighted = ref(false);
 
-    const vertices = computed(() => props.model.vertices
-        .map((vertex) => `${vertex.coords.x},${vertex.coords.y}`)
-        .join(' '));
-
     const linkClass = computed(() => {
         return {
             [props.model._class.name]: true,

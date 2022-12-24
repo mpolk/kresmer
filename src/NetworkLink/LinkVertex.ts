@@ -79,6 +79,7 @@ export default class LinkVertex {
             }//if
             this.connect(connectionPoint);
         }//if
+        return this;
     }//init
 
     pinUp(pos: Position)
@@ -236,8 +237,10 @@ export default class LinkVertex {
             this.pinUp(newPos);
             this.link.kresmer.undoStack.commitOperation();
             this.link.kresmer.emit("link-vertex-moved", this);
+            return true;
         } else {
             this.link.kresmer.undoStack.cancelOperation();
+            return false;
         }//if
     }//align
 

@@ -105,6 +105,10 @@ export default class NetworkLink extends NetworkElement {
     public addVertex(segmentNumber: number, mousePos: Position)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
+        const vertexNumber = segmentNumber + 1;
+        const pos = this.kresmer.applyScreenCTM(mousePos);
+        const vertex = new LinkVertex(this, vertexNumber, {pos}).init();
+        this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
     }//addVertex
 
 
@@ -123,7 +127,7 @@ export default class NetworkLink extends NetworkElement {
 
     public alignVertex(vertexNumber: number)
     {
-        this.vertices[vertexNumber].align();
+        return this.vertices[vertexNumber].align();
     }//alignVertex
 
 
@@ -135,6 +139,36 @@ export default class NetworkLink extends NetworkElement {
 
 }//NetworkLink
 
+
+// Editor operations
+
+class AddVertexOp extends EditorOperation {
+    private vertex: LinkVertex;
+
+    constructor(vertex: LinkVertex)
+    {
+        super();
+        this.vertex = vertex;
+    }//ctor
+
+    exec() {
+        const link = this.vertex.link;
+        const vertexNumber = this.vertex.vertexNumber;
+        link.vertices.splice(vertexNumber, 0, this.vertex);
+        for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
+            link.vertices[i].vertexNumber = i;
+        }//for
+    }//exec
+
+    undo() {
+        const link = this.vertex.link;
+        const vertexNumber = this.vertex.vertexNumber;
+        link.vertices.splice(vertexNumber, 1);
+        for (let i = vertexNumber; i < link.vertices.length; i++) {
+            link.vertices[i].vertexNumber = i;
+        }//for
+    }//undo
+}//AddVertexOp
 
 class DeleteVertexOp extends EditorOperation {
     private vertex: LinkVertex;
