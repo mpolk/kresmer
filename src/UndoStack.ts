@@ -111,6 +111,7 @@ export default class UndoStack {
 }//UndoStack
 
 
+/** The base class for various undo-enabled editor operations */
 export abstract class EditorOperation {
     abstract undo(): void;
     abstract exec(): void;

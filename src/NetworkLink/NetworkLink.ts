@@ -143,7 +143,7 @@ export default class NetworkLink extends NetworkElement {
 // Editor operations
 
 class AddVertexOp extends EditorOperation {
-    private vertex: LinkVertex;
+    protected vertex: LinkVertex;
 
     constructor(vertex: LinkVertex)
     {
@@ -170,30 +170,12 @@ class AddVertexOp extends EditorOperation {
     }//undo
 }//AddVertexOp
 
-class DeleteVertexOp extends EditorOperation {
-    private vertex: LinkVertex;
-
-    constructor(vertex: LinkVertex)
-    {
-        super();
-        this.vertex = vertex;
-    }//ctor
-
+class DeleteVertexOp extends AddVertexOp {
     exec() {
-        const link = this.vertex.link;
-        const vertexNumber = this.vertex.vertexNumber;
-        link.vertices.splice(vertexNumber, 1);
-        for (let i = vertexNumber; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber = i;
-        }//for
+        super.undo();
     }//exec
 
     undo() {
-        const link = this.vertex.link;
-        const vertexNumber = this.vertex.vertexNumber;
-        link.vertices.splice(vertexNumber, 0, this.vertex);
-        for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber = i;
-        }//for
+        super.exec();
     }//undo
 }//DeleteVertexOp
