@@ -188,9 +188,9 @@ function onLinkSelected(link: NetworkLink, isSelected: boolean)
     }//if
 }//onLinkSelected
 
-function onLinkRightClick(link: NetworkLink, mouseEvent: MouseEvent)
+function onLinkRightClick(link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent)
 {
-    window.electronAPI.showContextMenu("link", link.id, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+    window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 }//onLinkRightClick
 
 function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent */)
@@ -204,9 +204,9 @@ function onLinkVertexMutated(vertex: LinkVertex)
     setWindowTitle();
 }//onLinkVertexMutated
 
-function addLinkVertex(linkID: number, mousePos: Position)
+function addLinkVertex(linkID: number, segmentNumber: number, mousePos: Position)
 {
-    kresmer.addLinkVertex(linkID, mousePos);
+    kresmer.addLinkVertex(linkID, segmentNumber, mousePos);
     setWindowTitle();
 }//addLinkVertex
 

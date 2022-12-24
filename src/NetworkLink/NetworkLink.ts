@@ -102,9 +102,9 @@ export default class NetworkLink extends NetworkElement {
     }//restoreZPosition
 
 
-    public addVertex(mousePos: Position)
+    public addVertex(segmentNumber: number, mousePos: Position)
     {
-        console.debug(`Add vertex: ${this.name}(${mousePos.x}, ${mousePos.y})`);
+        console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
     }//addVertex
 
 
@@ -127,10 +127,10 @@ export default class NetworkLink extends NetworkElement {
     }//alignVertex
 
 
-    public onRightClick(event: MouseEvent)
+    public onRightClick(segmentNumber: number, event: MouseEvent)
     {
         this.selectLink();
-        this.kresmer.emit("link-right-click", this, event);
+        this.kresmer.emit("link-right-click", this, segmentNumber, event);
     }//onRightClick
 
 }//NetworkLink

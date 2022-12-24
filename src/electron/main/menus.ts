@@ -12,7 +12,7 @@ import { openDrawing, loadLibrary, sendAppCommand } from "./main";
 const isMac = process.platform === 'darwin'
 
 export interface ContextMenus {
-  "link": (linkID: number, mousePos: Position) => void,
+  "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
   "link-vertex": (linkID: number, vertexNumber: number) => void,
 }//ContextMenus
 

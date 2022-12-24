@@ -566,16 +566,17 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Adds a link vertex
      * @param linkID The link this vertexs belongs
-     * @param vertexNumber The seq number of the vertex to delete
-     * @returns True if the vertex was deleted or false otherwise
+     * @param segmentNumber The seq number of the segment where tne vertex should be added
+     * @param mousePos The mouse click position
+     * @returns True if the vertex was added or false otherwise
      */
-    public addLinkVertex(linkID: number, mousePos: Position)
+    public addLinkVertex(linkID: number, segmentNumber: number, mousePos: Position)
     {
         const link = this.getLinkById(linkID);
         if (!link) {
             throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
         }//if
-        return link.addVertex(mousePos);
+        return link.addVertex(segmentNumber, mousePos);
     }//addLinkVertex
 
     /**

@@ -62,12 +62,21 @@
         @mouseenter="isHighlighted = true"
         @mouseleave="isHighlighted = false"
         >
-        <polyline :points="vertices" class="padding" style="stroke: transparent; fill: none;" 
-            @contextmenu.self="model.onRightClick($event)"
-            :style="segmentStyle" />
-        <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle"
-            @contextmenu.self="model.onRightClick($event)"
-            />
+        <template v-for="(vertex, i) in props.model.vertices" :key="`segment${i}`">
+            <template v-if="i">
+                <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
+                    :x2="vertex.coords.x" :y2="vertex.coords.y" 
+                    class="padding" style="stroke: transparent; fill: none;" 
+                    @contextmenu.self="model.onRightClick(i - 1, $event)"
+                    :style="segmentStyle"
+                    />
+                <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
+                    :x2="vertex.coords.x" :y2="vertex.coords.y" 
+                    :class="segmentClass" style="fill: none;" :style="segmentStyle"
+                    @contextmenu.self="model.onRightClick(i - 1, $event)"
+                    />
+            </template>
+        </template>
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
                 <link-vertex-vue :model="vertex" :is-editable="isEditable"/>
