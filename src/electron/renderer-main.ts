@@ -18,6 +18,7 @@ import NetworkLink from '../NetworkLink/NetworkLink';
 import LinkVertex from '../NetworkLink/LinkVertex';
 import { AppCommandExecutor } from './app-commands';
 import DrawingMergeDialog from './drawing-merge-dialog.vue';
+import { Position } from '../Transform/Transform';
 
 export const kresmer = new Kresmer('#kresmer');
 let drawingName = "";
@@ -50,6 +51,7 @@ kresmer
     .on("component-exited-transform-mode", () => hints.pop())
     .on("component-selected", onComponentSelected)
     .on("link-selected", onLinkSelected)
+    .on("link-right-click", onLinkRightClick)
     .on("link-vertex-moved", onLinkVertexMutated)
     .on("link-vertex-connected", onLinkVertexMutated)
     .on("link-vertex-disconnected", onLinkVertexMutated)
@@ -65,6 +67,7 @@ appCommandExecutor
     .on("load-drawing", loadDrawing)
     .on("undo", () => {kresmer.undo(); setWindowTitle();})
     .on("redo", () => {kresmer.redo(); setWindowTitle();})
+    .on("add-vertex", addLinkVertex)
     .on("delete-vertex", deleteLinkVertex)
     .on("align-vertex", alignLinkVertex)
     ;
@@ -185,6 +188,11 @@ function onLinkSelected(link: NetworkLink, isSelected: boolean)
     }//if
 }//onLinkSelected
 
+function onLinkRightClick(link: NetworkLink, mouseEvent: MouseEvent)
+{
+    window.electronAPI.showContextMenu("link", link.id, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+}//onLinkRightClick
+
 function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent */)
 {
     window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
@@ -195,6 +203,12 @@ function onLinkVertexMutated(vertex: LinkVertex)
     hints.setHint(`${vertex.link}`);
     setWindowTitle();
 }//onLinkVertexMutated
+
+function addLinkVertex(linkID: number, mousePos: Position)
+{
+    kresmer.addLinkVertex(linkID, mousePos);
+    setWindowTitle();
+}//addLinkVertex
 
 function deleteLinkVertex(linkID: number, vertexNumber: number)
 {

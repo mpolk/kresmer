@@ -63,8 +63,11 @@
         @mouseleave="isHighlighted = false"
         >
         <polyline :points="vertices" class="padding" style="stroke: transparent; fill: none;" 
+            @contextmenu.self="model.onRightClick($event)"
             :style="segmentStyle" />
-        <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle"/>
+        <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle"
+            @contextmenu.self="model.onRightClick($event)"
+            />
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
                 <link-vertex-vue :model="vertex" :is-editable="isEditable"/>

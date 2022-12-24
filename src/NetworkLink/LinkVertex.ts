@@ -303,9 +303,8 @@ export default class LinkVertex {
         }//switch
     }//alignBetweenConnectionAndPosition
 
-    
-
 }//LinkVertex
+
 
 // Auxiliary interfaces for initialization and position saving
 export interface LinkVertexInitParams  {

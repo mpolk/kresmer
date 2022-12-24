@@ -6,18 +6,22 @@
  *                      Menus for Electron application
  ***************************************************************************/
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
+import { Position } from "../../Transform/Transform";
 import { openDrawing, loadLibrary, sendAppCommand } from "./main";
 
 const isMac = process.platform === 'darwin'
 
 export interface ContextMenus {
-    "link-vertex": (linkID: number, vertexNumber: number) => void,
+  "link": (linkID: number, mousePos: Position) => void,
+  "link-vertex": (linkID: number, vertexNumber: number) => void,
 }//ContextMenus
 
 export type ContextMenuID = keyof ContextMenus;
 
 type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
+    "align-vertices": ContextMenuHandler<"link">,
+    "add-vertex": ContextMenuHandler<"link">,
     "align-vertex": ContextMenuHandler<"link-vertex">,
     "delete-vertex": ContextMenuHandler<"link-vertex">,
 }//ContextMenuCommands
@@ -80,7 +84,11 @@ export default class Menus {
 
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
         {
-            "link-vertex": [
+        "link": [
+            {label: "Align vertices", id: "align-vertices"},
+            {label: "Add vertex", id: "add-vertex"},
+        ],
+        "link-vertex": [
                 {label: "Align vertex (double-click)", id: "align-vertex"},
                 {label: "Delete vertex", id: "delete-vertex"},
             ],

@@ -13,6 +13,7 @@ import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
 import { EditorOperation } from "../UndoStack";
+import { Position } from "../Transform/Transform";
 
 /**
  * Network Component - a generic network element instance 
@@ -101,6 +102,12 @@ export default class NetworkLink extends NetworkElement {
     }//restoreZPosition
 
 
+    public addVertex(mousePos: Position)
+    {
+        console.debug(`Add vertex: ${this.name}(${mousePos.x}, ${mousePos.y})`);
+    }//addVertex
+
+
     public deleteVertex(vertexNumber: number) {
         if (this.vertices.length <= vertexNumber) {
             throw new KresmerException(`Attempt to delete a non-existent vertex (${this.id}, ${vertexNumber})`);
@@ -118,6 +125,13 @@ export default class NetworkLink extends NetworkElement {
     {
         this.vertices[vertexNumber].align();
     }//alignVertex
+
+
+    public onRightClick(event: MouseEvent)
+    {
+        this.selectLink();
+        this.kresmer.emit("link-right-click", this, event);
+    }//onRightClick
 
 }//NetworkLink
 

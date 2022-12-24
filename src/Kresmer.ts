@@ -564,6 +564,21 @@ export default class Kresmer extends KresmerEventHooks {
     // Externally available operations with the drawing objects
 
     /**
+     * Adds a link vertex
+     * @param linkID The link this vertexs belongs
+     * @param vertexNumber The seq number of the vertex to delete
+     * @returns True if the vertex was deleted or false otherwise
+     */
+    public addLinkVertex(linkID: number, mousePos: Position)
+    {
+        const link = this.getLinkById(linkID);
+        if (!link) {
+            throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
+        }//if
+        return link.addVertex(mousePos);
+    }//addLinkVertex
+
+    /**
      * Aligns (or at least tries to) a link vertex to its neighbours
      * @param linkID The link this vertexs belongs
      * @param vertexNumber The seq number of the vertex to align
