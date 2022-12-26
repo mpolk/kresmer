@@ -272,7 +272,7 @@ export default class LinkVertex {
             case 270:
                 return (p.y < c.y) ? {x: c.x, y: p.y} : null;
             default: {
-                const k = Math.tan(dir/90 * Math.PI);
+                const k = Math.tan(dir/180 * Math.PI);
                 let sx: number; let sy: number;
                 if (dir < 90) {
                     sx = 1; sy = 1;
