@@ -34,13 +34,14 @@
         const drawingRect = kresmer.drawingRect;
         const mountingRect = kresmer.mountPoint.getBoundingClientRect();
         const matrix = circle.value!.getCTM()!;
-        const connectionCoords = {
+        const coords = {
             x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
                drawingRect.left + mountingRect.left /* - window.scrollX */,
             y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - 
                drawingRect.top + mountingRect.top /* - window.scrollY */,
         };        
-        proxy.setCoords(connectionCoords);
+        const rot = Math.atan2(matrix.b, matrix.a) / Math.PI * 180;
+        proxy.setPos(coords, proxy.dir0 + rot);
     }//updatePos
 
     watch(proxy.posUpdateTrigger, () => {nextTick(updatePos)});

@@ -14,21 +14,24 @@ import { Position } from "../Transform/Transform";
 export default class ConnectionPointProxy {
     constructor(dir: number)
     {
-        this.dir = dir;
+        this.dir0 = this.dir = dir;
     }//ctor
 
     /** Preferable direction for connection (angle from x-axis) */
-    readonly dir: number;
+    dir: number;
+    /** The initial value of the preferred */
+    readonly dir0: number;
 
     /** Absolute coordinates of the connection point */
     readonly coords = reactive<Position>({x: 0, y: 0});
 
     /** The setter for the coords property - 
      * the vue-component calls it when the connection point position is updated */
-    setCoords(coords: Position)
+    setPos(coords: Position, dir: number)
     {
         ({x: this.coords.x, y: this.coords.y} = coords);
-    }//setCoords
+        this.dir = dir;
+    }//setPos
 
     /** A trigger variable that signals the vue-component that it should refresh coords */
     readonly posUpdateTrigger = ref(0);
