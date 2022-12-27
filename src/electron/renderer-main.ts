@@ -21,7 +21,7 @@ import DrawingMergeDialog from './drawing-merge-dialog.vue';
 import { Position } from '../Transform/Transform';
 
 export const kresmer = new Kresmer('#kresmer');
-let drawingName = "";
+let drawingFileName: string;
 
 export const hints = new Hints;
 export const statusBarData = reactive({
@@ -102,14 +102,14 @@ function loadLibrary(libData: string, completionSignal?: number)
 
 async function loadDrawing(drawingData: string, 
                      options?: {
-                        drawingName?: string,
+                        drawingFileName?: string,
                         mergeOptions?: DrawingMergeOptions,
                         completionSignal?: number,
                     })
 { 
     try {
         let mergeOptions: DrawingMergeOptions|null|undefined = options?.mergeOptions;
-        if (!options?.mergeOptions && !mergeOptions) {
+        if (!mergeOptions) {
             mergeOptions = await drawingMergeDialog.show();
             if (!mergeOptions) {
                 return;
@@ -118,8 +118,9 @@ async function loadDrawing(drawingData: string,
 
         if (!kresmer.loadDrawing(drawingData, mergeOptions))
             alert("There were errors during drawing load (see the log)");
-        else if (options?.drawingName)
-            drawingName = options?.drawingName;
+        else if (options?.drawingFileName && (!options.mergeOptions || options.mergeOptions === "erase-previous-content")) {
+            drawingFileName = options?.drawingFileName;
+        }//if
     } catch (exc) {
         if (exc instanceof ParsingException) {
             alert(exc.message);
@@ -138,8 +139,8 @@ async function loadDrawing(drawingData: string,
 function setWindowTitle()
 {
     let title = "Kresmer";
-    if (drawingName) {
-        title = `${drawingName} - Kresmer`;
+    if (kresmer.drawingName) {
+        title = `${kresmer.drawingName} - Kresmer`;
     }//if
     if (kresmer.isDirty) {
         title = `*${title}`;

@@ -1,69 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="autoload">
-    <component class="BorderedKresmer">
-        <props>
-            <prop name="width">450</prop>
-            <prop name="height">50</prop>
-            <prop name="fill">lightgreen</prop>
-            <prop name="text">Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</prop>
-        </props>
-        <origin x="30" y="30"/>
-    </component>
-
-    <component class="PatrioticKresmer">
-        <props>
-            <prop name="width">450</prop>
-            <prop name="height">50</prop>
-            <prop name="text">А це справжний Кресмер</prop>
-            <prop name="font-size">24</prop>
-            <prop name="font-family">sans-serif</prop>
-        </props>
-        <origin x="30" y="90"/>
-    </component>
-
-    <component class="BorderedKresmer">
-        <props>
-            <prop name="width">200</prop>
-            <prop name="height">50</prop>
-            <prop name="text">Ще один Кресмер</prop>
-        </props>
-        <origin x="50" y="150"/>
-        <transform>
-            <scale x="2"/>
-            <rotate angle="45"/>
-        </transform>
-    </component>
-
-    <component class="Text">
-        <origin x="30" y="250" />
-        <props>
-            <prop name="font-size">32</prop>
-            <prop name="color">darkgreen</prop>
-            <prop name="font-family">sans-serif</prop>
-        </props>
-        <content>А это просто текст, как на заборе</content>
-        <transform>
-            <rotate angle="-10" />
-        </transform>
-    </component>
-
-    <component class="SilverKresmer">
-        <origin x="30" y="380" />
-        <props>
-            <prop name="width">400</prop>
-            <prop name="height">50</prop>
-            <prop name="text">Silver Kresmer</prop>
-            <prop name="font-size">32</prop>
-        </props>
-    </component>
-
     <component class="ExtremeSwitch" name="core" height="50" n-ports="26">
-        <origin x="30" y="550" />
+        <origin x="30" y="100" />
     </component>
 
     <component class="ExtremeSwitch">
-        <origin x="30" y="700" />
+        <origin x="30" y="250" />
         <props>
             <prop name="name">metro</prop>
             <prop name="height">50</prop>
@@ -72,7 +15,7 @@
     </component>
 
     <component class="Catalyst">
-        <origin x="500" y="700" />
+        <origin x="500" y="250" />
         <props>
             <prop name="name">dru-core</prop>
             <prop name="height">50</prop>
@@ -81,7 +24,7 @@
     </component>
 
     <component class="Switch">
-        <origin x="100" y="850" />
+        <origin x="100" y="450" />
         <props>
             <prop name="name">dru-metro</prop>
             <prop name="height">50</prop>
@@ -90,9 +33,9 @@
     </component>
 
     <link class="twisted-pair" from="core:1" to="dru-core:1">
-        <vertex x="20" y="630"/>
-        <vertex x="45" y="650"/>
-        <vertex x="20" y="670"/>
+        <vertex x="20" y="180"/>
+        <vertex x="45" y="200"/>
+        <vertex x="20" y="220"/>
     </link>
     <link class="twisted-pair" from="core:2" to="dru-core:2"/>
     <link class="twisted-pair" from="core:3" to="dru-core:3"/>

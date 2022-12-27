@@ -16,7 +16,7 @@ import { Position, Transform, TransformFunctons, ITransform } from "./Transform/
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LinkClass from "./NetworkLink/NetworkLinkClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
-import DrawingParser from "./parsers/DrawingParser";
+import DrawingParser, { DrawingData } from "./parsers/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -84,6 +84,8 @@ export default class Kresmer extends KresmerEventHooks {
     public readonly defs: Template[] = [];
     /** CSS styles collected component libraries */
     public styles: PostCSSRoot[] = [];
+    /** Drawing name */
+    public drawingName?: string;
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
@@ -340,13 +342,16 @@ export default class Kresmer extends KresmerEventHooks {
             this.eraseContent();
         }//if
 
+        let drawingName: string;
         const componentRenames = new Map<string, string>();
 
         const parser = new DrawingParser(this);
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
-            if (element instanceof NetworkComponentController) {
+            if (element instanceof DrawingData) {
+                drawingName = element.drawingName;
+            } else if (element instanceof NetworkComponentController) {
                 const componentName = element.component.name;
                 if (componentName in this.componentsByName) {
                     switch (mergeOptions) {
@@ -395,6 +400,16 @@ export default class Kresmer extends KresmerEventHooks {
                 wereErrors = true;
             }//if
         }//for
+
+        switch (mergeOptions) {
+            case undefined: case "erase-previous-content":
+                this.drawingName = drawingName!;
+                break;
+            default:
+                if (!this.drawingName) {
+                    this.drawingName = drawingName!;
+                }//if
+        }//switch
 
         this.undoStack.reset();
         return !wereErrors;
@@ -626,8 +641,9 @@ export const GeneralTemplateFunctions = {
      */
     $global: function(name: string, value: unknown)
     {
-        if (!(name in GeneralTemplateFunctions.$$))
+        if (!(name in GeneralTemplateFunctions.$$)) {
             Object.defineProperty(GeneralTemplateFunctions.$$, name, {value});
+        }//if
     }//$global
 }//GeneralTemplateFunctions
 

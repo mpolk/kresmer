@@ -13,7 +13,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "load-library": (libData: string, completionSignal?: number) => void,
     "load-drawing": (drawingData: string, 
                      options?: {
-                        drawingName?: string, 
+                        drawingFileName?: string, 
                         mergeOptions?: DrawingMergeOptions,
                         completionSignal?: number,
                     }) => void,

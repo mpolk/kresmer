@@ -297,7 +297,7 @@ export default class LinkVertex {
                 }//if
                 if (Math.abs(dx) < Math.abs(dy)) {
                     return newPosX!;
-                } else if (Math.abs(dx) > Math.abs(dy) || Number.isFinite(dy)) {
+                } else if (Number.isFinite(dy)) {
                     return newPosY!;
                 } else {
                     return null;

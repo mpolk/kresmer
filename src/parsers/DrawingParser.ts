@@ -44,8 +44,12 @@ export default class DrawingParser {
         const root = dom.firstElementChild;
 
         if (root?.nodeName !== "kresmer-drawing")
-            throw new DrawingParsingException(
-                `Invalid drawing root element: ${root?.nodeName}`);
+            throw new DrawingParsingException(`Invalid drawing root element: ${root?.nodeName}`);
+        if (!root.hasAttribute("name")) {
+            throw new DrawingParsingException("The root element does not define drawing name");
+        }//if
+
+        yield new DrawingData(root.getAttribute("name")!);
 
         for (let i = 0; i < root.children.length; i++) {
             const node = root.children[i];
@@ -380,7 +384,21 @@ export default class DrawingParser {
 
 }//DrawingParser
 
-export type ParsedNode = NetworkComponentController|NetworkLink|ParsingException;
+export class DrawingData {
+    constructor(drawingName: string) 
+    {
+        this.drawingName = drawingName;
+    }//ctor
+
+    readonly drawingName: string;
+}//DrawingData
+
+export type ParsedNode = 
+    DrawingData |
+    NetworkComponentController |
+    NetworkLink |
+    ParsingException
+    ;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Props = Record<string, string|number|object|boolean|any[]>;

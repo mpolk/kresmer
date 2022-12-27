@@ -80,10 +80,10 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             const autoload = argv[1] == "." ? argv[2] : argv[1];
             if (fs.existsSync(autoload)) {
                 const dwgData = fs.readFileSync(autoload, "utf-8");
-                const drawingName = path.basename(autoload);
+                const drawingFileName = path.basename(autoload);
                 sendAppCommand("load-drawing", dwgData, 
                                 {
-                                    drawingName, 
+                                    drawingFileName, 
                                     completionSignal: 2, 
                                     mergeOptions: "ignore-duplicates"
                                 });
@@ -137,8 +137,8 @@ export function openDrawing()
 
     if (filePath) {
         const dwgData = fs.readFileSync(filePath[0], "utf-8");
-        const drawingName = path.basename(filePath[0]);
-        sendAppCommand("load-drawing", dwgData, {drawingName});
+        const drawingFileName = path.basename(filePath[0]);
+        sendAppCommand("load-drawing", dwgData, {drawingFileName});
     }//if
 }//openDrawing
 
