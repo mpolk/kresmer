@@ -240,6 +240,10 @@ export default class NetworkComponentController {
         const xml = [`${indent(indentLevel)}<component ${attrStr}>`];
         xml.push(`${indent(indentLevel+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
 
+        if (this.transform.nonEmpty) {
+            xml.push(this.transform.toXML(indentLevel+1));
+        }//if
+
         if (this.component.props) {
             xml.push(`${indent(indentLevel+1)}<props>`);
             for (const propName in this.component.props) {

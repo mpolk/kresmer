@@ -7,6 +7,8 @@
  * applied to the Network Component images
  ***************************************************************************/
 
+import { indent } from "../Utils";
+
 // Utility types for some geometry objects and transformations
  export type Position = {x: number, y: number};
  export type RadiusVector = Position;
@@ -59,6 +61,26 @@
         this.scale = data.scale ? {...data.scale} : {x: 1, y: 1};
     }//set data
 
+    get hasRotation()
+    {
+        return Boolean(this.rotation.angle);
+    }//hasRotation
+
+    get hasScale()
+    {
+        return (this.scale.x != 1) || (this.scale.y != 1);
+    }//hasScale
+
+    get isEmpty()
+    {
+        return !this.hasRotation && !this.hasScale;
+    }//isEmpty
+
+    get nonEmpty()
+    {
+        return this.hasRotation || this.hasScale;
+    }//nponEmpty
+
     /**
      * Generates an SVG "transform" attribute for this Transform
      * @returns A string containing SVG transform attribute value
@@ -77,6 +99,19 @@
 
         return chunks.join(' ');
     }//toAttr
+
+    public toXML(indentLevel: number)
+    {
+        let xml = `${indent(indentLevel)}<transform>\n`;
+        if (this.scale.x !== 1 || this.scale.y !== 1) {
+            xml += `${indent(indentLevel+1)}<scale x="${this.scale.x}" y="${this.scale.y}"/>\n`
+        }//if
+        if (this.rotation.angle) {
+            xml += `${indent(indentLevel+1)}<rotate angle="${this.rotation.angle}" x="${this.rotation.x}" y="${this.rotation.y}"/>\n`
+        }//if
+        xml += `${indent(indentLevel)}</transform>`;
+        return xml;
+    }//toXML
 
     /** A transform state snapshot used as a starting point for the additional transformations */
     private operationStartTransform?: Required<ITransform>;

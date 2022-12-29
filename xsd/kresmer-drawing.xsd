@@ -13,8 +13,8 @@
 
                                 <xs:element name="origin">
                                     <xs:complexType>
-                                        <xs:attribute name="x" type="xs:integer" use="required" />
-                                        <xs:attribute name="y" type="xs:integer" use="required" />
+                                        <xs:attribute name="x" type="xs:float" use="required" />
+                                        <xs:attribute name="y" type="xs:float" use="required" />
                                     </xs:complexType>
                                 </xs:element>
 
