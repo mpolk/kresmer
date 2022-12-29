@@ -13,6 +13,7 @@ export interface IElectronAPI {
     signalReadiness: (stage: number) => void,
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => void,
     showContextMenu: <MenuID extends ContextMenuID>(menuID: MenuID, ...args: Parameters<ContextMenus[MenuID]>) => void,
+    completeDrawingSaving: (dwgData: string, defaultDrawingFileName?: string) => void,
 }//IElectronAPI
 
 declare global {

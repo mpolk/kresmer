@@ -137,6 +137,31 @@ export default class NetworkLink extends NetworkElement {
         this.kresmer.emit("link-right-click", this, segmentNumber, event);
     }//onRightClick
 
+
+    public toXML(indent: number): string 
+    {
+        const attrs = new Map<string, string>();
+        attrs.set("class", this._class.name);
+        this.isNamed && attrs.set("name", this.name);
+        (this.vertices[0].isConnected || this.vertices[0].isPinnedUp) && 
+            attrs.set("from", this.vertices[0].toString());
+        const n = this.vertices.length - 1;
+        (this.vertices[n].isConnected || this.vertices[n].isPinnedUp) && 
+            attrs.set("to", this.vertices[n].toString());
+
+        const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
+        if (this.vertices.length <= 2) {
+            return `${"    ".repeat(indent)}<link ${attrStr}/>`;
+        } else {
+            let xml = `${"    ".repeat(indent)}<link ${attrStr}>\n`;
+            for (let i = 1; i <= n - 1; i++) {
+                xml += `${"    ".repeat(indent+1)}${this.vertices[i].toXML()}\n`;
+            }//for
+            xml += `${"    ".repeat(indent)}</link>`;
+            return xml;
+        }//if
+    }//toXML
+
 }//NetworkLink
 
 

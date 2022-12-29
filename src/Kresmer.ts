@@ -16,7 +16,7 @@ import { Position, Transform, TransformFunctons, ITransform } from "./Transform/
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import LinkClass from "./NetworkLink/NetworkLinkClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
-import DrawingParser, { DrawingData } from "./parsers/DrawingParser";
+import DrawingParser, { DrawingProperties } from "./parsers/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -198,7 +198,9 @@ export default class Kresmer extends KresmerEventHooks {
 
         // automatically create a single component instance if required
         if (componentClass.autoInstanciate) {
-            this.placeNetworkComponent(new NetworkComponent(this, componentClass.name), {x: 0, y: 0});
+            const component = new NetworkComponent(this, componentClass.name, 
+                                                   {isAutoInstantiated: true});
+            this.placeNetworkComponent(component, {x: 0, y: 0});
         }//if
         return this;
     }//registerNetworkComponentClass
@@ -349,7 +351,7 @@ export default class Kresmer extends KresmerEventHooks {
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
-            if (element instanceof DrawingData) {
+            if (element instanceof DrawingProperties) {
                 drawingName = element.drawingName;
             } else if (element instanceof NetworkComponentController) {
                 const componentName = element.component.name;
@@ -414,6 +416,30 @@ export default class Kresmer extends KresmerEventHooks {
         this.undoStack.reset();
         return !wereErrors;
     }//loadDrawing
+
+
+    /** Serializes the drawing data to the string and returns this string */
+    public saveDrawing()
+    {
+        let xml = `\
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-drawing.xsd"?>
+<kresmer-drawing name="${this.drawingName}">
+`;
+
+        for (const id in this.networkComponents) {
+            if (!this.networkComponents[id].component.isAutoInstantiated) {
+                xml += this.networkComponents[id].toXML(1) + "\n\n";
+            }//for
+        }//for
+
+        for (const id in this.links) {
+            xml += this.links[id].toXML(1) + "\n\n";
+        }//for
+
+        xml += "</kresmer-drawing>\n"
+        return xml;
+    }//saveDrawing
 
 
     /** Erases everything that is in the drawing now */

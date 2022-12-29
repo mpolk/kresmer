@@ -228,6 +228,20 @@ export default class NetworkComponentController {
         this.kresmer.emit("component-entered-transform-mode", this, this.transformMode);
     }//onTransformBoxClick
 
+
+    public toXML(indent: number): string 
+    {
+        const attrs = new Map<string, string>();
+        attrs.set("class", this.component._class.name);
+        this.component.isNamed && attrs.set("name", this.component.name);
+
+        const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
+        const xml = [`${"    ".repeat(indent)}<component ${attrStr}>`];
+        xml.push(`${"    ".repeat(indent+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
+        xml.push(`${"    ".repeat(indent)}</component>`);
+
+        return xml.join("\n");
+    }//toXML
 }//NetworkComponentController
 
 

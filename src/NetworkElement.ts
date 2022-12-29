@@ -59,6 +59,10 @@ export default abstract class NetworkElement {
     {
         this._name = newName;
     }//set name
+    get isNamed()
+    {
+        return Boolean(this._name);
+    }//isNamed
     abstract getDefaultName(): string;
 
     protected _isSelected = false;

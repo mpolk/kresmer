@@ -17,6 +17,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
                         mergeOptions?: DrawingMergeOptions,
                         completionSignal?: number,
                     }) => void,
+    "save-drawing": () => void,
     "undo": () => void,
     "redo": () => void,
 }//AppCommandFormats
@@ -39,8 +40,9 @@ export class AppCommandExecutor {
 
     on<Command extends AppCommand>(
         command: Command, 
-        handler: (...args: Parameters<AppCommandFormats[Command]>) => void): AppCommandExecutor;
-    on<Command extends AppCommand>(command: Command, handler: (...args: unknown[]) => void)
+        handler: (...args: Parameters<AppCommandFormats[Command]>) => ReturnType<AppCommandFormats[Command]>): AppCommandExecutor;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    on<Command extends AppCommand>(command: Command, handler: (...args: unknown[]) => any)
     {
         this.handlers[command] = handler;
         return this;

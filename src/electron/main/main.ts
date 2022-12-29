@@ -15,9 +15,11 @@ import Settings from './settings';
 const packageJson = require("../../../package.json");
 import Menus, {ContextMenuID} from "./menus";
 import { AppCommand, AppCommandFormats } from '../app-commands';
+import console from 'console';
 
 const isDev = process.env.npm_lifecycle_event === "app:dev";
 
+let mainWindow: BrowserWindow;
 export let menus: Menus;
 
 export const userPrefs = new Settings({
@@ -93,8 +95,6 @@ function initApp(mainWindow: BrowserWindow, stage: number)
     }//switch
 }//initApp
 
-let mainWindow: BrowserWindow;
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -141,6 +141,39 @@ export function openDrawing()
         sendAppCommand("load-drawing", dwgData, {drawingFileName});
     }//if
 }//openDrawing
+
+
+export function saveDrawingAs()
+{
+    let filePath = dialog.showSaveDialogSync(mainWindow, {
+        title: "Save drawing",
+        filters: [
+            {name: "Kresmer drawing files (*.kre)", extensions: ["kre"]},
+            {name: "All files (*.*)", extensions: ["*"]},
+        ]
+    });
+
+    if (filePath) {
+        if (!path.extname(filePath)) {
+            filePath += ".kre";
+        }//if
+
+        if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
+            message: `File "${path.basename(filePath)}" exists! Overwrite?`,
+            buttons: ["Ok", "Cancel"],
+            defaultId: 1,
+            })) 
+        {
+            return;
+        }//if
+        
+        ipcMain.once("complete-drawing-saving", (_event, dwgData: string) => {
+            console.debug(`About to save the drawing to the file "${filePath}"`);
+            fs.writeFileSync(filePath!, dwgData);
+        });
+        sendAppCommand("save-drawing");
+    }//if
+}//saveDrawingAs
 
 
 export function loadLibrary()

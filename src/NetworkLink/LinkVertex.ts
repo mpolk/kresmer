@@ -306,6 +306,17 @@ export default class LinkVertex {
         }//switch
     }//alignBetweenConnectionAndPosition
 
+    public toXML()
+    {
+        if (this._isPinnedUp) {
+            return `<vertex x="${this.pos!.x}" y="${this.pos!.y}"/>`;
+        } else if (this._isConnected) {
+            const conn = `${this.initParams!.conn!.component}:${this.initParams!.conn!.connectionPoint}`;
+            return `<vertex connect="${conn}"/>`;
+        } else {
+            return `<vertex/>`;
+        }//if
+    }//toXML
 }//LinkVertex
 
 

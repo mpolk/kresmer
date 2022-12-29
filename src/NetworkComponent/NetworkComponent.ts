@@ -31,10 +31,12 @@ export default class NetworkComponent extends NetworkElement {
             name?: string,
             props?: Record<string, unknown>,
             content?: unknown, 
+            isAutoInstantiated?: boolean,
         }
     ) {
         super(kresmer, _class instanceof NetworkComponentClass ? _class : NetworkComponentClass.getClass(_class), args);
         this.content = args?.content;
+        this.isAutoInstantiated = !!args?.isAutoInstantiated;
     }//ctor
 
     /** A symbolic key for the component instance injection */
@@ -42,6 +44,9 @@ export default class NetworkComponent extends NetworkElement {
 
     /** Data passed to the vue-component content (unnamed slot) */
     readonly content: unknown;
+
+    /** Indicates where the component was auto instanctiated when its class was registered */
+    readonly isAutoInstantiated: boolean;
 
     toString()
     {

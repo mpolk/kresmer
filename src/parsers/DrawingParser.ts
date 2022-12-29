@@ -49,7 +49,7 @@ export default class DrawingParser {
             throw new DrawingParsingException("The root element does not define drawing name");
         }//if
 
-        yield new DrawingData(root.getAttribute("name")!);
+        yield new DrawingProperties(root.getAttribute("name")!);
 
         for (let i = 0; i < root.children.length; i++) {
             const node = root.children[i];
@@ -384,17 +384,17 @@ export default class DrawingParser {
 
 }//DrawingParser
 
-export class DrawingData {
+export class DrawingProperties {
     constructor(drawingName: string) 
     {
         this.drawingName = drawingName;
     }//ctor
 
     readonly drawingName: string;
-}//DrawingData
+}//DrawingProperties
 
 export type ParsedNode = 
-    DrawingData |
+    DrawingProperties |
     NetworkComponentController |
     NetworkLink |
     ParsingException

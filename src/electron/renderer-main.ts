@@ -21,13 +21,14 @@ import DrawingMergeDialog from './drawing-merge-dialog.vue';
 import { Position } from '../Transform/Transform';
 
 export const kresmer = new Kresmer('#kresmer');
-let drawingFileName: string;
 
 export const hints = new Hints;
 export const statusBarData = reactive({
     hint: "",
     drawingScale: 1,
 })//statusBarData
+
+let defaultDrawingFileName: string;
 
 export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
@@ -65,6 +66,7 @@ const appCommandExecutor = new AppCommandExecutor;
 appCommandExecutor
     .on("load-library", loadLibrary)
     .on("load-drawing", loadDrawing)
+    .on("save-drawing", saveDrawing)
     .on("undo", () => {kresmer.undo(); setWindowTitle();})
     .on("redo", () => {kresmer.redo(); setWindowTitle();})
     .on("add-vertex", addLinkVertex)
@@ -119,7 +121,7 @@ async function loadDrawing(drawingData: string,
         if (!kresmer.loadDrawing(drawingData, mergeOptions))
             alert("There were errors during drawing load (see the log)");
         else if (options?.drawingFileName && (!options.mergeOptions || options.mergeOptions === "erase-previous-content")) {
-            drawingFileName = options?.drawingFileName;
+            defaultDrawingFileName = options.drawingFileName;
         }//if
     } catch (exc) {
         if (exc instanceof ParsingException) {
@@ -135,6 +137,12 @@ async function loadDrawing(drawingData: string,
         window.electronAPI.signalReadiness(options.completionSignal);
     }//if
 }//loadDrawing
+
+function saveDrawing()
+{
+    const dwgData = kresmer.saveDrawing();
+    window.electronAPI.completeDrawingSaving(dwgData, defaultDrawingFileName);
+}//saveDrawing
 
 function setWindowTitle()
 {
