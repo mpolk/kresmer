@@ -49,8 +49,8 @@ import { indent } from "../Utils";
     get data(): ITransform
     {
         return {
-            rotation: this.rotation ? {...this.rotation} : undefined,
-            scale: this.scale? {...this.scale} : undefined,
+            rotation: {...this.rotation},
+            scale: {...this.scale},
         }
     }//get data
 

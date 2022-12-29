@@ -45,6 +45,9 @@
     onMounted(() => {
         bBox.value = svg.value?.getBBox({stroke: true});
         applyTransform.value = true;
+        if (props.transform.nonEmpty) {
+            props.controller.updateConnectionPoints();
+        }//if
     })//onMounted
 
     const transform = computed(() => {
