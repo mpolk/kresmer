@@ -14,6 +14,7 @@ import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
+import { indent } from "../Utils";
 
 /**
  * Network Component - a generic network element instance 
@@ -138,7 +139,7 @@ export default class NetworkLink extends NetworkElement {
     }//onRightClick
 
 
-    public toXML(indent: number): string 
+    public toXML(indentLevel: number): string 
     {
         const attrs = new Map<string, string>();
         attrs.set("class", this._class.name);
@@ -151,13 +152,13 @@ export default class NetworkLink extends NetworkElement {
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
         if (this.vertices.length <= 2) {
-            return `${"    ".repeat(indent)}<link ${attrStr}/>`;
+            return `${indent(indentLevel)}<link ${attrStr}/>`;
         } else {
-            let xml = `${"    ".repeat(indent)}<link ${attrStr}>\n`;
+            let xml = `${indent(indentLevel)}<link ${attrStr}>\n`;
             for (let i = 1; i <= n - 1; i++) {
-                xml += `${"    ".repeat(indent+1)}${this.vertices[i].toXML()}\n`;
+                xml += `${indent(indentLevel+1)}${this.vertices[i].toXML()}\n`;
             }//for
-            xml += `${"    ".repeat(indent)}</link>`;
+            xml += `${indent(indentLevel)}</link>`;
             return xml;
         }//if
     }//toXML

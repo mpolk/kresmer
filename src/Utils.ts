@@ -11,3 +11,9 @@ export function toCamelCase(s: string): string
 {
     return s.replaceAll(/-([a-z])/g, (_, p1) => p1.toUpperCase());
 }//toCamelCase
+
+
+export function indent(indentLevel: number)
+{
+    return " ".repeat(indentLevel * 4);
+}//indent

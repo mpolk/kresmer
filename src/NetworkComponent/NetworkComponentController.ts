@@ -13,6 +13,7 @@ import NetworkComponent from "./NetworkComponent";
 import { Position, Transform, ITransform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
 import { EditorOperation } from "../UndoStack";
+import { indent } from "../Utils";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
@@ -229,16 +230,28 @@ export default class NetworkComponentController {
     }//onTransformBoxClick
 
 
-    public toXML(indent: number): string 
+    public toXML(indentLevel: number): string 
     {
         const attrs = new Map<string, string>();
         attrs.set("class", this.component._class.name);
         this.component.isNamed && attrs.set("name", this.component.name);
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
-        const xml = [`${"    ".repeat(indent)}<component ${attrStr}>`];
-        xml.push(`${"    ".repeat(indent+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
-        xml.push(`${"    ".repeat(indent)}</component>`);
+        const xml = [`${indent(indentLevel)}<component ${attrStr}>`];
+        xml.push(`${indent(indentLevel+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
+
+        if (this.component.props) {
+            xml.push(`${indent(indentLevel+1)}<props>`);
+            for (const propName in this.component.props) {
+                const propValue = this.component.props[propName];
+                if (propName !== "name") {
+                    xml.push(`${indent(indentLevel+2)}<prop name="${propName}">${propValue}</prop>`);
+                }//if
+            }//for
+            xml.push(`${indent(indentLevel+1)}</props>`);
+        }//if
+
+        xml.push(`${indent(indentLevel)}</component>`);
 
         return xml.join("\n");
     }//toXML
