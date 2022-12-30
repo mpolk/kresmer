@@ -25,8 +25,12 @@ import { ContextMenuID } from './menus';
         ipcRenderer.send('context-menu', menuID, ...args);
     },
 
-    completeDrawingSaving: (dwgData: string, defaultDrawingFileName?: string) => {
-        ipcRenderer.send("complete-drawing-saving", dwgData, defaultDrawingFileName);
+    setDefaultDrawingFileName: (fileName: string) => {
+        ipcRenderer.send('set-default-drawing-filename', fileName);
+    },
+
+    completeDrawingSaving: (dwgData: string) => {
+        ipcRenderer.send("complete-drawing-saving", dwgData);
     },
 
  });

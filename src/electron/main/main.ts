@@ -21,6 +21,7 @@ const isDev = process.env.npm_lifecycle_event === "app:dev";
 
 let mainWindow: BrowserWindow;
 export let menus: Menus;
+let defaultDrawingFileName: string;
 
 export const userPrefs = new Settings({
     fileName: "user-prefs.json", 
@@ -60,6 +61,8 @@ function createWindow() {
     });
 
     ipcMain.on('renderer-ready', (_event, stage: number) => {initApp(mainWindow, stage)});
+    ipcMain.on('set-default-drawing-filename', 
+               (_event, fileName: string) => {defaultDrawingFileName = fileName});
     return mainWindow;
 }//createWindow
 
@@ -81,11 +84,11 @@ function initApp(mainWindow: BrowserWindow, stage: number)
             console.debug(`argv=${argv}`);
             const autoload = argv[1] == "." ? argv[2] : argv[1];
             if (fs.existsSync(autoload)) {
+                defaultDrawingFileName = autoload;
                 const dwgData = fs.readFileSync(autoload, "utf-8");
-                const drawingFileName = path.basename(autoload);
                 sendAppCommand("load-drawing", dwgData, 
                                 {
-                                    drawingFileName, 
+                                    drawingFileName: autoload, 
                                     completionSignal: 2, 
                                     mergeOptions: "ignore-duplicates"
                                 });
@@ -141,6 +144,20 @@ export function openDrawing()
         sendAppCommand("load-drawing", dwgData, {drawingFileName});
     }//if
 }//openDrawing
+
+
+export function saveDrawing()
+{
+    if (!defaultDrawingFileName) {
+        saveDrawingAs();
+    } else {
+        ipcMain.once("complete-drawing-saving", (_event, dwgData: string) => {
+                console.debug(`About to save the drawing to the file "${defaultDrawingFileName}"`);
+                fs.writeFileSync(defaultDrawingFileName, dwgData);
+        });
+        sendAppCommand("save-drawing");
+    }//if
+}//saveDrawing
 
 
 export function saveDrawingAs()

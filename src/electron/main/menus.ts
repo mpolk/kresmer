@@ -7,7 +7,7 @@
  ***************************************************************************/
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 import { Position } from "../../Transform/Transform";
-import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand } from "./main";
+import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing } from "./main";
 
 const isMac = process.platform === 'darwin'
 
@@ -46,6 +46,7 @@ export default class Menus {
           {label: "Open drawing...", accelerator: "Control+O", click: () => openDrawing()},
           {label: "Load library...", accelerator: "Control+L", click: () => loadLibrary()},
           {type: 'separator'},
+          {label: "Save drawing", accelerator: "Control+S", click: () => saveDrawing()},
           {label: "Save drawing as...", click: () => saveDrawingAs()},
           {type: 'separator'},
           isMac ? { role: 'close' } : { role: 'quit' }

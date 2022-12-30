@@ -28,8 +28,6 @@ export const statusBarData = reactive({
     drawingScale: 1,
 })//statusBarData
 
-let defaultDrawingFileName: string;
-
 export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar");
@@ -121,7 +119,7 @@ async function loadDrawing(drawingData: string,
         if (!kresmer.loadDrawing(drawingData, mergeOptions))
             alert("There were errors during drawing load (see the log)");
         else if (options?.drawingFileName && (!options.mergeOptions || options.mergeOptions === "erase-previous-content")) {
-            defaultDrawingFileName = options.drawingFileName;
+            window.electronAPI.setDefaultDrawingFileName(options.drawingFileName);
         }//if
     } catch (exc) {
         if (exc instanceof ParsingException) {
@@ -141,7 +139,7 @@ async function loadDrawing(drawingData: string,
 function saveDrawing()
 {
     const dwgData = kresmer.saveDrawing();
-    window.electronAPI.completeDrawingSaving(dwgData, defaultDrawingFileName);
+    window.electronAPI.completeDrawingSaving(dwgData);
 }//saveDrawing
 
 function setWindowTitle()
