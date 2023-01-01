@@ -15,6 +15,7 @@ import StatusBar from './status-bar.vue';
 import NetworkComponentController from '../NetworkComponent/NetworkComponentController';
 import NetworkComponent from '../NetworkComponent/NetworkComponent';
 import NetworkLink from '../NetworkLink/NetworkLink';
+import NetworkElement from '../NetworkElement';
 import LinkVertex from '../NetworkLink/LinkVertex';
 import { AppCommandExecutor } from './app-commands';
 import DrawingMergeDialog from './drawing-merge-dialog.vue';
@@ -23,7 +24,15 @@ import { Position } from '../Transform/Transform';
 export const kresmer = new Kresmer('#kresmer');
 
 export const hints = new Hints;
-export const statusBarData = reactive({
+
+export type StatusBarDisplayData = {
+    selectedElement: NetworkElement | null,
+    hint: string,
+    drawingScale: number,
+};
+
+export const statusBarData: StatusBarDisplayData = reactive({
+    selectedElement: null,
     hint: "",
     drawingScale: 1,
 })//statusBarData
@@ -173,25 +182,25 @@ function indicateComponentMove(controller: NetworkComponentController)
 function onComponentSelected(component: NetworkComponent, isSelected: boolean)
 {
     if (isSelected) {
-        hints.push(`${component}`);
+        statusBarData.selectedElement = component;
     } else {
-        hints.pop();
+        statusBarData.selectedElement = null;
     }//if
 }//onComponentSelected
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function onComponentMutated(controller: NetworkComponentController)
 {
     hints.pop();
-    hints.setHint(`${controller.component}`);
     setWindowTitle();
 }//onComponentMutated
 
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
 {
     if (isSelected) {
-        hints.push(`${link}`);
+        statusBarData.selectedElement = link;
     } else {
-        hints.pop();
+        statusBarData.selectedElement = null;
     }//if
 }//onLinkSelected
 

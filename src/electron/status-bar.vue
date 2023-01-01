@@ -7,14 +7,10 @@
 <*************************************************************************** -->
 <script setup lang="ts">
     import { computed, onMounted, PropType, ref } from 'vue';
-
-    type DisplayData = {
-        hint: string,
-        drawingScale: number,
-    };
+    import {StatusBarDisplayData} from './renderer-main';
 
     const props = defineProps({
-        displayData: {type: Object as PropType<DisplayData>, required: true},
+        displayData: {type: Object as PropType<StatusBarDisplayData>, required: true},
     });
 
     const bottom = ref(0);
@@ -39,11 +35,14 @@
 
 <template>
     <div class="status-bar" :style="{bottom}">
-        <div class="pane">
+        <div class="pane selected-element">
+            {{displayData.selectedElement}}
+        </div>
+        <div class="pane hint">
             {{displayData.hint}}
         </div>
         <div class="pane right">
-            Scale: ({{drawingScale}})
+            {{drawingScale}}
         </div>
     </div>
 </template>
@@ -60,6 +59,14 @@
         .pane {
             display: inline-block;
             padding: 0 0.5rem;
+
+            &.selected-element {
+                min-width: 15rem;
+            }
+
+            &.hint {
+                color: yellow;
+            }
 
             &.right {
                 float: right;
