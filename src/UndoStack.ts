@@ -6,9 +6,16 @@
  *         The stack for the editor operations undo/redo
 \**************************************************************************/
 
+import Kresmer from "./Kresmer";
 import KresmerException from "./KresmerException";
 
 export default class UndoStack {
+    constructor(kresmer: Kresmer)
+    {
+        this.kresmer = kresmer;
+    }//ctor
+
+    private kresmer: Kresmer;
     private stack: EditorOperation[] = [];
     private stackPointer = -1;
     private static readonly MAX_UNDOES = 100;
@@ -53,6 +60,7 @@ export default class UndoStack {
             this.stack.splice(0, 1);
             this._wasTruncated = true;
         }//if
+        this.kresmer._isDirty = true;
     }//_commit
 
     /** Clears the reference to the currently started operation */
@@ -75,8 +83,11 @@ export default class UndoStack {
     /** Undoes the last operation (or the next after the last of already undone ones) */
     undo()
     {
-        if (this.stackPointer >= 0) {
+        if (this.canUndo) {
             this.stack[this.stackPointer--].undo();
+            if (!this.canUndo && !this._wasTruncated) {
+                this.kresmer._isDirty = false;
+            }//if
         }//if
     }//undo
 
@@ -91,6 +102,7 @@ export default class UndoStack {
     {
         if (this.stackPointer < this.stack.length - 1) {
             this.stack[++this.stackPointer].redo();
+            this.kresmer._isDirty = true;
         }//if
     }//redo
 

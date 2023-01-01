@@ -104,15 +104,18 @@ export default class Kresmer extends KresmerEventHooks {
     readonly mountPoint: HTMLElement;
 
     /** The stack for undoing editor operations */
-    readonly undoStack = new UndoStack;
+    readonly undoStack = new UndoStack(this);
     public undo() {this.undoStack.undo()}
     public redo() {this.undoStack.redo()}
 
     /** Shows whether the content was modified comparing to the last data loading */
     public get isDirty()
     {
-        return this.undoStack.wasTruncated || this.undoStack.canUndo;
+        return this._isDirty;
     }//isDirty
+
+    public _isDirty = false;
+
 
     /**
      * A list of all Component Classes, registered by Kresmer
@@ -310,6 +313,7 @@ export default class Kresmer extends KresmerEventHooks {
     {
         this.networkComponents[controller.component.id] = controller;
         this.componentsByName[controller.component.name] = controller.component.id;
+        this._isDirty = true;
         return this;
     }//addPositionedNetworkComponent
  
@@ -327,6 +331,7 @@ export default class Kresmer extends KresmerEventHooks {
      {
          this.links[link.id] = link;
          this.linksByName[link.name] = link.id;
+         this._isDirty = true;
          return this;
      }//addLink
  
@@ -334,7 +339,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Loads a component class library from the raw XML data
      * @param dwgData Library data
-     * @param erasePreviousContent Specifies whether the exisiting content should be deleting
+     * @param mergeOptions Defines the way the loaded content should be merged with the existing one
      */
     public loadDrawing(dwgData: string, mergeOptions?: DrawingMergeOptions): boolean
     {
@@ -406,12 +411,14 @@ export default class Kresmer extends KresmerEventHooks {
         switch (mergeOptions) {
             case undefined: case "erase-previous-content":
                 this.drawingName = drawingName!;
+                this._isDirty = false;
                 break;
             default:
                 if (!this.drawingName) {
                     this.drawingName = drawingName!;
                 }//if
-        }//switch
+                this._isDirty = true;
+            }//switch
 
         this.undoStack.reset();
         return !wereErrors;
@@ -438,6 +445,7 @@ export default class Kresmer extends KresmerEventHooks {
         }//for
 
         xml += "</kresmer-drawing>\n"
+        this._isDirty = false;
         return xml;
     }//saveDrawing
 
