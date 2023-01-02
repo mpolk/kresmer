@@ -67,7 +67,7 @@
 <template>
     <circle v-if="model.isDragged" ref="padding"
         :cx="model.coords.x" :cy="model.coords.y" 
-        class="link vertex padding"
+        class="vertex padding"
         style="cursor: move; stroke: none;"
         :is-editable="isEditable"
         @mouseup.stop="onMouseUp($event)"
@@ -76,7 +76,7 @@
         />
     <circle ref="circle"
         :cx="model.coords.x" :cy="model.coords.y" 
-        class="link vertex" :class="{connected: model.isConnected}"
+        class="vertex" :class="{connected: model.isConnected}"
         style="cursor: move;"
         :is-editable="isEditable"
         @mousedown.stop="onMouseDown($event)"
@@ -89,7 +89,7 @@
     <Transition>
         <circle v-if="model.showBlinker" ref="blinker"
             :cx="model.coords.x" :cy="model.coords.y" 
-            class="link vertex blinker"
+            class="vertex blinker"
             />
     </Transition>
 </template>
@@ -105,7 +105,7 @@
     }
 
     .v-enter-active {
-        transition: opacity 0.5s ease;
+        transition: opacity 0.3s ease;
     }
     .v-leave-active {
         transition: opacity 2s ease;

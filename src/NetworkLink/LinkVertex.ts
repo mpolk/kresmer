@@ -239,7 +239,9 @@ export default class LinkVertex {
             return;
         }//if
         const predecessor = this.link.vertices[this.vertexNumber - 1];
+        const prePos = predecessor.coords;
         const successor = this.link.vertices[this.vertexNumber + 1];
+        const sucPos = successor.coords;
 
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
         const newPos = 
@@ -248,6 +250,7 @@ export default class LinkVertex {
             (successor._isConnected && successor.isEndpoint && (!predecessor._isConnected || !predecessor.isEndpoint)) ?
                 this.alignBetweenConnectionAndPosition(successor, predecessor) :
                 this.alignBetweenTwoPositions(predecessor, successor);
+
         let shouldMove = Boolean(newPos);
         const outOfLimits = newPos && (
             newPos.x <= 0 || newPos.x >= this.link.kresmer.viewWidth ||
@@ -256,6 +259,17 @@ export default class LinkVertex {
             shouldMove = false;
             this.blink();
         }//if
+        const hitToPre = newPos && newPos.x == prePos.x && newPos.y == prePos.y;
+        if (hitToPre) {
+            shouldMove = false;
+            predecessor.blink();
+        }//if
+        const hitToSuc = newPos && newPos.x == sucPos.x && newPos.y == sucPos.y;
+        if (hitToSuc) {
+            shouldMove = false;
+            successor.blink();
+        }//if
+
         if (shouldMove) {
             this.pinUp(newPos!);
             this.link.kresmer.undoStack.commitOperation();
@@ -285,15 +299,20 @@ export default class LinkVertex {
         const c = connected.coords;
         const p = positioned.coords;
         const dir = connected.conn!.dir % 360;
+        let newPos: Position | null;
         switch (dir) {
             case 0:
-                return (p.x > c.x) ? {x: p.x, y: c.y} : null;
+                newPos = (p.x > c.x) ? {x: p.x, y: c.y} : null;
+                break;
             case 90:
-                return (p.y > c.y) ? {x: c.x, y: p.y} : null;
+                newPos = (p.y > c.y) ? {x: c.x, y: p.y} : null;
+                break;
             case 180:
-                return (p.x < c.x) ? {x: p.x, y: c.y} : null;
+                newPos = (p.x < c.x) ? {x: p.x, y: c.y} : null;
+                break;
             case 270:
-                return (p.y < c.y) ? {x: c.x, y: p.y} : null;
+                newPos = (p.y < c.y) ? {x: c.x, y: p.y} : null;
+                break;
             default: {
                 const k = Math.tan(dir/180 * Math.PI);
                 let sx: number; let sy: number;
@@ -319,14 +338,20 @@ export default class LinkVertex {
                     newPosY = {x: c.x + dy / k, y: p.y};
                 }//if
                 if (Math.abs(dx) < Math.abs(dy)) {
-                    return newPosX!;
+                    newPos = newPosX!;
                 } else if (Number.isFinite(dy)) {
-                    return newPosY!;
+                    newPos = newPosY!;
                 } else {
-                    return null;
+                    newPos =  null;
                 }//if
             }//default
         }//switch
+
+        if (!newPos) {
+            connected.blink();
+            positioned.blink();
+        }//if
+        return newPos;
     }//alignBetweenConnectionAndPosition
 
 
