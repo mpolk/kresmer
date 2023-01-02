@@ -233,7 +233,10 @@ export default class LinkVertex {
             (successor._isConnected && successor.isEndpoint && (!predecessor._isConnected || !predecessor.isEndpoint)) ?
                 this.alignBetweenConnectionAndPosition(successor, predecessor) :
                 this.alignBetweenTwoPositions(predecessor, successor);
-        if (newPos) {
+        const shouldMove = newPos &&
+            newPos.x > 0 && newPos.x < this.link.kresmer.viewWidth &&
+            newPos.y > 0 && newPos.y < this.link.kresmer.viewHeight;
+        if (shouldMove) {
             this.pinUp(newPos);
             this.link.kresmer.undoStack.commitOperation();
             this.link.kresmer.emit("link-vertex-moved", this);
