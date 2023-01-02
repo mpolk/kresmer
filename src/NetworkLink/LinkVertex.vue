@@ -86,6 +86,12 @@
         @contextmenu="onRightClick($event)"
         @dblclick="onDoubleClick()"
         />
+    <Transition>
+        <circle v-if="model.showBlinker" ref="blinker"
+            :cx="model.coords.x" :cy="model.coords.y" 
+            class="link vertex blinker"
+            />
+    </Transition>
 </template>
 
 <style lang="scss">
@@ -96,5 +102,15 @@
         &:hover {
             opacity: 0.9;
         }
+    }
+
+    .v-enter-active {
+        transition: opacity 0.5s ease;
+    }
+    .v-leave-active {
+        transition: opacity 2s ease;
+    }
+    .v-enter-from, .v-leave-to {
+        opacity: 0;
     }
 </style>

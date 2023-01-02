@@ -6,6 +6,7 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
+import { ref } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
@@ -40,6 +41,8 @@ export default class LinkVertex {
     private dragStartPos?: Position;
     private savedMousePos?: Position;
 
+    showBlinker = false;
+
     toString()
     {
         if (this._isConnected) {
@@ -50,6 +53,18 @@ export default class LinkVertex {
             return "()";
         }//if
     }//toString
+
+    public toXML()
+    {
+        if (this._isPinnedUp) {
+            return `<vertex x="${this.pos!.x}" y="${this.pos!.y}"/>`;
+        } else if (this._isConnected) {
+            const conn = `${this.initParams!.conn!.component}:${this.initParams!.conn!.connectionPoint}`;
+            return `<vertex connect="${conn}"/>`;
+        } else {
+            return `<vertex/>`;
+        }//if
+    }//toXML
 
 
     get isEndpoint()
@@ -233,11 +248,16 @@ export default class LinkVertex {
             (successor._isConnected && successor.isEndpoint && (!predecessor._isConnected || !predecessor.isEndpoint)) ?
                 this.alignBetweenConnectionAndPosition(successor, predecessor) :
                 this.alignBetweenTwoPositions(predecessor, successor);
-        const shouldMove = newPos &&
-            newPos.x > 0 && newPos.x < this.link.kresmer.viewWidth &&
-            newPos.y > 0 && newPos.y < this.link.kresmer.viewHeight;
+        let shouldMove = Boolean(newPos);
+        const outOfLimits = newPos && (
+            newPos.x <= 0 || newPos.x >= this.link.kresmer.viewWidth ||
+            newPos.y <= 0 || newPos.y >= this.link.kresmer.viewHeight);
+        if (outOfLimits) {
+            shouldMove = false;
+            this.blink();
+        }//if
         if (shouldMove) {
-            this.pinUp(newPos);
+            this.pinUp(newPos!);
             this.link.kresmer.undoStack.commitOperation();
             this.link.kresmer.emit("link-vertex-moved", this);
             return true;
@@ -309,17 +329,12 @@ export default class LinkVertex {
         }//switch
     }//alignBetweenConnectionAndPosition
 
-    public toXML()
+
+    public blink()
     {
-        if (this._isPinnedUp) {
-            return `<vertex x="${this.pos!.x}" y="${this.pos!.y}"/>`;
-        } else if (this._isConnected) {
-            const conn = `${this.initParams!.conn!.component}:${this.initParams!.conn!.connectionPoint}`;
-            return `<vertex connect="${conn}"/>`;
-        } else {
-            return `<vertex/>`;
-        }//if
-    }//toXML
+        this.showBlinker = true;
+        setTimeout(() => {this.showBlinker = false}, 500);
+    }//blink
 }//LinkVertex
 
 

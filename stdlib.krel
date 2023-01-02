@@ -251,6 +251,7 @@
             .segment.selected {stroke: #525440; stroke-width: 4px}
             .vertex {stroke: #525440; stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
+            .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
         </style>
     </link-class>
 </kresmer-library>
