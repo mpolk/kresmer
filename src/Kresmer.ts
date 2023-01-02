@@ -120,7 +120,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * A list of all Component Classes, registered by Kresmer
      */
-    protected readonly registeredComponentClasses: Record<string, NetworkComponentClass> = {};
+    protected readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
@@ -197,7 +197,7 @@ export default class Kresmer extends KresmerEventHooks {
             this.styles.push(this.scopeStyles(componentClass.style, componentClass.name));
         }//if
 
-        this.registeredComponentClasses[componentClass.name] = componentClass;
+        this.registeredComponentClasses.set(componentClass.name, componentClass);
 
         // automatically create a single component instance if required
         if (componentClass.autoInstanciate) {
@@ -229,14 +229,14 @@ export default class Kresmer extends KresmerEventHooks {
             this.styles.push(this.scopeStyles(linkClass.style, linkClass.name));
         }//if
 
-        this.registeredLinkClasses[linkClass.name] = linkClass;
+        this.registeredLinkClasses.set(linkClass.name, linkClass);
         return this;
     }//registerLinkClass
 
     /**
      * A list of all Link Classes, registered by Kresmer
      */
-    protected readonly registeredLinkClasses: Record<string, LinkClass> = {};
+    protected readonly registeredLinkClasses = new Map<string, LinkClass>();
 
 
     /**
@@ -290,8 +290,8 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Components currently placed to the drawing
      */
-    private readonly networkComponents = reactive<Record<string, NetworkComponentController>>({});
-    private readonly componentsByName: Record<string, number> = {};
+    private readonly networkComponents = reactive(new Map<number, NetworkComponentController>());
+    private readonly componentsByName = new Map<string, number>();
 
     /**
      * Adds a new Network Component to the content of the drawing
@@ -311,8 +311,8 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public addPositionedNetworkComponent(controller: NetworkComponentController)
     {
-        this.networkComponents[controller.component.id] = controller;
-        this.componentsByName[controller.component.name] = controller.component.id;
+        this.networkComponents.set(controller.component.id, controller);
+        this.componentsByName.set(controller.component.name, controller.component.id);
         this._isDirty = true;
         return this;
     }//addPositionedNetworkComponent
@@ -320,8 +320,8 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-     private readonly links = reactive<Record<string, Link>>({});
-     private readonly linksByName: Record<string, number> = {};
+     protected readonly links = reactive(new Map<number, Link>());
+     protected readonly linksByName = new Map<string, number>();
 
     /**
      * Adds a new Link to the content of the drawing
@@ -329,8 +329,8 @@ export default class Kresmer extends KresmerEventHooks {
      */
      public addLink(link: Link)
      {
-         this.links[link.id] = link;
-         this.linksByName[link.name] = link.id;
+         this.links.set(link.id, link);
+         this.linksByName.set(link.name, link.id);
          this._isDirty = true;
          return this;
      }//addLink
@@ -434,14 +434,14 @@ export default class Kresmer extends KresmerEventHooks {
 <kresmer-drawing name="${this.drawingName}">
 `;
 
-        for (const id in this.networkComponents) {
-            if (!this.networkComponents[id].component.isAutoInstantiated) {
-                xml += this.networkComponents[id].toXML(1) + "\n\n";
+        for (const controller of this.networkComponents.values()) {
+            if (!controller.component.isAutoInstantiated) {
+                xml += controller.toXML(1) + "\n\n";
             }//for
         }//for
 
-        for (const id in this.links) {
-            xml += this.links[id].toXML(1) + "\n\n";
+        for (const link of this.links.values()) {
+            xml += link.toXML(1) + "\n\n";
         }//for
 
         xml += "</kresmer-drawing>\n"
@@ -454,18 +454,10 @@ export default class Kresmer extends KresmerEventHooks {
     public eraseContent()
     {
         this.undoStack.reset();
-        for (const name in this.linksByName) {
-            delete this.linksByName[name];
-        }//for
-        for (const id in this.links) {
-            delete this.links[id];
-        }//for
-        for (const name in this.componentsByName) {
-            delete this.componentsByName[name];
-        }//for
-        for (const id in this.networkComponents) {
-            delete this.networkComponents[id];
-        }//for
+        this.linksByName.clear();
+        this.links.clear();
+        this.componentsByName.clear();
+        this.networkComponents.clear();
     }//eraseContent
 
 
@@ -476,7 +468,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public getComponentById(id: number)
     {
-        return this.networkComponents[id].component;
+        return this.networkComponents.get(id)?.component;
     }//getComponentById
 
 
@@ -487,10 +479,10 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public getComponentByName(name: string)
     {
-        const id = this.componentsByName[name];
+        const id = this.componentsByName.get(name);
         if (id === undefined)
             return undefined;
-        return this.networkComponents[id].component;
+        return this.networkComponents.get(id)?.component;
     }//getComponentByName
 
 
@@ -501,7 +493,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public getLinkById(id: number)
     {
-        return this.links[id];
+        return this.links.get(id);
     }//getLinkById
 
 
@@ -512,10 +504,10 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public getLinkByName(name: string)
     {
-        const id = this.linksByName[name];
+        const id = this.linksByName.get(name);
         if (id === undefined)
             return undefined;
-        return this.links[id];
+        return this.links.get(id);
     }//getLinkByName
  
 
@@ -526,7 +518,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public getComponentControllerById(id: number)
     {
-        return this.networkComponents[id];
+        return this.networkComponents.get(id);
     }//getComponentLoavtionById
   
 
@@ -549,8 +541,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public resetAllComponentMode(except?: NetworkComponentController)
     {
-        for (const id in this.networkComponents) {
-            const controller = this.networkComponents[id];
+        for (const controller of this.networkComponents.values()) {
             if (controller !== except)
                 controller.resetMode();
         }//for
@@ -559,8 +550,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Deselects all components (probably except the one specified) */
     public deselectAllComponents(except?: NetworkComponentController)
     {
-        for (const id in this.networkComponents) {
-            const controller = this.networkComponents[id];
+        for (const controller of this.networkComponents.values()) {
             if (controller !== except) {
                 controller.component.isSelected = false;
             }//if
@@ -570,8 +560,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Deselects all links (probably except the one specified) */
     public deselectAllLinks(except?: NetworkLink)
     {
-        for (const id in this.links) {
-            const link = this.links[id];
+        for (const link of this.links.values()) {
             if (link !== except) {
                 link.isSelected = false;
             }//if
@@ -581,14 +570,12 @@ export default class Kresmer extends KresmerEventHooks {
     /** Deselects all components (probably except the one specified) */
     public deselectAllElements(except?: NetworkComponentController|NetworkLink)
     {
-        for (const id in this.networkComponents) {
-            const controller = this.networkComponents[id];
+        for (const controller of this.networkComponents.values()) {
             if (controller !== except) {
                 controller.component.isSelected = false;
             }//if
         }//for
-        for (const id in this.links) {
-            const link = this.links[id];
+        for (const link of this.links.values()) {
             if (link !== except) {
                 link.isSelected = false;
             }//if

@@ -27,19 +27,19 @@
     const props = defineProps({
         controller: {type: Object as PropType<Kresmer>, required: true},
         networkComponents: {
-            type: Object as PropType<Record<string, NetworkComponentController>>, 
+            type: Object as PropType<Map<string, NetworkComponentController>>, 
             required: true
         },
         networkComponentClasses: {
-            type: Object as PropType<Record<string, NetworkComponentClass>>, 
+            type: Object as PropType<Map<string, NetworkComponentClass>>, 
             required: true
         },
         links: {
-            type: Object as PropType<Record<string, NetworkLink>>, 
+            type: Object as PropType<Map<string, NetworkLink>>, 
             required: true
         },
         linkClasses: {
-            type: Object as PropType<Record<string, NetworkLinkClass>>, 
+            type: Object as PropType<Map<string, NetworkLinkClass>>, 
             required: true
         },
         drawingWidth: {type: [Number, String], default: "100%"},
@@ -53,11 +53,11 @@
     const rootSVG = ref<SVGGraphicsElement>();
 
     const networkComponentsSorted = computed(() => {
-        return Object.values(props.networkComponents).sort((c1, c2) => c1.zIndex - c2.zIndex)
+        return Array.from(props.networkComponents.values()).sort((c1, c2) => c1.zIndex - c2.zIndex)
     })
 
     const linksSorted = computed(() => {
-        return Object.values(props.links).sort((c1, c2) => c1.zIndex - c2.zIndex)
+        return Array.from(props.links.values()).sort((c1, c2) => c1.zIndex - c2.zIndex)
     })
 
     const scale = ref(1);
@@ -155,7 +155,7 @@
             <TransformBoxFilters />
             <ConnectionPointFilters />
             <component v-for="(_, i) in controller.defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
-            <template v-for="_class in networkComponentClasses">
+            <template v-for="_class of networkComponentClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
         </defs>
