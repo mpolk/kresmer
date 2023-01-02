@@ -111,10 +111,10 @@ export default class Kresmer extends KresmerEventHooks {
     /** Shows whether the content was modified comparing to the last data loading */
     public get isDirty()
     {
-        return this._isDirty;
+        return this._isDirty || this.undoStack.canUndo || this.undoStack.wasTruncated;
     }//isDirty
 
-    public _isDirty = false;
+    private _isDirty = false;
 
 
     /**

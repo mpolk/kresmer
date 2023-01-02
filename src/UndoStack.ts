@@ -60,7 +60,6 @@ export default class UndoStack {
             this.stack.splice(0, 1);
             this._wasTruncated = true;
         }//if
-        this.kresmer._isDirty = true;
     }//_commit
 
     /** Clears the reference to the currently started operation */
@@ -85,9 +84,6 @@ export default class UndoStack {
     {
         if (this.canUndo) {
             this.stack[this.stackPointer--].undo();
-            if (!this.canUndo && !this._wasTruncated) {
-                this.kresmer._isDirty = false;
-            }//if
         }//if
     }//undo
 
@@ -102,7 +98,6 @@ export default class UndoStack {
     {
         if (this.stackPointer < this.stack.length - 1) {
             this.stack[++this.stackPointer].redo();
-            this.kresmer._isDirty = true;
         }//if
     }//redo
 
