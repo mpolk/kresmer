@@ -112,22 +112,21 @@ function loadLibrary(libData: string, completionSignal?: number)
 async function loadDrawing(drawingData: string, 
                      options?: {
                         drawingFileName?: string,
-                        mergeOptions?: DrawingMergeOptions,
                         completionSignal?: number,
                     })
 { 
     try {
-        let mergeOptions: DrawingMergeOptions|null|undefined = options?.mergeOptions;
-        if (!mergeOptions) {
+        let mergeOptions: DrawingMergeOptions|undefined|null;
+        if (!options?.completionSignal) {
             mergeOptions = await drawingMergeDialog.show();
             if (!mergeOptions) {
                 return;
             }//if
         }//if
 
-        if (!kresmer.loadDrawing(drawingData, mergeOptions))
+        if (!kresmer.loadDrawing(drawingData, mergeOptions)) {
             alert("There were errors during drawing load (see the log)");
-        else if (options?.drawingFileName && (!options.mergeOptions || options.mergeOptions === "erase-previous-content")) {
+        } else if (options?.drawingFileName && (!mergeOptions || mergeOptions === "erase-previous-content")) {
             window.electronAPI.setDefaultDrawingFileName(options.drawingFileName);
         }//if
     } catch (exc) {

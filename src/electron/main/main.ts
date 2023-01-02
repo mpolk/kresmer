@@ -90,7 +90,6 @@ function initApp(mainWindow: BrowserWindow, stage: number)
                                 {
                                     drawingFileName: autoload, 
                                     completionSignal: 2, 
-                                    mergeOptions: "ignore-duplicates"
                                 });
             }//if
             break;
