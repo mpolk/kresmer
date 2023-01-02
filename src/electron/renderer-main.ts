@@ -116,9 +116,9 @@ async function loadDrawing(drawingData: string,
                     })
 { 
     try {
-        let mergeOptions: DrawingMergeOptions|undefined|null;
+        let mergeOptions: DrawingMergeOptions|undefined;
         if (!options?.completionSignal) {
-            mergeOptions = await drawingMergeDialog.show();
+            mergeOptions = (await drawingMergeDialog.show()) ?? undefined;
             if (!mergeOptions) {
                 return;
             }//if

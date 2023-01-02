@@ -341,7 +341,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param dwgData Library data
      * @param mergeOptions Defines the way the loaded content should be merged with the existing one
      */
-    public loadDrawing(dwgData: string, mergeOptions?: DrawingMergeOptions|null): boolean
+    public loadDrawing(dwgData: string, mergeOptions?: DrawingMergeOptions): boolean
     {
         console.debug("Loading drawing...");
         // console.debug(dwgData);
@@ -418,7 +418,7 @@ export default class Kresmer extends KresmerEventHooks {
                     this.drawingName = drawingName!;
                 }//if
                 this._isDirty = true;
-            }//switch
+        }//switch
 
         this.undoStack.reset();
         return !wereErrors;
