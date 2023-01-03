@@ -48,7 +48,7 @@ export default class UndoStack {
     private _commit(op: EditorOperation)
     {
         if (this.stackPointer < this.stack.length - 1) {
-            this.stack.splice(this.stackPointer, this.stack.length - 1 - this.stackPointer);
+            this.stack.splice(this.stackPointer + 1, this.stack.length - 1 - this.stackPointer);
         }//if
 
         op.onCommit();
