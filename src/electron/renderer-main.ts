@@ -60,6 +60,7 @@ kresmer
     .on("component-selected", onComponentSelected)
     .on("link-selected", onLinkSelected)
     .on("link-right-click", onLinkRightClick)
+    .on("link-vertex-being-moved", indicateLinkVertexMove)
     .on("link-vertex-moved", onLinkVertexMutated)
     .on("link-vertex-connected", onLinkVertexMutated)
     .on("link-vertex-disconnected", onLinkVertexMutated)
@@ -213,9 +214,18 @@ function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent *
     window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
 }//onLinkVertexRightClick
 
+function indicateLinkVertexMove(vertex: LinkVertex)
+{
+    const coords = vertex.coords;
+    const hint = `x:${coords.x.toFixed(0)} \
+                  y:${coords.y.toFixed(0)}`;
+    hints.setHint(hint);
+}//indicateLinkVertexMove
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function onLinkVertexMutated(vertex: LinkVertex)
 {
-    hints.setHint(`${vertex.link}`);
+    hints.pop();
     setWindowTitle();
 }//onLinkVertexMutated
 

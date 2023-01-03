@@ -6,7 +6,6 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
-import { ref } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
