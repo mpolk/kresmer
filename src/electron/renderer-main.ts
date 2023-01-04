@@ -149,6 +149,7 @@ function saveDrawing()
 {
     const dwgData = kresmer.saveDrawing();
     window.electronAPI.completeDrawingSaving(dwgData);
+    setWindowTitle();
 }//saveDrawing
 
 function setWindowTitle()

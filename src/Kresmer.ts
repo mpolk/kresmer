@@ -104,17 +104,20 @@ export default class Kresmer extends KresmerEventHooks {
     readonly mountPoint: HTMLElement;
 
     /** The stack for undoing editor operations */
-    readonly undoStack = new UndoStack(this);
+    readonly undoStack = new UndoStack();
     public undo() {this.undoStack.undo()}
     public redo() {this.undoStack.redo()}
 
     /** Shows whether the content was modified comparing to the last data loading */
     public get isDirty()
     {
-        return this._isDirty || this.undoStack.canUndo || this.undoStack.wasTruncated;
-    }//isDirty
+        return this.undoStack.isDirty;
+    }//get isDirty
 
-    private _isDirty = false;
+    public set isDirty(newValue)
+    {
+        this.undoStack.isDirty = newValue;
+    }//set isDirty
 
 
     /**
@@ -313,7 +316,7 @@ export default class Kresmer extends KresmerEventHooks {
     {
         this.networkComponents.set(controller.component.id, controller);
         this.componentsByName.set(controller.component.name, controller.component.id);
-        this._isDirty = true;
+        this.isDirty = true;
         return this;
     }//addPositionedNetworkComponent
  
@@ -331,7 +334,7 @@ export default class Kresmer extends KresmerEventHooks {
      {
          this.links.set(link.id, link);
          this.linksByName.set(link.name, link.id);
-         this._isDirty = true;
+         this.isDirty = true;
          return this;
      }//addLink
  
@@ -411,13 +414,13 @@ export default class Kresmer extends KresmerEventHooks {
         switch (mergeOptions) {
             case undefined: case "erase-previous-content":
                 this.drawingName = drawingName!;
-                this._isDirty = false;
+                this.isDirty = false;
                 break;
             default:
                 if (!this.drawingName) {
                     this.drawingName = drawingName!;
                 }//if
-                this._isDirty = true;
+                this.isDirty = true;
         }//switch
 
         this.undoStack.reset();
@@ -445,7 +448,7 @@ export default class Kresmer extends KresmerEventHooks {
         }//for
 
         xml += "</kresmer-drawing>\n"
-        this._isDirty = false;
+        this.isDirty = false;
         return xml;
     }//saveDrawing
 
