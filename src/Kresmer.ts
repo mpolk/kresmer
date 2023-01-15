@@ -8,8 +8,8 @@
 
 import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef } from "vue";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
-import KresmerVue from "./Kresmer.vue";
 import KresmerEventHooks from "./KresmerEventHooks";
+import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
@@ -21,7 +21,6 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import Link from "./NetworkLink/NetworkLink";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
@@ -323,14 +322,14 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-     protected readonly links = reactive(new Map<number, Link>());
+     protected readonly links = reactive(new Map<number, NetworkLink>());
      protected readonly linksByName = new Map<string, number>();
 
     /**
      * Adds a new Link to the content of the drawing
      * @param link A Link to add
      */
-     public addLink(link: Link)
+     public addLink(link: NetworkLink)
      {
          this.links.set(link.id, link);
          this.linksByName.set(link.name, link.id);
@@ -380,7 +379,7 @@ export default class Kresmer extends KresmerEventHooks {
                     }//switch
                 }//if
                 this.addPositionedNetworkComponent(element);
-            } else if (element instanceof Link) {
+            } else if (element instanceof NetworkLink) {
                 for (const vertex of element.vertices) {
                     const componentName = vertex.initParams?.conn?.component;
                     if (componentName && componentRenames.has(componentName)) {
@@ -677,3 +676,12 @@ export type DrawingMergeOptions =
     "merge-duplicates" |
     "rename-duplicates" |
     "ignore-duplicates";
+
+export type {default as NetworkElement} from "./NetworkElement";
+export type {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
+export type {default as NetworkComponentController} from "./NetworkComponent/NetworkComponentController";
+export type { Position } from "./Transform/Transform";
+export type {default as NetworkLink} from "./NetworkLink/NetworkLink";
+export type {default as LinkVertex} from "./NetworkLink/LinkVertex";
+export {default as ParsingException} from "./parsers/ParsingException"
+    

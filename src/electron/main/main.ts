@@ -12,7 +12,7 @@ import process from 'process';
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const packageJson = require("../../../package.json");
+//const packageJson = require("../../../package.json");
 import Menus, {ContextMenuID} from "./menus";
 import { AppCommand, AppCommandFormats } from '../app-commands';
 import console from 'console';
@@ -43,7 +43,8 @@ function createWindow() {
 
     // and load the index.html of the app.
     const url = isDev ?
-        `http://localhost:${packageJson.config.port}/index.electron.html` :
+        //`http://localhost:${packageJson.config.port}/index.electron.html` :
+        `http://localhost:5173/index.electron.html` :
         'file://' + path.join(__dirname, '../../index.electron.html');
     mainWindow.loadURL(url);
 
