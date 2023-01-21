@@ -123,7 +123,7 @@ export default class Kresmer extends KresmerEventHooks {
     {
         return !this.links.size && 
                !Array.from(this.networkComponents)
-                     .filter(([_, controller]) => !controller.component.isAutoInstantiated)
+                     .filter(([, controller]) => !controller.component.isAutoInstantiated)
                      .length;
     }//get isEmpty
 
@@ -371,7 +371,7 @@ export default class Kresmer extends KresmerEventHooks {
                 drawingName = element.drawingName;
             } else if (element instanceof NetworkComponentController) {
                 const componentName = element.component.name;
-                if (componentName in this.componentsByName) {
+                if (this.componentsByName.has(componentName)) {
                     switch (mergeOptions) {
                         case "merge-duplicates":
                             continue;
