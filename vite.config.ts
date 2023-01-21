@@ -1,12 +1,13 @@
 import { defineConfig, UserConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import path from 'path';
 
 export default defineConfig(({command, mode}) => {
   // https://vitejs.dev/config/
   const config: UserConfig = {
-    plugins: [vue(), dts()],
+    plugins: [vue(), dts(), cssInjectedByJsPlugin(),],
     base: './',
 
     resolve: {

@@ -677,11 +677,12 @@ export type DrawingMergeOptions =
     "rename-duplicates" |
     "ignore-duplicates";
 
-export type {default as NetworkElement} from "./NetworkElement";
-export type {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
-export type {default as NetworkComponentController} from "./NetworkComponent/NetworkComponentController";
+export {default as NetworkElement} from "./NetworkElement";
+export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
+export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
+export {default as NetworkComponentController} from "./NetworkComponent/NetworkComponentController";
 export type { Position } from "./Transform/Transform";
-export type {default as NetworkLink} from "./NetworkLink/NetworkLink";
-export type {default as LinkVertex} from "./NetworkLink/LinkVertex";
+export {default as NetworkLink} from "./NetworkLink/NetworkLink";
+export {default as LinkVertex} from "./NetworkLink/LinkVertex";
 export {default as ParsingException} from "./parsers/ParsingException"
     
