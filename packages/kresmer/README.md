@@ -1,49 +1,31 @@
 # "Kreslennya Merezh" - network diagram editor and viewer
+## Core component
 
 ![screenshot](./src/assets/screenshot.png)
 
 ## Get Started
 
-### 1. clone this repository
+1. ### Install the component
 
-```bash
-git clone https://github.com/mpolk/kresmer.git
-```
+    ```bash
+    npm install kresmer
+    ```
 
-### 2. install packages
+1. ### Import it into your application
 
-```bash
-npm i
-```
+    ```typescript
+    import Kresmer from 'kresmer';
+    ```
 
-### 3. run
+1. ### Place it on the page
 
-```bash
-npm run app:dev
-```
-
-
-Other useful commands:
-### dev mode
-
-```bash
-npm run app:dev  
-```
-
-### preview mode
-
-```bash
-npm run app:preview  
-```
-
-### build app
-
-```bash
-npm run app:build
-```
-
-### debug main process
-
-1. Add a break point in the main process `src/electron/main/main.ts`.
-2. Open the `Run and Debug (Ctrl+Shift+D)` tool, and select `Debug Main Process`.
-*Note: Before using the debug tool to debug the main process, you should run the preview script `npm run app:preview` first to build the Vue app.*
+    ```typescript
+    const kresmer = new Kresmer("divDrawing");
+    ```
+1. ### Load the standard element library
+    ```typescript
+    kresmer.loadLibrary(await (await fetch("stdlib.krel")).text());
+1. ### Load some drawing
+    ```typescript
+    kresmer.loadDrawing(await (await fetch("autoload.kre")).text());
+    
