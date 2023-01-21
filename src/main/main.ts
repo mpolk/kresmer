@@ -33,18 +33,19 @@ function createWindow() {
     const windowOptions = {
         ...userPrefs.get("window"),
         title: "Kresmer",
-        icon: path.join(__dirname, "../../logo.png"),
+        icon: path.join(__dirname, "../logo.png"),
         webPreferences: {
-            preload: path.join(__dirname, 'preload.js')
+            preload: path.join(__dirname, '../preload.js')
         }
     }//windowOptions
     const mainWindow = new BrowserWindow(windowOptions);
     menus = new Menus(mainWindow);
 
-    // and load the index.html of the app.
+    // and load the index page of the app
+    const indexPage = "index.electron.html";
     const url = isDev ?
-        `http://localhost:${packageJson.config.port}/index.electron.html` :
-        'file://' + path.join(__dirname, '../index.electron.html');
+        `http://localhost:${packageJson.config.port}/${indexPage}` :
+        'file://' + path.join(__dirname, `../${indexPage}`);
     mainWindow.loadURL(url);
 
     if (isDev) {
