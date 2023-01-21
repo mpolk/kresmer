@@ -373,8 +373,11 @@ export default class Kresmer extends KresmerEventHooks {
                 const componentName = element.component.name;
                 if (this.componentsByName.has(componentName)) {
                     switch (mergeOptions) {
-                        case "merge-duplicates":
-                            continue;
+                        case "merge-duplicates": {
+                            const id = this.componentsByName.get(componentName)!;
+                            this.networkComponents.delete(id);
+                            break;
+                        }
                         case "rename-duplicates":
                             for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
                                 const newName = `${componentName}.${i}`;
@@ -397,10 +400,13 @@ export default class Kresmer extends KresmerEventHooks {
                 }//for
 
                 const linkName = element.name;
-                if (linkName in this.linksByName) {
+                if (this.linksByName.has(linkName)) {
                     switch (mergeOptions) {
-                        case "merge-duplicates":
-                            continue;
+                        case "merge-duplicates": {
+                            const id = this.linksByName.get(linkName)!;
+                            this.links.delete(id);
+                            break;
+                        }
                         case "rename-duplicates":
                             for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
                                 const newName = `${linkName}.${i}`;

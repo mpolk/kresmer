@@ -41,7 +41,7 @@
     <link class="twisted-pair" from="core:3" to="dru-core:3"/>
     <link class="twisted-pair" to="core:26"/>
 
-    <link class="twisted-pair" from="core:4" to="metro:1"/>
-    <link class="twisted-pair" from="core:5" to="metro:2"/>
-    <link class="twisted-pair" from="core:6" to="metro:3"/>
+    <link class="twisted-pair" from="core:4" to="metro:1" name="core-metro-1"/>
+    <link class="twisted-pair" from="core:5" to="metro:2" name="core-metro-2"/>
+    <link class="twisted-pair" from="core:6" to="metro:3" name="core-metro-3"/>
 </kresmer-drawing>

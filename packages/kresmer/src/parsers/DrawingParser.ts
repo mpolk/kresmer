@@ -191,9 +191,15 @@ export default class DrawingParser {
         }//for
 
         const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
+        let linkName: string|undefined|null = node.getAttribute("name");
+        if ("name" in props) {
+            linkName = props["name"].toString();
+        } else if (!linkName) {
+            linkName = undefined;
+        }//if
         const from = this.parseLinkEndpoint(node.getAttribute("from"));
         const to = this.parseLinkEndpoint(node.getAttribute("to"));
-        const link = new NetworkLink(this.kresmer, className, {props, from, to, vertices});
+        const link = new NetworkLink(this.kresmer, className, {name: linkName, props, from, to, vertices});
         return link;
     }//parseLinkNode
 
