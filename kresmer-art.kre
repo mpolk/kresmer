@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-drawing.xsd"?>
+<kresmer-drawing name="kresmer-art">
+    <component class="BorderedKresmer">
+        <props>
+            <prop name="width">450</prop>
+            <prop name="height">50</prop>
+            <prop name="fill">lightgreen</prop>
+            <prop name="text">Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</prop>
+        </props>
+        <origin x="30" y="530"/>
+    </component>
+
+    <component class="PatrioticKresmer">
+        <props>
+            <prop name="width">450</prop>
+            <prop name="height">50</prop>
+            <prop name="text">А це справжний Кресмер</prop>
+            <prop name="font-size">24</prop>
+            <prop name="font-family">sans-serif</prop>
+        </props>
+        <origin x="30" y="590"/>
+    </component>
+
+    <component class="BorderedKresmer">
+        <props>
+            <prop name="width">200</prop>
+            <prop name="height">50</prop>
+            <prop name="text">Ще один Кресмер</prop>
+        </props>
+        <origin x="50" y="650"/>
+        <transform>
+            <scale x="2"/>
+            <rotate angle="45"/>
+        </transform>
+    </component>
+
+    <component class="Text">
+        <origin x="30" y="750" />
+        <props>
+            <prop name="font-size">32</prop>
+            <prop name="color">darkgreen</prop>
+            <prop name="font-family">sans-serif</prop>
+        </props>
+        <content>А это просто текст, как на заборе</content>
+        <transform>
+            <rotate angle="-10" />
+        </transform>
+    </component>
+
+    <component class="SilverKresmer">
+        <origin x="30" y="880" />
+        <props>
+            <prop name="width">400</prop>
+            <prop name="height">50</prop>
+            <prop name="text">Silver Kresmer</prop>
+            <prop name="font-size">32</prop>
+        </props>
+    </component>
+</kresmer-drawing>
