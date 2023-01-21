@@ -108,14 +108,14 @@ function loadLibrary(libData: string, completionSignal?: number)
 }//loadLibrary
 
 async function loadDrawing(drawingData: string, 
-                     options?: {
-                        drawingFileName?: string,
-                        completionSignal?: number,
-                    })
-{ 
+                           options?: {
+                                drawingFileName?: string,
+                                completionSignal?: number,
+                          })
+{
     try {
         let mergeOptions: DrawingMergeOptions|undefined;
-        if (!options?.completionSignal) {
+        if (!options?.completionSignal && !kresmer.isEmpty) {
             mergeOptions = (await drawingMergeDialog.show()) ?? undefined;
             if (!mergeOptions) {
                 return;

@@ -118,6 +118,15 @@ export default class Kresmer extends KresmerEventHooks {
         this.undoStack.isDirty = newValue;
     }//set isDirty
 
+    /** Shows whether the drawing has no content  */
+    public get isEmpty()
+    {
+        return !this.links.size && 
+               !Array.from(this.networkComponents)
+                     .filter(([_, controller]) => !controller.component.isAutoInstantiated)
+                     .length;
+    }//get isEmpty
+
 
     /**
      * A list of all Component Classes, registered by Kresmer
@@ -458,8 +467,16 @@ export default class Kresmer extends KresmerEventHooks {
         this.undoStack.reset();
         this.linksByName.clear();
         this.links.clear();
-        this.componentsByName.clear();
-        this.networkComponents.clear();
+        this.networkComponents.forEach((controller, id) => {
+            if (!controller.component.isAutoInstantiated) {
+                this.networkComponents.delete(id);
+            }//if
+        });
+        this.componentsByName.forEach((id, name) => {
+            if (!this.networkComponents.has(id)) {
+                this.componentsByName.delete(name);
+            }//if
+        });
     }//eraseContent
 
 
