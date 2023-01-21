@@ -89,7 +89,7 @@ export default class DrawingParser {
             throw new DrawingParsingException("Component without the class");
         const componentClass = NetworkComponentClass.getClass(className);
         if (!componentClass) 
-            throw new DrawingParsingException(`Unknown component class "${componentClass}"`);
+            throw new DrawingParsingException(`Unknown component class "${className}"`);
 
         const propsFromAttributes: RawProps = {};
         for (const attrName of node.getAttributeNames()) {
@@ -164,7 +164,7 @@ export default class DrawingParser {
             throw new DrawingParsingException("Link without the class");
         const linkClass = NetworkLinkClass.getClass(className);
         if (!linkClass) 
-            throw new DrawingParsingException(`Unknown link class "${linkClass}"`);
+            throw new DrawingParsingException(`Unknown link class "${className}"`);
 
         const propsFromAttributes: RawProps = {};
         for (const attrName of node.getAttributeNames()) {
