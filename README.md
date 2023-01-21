@@ -4,31 +4,29 @@
 
 ## Get Started
 
-### 1. clone this repository
+1. ### clone this repository
 
-```bash
-git clone https://github.com/mpolk/kresmer.git
-```
+    ```bash
+    git clone https://github.com/mpolk/kresmer.git
+    ```
 
-### 2. install packages
+2. ### install packages
 
-```bash
-npm i
-```
+    ```bash
+    npm i
+    ```
+3. ### build core-component
+    ```bash
+    npm build-component
+    ```
+3. ### run editor (in development mode)
 
-### 3. run
-
-```bash
-npm run app:dev
-```
+    ```bash
+    npm run app:dev
+    ```
 
 
 Other useful commands:
-### dev mode
-
-```bash
-npm run app:dev  
-```
 
 ### preview mode
 

@@ -15,13 +15,8 @@
     "skipLibCheck": true,
     "rootDir": "src",
     "outDir": "dist",
-    // "rootDir": "src/electron",
-    // "outDir": "dist/electron",
     "declaration": true,
     "allowSyntheticDefaultImports": true,
   },
-  "include": ["src/**/*"],
-  "references": [
-    {"path": "./tsconfig.node.json"},
-  ]
+  "include": ["src/**/*"]
 }
