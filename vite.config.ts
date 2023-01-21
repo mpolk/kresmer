@@ -14,17 +14,12 @@ export default defineConfig({
     }
   },
 
-  // optimizeDeps: {
-  //   include: ['kresmer'],
-  // },
-
   build: {
     rollupOptions: {
       input: {
         app: "./index.electron.html"
       }
     },
-    // commonjsOptions: { include: [/kresmer/] },    
   },
   
 })
