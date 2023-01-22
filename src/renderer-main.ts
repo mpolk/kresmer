@@ -10,6 +10,7 @@ import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
 import Hints from './hints';
 import StatusBar from './status-bar.vue';
+import ComponentPropsSidebar from './ComponentPropsSidebar.vue';
 import Kresmer, { 
     DrawingMergeOptions, Position, ParsingException, 
     NetworkComponentController, NetworkComponent,
@@ -17,6 +18,7 @@ import Kresmer, {
  } from 'kresmer';
 import { AppCommandExecutor } from './app-commands';
 import DrawingMergeDialog from './drawing-merge-dialog.vue';
+import { TransformMode } from 'kresmer/dist/NetworkComponent/NetworkComponentController';
 
 export const kresmer = new Kresmer('#kresmer');
 
@@ -38,6 +40,9 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar");
 
+const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
+    InstanceType<typeof ComponentPropsSidebar>;
+
 kresmer
     .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
     .on("drawing-mouse-leave", () => hints.reset())
@@ -50,11 +55,11 @@ kresmer
     .on("component-transform-started", () => hints.push(""))
     .on("component-being-transformed", indicateComponentTransform)
     .on("component-transformed", onComponentMutated)
-    .on("component-entered-transform-mode", (_, mode) => hints.push(mode == "rotation" ? 
-                                                                        Hints.onRotation : 
-                                                                        Hints.onScaling))
+    .on("component-entered-transform-mode", onComponentEnteredTransformMode)
     .on("component-exited-transform-mode", () => hints.pop())
     .on("component-selected", onComponentSelected)
+    .on("component-right-click", onComponentRightClick)
+    .on("component-double-click", onComponentDoubleClick)
     .on("link-selected", onLinkSelected)
     .on("link-right-click", onLinkRightClick)
     .on("link-vertex-being-moved", indicateLinkVertexMove)
@@ -74,6 +79,7 @@ appCommandExecutor
     .on("save-drawing", saveDrawing)
     .on("undo", () => {kresmer.undo(); setWindowTitle();})
     .on("redo", () => {kresmer.redo(); setWindowTitle();})
+    .on("edit-component-properties", editComponentProperties)
     .on("add-vertex", addLinkVertex)
     .on("delete-vertex", deleteLinkVertex)
     .on("align-vertex", alignLinkVertex)
@@ -161,6 +167,33 @@ function setWindowTitle()
     window.document.title = title;
 }//setWindowTitle
 
+function onComponentDoubleClick(controller: NetworkComponentController)
+{
+    vueComponentPropsSidebar.show(controller.component);
+}//onComponentDoubleClick
+
+function editComponentProperties(componentID: number)
+{
+    const component = kresmer.getComponentById(componentID);
+    if (!component) {
+        console.error(`No such component (id=${componentID})`);
+        return;
+    }//if
+    vueComponentPropsSidebar.show(component);
+}//editComponentProperties
+
+function onComponentRightClick(controller: NetworkComponentController)
+{
+    window.electronAPI.showContextMenu("component", controller.component.id);
+}//onComponentRightClick
+
+function onComponentEnteredTransformMode(_: NetworkComponentController, mode: TransformMode) 
+{
+    hints.push(mode == "rotation" ? 
+        Hints.onRotation : 
+        Hints.onScaling);
+}//onComponentEnteredTransformMode
+
 function indicateComponentTransform(controller: NetworkComponentController)
 {
     const hint = controller.transformMode === "rotation" ? 
@@ -187,7 +220,7 @@ function onComponentSelected(component: NetworkComponent, isSelected: boolean)
 }//onComponentSelected
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onComponentMutated(controller: NetworkComponentController)
+function onComponentMutated(_controller: NetworkComponentController)
 {
     hints.pop();
     setWindowTitle();
@@ -221,7 +254,7 @@ function indicateLinkVertexMove(vertex: LinkVertex)
 }//indicateLinkVertexMove
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onLinkVertexMutated(vertex: LinkVertex)
+function onLinkVertexMutated(_vertex: LinkVertex)
 {
     hints.pop();
     setWindowTitle();

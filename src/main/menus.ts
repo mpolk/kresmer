@@ -12,6 +12,7 @@ import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing } 
 const isMac = process.platform === 'darwin'
 
 export interface ContextMenus {
+  "component": (componentID: number) => void,
   "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
   "link-vertex": (linkID: number, vertexNumber: number) => void,
 }//ContextMenus
@@ -20,6 +21,8 @@ export type ContextMenuID = keyof ContextMenus;
 
 type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
+    "transform-component": ContextMenuHandler<"component">,
+    "edit-component-properties": ContextMenuHandler<"component">,
     "align-vertices": ContextMenuHandler<"link">,
     "add-vertex": ContextMenuHandler<"link">,
     "align-vertex": ContextMenuHandler<"link-vertex">,
@@ -86,7 +89,11 @@ export default class Menus {
     ]// as MenuItemConstructorOptions[]
 
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
-        {
+      {
+        "component" : [
+          {"label": "Transform", id: "transform-component"},
+          {"label": "Properties", id: "edit-component-properties"},
+        ],
         "link": [
             {label: "Align vertices", id: "align-vertices"},
             {label: "Add vertex", id: "add-vertex"},
@@ -95,7 +102,7 @@ export default class Menus {
                 {label: "Align vertex (double-click)", id: "align-vertex"},
                 {label: "Delete vertex", id: "delete-vertex"},
             ],
-        }
+      }
 
     private readonly browserWindow: BrowserWindow;
 
