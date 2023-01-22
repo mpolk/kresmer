@@ -17,9 +17,8 @@
   },
   "scripts": {
     "lint": "eslint -c .eslintrc.cjs --ext .ts ./src",
-    "ts": "tsc",
-    "watch": "tsc -w",
     "build-only": "vite build",
+    "build-watch": "vite build --watch",
     "type-check": "vue-tsc --noEmit",
     "vite:dev": "vite --port ${npm_package_config_port}",
     "vite:build": "run-p type-check build-only",
@@ -27,7 +26,6 @@
   },
   "build": {
     "appId": "kresmer",
-    "asar": true,
     "directories": {
       "buildResources": "assets",
       "output": "release/${version}"
