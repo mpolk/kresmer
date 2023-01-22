@@ -69,6 +69,7 @@
     const emit = defineEmits<{
         (event: "right-click", controller: NetworkComponentController, 
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
+        (event: "double-click", controller: NetworkComponentController, nativeEvent: MouseEvent): void,
         (event: "mouse-enter", controller: NetworkComponentController): void,
         (event: "mouse-leave", controller: NetworkComponentController): void,
     }>();
@@ -205,6 +206,10 @@
         emit("right-click", props.controller, target, event);
     }//onRightClick
 
+    function onDoubleClick(event: MouseEvent) {
+        emit("double-click", props.controller, event);
+    }//onDoubleClick
+
     defineExpose({center});
 </script>
 
@@ -227,6 +232,7 @@
             @mouseenter.stop="onMouseEnter($event)"
             @mouseleave.stop="onMouseLeave($event)"
             @contextmenu="onRightClick($event, 'component')"
+            @dblclick="onDoubleClick($event)"
             >
             <g class="network-component-slot"><slot></slot></g>
             <TransformBox v-if="transformMode" ref="trBox" :origin="origin!" 

@@ -30,7 +30,7 @@ export default abstract class NetworkElementClass {
     })
     {
         this.name = name;
-        this.props = params.props;
+        this.props = params.props ?? {};
         this.computedProps = params.computedProps;
         this.defs = params.defs;
         this.style = params.style;
@@ -43,7 +43,7 @@ export default abstract class NetworkElementClass {
     /**
      * Props definition of the Vue-component for this class
      */
-    readonly props?: ComponentObjectPropsOptions;
+    readonly props: ComponentObjectPropsOptions;
     /**
      * Computed props (aka just computed) definition of the Vue-component for this class
      */

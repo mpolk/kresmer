@@ -27,7 +27,7 @@ export default abstract class NetworkElement {
     ) {
         this.kresmer = kresmer;
         this._class = _class;
-        this.props = args?.props;
+        this.props = args?.props ?? {};
         this.id = NetworkElement.nextID++;
         this._name = args?.name;
     }//ctor
@@ -44,7 +44,7 @@ export default abstract class NetworkElement {
     protected static nextID = 1;
 
     /** Data passed to the vue-component props */
-    readonly props?: Record<string, unknown>;
+    readonly props: Record<string, unknown>;
 
     /** A name for component lookup*/
     private _name?: string;
@@ -57,7 +57,7 @@ export default abstract class NetworkElement {
     }//name
     set name(newName: string)
     {
-        this._name = newName;
+        this.props.name = this._name = newName;
     }//set name
     get isNamed()
     {

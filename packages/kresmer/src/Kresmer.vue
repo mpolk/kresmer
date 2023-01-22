@@ -117,6 +117,12 @@
         props.controller.emit("component-right-click", controller, target, nativeEvent);
     }//onComponentRightClick
 
+    function onComponentDoubleClick(controller: NetworkComponentController, 
+                                    nativeEvent: MouseEvent)
+    {
+        props.controller.emit("component-double-click", controller, nativeEvent);
+    }//onComponentDoubleClick
+
     function onMouseEnter()
     {
         props.controller.emit("drawing-mouse-enter");
@@ -172,6 +178,7 @@
                    :is-being-transformed="controller.isBeingTransformed"
                    :transform-mode="controller.transformMode"
                    @right-click="onComponentRightClick"
+                   @double-click="onComponentDoubleClick"
                    @mouse-enter="onComponentMouseEnter"
                    @mouse-leave="onComponentMouseLeave"
                 >
