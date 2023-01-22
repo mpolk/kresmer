@@ -33,6 +33,8 @@ class KresmerEventFormats  {
     "component-being-transformed":      (controller: NetworkComponentController) => void;
     "component-transformed":            (controller: NetworkComponentController) => void;
     "component-exited-transform-mode":  (controller: NetworkComponentController) => void;
+    "component-double-click":           (controller: NetworkComponentController, 
+                                         nativeEvent: MouseEvent) => void;
     "component-right-click":            (controller: NetworkComponentController, 
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
@@ -204,8 +206,16 @@ export default class KresmerEventHooks {
     protected onComponentExitedTransformMode(controller: NetworkComponentController) {}
 
     /**
+     * Is called when a network component is double-clicked
+     * @param component The component been clicked
+     */
+    @overridableHandler("component-double-click")
+    protected onComponentDoubleClick(controller: NetworkComponentController, 
+                                     nativeEvent: MouseEvent) {}
+
+    /**
      * Is called when a network component is right-clicked
-     * @param component The component been transformed
+     * @param component The component been right-clicked
      */
     @overridableHandler("component-right-click")
     protected onComponentRightClick(controller: NetworkComponentController, 
