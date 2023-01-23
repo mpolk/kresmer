@@ -7,27 +7,16 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { ref, reactive, computed } from 'vue';
+    import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { NetworkComponent } from 'kresmer';
 
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
 
-    let originalComponent: NetworkComponent;
-    const data = reactive<{
-        component?: NetworkComponent
-    }>({});
-
-    const componentProps = computed(() => {
-        const props: {name: string, value?: unknown}[] = [];
-        if (data.component) {
-            for (const name in data.component._class.props) {
-                props.push({name, value: data.component.props[name]});
-            }//for
-        }//if
-        return props;
-    })//componentProps
+    let componentToEdit: NetworkComponent;
+    const componentName = ref("");
+    const componentProps = ref<{name: string, value: unknown}[]>([]);
 
     function show(component: NetworkComponent)
     {
@@ -35,13 +24,19 @@
             offCanvas = new Offcanvas(rootDiv.value!);
         }//if
 
-        data.component = originalComponent = component;
+        componentToEdit = component;
+        componentName.value = component.name;
+        componentProps.value = Object.keys(component._class.props)
+            .map(name => {return {name, value: component.props[name]}});
         offCanvas.show();
     }//show
 
     function save()
     {
-        originalComponent.name = data.component!.name;
+        componentToEdit.name = componentName.value;
+        for (const prop of componentProps.value) {
+            componentToEdit.props[prop.name] = prop.value;
+        }//for
         offCanvas.hide();
     }//save
 
@@ -58,19 +53,19 @@
          data-bs-backdrop="static" data-bs-scroll="true" tabindex="-1">
         <div class="offcanvas-header align-items-baseline">
             <div>
-                <h5 class="offcanvas-title">{{data.component?.name}}</h5>
-                <h6 class="text-secondary">{{data.component?.getClass()?.name}}</h6>
+                <h5 class="offcanvas-title">{{componentName}}</h5>
+                <h6 class="text-secondary">{{componentToEdit?.getClass()?.name}}</h6>
             </div>
             <button type="button" class="btn-close" @click="close"></button>
          </div>
         <div class="offcanvas-body">
-            <form v-if="data.component">
+            <form v-if="componentToEdit">
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
                             <td>name</td>
                             <td>
-                                <input class="form-control" v-model="data.component.name"/>
+                                <input class="form-control" v-model="componentName"/>
                             </td>
                         </tr>
                         <tr v-for="prop in componentProps" :key="`prop[${prop.name}]`">
