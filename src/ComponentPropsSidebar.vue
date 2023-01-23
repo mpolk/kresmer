@@ -3,39 +3,39 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *   A sidebar for displaying and editing network components properties
+ *   A sidebar for displaying and editing network elements properties
 <*************************************************************************** -->
 
 <script setup lang="ts">
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
-    import { NetworkComponent } from 'kresmer';
+    import { NetworkElement } from 'kresmer';
 
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
 
-    let componentToEdit: NetworkComponent;
-    const componentName = ref("");
-    const componentProps = ref<{name: string, value: unknown}[]>([]);
+    let elementToEdit: NetworkElement;
+    const elementName = ref("");
+    const elementProps = ref<{name: string, value: unknown}[]>([]);
 
-    function show(component: NetworkComponent)
+    function show(element: NetworkElement)
     {
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!);
         }//if
 
-        componentToEdit = component;
-        componentName.value = component.name;
-        componentProps.value = Object.keys(component._class.props)
-            .map(name => {return {name, value: component.props[name]}});
+        elementToEdit = element;
+        elementName.value = element.name;
+        elementProps.value = Object.keys(element._class.props)
+            .map(name => {return {name, value: element.props[name]}});
         offCanvas.show();
     }//show
 
     function save()
     {
-        componentToEdit.name = componentName.value;
-        for (const prop of componentProps.value) {
-            componentToEdit.props[prop.name] = prop.value;
+        elementToEdit.name = elementName.value;
+        for (const prop of elementProps.value) {
+            elementToEdit.props[prop.name] = prop.value;
         }//for
         offCanvas.hide();
     }//save
@@ -53,22 +53,22 @@
          data-bs-backdrop="static" data-bs-scroll="true" tabindex="-1">
         <div class="offcanvas-header align-items-baseline">
             <div>
-                <h5 class="offcanvas-title">{{componentName}}</h5>
-                <h6 class="text-secondary">{{componentToEdit?.getClass()?.name}}</h6>
+                <h5 class="offcanvas-title">{{elementName}}</h5>
+                <h6 class="text-secondary">{{elementToEdit?.getClass()?.name}}</h6>
             </div>
             <button type="button" class="btn-close" @click="close"></button>
          </div>
         <div class="offcanvas-body">
-            <form v-if="componentToEdit">
+            <form v-if="elementToEdit">
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
                             <td>name</td>
                             <td>
-                                <input class="form-control" v-model="componentName"/>
+                                <input class="form-control" v-model="elementName"/>
                             </td>
                         </tr>
-                        <tr v-for="prop in componentProps" :key="`prop[${prop.name}]`">
+                        <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">
                             <td>{{ prop.name }}</td>
                             <td>{{ prop.value }}</td>
                         </tr>
