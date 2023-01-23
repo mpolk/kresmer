@@ -183,8 +183,8 @@
                    @mouse-leave="onComponentMouseLeave"
                 >
             <component :is="controller.component.vueName"
-                   :component-id="controller.component.id"
                    v-bind="controller.component.props"
+                   :component-id="controller.component.id"
                    :name="controller.component.name"
                 >
                 {{controller.component.content}}
