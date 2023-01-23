@@ -191,7 +191,9 @@
             </component>
         </NetworkComponentHolder>
 
-        <NetworkLinkVue v-for="link in linksSorted" :key="`link${link.id}`" 
+        <NetworkLinkVue v-for="link in linksSorted" 
+            v-bind="link.props"
+            :key="`link${link.id}`" 
             :model="link"
             :is-editable="isEditable"
             />
