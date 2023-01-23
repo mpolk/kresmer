@@ -75,7 +75,7 @@
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-end">
-                    <button class="btn btn-primary" @click="save">Save</button>
+                    <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>
                 </div>
             </form>
         </div>

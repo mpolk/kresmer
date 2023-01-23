@@ -184,8 +184,8 @@
                 >
             <component :is="controller.component.vueName"
                    :component-id="controller.component.id"
-                   :name="controller.component.name"
                    v-bind="controller.component.props"
+                   :name="controller.component.name"
                 >
                 {{controller.component.content}}
             </component>

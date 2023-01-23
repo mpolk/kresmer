@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-library.xsd"?>
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind">
-    <!-- Test data (just fo fun)-->
+    <!-- Test data (just for fun)-->
     <defs>
         <text id="kre:std:Crown">👑</text>
     </defs>
@@ -143,7 +143,6 @@
         </style>
         <props>
             <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
-            <prop name="name" type="String" />
         </props>
     </component-class>
 

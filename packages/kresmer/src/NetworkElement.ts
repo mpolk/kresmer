@@ -12,8 +12,8 @@ import NetworkElementClass from "./NetworkElementClass";
 export default abstract class NetworkElement {
     /**
      * 
-     * @param _class The class this Link should belong 
-     *               (either Lonk class instance or its name)
+     * @param _class The class this Element should belong 
+     *               (either Element class instance or its name)
      * @param args Instance creation arguments:
      *             props: translates to the vue-component props
      */
@@ -57,7 +57,7 @@ export default abstract class NetworkElement {
     }//name
     set name(newName: string)
     {
-        this.props.name = this._name = newName;
+        this._name = newName;
     }//set name
     get isNamed()
     {
