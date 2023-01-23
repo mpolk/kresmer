@@ -13,11 +13,13 @@
 
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
+    const propInputs = ref<[HTMLElement]>();
 
     let elementToEdit: NetworkElement;
     const elementName = ref("");
     // eslint-disable-next-line @typescript-eslint/ban-types
-    const elementProps = ref<{name: string, value: unknown, type: Function, validValues?: string[]}[]>([]);
+    type ElementProp = {name: string, value: unknown, type: Function, validValues?: string[]};
+    const elementProps = ref<ElementProp[]>([]);
 
     function show(element: NetworkElement)
     {
@@ -33,7 +35,7 @@
                     const validValues = element._class.props[name].validator?.validValues;
                     return {
                         name, 
-                        value: element.props[name] as boolean, 
+                        value: element.props[name], 
                         type: element._class.props[name].type,
                         validValues,
                     }
@@ -41,12 +43,47 @@
         offCanvas.show();
     }//show
 
+    function validateProp(prop: ElementProp, checkType: (v: unknown) => boolean)
+    {
+        let v: unknown;
+        let wasError = false;
+        try {
+            v = JSON.parse(prop.value as string);
+        } catch {
+            wasError = true;
+        }
+        if (!wasError && !checkType(v)) {
+            wasError = true;
+        }//if
+        if (wasError) {
+            return false;
+        }//if
+
+        elementToEdit.props[prop.name] = v;
+        return true;
+    }//validateProp
+
     function save()
     {
-        elementToEdit.name = elementName.value;
+        const propsWithErrors: string[] = [];
         for (const prop of elementProps.value) {
-            elementToEdit.props[prop.name] = prop.value;
+            switch (prop.type) {
+                case Array: 
+                    if (!validateProp(prop, v => Array.isArray(v))) {
+                        propsWithErrors.push(prop.name);
+                    }//if
+                    break;
+                case Object: 
+                    if (!validateProp(prop, v => typeof v === "object")) {
+                        propsWithErrors.push(prop.name);
+                    }//if
+                    break;
+                default:
+                    elementToEdit.props[prop.name] = prop.value;
+            }//switch
         }//for
+
+        elementToEdit.name = elementName.value;
         offCanvas.hide();
     }//save
 
@@ -94,11 +131,14 @@
                                                   /*calm Vue typechecker*/ 
                                                   && (typeof prop.value === 'boolean' || 
                                                       typeof prop.value === 'undefined')" type="checkbox" 
-                                    class="form-control form-control-sm text-end"
+                                    class="form-check-input"
                                     v-model="prop.value"/>
                                 <input v-else 
                                     class="form-control form-control-sm"
                                     v-model="prop.value"/>
+                                <div class="invalid-feedback">
+                                    Syntax error!
+                                </div>
                             </td>
                         </tr>
                     </tbody>
