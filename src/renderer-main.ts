@@ -10,7 +10,7 @@ import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
 import Hints from './hints';
 import StatusBar from './status-bar.vue';
-import ComponentPropsSidebar from './ComponentPropsSidebar.vue';
+import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
     DrawingMergeOptions, Position, ParsingException, 
     NetworkComponentController, NetworkComponent,

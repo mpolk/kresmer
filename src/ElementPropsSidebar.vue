@@ -16,7 +16,8 @@
 
     let elementToEdit: NetworkElement;
     const elementName = ref("");
-    const elementProps = ref<{name: string, value: unknown}[]>([]);
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    const elementProps = ref<{name: string, value: unknown, type: Function, validValues?: string[]}[]>([]);
 
     function show(element: NetworkElement)
     {
@@ -27,7 +28,16 @@
         elementToEdit = element;
         elementName.value = element.name;
         elementProps.value = Object.keys(element._class.props)
-            .map(name => {return {name, value: element.props[name]}});
+            .map(name => 
+                {
+                    const validValues = element._class.props[name].validator?.validValues;
+                    return {
+                        name, 
+                        value: element.props[name] as boolean, 
+                        type: element._class.props[name].type,
+                        validValues,
+                    }
+                });
         offCanvas.show();
     }//show
 
@@ -65,12 +75,31 @@
                         <tr>
                             <td>name</td>
                             <td>
-                                <input class="form-control" v-model="elementName"/>
+                                <input class="form-control form-control-sm" v-model="elementName"/>
                             </td>
                         </tr>
                         <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">
                             <td>{{ prop.name }}</td>
-                            <td>{{ prop.value }}</td>
+                            <td>
+                                <select v-if="prop.validValues" 
+                                       class="form-select form-select-sm"
+                                       v-model="prop.value">
+                                    <option v-for="(choice, i) in prop.validValues" 
+                                            :key="`${prop.name}[${i}]`">{{ choice }}</option>
+                                </select>
+                                <input v-else-if="prop.type === Number" type="number" 
+                                    class="form-control form-control-sm text-end"
+                                    v-model="prop.value"/>
+                                <input v-else-if="prop.type === Boolean 
+                                                  /*calm Vue typechecker*/ 
+                                                  && (typeof prop.value === 'boolean' || 
+                                                      typeof prop.value === 'undefined')" type="checkbox" 
+                                    class="form-control form-control-sm text-end"
+                                    v-model="prop.value"/>
+                                <input v-else 
+                                    class="form-control form-control-sm"
+                                    v-model="prop.value"/>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
