@@ -6,7 +6,7 @@
  * Application commands that can be sent from the Main process to the Renderer
  ***************************************************************************/
 
-import { ContextMenuCommands } from "./main/menus";
+import { ContextMenuCommands } from "../main/menus";
 import { DrawingMergeOptions } from "kresmer";
 
 export interface AppCommandFormats extends ContextMenuCommands {

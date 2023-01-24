@@ -8,17 +8,17 @@
 
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
-import Hints from './hints';
-import StatusBar from './status-bar.vue';
+import Hints from './Hints';
+import StatusBar from './StatusBar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
     DrawingMergeOptions, Position, ParsingException, 
     NetworkComponentController, NetworkComponent,
-    NetworkLink, NetworkElement, LinkVertex
+    NetworkLink, NetworkElement, LinkVertex,
+    TransformMode,
  } from 'kresmer';
-import { AppCommandExecutor } from './app-commands';
-import DrawingMergeDialog from './drawing-merge-dialog.vue';
-import { TransformMode } from 'kresmer/dist/NetworkComponent/NetworkComponentController';
+import { AppCommandExecutor } from './AppCommands';
+import DrawingMergeDialog from './DrawingMergeDialog.vue';
 
 export const kresmer = new Kresmer('#kresmer');
 

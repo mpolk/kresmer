@@ -14,7 +14,7 @@ import Settings from './settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../package.json");
 import Menus, {ContextMenuID} from "./menus";
-import { AppCommand, AppCommandFormats } from '../app-commands';
+import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import console from 'console';
 
 const isDev = process.env.npm_lifecycle_event === "app:dev";

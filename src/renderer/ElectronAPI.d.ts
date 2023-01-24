@@ -9,7 +9,7 @@
 import {IpcRendererEvent} from 'electron';
 import { ContextMenus, ContextMenuID } from './main/menus';
 
-export interface IElectronAPI {
+export interface ElectronAPI {
     signalReadiness: (stage: number) => void,
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => void,
     showContextMenu: <MenuID extends ContextMenuID>(menuID: MenuID, ...args: Parameters<ContextMenus[MenuID]>) => void,
@@ -19,6 +19,6 @@ export interface IElectronAPI {
 
 declare global {
     interface Window {
-        electronAPI: IElectronAPI
+        electronAPI: ElectronAPI
     }
 }

@@ -715,7 +715,7 @@ export type DrawingMergeOptions =
 export {default as NetworkElement} from "./NetworkElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
-export {default as NetworkComponentController} from "./NetworkComponent/NetworkComponentController";
+export {default as NetworkComponentController, type TransformMode} from "./NetworkComponent/NetworkComponentController";
 export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
