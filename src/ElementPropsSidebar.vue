@@ -13,7 +13,8 @@
 
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
-    const propInputs = ref<[HTMLElement]>();
+    const propInputs = ref<[HTMLInputElement]>();
+    const formValidated = ref(false);
 
     let elementToEdit: NetworkElement;
     const elementName = ref("");
@@ -83,6 +84,16 @@
             }//switch
         }//for
 
+        if (propsWithErrors.length) {
+            for (const input of propInputs.value!) {
+                if (propsWithErrors.includes(input.getAttribute("dataPropName")!)) {
+                    input.setCustomValidity("Syntax error!");
+                }//if
+            }//for
+            formValidated.value = true;
+            return;
+        }//if
+
         elementToEdit.name = elementName.value;
         offCanvas.hide();
     }//save
@@ -106,7 +117,7 @@
             <button type="button" class="btn-close" @click="close"></button>
          </div>
         <div class="offcanvas-body">
-            <form v-if="elementToEdit">
+            <form v-if="elementToEdit" :class="{wasValidated: formValidated}">
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
@@ -118,22 +129,25 @@
                         <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">
                             <td>{{ prop.name }}</td>
                             <td>
-                                <select v-if="prop.validValues" 
+                                <select v-if="prop.validValues" ref="propInputs" :data-prop-name="prop.name"
                                        class="form-select form-select-sm"
                                        v-model="prop.value">
                                     <option v-for="(choice, i) in prop.validValues" 
                                             :key="`${prop.name}[${i}]`">{{ choice }}</option>
                                 </select>
                                 <input v-else-if="prop.type === Number" type="number" 
+                                    ref="propInputs" :data-prop-name="prop.name"
                                     class="form-control form-control-sm text-end"
                                     v-model="prop.value"/>
                                 <input v-else-if="prop.type === Boolean 
                                                   /*calm Vue typechecker*/ 
                                                   && (typeof prop.value === 'boolean' || 
-                                                      typeof prop.value === 'undefined')" type="checkbox" 
+                                                      typeof prop.value === 'undefined')" type="checkbox"
+                                    ref="propInputs" :data-prop-name="prop.name"
                                     class="form-check-input"
                                     v-model="prop.value"/>
                                 <input v-else 
+                                    ref="propInputs" :data-prop-name="prop.name"
                                     class="form-control form-control-sm"
                                     v-model="prop.value"/>
                                 <div class="invalid-feedback">
