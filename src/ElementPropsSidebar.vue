@@ -19,7 +19,7 @@
     let elementToEdit: NetworkElement;
     const elementName = ref("");
     // eslint-disable-next-line @typescript-eslint/ban-types
-    type ElementProp = {name: string, value: unknown, type: Function, validValues?: string[]};
+    type ElementProp = {name: string, value: string, type: Function, validValues?: string[]};
     const elementProps = ref<ElementProp[]>([]);
 
     function show(element: NetworkElement)
@@ -33,10 +33,11 @@
         elementProps.value = Object.keys(element._class.props)
             .map(name => 
                 {
+                    const value = typeof element.props[name] === "undefined" ? "" : (element.props[name] as object).toString()
                     const validValues = element._class.props[name].validator?.validValues;
                     return {
                         name, 
-                        value: element.props[name], 
+                        value, 
                         type: element._class.props[name].type,
                         validValues,
                     }
@@ -44,55 +45,62 @@
         offCanvas.show();
     }//show
 
-    function validateProp(prop: ElementProp, checkType: (v: unknown) => boolean)
+    function validateProp(prop: ElementProp)
     {
         let v: unknown;
         let wasError = false;
-        try {
-            v = JSON.parse(prop.value as string);
-        } catch {
-            wasError = true;
-        }
-        if (!wasError && !checkType(v)) {
-            wasError = true;
-        }//if
-        if (wasError) {
-            return false;
-        }//if
+        switch (prop.type) {
+            case Object: case Array:
+                try {
+                    v = JSON.parse(prop.value);
+                    if (prop.type === Object) {
+                        wasError = typeof v !== "object";
+                    } else {
+                        wasError = !Array.isArray(v);
+                    }//if
+                } catch {
+                    wasError = true;
+                }
+                break;
+            case Number:
+                if (prop.value === "") {
+                    v = undefined;
+                } else {
+                    v = parseFloat(prop.value);
+                    wasError = isNaN(v as number);
+                }//if
+                break;
+            default:
+                v = prop.value;
+        }//switch
 
-        elementToEdit.props[prop.name] = v;
-        return true;
+        return wasError ? null : v;
     }//validateProp
 
     function save()
     {
         const propsWithErrors: string[] = [];
         for (const prop of elementProps.value) {
-            switch (prop.type) {
-                case Array: 
-                    if (!validateProp(prop, v => Array.isArray(v))) {
-                        propsWithErrors.push(prop.name);
-                    }//if
-                    break;
-                case Object: 
-                    if (!validateProp(prop, v => typeof v === "object")) {
-                        propsWithErrors.push(prop.name);
-                    }//if
-                    break;
-                default:
-                    elementToEdit.props[prop.name] = prop.value;
-            }//switch
+            if (validateProp(prop) === null) {
+                propsWithErrors.push(prop.name);
+            }//if
         }//for
 
+        for (const input of propInputs.value!) {
+            if (!input.validity.valid) {
+                propsWithErrors.push(input.dataset.propName!);
+            } else if (propsWithErrors.includes(input.dataset.propName!)) {
+                input.setCustomValidity("Syntax error!");
+            }//if
+        }//for
         if (propsWithErrors.length) {
-            for (const input of propInputs.value!) {
-                if (propsWithErrors.includes(input.getAttribute("dataPropName")!)) {
-                    input.setCustomValidity("Syntax error!");
-                }//if
-            }//for
             formValidated.value = true;
             return;
         }//if
+
+        for (const prop of elementProps.value) {
+            elementToEdit.props[prop.name] = validateProp(prop);
+        }//for
 
         elementToEdit.name = elementName.value;
         offCanvas.hide();
@@ -117,7 +125,7 @@
             <button type="button" class="btn-close" @click="close"></button>
          </div>
         <div class="offcanvas-body">
-            <form v-if="elementToEdit" :class="{wasValidated: formValidated}">
+            <form v-if="elementToEdit" :class='{"was-validated": formValidated}'>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
