@@ -77,8 +77,8 @@ appCommandExecutor
     .on("load-library", loadLibrary)
     .on("load-drawing", loadDrawing)
     .on("save-drawing", saveDrawing)
-    .on("undo", () => {kresmer.undo(); setWindowTitle();})
-    .on("redo", () => {kresmer.redo(); setWindowTitle();})
+    .on("undo", () => {kresmer.undo(); updateWindowTitle();})
+    .on("redo", () => {kresmer.redo(); updateWindowTitle();})
     .on("edit-component-properties", editComponentProperties)
     .on("add-vertex", addLinkVertex)
     .on("delete-vertex", deleteLinkVertex)
@@ -142,7 +142,7 @@ async function loadDrawing(drawingData: string,
         }//if
     }//catch
 
-    setWindowTitle();
+    updateWindowTitle();
     if (options?.completionSignal) {
         window.electronAPI.signalReadiness(options.completionSignal);
     }//if
@@ -152,10 +152,10 @@ function saveDrawing()
 {
     const dwgData = kresmer.saveDrawing();
     window.electronAPI.completeDrawingSaving(dwgData);
-    setWindowTitle();
+    updateWindowTitle();
 }//saveDrawing
 
-function setWindowTitle()
+export function updateWindowTitle()
 {
     let title = "Kresmer";
     if (kresmer.drawingName) {
@@ -165,7 +165,7 @@ function setWindowTitle()
         title = `*${title}`;
     }//if
     window.document.title = title;
-}//setWindowTitle
+}//updateWindowTitle
 
 function onComponentDoubleClick(controller: NetworkComponentController)
 {
@@ -223,7 +223,7 @@ function onComponentSelected(component: NetworkComponent, isSelected: boolean)
 function onComponentMutated(_controller: NetworkComponentController)
 {
     hints.pop();
-    setWindowTitle();
+    updateWindowTitle();
 }//onComponentMutated
 
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
@@ -257,23 +257,23 @@ function indicateLinkVertexMove(vertex: LinkVertex)
 function onLinkVertexMutated(_vertex: LinkVertex)
 {
     hints.pop();
-    setWindowTitle();
+    updateWindowTitle();
 }//onLinkVertexMutated
 
 function addLinkVertex(linkID: number, segmentNumber: number, mousePos: Position)
 {
     kresmer.addLinkVertex(linkID, segmentNumber, mousePos);
-    setWindowTitle();
+    updateWindowTitle();
 }//addLinkVertex
 
 function deleteLinkVertex(linkID: number, vertexNumber: number)
 {
     kresmer.deleteLinkVertex(linkID, vertexNumber);
-    setWindowTitle();
+    updateWindowTitle();
 }//deleteLinkVertex
 
 function alignLinkVertex(linkID: number, vertexNumber: number)
 {
     kresmer.alignLinkVertex(linkID, vertexNumber);
-    setWindowTitle();
+    updateWindowTitle();
 }//alignLinkVertex

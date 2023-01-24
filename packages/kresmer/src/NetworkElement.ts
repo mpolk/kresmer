@@ -9,6 +9,7 @@
 
 import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
+import { EditorOperation } from "./UndoStack";
 export default abstract class NetworkElement {
     /**
      * 
@@ -47,15 +48,15 @@ export default abstract class NetworkElement {
     readonly props: Record<string, unknown>;
 
     /** A name for component lookup*/
-    private _name?: string;
-    get name()
+    public _name?: string;
+    get name(): string
     {
         if (this._name)
             return this._name;
         else
             return this.getDefaultName();
     }//name
-    set name(newName: string)
+    set name(newName: string|undefined)
     {
         this._name = newName;
     }//set name
@@ -69,3 +70,48 @@ export default abstract class NetworkElement {
     get isSelected() {return this._isSelected}
     set isSelected(reallyIs: boolean) {this._isSelected = reallyIs}
 }//NetworkElement
+
+
+export class UpdateElementOp extends EditorOperation {
+
+    constructor(private readonly element: NetworkElement, 
+                private readonly newProps: {name: string, value: unknown}[], 
+                private readonly newName?: string)
+    {
+        super();
+        this.oldProps = [];
+        for (const prop of this.newProps) {
+            this.oldProps.push({name: prop.name, value: prop.value});
+        }//for
+
+        if (this.newName !== undefined) {
+            this.oldName = this.element._name;
+        }//if
+    }//ctor
+
+    private readonly oldProps: {name: string, value: unknown}[];
+    private readonly oldName?: string;
+
+    override exec(): void 
+    {
+        for (const prop of this.newProps) {
+            this.element.props[prop.name] = prop.value;
+        }//for
+
+        if (this.newName !== undefined) {
+            this.element.name = this.newName;
+        }//if
+    }//exec
+
+    override undo(): void 
+    {
+        for (const prop of this.oldProps) {
+            this.element.props[prop.name] = prop.value;
+        }//for
+
+        if (this.newName !== undefined) {
+            this.element.name = this.oldName;
+        }//if
+    }//undo
+
+}//UpdateElementOp

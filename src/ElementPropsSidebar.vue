@@ -10,6 +10,7 @@
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { NetworkElement } from 'kresmer';
+import { updateWindowTitle } from './renderer-main';
 
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
@@ -19,7 +20,7 @@
     let elementToEdit: NetworkElement;
     const elementName = ref("");
     // eslint-disable-next-line @typescript-eslint/ban-types
-    type ElementProp = {name: string, value: string, type: Function, validValues?: string[]};
+    type ElementProp = {name: string, value: unknown, type: Function, validValues?: string[]};
     const elementProps = ref<ElementProp[]>([]);
 
     function show(element: NetworkElement)
@@ -33,11 +34,10 @@
         elementProps.value = Object.keys(element._class.props)
             .map(name => 
                 {
-                    const value = typeof element.props[name] === "undefined" ? "" : (element.props[name] as object).toString()
                     const validValues = element._class.props[name].validator?.validValues;
                     return {
                         name, 
-                        value, 
+                        value: element.props[name], 
                         type: element._class.props[name].type,
                         validValues,
                     }
@@ -52,7 +52,7 @@
         switch (prop.type) {
             case Object: case Array:
                 try {
-                    v = JSON.parse(prop.value);
+                    v = JSON.parse(prop.value as string);
                     if (prop.type === Object) {
                         wasError = typeof v !== "object";
                     } else {
@@ -63,10 +63,10 @@
                 }
                 break;
             case Number:
-                if (prop.value === "") {
+                if (prop.value === undefined) {
                     v = undefined;
                 } else {
-                    v = parseFloat(prop.value);
+                    v = parseFloat(prop.value as string);
                     wasError = isNaN(v as number);
                 }//if
                 break;
@@ -98,12 +98,9 @@
             return;
         }//if
 
-        for (const prop of elementProps.value) {
-            elementToEdit.props[prop.name] = validateProp(prop);
-        }//for
-
-        elementToEdit.name = elementName.value;
         offCanvas.hide();
+        elementToEdit.kresmer.updateElement(elementToEdit, elementProps.value, elementName.value);
+        updateWindowTitle();
     }//save
 
     function close()

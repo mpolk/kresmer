@@ -24,6 +24,7 @@ import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
+import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 
 
 /**
@@ -669,6 +670,17 @@ export default class Kresmer extends KresmerEventHooks {
         }//if
         return link.deleteVertex(vertexNumber);
     }//deleteLinkVertex
+
+    /**
+     * 
+     * @param element Update the specified network element props and name (if required)
+     * @param newProps The new prop values
+     * @param newName The new element name
+     */
+    public updateElement(element: NetworkElement, newProps: {name: string, value: unknown}[], newName?: string)
+    {
+        this.undoStack.execAndCommit(new UpdateElementOp(element, newProps, newName));
+    }//updateElement
 
 }//Kresmer
 
