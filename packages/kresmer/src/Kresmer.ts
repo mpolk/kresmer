@@ -705,13 +705,14 @@ export const GeneralTemplateFunctions = {
     }//$global
 }//GeneralTemplateFunctions
 
-/** The way to perform drawing merge upon its loading */
+/** The options to perform drawing merge upon its loading */
 export type DrawingMergeOptions = 
     "erase-previous-content" | 
     "merge-duplicates" |
     "rename-duplicates" |
     "ignore-duplicates";
 
+// Re-export child classes to API
 export {default as NetworkElement} from "./NetworkElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";

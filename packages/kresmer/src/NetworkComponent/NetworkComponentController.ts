@@ -181,9 +181,7 @@ export default class NetworkComponentController {
 
     public updateConnectionPoints()
     {
-        for (const name in this.component.connectionPoints) {
-            this.component.connectionPoints[name].updatePos();
-        }//for
+        this.component.updateConnectionPoints();
     }//updateConnectionPoints
 
     public bringComponentToTop()

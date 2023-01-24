@@ -9,6 +9,7 @@
 
 import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
+import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import { EditorOperation } from "./UndoStack";
 export default abstract class NetworkElement {
     /**
@@ -56,10 +57,12 @@ export default abstract class NetworkElement {
         else
             return this.getDefaultName();
     }//name
+
     set name(newName: string|undefined)
     {
         this._name = newName;
     }//set name
+
     get isNamed()
     {
         return Boolean(this._name);
@@ -81,7 +84,7 @@ export class UpdateElementOp extends EditorOperation {
         super();
         this.oldProps = [];
         for (const prop of this.newProps) {
-            this.oldProps.push({name: prop.name, value: prop.value});
+            this.oldProps.push({name: prop.name, value: this.element.props[prop.name]});
         }//for
 
         if (this.newName !== undefined) {
@@ -101,6 +104,10 @@ export class UpdateElementOp extends EditorOperation {
         if (this.newName !== undefined) {
             this.element.name = this.newName;
         }//if
+
+        if (this.element instanceof NetworkComponent) {
+            this.element.updateConnectionPoints();
+        }//if
     }//exec
 
     override undo(): void 
@@ -111,6 +118,10 @@ export class UpdateElementOp extends EditorOperation {
 
         if (this.newName !== undefined) {
             this.element.name = this.oldName;
+        }//if
+
+        if (this.element instanceof NetworkComponent) {
+            this.element.updateConnectionPoints();
         }//if
     }//undo
 

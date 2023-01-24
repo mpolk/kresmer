@@ -61,6 +61,14 @@ export default class NetworkComponent extends NetworkElement {
     /** A collection of this component connection points indexed by their names */
     readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
 
+    /** Update component's connectio points position to the actual values */
+    public updateConnectionPoints()
+    {
+        for (const name in this.connectionPoints) {
+            this.connectionPoints[name].updatePos();
+        }//for
+    }//updateConnectionPoints
+
     override get isSelected() {return this._isSelected}
     override set isSelected(reallyIs: boolean) {
         const shouldNotify = reallyIs != this.isSelected;
