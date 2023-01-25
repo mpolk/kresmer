@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
-import { ContextMenuID } from './main/menus';
+import { ContextMenuID } from './main/Menus';
 
  console.debug("Setting up electron API for the renderer...");
  contextBridge.exposeInMainWorld('electronAPI', {

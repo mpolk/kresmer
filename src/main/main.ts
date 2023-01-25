@@ -10,10 +10,10 @@ import path from 'path';
 import fs from 'fs';
 import process from 'process';
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
-import Settings from './settings';
+import Settings from './Settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../package.json");
-import Menus, {ContextMenuID} from "./menus";
+import Menus, {ContextMenuID} from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import console from 'console';
 

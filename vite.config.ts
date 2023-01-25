@@ -23,7 +23,7 @@ export default defineConfig({
   },
 
   server: {
-    watch: {awaitWriteFinish: {stabilityThreshold: 1000}}
+    watch: {awaitWriteFinish: {stabilityThreshold: 2000}}
   },
   
 })

@@ -59,8 +59,8 @@ export default class Menus {
       {
         label: 'Edit',
         submenu: [
-          { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
-          { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
+          { label: 'Undo', accelerator: "Alt+U", click: () => sendAppCommand("undo") },
+          { label: 'Redo', accelerator: "Alt+R", click: () => sendAppCommand("redo") },
           { type: 'separator' },
           { role: 'delete' },
         ]
