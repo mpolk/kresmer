@@ -21,6 +21,7 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
+import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
@@ -102,6 +103,13 @@ export default class Kresmer extends KresmerEventHooks {
     readonly isEditable: boolean = true;
     /** The element Kresmer was mounted on */
     readonly mountPoint: HTMLElement;
+
+    /** A blank for new link creation */
+    newLinkBlank?: {
+        start: ConnectionPointProxy,
+        _class: NetworkLinkClass,
+        end: Position,
+    }//newLinkBlank
 
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack();
@@ -706,6 +714,29 @@ export default class Kresmer extends KresmerEventHooks {
             }//if
         }//if
     }//onElementRename
+
+    /**
+     * Starts link creation pulling in from the specified connection point
+     * @param linkClass A class of the new link
+     * @param fromComponentID A component from which the link is started
+     * @param fromConnectionPointName A connection point from which the link is started
+     */
+    public startLinkCreation(linkClass: NetworkLinkClass, fromComponentID: number, 
+                             fromConnectionPointName: string|number)
+    {
+        const fromComponent = this.getComponentById(fromComponentID);
+        if (!fromComponent) {
+            console.error(`Trying to create a link from non-existing component (id=${fromComponentID})!`);
+            return;
+        }//if
+        const fromConnectionPoint = fromComponent.connectionPoints[fromConnectionPointName];
+        if (!fromConnectionPoint) {
+            console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
+            return;
+        }//if
+        this.newLinkBlank = {_class: linkClass, start: fromConnectionPoint, end: {...fromConnectionPoint.coords}};
+    }//startLinkCreation
+
 }//Kresmer
 
 /** Data type for Vue templates */

@@ -318,4 +318,8 @@ async function startLinkCreation(fromComponentID: number, fromConnectionPointNam
 {
     const linkClass = await vueLinkClassSelectionDialog.show();
     console.log(`link-class = ${linkClass?.name}`);
+
+    if (linkClass) {
+        kresmer.startLinkCreation(linkClass, fromComponentID, fromConnectionPointName);
+    }//if
 }//startLinkCreation
