@@ -19,6 +19,7 @@ import Kresmer, {
  } from 'kresmer';
 import { AppCommandExecutor } from './AppCommands';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
+import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 
 export const kresmer = new Kresmer('#kresmer');
 
@@ -42,6 +43,8 @@ export const vueStatusBar = createApp(StatusBar, {
 
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
+const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#dlgLinkClassSelection") as
+    InstanceType<typeof LinkClassSelectionDialog>;
 
 kresmer
     .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
@@ -87,6 +90,7 @@ appCommandExecutor
     .on("add-vertex", addLinkVertex)
     .on("delete-vertex", deleteLinkVertex)
     .on("align-vertex", alignLinkVertex)
+    .on("connect-connection-point", startLinkCreation)
     ;
 
 window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
@@ -309,3 +313,9 @@ function onConnectionPointRightClick(connectionPoint: ConnectionPointProxy)
 {
     window.electronAPI.showContextMenu("connection-point", connectionPoint.component.id, connectionPoint.name);
 }//onConnectionPointRightClick
+
+async function startLinkCreation(fromComponentID: number, fromConnectionPointName: string|number)
+{
+    const linkClass = await vueLinkClassSelectionDialog.show();
+    console.log(`link-class = ${linkClass?.name}`);
+}//startLinkCreation

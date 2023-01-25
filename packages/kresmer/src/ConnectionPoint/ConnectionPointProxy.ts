@@ -13,14 +13,18 @@ import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import { Position } from "../Transform/Transform";
 
 export default class ConnectionPointProxy {
-    constructor(readonly component: NetworkComponent, readonly name: string|number, dir: number)
+    /**
+     * Constructs a connection point
+     * @param component The component this connection point belongs to
+     * @param name The name of the connection point
+     * @param dir Prefered direction for the link connected here (angle from x-axis)
+     */
+    constructor(readonly component: NetworkComponent, readonly name: string|number, public dir: number)
     {
-        this.dir0 = this.dir = dir;
+        this.dir0 = dir;
     }//ctor
 
-    /** Preferable direction for connection (angle from x-axis) */
-    dir: number;
-    /** The initial value of the preferred */
+    /** The initial value of the prefered direction */
     readonly dir0: number;
 
     /** Absolute coordinates of the connection point */
@@ -28,11 +32,11 @@ export default class ConnectionPointProxy {
 
     /** The setter for the coords property - 
      * the vue-component calls it when the connection point position is updated */
-    setPos(coords: Position, dir: number)
+    _setPos(coords: Position, dir: number)
     {
         ({x: this.coords.x, y: this.coords.y} = coords);
         this.dir = dir;
-    }//setPos
+    }//_setPos
 
     /** A trigger variable that signals the vue-component that it should refresh coords */
     readonly posUpdateTrigger = ref(0);
@@ -43,8 +47,4 @@ export default class ConnectionPointProxy {
         this.posUpdateTrigger.value++;
     }//updatePos
 
-    onRightClick()
-    {
-        this.component.kresmer.emit("connection-point-right-click", this);
-    }//onRightClick
 }//ConnectionPointProxy

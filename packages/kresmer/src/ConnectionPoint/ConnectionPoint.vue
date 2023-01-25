@@ -41,8 +41,13 @@
                drawingRect.top + mountingRect.top /* - window.scrollY */,
         };        
         const rot = Math.atan2(matrix.b, matrix.a) / Math.PI * 180;
-        proxy.setPos(coords, proxy.dir0 + rot);
+        proxy._setPos(coords, proxy.dir0 + rot);
     }//updatePos
+
+    function onRightClick()
+    {
+        proxy.component.kresmer.emit("connection-point-right-click", proxy);
+    }//onRightClick
 
     watch(proxy.posUpdateTrigger, () => {nextTick(updatePos)});
 </script>
@@ -50,7 +55,7 @@
 <template>
     <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"
         :data-connection-point="`${component.name}:${name}`"
-        @contextmenu="proxy.onRightClick()"
+        @contextmenu.stop="onRightClick()"
         />
 </template>
 

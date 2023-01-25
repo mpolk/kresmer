@@ -14,7 +14,7 @@ import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
-import LinkClass from "./NetworkLink/NetworkLinkClass";
+import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
 import DrawingParser, { DrawingProperties } from "./parsers/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"
@@ -225,7 +225,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param linkClass A class to register
      * @returns Kresmer itself
      */
-    public registerLinkClass(linkClass: LinkClass)
+    public registerLinkClass(linkClass: NetworkLinkClass)
     {
 
         // Register class's svg-definitions
@@ -248,7 +248,11 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * A list of all Link Classes, registered by Kresmer
      */
-    protected readonly registeredLinkClasses = new Map<string, LinkClass>();
+    protected readonly registeredLinkClasses = new Map<string, NetworkLinkClass>();
+    /** Returns a list of all Link Classes, registered by Kresmer */
+    public getRegisteredLinkClasses() {
+        return this.registeredLinkClasses.entries();
+    }//getRegisteredLinkClasses
 
 
     /**
@@ -264,7 +268,7 @@ export default class Kresmer extends KresmerEventHooks {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
                 this.registerNetworkComponentClass(element);
-            } else if (element instanceof LinkClass) {
+            } else if (element instanceof NetworkLinkClass) {
                 this.registerLinkClass(element);
             } else if (element instanceof DefsLibNode) {
                 this.defs.push(element.data);
@@ -739,6 +743,7 @@ export {default as NetworkComponentClass} from "./NetworkComponent/NetworkCompon
 export {default as NetworkComponentController, type TransformMode} from "./NetworkComponent/NetworkComponentController";
 export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
+export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
 export {default as ParsingException} from "./parsers/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPointProxy";
