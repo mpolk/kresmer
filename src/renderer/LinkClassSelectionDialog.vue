@@ -70,7 +70,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fs-5">Drawing merge options...</h5>
+                    <h5 class="modal-title fs-5">Choose the new link class...</h5>
                     <button type="button" class="btn-close" @click="close(null)"></button>
                 </div>
                 <form @submit.prevent="">

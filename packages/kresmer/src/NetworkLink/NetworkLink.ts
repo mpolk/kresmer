@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Network Component - a generic network element instance 
+ * Network Link - data object 
  ***************************************************************************/
 
 import { InjectionKey } from "vue";
@@ -17,7 +17,7 @@ import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
 
 /**
- * Network Component - a generic network element instance 
+ * Network Link 
  */
 export default class NetworkLink extends NetworkElement {
     /**

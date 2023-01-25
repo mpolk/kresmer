@@ -26,6 +26,7 @@ import NetworkLink from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
+import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 
 
 /**
@@ -103,13 +104,6 @@ export default class Kresmer extends KresmerEventHooks {
     readonly isEditable: boolean = true;
     /** The element Kresmer was mounted on */
     readonly mountPoint: HTMLElement;
-
-    /** A blank for new link creation */
-    newLinkBlank?: {
-        start: ConnectionPointProxy,
-        _class: NetworkLinkClass,
-        end: Position,
-    }//newLinkBlank
 
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack();
@@ -715,6 +709,9 @@ export default class Kresmer extends KresmerEventHooks {
         }//if
     }//onElementRename
 
+    /** A blank for a new link creation */
+    newLinkBlank: NetworkLinkBlank | null = null;
+
     /**
      * Starts link creation pulling in from the specified connection point
      * @param linkClass A class of the new link
@@ -734,7 +731,9 @@ export default class Kresmer extends KresmerEventHooks {
             console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
             return;
         }//if
-        this.newLinkBlank = {_class: linkClass, start: fromConnectionPoint, end: {...fromConnectionPoint.coords}};
+        this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint, 
+                                                 fromConnectionPoint.coords.x, 
+                                                 fromConnectionPoint.coords.y);
     }//startLinkCreation
 
 }//Kresmer

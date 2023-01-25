@@ -228,7 +228,7 @@
             :transform="transformAttr" :transform-origin="transformOrigin"
             @mousedown.stop="onMouseDown($event)"
             @mouseup.stop="onMouseUp($event)"
-            @mousemove.stop="onMouseMove($event)"
+            @mousemove="onMouseMove($event)"
             @mouseenter.stop="onMouseEnter($event)"
             @mouseleave.stop="onMouseLeave($event)"
             @contextmenu="onRightClick($event, 'component')"

@@ -15,6 +15,7 @@
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
+    import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
     import NetworkLink from './NetworkLink/NetworkLink';
     import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
 
@@ -152,10 +153,9 @@
         :width = "width" :height="height"
         :viewBox="`0 0 ${viewWidth} ${viewHeight}`"
         @mousedown.prevent.self="onMouseDownOnCanvas($event)"
-        @mousemove.prevent=""
         @wheel.ctrl.prevent="onMouseWheel($event)"
-        @mouseenter="onMouseEnter"
-        @mouseleave="onMouseLeave"
+        @mouseenter.self="onMouseEnter"
+        @mouseleave.self="onMouseLeave"
         >
         <defs>
             <TransformBoxFilters />
@@ -197,6 +197,8 @@
             :model="link"
             :is-editable="isEditable"
             />
+
+        <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
     </svg>
 </template>
 
