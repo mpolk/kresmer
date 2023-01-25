@@ -682,6 +682,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.undoStack.execAndCommit(new UpdateElementOp(element, newProps, newName));
     }//updateElement
 
+    // For internal use
     public onElementRename(element: NetworkElement, oldName: string)
     {
         if (element.name != oldName) {
