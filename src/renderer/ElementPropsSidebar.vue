@@ -10,11 +10,12 @@
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { NetworkElement } from 'kresmer';
-import { updateWindowTitle } from './renderer-main';
+    import { updateWindowTitle } from './renderer-main';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>();
     const propInputs = ref<[HTMLInputElement]>();
+    const formInstantiated = ref(false);
     const formValidated = ref(false);
 
     let elementToEdit: NetworkElement;
@@ -42,6 +43,7 @@ import { updateWindowTitle } from './renderer-main';
                         validValues,
                     }
                 });
+        formInstantiated.value = true;
         offCanvas.show();
     }//show
 
@@ -106,8 +108,7 @@ import { updateWindowTitle } from './renderer-main';
     function close()
     {
         offCanvas!.hide();
-        // offCanvas!.dispose();
-        // offCanvas = undefined;
+        formInstantiated.value = false;
     }//close
 
     defineExpose({show});
@@ -123,7 +124,7 @@ import { updateWindowTitle } from './renderer-main';
             <button type="button" class="btn-close" @click="close"></button>
          </div>
         <div class="offcanvas-body">
-            <form v-if="elementToEdit" :class='{"was-validated": formValidated}'>
+            <form v-if="formInstantiated" :class='{"was-validated": formValidated}'>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
