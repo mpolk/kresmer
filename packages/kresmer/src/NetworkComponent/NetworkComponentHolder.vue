@@ -231,7 +231,7 @@
             @mousemove.stop="onMouseMove($event)"
             @mouseenter.stop="onMouseEnter($event)"
             @mouseleave.stop="onMouseLeave($event)"
-            @contextmenu="onRightClick($event, 'component')"
+            @contextmenu.self="onRightClick($event, 'component')"
             @dblclick="onDoubleClick($event)"
             >
             <g class="network-component-slot"><slot></slot></g>

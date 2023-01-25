@@ -20,6 +20,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "save-drawing": () => void,
     "undo": () => void,
     "redo": () => void,
+    "add-component": () => void,
 }//AppCommandFormats
 
 export type AppCommand = keyof AppCommandFormats;

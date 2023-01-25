@@ -21,8 +21,8 @@
         dir: {type: Number, default: 90},
     });
 
-    const proxy = new ConnectionPointProxy(props.dir);
     const component = inject(NetworkComponent.injectionKey)!;
+    const proxy = new ConnectionPointProxy(component, props.name, props.dir);
     component.connectionPoints[props.name] = proxy;
 
     const kresmer = inject(Kresmer.injectionKey)!;
@@ -49,7 +49,9 @@
 
 <template>
     <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"
-        :data-connection-point="`${component.name}:${name}`"/>
+        :data-connection-point="`${component.name}:${name}`"
+        @contextmenu="proxy.onRightClick()"
+        />
 </template>
 
 <style lang="scss">

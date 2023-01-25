@@ -15,7 +15,7 @@ import Kresmer, {
     DrawingMergeOptions, Position, ParsingException, 
     NetworkComponentController, NetworkComponent,
     NetworkLink, NetworkElement, LinkVertex,
-    TransformMode,
+    TransformMode, ConnectionPointProxy,
  } from 'kresmer';
 import { AppCommandExecutor } from './AppCommands';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
@@ -68,6 +68,7 @@ kresmer
     .on("link-vertex-connected", onLinkVertexMutated)
     .on("link-vertex-disconnected", onLinkVertexMutated)
     .on("link-vertex-right-click", onLinkVertexRightClick)
+    .on("connection-point-right-click", onConnectionPointRightClick)
     ;
 
 const drawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
@@ -303,3 +304,8 @@ function alignLinkVertex(linkID: number, vertexNumber: number)
     kresmer.alignLinkVertex(linkID, vertexNumber);
     updateWindowTitle();
 }//alignLinkVertex
+
+function onConnectionPointRightClick(connectionPoint: ConnectionPointProxy)
+{
+    window.electronAPI.showContextMenu("connection-point", connectionPoint.component.id, connectionPoint.name);
+}//onConnectionPointRightClick

@@ -740,5 +740,6 @@ export {default as NetworkComponentController, type TransformMode} from "./Netwo
 export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
-export {default as ParsingException} from "./parsers/ParsingException"
+export {default as ParsingException} from "./parsers/ParsingException";
+export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPointProxy";
     

@@ -15,6 +15,7 @@ export interface ContextMenus {
   "component": (componentID: number) => void,
   "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
   "link-vertex": (linkID: number, vertexNumber: number) => void,
+  "connection-point": (componentID: number, connectionPointName: number) => void,
 }//ContextMenus
 
 export type ContextMenuID = keyof ContextMenus;
@@ -22,12 +23,18 @@ export type ContextMenuID = keyof ContextMenus;
 type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
     "transform-component": ContextMenuHandler<"component">,
+    "delete-component": ContextMenuHandler<"component">,
     "edit-component-properties": ContextMenuHandler<"component">,
+
     "align-vertices": ContextMenuHandler<"link">,
     "add-vertex": ContextMenuHandler<"link">,
+    "delete-link": ContextMenuHandler<"link">,
     "edit-link-properties": ContextMenuHandler<"link">,
+
     "align-vertex": ContextMenuHandler<"link-vertex">,
     "delete-vertex": ContextMenuHandler<"link-vertex">,
+
+    "connect-connection-point": ContextMenuHandler<"connection-point">,
 }//ContextMenuCommands
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
@@ -63,7 +70,7 @@ export default class Menus {
           { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
           { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
-          { role: 'delete' },
+          { label: 'Add component...', click: () => sendAppCommand("add-component") },
         ]
       },
       // { role: 'viewMenu' }
@@ -93,19 +100,24 @@ export default class Menus {
       {
         "component" : [
           {label: "Transform", id: "transform-component"},
+          {label: "Delete component", id: "delete-component"},
           {type: 'separator'},
           {label: "Properties...", id: "edit-component-properties"},
         ],
         "link": [
             {label: "Align vertices", id: "align-vertices"},
             {label: "Add vertex", id: "add-vertex"},
+            {label: "Delete link", id: "delete-link"},
             {type: 'separator'},
             {label: "Properties...", id: "edit-link-properties"},
           ],
         "link-vertex": [
-                {label: "Align vertex (double-click)", id: "align-vertex"},
-                {label: "Delete vertex", id: "delete-vertex"},
-            ],
+            {label: "Align vertex (double-click)", id: "align-vertex"},
+            {label: "Delete vertex", id: "delete-vertex"},
+          ],
+        "connection-point": [
+            {label: "Connect...", id: "connect-connection-point"},
+          ],
       }
 
     private readonly browserWindow: BrowserWindow;

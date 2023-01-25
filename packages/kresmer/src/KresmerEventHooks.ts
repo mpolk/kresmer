@@ -48,6 +48,7 @@ class KresmerEventFormats  {
     "link-vertex-connected":            (vertex: LinkVertex) => void;
     "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPointProxy) => void;
     "link-vertex-right-click":          (vertex: LinkVertex, mouseEvent: MouseEvent) => void;
+    "connection-point-right-click":     (connectionPoint: ConnectionPointProxy) => void;
 }//KresmerEventFormats
 
 /** Event names alone */
@@ -291,6 +292,13 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("link-vertex-right-click")
     protected onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent) {}
+
+    /**
+     * Is called upon right mouse click on the connection point
+     * @param link The connection point been clicked
+     */
+    @overridableHandler("connection-point-right-click")
+    protected onConnectionPointRightClick(connectionPoint: ConnectionPointProxy) {}
 
 }//KresmerEventHooks
 

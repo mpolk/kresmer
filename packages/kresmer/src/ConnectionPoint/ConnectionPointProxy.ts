@@ -9,10 +9,11 @@
 \****************************************************************************/
 
 import { reactive, ref } from "vue";
+import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import { Position } from "../Transform/Transform";
 
 export default class ConnectionPointProxy {
-    constructor(dir: number)
+    constructor(readonly component: NetworkComponent, readonly name: string|number, dir: number)
     {
         this.dir0 = this.dir = dir;
     }//ctor
@@ -41,4 +42,9 @@ export default class ConnectionPointProxy {
     {
         this.posUpdateTrigger.value++;
     }//updatePos
+
+    onRightClick()
+    {
+        this.component.kresmer.emit("connection-point-right-click", this);
+    }//onRightClick
 }//ConnectionPointProxy
