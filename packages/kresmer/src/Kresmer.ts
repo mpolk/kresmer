@@ -677,13 +677,20 @@ export default class Kresmer extends KresmerEventHooks {
      * @param newProps The new prop values
      * @param newName The new element name
      */
-    public updateElement(element: NetworkElement, newProps: {name: string, value: unknown}[], newName?: string)
+    public updateElement(element: NetworkElement, newProps: {name: string, value: unknown}[], newName?: string): void;
+    public updateElement(element: NetworkElement, newProps: Record<string, unknown>, newName?: string): void;
+    public updateElement(element: NetworkElement, 
+                         newProps: {name: string, value: unknown}[] | Record<string, unknown>, 
+                         newName?: string)
     {
+        if (Array.isArray(newProps)) {
+            newProps = Object.fromEntries(newProps.map(prop => [prop.name, prop.value]));
+        }//if
         this.undoStack.execAndCommit(new UpdateElementOp(element, newProps, newName));
     }//updateElement
 
-    // For internal use
-    public onElementRename(element: NetworkElement, oldName: string)
+    // For internal use: reacts on some network element rename refreshing corresponding map
+    public _onElementRename(element: NetworkElement, oldName: string)
     {
         if (element.name != oldName) {
             if (element instanceof NetworkComponent) {

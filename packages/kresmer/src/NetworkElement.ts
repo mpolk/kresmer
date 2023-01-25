@@ -62,7 +62,7 @@ export default abstract class NetworkElement {
     {
         const oldName = this.name;
         this._name = newName;
-        this.kresmer.onElementRename(this, oldName);
+        this.kresmer._onElementRename(this, oldName);
     }//set name
 
     get isNamed()
@@ -80,27 +80,24 @@ export default abstract class NetworkElement {
 export class UpdateElementOp extends EditorOperation {
 
     constructor(private readonly element: NetworkElement, 
-                private readonly newProps: {name: string, value: unknown}[], 
+                private readonly newProps: Record<string, unknown>, 
                 private readonly newName?: string)
     {
         super();
-        this.oldProps = [];
-        for (const prop of this.newProps) {
-            this.oldProps.push({name: prop.name, value: this.element.props[prop.name]});
-        }//for
+        this.oldProps = {...element.props};
 
         if (this.newName !== undefined) {
             this.oldName = this.element._name;
         }//if
     }//ctor
 
-    private readonly oldProps: {name: string, value: unknown}[];
+    private readonly oldProps: Record<string, unknown>;
     private readonly oldName?: string;
 
     override exec(): void 
     {
-        for (const prop of this.newProps) {
-            this.element.props[prop.name] = prop.value;
+        for (const propName in this.newProps) {
+            this.element.props[propName] = this.newProps[propName];
         }//for
 
         if (this.newName !== undefined) {
@@ -114,8 +111,8 @@ export class UpdateElementOp extends EditorOperation {
 
     override undo(): void 
     {
-        for (const prop of this.oldProps) {
-            this.element.props[prop.name] = prop.value;
+        for (const propName in this.oldProps) {
+            this.element.props[propName] = this.oldProps[propName];
         }//for
 
         if (this.newName !== undefined) {
