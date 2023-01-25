@@ -80,6 +80,7 @@ appCommandExecutor
     .on("undo", () => {kresmer.undo(); updateWindowTitle();})
     .on("redo", () => {kresmer.redo(); updateWindowTitle();})
     .on("edit-component-properties", editComponentProperties)
+    .on("transform-component", transformComponent)
     .on("add-vertex", addLinkVertex)
     .on("delete-vertex", deleteLinkVertex)
     .on("align-vertex", alignLinkVertex)
@@ -181,6 +182,14 @@ function editComponentProperties(componentID: number)
     }//if
     vueComponentPropsSidebar.show(component);
 }//editComponentProperties
+
+function transformComponent(componentID: number)
+{
+    const controller = kresmer.getComponentControllerById(componentID);
+    if (controller) {
+        controller.transformMode = "scaling";
+    }//if
+}//transformComponent
 
 function onComponentRightClick(controller: NetworkComponentController)
 {
