@@ -12,7 +12,7 @@
     import { NetworkElement } from 'kresmer';
 import { updateWindowTitle } from './renderer-main';
 
-    let offCanvas!: Offcanvas;
+    let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>();
     const propInputs = ref<[HTMLInputElement]>();
     const formValidated = ref(false);
@@ -26,7 +26,7 @@ import { updateWindowTitle } from './renderer-main';
     function show(element: NetworkElement)
     {
         if (!offCanvas) {
-            offCanvas = new Offcanvas(rootDiv.value!);
+            offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
 
         elementToEdit = element;
@@ -98,22 +98,23 @@ import { updateWindowTitle } from './renderer-main';
             return;
         }//if
 
-        offCanvas.hide();
+        close();
         elementToEdit.kresmer.updateElement(elementToEdit, elementProps.value, elementName.value);
         updateWindowTitle();
     }//save
 
     function close()
     {
-        offCanvas.hide();
+        offCanvas!.hide();
+        // offCanvas!.dispose();
+        // offCanvas = undefined;
     }//close
 
     defineExpose({show});
 </script>
 
 <template>
-    <div ref="rootDiv" class="offcanvas offcanvas-end" 
-         data-bs-backdrop="static" data-bs-scroll="true" tabindex="-1">
+    <div ref="rootDiv" class="offcanvas offcanvas-end" tabindex="-1">
         <div class="offcanvas-header align-items-baseline">
             <div>
                 <h5 class="offcanvas-title">{{elementName}}</h5>
