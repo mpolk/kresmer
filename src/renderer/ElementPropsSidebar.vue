@@ -15,7 +15,7 @@
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>();
     const propInputs = ref<[HTMLInputElement]>();
-    const formInstantiated = ref(false);
+    const formEnabled = ref(false);
     const formValidated = ref(false);
 
     let elementToEdit: NetworkElement;
@@ -43,7 +43,7 @@
                         validValues,
                     }
                 });
-        formInstantiated.value = true;
+        formEnabled.value = true;
         offCanvas.show();
     }//show
 
@@ -108,7 +108,7 @@
     function close()
     {
         offCanvas!.hide();
-        formInstantiated.value = false;
+        formEnabled.value = false;
     }//close
 
     defineExpose({show});
@@ -124,7 +124,7 @@
             <button type="button" class="btn-close" @click="close"></button>
          </div>
         <div class="offcanvas-body">
-            <form v-if="formInstantiated" :class='{"was-validated": formValidated}'>
+            <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
