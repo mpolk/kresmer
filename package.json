@@ -22,7 +22,7 @@
     "test:unit": "cypress open --component",
     "test:unit:ci": "cypress run --component --quiet --reporter spec",
     "lint": "eslint -c .eslintrc.cjs --ext .ts ./src",
-    "app:dev": "npm run ts && concurrently \"npm run --w kresmer build-watch\" vite \"electron . autoload.kre\" \"npm run watch\"",
+    "app:dev": "npm run ts && concurrently \"npm run -w kresmer build-watch\" vite \"electron . autoload.kre\" \"npm run watch\"",
     "app:build": "run-s build-component vite:build ts && electron-builder",
     "app:preview": "run-s build-component vite:build ts && electron . autoload.kre"
   },
