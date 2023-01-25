@@ -123,6 +123,7 @@ app.on('window-all-closed', () => {
 export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: Parameters<AppCommandFormats[Command]>): void;
 export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: unknown[])
 {
+    // console.debug(command, ...args);
     mainWindow.webContents.send("command", command, ...args);
 }//sendAppCommand
 

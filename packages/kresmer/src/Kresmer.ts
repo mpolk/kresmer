@@ -682,6 +682,18 @@ export default class Kresmer extends KresmerEventHooks {
         this.undoStack.execAndCommit(new UpdateElementOp(element, newProps, newName));
     }//updateElement
 
+    public onElementRename(element: NetworkElement, oldName: string)
+    {
+        if (element.name != oldName) {
+            if (element instanceof NetworkComponent) {
+                this.componentsByName.delete(oldName);
+                this.componentsByName.set(element.name, element.id);
+            } else if (element instanceof NetworkLink) {
+                this.linksByName.delete(oldName);
+                this.linksByName.set(element.name, element.id);
+            }//if
+        }//if
+    }//onElementRename
 }//Kresmer
 
 /** Data type for Vue templates */

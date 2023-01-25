@@ -60,7 +60,9 @@ export default abstract class NetworkElement {
 
     set name(newName: string|undefined)
     {
+        const oldName = this.name;
         this._name = newName;
+        this.kresmer.onElementRename(this, oldName);
     }//set name
 
     get isNamed()
