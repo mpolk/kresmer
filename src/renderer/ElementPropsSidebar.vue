@@ -88,16 +88,18 @@
             }//if
         }//for
 
-        for (const input of propInputs.value!) {
-            if (!input.validity.valid) {
-                propsWithErrors.push(input.dataset.propName!);
-            } else if (propsWithErrors.includes(input.dataset.propName!)) {
-                input.setCustomValidity("Syntax error!");
+        if (propInputs.value) {
+            for (const input of propInputs.value) {
+                if (!input.validity.valid) {
+                    propsWithErrors.push(input.dataset.propName!);
+                } else if (propsWithErrors.includes(input.dataset.propName!)) {
+                    input.setCustomValidity("Syntax error!");
+                }//if
+            }//for
+            if (propsWithErrors.length) {
+                formValidated.value = true;
+                return;
             }//if
-        }//for
-        if (propsWithErrors.length) {
-            formValidated.value = true;
-            return;
         }//if
 
         close();

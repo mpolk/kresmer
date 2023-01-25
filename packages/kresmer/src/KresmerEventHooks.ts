@@ -41,6 +41,7 @@ class KresmerEventFormats  {
     "mode-reset":                       () => void;
     "link-selected":                    (link: NetworkLink, isSelected: boolean) => void;
     "link-right-click":                 (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
+    "link-double-click":                (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
     "link-vertex-move-started":         (vertex: LinkVertex) => void;
     "link-vertex-being-moved":          (vertex: LinkVertex) => void;
     "link-vertex-moved":                (vertex: LinkVertex) => void;
@@ -241,6 +242,13 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("link-right-click")
     protected onLinkRightClick(link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) {}
+
+    /**
+     * Is called upon double mouse click on the network link
+     * @param link The link been clicked
+     */
+    @overridableHandler("link-double-click")
+    protected onLinkDoubleClick(link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) {}
   
     /**
      * Is called when a network link vertex move starts

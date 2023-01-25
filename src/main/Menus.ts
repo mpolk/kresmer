@@ -25,13 +25,14 @@ export interface ContextMenuCommands {
     "edit-component-properties": ContextMenuHandler<"component">,
     "align-vertices": ContextMenuHandler<"link">,
     "add-vertex": ContextMenuHandler<"link">,
+    "edit-link-properties": ContextMenuHandler<"link">,
     "align-vertex": ContextMenuHandler<"link-vertex">,
     "delete-vertex": ContextMenuHandler<"link-vertex">,
 }//ContextMenuCommands
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
 type ContextMenuItemConstructorOptions = 
-    Omit<MenuItemConstructorOptions, "id"> & {id: ContextMenuCommandID};
+    Omit<MenuItemConstructorOptions, "id"> & {id?: ContextMenuCommandID};
 
 export default class Menus {
 
@@ -91,13 +92,16 @@ export default class Menus {
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
       {
         "component" : [
-          {"label": "Transform", id: "transform-component"},
-          {"label": "Properties", id: "edit-component-properties"},
+          {label: "Transform", id: "transform-component"},
+          {type: 'separator'},
+          {label: "Properties...", id: "edit-component-properties"},
         ],
         "link": [
             {label: "Align vertices", id: "align-vertices"},
             {label: "Add vertex", id: "add-vertex"},
-        ],
+            {type: 'separator'},
+            {label: "Properties...", id: "edit-link-properties"},
+          ],
         "link-vertex": [
                 {label: "Align vertex (double-click)", id: "align-vertex"},
                 {label: "Delete vertex", id: "delete-vertex"},

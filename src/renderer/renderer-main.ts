@@ -62,6 +62,7 @@ kresmer
     .on("component-double-click", onComponentDoubleClick)
     .on("link-selected", onLinkSelected)
     .on("link-right-click", onLinkRightClick)
+    .on("link-double-click", onLinkDoubleClick)
     .on("link-vertex-being-moved", indicateLinkVertexMove)
     .on("link-vertex-moved", onLinkVertexMutated)
     .on("link-vertex-connected", onLinkVertexMutated)
@@ -81,6 +82,7 @@ appCommandExecutor
     .on("redo", () => {kresmer.redo(); updateWindowTitle();})
     .on("edit-component-properties", editComponentProperties)
     .on("transform-component", transformComponent)
+    .on("edit-link-properties", editLinkProperties)
     .on("add-vertex", addLinkVertex)
     .on("delete-vertex", deleteLinkVertex)
     .on("align-vertex", alignLinkVertex)
@@ -249,10 +251,25 @@ function onLinkRightClick(link: NetworkLink, segmentNumber: number, mouseEvent: 
     window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 }//onLinkRightClick
 
+function onLinkDoubleClick(link: NetworkLink)
+{
+    vueComponentPropsSidebar.show(link);
+}//onComponentLinkClick
+
 function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent */)
 {
     window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
 }//onLinkVertexRightClick
+
+function editLinkProperties(linkID: number)
+{
+    const link = kresmer.getLinkById(linkID);
+    if (!link) {
+        console.error(`No such link (id=${linkID})`);
+        return;
+    }//if
+    vueComponentPropsSidebar.show(link);
+}//editLinkProperties
 
 function indicateLinkVertexMove(vertex: LinkVertex)
 {

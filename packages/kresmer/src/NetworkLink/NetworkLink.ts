@@ -139,6 +139,13 @@ export default class NetworkLink extends NetworkElement {
     }//onRightClick
 
 
+    public onDoubleClick(segmentNumber: number, event: MouseEvent)
+    {
+        this.selectLink();
+        this.kresmer.emit("link-double-click", this, segmentNumber, event);
+    }//onDoubleClick
+
+
     public toXML(indentLevel: number): string 
     {
         const attrs = new Map<string, string>();
