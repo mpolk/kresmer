@@ -24,11 +24,17 @@
 
 <template>
     <line class="line" 
-        :x1="model.start?.coords.x" :y1="model.start?.coords.y"
+        :x1="model.start!.coords.x" :y1="model.start!.coords.y"
         :x2="model.end.x" :y2="model.end.y"
         />
+    <circle class="origin" :cx="model.start!.coords.x" :cy="model.start!.coords.y" r="20" />
+    <circle class="origin-center" :cx="model.start!.coords.x" :cy="model.start!.coords.y" r="4" />
     <circle class="header"
         :cx="model.end.x" :cy="model.end.y" r="20"
+        @mousemove.self="onMouseMove($event)"
+        />
+    <circle class="header-center"
+        :cx="model.end.x" :cy="model.end.y" r="4"
         @mousemove.self="onMouseMove($event)"
         />
 </template>
@@ -40,10 +46,25 @@
         stroke-width: 2px;
     }
 
+    .origin {
+        stroke: orange;
+        stroke-width: 2px;
+        fill: orange;
+        fill-opacity: 0.5;
+    }
+
+    .origin-center {
+        fill: red;
+    }
+
     .header {
-        stroke: red;
+        stroke: rgb(255, 88, 88);
         stroke-width: 2px;
         fill: pink;
         fill-opacity: 0.5;
+    }
+
+    .header-center {
+        fill: red;
     }
 </style>

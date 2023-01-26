@@ -60,7 +60,6 @@ export default class Kresmer extends KresmerEventHooks {
             viewWidth: this.viewWidth,
             viewHeight: this.viewHeight,
             isEditable: this.isEditable,
-            newLinkBlank: this.newLinkBlank,
         });
 
         this.appKresmer

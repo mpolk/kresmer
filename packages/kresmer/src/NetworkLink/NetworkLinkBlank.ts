@@ -6,7 +6,7 @@
  * Network Link Blank (temporary object for a link creation) - data object 
  ***************************************************************************/
 
-import { reactive } from "vue";
+import { reactive, ref } from "vue";
 import Kresmer from "../Kresmer";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 import NetworkLinkClass from "./NetworkLinkClass";
@@ -24,6 +24,7 @@ export default class NetworkLinkBlank {
         private readonly kresmer: Kresmer,
     ) {}
 
+    public isActive = false;
     public _class?: NetworkLinkClass;
     public start?: ConnectionPointProxy;
     public end = reactive<Position>({x: 0, y: 0});
@@ -33,7 +34,13 @@ export default class NetworkLinkBlank {
         this._class = _class;
         this.start = start;
         ({x: this.end.x, y: this.end.y} = start.coords);
+        this.isActive = true;
     }//activate
+
+    public deactivate()
+    {
+        this.isActive = false;
+    }//deactivate
 
     public extrude(event: MouseEvent)
     {

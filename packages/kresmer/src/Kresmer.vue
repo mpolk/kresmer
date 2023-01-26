@@ -15,7 +15,6 @@
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
-    import NetworkLinkBlank from './NetworkLink/NetworkLinkBlank';
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
     import NetworkLink from './NetworkLink/NetworkLink';
     import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
@@ -38,7 +37,6 @@
         viewWidth: {type: Number, default: 1000},
         viewHeight: {type: Number, default: 1000},
         isEditable: {type: Boolean, default: true},
-        newLinkBlank: {type: Object as PropType<NetworkLinkBlank>, required: true},
     });
 
     provide(Kresmer.injectionKey, props.controller);
@@ -189,7 +187,7 @@
             :is-editable="isEditable"
             />
 
-        <NetworkLinkBlankVue v-if="newLinkBlank.start" :model="newLinkBlank" />
+        <NetworkLinkBlankVue v-if="controller.newLinkBlank.isActive" :model="controller.newLinkBlank" />
     </svg>
 </template>
 
