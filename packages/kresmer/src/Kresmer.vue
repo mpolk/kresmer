@@ -187,7 +187,7 @@
             :is-editable="isEditable"
             />
 
-        <NetworkLinkBlankVue v-if="controller.newLinkBlank.isActive" :model="controller.newLinkBlank" />
+        <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
     </svg>
 </template>
 

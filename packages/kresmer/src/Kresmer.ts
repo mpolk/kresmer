@@ -709,7 +709,7 @@ export default class Kresmer extends KresmerEventHooks {
     }//onElementRename
 
     /** A blank for a new link creation */
-    public newLinkBlank = new NetworkLinkBlank(this);
+    public newLinkBlank?: NetworkLinkBlank;
 
     /**
      * Starts link creation pulling in from the specified connection point
@@ -730,7 +730,8 @@ export default class Kresmer extends KresmerEventHooks {
             console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
             return;
         }//if
-        this.newLinkBlank.activate(linkClass, fromConnectionPoint);
+        this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint);
+        this.vueKresmer.$forceUpdate();
     }//startLinkCreation
 
 }//Kresmer

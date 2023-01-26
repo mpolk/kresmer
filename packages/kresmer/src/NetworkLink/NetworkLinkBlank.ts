@@ -22,25 +22,14 @@ export default class NetworkLinkBlank {
      */
     public constructor(
         private readonly kresmer: Kresmer,
-    ) {}
-
-    public isActive = false;
-    public _class?: NetworkLinkClass;
-    public start?: ConnectionPointProxy;
-    public end = reactive<Position>({x: 0, y: 0});
-
-    public activate(_class: NetworkLinkClass, start: ConnectionPointProxy)
+        readonly _class: NetworkLinkClass,
+        readonly start: ConnectionPointProxy,
+        ) 
     {
-        this._class = _class;
-        this.start = start;
         ({x: this.end.x, y: this.end.y} = start.coords);
-        this.isActive = true;
-    }//activate
+    }//ctor
 
-    public deactivate()
-    {
-        this.isActive = false;
-    }//deactivate
+    readonly end = reactive<Position>({x: 0, y: 0});
 
     public extrude(event: MouseEvent)
     {
