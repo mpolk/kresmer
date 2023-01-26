@@ -154,6 +154,7 @@ export default class LinkVertex {
         this.dragStartPos = {...this.coords};
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
+        this.link.kresmer.deselectAllElements(this.link);
         this.link.bringToTop();
         this.link.kresmer.emit("link-vertex-move-started", this);
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));

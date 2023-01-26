@@ -612,6 +612,7 @@ export default class Kresmer extends KresmerEventHooks {
                 link.isSelected = false;
             }//if
         }//for
+        this._abortLinkCreation();
     }//deselectAllElements
 
 
@@ -752,6 +753,18 @@ export default class Kresmer extends KresmerEventHooks {
         this.newLinkBlank = undefined;
         this.vueKresmer.$forceUpdate();
     }//_completeLinkCreation
+
+
+    /**
+     * Aborts the new link creation (for private use only)
+     */
+    public _abortLinkCreation()
+    {
+        if (this.newLinkBlank) {
+            this.newLinkBlank = undefined;
+            this.vueKresmer.$forceUpdate();
+        }//if
+    }//_abortLinkCreation
 }//Kresmer
 
 /** Data type for Vue templates */

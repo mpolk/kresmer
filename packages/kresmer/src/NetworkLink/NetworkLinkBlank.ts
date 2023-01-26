@@ -37,6 +37,12 @@ export default class NetworkLinkBlank {
     }//extrude
 
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public onMouseDown(_event: MouseEvent)
+    {
+        this.kresmer.deselectAllLinks();
+    }//onMouseDown
+
     public onMouseUp(event: MouseEvent)
     {
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
