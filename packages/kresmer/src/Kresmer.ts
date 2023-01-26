@@ -21,7 +21,7 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import NetworkLink from "./NetworkLink/NetworkLink";
+import NetworkLink, { AddLinkOp } from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
@@ -331,7 +331,6 @@ export default class Kresmer extends KresmerEventHooks {
     {
         this.networkComponents.set(controller.component.id, controller);
         this.componentsByName.set(controller.component.name, controller.component.id);
-        this.isDirty = true;
         return this;
     }//addPositionedNetworkComponent
  
@@ -349,10 +348,22 @@ export default class Kresmer extends KresmerEventHooks {
      {
          this.links.set(link.id, link);
          this.linksByName.set(link.name, link.id);
-         this.isDirty = true;
+         this.emit("link-added", link);
          return this;
      }//addLink
- 
+
+    /**
+     * Delete a Link from the content of the drawing
+     * @param link A Link to delete
+     */
+    public deleteLink(link: NetworkLink)
+    {
+        this.links.delete(link.id);
+        this.linksByName.delete(link.name);
+        this.emit("link-deleted", link);
+        return this;
+    }//deleteLink
+
 
     /**
      * Loads a component class library from the raw XML data
@@ -749,7 +760,7 @@ export default class Kresmer extends KresmerEventHooks {
                 to: {connectionPoint: toConnectionPoint},
             });
         newLink.initVertices();
-        this.addLink(newLink);
+        this.undoStack.execAndCommit(new AddLinkOp(newLink));
         this.newLinkBlank = undefined;
         this.vueKresmer.$forceUpdate();
     }//_completeLinkCreation

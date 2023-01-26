@@ -63,6 +63,8 @@ kresmer
     .on("component-selected", onComponentSelected)
     .on("component-right-click", onComponentRightClick)
     .on("component-double-click", onComponentDoubleClick)
+    .on("link-added", onLinkAdded)
+    .on("link-deleted", onLinkDeleted)
     .on("link-selected", onLinkSelected)
     .on("link-right-click", onLinkRightClick)
     .on("link-double-click", onLinkDoubleClick)
@@ -241,6 +243,18 @@ function onComponentMutated(_controller: NetworkComponentController)
     hints.pop();
     updateWindowTitle();
 }//onComponentMutated
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function onLinkAdded(link: NetworkLink)
+{
+    updateWindowTitle();
+}//onLinkAdded
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function onLinkDeleted(link: NetworkLink)
+{
+    updateWindowTitle();
+}//onLinkDeleted
 
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
 {

@@ -175,13 +175,27 @@ export default class NetworkLink extends NetworkElement {
 
 // Editor operations
 
-class AddVertexOp extends EditorOperation {
-    protected vertex: LinkVertex;
+export class AddLinkOp extends EditorOperation {
 
-    constructor(vertex: LinkVertex)
+    constructor (protected link: NetworkLink)
     {
         super();
-        this.vertex = vertex;
+    }//ctor
+
+    override exec(): void {
+        this.link.kresmer.addLink(this.link);
+    }//exec
+
+    override undo(): void {
+        this.link.kresmer.deleteLink(this.link);
+    }//undo
+}//AddLinkOp
+
+class AddVertexOp extends EditorOperation {
+
+    constructor(protected vertex: LinkVertex)
+    {
+        super();
     }//ctor
 
     exec() {

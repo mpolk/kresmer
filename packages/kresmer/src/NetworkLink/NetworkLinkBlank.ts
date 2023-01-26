@@ -24,8 +24,7 @@ export default class NetworkLinkBlank {
         private readonly kresmer: Kresmer,
         readonly _class: NetworkLinkClass,
         readonly start: ConnectionPointProxy,
-        ) 
-    {
+    ) {
         ({x: this.end.x, y: this.end.y} = start.coords);
     }//ctor
 

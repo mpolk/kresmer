@@ -39,6 +39,8 @@ class KresmerEventFormats  {
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
     "mode-reset":                       () => void;
+    "link-added":                       (link: NetworkLink) => void;
+    "link-deleted":                     (link: NetworkLink) => void;
     "link-selected":                    (link: NetworkLink, isSelected: boolean) => void;
     "link-right-click":                 (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
     "link-double-click":                (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
@@ -231,8 +233,22 @@ export default class KresmerEventHooks {
     protected onModeReset() {}
 
     /**
+     * Is called when a network component is added
+     * @param link The link been added
+     */
+    @overridableHandler("link-added")
+    protected onLinkAdded(link: NetworkLink) {}
+
+    /**
+     * Is called when a network component is deleted
+     * @param link The link been deleted
+     */
+    @overridableHandler("link-deleted")
+    protected onLinkDeleted(link: NetworkLink) {}
+
+    /**
      * Is called when a network component is selected or deselected
-     * @param controller The controller of the component
+     * @param link The link been selected
      */
     @overridableHandler("link-selected")
     protected onLinkSelected(link: NetworkLink, isSelected: boolean) {}
