@@ -88,6 +88,7 @@ appCommandExecutor
     .on("edit-component-properties", editComponentProperties)
     .on("transform-component", transformComponent)
     .on("edit-link-properties", editLinkProperties)
+    .on("delete-link", deleteLink)
     .on("add-vertex", addLinkVertex)
     .on("delete-vertex", deleteLinkVertex)
     .on("align-vertex", alignLinkVertex)
@@ -240,6 +241,11 @@ function onComponentMutated(_controller: NetworkComponentController)
 {
     hints.pop();
 }//onComponentMutated
+
+function deleteLink(linkID: number)
+{
+    kresmer.edopDeleteLink(linkID);
+}//deleteLink
 
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
 {

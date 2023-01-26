@@ -21,7 +21,7 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import NetworkLink, { AddLinkOp } from "./NetworkLink/NetworkLink";
+import NetworkLink, { AddLinkOp, DeleteLinkOp } from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
@@ -353,7 +353,7 @@ export default class Kresmer extends KresmerEventHooks {
      }//addLink
 
     /**
-     * Delete a Link from the content of the drawing
+     * Deletes a Link from the content of the drawing
      * @param link A Link to delete
      */
     public deleteLink(link: NetworkLink)
@@ -363,6 +363,20 @@ export default class Kresmer extends KresmerEventHooks {
         this.emit("link-deleted", link);
         return this;
     }//deleteLink
+
+    /**
+     * Deletes a Link using an undoable editor operation
+     * @param linkID A an ID of the Link to delete
+     */
+    public edopDeleteLink(linkID: number)
+    {
+        const link = this.getLinkById(linkID);
+        if (!link) {
+            console.error(`Attempt to delete non-existent link (id=${linkID})`);
+            return;
+        }//if
+        this.undoStack.execAndCommit(new DeleteLinkOp(link));
+    }//edopDeleteLink
 
 
     /**
