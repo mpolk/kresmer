@@ -6,7 +6,7 @@
  * Network Link Blank (temporary object for a link creation) - data object 
  ***************************************************************************/
 
-import { reactive, ref } from "vue";
+import { reactive } from "vue";
 import Kresmer from "../Kresmer";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 import NetworkLinkClass from "./NetworkLinkClass";

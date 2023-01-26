@@ -15,6 +15,7 @@
     let modal!: Modal;
     const rootDiv = ref<HTMLDivElement>();
     const selLinkClass = ref<HTMLSelectElement>();
+    const btnOk = ref<HTMLButtonElement>();
     let resolvePromise!: (result: NetworkLinkClass|null) => void;
 
     // eslint-disable-next-line prefer-const
@@ -28,7 +29,8 @@
 
     function shown()
     {
-        selLinkClass.value!.focus();
+        // selLinkClass.value!.focus();
+        btnOk.value!.focus();
     }//shown
 
 
@@ -84,7 +86,7 @@
                         </select>
                     </div>
                     <div class="modal-footer">
-                        <button type="submit" class="btn btn-primary" @click="submit">Ok</button>
+                        <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
                         <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
                     </div>
                 </form>
