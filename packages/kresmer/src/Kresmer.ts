@@ -21,7 +21,6 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
@@ -61,6 +60,7 @@ export default class Kresmer extends KresmerEventHooks {
             viewWidth: this.viewWidth,
             viewHeight: this.viewHeight,
             isEditable: this.isEditable,
+            newLinkBlank: this.newLinkBlank,
         });
 
         this.appKresmer
@@ -710,7 +710,7 @@ export default class Kresmer extends KresmerEventHooks {
     }//onElementRename
 
     /** A blank for a new link creation */
-    newLinkBlank: NetworkLinkBlank | null = null;
+    public newLinkBlank = new NetworkLinkBlank(this);
 
     /**
      * Starts link creation pulling in from the specified connection point
@@ -731,9 +731,7 @@ export default class Kresmer extends KresmerEventHooks {
             console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
             return;
         }//if
-        this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint, 
-                                                 fromConnectionPoint.coords.x, 
-                                                 fromConnectionPoint.coords.y);
+        this.newLinkBlank.activate(linkClass, fromConnectionPoint);
     }//startLinkCreation
 
 }//Kresmer

@@ -16,18 +16,20 @@
 
     function onMouseMove(event: MouseEvent)
     {
-        props.model.extrude(event);
+        if (event.buttons & 1) {
+            props.model.extrude(event);
+        }//if
     }//onMouseMove
 </script>
 
 <template>
     <line class="line" 
-        :x1="model.start.coords.x" :y1="model.start.coords.y"
-        :x2="model.endX" :y2="model.endY"
+        :x1="model.start?.coords.x" :y1="model.start?.coords.y"
+        :x2="model.end.x" :y2="model.end.y"
         />
     <circle class="header"
-        :cx="model.endX" :cy="model.endY" r="20"
-        @mousemove.prevent="onMouseMove($event)"
+        :cx="model.end.x" :cy="model.end.y" r="20"
+        @mousemove.self="onMouseMove($event)"
         />
 </template>
 

@@ -15,39 +15,30 @@
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
+    import NetworkLinkBlank from './NetworkLink/NetworkLinkBlank';
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
     import NetworkLink from './NetworkLink/NetworkLink';
     import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
 
     export default {
-        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, NetworkLinkVue },
+        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, 
+                      NetworkLinkVue, NetworkLinkBlankVue },
     }
 </script>
 
 <script setup lang="ts">
     const props = defineProps({
         controller: {type: Object as PropType<Kresmer>, required: true},
-        networkComponents: {
-            type: Object as PropType<Map<string, NetworkComponentController>>, 
-            required: true
-        },
-        networkComponentClasses: {
-            type: Object as PropType<Map<string, NetworkComponentClass>>, 
-            required: true
-        },
-        links: {
-            type: Object as PropType<Map<string, NetworkLink>>, 
-            required: true
-        },
-        linkClasses: {
-            type: Object as PropType<Map<string, NetworkLinkClass>>, 
-            required: true
-        },
+        networkComponents: {type: Object as PropType<Map<string, NetworkComponentController>>, required: true},
+        networkComponentClasses: {type: Object as PropType<Map<string, NetworkComponentClass>>, required: true},
+        links: {type: Object as PropType<Map<string, NetworkLink>>, required: true},
+        linkClasses: {type: Object as PropType<Map<string, NetworkLinkClass>>, required: true},
         drawingWidth: {type: [Number, String], default: "100%"},
         drawingHeight: {type: [Number, String], default: "100%"},
         viewWidth: {type: Number, default: 1000},
         viewHeight: {type: Number, default: 1000},
         isEditable: {type: Boolean, default: true},
+        newLinkBlank: {type: Object as PropType<NetworkLinkBlank>, required: true},
     });
 
     provide(Kresmer.injectionKey, props.controller);
@@ -198,7 +189,7 @@
             :is-editable="isEditable"
             />
 
-        <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
+        <NetworkLinkBlankVue v-if="newLinkBlank.start" :model="newLinkBlank" />
     </svg>
 </template>
 

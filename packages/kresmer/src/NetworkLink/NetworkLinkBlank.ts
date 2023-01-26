@@ -5,9 +5,12 @@
  * -----------------------------------------------------------------------
  * Network Link Blank (temporary object for a link creation) - data object 
  ***************************************************************************/
+
+import { reactive } from "vue";
+import Kresmer from "../Kresmer";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 import NetworkLinkClass from "./NetworkLinkClass";
-import Kresmer from "../Kresmer";
+import { Position } from "../Transform/Transform";
 
 /**
  * Network Link Blank (temporary object for a link creation)
@@ -19,16 +22,22 @@ export default class NetworkLinkBlank {
      */
     public constructor(
         private readonly kresmer: Kresmer,
-        readonly _class: NetworkLinkClass | string,
-        readonly start: ConnectionPointProxy,
-        public endX: number,
-        public endY: number,
     ) {}
 
+    public _class?: NetworkLinkClass;
+    public start?: ConnectionPointProxy;
+    public end = reactive<Position>({x: 0, y: 0});
+
+    public activate(_class: NetworkLinkClass, start: ConnectionPointProxy)
+    {
+        this._class = _class;
+        this.start = start;
+        ({x: this.end.x, y: this.end.y} = start.coords);
+    }//activate
 
     public extrude(event: MouseEvent)
     {
-        ({x: this.endX, y: this.endY} = this.kresmer.applyScreenCTM(event));
+        ({x: this.end.x, y: this.end.y} = this.kresmer.applyScreenCTM(event));
     }//extrude
 
 }//NetworkLinkBlank
