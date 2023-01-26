@@ -20,6 +20,11 @@
             props.model.extrude(event);
         }//if
     }//onMouseMove
+
+    function onMouseUp(event: MouseEvent)
+    {
+        props.model.onMouseUp(event);
+    }//onMouseUp
 </script>
 
 <template>
@@ -32,10 +37,12 @@
     <circle class="header"
         :cx="model.end.x" :cy="model.end.y" r="20"
         @mousemove.self="onMouseMove($event)"
+        @mouseup="onMouseUp($event)"
         />
     <circle class="header-center"
         :cx="model.end.x" :cy="model.end.y" r="4"
         @mousemove.self="onMouseMove($event)"
+        @mouseup="onMouseUp($event)"
         />
 </template>
 
@@ -62,9 +69,11 @@
         stroke-width: 2px;
         fill: pink;
         fill-opacity: 0.5;
+        cursor: move;
     }
 
     .header-center {
         fill: red;
+        cursor: move;
     }
 </style>

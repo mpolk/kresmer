@@ -26,6 +26,7 @@ import KresmerException from "./KresmerException";
 import UndoStack from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
+import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 
 
 /**
@@ -734,6 +735,23 @@ export default class Kresmer extends KresmerEventHooks {
         this.vueKresmer.$forceUpdate();
     }//startLinkCreation
 
+
+    /**
+     * Completes the new link creation (for private use only)
+     * @param toConnectionPoint The connection point, which will be the end of the new link
+     */
+    public _completeLinkCreation(toConnectionPoint: ConnectionPointProxy)
+    {
+        const newLink = new NetworkLink(this, this.newLinkBlank!._class,
+            {
+                from: {connectionPoint: this.newLinkBlank!.start},
+                to: {connectionPoint: toConnectionPoint},
+            });
+        newLink.initVertices();
+        this.addLink(newLink);
+        this.newLinkBlank = undefined;
+        this.vueKresmer.$forceUpdate();
+    }//_completeLinkCreation
 }//Kresmer
 
 /** Data type for Vue templates */

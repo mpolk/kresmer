@@ -36,4 +36,24 @@ export default class NetworkLinkBlank {
         ({x: this.end.x, y: this.end.y} = this.kresmer.applyScreenCTM(event));
     }//extrude
 
+
+    public onMouseUp(event: MouseEvent)
+    {
+        const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
+        for (const element of elementsUnderCursor) {
+            const connectionPointData = element.getAttribute("data-connection-point");
+            if (connectionPointData) {
+                const [componentName, connectionPointName] = connectionPointData.split(':');
+                const component = this.kresmer.getComponentByName(componentName);
+                const connectionPoint = component?.connectionPoints[connectionPointName];
+                if (connectionPoint) {
+                    this.kresmer._completeLinkCreation(connectionPoint);
+                } else {
+                    console.error('Reference to undefined connection point "%s"', connectionPointData);
+                }//if
+                return;
+            }//if
+        }//for
+    }//onMouseUp
+
 }//NetworkLinkBlank

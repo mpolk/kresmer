@@ -92,6 +92,10 @@ export default class LinkVertex {
                     ${this.initParams.conn.component}:${this.initParams.conn.connectionPoint}`);
             }//if
             this.connect(connectionPoint);
+        } else if (this.initParams?.connectionPoint) {
+            this.connect(this.initParams.connectionPoint);
+        // } else {
+        //     throw new KresmerException(`Invalid connection point initialization params: ${this.initParams}`);
         }//if
         return this;
     }//init
@@ -368,7 +372,8 @@ export interface LinkVertexInitParams  {
     conn?: {
         component: string, 
         connectionPoint: string
-    }
+    },
+    connectionPoint?: ConnectionPointProxy,
 }//LinkVertexInitParams
 
 /** Extended Link Vertex position (includes its connection if it is connected) */

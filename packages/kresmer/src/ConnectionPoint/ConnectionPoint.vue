@@ -46,7 +46,9 @@
 
     function onRightClick()
     {
-        proxy.component.kresmer.emit("connection-point-right-click", proxy);
+        if (component.kresmer.isEditable) {
+            proxy.component.kresmer.emit("connection-point-right-click", proxy);
+        }//if
     }//onRightClick
 
     watch(proxy.posUpdateTrigger, () => {nextTick(updatePos)});
