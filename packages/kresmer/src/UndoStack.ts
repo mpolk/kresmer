@@ -6,9 +6,12 @@
  *         The stack for the editor operations undo/redo
 \**************************************************************************/
 
+import Kresmer from "./Kresmer";
 import KresmerException from "./KresmerException";
 
 export default class UndoStack {
+
+    constructor (private kresmer: Kresmer) {}
 
     private stack: EditorOperation[] = [];
     private stackPointer = -1;
@@ -56,6 +59,7 @@ export default class UndoStack {
             this.purityMark--;
             this._wasTruncated = true;
         }//if
+        this.kresmer.emit("got-dirty", true);
     }//_commit
 
     /** Clears the reference to the currently started operation */
@@ -80,6 +84,7 @@ export default class UndoStack {
     {
         if (this.canUndo) {
             this.stack[this.stackPointer--].undo();
+            this.kresmer.emit("got-dirty", this.isDirty);
         }//if
     }//undo
 
@@ -94,6 +99,7 @@ export default class UndoStack {
     {
         if (this.stackPointer < this.stack.length - 1) {
             this.stack[++this.stackPointer].redo();
+            this.kresmer.emit("got-dirty", this.isDirty);
         }//if
     }//redo
 
@@ -101,9 +107,11 @@ export default class UndoStack {
     reset()
     {
         this.stackPointer = -1;
+        this.purityMark = 0;
         this.stack.splice(0, this.stack.length);
         this.operationInProgress = undefined;
         this._wasTruncated = false;
+        this.kresmer.emit("got-dirty", false);
     }//reset
 
     /** Shows  whether the stack was truncated because of undo overlimit */
@@ -124,6 +132,7 @@ export default class UndoStack {
         } else {
             this.purityMark = this.stackPointer + 1;
         }//if
+        this.kresmer.emit("got-dirty", newValue);
     }//set isDirty
 }//UndoStack
 

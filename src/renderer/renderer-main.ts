@@ -47,6 +47,7 @@ const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#
     InstanceType<typeof LinkClassSelectionDialog>;
 
 kresmer
+    .on("got-dirty", updateWindowTitle)
     .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
     .on("drawing-mouse-leave", () => hints.reset())
     .on("mode-reset", () => hints.reset())
@@ -63,8 +64,6 @@ kresmer
     .on("component-selected", onComponentSelected)
     .on("component-right-click", onComponentRightClick)
     .on("component-double-click", onComponentDoubleClick)
-    .on("link-added", onLinkAdded)
-    .on("link-deleted", onLinkDeleted)
     .on("link-selected", onLinkSelected)
     .on("link-right-click", onLinkRightClick)
     .on("link-double-click", onLinkDoubleClick)
@@ -84,8 +83,8 @@ appCommandExecutor
     .on("load-library", loadLibrary)
     .on("load-drawing", loadDrawing)
     .on("save-drawing", saveDrawing)
-    .on("undo", () => {kresmer.undo(); updateWindowTitle();})
-    .on("redo", () => {kresmer.redo(); updateWindowTitle();})
+    .on("undo", () => {kresmer.undo()})
+    .on("redo", () => {kresmer.redo()})
     .on("edit-component-properties", editComponentProperties)
     .on("transform-component", transformComponent)
     .on("edit-link-properties", editLinkProperties)
@@ -162,7 +161,6 @@ function saveDrawing()
 {
     const dwgData = kresmer.saveDrawing();
     window.electronAPI.completeDrawingSaving(dwgData);
-    updateWindowTitle();
 }//saveDrawing
 
 export function updateWindowTitle()
@@ -241,20 +239,7 @@ function onComponentSelected(component: NetworkComponent, isSelected: boolean)
 function onComponentMutated(_controller: NetworkComponentController)
 {
     hints.pop();
-    updateWindowTitle();
 }//onComponentMutated
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onLinkAdded(link: NetworkLink)
-{
-    updateWindowTitle();
-}//onLinkAdded
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onLinkDeleted(link: NetworkLink)
-{
-    updateWindowTitle();
-}//onLinkDeleted
 
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
 {
@@ -302,25 +287,21 @@ function indicateLinkVertexMove(vertex: LinkVertex)
 function onLinkVertexMutated(_vertex: LinkVertex)
 {
     hints.pop();
-    updateWindowTitle();
 }//onLinkVertexMutated
 
 function addLinkVertex(linkID: number, segmentNumber: number, mousePos: Position)
 {
     kresmer.addLinkVertex(linkID, segmentNumber, mousePos);
-    updateWindowTitle();
 }//addLinkVertex
 
 function deleteLinkVertex(linkID: number, vertexNumber: number)
 {
     kresmer.deleteLinkVertex(linkID, vertexNumber);
-    updateWindowTitle();
 }//deleteLinkVertex
 
 function alignLinkVertex(linkID: number, vertexNumber: number)
 {
     kresmer.alignLinkVertex(linkID, vertexNumber);
-    updateWindowTitle();
 }//alignLinkVertex
 
 function onConnectionPointRightClick(connectionPoint: ConnectionPointProxy)

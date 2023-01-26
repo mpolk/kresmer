@@ -18,6 +18,7 @@ import {toCamelCase} from "./Utils";
 
 /** A list of Kresmer events along with correponding handler definitions */
 class KresmerEventFormats  {
+    "got-dirty":                        (isDirty: boolean) => void;
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
@@ -112,7 +113,14 @@ export default class KresmerEventHooks {
 
 
     /**
-     * Is called when the global drawing scale changed occurs
+     * Is called when the dirtiness state change occurs
+     * @param isDirty A new dirtiness state
+     */
+    @overridableHandler("got-dirty")
+    protected onGotDirty(isDirty: boolean) {}
+
+    /**
+     * Is called when the global drawing scale change occurs
      * @param newScale A new scale value
      */
     @overridableHandler("drawing-scale")

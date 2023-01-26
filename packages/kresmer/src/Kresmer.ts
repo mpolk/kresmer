@@ -106,7 +106,7 @@ export default class Kresmer extends KresmerEventHooks {
     readonly mountPoint: HTMLElement;
 
     /** The stack for undoing editor operations */
-    readonly undoStack = new UndoStack();
+    readonly undoStack = new UndoStack(this);
     public undo() {this.undoStack.undo()}
     public redo() {this.undoStack.redo()}
 
@@ -443,6 +443,7 @@ export default class Kresmer extends KresmerEventHooks {
             }//if
         }//for
 
+        this.undoStack.reset();
         switch (mergeOptions) {
             case undefined: case "erase-previous-content":
                 this.drawingName = drawingName!;
@@ -455,7 +456,6 @@ export default class Kresmer extends KresmerEventHooks {
                 this.isDirty = true;
         }//switch
 
-        this.undoStack.reset();
         return !wereErrors;
     }//loadDrawing
 
