@@ -258,6 +258,9 @@
         
         &.dragged {
             outline: thin red solid;
+            .network-component-slot {
+                cursor: move !important;
+            }
         }
         
         &.beingTransformed .network-component-slot {
