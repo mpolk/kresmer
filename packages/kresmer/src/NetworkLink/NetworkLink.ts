@@ -110,6 +110,7 @@ export default class NetworkLink extends NetworkElement {
         const pos = this.kresmer.applyScreenCTM(mousePos);
         const vertex = new LinkVertex(this, vertexNumber, {pos}).init();
         this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
+        return vertex;
     }//addVertex
 
 
@@ -119,10 +120,11 @@ export default class NetworkLink extends NetworkElement {
         }//if
         if (this.vertices.length <= 2) {
             console.info(`Attempt to delete the next-to-last vertex (${this.id}, ${vertexNumber})`);
-            return false;
+            return null;
         }//if
-        this.kresmer.undoStack.execAndCommit(new DeleteVertexOp(this.vertices[vertexNumber]));
-        return true;
+        const vertex = this.vertices[vertexNumber];
+        this.kresmer.undoStack.execAndCommit(new DeleteVertexOp(vertex));
+        return vertex;
     }//deleteVertex
 
 

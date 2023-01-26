@@ -670,7 +670,9 @@ export default class Kresmer extends KresmerEventHooks {
         if (!link) {
             throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
         }//if
-        return link.addVertex(segmentNumber, mousePos);
+        const vertex = link.addVertex(segmentNumber, mousePos);
+        this.emit("link-vertex-added", vertex);
+        return vertex;
     }//addLinkVertex
 
     /**
@@ -685,7 +687,11 @@ export default class Kresmer extends KresmerEventHooks {
         if (!link) {
             throw new KresmerException(`Attempt to aling a vertex of the non-existent link (id=${linkID})`);
         }//if
-        return link.alignVertex(vertexNumber);
+        const vertex = link.alignVertex(vertexNumber);
+        if (vertex) {
+            this.emit("link-vertex-moved", vertex);
+        }//if
+        return vertex;
     }//alignLinkVertex
 
     /**
@@ -700,7 +706,11 @@ export default class Kresmer extends KresmerEventHooks {
         if (!link) {
             throw new KresmerException(`Attempt to delete a vertex from the non-existent link (id=${linkID})`);
         }//if
-        return link.deleteVertex(vertexNumber);
+        const vertex = link.deleteVertex(vertexNumber);
+        if (vertex) {
+            this.emit("link-vertex-deleted", vertex);
+        }//if
+        return vertex;
     }//deleteLinkVertex
 
     /**

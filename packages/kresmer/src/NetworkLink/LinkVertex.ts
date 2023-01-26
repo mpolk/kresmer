@@ -236,11 +236,11 @@ export default class LinkVertex {
     {
         if (this._isConnected) {
             console.warn(`Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`);
-            return;
+            return null;
         }//if
         if (this.isEndpoint) {
             console.warn(`Cannot align an endpoint (${this.link.name}:${this.vertexNumber})`);
-            return;
+            return null;
         }//if
         const predecessor = this.link.vertices[this.vertexNumber - 1];
         const prePos = predecessor.coords;
@@ -278,10 +278,10 @@ export default class LinkVertex {
             this.pinUp(newPos!);
             this.link.kresmer.undoStack.commitOperation();
             this.link.kresmer.emit("link-vertex-moved", this);
-            return true;
+            return this;
         } else {
             this.link.kresmer.undoStack.cancelOperation();
-            return false;
+            return null;
         }//if
     }//align
 
