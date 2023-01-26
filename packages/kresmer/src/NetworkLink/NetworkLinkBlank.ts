@@ -61,4 +61,10 @@ export default class NetworkLinkBlank {
         }//for
     }//onMouseUp
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public onDoubleClick(event: MouseEvent)
+    {
+        this.kresmer._completeLinkCreation();
+    }//onDoubleClick
+
 }//NetworkLinkBlank

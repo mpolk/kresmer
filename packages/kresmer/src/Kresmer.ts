@@ -766,13 +766,13 @@ export default class Kresmer extends KresmerEventHooks {
      * Completes the new link creation (for private use only)
      * @param toConnectionPoint The connection point, which will be the end of the new link
      */
-    public _completeLinkCreation(toConnectionPoint: ConnectionPointProxy)
+    public _completeLinkCreation(toConnectionPoint?: ConnectionPointProxy)
     {
+        const to = toConnectionPoint ? 
+            {connectionPoint: toConnectionPoint} :
+            {pos: {...this.newLinkBlank!.end}};
         const newLink = new NetworkLink(this, this.newLinkBlank!._class,
-            {
-                from: {connectionPoint: this.newLinkBlank!.start},
-                to: {connectionPoint: toConnectionPoint},
-            });
+            {from: {connectionPoint: this.newLinkBlank!.start}, to});
         newLink.initVertices();
         this.undoStack.execAndCommit(new AddLinkOp(newLink));
         this.newLinkBlank = undefined;

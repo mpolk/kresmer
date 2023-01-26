@@ -30,6 +30,11 @@
     {
         props.model.onMouseUp(event);
     }//onMouseUp
+
+    function onDoubleClick(event: MouseEvent)
+    {
+        props.model.onDoubleClick(event);
+    }//onDoubleClick
 </script>
 
 <template>
@@ -44,12 +49,14 @@
         @mousemove.self="onMouseMove($event)"
         @mousedown="onMouseDown($event)"
         @mouseup="onMouseUp($event)"
+        @dblclick="onDoubleClick($event)"
         />
     <circle class="header-center"
         :cx="model.end.x" :cy="model.end.y" r="4"
         @mousemove.self="onMouseMove($event)"
         @mousedown="onMouseDown($event)"
         @mouseup="onMouseUp($event)"
+        @dblclick="onDoubleClick($event)"
         />
 </template>
 
