@@ -85,6 +85,7 @@ appCommandExecutor
     .on("save-drawing", saveDrawing)
     .on("undo", () => {kresmer.undo()})
     .on("redo", () => {kresmer.redo()})
+    .on("delete-component", deleteComponent)
     .on("edit-component-properties", editComponentProperties)
     .on("transform-component", transformComponent)
     .on("edit-link-properties", editLinkProperties)
@@ -180,6 +181,11 @@ function onComponentDoubleClick(controller: NetworkComponentController)
 {
     vueComponentPropsSidebar.show(controller.component);
 }//onComponentDoubleClick
+
+function deleteComponent(componentID: number)
+{
+    kresmer.edopDeleteComponent(componentID);
+}//deleteComponent
 
 function editComponentProperties(componentID: number)
 {

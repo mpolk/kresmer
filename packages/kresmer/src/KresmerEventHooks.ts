@@ -22,6 +22,8 @@ class KresmerEventFormats  {
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
+    "component-added":                  (controller: NetworkComponentController) => void;
+    "component-deleted":                (controller: NetworkComponentController) => void;
     "component-selected":               (component: NetworkComponent, isSelected: boolean) => void;
     "component-mouse-enter":            (controller: NetworkComponentController) => void;
     "component-mouse-leave":            (controller: NetworkComponentController) => void;
@@ -141,8 +143,22 @@ export default class KresmerEventHooks {
     protected onDrawingMouseLeave() {}
 
     /**
+     * Is called when a network component is added to the drawing
+     * @param controller The controller of the component been added
+     */
+    @overridableHandler("component-added")
+    protected onComponentAdded(controller: NetworkComponentController) {}
+
+    /**
+     * Is called when a network component is deleted
+     * @param controller The controller of the component been deleted
+     */
+    @overridableHandler("component-deleted")
+    protected onComponentDeleted(controller: NetworkComponentController) {}
+
+    /**
      * Is called when a network component is selected or deselected
-     * @param controller The controller of the component
+     * @param controller The component been (de-)selected
      */
     @overridableHandler("component-selected")
     protected onComponentSelected(component: NetworkComponent, isSelected: boolean) {}

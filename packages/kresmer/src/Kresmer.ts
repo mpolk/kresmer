@@ -23,7 +23,7 @@ import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapt
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, DeleteLinkOp } from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
-import UndoStack from "./UndoStack";
+import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
@@ -333,6 +333,30 @@ export default class Kresmer extends KresmerEventHooks {
         this.componentsByName.set(controller.component.name, controller.component.id);
         return this;
     }//addPositionedNetworkComponent
+
+    /**
+     * Deletes the specified component from the drawing
+     * @param controller The controller of the component to delete
+     */
+    public deleteComponent(controller: NetworkComponentController)
+    {
+        this.componentsByName.delete(controller.component.name);
+        this.networkComponents.delete(controller.component.id);
+        this.emit("component-deleted", controller);
+    }//deleteComponent
+
+    /**
+     * Deletes the specified component from the drawing using an undoable editor operation
+     * @param componentID The ID of the component to delete
+     */
+    public edopDeleteComponent(componentID: number)
+    {
+        const component = this.networkComponents.get(componentID);
+        if (!component) {
+            throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
+        }//if
+        this.undoStack.execAndCommit(new DeleteComponentOp(this, component));
+    }//edopDeleteComponent
  
     /**
      * Links currently placed to the drawing
@@ -341,7 +365,7 @@ export default class Kresmer extends KresmerEventHooks {
      protected readonly linksByName = new Map<string, number>();
 
     /**
-     * Adds a new Link to the content of the drawing
+     * Adds a new Link to the drawing
      * @param link A Link to add
      */
      public addLink(link: NetworkLink)
@@ -829,6 +853,26 @@ export type DrawingMergeOptions =
     "merge-duplicates" |
     "rename-duplicates" |
     "ignore-duplicates";
+
+
+// Editor operations
+class DeleteComponentOp extends EditorOperation {
+
+    constructor(private kresmer: Kresmer, private controller: NetworkComponentController) 
+    {
+        super();
+    }//ctor
+
+    override exec(): void {
+        this.kresmer.deleteComponent(this.controller);
+    }//exec
+
+    override undo(): void {
+        this.kresmer.addPositionedNetworkComponent(this.controller);
+    }//undo
+
+}//DeleteComponentOp
+
 
 // Re-export child classes to API
 export {default as NetworkElement} from "./NetworkElement";
