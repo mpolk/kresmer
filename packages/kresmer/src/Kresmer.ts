@@ -340,6 +340,14 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public deleteComponent(controller: NetworkComponentController)
     {
+        this.links.forEach(link => {
+            link.vertices.forEach(vertex => {
+                if (vertex.isConnected && vertex.conn?.component === controller.component) {
+                    vertex.detach();
+                }//if
+            })//vertices
+        })//links
+
         this.componentsByName.delete(controller.component.name);
         this.networkComponents.delete(controller.component.id);
         this.emit("component-deleted", controller);

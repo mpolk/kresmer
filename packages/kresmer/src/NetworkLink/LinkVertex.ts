@@ -58,7 +58,7 @@ export default class LinkVertex {
         if (this._isPinnedUp) {
             return `<vertex x="${this.pos!.x}" y="${this.pos!.y}"/>`;
         } else if (this._isConnected) {
-            const conn = `${this.initParams!.conn!.component}:${this.initParams!.conn!.connectionPoint}`;
+            const conn = `${this.conn!.component.name}:${this.conn!.name}`;
             return `<vertex connect="${conn}"/>`;
         } else {
             return `<vertex/>`;
@@ -105,6 +105,7 @@ export default class LinkVertex {
         this.pos = {...pos};
         this._isPinnedUp = true;
         this._isConnected = false;
+        this.conn = undefined;
     }//pinUp
 
     connect(connectionPoint: ConnectionPointProxy)
@@ -112,6 +113,7 @@ export default class LinkVertex {
         this.conn = connectionPoint;
         this._isPinnedUp = false;
         this._isConnected = true;
+        this.pos = undefined;
     }//connect
 
     get coords(): Position
@@ -135,12 +137,9 @@ export default class LinkVertex {
         }
     }//get extPos
 
-    set extPos(extPos: LinkVertexExtPos)
+    set extPos(newPos: LinkVertexExtPos)
     {
-        this.pos = extPos.pos;
-        this.conn = extPos.conn;
-        this._isPinnedUp = extPos.isPinnedUp;
-        this._isConnected = extPos.isConnected;
+        ({pos: this.pos, conn: this.conn, isPinnedUp: this._isPinnedUp, isConnected: this._isConnected} = newPos);
     }//set extPos
 
 
@@ -202,10 +201,6 @@ export default class LinkVertex {
                     this._isPinnedUp = false;
                     if (connectionPoint !== this.conn) {
                         this.conn = connectionPoint;
-                        if (!this.initParams) {
-                            this.initParams = {};
-                        }//if
-                        this.initParams.conn = {component: componentName, connectionPoint: connectionPointName};
                     }//if
                 } else {
                     console.error('Reference to undefined connection point "%s"', connectionPointData);
@@ -364,6 +359,16 @@ export default class LinkVertex {
         this.showBlinker = true;
         setTimeout(() => {this.showBlinker = false}, 500);
     }//blink
+
+
+    public detach()
+    {
+        if (this._isConnected) {
+            this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
+            this.pinUp(this.coords);
+            this.link.kresmer.undoStack.commitOperation();
+        }//if
+    }//detach
 }//LinkVertex
 
 
