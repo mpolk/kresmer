@@ -171,7 +171,7 @@ export default class KresmerEventHooks {
     protected onComponentMouseEnter(controller: NetworkComponentController) {}
 
      /**
-      * Is called when the mouse cursor leaves a network component visible area
+      * Is called when the mouse cursor leaves from the network component visible area
       * @param controller The controller of the component
       */
     @overridableHandler("component-mouse-leave")
