@@ -6,6 +6,12 @@
  *   A sidebar for displaying and editing network elements properties
 <*************************************************************************** -->
 
+<script lang="ts">
+    export default {
+        name: "ElementPropsSidebar",
+    }
+</script>
+
 <script setup lang="ts">
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';

@@ -6,6 +6,12 @@
  *     A dialog for specifying drawing merge options upon its loading
 <*************************************************************************** -->
 
+<script lang="ts">
+    export default {
+        name: "DrawingMergeDialog",
+    }
+</script>
+
 <script setup lang="ts">
     import { onMounted, ref } from 'vue';
     import {Modal} from 'bootstrap';

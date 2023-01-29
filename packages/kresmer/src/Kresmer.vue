@@ -20,6 +20,7 @@
     import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
 
     export default {
+        name: "Kresmer",
         components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, 
                       NetworkLinkVue, NetworkLinkBlankVue },
     }

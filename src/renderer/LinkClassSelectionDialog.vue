@@ -6,6 +6,12 @@
  *      A dialog for link class selection wnen creating a new link
 <*************************************************************************** -->
 
+<script lang="ts">
+    export default {
+        name: "LinkClassSelectionDialog",
+    }
+</script>
+
 <script setup lang="ts">
     import { onMounted, ref } from 'vue';
     import { Modal } from 'bootstrap';

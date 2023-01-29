@@ -5,6 +5,13 @@
  * --------------------------------------------------------------------------
  * The main window status bar
 <*************************************************************************** -->
+
+<script lang="ts">
+    export default {
+        name: "StatusBar",
+    }
+</script>
+
 <script setup lang="ts">
     import { computed, onMounted, PropType, ref } from 'vue';
     import {StatusBarDisplayData} from './renderer-main';
