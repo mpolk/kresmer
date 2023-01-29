@@ -25,14 +25,11 @@ export default class LinkVertex {
 
     vertexNumber: number;
     initParams?: LinkVertexInitParams;
-    private _isPinnedUp = false;
-    get isPinnedUp() {return this._isPinnedUp}
-    private _isConnected = false;
-    get isConnected() {return this._isConnected}
-    private wasConnected = false;
+    get isConnected() {return Boolean(this.conn);}
 
     pos?: Position;
     conn?: ConnectionPointProxy; 
+    private savedConn?: ConnectionPointProxy;
     link: NetworkLink;
 
     public isGoingToBeDragged = false;
@@ -44,10 +41,10 @@ export default class LinkVertex {
 
     toString()
     {
-        if (this._isConnected) {
-            return `${this.initParams?.conn?.component}:${this.initParams?.conn?.connectionPoint}`;
-        } else if (this._isPinnedUp) {
-            return `(${this.pos!.x.toFixed()}, ${this.pos!.y.toFixed()})`
+        if (this.conn) {
+            return `${this.conn.component.name}:${this.conn.name}`;
+        } else if (this.pos) {
+            return `(${this.pos.x.toFixed()}, ${this.pos.y.toFixed()})`
         } else {
             return "()";
         }//if
@@ -55,11 +52,10 @@ export default class LinkVertex {
 
     public toXML()
     {
-        if (this._isPinnedUp) {
-            return `<vertex x="${this.pos!.x}" y="${this.pos!.y}"/>`;
-        } else if (this._isConnected) {
-            const conn = `${this.conn!.component.name}:${this.conn!.name}`;
-            return `<vertex connect="${conn}"/>`;
+        if (this.conn) {
+            return `<vertex connect="${this.conn.component.name}:${this.conn.name}"/>`;
+        } else if (this.pos) {
+            return `<vertex x="${this.pos.x}" y="${this.pos.y}"/>`;
         } else {
             return `<vertex/>`;
         }//if
@@ -97,31 +93,28 @@ export default class LinkVertex {
         // } else {
         //     throw new KresmerException(`Invalid connection point initialization params: ${this.initParams}`);
         }//if
+        this.initParams = undefined;
         return this;
     }//init
 
     pinUp(pos: Position)
     {
         this.pos = {...pos};
-        this._isPinnedUp = true;
-        this._isConnected = false;
         this.conn = undefined;
     }//pinUp
 
     connect(connectionPoint: ConnectionPointProxy)
     {
         this.conn = connectionPoint;
-        this._isPinnedUp = false;
-        this._isConnected = true;
         this.pos = undefined;
     }//connect
 
     get coords(): Position
     {
-        if (this._isPinnedUp) {
-            return this.pos!;
-        } else if (this._isConnected) {
-            return this.conn!.coords;
+        if (this.conn) {
+            return this.conn.coords;
+        } else if (this.pos) {
+            return this.pos;
         } else {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
         }//if
@@ -132,14 +125,13 @@ export default class LinkVertex {
         return {
             pos: this.pos,
             conn: this.conn,
-            isPinnedUp: this._isPinnedUp,
-            isConnected: this._isConnected,
         }
     }//get extPos
 
     set extPos(newPos: LinkVertexExtPos)
     {
-        ({pos: this.pos, conn: this.conn, isPinnedUp: this._isPinnedUp, isConnected: this._isConnected} = newPos);
+        this.pos = newPos.pos;
+        this.conn = newPos.conn;
     }//set extPos
 
 
@@ -165,9 +157,8 @@ export default class LinkVertex {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
-            this._isPinnedUp = true;
-            this.wasConnected = this._isConnected;
-            this._isConnected = false;
+            this.savedConn = this.conn;
+            this.conn = undefined;
         } else if (!this.isDragged) {
             return false;
         }//if
@@ -197,10 +188,8 @@ export default class LinkVertex {
                 const component = this.link.kresmer.getComponentByName(componentName);
                 const connectionPoint = component?.connectionPoints[connectionPointName];
                 if (connectionPoint) {
-                    this._isConnected = true;
-                    this._isPinnedUp = false;
-                    if (connectionPoint !== this.conn) {
-                        this.conn = connectionPoint;
+                    if (connectionPoint !== this.savedConn) {
+                        this.connect(connectionPoint);
                     }//if
                 } else {
                     console.error('Reference to undefined connection point "%s"', connectionPointData);
@@ -212,9 +201,9 @@ export default class LinkVertex {
         }//for
 
         this.link.kresmer.undoStack.commitOperation();
-        if (this.wasConnected) {
+        if (this.savedConn) {
             this.link.kresmer.emit("link-vertex-disconnected", this, this.conn!);
-            this.conn = undefined;
+            this.savedConn = undefined;
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
         return true;
@@ -229,7 +218,7 @@ export default class LinkVertex {
 
     public align()
     {
-        if (this._isConnected) {
+        if (this.isConnected) {
             console.warn(`Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`);
             return null;
         }//if
@@ -244,9 +233,9 @@ export default class LinkVertex {
 
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
         const newPos = 
-            (predecessor._isConnected && predecessor.isEndpoint && (!successor._isConnected || !successor.isEndpoint)) ?
+            (predecessor.isConnected && predecessor.isEndpoint && (!successor.isConnected || !successor.isEndpoint)) ?
             this.alignBetweenConnectionAndPosition(predecessor, successor) :
-            (successor._isConnected && successor.isEndpoint && (!predecessor._isConnected || !predecessor.isEndpoint)) ?
+            (successor.isConnected && successor.isEndpoint && (!predecessor.isConnected || !predecessor.isEndpoint)) ?
                 this.alignBetweenConnectionAndPosition(successor, predecessor) :
                 this.alignBetweenTwoPositions(predecessor, successor);
 
@@ -361,13 +350,19 @@ export default class LinkVertex {
     }//blink
 
 
+    public connectionPointToAttachTo?: ConnectionPointProxy;
+    public attach(connectionPoint: ConnectionPointProxy)
+    {
+        this.connectionPointToAttachTo = connectionPoint;
+    }//attach
+
+
     public detach()
     {
-        if (this._isConnected) {
-            this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
-            this.pinUp(this.coords);
-            this.link.kresmer.undoStack.commitOperation();
+        if (this.isConnected) {
+            this.pinUp({...this.coords});
         }//if
+        return this;
     }//detach
 }//LinkVertex
 
@@ -386,20 +381,16 @@ export interface LinkVertexInitParams  {
 interface LinkVertexExtPos {
     pos?: Position;
     conn?: ConnectionPointProxy; 
-    isPinnedUp: boolean,
-    isConnected: boolean,
 }//LinkVertexExtPos
 
 // Editor operations
 class VertexMoveOp extends EditorOperation {
-    constructor(vertex: LinkVertex)
+    constructor(private vertex: LinkVertex)
     {
         super();
-        this.vertex = vertex;
         this.oldPos = vertex.extPos;
     }//ctor
 
-    private vertex: LinkVertex;
     private oldPos: LinkVertexExtPos;
     private newPos?: LinkVertexExtPos;
 

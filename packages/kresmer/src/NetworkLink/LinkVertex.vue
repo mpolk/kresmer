@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType, ref } from 'vue';
+    import { PropType, ref, watch } from 'vue';
     import LinkVertex from './LinkVertex';
 
     const props = defineProps({
@@ -62,6 +62,15 @@
     {
         props.model.align();
     }//onDoubleClick
+
+    watch(
+        () => props.model.connectionPointToAttachTo,
+        (connectionPointToAttachTo) => {
+            if (connectionPointToAttachTo) {
+                props.model.connect(connectionPointToAttachTo);
+                props.model,connectionPointToAttachTo = undefined;
+            }//if
+        });
 </script>
 
 <template>

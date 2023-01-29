@@ -153,10 +153,10 @@ export default class NetworkLink extends NetworkElement {
         const attrs = new Map<string, string>();
         attrs.set("class", this._class.name);
         this.isNamed && attrs.set("name", this.name);
-        (this.vertices[0].isConnected || this.vertices[0].isPinnedUp) && 
+        (this.vertices[0].isConnected || this.vertices[0].pos) && 
             attrs.set("from", this.vertices[0].toString());
         const n = this.vertices.length - 1;
-        (this.vertices[n].isConnected || this.vertices[n].isPinnedUp) && 
+        (this.vertices[n].isConnected || this.vertices[n].pos) && 
             attrs.set("to", this.vertices[n].toString());
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
