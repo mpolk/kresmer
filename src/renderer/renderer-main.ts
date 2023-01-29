@@ -8,6 +8,7 @@
 
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
+import devtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
@@ -20,6 +21,11 @@ import Kresmer, {
 import { AppCommandExecutor } from './AppCommands';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
+
+if (process.env.NODE_ENV === 'development') {
+    devtools.connect(/* host, port */)
+}//if
+  
 
 export const kresmer = new Kresmer('#kresmer');
 
