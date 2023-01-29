@@ -11,7 +11,7 @@ import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
-import NetworkComponentController from "./NetworkComponent/NetworkComponentController";
+import NetworkComponentController, { ComponentDeleteOp } from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
@@ -23,7 +23,7 @@ import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapt
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, DeleteLinkOp } from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
-import UndoStack, { EditorOperation } from "./UndoStack";
+import UndoStack from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
@@ -359,17 +359,17 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public edopDeleteComponent(componentID: number)
     {
-        const component = this.networkComponents.get(componentID);
-        if (!component) {
+        const controller = this.networkComponents.get(componentID);
+        if (!controller) {
             throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
         }//if
-        this.undoStack.execAndCommit(new DeleteComponentOp(this, component));
+        this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
     }//edopDeleteComponent
  
     /**
      * Links currently placed to the drawing
      */
-     protected readonly links = reactive(new Map<number, NetworkLink>());
+     readonly links = reactive(new Map<number, NetworkLink>());
      protected readonly linksByName = new Map<string, number>();
 
     /**
@@ -861,25 +861,6 @@ export type DrawingMergeOptions =
     "merge-duplicates" |
     "rename-duplicates" |
     "ignore-duplicates";
-
-
-// Editor operations
-class DeleteComponentOp extends EditorOperation {
-
-    constructor(private kresmer: Kresmer, private controller: NetworkComponentController) 
-    {
-        super();
-    }//ctor
-
-    override exec(): void {
-        this.kresmer.deleteComponent(this.controller);
-    }//exec
-
-    override undo(): void {
-        this.kresmer.addPositionedNetworkComponent(this.controller);
-    }//undo
-
-}//DeleteComponentOp
 
 
 // Re-export child classes to API

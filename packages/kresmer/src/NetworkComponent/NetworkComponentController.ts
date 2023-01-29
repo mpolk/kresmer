@@ -14,6 +14,9 @@ import { Position, Transform, ITransform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
 import { EditorOperation } from "../UndoStack";
 import { indent } from "../Utils";
+import LinkVertex from "../NetworkLink/LinkVertex";
+import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
+import { nextTick } from "vue";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
@@ -316,3 +319,37 @@ class ComponentTransformOp extends EditorOperation {
         this.controller.updateConnectionPoints();
     }//undo
 }//ComponentTransformOp
+
+
+export class ComponentDeleteOp extends EditorOperation {
+
+    constructor(private controller: NetworkComponentController) 
+    {
+        super();
+    }//ctor
+
+    private detachedVertices = new Map<LinkVertex, ConnectionPointProxy>();
+
+    override exec(): void {
+        this.controller.kresmer.links.forEach(link => {
+            link.vertices.forEach(vertex => {
+                if (vertex.isConnected && vertex.conn!.component === this.controller.component) {
+                    this.detachedVertices.set(vertex, vertex.conn!);
+                    vertex.detach();
+                }//if
+            })//vertices
+        })//links
+
+        this.controller.kresmer.deleteComponent(this.controller);
+    }//exec
+
+    override undo(): void {
+        this.controller.kresmer.addPositionedNetworkComponent(this.controller);
+        nextTick(() => {
+            this.controller.updateConnectionPoints();
+            this.detachedVertices.forEach((connectionPoint, vertex) => {vertex.attach(connectionPoint)});
+        });
+    }//undo
+
+}//ComponentDeleteOp
+
