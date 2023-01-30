@@ -347,7 +347,7 @@ export class ComponentDeleteOp extends EditorOperation {
         this.controller.kresmer.addPositionedNetworkComponent(this.controller);
         nextTick(() => {
             this.controller.updateConnectionPoints();
-            this.detachedVertices.forEach((connectionPoint, vertex) => {vertex.attach(connectionPoint)});
+            this.detachedVertices.forEach((connectionPoint, vertex) => {vertex.connect(connectionPoint)});
         });
     }//undo
 

@@ -188,9 +188,7 @@ export default class LinkVertex {
                 const component = this.link.kresmer.getComponentByName(componentName);
                 const connectionPoint = component?.connectionPoints[connectionPointName];
                 if (connectionPoint) {
-                    if (connectionPoint !== this.savedConn) {
-                        this.connect(connectionPoint);
-                    }//if
+                    this.connect(connectionPoint);
                 } else {
                     console.error('Reference to undefined connection point "%s"', connectionPointData);
                 }//if
@@ -202,7 +200,9 @@ export default class LinkVertex {
 
         this.link.kresmer.undoStack.commitOperation();
         if (this.savedConn) {
-            this.link.kresmer.emit("link-vertex-disconnected", this, this.conn!);
+            if (this.conn !== this. savedConn) {
+                this.link.kresmer.emit("link-vertex-disconnected", this, this.conn!);
+            }//if
             this.savedConn = undefined;
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
@@ -348,13 +348,6 @@ export default class LinkVertex {
         this.showBlinker = true;
         setTimeout(() => {this.showBlinker = false}, 500);
     }//blink
-
-
-    public connectionPointToAttachTo?: ConnectionPointProxy;
-    public attach(connectionPoint: ConnectionPointProxy)
-    {
-        this.connectionPointToAttachTo = connectionPoint;
-    }//attach
 
 
     public detach()

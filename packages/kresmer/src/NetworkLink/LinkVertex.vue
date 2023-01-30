@@ -63,14 +63,6 @@
         props.model.align();
     }//onDoubleClick
 
-    watch(
-        () => props.model.connectionPointToAttachTo,
-        (connectionPointToAttachTo) => {
-            if (connectionPointToAttachTo) {
-                props.model.connect(connectionPointToAttachTo);
-                props.model,connectionPointToAttachTo = undefined;
-            }//if
-        });
 </script>
 
 <template>
