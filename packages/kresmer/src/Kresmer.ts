@@ -342,7 +342,7 @@ export default class Kresmer extends KresmerEventHooks {
     {
         this.links.forEach(link => {
             link.vertices.forEach(vertex => {
-                if (vertex.isConnected && vertex.conn?.component === controller.component) {
+                if (vertex.isConnected && vertex.anchor.conn?.component === controller.component) {
                     vertex.detach();
                 }//if
             })//vertices

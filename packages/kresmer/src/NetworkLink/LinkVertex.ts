@@ -120,19 +120,19 @@ export default class LinkVertex {
         }//if
     }//endPointCoords
 
-    get extPos(): LinkVertexExtPos
+    get anchor(): LinkVertexAnchor
     {
         return {
             pos: this.pos,
             conn: this.conn,
         }
-    }//get extPos
+    }//get anchor
 
-    set extPos(newPos: LinkVertexExtPos)
+    set anchor(newPos: LinkVertexAnchor)
     {
         this.pos = newPos.pos;
         this.conn = newPos.conn;
-    }//set extPos
+    }//set anchor
 
 
     private getMousePosition(event: MouseEvent) {
@@ -371,32 +371,32 @@ export interface LinkVertexInitParams  {
 }//LinkVertexInitParams
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
-interface LinkVertexExtPos {
+interface LinkVertexAnchor {
     pos?: Position;
     conn?: ConnectionPointProxy; 
-}//LinkVertexExtPos
+}//LinkVertexExtAnchor
 
 // Editor operations
 class VertexMoveOp extends EditorOperation {
     constructor(private vertex: LinkVertex)
     {
         super();
-        this.oldPos = vertex.extPos;
+        this.oldAnchor = vertex.anchor;
     }//ctor
 
-    private oldPos: LinkVertexExtPos;
-    private newPos?: LinkVertexExtPos;
+    private oldAnchor: LinkVertexAnchor;
+    private newAnchor?: LinkVertexAnchor;
 
     override onCommit()
     {
-        this.newPos = this.vertex.extPos;
+        this.newAnchor = this.vertex.anchor;
     }//onCommit
 
     override undo(): void {
-        this.vertex.extPos = this.oldPos;
+        this.vertex.anchor = this.oldAnchor;
     }//undo
 
     override exec(): void {
-        this.vertex.extPos = this.newPos!;
+        this.vertex.anchor = this.newAnchor!;
     }//exec
 }//VertexMoveOp

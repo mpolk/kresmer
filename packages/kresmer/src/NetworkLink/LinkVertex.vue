@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType, ref, watch } from 'vue';
+    import { PropType, ref } from 'vue';
     import LinkVertex from './LinkVertex';
 
     const props = defineProps({
@@ -62,7 +62,7 @@
     {
         props.model.align();
     }//onDoubleClick
-
+    
 </script>
 
 <template>

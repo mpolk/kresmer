@@ -51,8 +51,10 @@ export default class NetworkLink extends NetworkElement {
     vertices: LinkVertex[] = [];
 
     readonly initVertices = () => {
-        this.vertices.forEach(vertex => vertex.init());
-        this.verticesInitialized = true;
+        if (!this.verticesInitialized) {
+            this.vertices.forEach(vertex => vertex.init());
+            this.verticesInitialized = true;
+        }//if
     }//initVertices
 
     /** A symbolic key for the component instance injection */
@@ -153,10 +155,10 @@ export default class NetworkLink extends NetworkElement {
         const attrs = new Map<string, string>();
         attrs.set("class", this._class.name);
         this.isNamed && attrs.set("name", this.name);
-        (this.vertices[0].isConnected || this.vertices[0].pos) && 
+        (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
             attrs.set("from", this.vertices[0].toString());
         const n = this.vertices.length - 1;
-        (this.vertices[n].isConnected || this.vertices[n].pos) && 
+        (this.vertices[n].isConnected || this.vertices[n].anchor.pos) && 
             attrs.set("to", this.vertices[n].toString());
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');

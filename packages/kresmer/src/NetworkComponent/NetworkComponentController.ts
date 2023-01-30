@@ -15,7 +15,6 @@ import { TransformBoxZone } from "../Transform/TransformBox";
 import { EditorOperation } from "../UndoStack";
 import { indent } from "../Utils";
 import LinkVertex from "../NetworkLink/LinkVertex";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 import { nextTick } from "vue";
 
 export type TransformMode = undefined | "scaling" | "rotation";
@@ -328,13 +327,13 @@ export class ComponentDeleteOp extends EditorOperation {
         super();
     }//ctor
 
-    private detachedVertices = new Map<LinkVertex, ConnectionPointProxy>();
+    private detachedVertices = new Map<LinkVertex, string|number>();
 
     override exec(): void {
         this.controller.kresmer.links.forEach(link => {
             link.vertices.forEach(vertex => {
-                if (vertex.isConnected && vertex.conn!.component === this.controller.component) {
-                    this.detachedVertices.set(vertex, vertex.conn!);
+                if (vertex.isConnected && vertex.anchor.conn!.component === this.controller.component) {
+                    this.detachedVertices.set(vertex, vertex.anchor.conn!.name);
                     vertex.detach();
                 }//if
             })//vertices
@@ -347,7 +346,9 @@ export class ComponentDeleteOp extends EditorOperation {
         this.controller.kresmer.addPositionedNetworkComponent(this.controller);
         nextTick(() => {
             this.controller.updateConnectionPoints();
-            this.detachedVertices.forEach((connectionPoint, vertex) => {vertex.connect(connectionPoint)});
+            this.detachedVertices.forEach((connectionPointName, vertex) => {
+                vertex.connect(this.controller.component.connectionPoints[connectionPointName]);
+            });
         });
     }//undo
 
