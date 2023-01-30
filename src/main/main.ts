@@ -17,7 +17,7 @@ import Menus, {ContextMenuID} from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import console from 'console';
 
-const isDev = process.env.npm_lifecycle_event === "app:dev";
+const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
 
 let mainWindow: BrowserWindow;
 export let menus: Menus;
@@ -74,6 +74,7 @@ function initApp(mainWindow: BrowserWindow, stage: number)
     console.debug(`We've heard that the main window renderer is now ready (stage ${stage})`);
     switch (stage) {
         case 0: {
+            console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`)
             const libData = fs.readFileSync("./stdlib.krel", "utf-8");
             console.debug("Standard library loaded in memory");
             sendAppCommand("load-library", libData, 1);
