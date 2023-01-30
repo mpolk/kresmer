@@ -16,21 +16,13 @@ import { EditorOperation } from "../UndoStack";
 
 export default class LinkVertex {
 
-    constructor(link: NetworkLink, vertexNumber: number, initParams?: LinkVertexInitParams) 
-    {
-        this.link = link;
-        this.vertexNumber = vertexNumber;
-        this.initParams = initParams;
-    }//ctor
+    constructor(public link: NetworkLink, public vertexNumber: number, public initParams?: LinkVertexInitParams) {}
 
-    vertexNumber: number;
-    initParams?: LinkVertexInitParams;
     get isConnected() {return Boolean(this.conn);}
 
-    pos?: Position;
-    conn?: ConnectionPointProxy; 
+    private pos?: Position;
+    private conn?: ConnectionPointProxy; 
     private savedConn?: ConnectionPointProxy;
-    link: NetworkLink;
 
     public isGoingToBeDragged = false;
     public isDragged = false;
