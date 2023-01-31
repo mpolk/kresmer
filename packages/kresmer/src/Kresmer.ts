@@ -368,10 +368,14 @@ export default class Kresmer extends KresmerEventHooks {
      */
      public addLink(link: NetworkLink)
      {
-         this.links.set(link.id, link);
-         this.linksByName.set(link.name, link.id);
-         this.emit("link-added", link);
-         return this;
+        if (link.zIndex < 0) {
+            link.zIndex = Array.from(this.links.values())
+                .reduce((acc, link) => (link.zIndex > acc ? link.zIndex : acc), 0) + 1;
+        }//if
+        this.links.set(link.id, link);
+        this.linksByName.set(link.name, link.id);
+        this.emit("link-added", link);
+        return this;
      }//addLink
 
     /**
@@ -713,6 +717,20 @@ export default class Kresmer extends KresmerEventHooks {
     readonly edAPI = {
 
         /**
+         * Deletes the specified component from the drawing using an undoable editor operation
+         * @param componentID The ID of the component to delete
+         */
+        deleteComponent: (componentID: number) =>
+        {
+            const controller = this.networkComponents.get(componentID);
+            if (!controller) {
+                throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
+            }//if
+            controller.restoreComponentZPosition();
+            this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
+        },//deleteComponent
+
+        /**
          * Starts link creation pulling in from the specified connection point
          * @param linkClass A class of the new link
          * @param fromComponentID A component from which the link is started
@@ -736,20 +754,6 @@ export default class Kresmer extends KresmerEventHooks {
         },//startLinkCreation
 
         /**
-         * Deletes the specified component from the drawing using an undoable editor operation
-         * @param componentID The ID of the component to delete
-         */
-        deleteComponent: (componentID: number) =>
-        {
-            const controller = this.networkComponents.get(componentID);
-            if (!controller) {
-                throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
-            }//if
-            controller.restoreComponentZPosition();
-            this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
-        },//deleteComponent
-
-        /**
          * Deletes a Link using an undoable editor operation
          * @param linkID A an ID of the Link to delete
          */
@@ -760,6 +764,7 @@ export default class Kresmer extends KresmerEventHooks {
                 console.error(`Attempt to delete non-existent link (id=${linkID})`);
                 return;
             }//if
+            link.restoreZPosition();
             this.undoStack.execAndCommit(new DeleteLinkOp(link));
         },//deleteLink
 

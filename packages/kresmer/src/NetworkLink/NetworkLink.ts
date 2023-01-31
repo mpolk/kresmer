@@ -101,7 +101,9 @@ export default class NetworkLink extends NetworkElement {
 
     public restoreZPosition()
     {
-        this.zIndex = this.savedZIndex;
+        if (this.zIndex === Number.MAX_SAFE_INTEGER) {
+            this.zIndex = this.savedZIndex;
+        }//if
     }//restoreZPosition
 
 
