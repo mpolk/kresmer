@@ -330,7 +330,8 @@ export default class Kresmer extends KresmerEventHooks {
     public addPositionedNetworkComponent(controller: NetworkComponentController)
     {
         if (controller.zIndex < 0) {
-            controller.zIndex = this.networkComponents.size;
+            controller.zIndex = Array.from(this.networkComponents.values())
+                .reduce((acc, {zIndex: z}) => (z < Number.MAX_SAFE_INTEGER && z > acc ? z : acc), -1) + 1;
         }//if
         this.networkComponents.set(controller.component.id, controller);
         this.componentsByName.set(controller.component.name, controller.component.id);
@@ -370,7 +371,7 @@ export default class Kresmer extends KresmerEventHooks {
      {
         if (link.zIndex < 0) {
             link.zIndex = Array.from(this.links.values())
-                .reduce((acc, link) => (link.zIndex > acc ? link.zIndex : acc), 0) + 1;
+                .reduce((acc, {zIndex: z}) => (z < Number.MAX_SAFE_INTEGER && z > acc ? z : acc), -1) + 1;
         }//if
         this.links.set(link.id, link);
         this.linksByName.set(link.name, link.id);
