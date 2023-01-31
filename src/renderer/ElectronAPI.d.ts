@@ -15,6 +15,7 @@ export interface ElectronAPI {
     showContextMenu: <MenuID extends ContextMenuID>(menuID: MenuID, ...args: Parameters<ContextMenus[MenuID]>) => void,
     setDefaultDrawingFileName: (fileName: string) => void,
     completeDrawingSaving: (dwgData: string) => void,
+    enableDeleteMenuItem: (enable: boolean) => void,
 }//IElectronAPI
 
 declare global {

@@ -71,6 +71,8 @@ export default class Menus {
           { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
           { label: 'Add component...', click: () => sendAppCommand("add-component") },
+          { label: 'Delete network element', accelerator: "delete", enabled: false,
+            id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")},
         ]
       },
       // { role: 'viewMenu' }

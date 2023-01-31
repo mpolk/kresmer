@@ -33,6 +33,10 @@ import { ContextMenuID } from './main/Menus';
         ipcRenderer.send("complete-drawing-saving", dwgData);
     },
 
+    enableDeleteMenuItem: (enable: boolean) => {
+        ipcRenderer.send("enable-delete-menu-item", enable);
+    },
+
  });
  console.debug("Finished setting up electron API for the renderer");
  

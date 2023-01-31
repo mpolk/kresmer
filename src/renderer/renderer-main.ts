@@ -91,6 +91,7 @@ appCommandExecutor
     .on("save-drawing", saveDrawing)
     .on("undo", () => {kresmer.undo()})
     .on("redo", () => {kresmer.redo()})
+    .on("delete-selected-element", deleteSelectedElement)
     .on("delete-component", deleteComponent)
     .on("edit-component-properties", editComponentProperties)
     .on("transform-component", transformComponent)
@@ -188,6 +189,11 @@ function onComponentDoubleClick(controller: NetworkComponentController)
     vueComponentPropsSidebar.show(controller.component);
 }//onComponentDoubleClick
 
+function deleteSelectedElement()
+{
+
+}//deleteSelectedElement
+
 function deleteComponent(componentID: number)
 {
     kresmer.edAPI.deleteComponent(componentID);
@@ -246,6 +252,7 @@ function onComponentSelected(component: NetworkComponent, isSelected: boolean)
     } else {
         statusBarData.selectedElement = null;
     }//if
+    window.electronAPI.enableDeleteMenuItem(isSelected);
 }//onComponentSelected
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -266,6 +273,7 @@ function onLinkSelected(link: NetworkLink, isSelected: boolean)
     } else {
         statusBarData.selectedElement = null;
     }//if
+    window.electronAPI.enableDeleteMenuItem(isSelected);
 }//onLinkSelected
 
 function onLinkRightClick(link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent)

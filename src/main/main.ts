@@ -9,7 +9,7 @@
 import path from 'path';
 import fs from 'fs';
 import process from 'process';
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, Menu } from 'electron';
 import Settings from './Settings';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../package.json");
@@ -64,6 +64,10 @@ function createWindow() {
     ipcMain.on('renderer-ready', (_event, stage: number) => {initApp(mainWindow, stage)});
     ipcMain.on('set-default-drawing-filename', 
                (_event, fileName: string) => {defaultDrawingFileName = fileName});
+    ipcMain.on('enable-delete-menu-item', 
+               (_event, enable) => {
+                    Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
+                });
     return mainWindow;
 }//createWindow
 
