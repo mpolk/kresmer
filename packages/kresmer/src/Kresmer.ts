@@ -308,7 +308,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Components currently placed to the drawing
      */
-    private readonly networkComponents = reactive(new Map<number, NetworkComponentController>());
+    private readonly networkComponents = reactive(new MapWithZIndices<number, NetworkComponentController>());
     private readonly componentsByName = new Map<string, number>();
 
     /**
@@ -329,11 +329,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public addPositionedNetworkComponent(controller: NetworkComponentController)
     {
-        if (controller.zIndex < 0) {
-            controller.zIndex = Array.from(this.networkComponents.values())
-                .reduce((acc, {zIndex: z}) => (z < Number.MAX_SAFE_INTEGER && z > acc ? z : acc), -1) + 1;
-        }//if
-        this.networkComponents.set(controller.component.id, controller);
+        this.networkComponents.add(controller);
         this.componentsByName.set(controller.component.name, controller.component.id);
         return this;
     }//addPositionedNetworkComponent
@@ -360,7 +356,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-     readonly links = reactive(new Map<number, NetworkLink>());
+     readonly links = reactive(new MapWithZIndices<number, NetworkLink>());
      protected readonly linksByName = new Map<string, number>();
 
     /**
@@ -373,7 +369,7 @@ export default class Kresmer extends KresmerEventHooks {
             link.zIndex = Array.from(this.links.values())
                 .reduce((acc, {zIndex: z}) => (z < Number.MAX_SAFE_INTEGER && z > acc ? z : acc), -1) + 1;
         }//if
-        this.links.set(link.id, link);
+        this.links.add(link);
         this.linksByName.set(link.name, link.id);
         this.emit("link-added", link);
         return this;
@@ -842,6 +838,24 @@ export default class Kresmer extends KresmerEventHooks {
     }//edAPI
 }//Kresmer
 
+/** A specialized map for storing network elements */
+export class MapWithZIndices<K, T extends {id: K, zIndex: number}> extends Map<K, T> {
+    public add(item: T) {
+        if (item.zIndex < 0) {
+            item.zIndex = Array.from(this.values())
+                .reduce((acc, {zIndex: z}) => (z < Number.MAX_SAFE_INTEGER && z > acc ? z : acc), -1) + 1;
+        }//if
+        this.set(item.id, item);
+        return this;
+    }//add
+
+    public get sorted()
+    {
+        return Array.from(this.values()).sort((item1, item2) => item1.zIndex - item2.zIndex);
+    }//sorted
+}//MapWithZIndices
+
+
 /** Data type for Vue templates */
 export type Template = Element | string;
 
@@ -851,9 +865,9 @@ export const GeneralTemplateFunctions = {
     $$: {},
 
     /**
-     * 
-     * @param name Defines a "global" value that may be accessed in any component template
-     * @param value 
+     * Defines a "global" value that may be accessed in any component template
+     * @param name The name for this global
+     * @param value The value itself
      */
     $global: function(name: string, value: unknown)
     {

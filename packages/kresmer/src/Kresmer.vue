@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 <script lang="ts">
     import { PropType, ref, computed, provide } from 'vue';
-    import Kresmer from './Kresmer';
+    import Kresmer, {MapWithZIndices} from './Kresmer';
     import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
@@ -29,9 +29,9 @@
 <script setup lang="ts">
     const props = defineProps({
         controller: {type: Object as PropType<Kresmer>, required: true},
-        networkComponents: {type: Object as PropType<Map<string, NetworkComponentController>>, required: true},
+        networkComponents: {type: Object as PropType<MapWithZIndices<number, NetworkComponentController>>, required: true},
         networkComponentClasses: {type: Object as PropType<Map<string, NetworkComponentClass>>, required: true},
-        links: {type: Object as PropType<Map<string, NetworkLink>>, required: true},
+        links: {type: Object as PropType<MapWithZIndices<number, NetworkLink>>, required: true},
         linkClasses: {type: Object as PropType<Map<string, NetworkLinkClass>>, required: true},
         drawingWidth: {type: [Number, String], default: "100%"},
         drawingHeight: {type: [Number, String], default: "100%"},
@@ -43,13 +43,8 @@
     provide(Kresmer.injectionKey, props.controller);
     const rootSVG = ref<SVGGraphicsElement>();
 
-    const networkComponentsSorted = computed(() => {
-        return Array.from(props.networkComponents.values()).sort((c1, c2) => c1.zIndex - c2.zIndex)
-    })
-
-    const linksSorted = computed(() => {
-        return Array.from(props.links.values()).sort((c1, c2) => c1.zIndex - c2.zIndex)
-    })
+    const networkComponentsSorted = computed(() => props.networkComponents.sorted);
+    const linksSorted = computed(() => props.links.sorted);
 
     const scale = ref(1);
 

@@ -48,6 +48,7 @@ export default class NetworkComponentController {
         this.transform = params.transform ? params.transform : new Transform;
     }//ctor
 
+    get id() {return this.component.id}
 
     private getMousePosition(event: MouseEvent) {
         return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
