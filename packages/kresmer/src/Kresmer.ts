@@ -662,24 +662,6 @@ export default class Kresmer extends KresmerEventHooks {
         };
     }//applyScreenCTM
 
-    /**
-     * 
-     * @param element Update the specified network element props and name (if required)
-     * @param newProps The new prop values
-     * @param newName The new element name
-     */
-    public updateElement(element: NetworkElement, newProps: {name: string, value: unknown}[], newName?: string): void;
-    public updateElement(element: NetworkElement, newProps: Record<string, unknown>, newName?: string): void;
-    public updateElement(element: NetworkElement, 
-                         newProps: {name: string, value: unknown}[] | Record<string, unknown>, 
-                         newName?: string)
-    {
-        if (Array.isArray(newProps)) {
-            newProps = Object.fromEntries(newProps.map(prop => [prop.name, prop.value]));
-        }//if
-        this.undoStack.execAndCommit(new UpdateElementOp(element, newProps, newName));
-    }//updateElement
-
     // For internal use: reacts on some network element rename refreshing corresponding map
     public _onElementRename(element: NetworkElement, oldName: string)
     {
@@ -696,30 +678,6 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** A blank for a new link creation */
     public newLinkBlank?: NetworkLinkBlank;
-
-    /**
-     * Starts link creation pulling in from the specified connection point
-     * @param linkClass A class of the new link
-     * @param fromComponentID A component from which the link is started
-     * @param fromConnectionPointName A connection point from which the link is started
-     */
-    public startLinkCreation(linkClass: NetworkLinkClass, fromComponentID: number, 
-                             fromConnectionPointName: string|number)
-    {
-        const fromComponent = this.getComponentById(fromComponentID);
-        if (!fromComponent) {
-            console.error(`Trying to create a link from non-existing component (id=${fromComponentID})!`);
-            return;
-        }//if
-        const fromConnectionPoint = fromComponent.connectionPoints[fromConnectionPointName];
-        if (!fromConnectionPoint) {
-            console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
-            return;
-        }//if
-        this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint);
-        this.vueKresmer.$forceUpdate();
-    }//startLinkCreation
-
 
     /**
      * Completes the new link creation (for private use only)
@@ -753,6 +711,29 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Editor API functions (externally available operations with the drawing objects) */
     readonly edAPI = {
+
+        /**
+         * Starts link creation pulling in from the specified connection point
+         * @param linkClass A class of the new link
+         * @param fromComponentID A component from which the link is started
+         * @param fromConnectionPointName A connection point from which the link is started
+         */
+        startLinkCreation: (linkClass: NetworkLinkClass, fromComponentID: number, 
+                            fromConnectionPointName: string|number) =>
+        {
+            const fromComponent = this.getComponentById(fromComponentID);
+            if (!fromComponent) {
+                console.error(`Trying to create a link from non-existing component (id=${fromComponentID})!`);
+                return;
+            }//if
+            const fromConnectionPoint = fromComponent.connectionPoints[fromConnectionPointName];
+            if (!fromConnectionPoint) {
+                console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
+                return;
+            }//if
+            this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint);
+            this.vueKresmer.$forceUpdate();
+        },//startLinkCreation
 
         /**
          * Deletes the specified component from the drawing using an undoable editor operation
@@ -837,6 +818,20 @@ export default class Kresmer extends KresmerEventHooks {
             }//if
             return vertex;
         },//deleteLinkVertex
+
+        /**
+         * 
+         * @param element Update the specified network element props and name (if required)
+         * @param newProps The new prop values
+         * @param newName The new element name
+         */
+        updateElement: (element: NetworkElement, 
+                        newProps: {name: string, value: unknown}[], 
+                        newName?: string) =>
+        {
+            const newPropsObj = Object.fromEntries(newProps.map(prop => [prop.name, prop.value]));
+            this.undoStack.execAndCommit(new UpdateElementOp(element, newPropsObj, newName));
+        },//updateElement
 
     }//edAPI
 }//Kresmer

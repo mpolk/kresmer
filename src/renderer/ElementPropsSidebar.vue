@@ -109,7 +109,7 @@
         }//if
 
         close();
-        elementToEdit.kresmer.updateElement(elementToEdit, elementProps.value, elementName.value);
+        elementToEdit.kresmer.edAPI.updateElement(elementToEdit, elementProps.value, elementName.value);
         updateWindowTitle();
     }//save
 

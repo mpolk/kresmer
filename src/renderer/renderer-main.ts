@@ -330,9 +330,9 @@ function onConnectionPointRightClick(connectionPoint: ConnectionPointProxy)
 async function startLinkCreation(fromComponentID: number, fromConnectionPointName: string|number)
 {
     const linkClass = await vueLinkClassSelectionDialog.show();
-    console.log(`link-class = ${linkClass?.name}`);
+    console.debug(`link-class = ${linkClass?.name}`);
 
     if (linkClass) {
-        kresmer.startLinkCreation(linkClass, fromComponentID, fromConnectionPointName);
+        kresmer.edAPI.startLinkCreation(linkClass, fromComponentID, fromConnectionPointName);
     }//if
 }//startLinkCreation
