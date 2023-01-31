@@ -190,7 +190,7 @@ function onComponentDoubleClick(controller: NetworkComponentController)
 
 function deleteComponent(componentID: number)
 {
-    kresmer.edopDeleteComponent(componentID);
+    kresmer.edAPI.deleteComponent(componentID);
 }//deleteComponent
 
 function editComponentProperties(componentID: number)
@@ -256,7 +256,7 @@ function onComponentMutated(_controller: NetworkComponentController)
 
 function deleteLink(linkID: number)
 {
-    kresmer.edopDeleteLink(linkID);
+    kresmer.edAPI.deleteLink(linkID);
 }//deleteLink
 
 function onLinkSelected(link: NetworkLink, isSelected: boolean)
@@ -309,17 +309,17 @@ function onLinkVertexMutated(_vertex: LinkVertex)
 
 function addLinkVertex(linkID: number, segmentNumber: number, mousePos: Position)
 {
-    kresmer.addLinkVertex(linkID, segmentNumber, mousePos);
+    kresmer.edAPI.addLinkVertex(linkID, segmentNumber, mousePos);
 }//addLinkVertex
 
 function deleteLinkVertex(linkID: number, vertexNumber: number)
 {
-    kresmer.deleteLinkVertex(linkID, vertexNumber);
+    kresmer.edAPI.deleteLinkVertex(linkID, vertexNumber);
 }//deleteLinkVertex
 
 function alignLinkVertex(linkID: number, vertexNumber: number)
 {
-    kresmer.alignLinkVertex(linkID, vertexNumber);
+    kresmer.edAPI.alignLinkVertex(linkID, vertexNumber);
 }//alignLinkVertex
 
 function onConnectionPointRightClick(connectionPoint: ConnectionPointProxy)

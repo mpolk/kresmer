@@ -355,20 +355,6 @@ export default class Kresmer extends KresmerEventHooks {
         this.networkComponents.delete(controller.component.id);
         this.emit("component-deleted", controller);
     }//deleteComponent
-
-    /**
-     * Deletes the specified component from the drawing using an undoable editor operation
-     * @param componentID The ID of the component to delete
-     */
-    public edopDeleteComponent(componentID: number)
-    {
-        const controller = this.networkComponents.get(componentID);
-        if (!controller) {
-            throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
-        }//if
-        controller.restoreComponentZPosition();
-        this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
-    }//edopDeleteComponent
  
     /**
      * Links currently placed to the drawing
@@ -399,20 +385,6 @@ export default class Kresmer extends KresmerEventHooks {
         this.emit("link-deleted", link);
         return this;
     }//deleteLink
-
-    /**
-     * Deletes a Link using an undoable editor operation
-     * @param linkID A an ID of the Link to delete
-     */
-    public edopDeleteLink(linkID: number)
-    {
-        const link = this.getLinkById(linkID);
-        if (!link) {
-            console.error(`Attempt to delete non-existent link (id=${linkID})`);
-            return;
-        }//if
-        this.undoStack.execAndCommit(new DeleteLinkOp(link));
-    }//edopDeleteLink
 
 
     /**
@@ -690,65 +662,6 @@ export default class Kresmer extends KresmerEventHooks {
         };
     }//applyScreenCTM
 
-
-    // Externally available operations with the drawing objects
-
-    /**
-     * Adds a link vertex
-     * @param linkID The link this vertexs belongs
-     * @param segmentNumber The seq number of the segment where tne vertex should be added
-     * @param mousePos The mouse click position
-     * @returns True if the vertex was added or false otherwise
-     */
-    public addLinkVertex(linkID: number, segmentNumber: number, mousePos: Position)
-    {
-        const link = this.getLinkById(linkID);
-        if (!link) {
-            throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
-        }//if
-        const vertex = link.addVertex(segmentNumber, mousePos);
-        this.emit("link-vertex-added", vertex);
-        return vertex;
-    }//addLinkVertex
-
-    /**
-     * Aligns (or at least tries to) a link vertex to its neighbours
-     * @param linkID The link this vertexs belongs
-     * @param vertexNumber The seq number of the vertex to align
-     * @returns True if the vertex was aligned or false otherwise
-     */
-    public alignLinkVertex(linkID: number, vertexNumber: number)
-    {
-        const link = this.getLinkById(linkID);
-        if (!link) {
-            throw new KresmerException(`Attempt to aling a vertex of the non-existent link (id=${linkID})`);
-        }//if
-        const vertex = link.alignVertex(vertexNumber);
-        if (vertex) {
-            this.emit("link-vertex-moved", vertex);
-        }//if
-        return vertex;
-    }//alignLinkVertex
-
-    /**
-     * Deletes a link vertex
-     * @param linkID The link this vertexs belongs
-     * @param vertexNumber The seq number of the vertex to delete
-     * @returns True if the vertex was deleted or false otherwise
-     */
-    public deleteLinkVertex(linkID: number, vertexNumber: number)
-    {
-        const link = this.getLinkById(linkID);
-        if (!link) {
-            throw new KresmerException(`Attempt to delete a vertex from the non-existent link (id=${linkID})`);
-        }//if
-        const vertex = link.deleteVertex(vertexNumber);
-        if (vertex) {
-            this.emit("link-vertex-deleted", vertex);
-        }//if
-        return vertex;
-    }//deleteLinkVertex
-
     /**
      * 
      * @param element Update the specified network element props and name (if required)
@@ -836,6 +749,96 @@ export default class Kresmer extends KresmerEventHooks {
             this.vueKresmer.$forceUpdate();
         }//if
     }//_abortLinkCreation
+
+
+    /** Editor API functions (externally available operations with the drawing objects) */
+    readonly edAPI = {
+
+        /**
+         * Deletes the specified component from the drawing using an undoable editor operation
+         * @param componentID The ID of the component to delete
+         */
+        deleteComponent: (componentID: number) =>
+        {
+            const controller = this.networkComponents.get(componentID);
+            if (!controller) {
+                throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
+            }//if
+            controller.restoreComponentZPosition();
+            this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
+        },//deleteComponent
+
+        /**
+         * Deletes a Link using an undoable editor operation
+         * @param linkID A an ID of the Link to delete
+         */
+        deleteLink: (linkID: number) =>
+        {
+            const link = this.getLinkById(linkID);
+            if (!link) {
+                console.error(`Attempt to delete non-existent link (id=${linkID})`);
+                return;
+            }//if
+            this.undoStack.execAndCommit(new DeleteLinkOp(link));
+        },//deleteLink
+
+        /**
+         * Adds a link vertex
+         * @param linkID The link this vertexs belongs
+         * @param segmentNumber The seq number of the segment where tne vertex should be added
+         * @param mousePos The mouse click position
+         * @returns True if the vertex was added or false otherwise
+         */
+        addLinkVertex: (linkID: number, segmentNumber: number, mousePos: Position) =>
+        {
+            const link = this.getLinkById(linkID);
+            if (!link) {
+                throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
+            }//if
+            const vertex = link.addVertex(segmentNumber, mousePos);
+            this.emit("link-vertex-added", vertex);
+            return vertex;
+        },//addLinkVertex
+
+        /**
+         * Aligns (or at least tries to) a link vertex to its neighbours
+         * @param linkID The link this vertexs belongs
+         * @param vertexNumber The seq number of the vertex to align
+         * @returns True if the vertex was aligned or false otherwise
+         */
+        alignLinkVertex: (linkID: number, vertexNumber: number) =>
+        {
+            const link = this.getLinkById(linkID);
+            if (!link) {
+                throw new KresmerException(`Attempt to aling a vertex of the non-existent link (id=${linkID})`);
+            }//if
+            const vertex = link.alignVertex(vertexNumber);
+            if (vertex) {
+                this.emit("link-vertex-moved", vertex);
+            }//if
+            return vertex;
+        },//alignLinkVertex
+
+        /**
+         * Deletes a link vertex
+         * @param linkID The link this vertexs belongs
+         * @param vertexNumber The seq number of the vertex to delete
+         * @returns True if the vertex was deleted or false otherwise
+         */
+        deleteLinkVertex: (linkID: number, vertexNumber: number) =>
+        {
+            const link = this.getLinkById(linkID);
+            if (!link) {
+                throw new KresmerException(`Attempt to delete a vertex from the non-existent link (id=${linkID})`);
+            }//if
+            const vertex = link.deleteVertex(vertexNumber);
+            if (vertex) {
+                this.emit("link-vertex-deleted", vertex);
+            }//if
+            return vertex;
+        },//deleteLinkVertex
+
+    }//edAPI
 }//Kresmer
 
 /** Data type for Vue templates */
