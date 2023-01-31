@@ -196,7 +196,9 @@ export default class NetworkComponentController {
 
     public restoreComponentZPosition()
     {
-        this.zIndex = this.savedZIndex;
+        if (this.zIndex === Number.MAX_SAFE_INTEGER) {
+            this.zIndex = this.savedZIndex;
+        }//if
     }//restoreComponentZPosition
 
 

@@ -329,6 +329,9 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public addPositionedNetworkComponent(controller: NetworkComponentController)
     {
+        if (controller.zIndex < 0) {
+            controller.zIndex = this.networkComponents.size;
+        }//if
         this.networkComponents.set(controller.component.id, controller);
         this.componentsByName.set(controller.component.name, controller.component.id);
         return this;
@@ -363,6 +366,7 @@ export default class Kresmer extends KresmerEventHooks {
         if (!controller) {
             throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
         }//if
+        controller.restoreComponentZPosition();
         this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
     }//edopDeleteComponent
  
