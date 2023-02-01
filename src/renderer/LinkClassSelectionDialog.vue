@@ -13,7 +13,7 @@
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+    import { computed, onMounted, ref } from 'vue';
     import { Modal } from 'bootstrap';
     import { NetworkLinkClass } from 'kresmer';
     import { kresmer } from './renderer-main';
@@ -27,6 +27,7 @@
     // eslint-disable-next-line prefer-const
     let result: NetworkLinkClass|null = null;
     const linkClasses = ref<{name: string, _class: NetworkLinkClass}[]>([]);
+    const selectSize = computed(() => Math.min(linkClasses.value.length, 10));
 
     onMounted(() =>
     {
@@ -43,6 +44,7 @@
     async function show()
     {
         linkClasses.value = [...kresmer.getRegisteredLinkClasses()]
+            .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
         result = linkClasses.value[0]._class;
 
@@ -69,7 +71,7 @@
         resolvePromise!(result);
     }//close
 
-    defineExpose({show});
+    defineExpose({show, selectSize});
 
 </script>
 
@@ -83,7 +85,7 @@
                 </div>
                 <form @submit.prevent="">
                     <div class="modal-body">
-                        <select class="form-select" v-model="result" ref="selLinkClass">
+                        <select class="form-select" v-model="result" ref="selLinkClass" :size="selectSize">
                             <option v-for="cl in linkClasses" 
                                 :value="cl._class" 
                                 :key="`class[${cl.name}]`">
