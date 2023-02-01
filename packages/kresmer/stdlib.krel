@@ -38,7 +38,7 @@
             </text>
         </template>
         <props>
-            <prop name="color" type="String" />
+            <prop name="color" type="String" default="black"/>
             <prop name="font-size" type="String" default="32"/>
             <prop name="font-family" type="String" />
         </props>
@@ -52,10 +52,10 @@
             <text x="40" y="30" v-bind:fill="textColor" v-bind:font-size="fontSize" v-bind:font-family="fontFamily">{{text}}</text>
         </template>
         <props>
-            <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
+            <prop name="width" type="Number" required="true" default="200"/>
+            <prop name="height" type="Number" required="true" default="50"/>
             <prop name="fill" type="String" default="yellow"/>
-            <prop name="text" type="String"/>
+            <prop name="text" type="String" default="BorderedKresmer"/>
             <prop name="textColor" type="String" default="black"/>
             <prop name="font-size" type="String" />
             <prop name="font-family" type="String" />
@@ -70,11 +70,11 @@
             <text v-bind:x="width*0.2 + 1" v-bind:y="height/1.7 + 1" fill="blue" v-bind:font-size="fontSize" v-bind:font-family="fontFamily">{{text}}</text>
         </template>
         <props>
-            <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
-            <prop name="text" type="String"/>
-            <prop name="font-size" type="String" />
-            <prop name="font-family" type="String" />
+            <prop name="width" type="Number" required="true" default="500"/>
+            <prop name="height" type="Number" required="true" default="50"/>
+            <prop name="text" type="String" default="Справжний Кресмер"/>
+            <prop name="font-size" type="String" default="28"/>
+            <prop name="font-family" type="String" default="sans-serif"/>
         </props>
     </component-class>
 
@@ -97,11 +97,11 @@
             <text v-bind:x="width*0.75 + i*22" v-bind:y="height*0.6" fill="silver" v-bind:font-size="fontSize" v-for="i in 3">⚜</text>
         </template>
         <props>
-            <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
-            <prop name="text" type="String"/>
-            <prop name="font-size" type="String" />
-            <prop name="font-family" type="String" />
+            <prop name="width" type="Number" required="true" default="400"/>
+            <prop name="height" type="Number" required="true" default="50"/>
+            <prop name="text" type="String" default="Silver Kresmer"/>
+            <prop name="font-size" type="String" default="32"/>
+            <prop name="font-family" type="String" default="sans-serif"/>
         </props>
     </component-class>
 
@@ -142,7 +142,7 @@
             .port-icon.far-end {filter: brightness(0.7)}
         </style>
         <props>
-            <prop name="d" type="Number" required="true" /> <!-- diameter (or similar size parameter-->
+            <prop name="d" type="Number" required="true" default="25"/> <!-- diameter (or similar size parameter-->
         </props>
     </component-class>
 
@@ -186,7 +186,7 @@
         </style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
-            <prop name="height" type="Number" required="true"/>
+            <prop name="height" type="Number" required="true" default="50"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
         <computed-props>

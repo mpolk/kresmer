@@ -112,7 +112,15 @@ export default class LibraryParser {
                 {source: `Component class ${className}`});
         }//if
 
-        return new NetworkComponentClass(className, {template, props, computedProps, defs, style, autoInstanciate})
+        let defaultContent: string | undefined;
+        const slot = template.querySelector("slot");
+        if (slot?.textContent) {
+            defaultContent = slot.textContent;
+        }//if
+
+
+        return new NetworkComponentClass(className, {template, props, computedProps, defs, 
+                                                     style, autoInstanciate, defaultContent});
     }//parseComponentClassNode
 
 

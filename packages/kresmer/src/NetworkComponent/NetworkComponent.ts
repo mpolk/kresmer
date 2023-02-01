@@ -34,8 +34,9 @@ export default class NetworkComponent extends NetworkElement {
             isAutoInstantiated?: boolean,
         }
     ) {
-        super(kresmer, _class instanceof NetworkComponentClass ? _class : NetworkComponentClass.getClass(_class), args);
-        this.content = args?.content;
+        const componentClass = _class instanceof NetworkComponentClass ? _class : NetworkComponentClass.getClass(_class);
+        super(kresmer, componentClass, args);
+        this.content = args?.content ?? componentClass.defaultContent;
         this.isAutoInstantiated = Boolean(args?.isAutoInstantiated);
     }//ctor
 

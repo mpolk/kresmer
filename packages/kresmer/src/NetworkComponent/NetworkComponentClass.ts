@@ -31,11 +31,13 @@ export default class NetworkComponentClass extends NetworkElementClass {
         defs?: Template,
         style?: PostCSSRoot,
         autoInstanciate?: boolean,
+        defaultContent?: string,
     })
     {
         super(name, params);
         this.template = params.template;
         this.autoInstanciate = Boolean(params.autoInstanciate);
+        this.defaultContent = params.defaultContent;
         NetworkComponentClass.allClasses[name] = this;
     }//ctor
 
@@ -52,6 +54,8 @@ export default class NetworkComponentClass extends NetworkElementClass {
     public template: Template;
     /** Specifies that a single class instance should be created after the class is registered */
     readonly autoInstanciate: boolean;
+    /** The default content for the component (i.e. its slot) */
+    readonly defaultContent?: string;
 
     /**
      * Returns the name of the vue-component for this class

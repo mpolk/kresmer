@@ -29,6 +29,8 @@
     const componentClasses = ref<{name: string, _class: NetworkComponentClass}[]>([]);
     const selectSize = computed(() => Math.min(componentClasses.value.length, 10));
     let krePreview: Kresmer;
+    const previewWidth = 400;
+    const previewHeight = 400;
 
     onMounted(() =>
     {
@@ -38,8 +40,10 @@
     watch(result, () => {
         krePreview?.eraseContent();
         if (result.value) {
-            const component = new NetworkComponent(krePreview, result.value);
-            krePreview?.placeNetworkComponent(component, {x: 0, y: 0});
+            const _class = result.value;
+            const component = new NetworkComponent(krePreview, _class);
+            component.name = _class.name;
+            krePreview?.placeNetworkComponent(component, {x: previewWidth/2, y: previewHeight/2});
         }//if
     });
 
@@ -49,7 +53,8 @@
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
 
-        krePreview = new Kresmer(divPreview.value!, {isEditable: false});
+        krePreview = new Kresmer(divPreview.value!, {isEditable: false, 
+            viewWidth: previewWidth, viewHeight: previewHeight});
         componentClasses.value.forEach(item => {krePreview.registerNetworkComponentClass(item._class)});
         componentClasses.value = componentClasses.value.filter(({name, _class}) => !_class.autoInstanciate);
         result.value = componentClasses.value[0]._class;

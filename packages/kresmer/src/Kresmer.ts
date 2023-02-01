@@ -723,7 +723,7 @@ export default class Kresmer extends KresmerEventHooks {
         createComponent: (componentClass: NetworkComponentClass) =>
         {
             const newComponent = new NetworkComponent(this, componentClass);
-            this.placeNetworkComponent(newComponent, {x: 0, y:0});
+            this.placeNetworkComponent(newComponent, {x: this.viewWidth/2, y: this.viewHeight/2});
         },//createComponent
 
         /**
