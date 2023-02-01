@@ -70,7 +70,7 @@ export default class Menus {
           { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
           { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
-          { label: 'Add component...', click: () => sendAppCommand("add-component") },
+          { label: 'Add component...', accelerator: "insert", click: () => sendAppCommand("add-component") },
           { label: 'Delete network element', accelerator: "delete", enabled: false,
             id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")},
         ]

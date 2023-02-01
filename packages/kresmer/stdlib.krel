@@ -34,12 +34,12 @@
     <component-class name="Text">
         <template>  
             <text x="0" y="0" v-bind:fill="color" v-bind:font-size="fontSize" v-bind:font-family="fontFamily">
-                <slot></slot>
+                <slot>Text</slot>
             </text>
         </template>
         <props>
             <prop name="color" type="String" />
-            <prop name="font-size" type="String" />
+            <prop name="font-size" type="String" default="32"/>
             <prop name="font-family" type="String" />
         </props>
     </component-class>
