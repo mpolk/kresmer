@@ -39,7 +39,7 @@ export default class NetworkLinkBlank {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onMouseDown(_event: MouseEvent)
     {
-        this.kresmer.deselectAllLinks();
+        this.kresmer.deselectAllElements(this);
     }//onMouseDown
 
     public onMouseUp(event: MouseEvent)

@@ -640,40 +640,20 @@ export default class Kresmer extends KresmerEventHooks {
         this._selectedElement = newSelectedElement;
     }//set selectedElement
 
-    /** Deselects all components (probably except the one specified) */
-    public deselectAllComponents(except?: NetworkComponentController)
-    {
-        for (const controller of this.networkComponents.values()) {
-            if (controller !== except) {
-                controller.component.isSelected = false;
-            }//if
-        }//for
-    }//deselectAllComponents
-
-    /** Deselects all links (probably except the one specified) */
-    public deselectAllLinks(except?: NetworkLink)
-    {
-        for (const link of this.links.values()) {
-            if (link !== except) {
-                link.isSelected = false;
-            }//if
-        }//for
-    }//deselectAllLinks
 
     /** Deselects all components (probably except the one specified) */
-    public deselectAllElements(except?: NetworkComponentController|NetworkLink)
+    public deselectAllElements(except?: NetworkComponentController | NetworkLink | NetworkLinkBlank)
     {
-        for (const controller of this.networkComponents.values()) {
-            if (controller !== except) {
-                controller.component.isSelected = false;
-            }//if
-        }//for
-        for (const link of this.links.values()) {
-            if (link !== except) {
-                link.isSelected = false;
-            }//if
-        }//for
-        this._abortLinkCreation();
+        this.networkComponents.forEach(controller => {
+            (controller !== except) && (controller.component.isSelected = false);
+        });
+        this.links.forEach(link => {
+            (link !== except) && (link.isSelected = false);
+        });
+
+        if (!(except instanceof NetworkLinkBlank)) {
+            this._abortLinkCreation();
+        }//if
     }//deselectAllElements
 
 
