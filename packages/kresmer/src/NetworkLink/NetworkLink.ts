@@ -82,15 +82,6 @@ export default class NetworkLink extends NetworkElement {
         }//if
     }//selectComponent
 
-    override get isSelected() {return this._isSelected}
-    override set isSelected(reallyIs: boolean) {
-        const shouldNotify = reallyIs != this.isSelected;
-        this._isSelected = reallyIs;
-        if (shouldNotify) {
-            this.kresmer.emit("link-selected", this, this.isSelected);
-        }//if
-    }//isSelected
-
     public bringToTop()
     {
         if (this.zIndex < Number.MAX_SAFE_INTEGER) {

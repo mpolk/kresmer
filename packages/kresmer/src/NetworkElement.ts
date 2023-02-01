@@ -73,7 +73,10 @@ export default abstract class NetworkElement {
 
     protected _isSelected = false;
     get isSelected() {return this._isSelected}
-    set isSelected(reallyIs: boolean) {this._isSelected = reallyIs}
+    set isSelected(reallyIs: boolean) {
+        this._isSelected = reallyIs;
+        this.kresmer.selectedElement = reallyIs ? this : undefined;
+    }//isSelected
 }//NetworkElement
 
 

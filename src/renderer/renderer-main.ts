@@ -191,7 +191,11 @@ function onComponentDoubleClick(controller: NetworkComponentController)
 
 function deleteSelectedElement()
 {
-
+    if (kresmer.selectedElement instanceof NetworkComponent) {
+        kresmer.edAPI.deleteComponent(kresmer.selectedElement.id);
+    } else if (kresmer.selectedElement instanceof NetworkLink) {
+        kresmer.edAPI.deleteLink(kresmer.selectedElement.id);
+    }//if
 }//deleteSelectedElement
 
 function deleteComponent(componentID: number)

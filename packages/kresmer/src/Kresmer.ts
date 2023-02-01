@@ -613,6 +613,33 @@ export default class Kresmer extends KresmerEventHooks {
         }//for
     }//resetAllComponentMode
 
+
+    /** Currently selected network element */
+    private _selectedElement?: NetworkElement;
+    public get selectedElement() {return this._selectedElement}
+    public set selectedElement(newSelectedElement: NetworkElement | undefined) 
+    {
+        if (newSelectedElement === this._selectedElement) {
+            return;
+        }//if
+
+        if (newSelectedElement) {
+            if (newSelectedElement instanceof NetworkComponent) {
+                this.emit("component-selected", newSelectedElement, true);
+            } else if (newSelectedElement instanceof NetworkLink) {
+                this.emit("link-selected", newSelectedElement, true);
+            }//if
+        } else {
+            if (this._selectedElement instanceof NetworkComponent) {
+                this.emit("component-selected", this._selectedElement, false);
+            } else if (this._selectedElement instanceof NetworkLink) {
+                this.emit("link-selected", this._selectedElement, false);
+            }//if
+        }//if
+
+        this._selectedElement = newSelectedElement;
+    }//set selectedElement
+
     /** Deselects all components (probably except the one specified) */
     public deselectAllComponents(except?: NetworkComponentController)
     {
@@ -723,6 +750,7 @@ export default class Kresmer extends KresmerEventHooks {
             if (!controller) {
                 throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
             }//if
+            controller.component.isSelected = false;
             controller.restoreComponentZPosition();
             this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
         },//deleteComponent
@@ -761,6 +789,7 @@ export default class Kresmer extends KresmerEventHooks {
                 console.error(`Attempt to delete non-existent link (id=${linkID})`);
                 return;
             }//if
+            link.isSelected = false;
             link.restoreZPosition();
             this.undoStack.execAndCommit(new DeleteLinkOp(link));
         },//deleteLink

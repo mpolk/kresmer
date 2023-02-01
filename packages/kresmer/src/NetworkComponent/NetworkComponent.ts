@@ -69,12 +69,4 @@ export default class NetworkComponent extends NetworkElement {
         }//for
     }//updateConnectionPoints
 
-    override get isSelected() {return this._isSelected}
-    override set isSelected(reallyIs: boolean) {
-        const shouldNotify = reallyIs != this.isSelected;
-        this._isSelected = reallyIs;
-        if (shouldNotify) {
-            this.kresmer.emit("component-selected", this, this.isSelected);
-        }//if
-    }//isSelected
 }//NetworkComponent
