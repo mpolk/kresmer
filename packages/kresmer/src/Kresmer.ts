@@ -131,10 +131,10 @@ export default class Kresmer extends KresmerEventHooks {
     }//get isEmpty
 
 
-    /**
-     * A list of all Component Classes, registered by Kresmer
-     */
+    /** A list of all Component Classes, registered by Kresmer */
     protected readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();
+    /** Returns a list of all Component Classes, registered by Kresmer */
+    public getRegisteredComponentClasses() {return this.registeredComponentClasses.entries()}
 
     /**
      * Registers a Network Component Class in the Kresmer and registers
@@ -719,6 +719,11 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Editor API functions (externally available operations with the drawing objects) */
     readonly edAPI = {
+
+        createComponent: (componentClass: NetworkComponentClass) =>
+        {
+
+        },//createComponent
 
         /**
          * Deletes the specified component from the drawing using an undoable editor operation

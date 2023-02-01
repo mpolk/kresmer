@@ -20,6 +20,7 @@ import Kresmer, {
  } from 'kresmer';
 import { AppCommandExecutor } from './AppCommands';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
+import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 
 if (process.env.NODE_ENV === 'development') {
@@ -51,6 +52,8 @@ const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#compon
     InstanceType<typeof ComponentPropsSidebar>;
 const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#dlgLinkClassSelection") as
     InstanceType<typeof LinkClassSelectionDialog>;
+const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionDialog).mount("#dlgComponentClassSelection") as
+    InstanceType<typeof ComponentClassSelectionDialog>;
 
 kresmer
     .on("got-dirty", updateWindowTitle)
@@ -92,6 +95,7 @@ appCommandExecutor
     .on("undo", () => {kresmer.undo()})
     .on("redo", () => {kresmer.redo()})
     .on("delete-selected-element", deleteSelectedElement)
+    .on("add-component", addComponent)
     .on("delete-component", deleteComponent)
     .on("edit-component-properties", editComponentProperties)
     .on("transform-component", transformComponent)
@@ -197,6 +201,16 @@ function deleteSelectedElement()
         kresmer.edAPI.deleteLink(kresmer.selectedElement.id);
     }//if
 }//deleteSelectedElement
+
+async function addComponent()
+{
+    const componentClass = await vueComponentClassSelectionDialog.show();
+    console.debug(`component-class = ${componentClass?.name}`);
+
+    if (componentClass) {
+        kresmer.edAPI.createComponent(componentClass);
+    }//if
+}//addComponent
 
 function deleteComponent(componentID: number)
 {
