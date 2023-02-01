@@ -12,8 +12,8 @@
                   v-bind:fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
         </template>
         <props>
-            <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
+            <prop name="width" type="Number" required="true" default="300"/>
+            <prop name="height" type="Number" required="true" default="100"/>
             <prop name="fill" type="String" default="yellow"/>
         </props>
     </component-class>
@@ -24,8 +24,8 @@
                   v-bind:fill="fill"></rect>
         </template>
         <props>
-            <prop name="width" type="Number" required="true"/>
-            <prop name="height" type="Number" required="true"/>
+            <prop name="width" type="Number" required="true" default="300"/>
+            <prop name="height" type="Number" required="true" default="100"/>
             <prop name="fill" type="String" default="yellow"/>
         </props>
     </component-class>
