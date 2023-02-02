@@ -18,12 +18,12 @@ export default defineConfig({
     rollupOptions: {
       input: {
         app: "./index.electron.html"
-      }
+      },
     },
   },
 
   server: {
-    watch: {awaitWriteFinish: {stabilityThreshold: 2000}}
+    watch: {awaitWriteFinish: {stabilityThreshold: 3000}}
   },
   
 })
