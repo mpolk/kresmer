@@ -27,6 +27,7 @@ import UndoStack from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
+import NetworkElementClass from "./NetworkElementClass";
 
 
 /**
@@ -208,7 +209,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (componentClass.style) {
-            this.styles.push(this.scopeStyles(componentClass.style, componentClass.name));
+            this.styles.push(this.scopeStyles(componentClass.style, componentClass));
         }//if
 
         this.registeredComponentClasses.set(componentClass.name, componentClass);
@@ -240,7 +241,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (linkClass.style) {
-            this.styles.push(this.scopeStyles(linkClass.style, linkClass.name));
+            this.styles.push(this.scopeStyles(linkClass.style, linkClass));
         }//if
 
         this.registeredLinkClasses.set(linkClass.name, linkClass);
@@ -288,18 +289,34 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Adds global and component class scopes (optionally) to the CSS style definition
      * @param ast Parsed CSS (Abstract Syntax Tree) to modify
-     * @param classScope A component class name to apply as a scope
+     * @param classScope An element class to apply as a scope
      * @returns Modified AST
      */
-    private scopeStyles(ast: PostCSSRoot, classScope?: string)
+    private scopeStyles(ast: PostCSSRoot, classScope?: NetworkElementClass)
     {
         const ast1 = ast.clone();
+
         ast1.walkRules((rule: PostCSSRule) => {
-            // Scope all rules within the ".kresmer" class and optionally with a component class
+            const additionalScopes: string[] = [];
             let scope = ".kresmer";
-            if (classScope)
-                scope += ` .${classScope}`;
+            if (classScope) {
+                scope += ` .${classScope.name}`;
+                classScope.baseClasses?.forEach(baseClass => {
+                    additionalScopes.push(`${scope} .${baseClass.name}`);
+                });
+            }//if
+
+            const additionalSelectors: string[] = [];
+            rule.selectors.forEach(sel => {
+                additionalScopes.forEach(scope => {
+                    additionalSelectors.push(`${scope} ${sel}`);
+                });
+            });
+
             rule.selectors = rule.selectors.map(sel => `${scope} ${sel}`);
+            if (additionalSelectors.length) {
+                rule.selector += `, ${additionalSelectors.join(", ")}`;
+            }//if
         })
 
         return ast1;

@@ -16,7 +16,7 @@ import NetworkElementClass, { ComputedProps } from "../NetworkElementClass";
  * Network Link Class - a generic network link class
  * (the word "class" here means a runtime class, not a Typescript one)
  */
-export default class LinkClass extends NetworkElementClass {
+export default class NetworkLinkClass extends NetworkElementClass {
     /**
      * @param name Class name
      * @param params Class creation parameters:
@@ -24,6 +24,7 @@ export default class LinkClass extends NetworkElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params: {
+        baseClasses?: NetworkLinkClass[],
         props?: ComponentObjectPropsOptions,
         computedProps?: ComputedProps,
         defs?: Template,
@@ -31,10 +32,10 @@ export default class LinkClass extends NetworkElementClass {
     })
     {
         super(name, params);
-        LinkClass.allClasses[name] = this;
+        NetworkLinkClass.allClasses[name] = this;
     }//ctor
 
-    private static allClasses: Record<string, LinkClass> = {};
+    private static allClasses: Record<string, NetworkLinkClass> = {};
     /**
      *  Returns the class with the given name (if exists)
      *  @param name The name of the class to find

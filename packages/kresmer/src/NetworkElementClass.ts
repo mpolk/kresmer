@@ -23,6 +23,7 @@ export default abstract class NetworkElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params: {
+        baseClasses?: NetworkElementClass[],
         props?: ComponentObjectPropsOptions,
         computedProps?: ComputedProps,
         defs?: Template,
@@ -30,31 +31,24 @@ export default abstract class NetworkElementClass {
     })
     {
         this.name = name;
+        this.baseClasses = params.baseClasses;
         this.props = params.props ?? {};
         this.computedProps = params.computedProps;
         this.defs = params.defs;
         this.style = params.style;
     }//ctor
 
-    /**
-     * Class name
-     */
+    /** Class name */
     readonly name: string;
-    /**
-     * Props definition of the Vue-component for this class
-     */
+    /** A list of base classes */
+    readonly baseClasses?: NetworkElementClass[];
+    /** Props definition of the Vue-component for this class */
     readonly props: ComponentObjectPropsOptions;
-    /**
-     * Computed props (aka just computed) definition of the Vue-component for this class
-     */
+    /** Computed props (aka just computed) definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
-    /**
-     * SVG Defs for this class
-     */
+    /** SVG Defs for this class */
     readonly defs?: Template;
-    /**
-     * CSS styles defined in this class
-     */
+    /** CSS styles defined in this class */
     readonly style?: PostCSSRoot;
 
     /**

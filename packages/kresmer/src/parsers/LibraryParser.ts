@@ -8,8 +8,9 @@
 
 import { ComponentObjectPropsOptions, Prop } from "vue";
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
+import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
-import LinkClass from "../NetworkLink/NetworkLinkClass";
+import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
@@ -85,6 +86,7 @@ export default class LibraryParser {
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
+        let baseClasses: NetworkComponentClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -101,7 +103,9 @@ export default class LibraryParser {
                     defs = child;
                     break;
                 case "style":
-                    style = this.parseCSS(child.innerHTML, child.getAttribute("extends"));
+                    baseClasses = child.getAttribute("extends")?.split(/ *, */)
+                        .map(className => NetworkComponentClass.getClass(className));
+                    style = this.parseCSS(child.innerHTML, baseClasses);
                     break;
             }//switch
         }//for
@@ -119,7 +123,7 @@ export default class LibraryParser {
         }//if
 
 
-        return new NetworkComponentClass(className, {template, props, computedProps, defs, 
+        return new NetworkComponentClass(className, {baseClasses, template, props, computedProps, defs, 
                                                      style, autoInstanciate, defaultContent});
     }//parseComponentClassNode
 
@@ -134,6 +138,7 @@ export default class LibraryParser {
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
+        let baseClasses: NetworkLinkClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -147,12 +152,14 @@ export default class LibraryParser {
                     defs = child;
                     break;
                 case "style":
-                    style = this.parseCSS(child.innerHTML, child.getAttribute("extends"));
+                    baseClasses = child.getAttribute("extends")?.split(/ *, */)
+                        .map(className => NetworkLinkClass.getClass(className));
+                    style = this.parseCSS(child.innerHTML, baseClasses);
                     break;
             }//switch
         }//for
 
-        return new LinkClass(className, {props, computedProps, defs, style})
+        return new NetworkLinkClass(className, {baseClasses, props, computedProps, defs, style})
     }//parseLinkClassNode
 
 
@@ -261,16 +268,16 @@ export default class LibraryParser {
     }//parseComputedProps
 
 
-    private parseCSS(css: string, baseClassNames?: string|null)
+    private parseCSS(css: string, baseClasses?: NetworkElementClass[])
     {
         const ast = postcss.parse(css, {from: undefined});
-        if (!baseClassNames) {
+        if (!baseClasses) {
             return ast;
         }//if
 
         const ast0 = new PostCSSRoot();
-        for (const baseClassName of baseClassNames.split(/ *, */)) {
-            const ast1 = NetworkComponentClass.getClass(baseClassName)?.style;
+        for (const baseClass of baseClasses) {
+            const ast1 = baseClass?.style;
             if (ast1) {
                 this.mergeCSS(ast0, ast1);
             }//if
@@ -333,7 +340,7 @@ export class StyleLibNode {
 }//StyleLibNode
 
 type ParsedNode = NetworkComponentClass | 
-                  LinkClass |
+                  NetworkLinkClass |
                   DefsLibNode | 
                   StyleLibNode | 
                   ParsingException;
