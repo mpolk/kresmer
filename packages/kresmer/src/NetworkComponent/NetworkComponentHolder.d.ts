@@ -13,7 +13,7 @@ import Transform, {TransformMode} from "../Transform/Transform";
 export const NetworkComponentHolderProps = {
     origin: {type: Object as PropType<Position>, required: true},
     transform: {type: Object as PropType<Transform>},
-    svg: {type: Object as PropType<SVGGraphicsElement>},
+    svg: {type: Object as PropType<SVGSVGElement>},
     isSelected: {type: Boolean, default: false},
     isHighlighted: {type: Boolean, default: false},
     isDragged: {type: Boolean, default: false},

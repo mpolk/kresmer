@@ -28,8 +28,8 @@
         isEditable: {type: Boolean, required: true},
     });
 
-    const svg = ref<SVGGraphicsElement>()!;
-    const trGroup = ref<SVGGraphicsElement>()!;
+    const svg = ref<SVGSVGElement>()!;
+    const trGroup = ref<SVGSVGElement>()!;
     provide(NetworkComponent.injectionKey, props.controller.component);
 
     const applyTransform = ref(false);
@@ -48,6 +48,8 @@
         if (props.transform.nonEmpty) {
             props.controller.updateConnectionPoints();
         }//if
+        // eslint-disable-next-line vue/no-mutating-props
+        props.controller.component.svg = svg.value;
     })//onMounted
 
     const transform = computed(() => {

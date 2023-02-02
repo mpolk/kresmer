@@ -49,6 +49,9 @@ export default class NetworkComponent extends NetworkElement {
     /** Indicates where the component was auto instanctiated when its class was registered */
     readonly isAutoInstantiated: boolean;
 
+    /** Underlying SVG element */
+    svg?: SVGSVGElement;
+
     toString()
     {
         return `${this.name}: ${this.getClass().name}`;
@@ -62,7 +65,7 @@ export default class NetworkComponent extends NetworkElement {
     /** A collection of this component connection points indexed by their names */
     readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
 
-    /** Update component's connectio points position to the actual values */
+    /** Update component's connection points position to the actual values */
     public updateConnectionPoints()
     {
         for (const name in this.connectionPoints) {
