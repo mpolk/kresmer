@@ -233,8 +233,8 @@ export default class LinkVertex {
 
         let shouldMove = Boolean(newPos);
         const outOfLimits = newPos && (
-            newPos.x <= 0 || newPos.x >= this.link.kresmer.viewWidth ||
-            newPos.y <= 0 || newPos.y >= this.link.kresmer.viewHeight);
+            newPos.x <= 0 || newPos.x >= this.link.kresmer.logicalBox.width ||
+            newPos.y <= 0 || newPos.y >= this.link.kresmer.logicalBox.height);
         if (outOfLimits) {
             shouldMove = false;
             this.blink();

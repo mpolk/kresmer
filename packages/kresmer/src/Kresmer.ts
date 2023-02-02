@@ -37,18 +37,18 @@ import NetworkElementClass from "./NetworkElementClass";
 export default class Kresmer extends KresmerEventHooks {
 
     constructor(mountPoint: string|HTMLElement, options?: {
-        drawingWidth?: number | string,
-        drawingHeight?: number | string,
-        viewWidth?: number,
-        viewHeight?: number,
+        mountingWidth?: number | string,
+        mountingHeight?: number | string,
+        logicalWidth?: number,
+        logicalHeight?: number,
         isEditable?: boolean,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
-        options?.drawingWidth && (this.drawingWidth = options.drawingWidth);
-        options?.drawingHeight && (this.drawingHeight = options.drawingHeight);
-        options?.viewWidth && (this.viewWidth = options.viewWidth);
-        options?.viewHeight && (this.viewHeight = options.viewHeight);
+        options?.mountingWidth && (this.mountingBox.width = options.mountingWidth);
+        options?.mountingHeight && (this.mountingBox.height = options.mountingHeight);
+        options?.logicalWidth && (this.logicalBox.width = options.logicalWidth);
+        options?.logicalHeight && (this.logicalBox.height = options.logicalHeight);
         options?.isEditable !== undefined && (this.isEditable = options.isEditable);
             
         this.appKresmer = createApp(KresmerVue, {
@@ -57,10 +57,8 @@ export default class Kresmer extends KresmerEventHooks {
             networkComponentClasses: this.registeredComponentClasses,
             links: this.links,
             linkClasses: this.registeredLinkClasses,
-            drawingWidth: this.drawingWidth,
-            drawingHeight: this.drawingHeight,
-            viewWidth: this.viewWidth,
-            viewHeight: this.viewHeight,
+            mountingBox: this.mountingBox,
+            logicalBox: this.logicalBox,
             isEditable: this.isEditable,
         });
 
@@ -80,7 +78,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Kresmer's vue-component Application */
     readonly appKresmer: App;
     /** Kresmer's vue-component instance itself */
-    readonly vueKresmer: InstanceType<typeof KresmerVue>;
+    private readonly vueKresmer: InstanceType<typeof KresmerVue>;
     /** A symbolic key for the Kresmer instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
@@ -92,17 +90,22 @@ export default class Kresmer extends KresmerEventHooks {
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
-    readonly drawingWidth: number|string = "100%";
-    /** Sets the drawing height within the browser client area */
-    readonly drawingHeight: number|string = "100%";
-    /** Sets the drawing area width in SVG logical units 
-     * (component sizes are measuring related this width) */
-    readonly viewWidth: number = 1000;
-    /** Sets the drawing area height in SVG logical units 
-     * (component sizes are measuring related this height) */
-    readonly viewHeight: number = 1000;
+    readonly mountingBox: {width: number|string, height: number|string} = reactive({width: "100%", height: "100%"});
+    get mountingWidth() {return this.mountingBox.width}
+    set mountingWidth(newWidth) {this.mountingBox.width = newWidth}
+    get mountingHeight() {return this.mountingBox.height}
+    set mountingHeight(newHeight) {this.mountingBox.height = newHeight}
+
+    /** Sets the drawing area dimensions in SVG logical units 
+     * (component sizes are measuring relative to this sizes) */
+    readonly logicalBox = reactive({width: 1000, height: 1000});
+    get logicalWidth() {return this.logicalBox.width}
+    set logicalWidth(newWidth) {this.logicalBox.width = newWidth}
+    get logicalHeight() {return this.logicalBox.height}
+    set logicalHeight(newHeight) {this.logicalBox.height = newHeight}
+
     /** Determines whether the drawing is editable */
-    readonly isEditable: boolean = true;
+    isEditable = true;
     /** The element Kresmer was mounted on */
     readonly mountPoint: HTMLElement;
 
@@ -131,6 +134,11 @@ export default class Kresmer extends KresmerEventHooks {
                      .length;
     }//get isEmpty
 
+    /** Forces update on the underlying Vue-component */
+    public forceUpdate()
+    {
+        this.vueKresmer.$forceUpdate();
+    }//forceUpdate
 
     /** A list of all Component Classes, registered by Kresmer */
     protected readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();
@@ -606,7 +614,7 @@ export default class Kresmer extends KresmerEventHooks {
   
 
     /** Returns the root SVG element */
-    public get rootSVG(): SVGGraphicsElement
+    public get rootSVG(): SVGSVGElement
     {
         return this.vueKresmer.rootSVG!;
     }//rootSVG
@@ -740,7 +748,7 @@ export default class Kresmer extends KresmerEventHooks {
         createComponent: (componentClass: NetworkComponentClass) =>
         {
             const newComponent = new NetworkComponent(this, componentClass);
-            this.placeNetworkComponent(newComponent, {x: this.viewWidth/2, y: this.viewHeight/2});
+            this.placeNetworkComponent(newComponent, {x: this.logicalBox.width/2, y: this.logicalBox.height/2});
         },//createComponent
 
         /**

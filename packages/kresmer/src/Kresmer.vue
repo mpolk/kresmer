@@ -7,7 +7,7 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide } from 'vue';
+    import { PropType, ref, computed, provide, watch } from 'vue';
     import Kresmer, {MapWithZIndices} from './Kresmer';
     import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
@@ -27,21 +27,21 @@
 </script>
 
 <script setup lang="ts">
+    type DrawingSize = {width: number, height: number};
+
     const props = defineProps({
         controller: {type: Object as PropType<Kresmer>, required: true},
         networkComponents: {type: Object as PropType<MapWithZIndices<number, NetworkComponentController>>, required: true},
         networkComponentClasses: {type: Object as PropType<Map<string, NetworkComponentClass>>, required: true},
         links: {type: Object as PropType<MapWithZIndices<number, NetworkLink>>, required: true},
         linkClasses: {type: Object as PropType<Map<string, NetworkLinkClass>>, required: true},
-        drawingWidth: {type: [Number, String], default: "100%"},
-        drawingHeight: {type: [Number, String], default: "100%"},
-        viewWidth: {type: Number, default: 1000},
-        viewHeight: {type: Number, default: 1000},
+        mountingBox: {type: Object as PropType<DrawingSize>, required: true},
+        logicalBox: {type: Object as PropType<DrawingSize>, required: true},
         isEditable: {type: Boolean, default: true},
     });
 
     provide(Kresmer.injectionKey, props.controller);
-    const rootSVG = ref<SVGGraphicsElement>();
+    const rootSVG = ref<SVGSVGElement>();
 
     const networkComponentsSorted = computed(() => props.networkComponents.sorted);
     const linksSorted = computed(() => props.links.sorted);
@@ -72,8 +72,11 @@
 
     // const x = computed(() => scaledOffset(props.drawingWidth));
     // const y = computed(() => scaledOffset(props.drawingHeight));
-    const width = computed(() => scaled(props.drawingWidth));
-    const height = computed(() => scaled(props.drawingHeight));
+    const width = computed(() => scaled(props.mountingBox.width));
+    const height = computed(() => scaled(props.mountingBox.height));
+    const viewBox = computed(() => {
+        return `0 0 ${props.logicalBox.width} ${props.logicalBox.height}`;
+    });
 
     const styles = computed(() => {
         return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
@@ -135,8 +138,7 @@
 <template>
     <svg class="kresmer" ref="rootSVG" 
         xx-style="{marginLeft: x, marginTop: y, marginRight: 0, marginBottom: 0}" 
-        :width = "width" :height="height"
-        :viewBox="`0 0 ${viewWidth} ${viewHeight}`"
+        :width = "width" :height="height" :viewBox="viewBox"
         @mousedown.prevent.self="onMouseDownOnCanvas($event)"
         @wheel.ctrl.prevent="onMouseWheel($event)"
         @mouseenter.self="onMouseEnter"

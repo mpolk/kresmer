@@ -13,7 +13,7 @@
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref, computed, watch } from 'vue';
+    import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { Modal } from 'bootstrap';
     import Kresmer, { NetworkComponentClass, NetworkComponent } from 'kresmer';
     import { kresmer } from './renderer-main';
@@ -34,34 +34,42 @@
 
     onMounted(() =>
     {
-        rootDiv.value!.addEventListener('shown.bs.modal', () => btnOk.value!.focus());
+        rootDiv.value!.addEventListener('shown.bs.modal', () => selComponentClass.value!.focus());
     })//mounted
 
-    watch(result, () => {
-        krePreview?.eraseContent();
+    watch(result, async() => {
+        krePreview.eraseContent();
         if (result.value) {
             const _class = result.value;
             const component = new NetworkComponent(krePreview, _class);
             component.name = _class.name;
-            krePreview?.placeNetworkComponent(component, {x: previewWidth/2, y: previewHeight/2});
+            krePreview.placeNetworkComponent(component, {x: previewWidth/2, y: previewHeight/2});
+            await nextTick();
+
+            const bBox = component.svg?.getBoundingClientRect();
+            if (bBox && bBox.width && bBox.height) {
+                const d = Math.max(bBox.width, bBox.height);
+                krePreview.logicalWidth = d * 2;
+                krePreview.logicalHeight = d * 2;
+            }//if
         }//if
     });
 
     async function show()
     {
-        componentClasses.value = [...kresmer.getRegisteredComponentClasses()]
-            .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
-            .map(([name, _class]) => {return {name, _class}});
-
-        krePreview = new Kresmer(divPreview.value!, {isEditable: false, 
-            viewWidth: previewWidth, viewHeight: previewHeight});
-        componentClasses.value.forEach(item => {krePreview.registerNetworkComponentClass(item._class)});
-        componentClasses.value = componentClasses.value.filter(({name, _class}) => !_class.autoInstanciate);
-        result.value = componentClasses.value[0]._class;
-
         if (!modal) {
+            componentClasses.value = [...kresmer.getRegisteredComponentClasses()]
+                .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
+                .map(([name, _class]) => {return {name, _class}});
+
+            krePreview = new Kresmer(divPreview.value!, {isEditable: false, 
+                logicalWidth: previewWidth, logicalHeight: previewHeight});
+            componentClasses.value.forEach(item => {krePreview.registerNetworkComponentClass(item._class)});
+            componentClasses.value = componentClasses.value.filter(({name, _class}) => !_class.autoInstanciate);
+            result.value = componentClasses.value[0]._class;
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
         }//if
+
         modal.show();
         const promise = new Promise<NetworkComponentClass|null>((resolve) => {
             resolvePromise = resolve;
