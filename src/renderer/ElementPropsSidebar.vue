@@ -13,7 +13,7 @@
 </script>
 
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { ref, watch } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { NetworkElement } from 'kresmer';
     import { updateWindowTitle } from './renderer-main';
@@ -25,7 +25,10 @@
     const formValidated = ref(false);
 
     let elementToEdit: NetworkElement;
-    const elementName = ref("");
+    const elementName = ref<string|undefined>("");
+    const elementDisplayName = ref("");
+    watch(elementName, () => {elementDisplayName.value = elementToEdit.generateName(elementName.value)})
+
     // eslint-disable-next-line @typescript-eslint/ban-types
     type ElementProp = {name: string, value: unknown, type: Function, validValues?: string[]};
     const elementProps = ref<ElementProp[]>([]);
@@ -37,7 +40,8 @@
         }//if
 
         elementToEdit = element;
-        elementName.value = element.name;
+        elementName.value = element._name;
+        elementDisplayName.value = element.name;
         elementProps.value = Object.keys(element._class.props)
             .map(name => 
                 {
@@ -126,7 +130,7 @@
     <div ref="rootDiv" class="offcanvas offcanvas-end" tabindex="-1">
         <div class="offcanvas-header align-items-baseline">
             <div>
-                <h5 class="offcanvas-title">{{elementName}}</h5>
+                <h5 class="offcanvas-title">{{elementDisplayName}}</h5>
                 <h6 class="text-secondary">{{elementToEdit?.getClass()?.name}}</h6>
             </div>
             <button type="button" class="btn-close" @click="close"></button>

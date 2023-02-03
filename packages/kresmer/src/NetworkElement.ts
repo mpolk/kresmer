@@ -52,10 +52,7 @@ export default abstract class NetworkElement {
     public _name?: string;
     get name(): string
     {
-        if (this._name)
-            return this._name;
-        else
-            return this.getDefaultName();
+        return this.generateName(this._name);
     }//name
 
     set name(newName: string|undefined)
@@ -64,6 +61,14 @@ export default abstract class NetworkElement {
         this._name = newName;
         this.kresmer._onElementRename(this, oldName);
     }//set name
+
+    public generateName(rawName: string|undefined)
+    {
+        if (rawName)
+            return rawName;
+        else
+            return this.getDefaultName();
+    }//generateName
 
     get isNamed()
     {
