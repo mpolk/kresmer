@@ -117,7 +117,7 @@
                         <div class="row">
                             <div class="col">
                                 <select class="form-select" v-model="result" ref="selComponentClass" 
-                                        :size="selectSize">
+                                        :size="selectSize" @dblclick="submit">
                                     <option v-for="cl in componentClasses" 
                                         :value="cl._class" 
                                         :key="`class[${cl.name}]`">
