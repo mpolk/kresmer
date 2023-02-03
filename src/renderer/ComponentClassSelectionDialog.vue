@@ -39,6 +39,9 @@
 
     watch(result, async() => {
         krePreview.eraseContent();
+        krePreview.logicalWidth = previewWidth;
+        krePreview.logicalHeight = previewHeight;
+
         if (result.value) {
             const _class = result.value;
             const component = new NetworkComponent(krePreview, _class);
