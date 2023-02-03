@@ -15,7 +15,7 @@
 <script setup lang="ts">
     import { onMounted, ref, computed, watch, nextTick } from 'vue';
     import { Modal } from 'bootstrap';
-    import Kresmer, { NetworkComponentClass, NetworkComponent } from 'kresmer';
+    import Kresmer, { NetworkComponentClass, NetworkComponent, NetworkComponentController } from 'kresmer';
     import { kresmer } from './renderer-main';
 
     let modal!: Modal;
@@ -45,15 +45,21 @@
         if (result.value) {
             const _class = result.value;
             const component = new NetworkComponent(krePreview, _class);
+            const controller = new NetworkComponentController(krePreview, component, 
+                {origin: {x: previewWidth/2, y: previewHeight/2}});
             component.name = _class.name;
-            krePreview.placeNetworkComponent(component, {x: previewWidth/2, y: previewHeight/2});
+            krePreview.addPositionedNetworkComponent(controller);
             await nextTick();
 
-            const bBox = component.svg?.getBoundingClientRect();
-            if (bBox && bBox.width && bBox.height) {
-                const d = Math.max(bBox.width, bBox.height);
-                krePreview.logicalWidth = d * 2;
-                krePreview.logicalHeight = d * 2;
+            const bBox = component.svg?.getBBox();
+            const clRect = component.svg?.getBoundingClientRect();
+            if (bBox && bBox.width && bBox.height && clRect) {
+                const d = Math.max(bBox.width, bBox.height) * 1.2;
+                krePreview.logicalWidth = d;
+                krePreview.logicalHeight = d;
+                const componentPos = krePreview.applyScreenCTM(clRect);
+                controller.origin.x = previewWidth/2 + d/2 - (componentPos.x + bBox.width/2);
+                controller.origin.y = previewHeight/2 + d/2 - (componentPos.y + bBox.height/2);
             }//if
         }//if
     });
