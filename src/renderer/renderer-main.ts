@@ -299,9 +299,9 @@ function onLinkRightClick(link: NetworkLink, segmentNumber: number, mouseEvent: 
     window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 }//onLinkRightClick
 
-function onLinkDoubleClick(link: NetworkLink)
+function onLinkDoubleClick(link: NetworkLink, segmentNumber: number,  mouseEvent: MouseEvent)
 {
-    vueComponentPropsSidebar.show(link);
+    kresmer.edAPI.addLinkVertex(link.id, segmentNumber, mouseEvent);
 }//onComponentLinkClick
 
 function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent */)
