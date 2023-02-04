@@ -54,66 +54,135 @@ const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#
     InstanceType<typeof LinkClassSelectionDialog>;
 const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionDialog).mount("#dlgComponentClassSelection") as
     InstanceType<typeof ComponentClassSelectionDialog>;
+const drawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
+    InstanceType<typeof DrawingMergeDialog>;
 
+export function updateWindowTitle()
+{
+    let title = "Kresmer";
+    if (kresmer.drawingName) {
+        title = `${kresmer.drawingName} - Kresmer`;
+    }//if
+    if (kresmer.isDirty) {
+        title = `*${title}`;
+    }//if
+    window.document.title = title;
+}//updateWindowTitle
+
+
+// Processing Kresmer events (coming from the main Kresmer component)
 kresmer
     .on("got-dirty", updateWindowTitle)
-    .on("drawing-scale", (newScale) => statusBarData.drawingScale = newScale)
     .on("drawing-mouse-leave", () => hints.reset())
     .on("mode-reset", () => hints.reset())
     .on("component-mouse-enter", () => hints.push(Hints.onComponentMouseEnter))
     .on("component-mouse-leave", () => hints.pop())
     .on("component-move-started", () => hints.push(Hints.onDrag))
-    .on("component-moved", onComponentMutated)
-    .on("component-being-moved", indicateComponentMove)
+    .on("component-moved", () => hints.pop())
     .on("component-transform-started", () => hints.push(""))
-    .on("component-being-transformed", indicateComponentTransform)
-    .on("component-transformed", onComponentMutated)
-    .on("component-entered-transform-mode", onComponentEnteredTransformMode)
+    .on("component-transformed", () => hints.pop())
     .on("component-exited-transform-mode", () => hints.pop())
-    .on("component-selected", onComponentSelected)
-    .on("component-right-click", onComponentRightClick)
-    .on("component-double-click", onComponentDoubleClick)
-    .on("link-selected", onLinkSelected)
-    .on("link-right-click", onLinkRightClick)
-    .on("link-double-click", onLinkDoubleClick)
-    .on("link-vertex-being-moved", indicateLinkVertexMove)
-    .on("link-vertex-moved", onLinkVertexMutated)
-    .on("link-vertex-connected", onLinkVertexMutated)
-    .on("link-vertex-disconnected", onLinkVertexMutated)
-    .on("link-vertex-right-click", onLinkVertexRightClick)
-    .on("connection-point-right-click", onConnectionPointRightClick)
+    .on("link-vertex-moved", () => hints.pop())
+    .on("link-vertex-connected", () => hints.pop())
+    .on("link-vertex-disconnected", () => hints.pop())
     ;
 
-const drawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
-    InstanceType<typeof DrawingMergeDialog>;
+kresmer.on("drawing-scale", (newScale) => {
+    statusBarData.drawingScale = newScale;
+});
 
+kresmer.on("component-double-click", (controller: NetworkComponentController) =>
+{
+    vueComponentPropsSidebar.show(controller.component);
+});//onComponentDoubleClick
+
+kresmer.on("component-right-click", (controller: NetworkComponentController) =>
+{
+    window.electronAPI.showContextMenu("component", controller.component.id);
+});//onComponentRightClick
+
+kresmer.on("component-entered-transform-mode", (_: NetworkComponentController, mode: TransformMode) =>
+{
+    hints.push(mode == "rotation" ? Hints.onRotation : Hints.onScaling);
+});//onComponentEnteredTransformMode
+
+kresmer.on("component-being-transformed", (controller: NetworkComponentController) =>
+{
+    const hint = controller.transformMode === "rotation" ? 
+        controller.transform.rotation.angle.toFixed(0) + '°' :
+        `x:${controller.transform.scale.x.toFixed(controller.transform.scale.x < 10 ? 2 : 0)} \
+         y:${controller.transform.scale.y.toFixed(controller.transform.scale.y < 10 ? 2 : 0)}`;
+    hints.setHint(hint);
+});//indicateComponentTransform
+
+kresmer.on("component-being-moved", (controller: NetworkComponentController) =>
+{
+    const hint = `x:${controller.origin.x.toFixed(0)} \
+                  y:${controller.origin.y.toFixed(0)}`;
+    hints.setHint(hint);
+});//indicateComponentMove
+
+kresmer.on("component-selected", (component: NetworkComponent, isSelected: boolean) =>
+{
+    if (isSelected) {
+        statusBarData.selectedElement = component;
+    } else {
+        statusBarData.selectedElement = null;
+    }//if
+    window.electronAPI.enableDeleteMenuItem(isSelected);
+});//onComponentSelected
+
+kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) => 
+{
+    if (isSelected) {
+        statusBarData.selectedElement = link;
+    } else {
+        statusBarData.selectedElement = null;
+    }//if
+    window.electronAPI.enableDeleteMenuItem(isSelected);
+});//onLinkSelected
+
+kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>
+{
+    window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+});//onLinkRightClick
+
+kresmer.on("link-double-click", (link: NetworkLink, segmentNumber: number,  mouseEvent: MouseEvent) =>
+{
+    kresmer.edAPI.addLinkVertex(link.id, segmentNumber, mouseEvent);
+});//onLinkDoubleClick
+
+kresmer.on("link-vertex-right-click", (vertex: LinkVertex, /* _mouseEvent: MouseEvent */) =>
+{
+    window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
+});//onLinkVertexRightClick
+
+kresmer.on("link-vertex-being-moved", (vertex: LinkVertex) =>
+{
+    const coords = vertex.coords;
+    const hint = `x:${coords.x.toFixed(0)} \
+                  y:${coords.y.toFixed(0)}`;
+    hints.setHint(hint);
+});//indicateLinkVertexMove
+
+kresmer.on("connection-point-right-click", (connectionPoint: ConnectionPointProxy) =>
+{
+    window.electronAPI.showContextMenu("connection-point", connectionPoint.component.id, connectionPoint.name);
+});//onConnectionPointRightClick
+    
+
+// Processing application comand (coming from the main process)
 const appCommandExecutor = new AppCommandExecutor;
 appCommandExecutor
-    .on("load-library", loadLibrary)
-    .on("load-drawing", loadDrawing)
-    .on("save-drawing", saveDrawing)
     .on("undo", () => {kresmer.undo()})
     .on("redo", () => {kresmer.redo()})
-    .on("delete-selected-element", deleteSelectedElement)
-    .on("add-component", addComponent)
-    .on("delete-component", deleteComponent)
-    .on("edit-component-properties", editComponentProperties)
-    .on("transform-component", transformComponent)
-    .on("edit-link-properties", editLinkProperties)
-    .on("delete-link", deleteLink)
-    .on("add-vertex", addLinkVertex)
-    .on("delete-vertex", deleteLinkVertex)
-    .on("align-vertex", alignLinkVertex)
-    .on("connect-connection-point", startLinkCreation)
     ;
 
 window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
     appCommandExecutor.execute(command, ...args);
 });
 
-window.electronAPI.signalReadiness(0);
-
-function loadLibrary(libData: string, completionSignal?: number)
+appCommandExecutor.on("load-library", (libData: string, completionSignal?: number) =>
 { 
     try {
         if (!kresmer.loadLibrary(libData)) {
@@ -133,13 +202,11 @@ function loadLibrary(libData: string, completionSignal?: number)
     if (completionSignal !== undefined) {
         window.electronAPI.signalReadiness(completionSignal);
     }//if
-}//loadLibrary
+});//loadLibrary
 
-async function loadDrawing(drawingData: string, 
-                           options?: {
-                                drawingFileName?: string,
-                                completionSignal?: number,
-                          })
+
+appCommandExecutor.on("load-drawing", 
+    async (drawingData: string, options?: {drawingFileName?: string, completionSignal?: number}) =>
 {
     try {
         let mergeOptions: DrawingMergeOptions|undefined;
@@ -168,41 +235,25 @@ async function loadDrawing(drawingData: string,
     if (options?.completionSignal) {
         window.electronAPI.signalReadiness(options.completionSignal);
     }//if
-}//loadDrawing
+});//loadDrawing
 
-function saveDrawing()
+
+appCommandExecutor.on("save-drawing", () =>
 {
     const dwgData = kresmer.saveDrawing();
     window.electronAPI.completeDrawingSaving(dwgData);
-}//saveDrawing
+});//saveDrawing
 
-export function updateWindowTitle()
-{
-    let title = "Kresmer";
-    if (kresmer.drawingName) {
-        title = `${kresmer.drawingName} - Kresmer`;
-    }//if
-    if (kresmer.isDirty) {
-        title = `*${title}`;
-    }//if
-    window.document.title = title;
-}//updateWindowTitle
-
-function onComponentDoubleClick(controller: NetworkComponentController)
-{
-    vueComponentPropsSidebar.show(controller.component);
-}//onComponentDoubleClick
-
-function deleteSelectedElement()
+appCommandExecutor.on("delete-selected-element", () =>
 {
     if (kresmer.selectedElement instanceof NetworkComponent) {
         kresmer.edAPI.deleteComponent(kresmer.selectedElement.id);
     } else if (kresmer.selectedElement instanceof NetworkLink) {
         kresmer.edAPI.deleteLink(kresmer.selectedElement.id);
     }//if
-}//deleteSelectedElement
+});//deleteSelectedElement
 
-async function addComponent()
+appCommandExecutor.on("add-component", async () =>
 {
     const componentClass = await vueComponentClassSelectionDialog.show();
     console.debug(`component-class = ${componentClass?.name}`);
@@ -210,14 +261,14 @@ async function addComponent()
     if (componentClass) {
         kresmer.edAPI.createComponent(componentClass);
     }//if
-}//addComponent
+});//addComponent
 
-function deleteComponent(componentID: number)
+appCommandExecutor.on("delete-component", (componentID: number) =>
 {
     kresmer.edAPI.deleteComponent(componentID);
-}//deleteComponent
+});//deleteComponent
 
-function editComponentProperties(componentID: number)
+appCommandExecutor.on("edit-component-properties", (componentID: number) =>
 {
     const component = kresmer.getComponentById(componentID);
     if (!component) {
@@ -225,91 +276,22 @@ function editComponentProperties(componentID: number)
         return;
     }//if
     vueComponentPropsSidebar.show(component);
-}//editComponentProperties
+});//editComponentProperties
 
-function transformComponent(componentID: number)
+appCommandExecutor.on("transform-component", (componentID: number) =>
 {
     const controller = kresmer.getComponentControllerById(componentID);
     if (controller) {
         controller.transformMode = "scaling";
     }//if
-}//transformComponent
+});//transformComponent
 
-function onComponentRightClick(controller: NetworkComponentController)
-{
-    window.electronAPI.showContextMenu("component", controller.component.id);
-}//onComponentRightClick
-
-function onComponentEnteredTransformMode(_: NetworkComponentController, mode: TransformMode) 
-{
-    hints.push(mode == "rotation" ? 
-        Hints.onRotation : 
-        Hints.onScaling);
-}//onComponentEnteredTransformMode
-
-function indicateComponentTransform(controller: NetworkComponentController)
-{
-    const hint = controller.transformMode === "rotation" ? 
-        controller.transform.rotation.angle.toFixed(0) + '°' :
-        `x:${controller.transform.scale.x.toFixed(controller.transform.scale.x < 10 ? 2 : 0)} \
-         y:${controller.transform.scale.y.toFixed(controller.transform.scale.y < 10 ? 2 : 0)}`;
-    hints.setHint(hint);
-}//indicateComponentTransform
-
-function indicateComponentMove(controller: NetworkComponentController)
-{
-    const hint = `x:${controller.origin.x.toFixed(0)} \
-                  y:${controller.origin.y.toFixed(0)}`;
-    hints.setHint(hint);
-}//indicateComponentMove
-
-function onComponentSelected(component: NetworkComponent, isSelected: boolean)
-{
-    if (isSelected) {
-        statusBarData.selectedElement = component;
-    } else {
-        statusBarData.selectedElement = null;
-    }//if
-    window.electronAPI.enableDeleteMenuItem(isSelected);
-}//onComponentSelected
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onComponentMutated(_controller: NetworkComponentController)
-{
-    hints.pop();
-}//onComponentMutated
-
-function deleteLink(linkID: number)
+appCommandExecutor.on("delete-link", (linkID: number) =>
 {
     kresmer.edAPI.deleteLink(linkID);
-}//deleteLink
+});//deleteLink
 
-function onLinkSelected(link: NetworkLink, isSelected: boolean)
-{
-    if (isSelected) {
-        statusBarData.selectedElement = link;
-    } else {
-        statusBarData.selectedElement = null;
-    }//if
-    window.electronAPI.enableDeleteMenuItem(isSelected);
-}//onLinkSelected
-
-function onLinkRightClick(link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent)
-{
-    window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
-}//onLinkRightClick
-
-function onLinkDoubleClick(link: NetworkLink, segmentNumber: number,  mouseEvent: MouseEvent)
-{
-    kresmer.edAPI.addLinkVertex(link.id, segmentNumber, mouseEvent);
-}//onComponentLinkClick
-
-function onLinkVertexRightClick(vertex: LinkVertex, /* _mouseEvent: MouseEvent */)
-{
-    window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
-}//onLinkVertexRightClick
-
-function editLinkProperties(linkID: number)
+appCommandExecutor.on("edit-link-properties", (linkID: number) =>
 {
     const link = kresmer.getLinkById(linkID);
     if (!link) {
@@ -317,43 +299,25 @@ function editLinkProperties(linkID: number)
         return;
     }//if
     vueComponentPropsSidebar.show(link);
-}//editLinkProperties
+});//editLinkProperties
 
-function indicateLinkVertexMove(vertex: LinkVertex)
-{
-    const coords = vertex.coords;
-    const hint = `x:${coords.x.toFixed(0)} \
-                  y:${coords.y.toFixed(0)}`;
-    hints.setHint(hint);
-}//indicateLinkVertexMove
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-function onLinkVertexMutated(_vertex: LinkVertex)
-{
-    hints.pop();
-}//onLinkVertexMutated
-
-function addLinkVertex(linkID: number, segmentNumber: number, mousePos: Position)
+appCommandExecutor.on("add-vertex", (linkID: number, segmentNumber: number, mousePos: Position) =>
 {
     kresmer.edAPI.addLinkVertex(linkID, segmentNumber, mousePos);
-}//addLinkVertex
+});//addLinkVertex
 
-function deleteLinkVertex(linkID: number, vertexNumber: number)
+appCommandExecutor.on("delete-vertex", (linkID: number, vertexNumber: number) =>
 {
     kresmer.edAPI.deleteLinkVertex(linkID, vertexNumber);
-}//deleteLinkVertex
+});//deleteLinkVertex
 
-function alignLinkVertex(linkID: number, vertexNumber: number)
+appCommandExecutor.on("align-vertex", (linkID: number, vertexNumber: number) =>
 {
     kresmer.edAPI.alignLinkVertex(linkID, vertexNumber);
-}//alignLinkVertex
+});//alignLinkVertex
 
-function onConnectionPointRightClick(connectionPoint: ConnectionPointProxy)
-{
-    window.electronAPI.showContextMenu("connection-point", connectionPoint.component.id, connectionPoint.name);
-}//onConnectionPointRightClick
-
-async function startLinkCreation(fromComponentID: number, fromConnectionPointName: string|number)
+appCommandExecutor.on("connect-connection-point", async (
+    fromComponentID: number, fromConnectionPointName: string|number) =>
 {
     const linkClass = await vueLinkClassSelectionDialog.show();
     console.debug(`link-class = ${linkClass?.name}`);
@@ -361,4 +325,7 @@ async function startLinkCreation(fromComponentID: number, fromConnectionPointNam
     if (linkClass) {
         kresmer.edAPI.startLinkCreation(linkClass, fromComponentID, fromConnectionPointName);
     }//if
-}//startLinkCreation
+});//startLinkCreation
+
+// Let's go forward and do our work...
+window.electronAPI.signalReadiness(0);
