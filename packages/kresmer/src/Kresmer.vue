@@ -7,7 +7,7 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide, watch } from 'vue';
+    import { PropType, ref, computed, provide } from 'vue';
     import Kresmer, {MapWithZIndices} from './Kresmer';
     import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
@@ -18,6 +18,7 @@
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
     import NetworkLink from './NetworkLink/NetworkLink';
     import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
+    import { BoxSize } from './Transform/Transform';
 
     export default {
         name: "Kresmer",
@@ -27,7 +28,6 @@
 </script>
 
 <script setup lang="ts">
-    type DrawingSize = {width: number, height: number};
 
     const props = defineProps({
         controller: {type: Object as PropType<Kresmer>, required: true},
@@ -35,8 +35,8 @@
         networkComponentClasses: {type: Object as PropType<Map<string, NetworkComponentClass>>, required: true},
         links: {type: Object as PropType<MapWithZIndices<number, NetworkLink>>, required: true},
         linkClasses: {type: Object as PropType<Map<string, NetworkLinkClass>>, required: true},
-        mountingBox: {type: Object as PropType<DrawingSize>, required: true},
-        logicalBox: {type: Object as PropType<DrawingSize>, required: true},
+        mountingBox: {type: Object as PropType<BoxSize>, required: true},
+        logicalBox: {type: Object as PropType<BoxSize>, required: true},
         isEditable: {type: Boolean, default: true},
     });
 
@@ -46,8 +46,6 @@
     const networkComponentsSorted = computed(() => props.networkComponents.sorted);
     const linksSorted = computed(() => props.links.sorted);
 
-    const scale = ref(1);
-
     function scaled(size: string|number)
     {
         const matches = size.toString().match(/^([0-9.]+)(.+)$/);
@@ -55,7 +53,7 @@
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * scale.value}${matches[2]}`;
+        return `${n * props.controller.drawingScale.value}${matches[2]}`;
     }//scaled
 
     // function scaledOffset(size: string|number)
@@ -95,8 +93,8 @@
 
     function onMouseWheel(event: WheelEvent)
     {
-        scale.value *= Math.pow(1.05, event.deltaY * -0.01);
-        props.controller.emit("drawing-scale", scale.value);
+        props.controller.changeScale(Math.pow(1.05, event.deltaY * -0.01));
+        props.controller.emit("drawing-scale", props.controller.drawingScale.value);
     }//onMouseWheel
 
     function onComponentRightClick(controller: NetworkComponentController, 

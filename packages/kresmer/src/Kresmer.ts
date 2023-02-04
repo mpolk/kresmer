@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref } from "vue";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
@@ -103,6 +103,17 @@ export default class Kresmer extends KresmerEventHooks {
     set logicalWidth(newWidth) {this.logicalBox.width = newWidth}
     get logicalHeight() {return this.logicalBox.height}
     set logicalHeight(newHeight) {this.logicalBox.height = newHeight}
+
+    /** Drawing scale (visual) */
+    drawingScale = ref(1);
+    changeScale(factor?: number)
+    {
+        if (factor) {
+            this.drawingScale.value *= factor;
+        } else {
+            this.drawingScale.value = 1;
+        }//if
+    }//changeScale
 
     /** Determines whether the drawing is editable */
     isEditable = true;

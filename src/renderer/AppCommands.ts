@@ -20,11 +20,13 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "save-drawing": () => void,
     "undo": () => void,
     "redo": () => void,
+    "scale-drawing": (direction: ScaleDirection) => void,
     "delete-selected-element": () => void,
     "add-component": () => void,
 }//AppCommandFormats
 
 export type AppCommand = keyof AppCommandFormats;
+export type ScaleDirection = "+"|"-"|"0";
 
 export class AppCommandExecutor {
 

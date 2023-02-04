@@ -12,6 +12,7 @@ import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing } 
 const isMac = process.platform === 'darwin'
 
 export interface ContextMenus {
+  "drawing": (mousePos: Position) => void,
   "component": (componentID: number) => void,
   "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
   "link-vertex": (linkID: number, vertexNumber: number) => void,
@@ -22,6 +23,9 @@ export type ContextMenuID = keyof ContextMenus;
 
 type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
+    "add-component": ContextMenuHandler<"drawing">,
+    "edit-drawing-properties": ContextMenuHandler<"drawing">,
+
     "transform-component": ContextMenuHandler<"component">,
     "delete-component": ContextMenuHandler<"component">,
     "edit-component-properties": ContextMenuHandler<"component">,
@@ -83,9 +87,9 @@ export default class Menus {
           { role: 'forceReload' },
           { role: 'toggleDevTools' },
           { type: 'separator' },
-          { role: 'resetZoom' },
-          { role: 'zoomIn' },
-          { role: 'zoomOut' },
+          { label: 'Reset zoom', accelerator: "Control+0", click: () => sendAppCommand("scale-drawing", "0")},
+          { label: 'Zoom In', accelerator: "Control+Plus", click: () => sendAppCommand("scale-drawing", "+")},
+          { label: 'Zoom Out', accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-")},
           { type: 'separator' },
           { role: 'togglefullscreen' }
         ]
@@ -100,6 +104,11 @@ export default class Menus {
 
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
       {
+        "drawing": [
+          {label: "Add component...", id: "add-component"},
+          {type: 'separator'},
+          {label: "Properties...", id: "edit-drawing-properties"},
+        ],
         "component" : [
           {label: "Transform", id: "transform-component"},
           {label: "Delete component", id: "delete-component"},

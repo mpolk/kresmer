@@ -327,5 +327,14 @@ appCommandExecutor.on("connect-connection-point", async (
     }//if
 });//startLinkCreation
 
+appCommandExecutor.on("scale-drawing", direction => {
+    switch (direction) {
+        case "+": kresmer.drawingScale.value *= Math.SQRT2; break;
+        case "-": kresmer.drawingScale.value *= Math.SQRT1_2; break;
+        case "0": kresmer.drawingScale.value = 1; break;
+    }//switch
+});
+
+// -------------------------------------------------------------------------------------------------
 // Let's go forward and do our work...
 window.electronAPI.signalReadiness(0);
