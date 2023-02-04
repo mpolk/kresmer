@@ -22,7 +22,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "redo": () => void,
     "scale-drawing": (direction: ScaleDirection) => void,
     "delete-selected-element": () => void,
-    "add-component": () => void,
+    "add-component": (position?: {x: number, y: number}) => void,
 }//AppCommandFormats
 
 export type AppCommand = keyof AppCommandFormats;

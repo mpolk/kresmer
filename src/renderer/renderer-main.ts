@@ -91,6 +91,11 @@ kresmer.on("drawing-scale", (newScale) => {
     statusBarData.drawingScale = newScale;
 });
 
+kresmer.on("canvas-right-click", (mouseEvent: MouseEvent) =>
+{
+    window.electronAPI.showContextMenu("drawing", {x: mouseEvent.clientX, y: mouseEvent.clientY});
+});
+
 kresmer.on("component-double-click", (controller: NetworkComponentController) =>
 {
     vueComponentPropsSidebar.show(controller.component);
@@ -253,13 +258,13 @@ appCommandExecutor.on("delete-selected-element", () =>
     }//if
 });//deleteSelectedElement
 
-appCommandExecutor.on("add-component", async () =>
+appCommandExecutor.on("add-component", async (position?: Position) =>
 {
     const componentClass = await vueComponentClassSelectionDialog.show();
     console.debug(`component-class = ${componentClass?.name}`);
 
     if (componentClass) {
-        kresmer.edAPI.createComponent(componentClass);
+        kresmer.edAPI.createComponent(componentClass, position);
     }//if
 });//addComponent
 

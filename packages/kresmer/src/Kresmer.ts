@@ -761,10 +761,12 @@ export default class Kresmer extends KresmerEventHooks {
     /** Editor API functions (externally available operations with the drawing objects) */
     readonly edAPI = {
 
-        createComponent: (componentClass: NetworkComponentClass) =>
+        createComponent: (componentClass: NetworkComponentClass, position?: Position) =>
         {
             const newComponent = new NetworkComponent(this, componentClass);
-            this.placeNetworkComponent(newComponent, {x: this.logicalBox.width/2, y: this.logicalBox.height/2});
+            const origin = position ? this.applyScreenCTM(position) : 
+                                      {x: this.logicalBox.width/2, y: this.logicalBox.height/2};
+            this.placeNetworkComponent(newComponent, origin);
         },//createComponent
 
         /**

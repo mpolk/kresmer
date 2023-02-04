@@ -83,13 +83,21 @@
 
     // Event handlers
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    function onMouseDownOnCanvas(_event: MouseEvent)
+    function onMouseDownOnCanvas(event: MouseEvent)
     {
+        if (event.button & 1) {
+            event.preventDefault();
+        }//if
+
         props.controller.deselectAllElements();
         props.controller.resetAllComponentMode();
         props.controller.emit("mode-reset");
     }//onMouseDownOnCanvas
+
+    function onCanvasRightClick(event: MouseEvent)
+    {
+        props.controller.emit("canvas-right-click", event);
+    }//onCanvasRightClick
 
     function onMouseWheel(event: WheelEvent)
     {
@@ -136,7 +144,8 @@
     <svg class="kresmer" ref="rootSVG" 
         xx-style="{marginLeft: x, marginTop: y, marginRight: 0, marginBottom: 0}" 
         :width = "width" :height="height" :viewBox="viewBox"
-        @mousedown.prevent.self="onMouseDownOnCanvas($event)"
+        @mousedown.self="onMouseDownOnCanvas($event)"
+        @contextmenu.self="onCanvasRightClick($event)"
         @mousemove.prevent.self=""
         @wheel.ctrl.prevent="onMouseWheel($event)"
         @mouseenter.self="onMouseEnter"

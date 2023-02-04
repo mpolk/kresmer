@@ -22,6 +22,7 @@ class KresmerEventFormats  {
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
+    "canvas-right-click":               (nativeEvent: MouseEvent) => void;
     "component-added":                  (controller: NetworkComponentController) => void;
     "component-deleted":                (controller: NetworkComponentController) => void;
     "component-selected":               (component: NetworkComponent, isSelected: boolean) => void;
@@ -141,6 +142,12 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("drawing-mouse-leave")
     protected onDrawingMouseLeave() {}
+
+    /**
+     * Is called on mouse click on the drawing canvas
+     */
+    @overridableHandler("canvas-right-click")
+    protected onCanvasRightClick() {}
 
     /**
      * Is called when a network component is added to the drawing
