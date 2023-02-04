@@ -53,7 +53,7 @@
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * props.controller.drawingScale.value}${matches[2]}`;
+        return `${n * props.controller.drawingScale}${matches[2]}`;
     }//scaled
 
     // function scaledOffset(size: string|number)
@@ -94,7 +94,6 @@
     function onMouseWheel(event: WheelEvent)
     {
         props.controller.changeScale(Math.pow(1.05, event.deltaY * -0.01));
-        props.controller.emit("drawing-scale", props.controller.drawingScale.value);
     }//onMouseWheel
 
     function onComponentRightClick(controller: NetworkComponentController, 

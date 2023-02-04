@@ -105,13 +105,18 @@ export default class Kresmer extends KresmerEventHooks {
     set logicalHeight(newHeight) {this.logicalBox.height = newHeight}
 
     /** Drawing scale (visual) */
-    drawingScale = ref(1);
+    private _drawingScale = ref(1);
+    get drawingScale() {return this._drawingScale.value}
+    set drawingScale(newScale) {
+        this._drawingScale.value = newScale;
+        this.emit("drawing-scale", this._drawingScale.value);
+    }
     changeScale(factor?: number)
     {
         if (factor) {
-            this.drawingScale.value *= factor;
+            this.drawingScale *= factor;
         } else {
-            this.drawingScale.value = 1;
+            this.drawingScale = 1;
         }//if
     }//changeScale
 
