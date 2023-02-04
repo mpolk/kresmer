@@ -442,7 +442,7 @@ export default class Kresmer extends KresmerEventHooks {
             this.eraseContent();
         }//if
 
-        let drawingName: string;
+        let drawingProperties!: DrawingProperties;
         const componentRenames = new Map<string, string>();
 
         const parser = new DrawingParser(this);
@@ -450,7 +450,7 @@ export default class Kresmer extends KresmerEventHooks {
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
             if (element instanceof DrawingProperties) {
-                drawingName = element.drawingName;
+                drawingProperties = element;
             } else if (element instanceof NetworkComponentController) {
                 const componentName = element.component.name;
                 if (this.componentsByName.has(componentName)) {
@@ -510,12 +510,14 @@ export default class Kresmer extends KresmerEventHooks {
         this.undoStack.reset();
         switch (mergeOptions) {
             case undefined: case "erase-previous-content":
-                this.drawingName = drawingName!;
+                this.drawingName = drawingProperties.name;
+                drawingProperties.width && (this.logicalBox.width = drawingProperties.width);
+                drawingProperties.height && (this.logicalBox.height = drawingProperties.height);
                 this.isDirty = false;
                 break;
             default:
                 if (!this.drawingName) {
-                    this.drawingName = drawingName!;
+                    this.drawingName = drawingProperties.name;
                 }//if
                 this.isDirty = true;
         }//switch

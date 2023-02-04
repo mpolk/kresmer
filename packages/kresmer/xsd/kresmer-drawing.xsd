@@ -68,6 +68,8 @@
                 </xs:choice>
             </xs:sequence>
             <xs:attribute name="name" use="required" />
+            <xs:attribute name="width" type="xs:float" />
+            <xs:attribute name="height" type="xs:float" />
         </xs:complexType>
     </xs:element>
 

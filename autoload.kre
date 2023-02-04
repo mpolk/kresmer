@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="autoload">
+<kresmer-drawing name="autoload" width="1000" height="1000">
     <component class="ExtremeSwitch" name="core" height="50" n-ports="26">
         <origin x="30" y="100" />
     </component>
