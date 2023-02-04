@@ -189,7 +189,6 @@ export class AddLinkOp extends EditorOperation {
 }//AddLinkOp
 
 export class DeleteLinkOp extends AddLinkOp {
-
     override exec(): void {
         super.undo();
     }//exec
