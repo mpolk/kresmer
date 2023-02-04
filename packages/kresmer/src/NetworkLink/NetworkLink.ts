@@ -129,6 +129,16 @@ export default class NetworkLink extends NetworkElement {
     }//alignVertex
 
 
+    public onClick(segmentNumber: number, event: MouseEvent)
+    {
+        if (event.ctrlKey) {
+            this.kresmer.edAPI.addLinkVertex(this.id, segmentNumber, event);
+        } else {
+            this.selectLink();
+        }//if
+    }//onClick
+
+
     public onRightClick(segmentNumber: number, event: MouseEvent)
     {
         this.selectLink();

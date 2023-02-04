@@ -147,9 +147,9 @@ kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseE
     window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 });//onLinkRightClick
 
-kresmer.on("link-double-click", (link: NetworkLink, segmentNumber: number,  mouseEvent: MouseEvent) =>
+kresmer.on("link-double-click", (link: NetworkLink, /* segmentNumber: number,  mouseEvent: MouseEvent */) =>
 {
-    kresmer.edAPI.addLinkVertex(link.id, segmentNumber, mouseEvent);
+    vueComponentPropsSidebar.show(link);
 });//onLinkDoubleClick
 
 kresmer.on("link-vertex-right-click", (vertex: LinkVertex, /* _mouseEvent: MouseEvent */) =>

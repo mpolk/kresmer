@@ -54,7 +54,6 @@
 
 <template>
     <g :class="linkClass" 
-        @click="model.selectLink()"
         @mouseenter="isHighlighted = true"
         @mouseleave="isHighlighted = false"
         >
@@ -63,6 +62,7 @@
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
                     :x2="vertex.coords.x" :y2="vertex.coords.y" 
                     class="padding" style="stroke: transparent; fill: none;" 
+                    @click.self="model.onClick(i - 1, $event)"
                     @contextmenu.self="model.onRightClick(i - 1, $event)"
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
                     :style="segmentStyle"
@@ -70,6 +70,7 @@
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
                     :x2="vertex.coords.x" :y2="vertex.coords.y" 
                     :class="segmentClass" style="fill: none;" :style="segmentStyle"
+                    @click.self="model.onClick(i - 1, $event)"
                     @contextmenu.self="model.onRightClick(i - 1, $event)"
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
                     />
