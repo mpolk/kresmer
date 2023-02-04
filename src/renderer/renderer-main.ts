@@ -11,6 +11,7 @@ import { createApp, reactive } from 'vue';
 import vueDevtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
+import DrawingPropsSidebar from './DrawingPropsSidebar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
     DrawingMergeOptions, Position, ParsingException, 
@@ -48,6 +49,8 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar");
 
+const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
+    InstanceType<typeof DrawingPropsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
 const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#dlgLinkClassSelection") as
@@ -248,6 +251,10 @@ appCommandExecutor.on("save-drawing", () =>
     const dwgData = kresmer.saveDrawing();
     window.electronAPI.completeDrawingSaving(dwgData);
 });//saveDrawing
+
+appCommandExecutor.on("edit-drawing-properties", () => {
+    vueDrawingPropsSidebar.show();
+});
 
 appCommandExecutor.on("delete-selected-element", () =>
 {

@@ -77,7 +77,9 @@ export default class Menus {
           { label: 'Add component...', accelerator: "insert", click: () => sendAppCommand("add-component") },
           { label: 'Delete network element', accelerator: "delete", enabled: false,
             id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")},
-        ]
+          { type: 'separator' },
+          { label: "Drawing properties...", click: () => sendAppCommand("edit-drawing-properties", {x: 0, y: 0})},
+          ]
       },
       // { role: 'viewMenu' }
       {
