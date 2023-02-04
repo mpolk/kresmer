@@ -142,6 +142,7 @@
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
+        event.preventDefault();
         if (props.isEditable && transformStartEvent) {
             switch(zone) {
                 case "tr-box":
@@ -230,7 +231,7 @@
             :transform="transformAttr" :transform-origin="transformOrigin"
             @mousedown.stop="onMouseDown($event)"
             @mouseup.stop="onMouseUp($event)"
-            @mousemove="onMouseMove($event)"
+            @mousemove.stop.prevent="onMouseMove($event)"
             @mouseenter.stop="onMouseEnter($event)"
             @mouseleave.stop="onMouseLeave($event)"
             @contextmenu="onRightClick($event, 'component')"

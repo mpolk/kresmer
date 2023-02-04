@@ -140,6 +140,7 @@
         xx-style="{marginLeft: x, marginTop: y, marginRight: 0, marginBottom: 0}" 
         :width = "width" :height="height" :viewBox="viewBox"
         @mousedown.prevent.self="onMouseDownOnCanvas($event)"
+        @mousemove.prevent.self=""
         @wheel.ctrl.prevent="onMouseWheel($event)"
         @mouseenter.self="onMouseEnter"
         @mouseleave.self="onMouseLeave"
