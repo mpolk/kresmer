@@ -188,19 +188,14 @@ export class AddLinkOp extends EditorOperation {
     }//undo
 }//AddLinkOp
 
-export class DeleteLinkOp extends EditorOperation {
-
-    constructor (protected link: NetworkLink)
-    {
-        super();
-    }//ctor
+export class DeleteLinkOp extends AddLinkOp {
 
     override exec(): void {
-        this.link.kresmer.deleteLink(this.link);
+        super.undo();
     }//exec
 
     override undo(): void {
-        this.link.kresmer.addLink(this.link);
+        super.exec();
     }//undo
 }//DeleteLinkOp
 
