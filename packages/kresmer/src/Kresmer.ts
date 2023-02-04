@@ -530,7 +530,7 @@ export default class Kresmer extends KresmerEventHooks {
         let xml = `\
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="${this.drawingName}">
+<kresmer-drawing name="${this.drawingName}" width="${this.logicalBox.width}" height="${this.logicalBox.height}">
 `;
 
         for (const controller of this.networkComponents.values()) {
