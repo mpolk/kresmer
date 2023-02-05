@@ -29,3 +29,32 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
         return Array.from(this.values()).sort((item1, item2) => item1.zIndex - item2.zIndex);
     }//sorted
 }//MapWithZOrder
+
+/**
+ * Adds a mixin implementing z-order operations to some class
+ * @param Base A base class to be augmented
+ * @returns An augmented class
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function withZOrder<TBase extends new(...args: any[]) => object>(Base: TBase)
+{
+    return class extends Base {
+        zIndex = -1;
+        savedZIndex = -1;
+
+        public bringToTop()
+        {
+            if (this.zIndex < Z_INDEX_INF) {
+                this.savedZIndex = this.zIndex;
+                this.zIndex = Z_INDEX_INF;
+            }//if
+        }//bringToTop
+    
+        public restoreZPosition()
+        {
+            if (this.zIndex === Z_INDEX_INF) {
+                this.zIndex = this.savedZIndex;
+            }//if
+        }//restoreZPosition
+    }//class
+}//withZOrder

@@ -95,7 +95,7 @@
     function onMouseUp(event: MouseEvent)
     {
         if (props.isEditable && !props.transformMode && props.controller.endDrag(event)) { 
-            props.controller.restoreComponentZPosition();
+            props.controller.restoreZPosition();
             return;
         }//if
 

@@ -779,7 +779,7 @@ export default class Kresmer extends KresmerEventHooks {
                 throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
             }//if
             controller.component.isSelected = false;
-            controller.restoreComponentZPosition();
+            controller.restoreZPosition();
             this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
         },//deleteComponent
 

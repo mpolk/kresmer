@@ -16,11 +16,11 @@ import { EditorOperation } from "../UndoStack";
 import { indent } from "../Utils";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
-import { Z_INDEX_INF } from "../ZOrdering";
+import { withZOrder } from "../ZOrdering";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
-export default class NetworkComponentController {
+class _NetworkComponentController {
     readonly kresmer: Kresmer;
     readonly component: NetworkComponent;
     origin: Position;
@@ -32,8 +32,6 @@ export default class NetworkComponentController {
 
     private dragStartPos?: Position;
     private savedMousePos?: Position;
-    public zIndex = -1;
-    private savedZIndex = -1;
 
     constructor(
         kresmer: Kresmer,
@@ -55,7 +53,7 @@ export default class NetworkComponentController {
         return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
-    public selectComponent()
+    public selectComponent(this: NetworkComponentController): void
     {
         if (!this.component.isSelected) {
             this.kresmer.deselectAllElements(this);
@@ -63,18 +61,18 @@ export default class NetworkComponentController {
         }//if
     }//selectComponent
 
-    public startDrag(event: MouseEvent)
+    public startDrag(this: NetworkComponentController, event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.dragStartPos = {...this.origin};
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
-        this.bringComponentToTop();
+        this.bringToTop();
         this.kresmer.emit("component-move-started", this);
         this.kresmer.undoStack.startOperation(new ComponentMoveOp(this));
     }//startDrag
 
-    public drag(event: MouseEvent)
+    public drag(this: NetworkComponentController, event: MouseEvent)
     {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
@@ -92,7 +90,7 @@ export default class NetworkComponentController {
     }//drag
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endDrag(event: MouseEvent)
+    public endDrag(this: NetworkComponentController, _event: MouseEvent)
     {
         if (this.isDragged) {
             this.isDragged = false;
@@ -106,19 +104,19 @@ export default class NetworkComponentController {
     }//endDrag
 
     
-    public startRotate(event: MouseEvent)
+    public startRotate(this: NetworkComponentController, event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.savedMousePos = this.getMousePosition(event);
         this.transform.makeSnapshot();
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
-        this.bringComponentToTop();
+        this.bringToTop();
         this.kresmer.emit("component-transform-started", this);
         this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startRotate
 
-    public rotate(event: MouseEvent, center: Position)
+    public rotate(this: NetworkComponentController, event: MouseEvent, center: Position)
     {
         if (!this.isBeingTransformed)
             return false;
@@ -140,7 +138,7 @@ export default class NetworkComponentController {
     }//makeRaduisVectors
 
 
-    public startScale(event: MouseEvent)
+    public startScale(this: NetworkComponentController, event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.transform.makeSnapshot();
@@ -148,11 +146,11 @@ export default class NetworkComponentController {
         this.isBeingTransformed = true;
         this.transformMode = "scaling";
         this.kresmer.emit("component-transform-started", this);
-        this.bringComponentToTop();
+        this.bringToTop();
         this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startScale
 
-    public scale(event: MouseEvent, zone: TransformBoxZone, bBox: SVGRect, center: Position)
+    public scale(this: NetworkComponentController, event: MouseEvent, zone: TransformBoxZone, bBox: SVGRect, center: Position)
     {
         if (!this.isBeingTransformed)
             return false;
@@ -170,7 +168,7 @@ export default class NetworkComponentController {
 
     
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endTransform(event: MouseEvent)
+    public endTransform(this: NetworkComponentController, _event: MouseEvent)
     {
         if (!this.isBeingTransformed) {
             return false;
@@ -188,43 +186,28 @@ export default class NetworkComponentController {
         this.component.updateConnectionPoints();
     }//updateConnectionPoints
 
-    public bringComponentToTop()
-    {
-        if (this.zIndex < Z_INDEX_INF) {
-            this.savedZIndex = this.zIndex;
-            this.zIndex = Z_INDEX_INF;
-        }//if
-    }//bringComponentToTop
-
-    public restoreComponentZPosition()
-    {
-        if (this.zIndex === Z_INDEX_INF) {
-            this.zIndex = this.savedZIndex;
-        }//if
-    }//restoreComponentZPosition
-
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public enterTransformMode(_event:  MouseEvent)
+    public enterTransformMode(this: NetworkComponentController, _event:  MouseEvent)
     {
         // this.isBeingTransformed = true;
         this.kresmer.resetAllComponentMode(this);
         this.transformMode = "scaling";
         this.kresmer.emit("component-entered-transform-mode", this, this.transformMode);
-        this.bringComponentToTop();
+        this.bringToTop();
     }//enterTransformMode
 
-    public resetMode()
+    public resetMode(this: NetworkComponentController)
     {
         this.component.isSelected = false;
         // this.isBeingTransformed = false;
         this.transformMode = undefined;
         //this.kresmer.onComponentExitingTransformMode(this);
-        this.restoreComponentZPosition();
+        this.restoreZPosition();
     }//resetMode
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public onTransformBoxClick(_event: MouseEvent)
+    public onTransformBoxClick(this: NetworkComponentController, _event: MouseEvent)
     {
         if (this.transformMode) {
             this.kresmer.emit("component-exited-transform-mode", this);
@@ -263,7 +246,9 @@ export default class NetworkComponentController {
 
         return xml.join("\n");
     }//toXML
-}//NetworkComponentController
+}//_NetworkComponentController
+
+export default class NetworkComponentController extends withZOrder(_NetworkComponentController) {}
 
 
 // Editor operations
