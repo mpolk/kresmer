@@ -40,12 +40,12 @@ export function withZOrder<TBase extends new(...args: any[]) => object>(Base: TB
 {
     return class extends Base {
         zIndex = -1;
-        savedZIndex = -1;
+        _savedZIndex = -1;
 
         public bringToTop()
         {
             if (this.zIndex < Z_INDEX_INF) {
-                this.savedZIndex = this.zIndex;
+                this._savedZIndex = this.zIndex;
                 this.zIndex = Z_INDEX_INF;
             }//if
         }//bringToTop
@@ -53,7 +53,7 @@ export function withZOrder<TBase extends new(...args: any[]) => object>(Base: TB
         public restoreZPosition()
         {
             if (this.zIndex === Z_INDEX_INF) {
-                this.zIndex = this.savedZIndex;
+                this.zIndex = this._savedZIndex;
             }//if
         }//restoreZPosition
     }//class

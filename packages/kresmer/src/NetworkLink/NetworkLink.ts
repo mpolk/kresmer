@@ -15,12 +15,12 @@ import NetworkElement from '../NetworkElement';
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
-import { Z_INDEX_INF } from "../ZOrdering";
+import { withZOrder } from "../ZOrdering";
 
 /**
  * Network Link 
  */
-export default class NetworkLink extends NetworkElement {
+class _NetworkLink extends NetworkElement {
     /**
      * 
      * @param _class The class this Link should belong 
@@ -40,14 +40,21 @@ export default class NetworkLink extends NetworkElement {
         }
     ) {
         super(kresmer, _class instanceof NetworkLinkClass ? _class : NetworkLinkClass.getClass(_class), args);
-        let i = 0;
-        this.vertices.push(new LinkVertex(this, i++, args?.from));
-        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(this, i++, initParams)));
-        this.vertices.push(new LinkVertex(this, i++, args?.to));
+        (this as unknown as NetworkLink).constructVertices(args?.from, args?.to, args?.vertices);
     }//ctor
 
-    public zIndex = -1;
-    private savedZIndex = -1;
+    private constructVertices(
+        this: NetworkLink,
+        from?: LinkVertexInitParams,
+        to?: LinkVertexInitParams,
+        vertices?: LinkVertexInitParams[],
+    ) {
+        let i = 0;
+        this.vertices.push(new LinkVertex(this, i++, from));
+        vertices?.forEach(initParams => this.vertices.push(new LinkVertex(this, i++, initParams)));
+        this.vertices.push(new LinkVertex(this, i++, to));
+    }//constructVertices
+
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
 
@@ -75,7 +82,7 @@ export default class NetworkLink extends NetworkElement {
         return str;
     }//toString
 
-    public selectLink()
+    public selectLink(this: NetworkLink)
     {
         if (!this.isSelected) {
             this.kresmer.deselectAllElements(this);
@@ -83,23 +90,8 @@ export default class NetworkLink extends NetworkElement {
         }//if
     }//selectComponent
 
-    public bringToTop()
-    {
-        if (this.zIndex < Z_INDEX_INF) {
-            this.savedZIndex = this.zIndex;
-            this.zIndex = Z_INDEX_INF;
-        }//if
-    }//bringToTop
 
-    public restoreZPosition()
-    {
-        if (this.zIndex === Z_INDEX_INF) {
-            this.zIndex = this.savedZIndex;
-        }//if
-    }//restoreZPosition
-
-
-    public addVertex(segmentNumber: number, mousePos: Position)
+    public addVertex(this: NetworkLink, segmentNumber: number, mousePos: Position)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
         const vertexNumber = segmentNumber + 1;
@@ -130,7 +122,7 @@ export default class NetworkLink extends NetworkElement {
     }//alignVertex
 
 
-    public onClick(segmentNumber: number, event: MouseEvent)
+    public onClick(this: NetworkLink, segmentNumber: number, event: MouseEvent)
     {
         if (event.ctrlKey) {
             this.kresmer.edAPI.addLinkVertex(this.id, segmentNumber, event);
@@ -140,14 +132,14 @@ export default class NetworkLink extends NetworkElement {
     }//onClick
 
 
-    public onRightClick(segmentNumber: number, event: MouseEvent)
+    public onRightClick(this: NetworkLink, segmentNumber: number, event: MouseEvent)
     {
         this.selectLink();
         this.kresmer.emit("link-right-click", this, segmentNumber, event);
     }//onRightClick
 
 
-    public onDoubleClick(segmentNumber: number, event: MouseEvent)
+    public onDoubleClick(this: NetworkLink, segmentNumber: number, event: MouseEvent)
     {
         this.selectLink();
         this.kresmer.emit("link-double-click", this, segmentNumber, event);
@@ -178,7 +170,9 @@ export default class NetworkLink extends NetworkElement {
         }//if
     }//toXML
 
-}//NetworkLink
+}//_NetworkLink
+
+export default class NetworkLink extends withZOrder(_NetworkLink) {}
 
 
 // Editor operations
