@@ -16,7 +16,7 @@ import { EditorOperation } from "../UndoStack";
 import { indent } from "../Utils";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
-import { MAX_Z_INDEX } from "../ZOrdering";
+import { Z_INDEX_INF } from "../ZOrdering";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
@@ -190,15 +190,15 @@ export default class NetworkComponentController {
 
     public bringComponentToTop()
     {
-        if (this.zIndex < MAX_Z_INDEX) {
+        if (this.zIndex < Z_INDEX_INF) {
             this.savedZIndex = this.zIndex;
-            this.zIndex = MAX_Z_INDEX;
+            this.zIndex = Z_INDEX_INF;
         }//if
     }//bringComponentToTop
 
     public restoreComponentZPosition()
     {
-        if (this.zIndex === MAX_Z_INDEX) {
+        if (this.zIndex === Z_INDEX_INF) {
             this.zIndex = this.savedZIndex;
         }//if
     }//restoreComponentZPosition

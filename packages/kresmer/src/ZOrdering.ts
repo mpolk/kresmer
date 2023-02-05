@@ -11,14 +11,14 @@ export interface ZOrderable<ID> {
     zIndex: number,
 }//ZOrderable
 
-export const MAX_Z_INDEX = Number.MAX_SAFE_INTEGER;
+export const Z_INDEX_INF = Number.MAX_SAFE_INTEGER;
 
 /** A specialized map for storing network elements */
 export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
     public add(item: T) {
         if (item.zIndex < 0) {
             item.zIndex = Array.from(this.values())
-                .reduce((acc, {zIndex: z}) => (z < MAX_Z_INDEX && z > acc ? z : acc), -1) + 1;
+                .reduce((acc, {zIndex: z}) => (z < Z_INDEX_INF && z > acc ? z : acc), -1) + 1;
         }//if
         this.set(item.id, item);
         return this;
