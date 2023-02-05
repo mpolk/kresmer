@@ -8,7 +8,8 @@
 <*************************************************************************** -->
 <script lang="ts">
     import { PropType, ref, computed, provide } from 'vue';
-    import Kresmer, {MapWithZIndices} from './Kresmer';
+    import Kresmer from './Kresmer';
+    import { MapWithZOrder } from './ZOrdering';
     import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
     import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
@@ -31,9 +32,9 @@
 
     const props = defineProps({
         controller: {type: Object as PropType<Kresmer>, required: true},
-        networkComponents: {type: Object as PropType<MapWithZIndices<number, NetworkComponentController>>, required: true},
+        networkComponents: {type: Object as PropType<MapWithZOrder<number, NetworkComponentController>>, required: true},
         networkComponentClasses: {type: Object as PropType<Map<string, NetworkComponentClass>>, required: true},
-        links: {type: Object as PropType<MapWithZIndices<number, NetworkLink>>, required: true},
+        links: {type: Object as PropType<MapWithZOrder<number, NetworkLink>>, required: true},
         linkClasses: {type: Object as PropType<Map<string, NetworkLinkClass>>, required: true},
         mountingBox: {type: Object as PropType<BoxSize>, required: true},
         logicalBox: {type: Object as PropType<BoxSize>, required: true},

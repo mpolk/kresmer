@@ -28,6 +28,7 @@ import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import NetworkElementClass from "./NetworkElementClass";
+import { MapWithZOrder } from "./ZOrdering";
 
 
 /**
@@ -349,7 +350,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Components currently placed to the drawing
      */
-    private readonly networkComponents = reactive(new MapWithZIndices<number, NetworkComponentController>());
+    private readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>());
     private readonly componentsByName = new Map<string, number>();
 
     /**
@@ -397,7 +398,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-     readonly links = reactive(new MapWithZIndices<number, NetworkLink>());
+     readonly links = reactive(new MapWithZOrder<number, NetworkLink>());
      protected readonly linksByName = new Map<string, number>();
 
     /**
@@ -406,10 +407,6 @@ export default class Kresmer extends KresmerEventHooks {
      */
      public addLink(link: NetworkLink)
      {
-        if (link.zIndex < 0) {
-            link.zIndex = Array.from(this.links.values())
-                .reduce((acc, {zIndex: z}) => (z < Number.MAX_SAFE_INTEGER && z > acc ? z : acc), -1) + 1;
-        }//if
         this.links.add(link);
         this.linksByName.set(link.name, link.id);
         this.emit("link-added", link);
@@ -897,23 +894,6 @@ export default class Kresmer extends KresmerEventHooks {
 
     }//edAPI
 }//Kresmer
-
-/** A specialized map for storing network elements */
-export class MapWithZIndices<K, T extends {id: K, zIndex: number}> extends Map<K, T> {
-    public add(item: T) {
-        if (item.zIndex < 0) {
-            item.zIndex = Array.from(this.values())
-                .reduce((acc, {zIndex: z}) => (z < Number.MAX_SAFE_INTEGER && z > acc ? z : acc), -1) + 1;
-        }//if
-        this.set(item.id, item);
-        return this;
-    }//add
-
-    public get sorted()
-    {
-        return Array.from(this.values()).sort((item1, item2) => item1.zIndex - item2.zIndex);
-    }//sorted
-}//MapWithZIndices
 
 
 /** Data type for Vue templates */

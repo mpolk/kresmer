@@ -15,6 +15,7 @@ import NetworkElement from '../NetworkElement';
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
+import { MAX_Z_INDEX } from "../ZOrdering";
 
 /**
  * Network Link 
@@ -84,15 +85,15 @@ export default class NetworkLink extends NetworkElement {
 
     public bringToTop()
     {
-        if (this.zIndex < Number.MAX_SAFE_INTEGER) {
+        if (this.zIndex < MAX_Z_INDEX) {
             this.savedZIndex = this.zIndex;
-            this.zIndex = Number.MAX_SAFE_INTEGER;
+            this.zIndex = MAX_Z_INDEX;
         }//if
     }//bringToTop
 
     public restoreZPosition()
     {
-        if (this.zIndex === Number.MAX_SAFE_INTEGER) {
+        if (this.zIndex === MAX_Z_INDEX) {
             this.zIndex = this.savedZIndex;
         }//if
     }//restoreZPosition
