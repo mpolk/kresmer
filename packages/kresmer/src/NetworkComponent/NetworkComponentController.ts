@@ -232,7 +232,7 @@ class _NetworkComponentController {
             xml.push(this.transform.toXML(indentLevel+1));
         }//if
 
-        if (this.component.props) {
+        if (Object.getOwnPropertyNames(this.component.props).filter(prop => prop !== "name").length) {
             xml.push(`${indent(indentLevel+1)}<props>`);
             for (const propName in this.component.props) {
                 const propValue = this.component.props[propName];
