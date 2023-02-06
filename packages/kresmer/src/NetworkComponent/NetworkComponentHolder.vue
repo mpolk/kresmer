@@ -74,7 +74,6 @@
         (event: "right-click", controller: NetworkComponentController, 
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
         (event: "double-click", controller: NetworkComponentController, nativeEvent: MouseEvent): void,
-        (event: "mouse-leave", controller: NetworkComponentController): void,
     }>();
 
     let transformStartEvent: MouseEvent | undefined;
@@ -119,11 +118,7 @@
 
     function onMouseLeave(event: MouseEvent)
     {
-        emit("mouse-leave", props.controller);
-        // props.isEditable &&
-        // !props.transformMode &&
-        // props.controller.endDrag(event) && 
-        // props.controller.restoreComponentZPosition();
+        kresmer.emit("component-mouse-leave", props.controller);
     }//onMouseLeave
 
     function onMouseDownInTransformBox(zone: TransformBoxZone, event: MouseEvent)

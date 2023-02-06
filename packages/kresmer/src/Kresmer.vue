@@ -128,11 +128,6 @@
         props.controller.emit("drawing-mouse-leave");
     }//onMouseLeave
 
-    function onComponentMouseLeave(controller: NetworkComponentController)
-    {
-        props.controller.emit("component-mouse-leave", controller);
-    }//onComponentMouseLeave
-
     defineExpose({rootSVG});
 </script>
 
@@ -169,7 +164,6 @@
                    :transform-mode="controller.transformMode"
                    @right-click="onComponentRightClick"
                    @double-click="onComponentDoubleClick"
-                   @mouse-leave="onComponentMouseLeave"
                 >
             <component :is="controller.component.vueName"
                    v-bind="controller.component.props"
