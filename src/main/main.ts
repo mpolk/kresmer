@@ -23,9 +23,9 @@ let mainWindow: BrowserWindow;
 export let menus: Menus;
 let defaultDrawingFileName: string;
 
-export const userPrefs = new Settings({
-    fileName: "user-prefs.json", 
-    defaults: {window: {width: 800, height: 600}}
+export const userPrefs = new Settings("user-prefs.json", {
+    window: {width: 800, height: 600},
+    server: {url: "", autoConnect: false},
 });
 
 function createWindow() {
@@ -39,7 +39,11 @@ function createWindow() {
         }
     }//windowOptions
     const mainWindow = new BrowserWindow(windowOptions);
+
     menus = new Menus(mainWindow);
+    if (userPrefs.get2("server", "autoConnect")) {
+        requestConnectToServer();
+    }//if
 
     // and load the index page of the app
     const indexPage = "index.electron.html";
@@ -215,3 +219,9 @@ export function loadLibrary()
         sendAppCommand("load-library", libData);
     }//if
 }//loadLibrary
+
+
+export function requestConnectToServer()
+{
+    sendAppCommand("connect-to-server", userPrefs.get2("server", "url"));
+}//requestConnectToServer

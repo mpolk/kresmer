@@ -11,36 +11,71 @@ import * as path from 'path';
 import { app } from 'electron';
 import * as fs from 'fs';
 
-type Options<T> = {
-    fileName: string,
-    defaults: T
+type Options = {
+    window: {
+        width: number,
+        height: number,
+    },
+    server: {
+        url: string,
+        autoConnect: boolean,
+    },
 };
 
-export default class Settings<T extends Record<string, unknown>>
+export default class Settings
 {
-    protected fileName: string;
-    protected data: T;
+    private fileName: string;
+    private data: Record<string, Record<string, unknown>>;
 
-    public constructor(options: Options<T>)
+    public constructor(fileName: string, private defaults: Options)
     {
-        this.fileName = path.join(app.getPath("userData"), options.fileName);
+        this.fileName = path.join(app.getPath("userData"), fileName);
         
         try {
             this.data = JSON.parse(fs.readFileSync(this.fileName, "utf8"));
         } catch (error) {
-            this.data = options.defaults;
+            this.data = defaults;
         }//catch
     }//ctor
 
-
-    public get(key: keyof T) {
-        return this.data[key];
+    public get<K1 extends keyof Options>(key1: K1)
+    {
+        if (key1 in this.data) {
+            return this.data[key1];
+        } else {
+            return this.defaults[key1];
+        }//if
     }//get
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    public set(key: keyof T, value: any) {
-        this.data[key] = value;
-        fs.writeFileSync(this.fileName, JSON.stringify(this.data));
+    public get2<K1 extends keyof Options, K2 extends keyof Options[K1]>(key1: K1, key2: K2) 
+    {
+        if (key1 in this.data && key2 in this.data[key1]) {
+            return (this.data[key1] as Options[K1])[key2];
+        } else {
+            return this.defaults[key1][key2];
+        }//if
+    }//get2
+
+
+    public set<K1 extends keyof Options, V1 extends Options[K1]>(key1: K1, value: V1)
+    {
+        this.data[key1] = value;
+        this.persist();
     }//set
 
+    public set2<K1 extends keyof Options, K2 extends keyof Options[K1], V2 extends Options[K1][K2]>
+        (key1: K1, key2: K2, value: V2) 
+    {
+        if (key1 in this.data && typeof this.data[key1] === "object") {
+            (this.data[key1] as Options[K1])[key2] = value;
+        } else {
+            this.data[key1] = {key2: value};
+        }//if
+        this.persist();
+    }//set
+
+    private persist()
+    {
+        fs.writeFileSync(this.fileName, JSON.stringify(this.data));
+    }//persist
 }//Settings

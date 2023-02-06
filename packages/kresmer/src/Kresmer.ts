@@ -128,6 +128,9 @@ export default class Kresmer extends KresmerEventHooks {
     /** The element Kresmer was mounted on */
     readonly mountPoint: HTMLElement;
 
+    /** Kresmer-backend server URL (if any) */
+    serverURL = "";
+
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack(this);
     public undo() {this.undoStack.undo()}
