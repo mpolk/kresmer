@@ -143,12 +143,6 @@
                    :key="`networkComponent${controller.component.id}`"
                    :controller="controller"
                    :is-editable="isEditable"
-                   :origin="controller.origin"
-                   :transform="controller.transform"
-                   :is-selected="controller.component.isSelected"
-                   :is-dragged="controller.isDragged"
-                   :is-being-transformed="controller.isBeingTransformed"
-                   :transform-mode="controller.transformMode"
                 >
             <component :is="controller.component.vueName"
                    v-bind="controller.component.props"

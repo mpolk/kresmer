@@ -13,7 +13,6 @@
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponentController from "./NetworkComponentController";
     import NetworkComponent from "./NetworkComponent";
-    import { NetworkComponentHolderProps } from "./NetworkComponentHolder.d";
     import { Transform } from '../Transform/Transform';
     import Kresmer from '../Kresmer';
 
@@ -24,7 +23,6 @@
 
 <script setup lang="ts">
     const props = defineProps({
-        ...NetworkComponentHolderProps,
         controller: {type: Object as PropType<NetworkComponentController>, required: true},
         isEditable: {type: Boolean, required: true},
     });
@@ -47,7 +45,7 @@
     onMounted(() => {
         bBox.value = svg.value?.getBBox({stroke: true});
         applyTransform.value = true;
-        if (props.transform.nonEmpty) {
+        if (props.controller.transform.nonEmpty) {
             props.controller.updateConnectionPoints();
         }//if
         // eslint-disable-next-line vue/no-mutating-props
@@ -55,15 +53,15 @@
     })//onMounted
 
     const transform = computed(() => {
-        if (props.transform && applyTransform.value)
-            return props.transform;
+        if (props.controller.transform && applyTransform.value)
+            return props.controller.transform;
         else
             return new Transform;
     })//transform
 
     const transformAttr = computed(() => {
-        if (props.transform && applyTransform.value)
-            return props.transform.toAttr();
+        if (props.controller.transform && applyTransform.value)
+            return props.controller.transform.toAttr();
         else
             return undefined;
     })//transformAttr
@@ -76,7 +74,7 @@
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1 && !props.transformMode && props.isEditable) {
+        if (event.buttons === 1 && !props.controller.transformMode && props.isEditable) {
             event.preventDefault();
             if (!event.ctrlKey) {
                 props.controller.startDrag(event);
@@ -88,19 +86,19 @@
 
     function onMouseUp(event: MouseEvent)
     {
-        if (props.isEditable && !props.transformMode && props.controller.endDrag(event)) { 
+        if (props.isEditable && !props.controller.transformMode && props.controller.endDrag(event)) { 
             props.controller.restoreZPosition();
             return;
         }//if
 
-        if (!props.transformMode) {
+        if (!props.controller.transformMode) {
             props.controller.selectComponent();
         }//if
     }//onMouseUp
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1 && !props.transformMode && props.isEditable) {
+        if (event.buttons & 1 && !props.controller.transformMode && props.isEditable) {
             props.controller.drag(event);
         }//if
     }//onMouseMove
@@ -207,14 +205,13 @@
 </script>
 
 <template>
-    <svg ref="svg" v-bind="origin" 
+    <svg ref="svg" v-bind="controller.origin" 
         class="network-component" 
         :class="{
             [controller.component._class.name]: true,
-            highlighted: isHighlighted, 
-            selected: isSelected,
-            dragged: isDragged, 
-            beingTransformed: isBeingTransformed
+            selected: controller.component.isSelected,
+            dragged: controller.isDragged, 
+            beingTransformed: controller.isBeingTransformed
         }"
         >
         <g ref="trGroup" class="tr-group" 
@@ -228,9 +225,9 @@
             @dblclick="onDoubleClick($event)"
             >
             <g class="network-component-slot"><slot></slot></g>
-            <TransformBox v-if="transformMode" ref="trBox" :origin="origin!" 
+            <TransformBox v-if="controller.transformMode" ref="trBox" :origin="controller.origin" 
                 :transform="transform" :transform-origin="transformOrigin" 
-                :transform-mode="transformMode"
+                :transform-mode="controller.transformMode"
                 :b-box="bBox!" :center="center"
                 @mouse-down="onMouseDownInTransformBox"
                 @mouse-move="onMouseMoveInTransformBox"
