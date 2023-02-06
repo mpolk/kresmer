@@ -44,9 +44,6 @@
     provide(Kresmer.ikIsEditable, props.controller.isEditable);
     const rootSVG = ref<SVGSVGElement>();
 
-    const networkComponentsSorted = computed(() => props.networkComponents.sorted);
-    const linksSorted = computed(() => props.links.sorted);
-
     function scaled(size: string|number)
     {
         const matches = size.toString().match(/^([0-9.]+)(.+)$/);
@@ -139,25 +136,18 @@
         </defs>
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 
-        <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
-                   :key="`networkComponent${controller.component.id}`"
-                   :controller="controller"
+        <NetworkComponentHolder 
+            v-for="controller in networkComponents.sorted" 
+            :key="`networkComponent${controller.component.id}`" :controller="controller"
                 >
-            <component :is="controller.component.vueName"
-                   v-bind="controller.component.props"
-                   :component-id="controller.component.id"
-                   :name="controller.component.name"
+            <component :is="controller.component.vueName" v-bind="controller.component.props"
+                   :component-id="controller.component.id" :name="controller.component.name"
                 >
                 {{controller.component.content}}
             </component>
         </NetworkComponentHolder>
 
-        <NetworkLinkVue v-for="link in linksSorted" 
-            v-bind="link.props"
-            :key="`link${link.id}`" 
-            :model="link"
-            />
-
+        <NetworkLinkVue v-for="link in links.sorted" v-bind="link.props" :key="`link${link.id}`" :model="link" />
         <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
     </svg>
 </template>
