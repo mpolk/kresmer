@@ -11,7 +11,7 @@ import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
-import NetworkComponentController, { ComponentDeleteOp } from "./NetworkComponent/NetworkComponentController";
+import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp } from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
@@ -765,7 +765,8 @@ export default class Kresmer extends KresmerEventHooks {
             const newComponent = new NetworkComponent(this, componentClass);
             const origin = position ? this.applyScreenCTM(position) : 
                                       {x: this.logicalBox.width/2, y: this.logicalBox.height/2};
-            this.placeNetworkComponent(newComponent, origin);
+            const controller = new NetworkComponentController(this, newComponent, {origin});
+            this.undoStack.execAndCommit(new ComponentAddOp(controller));
         },//createComponent
 
         /**

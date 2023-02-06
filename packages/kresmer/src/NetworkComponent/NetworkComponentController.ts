@@ -16,7 +16,7 @@ import { EditorOperation } from "../UndoStack";
 import { indent } from "../Utils";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
-import { withZOrder } from "../ZOrdering";
+import { withZOrder  } from "../ZOrdering";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
@@ -307,6 +307,23 @@ class ComponentTransformOp extends EditorOperation {
         this.controller.updateConnectionPoints();
     }//undo
 }//ComponentTransformOp
+
+
+export class ComponentAddOp extends EditorOperation {
+
+    constructor(private controller: NetworkComponentController) 
+    {
+        super();
+    }//ctor
+
+    override exec(): void {
+        this.controller.kresmer.addPositionedNetworkComponent(this.controller);
+    }//exec
+
+    override undo(): void {
+        this.controller.kresmer.deleteComponent(this.controller);
+    }//undo
+}//ComponentAddOp
 
 
 export class ComponentDeleteOp extends EditorOperation {
