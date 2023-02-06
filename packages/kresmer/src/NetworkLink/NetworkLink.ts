@@ -160,7 +160,7 @@ class _NetworkLink extends NetworkElement {
             attrs.set("to", this.vertices[n].toString());
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
-        if (this.vertices.length <= 2 && Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length == 0) {
+        if (this.vertices.length <= 2 && this.propCount == 0) {
             return `${indent(indentLevel)}<link ${attrStr}/>`;
         } else {
             const xml = [`${indent(indentLevel)}<link ${attrStr}>`];
@@ -169,16 +169,7 @@ class _NetworkLink extends NetworkElement {
                 xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
             }//for
 
-            if (Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length) {
-                xml.push(`${indent(indentLevel+1)}<props>`);
-                for (const propName in this.props) {
-                    const propValue = this.props[propName];
-                    if (propName !== "name" && typeof propValue !== "undefined") {
-                        xml.push(`${indent(indentLevel+2)}<prop name="${propName}">${propValue}</prop>`);
-                    }//if
-                }//for
-                xml.push(`${indent(indentLevel+1)}</props>`);
-            }//if
+            xml.push(...this.propsToXML(indentLevel));
 
             xml.push(`${indent(indentLevel)}</link>`);
             return xml.join("\n");

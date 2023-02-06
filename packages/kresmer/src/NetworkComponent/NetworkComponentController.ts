@@ -232,16 +232,7 @@ class _NetworkComponentController {
             xml.push(this.transform.toXML(indentLevel+1));
         }//if
 
-        if (Object.getOwnPropertyNames(this.component.props).filter(prop => prop !== "name").length) {
-            xml.push(`${indent(indentLevel+1)}<props>`);
-            for (const propName in this.component.props) {
-                const propValue = this.component.props[propName];
-                if (propName !== "name" && typeof propValue !== "undefined") {
-                    xml.push(`${indent(indentLevel+2)}<prop name="${propName}">${propValue}</prop>`);
-                }//if
-            }//for
-            xml.push(`${indent(indentLevel+1)}</props>`);
-        }//if
+        xml.push(...this.component.propsToXML(indentLevel));
 
         xml.push(`${indent(indentLevel)}</component>`);
 

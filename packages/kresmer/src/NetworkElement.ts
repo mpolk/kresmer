@@ -12,6 +12,8 @@ import NetworkElementClass from "./NetworkElementClass";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import { EditorOperation } from "./UndoStack";
 import KresmerException from "./KresmerException";
+import { indent } from "./Utils";
+
 export default abstract class NetworkElement {
     /**
      * 
@@ -50,6 +52,8 @@ export default abstract class NetworkElement {
 
     /** Data passed to the vue-component props */
     readonly props: Record<string, unknown>;
+    /** Return the number of props (excluding "name") */
+    get propCount() { return Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length;}
 
     /** A name for component lookup*/
     public _name?: string;
@@ -82,6 +86,7 @@ export default abstract class NetworkElement {
         return Boolean(this._name);
     }//isNamed
     abstract getDefaultName(): string;
+
 
     protected _dbID?: number|string;
     /** A unique element ID for binding to the matching database entity */
@@ -120,6 +125,22 @@ export default abstract class NetworkElement {
         
         this._dbID = newDbID;
     }//dbID
+
+
+    public *propsToXML(indentLevel: number)
+    {
+        if (Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length) {
+            yield `${indent(indentLevel+1)}<props>`;
+            for (const propName in this.props) {
+                const propValue = this.props[propName];
+                if (propName !== "name" && typeof propValue !== "undefined") {
+                    yield `${indent(indentLevel+2)}<prop name="${propName}">${propValue}</prop>`;
+                }//if
+            }//for
+            yield `${indent(indentLevel+1)}</props>`;
+        }//if
+    }//propsToXML
+
 
     protected _isSelected = false;
     get isSelected() {return this._isSelected}
