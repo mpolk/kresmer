@@ -25,7 +25,8 @@
     const proxy = new ConnectionPointProxy(component, props.name, props.dir);
     component.connectionPoints[props.name] = proxy;
 
-    const kresmer = inject(Kresmer.injectionKey)!;
+    const kresmer = inject(Kresmer.ikKresmer)!;
+    const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<SVGCircleElement>();
 
     onMounted(updatePos);
@@ -46,7 +47,7 @@
 
     function onRightClick()
     {
-        if (component.kresmer.isEditable) {
+        if (isEditable) {
             proxy.component.kresmer.emit("connection-point-right-click", proxy);
         }//if
     }//onRightClick

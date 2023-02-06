@@ -7,21 +7,22 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType, ref } from 'vue';
+    import { PropType, ref, inject } from 'vue';
+    import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
 
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
-        isEditable: {type: Boolean, required: true},
         isEndpoint: {type: Boolean, default: false},
     })
 
+    const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<HTMLElement>()!;
     const padding = ref<HTMLElement>()!;
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1 && props.isEditable) {
+        if (event.buttons === 1 && isEditable) {
             event.preventDefault();
             props.model.startDrag(event);
         }//if
@@ -29,7 +30,7 @@
 
     function onMouseUp(event: MouseEvent)
     {
-        if (props.isEditable && props.model.endDrag(event)) { 
+        if (isEditable && props.model.endDrag(event)) { 
             props.model.link.restoreZPosition();
             return;
         }//if
@@ -39,7 +40,7 @@
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1 && props.isEditable) {
+        if (event.buttons & 1 && isEditable) {
             props.model.drag(event);
         }//if
     }//onMouseMove
@@ -48,7 +49,7 @@
     {
         event.relatedTarget !== circle.value &&
         event.relatedTarget !== padding.value &&
-        props.isEditable &&
+        isEditable &&
         props.model.endDrag(event) && 
         props.model.link.restoreZPosition();
     }//onMouseLeave

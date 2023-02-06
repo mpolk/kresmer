@@ -81,7 +81,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Kresmer's vue-component instance itself */
     private readonly vueKresmer: InstanceType<typeof KresmerVue>;
     /** A symbolic key for the Kresmer instance injection */
-    static readonly injectionKey = Symbol() as InjectionKey<Kresmer>;
+    static readonly ikKresmer = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
     public readonly defs: Template[] = [];
     /** CSS styles collected component libraries */
@@ -123,6 +123,8 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Determines whether the drawing is editable */
     isEditable = true;
+    /** A symbolic key for the editability flag injection */
+    static readonly ikIsEditable = Symbol() as InjectionKey<boolean>;
     /** The element Kresmer was mounted on */
     readonly mountPoint: HTMLElement;
 

@@ -7,7 +7,8 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { computed, ref, onBeforeMount, PropType } from 'vue';
+    import { computed, ref, onBeforeMount, PropType, inject } from 'vue';
+    import Kresmer from '../Kresmer';
     import NetworkLink from './NetworkLink';
     import LinkVertexVue from './LinkVertex.vue';
     
@@ -20,9 +21,9 @@
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
-        isEditable: {type: Boolean, required: true},
     });
 
+    const isEditable = inject(Kresmer.ikIsEditable);
     onBeforeMount(props.model.initVertices);
 
     const isHighlighted = ref(false);
@@ -78,7 +79,7 @@
         </template>
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
-                <link-vertex-vue :model="vertex" :is-editable="isEditable"/>
+                <link-vertex-vue :model="vertex" />
             </template>
         </template>
     </g>

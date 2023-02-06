@@ -38,10 +38,10 @@
         linkClasses: {type: Object as PropType<Map<string, NetworkLinkClass>>, required: true},
         mountingBox: {type: Object as PropType<BoxSize>, required: true},
         logicalBox: {type: Object as PropType<BoxSize>, required: true},
-        isEditable: {type: Boolean, default: true},
     });
 
-    provide(Kresmer.injectionKey, props.controller);
+    provide(Kresmer.ikKresmer, props.controller);
+    provide(Kresmer.ikIsEditable, props.controller.isEditable);
     const rootSVG = ref<SVGSVGElement>();
 
     const networkComponentsSorted = computed(() => props.networkComponents.sorted);
@@ -142,7 +142,6 @@
         <NetworkComponentHolder v-for="controller in networkComponentsSorted" 
                    :key="`networkComponent${controller.component.id}`"
                    :controller="controller"
-                   :is-editable="isEditable"
                 >
             <component :is="controller.component.vueName"
                    v-bind="controller.component.props"
@@ -157,7 +156,6 @@
             v-bind="link.props"
             :key="`link${link.id}`" 
             :model="link"
-            :is-editable="isEditable"
             />
 
         <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />

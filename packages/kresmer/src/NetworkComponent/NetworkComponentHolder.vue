@@ -24,10 +24,10 @@
 <script setup lang="ts">
     const props = defineProps({
         controller: {type: Object as PropType<NetworkComponentController>, required: true},
-        isEditable: {type: Boolean, required: true},
     });
 
-    const kresmer = inject(Kresmer.injectionKey)!;
+    const kresmer = inject(Kresmer.ikKresmer)!;
+    const isEditable = inject(Kresmer.ikIsEditable);
     const svg = ref<SVGSVGElement>()!;
     const trGroup = ref<SVGSVGElement>()!;
     provide(NetworkComponent.injectionKey, props.controller.component);
@@ -74,7 +74,7 @@
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1 && !props.controller.transformMode && props.isEditable) {
+        if (event.buttons === 1 && !props.controller.transformMode && isEditable) {
             event.preventDefault();
             if (!event.ctrlKey) {
                 props.controller.startDrag(event);
@@ -86,7 +86,7 @@
 
     function onMouseUp(event: MouseEvent)
     {
-        if (props.isEditable && !props.controller.transformMode && props.controller.endDrag(event)) { 
+        if (isEditable && !props.controller.transformMode && props.controller.endDrag(event)) { 
             props.controller.restoreZPosition();
             return;
         }//if
@@ -98,7 +98,7 @@
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1 && !props.controller.transformMode && props.isEditable) {
+        if (event.buttons & 1 && !props.controller.transformMode && isEditable) {
             props.controller.drag(event);
         }//if
     }//onMouseMove
@@ -124,14 +124,14 @@
     {
         if (transformStartEvent)
             transformStartEvent = undefined;
-        else if (props.isEditable)
+        else if (isEditable)
             props.controller.endTransform(event) || props.controller.endDrag(event);
     }//onMouseUpInTransformBox
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
         event.preventDefault();
-        if (props.isEditable && transformStartEvent) {
+        if (isEditable && transformStartEvent) {
             switch(zone) {
                 case "tr-box":
                     props.controller.startDrag(transformStartEvent);
@@ -154,7 +154,7 @@
             wasJustTransformed = true;
         }//if
 
-        if (props.isEditable && event.buttons & 1) {
+        if (isEditable && event.buttons & 1) {
             switch(zone) {
                 case "tr-box":
                     if (props.controller.isBeingTransformed && props.controller.transformMode == "scaling") {
@@ -189,7 +189,7 @@
     function onTransformBoxClick(event: MouseEvent) {
         if (wasJustTransformed)
             wasJustTransformed = false;
-        else if (props.isEditable)
+        else if (isEditable)
             props.controller.onTransformBoxClick(event);
     }//onTransformBoxClick
 
