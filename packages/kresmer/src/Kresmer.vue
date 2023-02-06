@@ -105,13 +105,6 @@
         props.controller.changeScale(Math.pow(1.05, event.deltaY * -0.01));
     }//onMouseWheel
 
-    function onComponentRightClick(controller: NetworkComponentController, 
-                                   target: "component"|"transform-box", 
-                                   nativeEvent: MouseEvent)
-    {
-        props.controller.emit("component-right-click", controller, target, nativeEvent);
-    }//onComponentRightClick
-
     function onMouseEnter()
     {
         props.controller.emit("drawing-mouse-enter");
@@ -156,7 +149,6 @@
                    :is-dragged="controller.isDragged"
                    :is-being-transformed="controller.isBeingTransformed"
                    :transform-mode="controller.transformMode"
-                   @right-click="onComponentRightClick"
                 >
             <component :is="controller.component.vueName"
                    v-bind="controller.component.props"

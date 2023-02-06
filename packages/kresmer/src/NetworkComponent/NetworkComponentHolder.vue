@@ -70,11 +70,6 @@
 
     const transformOrigin = computed(() => `${center.value.x} ${center.value.y}`)
 
-    const emit = defineEmits<{
-        (event: "right-click", controller: NetworkComponentController, 
-         target: "component" | "transform-box", nativeEvent: MouseEvent): void,
-    }>();
-
     let transformStartEvent: MouseEvent | undefined;
     let wasJustTransformed = false;
     let lastActiveHandle: TransformBoxZone = "tr-box";
@@ -201,7 +196,7 @@
     }//onTransformBoxClick
 
     function onRightClick(event: MouseEvent, target: "component" | "transform-box") {
-        emit("right-click", props.controller, target, event);
+        kresmer.emit("component-right-click", props.controller, target, event);
     }//onRightClick
 
     function onDoubleClick(event: MouseEvent) {
