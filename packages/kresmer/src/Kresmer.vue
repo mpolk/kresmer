@@ -128,11 +128,6 @@
         props.controller.emit("drawing-mouse-leave");
     }//onMouseLeave
 
-    function onComponentMouseEnter(controller: NetworkComponentController)
-    {
-        props.controller.emit("component-mouse-enter", controller);
-    }//onComponentMouseEnter
-
     function onComponentMouseLeave(controller: NetworkComponentController)
     {
         props.controller.emit("component-mouse-leave", controller);
@@ -174,7 +169,6 @@
                    :transform-mode="controller.transformMode"
                    @right-click="onComponentRightClick"
                    @double-click="onComponentDoubleClick"
-                   @mouse-enter="onComponentMouseEnter"
                    @mouse-leave="onComponentMouseLeave"
                 >
             <component :is="controller.component.vueName"

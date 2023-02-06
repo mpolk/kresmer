@@ -8,13 +8,14 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted, computed, provide } from 'vue';
+    import { ref, PropType, onMounted, computed, provide, inject } from 'vue';
     import TransformBox from '../Transform/TransformBox.vue';
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponentController from "./NetworkComponentController";
     import NetworkComponent from "./NetworkComponent";
     import { NetworkComponentHolderProps } from "./NetworkComponentHolder.d";
     import { Transform } from '../Transform/Transform';
+    import Kresmer from '../Kresmer';
 
     export default {
         components: { TransformBox },
@@ -28,6 +29,7 @@
         isEditable: {type: Boolean, required: true},
     });
 
+    const kresmer = inject(Kresmer.injectionKey)!;
     const svg = ref<SVGSVGElement>()!;
     const trGroup = ref<SVGSVGElement>()!;
     provide(NetworkComponent.injectionKey, props.controller.component);
@@ -72,7 +74,6 @@
         (event: "right-click", controller: NetworkComponentController, 
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
         (event: "double-click", controller: NetworkComponentController, nativeEvent: MouseEvent): void,
-        (event: "mouse-enter", controller: NetworkComponentController): void,
         (event: "mouse-leave", controller: NetworkComponentController): void,
     }>();
 
@@ -113,7 +114,7 @@
 
     function onMouseEnter(event: MouseEvent)
     {
-        emit("mouse-enter", props.controller);
+        kresmer.emit("component-mouse-enter", props.controller);
     }//onMouseLeave
 
     function onMouseLeave(event: MouseEvent)
