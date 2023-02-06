@@ -73,7 +73,6 @@
     const emit = defineEmits<{
         (event: "right-click", controller: NetworkComponentController, 
          target: "component" | "transform-box", nativeEvent: MouseEvent): void,
-        (event: "double-click", controller: NetworkComponentController, nativeEvent: MouseEvent): void,
     }>();
 
     let transformStartEvent: MouseEvent | undefined;
@@ -206,7 +205,7 @@
     }//onRightClick
 
     function onDoubleClick(event: MouseEvent) {
-        emit("double-click", props.controller, event);
+        kresmer.emit("component-double-click", props.controller, event);
     }//onDoubleClick
 
     defineExpose({center});
