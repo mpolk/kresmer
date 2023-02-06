@@ -7,8 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { computed, ref, onBeforeMount, PropType, inject } from 'vue';
-    import Kresmer from '../Kresmer';
+    import { computed, ref, onBeforeMount, PropType } from 'vue';
     import NetworkLink from './NetworkLink';
     import LinkVertexVue from './LinkVertex.vue';
     
@@ -23,7 +22,6 @@
         model: {type: Object as PropType<NetworkLink>, required: true},
     });
 
-    const isEditable = inject(Kresmer.ikIsEditable);
     onBeforeMount(props.model.initVertices);
 
     const isHighlighted = ref(false);
