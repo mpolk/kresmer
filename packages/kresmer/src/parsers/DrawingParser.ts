@@ -88,6 +88,7 @@ export default class DrawingParser {
     private parseComponentNode(node: Element): NetworkComponentController
     {
         const className = node.getAttribute("class");
+        const dbID = node.getAttribute("db-id");
         if (!className) 
             throw new DrawingParsingException("Component without the class");
         const componentClass = NetworkComponentClass.getClass(className);
@@ -96,7 +97,7 @@ export default class DrawingParser {
 
         const propsFromAttributes: RawProps = {};
         for (const attrName of node.getAttributeNames()) {
-            if (attrName !== "class") {
+            if (attrName !== "class" && attrName !== "db-id") {
                 propsFromAttributes[attrName] = node.getAttribute(attrName)!;
             }//if
         }//for
@@ -154,7 +155,7 @@ export default class DrawingParser {
         } else if (!componentName) {
             componentName = undefined;
         }//if
-        const component = new NetworkComponent(this.kresmer, className, {name: componentName, props, content});
+        const component = new NetworkComponent(this.kresmer, className, {name: componentName, dbID, props, content});
         return new NetworkComponentController(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
     }//parseComponentNode
@@ -163,6 +164,7 @@ export default class DrawingParser {
     private parseLinkNode(node: Element): NetworkLink
     {
         const className = node.getAttribute("class");
+        const dbID = node.getAttribute("db-id");
         if (!className) 
             throw new DrawingParsingException("Link without the class");
         const linkClass = NetworkLinkClass.getClass(className);
@@ -172,7 +174,7 @@ export default class DrawingParser {
         const propsFromAttributes: RawProps = {};
         for (const attrName of node.getAttributeNames()) {
             switch (attrName) {
-                case "class": case "from": case "to":
+                case "class": case "db-id": case "from": case "to":
                     break;
                 default:
                     propsFromAttributes[attrName] = node.getAttribute(attrName)!;
@@ -202,7 +204,7 @@ export default class DrawingParser {
         }//if
         const from = this.parseLinkEndpoint(node.getAttribute("from"));
         const to = this.parseLinkEndpoint(node.getAttribute("to"));
-        const link = new NetworkLink(this.kresmer, className, {name: linkName, props, from, to, vertices});
+        const link = new NetworkLink(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices});
         return link;
     }//parseLinkNode
 

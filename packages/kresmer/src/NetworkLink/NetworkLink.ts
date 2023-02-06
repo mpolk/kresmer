@@ -33,6 +33,7 @@ class _NetworkLink extends NetworkElement {
         _class: NetworkLinkClass | string,
         args?: {
             name?: string,
+            dbID?: number|string|null,
             props?: Record<string, unknown>,
             from?: LinkVertexInitParams,
             to?: LinkVertexInitParams,
@@ -151,6 +152,7 @@ class _NetworkLink extends NetworkElement {
         const attrs = new Map<string, string>();
         attrs.set("class", this._class.name);
         this.isNamed && attrs.set("name", this.name);
+        this.dbID && attrs.set("db-id", this.dbID.toString());
         (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
             attrs.set("from", this.vertices[0].toString());
         const n = this.vertices.length - 1;

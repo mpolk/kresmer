@@ -11,6 +11,7 @@ import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import { EditorOperation } from "./UndoStack";
+import KresmerException from "./KresmerException";
 export default abstract class NetworkElement {
     /**
      * 
@@ -24,6 +25,7 @@ export default abstract class NetworkElement {
         _class: NetworkElementClass,
         args?: {
             name?: string,
+            dbID?: number|string|null,
             props?: Record<string, unknown>,
         }
     ) {
@@ -32,6 +34,7 @@ export default abstract class NetworkElement {
         this.props = args?.props ?? {};
         this.id = NetworkElement.nextID++;
         this._name = args?.name;
+        this.dbID = (args?.dbID !== null) ? args?.dbID : undefined;
     }//ctor
 
     readonly kresmer: Kresmer;
@@ -58,7 +61,11 @@ export default abstract class NetworkElement {
     set name(newName: string|undefined)
     {
         const oldName = this.name;
-        this._name = newName;
+        if (newName) {
+            this._name = newName;
+        } else {
+            this._name = undefined;
+        }//if
         this.kresmer._onElementRename(this, oldName);
     }//set name
 
@@ -76,6 +83,44 @@ export default abstract class NetworkElement {
     }//isNamed
     abstract getDefaultName(): string;
 
+    protected _dbID?: number|string;
+    /** A unique element ID for binding to the matching database entity */
+    public get dbID() {return this._dbID}
+    public set dbID(newDbID: number|string|undefined)
+    {
+        switch (typeof newDbID) {
+            case "string": {
+                if (!newDbID) {
+                    newDbID = undefined;
+                } else {
+                    const n = parseInt(newDbID);
+                    if (!isNaN(n)) {
+                        newDbID = n;
+                    }//if
+                }//if
+                break;
+            }
+            case "undefined":
+                break;
+            default:
+                if (!Number.isInteger(newDbID)) {
+                    throw new KresmerException(
+                        `DatabaseID of the network element must be string or integer, but got ${newDbID}!`);
+                }//if
+        }//switch
+
+        const isDup = newDbID !== undefined && (
+            Array.from(this.kresmer.networkComponents.values())
+                .find(controller => controller.component._dbID == newDbID && controller.component.id !== this.id) ||
+            Array.from(this.kresmer.links.values())
+                .find(link => link._dbID == newDbID && link.id !== this.id));
+        if (isDup) {
+            throw new KresmerException(`Duplicate dbID: ${newDbID}`);
+        }//if
+        
+        this._dbID = newDbID;
+    }//dbID
+
     protected _isSelected = false;
     get isSelected() {return this._isSelected}
     set isSelected(reallyIs: boolean) {
@@ -89,18 +134,19 @@ export class UpdateElementOp extends EditorOperation {
 
     constructor(private readonly element: NetworkElement, 
                 private readonly newProps: Record<string, unknown>, 
-                private readonly newName?: string)
+                private readonly newName: string|undefined,
+                private readonly newDbID: number|string|undefined
+                )
     {
         super();
         this.oldProps = {...element.props};
-
-        if (this.newName !== undefined) {
-            this.oldName = this.element._name;
-        }//if
+        this.oldName = this.element._name;
+        this.oldDbID = this.newDbID;
     }//ctor
 
     private readonly oldProps: Record<string, unknown>;
-    private readonly oldName?: string;
+    private readonly oldName: string|undefined;
+    private readonly oldDbID: number|string|undefined;
 
     override exec(): void 
     {
@@ -108,9 +154,8 @@ export class UpdateElementOp extends EditorOperation {
             this.element.props[propName] = this.newProps[propName];
         }//for
 
-        if (this.newName !== undefined) {
-            this.element.name = this.newName;
-        }//if
+        this.element.name = this.newName;
+        this.element.dbID = this.newDbID;
 
         if (this.element instanceof NetworkComponent) {
             this.element.updateConnectionPoints();
@@ -123,9 +168,8 @@ export class UpdateElementOp extends EditorOperation {
             this.element.props[propName] = this.oldProps[propName];
         }//for
 
-        if (this.newName !== undefined) {
-            this.element.name = this.oldName;
-        }//if
+        this.element.name = this.oldName;
+        this.element.dbID = this.oldDbID;
 
         if (this.element instanceof NetworkComponent) {
             this.element.updateConnectionPoints();

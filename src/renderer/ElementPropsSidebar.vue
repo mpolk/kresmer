@@ -27,7 +27,8 @@
     let elementToEdit: NetworkElement;
     const elementName = ref<string|undefined>("");
     const elementDisplayName = ref("");
-    watch(elementName, () => {elementDisplayName.value = elementToEdit.generateName(elementName.value)})
+    watch(elementName, () => {elementDisplayName.value = elementToEdit.generateName(elementName.value)});
+    let dbID: number|string|undefined;
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     type ElementProp = {name: string, value: unknown, type: Function, validValues?: string[]};
@@ -42,6 +43,7 @@
         elementToEdit = element;
         elementName.value = element._name;
         elementDisplayName.value = element.name;
+        dbID = element.dbID;
         elementProps.value = Object.keys(element._class.props)
             .map(name => 
                 {
@@ -113,7 +115,7 @@
         }//if
 
         close();
-        elementToEdit.kresmer.edAPI.updateElement(elementToEdit, elementProps.value, elementName.value);
+        elementToEdit.kresmer.edAPI.updateElement(elementToEdit, elementProps.value, elementName.value, dbID);
         updateWindowTitle();
     }//save
 
@@ -143,6 +145,12 @@
                             <td>name</td>
                             <td>
                                 <input class="form-control form-control-sm" v-model="elementName"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>dbID</td>
+                            <td>
+                                <input class="form-control form-control-sm" v-model="dbID"/>
                             </td>
                         </tr>
                         <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">

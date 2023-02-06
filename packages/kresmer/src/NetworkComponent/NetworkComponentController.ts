@@ -222,6 +222,7 @@ class _NetworkComponentController {
         const attrs = new Map<string, string>();
         attrs.set("class", this.component._class.name);
         this.component.isNamed && attrs.set("name", this.component.name);
+        this.component.dbID && attrs.set("db-id", this.component.dbID.toString());
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
         const xml = [`${indent(indentLevel)}<component ${attrStr}>`];
@@ -235,7 +236,7 @@ class _NetworkComponentController {
             xml.push(`${indent(indentLevel+1)}<props>`);
             for (const propName in this.component.props) {
                 const propValue = this.component.props[propName];
-                if (propName !== "name") {
+                if (propName !== "name" && typeof propValue !== "undefined") {
                     xml.push(`${indent(indentLevel+2)}<prop name="${propName}">${propValue}</prop>`);
                 }//if
             }//for

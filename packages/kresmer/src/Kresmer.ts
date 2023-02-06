@@ -352,7 +352,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Components currently placed to the drawing
      */
-    private readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>());
+    public readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>());
     private readonly componentsByName = new Map<string, number>();
 
     /**
@@ -889,10 +889,12 @@ export default class Kresmer extends KresmerEventHooks {
          */
         updateElement: (element: NetworkElement, 
                         newProps: {name: string, value: unknown}[], 
-                        newName?: string) =>
+                        newName: string|undefined,
+                        newDbID: number|string|undefined,
+                        ) =>
         {
             const newPropsObj = Object.fromEntries(newProps.map(prop => [prop.name, prop.value]));
-            this.undoStack.execAndCommit(new UpdateElementOp(element, newPropsObj, newName));
+            this.undoStack.execAndCommit(new UpdateElementOp(element, newPropsObj, newName, newDbID));
         },//updateElement
 
     }//edAPI

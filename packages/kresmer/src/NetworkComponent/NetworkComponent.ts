@@ -29,6 +29,7 @@ export default class NetworkComponent extends NetworkElement {
         _class: NetworkComponentClass | string,
         args?: {
             name?: string,
+            dbID?: number|string|null,
             props?: Record<string, unknown>,
             content?: unknown, 
             isAutoInstantiated?: boolean,
