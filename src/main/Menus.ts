@@ -7,7 +7,7 @@
  ***************************************************************************/
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 import { Position } from "kresmer";
-import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing, userPrefs, requestConnectToServer } from "./main";
+import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing, requestConnectToServer } from "./main";
 
 const isMac = process.platform === 'darwin'
 

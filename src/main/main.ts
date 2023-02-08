@@ -25,7 +25,7 @@ let defaultDrawingFileName: string;
 
 export const userPrefs = new Settings("user-prefs.json", {
     window: {width: 800, height: 600},
-    server: {url: "", autoConnect: false},
+    server: {url: "", password: "", autoConnect: false},
 });
 
 function createWindow() {
@@ -207,7 +207,7 @@ export function loadLibrary()
 {
     // console.debug("About to show 'Open drawing dialog...'")
     const filePath = dialog.showOpenDialogSync(mainWindow, {
-        title: "Load libary...",
+        title: "Load library...",
         filters: [
             {name: "Kresmer library files (*.krel)", extensions: ["krel"]},
             {name: "All files (*.*)", extensions: ["*"]},

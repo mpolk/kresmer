@@ -18,14 +18,18 @@ type Options = {
     },
     server: {
         url: string,
+        password: string,
         autoConnect: boolean,
     },
 };
 
+type RegValue = string | number | boolean;
+interface RegData {[key: string]: RegValue|RegData}
+
 export default class Settings
 {
     private fileName: string;
-    private data: Record<string, Record<string, unknown>>;
+    private data: RegData;
 
     public constructor(fileName: string, private defaults: Options)
     {
@@ -38,10 +42,10 @@ export default class Settings
         }//catch
     }//ctor
 
-    public get<K1 extends keyof Options>(key1: K1)
+    public get<K1 extends keyof Options, V1 extends Options[K1]>(key1: K1)
     {
         if (key1 in this.data) {
-            return this.data[key1];
+            return this.data[key1] as V1;
         } else {
             return this.defaults[key1];
         }//if
@@ -49,7 +53,7 @@ export default class Settings
 
     public get2<K1 extends keyof Options, K2 extends keyof Options[K1]>(key1: K1, key2: K2) 
     {
-        if (key1 in this.data && key2 in this.data[key1]) {
+        if (key1 in this.data && typeof this.data[key1] === "object" && key2 in (this.data[key1] as object)) {
             return (this.data[key1] as Options[K1])[key2];
         } else {
             return this.defaults[key1][key2];
@@ -69,7 +73,7 @@ export default class Settings
         if (key1 in this.data && typeof this.data[key1] === "object") {
             (this.data[key1] as Options[K1])[key2] = value;
         } else {
-            this.data[key1] = {key2: value};
+            this.data[key1] = {key2: value as RegData};
         }//if
         this.persist();
     }//set
