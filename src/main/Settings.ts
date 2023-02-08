@@ -11,27 +11,15 @@ import * as path from 'path';
 import { app } from 'electron';
 import * as fs from 'fs';
 
-type Options = {
-    window: {
-        width: number,
-        height: number,
-    },
-    server: {
-        url: string,
-        password: string,
-        autoConnect: boolean,
-    },
-};
-
 type RegValue = string | number | boolean;
 interface RegData {[key: string]: RegValue|RegData}
 
-export default class Settings
+export default class Settings<Registry extends RegData>
 {
     private fileName: string;
     private data: RegData;
 
-    public constructor(fileName: string, private defaults: Options)
+    public constructor(fileName: string, private defaults: Registry)
     {
         this.fileName = path.join(app.getPath("userData"), fileName);
         
@@ -42,44 +30,42 @@ export default class Settings
         }//catch
     }//ctor
 
-    public get<K1 extends keyof Options, V1 extends Options[K1]>(key1: K1)
+    public get<K1 extends keyof Registry, V extends Registry[K1]>(key1: K1): V;
+    public get<K1 extends keyof Registry, K2 extends keyof Registry[K1], V extends Registry[K1][K2]>(key1: K1, key2: K2): V;
+    public get(...keys: string[])
     {
-        if (key1 in this.data) {
-            return this.data[key1] as V1;
+        return this._get(this.data, keys, this.defaults);
+    }//if
+
+    private _get(data: RegData, keys: string[], defaults: RegData): RegData|RegValue
+    {
+        if (!(keys[0] in data) || (keys.length > 1 && typeof data[keys[0]] !== "object")) {
+            return this._get(defaults, keys, defaults);
+        } else if (keys.length == 1) {
+            return data[keys[0]];
         } else {
-            return this.defaults[key1];
-        }//if
-    }//get
+            return this._get(data[keys[0]] as RegData, keys.slice(1), defaults[keys[0]] as RegData);
+        }
+    }//_get
 
-    public get2<K1 extends keyof Options, K2 extends keyof Options[K1]>(key1: K1, key2: K2) 
+
+    public set<K1 extends keyof Registry, V extends Registry[K1]>(key1: K1, value: V): Settings<Registry>;
+    public set<K1 extends keyof Registry, K2 extends keyof Registry[K1], 
+               V extends Registry[K1][K2]>(key1: K1, key2: K2, value: V): Settings<Registry>;
+    public set(...args: (string|RegData|RegValue)[])
     {
-        if (key1 in this.data && typeof this.data[key1] === "object" && key2 in (this.data[key1] as object)) {
-            return (this.data[key1] as Options[K1])[key2];
-        } else {
-            return this.defaults[key1][key2];
-        }//if
-    }//get2
-
-
-    public set<K1 extends keyof Options, V1 extends Options[K1]>(key1: K1, value: V1)
-    {
-        this.data[key1] = value;
-        this.persist();
-    }//set
-
-    public set2<K1 extends keyof Options, K2 extends keyof Options[K1], V2 extends Options[K1][K2]>
-        (key1: K1, key2: K2, value: V2) 
-    {
-        if (key1 in this.data && typeof this.data[key1] === "object") {
-            (this.data[key1] as Options[K1])[key2] = value;
-        } else {
-            this.data[key1] = {key2: value as RegData};
-        }//if
-        this.persist();
-    }//set
-
-    private persist()
-    {
+        this._set(this.data, args.slice(0, -1) as string[], args[args.length - 1] as RegData|RegValue);
         fs.writeFileSync(this.fileName, JSON.stringify(this.data));
-    }//persist
+        return this;
+    }//set
+
+    private _set(data: RegData, keys: string[], newValue: RegData|RegValue)
+    {
+        if (keys.length == 1 || !(keys[0] in data)) {
+            data[keys[0]] = newValue;
+        } else {
+            this._set(data[keys[0]] as RegData, keys.slice(1), newValue);
+        }//if
+    }//_set
+
 }//Settings

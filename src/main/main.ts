@@ -41,7 +41,7 @@ function createWindow() {
     const mainWindow = new BrowserWindow(windowOptions);
 
     menus = new Menus(mainWindow);
-    if (userPrefs.get2("server", "autoConnect")) {
+    if (userPrefs.get("server", "autoConnect")) {
         requestConnectToServer();
     }//if
 
@@ -223,5 +223,5 @@ export function loadLibrary()
 
 export function requestConnectToServer()
 {
-    sendAppCommand("connect-to-server", userPrefs.get2("server", "url"));
+    sendAppCommand("connect-to-server", userPrefs.get("server", "url"));
 }//requestConnectToServer
