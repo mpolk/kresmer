@@ -347,6 +347,12 @@ appCommandExecutor.on("scale-drawing", direction => {
     }//switch
 });
 
+appCommandExecutor.on("connect-to-server", (url, password, forceUI) => {
+    kresmer.backendServerURL = url;
+    kresmer.backendServerPassword = password;
+    window.electronAPI.saveBackendServerConnection(url, password, true);
+});
+
 // -------------------------------------------------------------------------------------------------
 // Let's go forward and do our work...
 window.electronAPI.signalReadiness(0);

@@ -25,7 +25,7 @@ let defaultDrawingFileName: string;
 
 export const userPrefs = new Settings("user-prefs.json", {
     window: {width: 800, height: 600},
-    server: {url: "", password: "", autoConnect: false},
+    server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
 });
 
 function createWindow() {
@@ -42,7 +42,7 @@ function createWindow() {
 
     menus = new Menus(mainWindow);
     if (userPrefs.get("server", "autoConnect")) {
-        requestConnectToServer();
+        requestConnectToServer(false);
     }//if
 
     // and load the index page of the app
@@ -66,12 +66,16 @@ function createWindow() {
     });
 
     ipcMain.on('renderer-ready', (_event, stage: number) => {initApp(mainWindow, stage)});
-    ipcMain.on('set-default-drawing-filename', 
-               (_event, fileName: string) => {defaultDrawingFileName = fileName});
-    ipcMain.on('enable-delete-menu-item', 
-               (_event, enable) => {
-                    Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
-                });
+    ipcMain.on('set-default-drawing-filename', (_event, fileName: string) => {
+        defaultDrawingFileName = fileName
+    });
+    ipcMain.on('enable-delete-menu-item', (_event, enable) => {
+        Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
+    });
+    ipcMain.on("save-backend-server-connection", (_event, url: string, password: string, autoConnect: boolean) => {
+        userPrefs.set("server", {url, password, autoConnect});
+    });
+
     return mainWindow;
 }//createWindow
 
@@ -221,7 +225,7 @@ export function loadLibrary()
 }//loadLibrary
 
 
-export function requestConnectToServer()
+export function requestConnectToServer(forceUI: boolean)
 {
-    sendAppCommand("connect-to-server", userPrefs.get("server", "url"));
+    sendAppCommand("connect-to-server", userPrefs.get("server", "url"), userPrefs.get("server", "password"), forceUI);
 }//requestConnectToServer

@@ -18,7 +18,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
                         completionSignal?: number,
                     }) => void,
     "save-drawing": () => void,
-    "connect-to-server": (url: string) => void,
+    "connect-to-server": (url: string, password: string, forceUI: boolean) => void,
     "undo": () => void,
     "redo": () => void,
     "scale-drawing": (direction: ScaleDirection) => void,

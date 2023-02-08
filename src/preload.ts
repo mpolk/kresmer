@@ -37,6 +37,10 @@ import { ContextMenuID } from './main/Menus';
         ipcRenderer.send("enable-delete-menu-item", enable);
     },
 
+    saveBackendServerConnection: (url: string, password: string, autoConnect: boolean) => {
+        ipcRenderer.send("save-backend-server-connection", url, password, autoConnect);
+    },
+
  });
  console.debug("Finished setting up electron API for the renderer");
  

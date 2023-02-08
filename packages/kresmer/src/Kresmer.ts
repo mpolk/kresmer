@@ -129,7 +129,9 @@ export default class Kresmer extends KresmerEventHooks {
     readonly mountPoint: HTMLElement;
 
     /** Kresmer-backend server URL (if any) */
-    serverURL = "";
+    backendServerURL = "";
+    /** A password for connecting to the Kresmer-backend server */
+    backendServerPassword = "";
 
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack(this);
