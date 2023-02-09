@@ -13,31 +13,39 @@
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+    import { onMounted, ref, reactive } from 'vue';
     import {Modal} from 'bootstrap';
+    import {BackendConnectionParams} from "./renderer-main";
 
     let modal!: Modal;
     const rootDiv = ref<HTMLDivElement>();
     const btnOk = ref<HTMLButtonElement>();
-    let resolvePromise!: (result: boolean) => void;
-    const showWarning = ref(false);
 
-    let serverURL = "";
-    let password = "";
-    let autoConnect = true;
-    let savePassword = false;
+    const data: BackendConnectionParams = reactive({
+        serverURL: "",
+        password: "",
+        autoConnect: true,
+        savePassword: false,
+    });
+
+    let resolvePromise!: (result: BackendConnectionParams | null) => void;
 
     onMounted(() =>
     {
         rootDiv.value!.addEventListener('shown.bs.modal', () => {btnOk.value!.focus()});
     })//mounted
 
-    async function show()
+    async function show(args: {serverURL: string, password: string, autoConnect: boolean})
     {
+        data.serverURL = args.serverURL;
+        data.password = args.password;
+        data.autoConnect = args.autoConnect;
+        data.savePassword = Boolean(args.password);
+
         if (!modal)
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
         modal.show();
-        const promise = new Promise<boolean>((resolve) => {
+        const promise = new Promise<BackendConnectionParams | null>((resolve) => {
             resolvePromise = resolve;
         })
         const result = await promise;
@@ -45,17 +53,24 @@
     }//show
 
 
+    function onSavePasswordChange(event: Event)
+    {
+        if (data.savePassword && 
+            !confirm("Keep in mind that the password is stored in plain text.\n" + 
+                     "Are you sure you want to save the password?")) 
+        {
+            data.savePassword = false;
+        }//if
+    }//onSavePasswordChange
+
+
     function submit()
     {
-        if (!result) {
-            showWarning.value = true;
-        } else {
-            close(result);
-        }//if
+        close(data);
     }//submit
 
 
-    function close(result: DrawingMergeOptions|null)
+    function close(result: BackendConnectionParams | null)
     {
         modal!.hide();
         resolvePromise!(result);
@@ -69,47 +84,29 @@
     <div class="modal fade" tabindex="-1" ref="rootDiv">
         <div class="modal-dialog">
             <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title fs-5">Drawing merge options...</h5>
-                <button type="button" class="btn-close" @click="close(null)"></button>
-            </div>
-            <div class="modal-body">
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="rbErasePreviousContent" name="mergeOptions"
-                           value="erase-previous-content" v-model="result" @click="showWarning = false">
-                    <label class="form-check-label" for="rbErasePreviousContent">
-                        Erase previous content
-                    </label>
+                <div class="modal-header">
+                    <h5 class="modal-title fs-5">Connect to the backend server...</h5>
+                    <button type="button" class="btn-close" @click="close(null)"></button>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="rbMergeDuplicates" name="mergeOptions"
-                           value="merge-duplicates" v-model="result" @click="showWarning = false">
-                    <label class="form-check-label" for="rbMergeDuplicates">
-                        Merge duplicates
-                    </label>
+                <div class="modal-body">
+                    <label for="inpServerURL" class="form-label">Server URL:</label>
+                    <input id="inpServerURL" class="form-control" v-model="data.serverURL" />
+                    <label for="inpBackendPassword" class="form-label">Password:</label>
+                    <input id="inpBackendPassword" type="password" class="form-control" v-model="data.password" />
+                    <div class="form-check mt-2">
+                        <input id="cbSavePassword" type="checkbox" class="form-check-input" v-model="data.savePassword" 
+                               @change="onSavePasswordChange($event)"/>
+                        <label for="cbSavePassword" class="form-check-label">Save password</label>
+                    </div>
+                    <div class="form-check">
+                        <input id="cbAutoConnect" type="checkbox" class="form-check-input" v-model="data.autoConnect" />
+                        <label for="cbAutoConnect" class="form-check-label">Connect to the server automatically</label>
+                    </div>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="rbRenameDuplicates" name="mergeOptions"
-                           value="rename-duplicates" v-model="result" @click="showWarning = false">
-                    <label class="form-check-label" for="rbRenameDuplicates">
-                        Rename duplicates
-                    </label>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
+                    <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
                 </div>
-                <div class="form-check">
-                    <input class="form-check-input" type="radio" id="rbIgnoreDuplicates" name="mergeOptions"
-                           value="ignore-duplicates" v-model="result" @click="showWarning = false">
-                    <label class="form-check-label" for="rbIgnoreDuplicates">
-                        Ignore duplicates
-                    </label>
-                </div>
-                <div v-if="showWarning" class="text-warning text-center">
-                    Please choose one of the options above
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
-                <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
-            </div>
             </div>
         </div>
     </div>

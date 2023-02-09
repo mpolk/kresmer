@@ -41,9 +41,9 @@ function createWindow() {
     const mainWindow = new BrowserWindow(windowOptions);
 
     menus = new Menus(mainWindow);
-    if (userPrefs.get("server", "autoConnect")) {
-        requestConnectToServer(false);
-    }//if
+    // if (userPrefs.get("server", "autoConnect")) {
+    //     requestConnectToServer(false);
+    // }//if
 
     // and load the index page of the app
     const indexPage = "index.electron.html";

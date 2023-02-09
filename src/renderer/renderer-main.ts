@@ -23,6 +23,7 @@ import { AppCommandExecutor } from './AppCommands';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
 import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
+import BackendConnectionDialog from './BackendConnectionDialog.vue';
 
 if (process.env.NODE_ENV === 'development') {
     vueDevtools.connect(/* host, port */)
@@ -57,8 +58,10 @@ const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#
     InstanceType<typeof LinkClassSelectionDialog>;
 const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionDialog).mount("#dlgComponentClassSelection") as
     InstanceType<typeof ComponentClassSelectionDialog>;
-const drawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
+const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
     InstanceType<typeof DrawingMergeDialog>;
+const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
+    InstanceType<typeof BackendConnectionDialog>;
 
 export function updateWindowTitle()
 {
@@ -219,7 +222,7 @@ appCommandExecutor.on("load-drawing",
     try {
         let mergeOptions: DrawingMergeOptions|undefined;
         if (!options?.completionSignal && !kresmer.isEmpty) {
-            mergeOptions = (await drawingMergeDialog.show()) ?? undefined;
+            mergeOptions = (await vueDrawingMergeDialog.show()) ?? undefined;
             if (!mergeOptions) {
                 return;
             }//if
@@ -347,10 +350,34 @@ appCommandExecutor.on("scale-drawing", direction => {
     }//switch
 });
 
-appCommandExecutor.on("connect-to-server", (url, password, forceUI) => {
-    kresmer.backendServerURL = url;
-    kresmer.backendServerPassword = password;
-    window.electronAPI.saveBackendServerConnection(url, password, true);
+export type BackendConnectionParams = {
+    serverURL: string,
+    password: string,
+    autoConnect: boolean,
+    savePassword: boolean,
+}//BackendConnectionParams
+
+
+appCommandExecutor.on("connect-to-server", async (serverURL, password, forceUI) => {
+    let connectionParams: BackendConnectionParams | null = {
+        serverURL,
+        password,
+        autoConnect: true,
+        savePassword: Boolean(password)
+    }
+
+    if (forceUI) {
+        connectionParams = await vueBackendConnectionDialog.show(connectionParams);
+        if (!connectionParams) {
+            return;
+        }//if
+    }//if
+    
+    kresmer.backendServerURL = connectionParams.serverURL;
+    kresmer.backendServerPassword = connectionParams.password;
+    window.electronAPI.saveBackendServerConnection(connectionParams.serverURL, 
+                                                   connectionParams.password, 
+                                                   connectionParams.autoConnect);
 });
 
 // -------------------------------------------------------------------------------------------------
