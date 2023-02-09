@@ -373,8 +373,7 @@ appCommandExecutor.on("connect-to-server", async (serverURL, password, forceUI) 
         }//if
     }//if
     
-    kresmer.backendServerURL = connectionParams.serverURL;
-    kresmer.backendServerPassword = connectionParams.password;
+    kresmer.connectToBackend(connectionParams.serverURL, connectionParams.password);
     window.electronAPI.saveBackendServerConnection(connectionParams.serverURL, 
                                                    connectionParams.password, 
                                                    connectionParams.autoConnect);

@@ -29,6 +29,7 @@ import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import NetworkElementClass from "./NetworkElementClass";
 import { MapWithZOrder } from "./ZOrdering";
+import BackendConnection from "./BackendConnection";
 
 
 /**
@@ -128,10 +129,31 @@ export default class Kresmer extends KresmerEventHooks {
     /** The element Kresmer was mounted on */
     readonly mountPoint: HTMLElement;
 
-    /** Kresmer-backend server URL (if any) */
-    backendServerURL = "";
-    /** A password for connecting to the Kresmer-backend server */
-    backendServerPassword = "";
+    /** Kresmer-backend server connection (if any) */
+    private backendConnection?: BackendConnection;
+    /** 
+     * Connects to the backend server
+     * @param serverURL An URL of the backend server to connect to
+     * @param password A password to use for the connection
+     */
+    public connectToBackend(serverURL: string, password: string)
+    {
+        this.backendConnection = new BackendConnection(serverURL, password);
+    }//connectToBackend
+    /** Disconnects from the backend server */
+    public disconnectFromBackend()
+    {
+        this.backendConnection = undefined;
+    }//disconnectFromBackend
+    /** 
+     * Tests a connection to the backend server using the specified URL and password
+     * @param serverURL An URL of the backend server to connect to
+     * @param password A password to use for the connection
+     */
+    public testBackendConnection(serverURL: string, password: string)
+    {
+        return BackendConnection.testConnection(serverURL, password);
+    }//testBackendConnection
 
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack(this);

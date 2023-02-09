@@ -15,9 +15,10 @@
 <script setup lang="ts">
     import { onMounted, ref, reactive } from 'vue';
     import {Modal} from 'bootstrap';
-    import {BackendConnectionParams} from "./renderer-main";
+    import {kresmer, BackendConnectionParams} from "./renderer-main";
 
     let modal!: Modal;
+    const diagMessage = ref("");
     const rootDiv = ref<HTMLDivElement>();
     const btnOk = ref<HTMLButtonElement>();
 
@@ -41,6 +42,7 @@
         data.password = args.password;
         data.autoConnect = args.autoConnect;
         data.savePassword = Boolean(args.password);
+        diagMessage.value = "";
 
         if (!modal)
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
@@ -64,8 +66,14 @@
     }//onSavePasswordChange
 
 
-    function submit()
+    async function submit()
     {
+        const {success, message} = await kresmer.testBackendConnection(data.serverURL, data.password);
+        if (!success) {
+            diagMessage.value = message!;
+            return;
+        }//if
+
         close(data);
     }//submit
 
@@ -101,6 +109,9 @@
                     <div class="form-check">
                         <input id="cbAutoConnect" type="checkbox" class="form-check-input" v-model="data.autoConnect" />
                         <label for="cbAutoConnect" class="form-check-label">Connect to the server automatically</label>
+                    </div>
+                    <div v-if="diagMessage" class="text-danger text-center">
+                        Cannot connect to the backend: {{ diagMessage }}
                     </div>
                 </div>
                 <div class="modal-footer">
