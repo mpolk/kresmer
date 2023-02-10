@@ -24,8 +24,8 @@ export default class BackendConnection {
             } else {
                 return {success: false, message: response.statusText}
             }//if
-        } catch {
-            return {success: false, message: "Network error"};
+        } catch (error) {
+            return {success: false, message: error as string};
         }//catch
     }//testConnection
 

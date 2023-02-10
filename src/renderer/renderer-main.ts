@@ -25,9 +25,9 @@ import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 
-if (process.env.NODE_ENV === 'development') {
-    vueDevtools.connect(/* host, port */)
-}//if
+// if (process.env.NODE_ENV === 'development') {
+//     vueDevtools.connect(/* host, port */)
+// }//if
   
 
 export const kresmer = new Kresmer('#kresmer');

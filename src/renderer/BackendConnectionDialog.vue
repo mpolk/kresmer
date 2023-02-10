@@ -111,7 +111,8 @@
                         <label for="cbAutoConnect" class="form-check-label">Connect to the server automatically</label>
                     </div>
                     <div v-if="diagMessage" class="text-danger text-center">
-                        Cannot connect to the backend: {{ diagMessage }}
+                        Cannot connect to the backend. Message is following:<br/>
+                        {{ diagMessage }}
                     </div>
                 </div>
                 <div class="modal-footer">

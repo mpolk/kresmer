@@ -150,7 +150,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param serverURL An URL of the backend server to connect to
      * @param password A password to use for the connection
      */
-    public testBackendConnection(serverURL: string, password: string)
+    public async testBackendConnection(serverURL: string, password: string)
     {
         return BackendConnection.testConnection(serverURL, password);
     }//testBackendConnection
