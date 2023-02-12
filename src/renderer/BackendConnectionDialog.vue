@@ -70,7 +70,7 @@
     {
         const {success, message} = await kresmer.testBackendConnection(data.serverURL, data.password);
         if (!success) {
-            diagMessage.value = message!;
+            diagMessage.value = message ? message : "<Some hidden error, probably CORS-related>";
             return;
         }//if
 

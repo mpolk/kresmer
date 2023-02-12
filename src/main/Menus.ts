@@ -64,7 +64,8 @@ export default class Menus {
           {label: "Save drawing", accelerator: "Control+S", click: () => saveDrawing()},
           {label: "Save drawing as...", click: () => saveDrawingAs()},
           {type: 'separator'},
-          {label: "Connect to server...", id: "connectToServer", click: () => requestConnectToServer(true)},
+          {label: "Connect to the backend server...", accelerator: "Control+B", id: "connectToServer", 
+                  click: () => requestConnectToServer(true)},
           {type: 'separator'},
           isMac ? { role: 'close' } : { role: 'quit' }
         ]
