@@ -17,8 +17,12 @@ export default class BackendConnection {
 
     static async testConnection(serverURL: string, password: string): Promise<BackendConnectionTestResult>
     {
+        const id = btoa(`Kresmer-client:${password}`);
+        const headers = new Headers({
+            "Authorization": `Basic ${id}`,
+        })
         try {
-            const response = await fetch(`${serverURL}/test-connection`);
+            const response = await fetch(`${serverURL}/test-connection`, {headers});
             if (response.ok) {
                 return {success: true};
             } else {

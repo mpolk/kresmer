@@ -36,8 +36,6 @@ function createWindow() {
         icon: path.join(__dirname, "../logo.png"),
         webPreferences: {
             preload: path.join(__dirname, '../preload.js'),
-            // webSecurity: false,
-            allowRunningInsecureContent: false,
         }
     }//windowOptions
     const mainWindow = new BrowserWindow(windowOptions);
