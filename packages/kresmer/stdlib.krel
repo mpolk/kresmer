@@ -190,10 +190,11 @@
             <rect v-if="perspective === 'left'" v-bind:x="-height*2.26" y="0" v-bind:width="height*2.26" 
                   v-bind:height="height" class="side facet" transform="skewY(32)"/>
             <text v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="height*0.75" 
-                  text-anchor="middle" v-bind:class="nameClass">{{name}}</text>
+                  text-anchor="middle" class="switch-name" 
+                  v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
         </template>
         <style>
-            .switch-name, .switch-name-no-persp { font-family: sans-serif; fill: black; }
+            .switch-name, .switch-name.no-persp { font-family: sans-serif; fill: black; text-shadow: none}
             .port-icon { fill: #525252; }
             .facet {fill: lightgray;}
             .top.facet { filter: brightness(0.7); }
@@ -212,9 +213,6 @@
             </computed-prop>
             <computed-prop name="nameY">
                 props.perspective === "none" ? -props.height*0.3 : -props.height*0.55
-            </computed-prop>
-            <computed-prop name="nameClass">
-                props.perspective === "none" ? "switch-name-no-persp" : "switch-name"
             </computed-prop>
         </computed-props>
     </component-class>
