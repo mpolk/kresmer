@@ -374,9 +374,15 @@ appCommandExecutor.on("connect-to-server", async (serverURL, password, forceUI) 
     }//if
     
     kresmer.connectToBackend(connectionParams.serverURL, connectionParams.password);
-    window.electronAPI.saveBackendServerConnection(connectionParams.serverURL, 
-                                                   connectionParams.password, 
-                                                   connectionParams.autoConnect);
+    window.electronAPI.backendServerConnected(connectionParams.serverURL, 
+                                              connectionParams.password, 
+                                              connectionParams.autoConnect);
+});
+
+
+appCommandExecutor.on("disconnect-from-server", async () => {
+    kresmer.disconnectFromBackend();
+    window.electronAPI.backendServerDisconnected();
 });
 
 // -------------------------------------------------------------------------------------------------

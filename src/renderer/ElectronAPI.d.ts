@@ -16,7 +16,8 @@ export interface ElectronAPI {
     setDefaultDrawingFileName: (fileName: string) => void,
     completeDrawingSaving: (dwgData: string) => void,
     enableDeleteMenuItem: (enable: boolean) => void,
-    saveBackendServerConnection: (url: string, password: string, autoConnect: boolean) => void,
+    backendServerConnected: (url: string, password: string, autoConnect: boolean) => void,
+    backendServerDisconnected: () => void,
 }//IElectronAPI
 
 declare global {

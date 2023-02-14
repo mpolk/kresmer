@@ -67,8 +67,24 @@ function createWindow() {
     ipcMain.on('enable-delete-menu-item', (_event, enable) => {
         Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
     });
-    ipcMain.on("save-backend-server-connection", (_event, url: string, password: string, autoConnect: boolean) => {
+    ipcMain.on("backend-server-connected", (_event, url: string, password: string, autoConnect: boolean) => {
         userPrefs.set("server", {url, password, autoConnect});
+        const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
+        menuConnectToServer.visible = false;
+        menuConnectToServer.enabled = false;
+        const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
+        menuDisconnectFromServer.visible = true;
+        menuDisconnectFromServer.enabled = true;
+    });
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    ipcMain.on("backend-server-disconnected", (_event) => {
+        userPrefs.set("server", "autoConnect", false);
+        const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
+        menuConnectToServer.visible = true;
+        menuConnectToServer.enabled = true;
+        const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
+        menuDisconnectFromServer.visible = false;
+        menuDisconnectFromServer.enabled = false;
     });
 
     return mainWindow;
@@ -224,3 +240,8 @@ export function requestConnectToServer(forceUI: boolean)
 {
     sendAppCommand("connect-to-server", userPrefs.get("server", "url"), userPrefs.get("server", "password"), forceUI);
 }//requestConnectToServer
+
+export function requestDisconnectFromServer()
+{
+    sendAppCommand("disconnect-from-server");
+}//requestDisconnectFromServer

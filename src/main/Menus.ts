@@ -7,7 +7,8 @@
  ***************************************************************************/
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 import { Position } from "kresmer";
-import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing, requestConnectToServer } from "./main";
+import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing, 
+         requestConnectToServer, requestDisconnectFromServer } from "./main";
 
 const isMac = process.platform === 'darwin'
 
@@ -66,6 +67,8 @@ export default class Menus {
           {type: 'separator'},
           {label: "Connect to the backend server...", accelerator: "Control+B", id: "connectToServer", 
                   click: () => requestConnectToServer(true)},
+          {label: "Disconnect from the backend server", accelerator: "Control+D", id: "disconnectFromServer", 
+                  click: () => requestDisconnectFromServer(), visible: false, enabled: false},
           {type: 'separator'},
           isMac ? { role: 'close' } : { role: 'quit' }
         ]
