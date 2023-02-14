@@ -51,6 +51,9 @@
         <div class="pane right">
             {{drawingScale}}
         </div>
+        <div class="pane right">
+            {{displayData.serverURL}}
+        </div>
     </div>
 </template>
 

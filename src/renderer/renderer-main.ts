@@ -37,12 +37,14 @@ export const hints = new Hints;
 export type StatusBarDisplayData = {
     selectedElement: NetworkElement | null,
     hint: string,
+    serverURL: string,
     drawingScale: number,
 };
 
 export const statusBarData: StatusBarDisplayData = reactive({
     selectedElement: null,
     hint: "",
+    serverURL: "",
     drawingScale: 1,
 })//statusBarData
 
@@ -377,12 +379,14 @@ appCommandExecutor.on("connect-to-server", async (serverURL, password, forceUI) 
     window.electronAPI.backendServerConnected(connectionParams.serverURL, 
                                               connectionParams.password, 
                                               connectionParams.autoConnect);
+    statusBarData.serverURL = connectionParams.serverURL;
 });
 
 
 appCommandExecutor.on("disconnect-from-server", async () => {
     kresmer.disconnectFromBackend();
     window.electronAPI.backendServerDisconnected();
+    statusBarData.serverURL = "";
 });
 
 // -------------------------------------------------------------------------------------------------

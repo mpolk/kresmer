@@ -91,7 +91,7 @@
 <template>
     <div class="modal fade" tabindex="-1" ref="rootDiv">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <form class="modal-content" @submit.prevent="">
                 <div class="modal-header">
                     <h5 class="modal-title fs-5">Connect to the backend server...</h5>
                     <button type="button" class="btn-close" @click="close(null)"></button>
@@ -116,10 +116,10 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
+                    <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
                     <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>
