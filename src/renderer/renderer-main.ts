@@ -8,7 +8,7 @@
 
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive } from 'vue';
-import vueDevtools from '@vue/devtools';
+// import vueDevtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
 import DrawingPropsSidebar from './DrawingPropsSidebar.vue';
@@ -24,6 +24,7 @@ import DrawingMergeDialog from './DrawingMergeDialog.vue';
 import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
+import { AppInitStage } from './ElectronAPI.d';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -195,7 +196,7 @@ window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args
     appCommandExecutor.execute(command, ...args);
 });
 
-appCommandExecutor.on("load-library", (libData: string, completionSignal?: number) =>
+appCommandExecutor.on("load-library", (libData: string, completionSignal?: AppInitStage) =>
 { 
     try {
         if (!kresmer.loadLibrary(libData)) {
@@ -219,7 +220,7 @@ appCommandExecutor.on("load-library", (libData: string, completionSignal?: numbe
 
 
 appCommandExecutor.on("load-drawing", 
-    async (drawingData: string, options?: {drawingFileName?: string, completionSignal?: number}) =>
+    async (drawingData: string, options?: {drawingFileName?: string, completionSignal?: AppInitStage}) =>
 {
     try {
         let mergeOptions: DrawingMergeOptions|undefined;
@@ -360,7 +361,8 @@ export type BackendConnectionParams = {
 }//BackendConnectionParams
 
 
-appCommandExecutor.on("connect-to-server", async (serverURL, password, forceUI) => {
+appCommandExecutor.on("connect-to-server", 
+    async (serverURL, password, forceUI, completionSignal?: AppInitStage) => {
     let connectionParams: BackendConnectionParams | null = {
         serverURL,
         password,
@@ -371,6 +373,9 @@ appCommandExecutor.on("connect-to-server", async (serverURL, password, forceUI) 
     if (forceUI) {
         connectionParams = await vueBackendConnectionDialog.show(connectionParams);
         if (!connectionParams) {
+            if (completionSignal) {
+                window.electronAPI.signalReadiness(completionSignal);
+            }//if
             return;
         }//if
     }//if
@@ -380,6 +385,9 @@ appCommandExecutor.on("connect-to-server", async (serverURL, password, forceUI) 
                                               connectionParams.password, 
                                               connectionParams.autoConnect);
     statusBarData.serverURL = connectionParams.serverURL;
+    if (completionSignal) {
+        window.electronAPI.signalReadiness(completionSignal);
+    }//if
 });
 
 
@@ -391,4 +399,4 @@ appCommandExecutor.on("disconnect-from-server", async () => {
 
 // -------------------------------------------------------------------------------------------------
 // Let's go forward and do our work...
-window.electronAPI.signalReadiness(0);
+window.electronAPI.signalReadiness(AppInitStage.HANDLERS_INITIALIZED);

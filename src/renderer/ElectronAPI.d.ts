@@ -10,7 +10,7 @@ import {IpcRendererEvent} from 'electron';
 import { ContextMenus, ContextMenuID } from './main/menus';
 
 export interface ElectronAPI {
-    signalReadiness: (stage: number) => void,
+    signalReadiness: (stage: AppInitStage) => void,
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => void,
     showContextMenu: <MenuID extends ContextMenuID>(menuID: MenuID, ...args: Parameters<ContextMenus[MenuID]>) => void,
     setDefaultDrawingFileName: (fileName: string) => void,
@@ -19,6 +19,14 @@ export interface ElectronAPI {
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => void,
     backendServerDisconnected: () => void,
 }//IElectronAPI
+
+
+export const enum AppInitStage {
+    HANDLERS_INITIALIZED = 0,
+    CONNECTED_TO_BACKEND = 1,
+    STDLIB_LOADED = 2,
+    DRAWING_LOADED = 3,
+}//AppInitStage
 
 declare global {
     interface Window {

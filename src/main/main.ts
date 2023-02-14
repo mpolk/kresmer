@@ -15,6 +15,7 @@ import Settings from './Settings';
 import Menus, {ContextMenuID} from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import console from 'console';
+import { AppInitStage } from '../renderer/ElectronAPI';
 
 const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
 
@@ -40,9 +41,6 @@ function createWindow() {
     const mainWindow = new BrowserWindow(windowOptions);
 
     menus = new Menus(mainWindow);
-    // if (userPrefs.get("server", "autoConnect")) {
-    //     requestConnectToServer(false);
-    // }//if
 
     // and load the index page of the app
     const indexPage = "index.electron.html";
@@ -96,19 +94,25 @@ function createWindow() {
 
 
 // Initializing the application when it is ready to be initialized
-function initApp(mainWindow: BrowserWindow, stage: number)
+function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
 {
     console.debug(`We've heard that the main window renderer is now ready (stage ${stage})`);
     switch (stage) {
-        case 0: {
+        case AppInitStage.HANDLERS_INITIALIZED: 
+            if (userPrefs.get("server", "autoConnect")) {
+                requestConnectToServer(false, AppInitStage.CONNECTED_TO_BACKEND);
+                break
+            }//if
+        // eslint-disable-next-line no-fallthrough
+        case AppInitStage.CONNECTED_TO_BACKEND: {
             console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`)
             const libData = fs.readFileSync("./stdlib.krel", "utf-8");
             console.debug("Standard library loaded in memory");
-            sendAppCommand("load-library", libData, 1);
+            sendAppCommand("load-library", libData, AppInitStage.STDLIB_LOADED);
             console.debug("Standard library loaded to Kresmer");
             break;
         }
-        case 1: {
+        case AppInitStage.STDLIB_LOADED: {
             const argv = process.argv;
             console.debug(`argv=${argv}`);
             const autoload = argv[1] == "." ? argv[2] : argv[1];
@@ -118,7 +122,7 @@ function initApp(mainWindow: BrowserWindow, stage: number)
                 sendAppCommand("load-drawing", dwgData, 
                                 {
                                     drawingFileName: autoload, 
-                                    completionSignal: 2, 
+                                    completionSignal: AppInitStage.DRAWING_LOADED, 
                                 });
             }//if
             break;
@@ -240,9 +244,10 @@ export function loadLibrary()
 }//loadLibrary
 
 
-export function requestConnectToServer(forceUI: boolean)
+export function requestConnectToServer(forceUI: boolean, completionSignal?: AppInitStage)
 {
-    sendAppCommand("connect-to-server", userPrefs.get("server", "url"), userPrefs.get("server", "password"), forceUI);
+    sendAppCommand("connect-to-server", userPrefs.get("server", "url"), 
+                    userPrefs.get("server", "password"), forceUI, completionSignal);
 }//requestConnectToServer
 
 export function requestDisconnectFromServer()

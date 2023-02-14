@@ -8,6 +8,7 @@
 
 import { ContextMenuCommands } from "../main/Menus";
 import { DrawingMergeOptions } from "kresmer";
+import { AppInitStage } from "./ElectronAPI";
 
 export interface AppCommandFormats extends ContextMenuCommands {
     "load-library": (libData: string, completionSignal?: number) => void,
@@ -18,7 +19,8 @@ export interface AppCommandFormats extends ContextMenuCommands {
                         completionSignal?: number,
                     }) => void,
     "save-drawing": () => void,
-    "connect-to-server": (url: string, password: string, forceUI: boolean) => void,
+    "connect-to-server": (url: string, password: string, forceUI: boolean, 
+                          completionSignal?: AppInitStage) => void,
     "disconnect-from-server": () => void,
     "undo": () => void,
     "redo": () => void,
