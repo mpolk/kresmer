@@ -8,13 +8,23 @@
 
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { ContextMenuID } from './main/Menus';
+import { AppInitStage } from './renderer/ElectronAPI';
+import { IpcMainChannel, IpcMainChannels } from './main/IpcMainHooks';
+
+class IpcMainSender {
+    static send<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): void;
+    static send(channel: IpcMainChannel, ...args: unknown[])
+    {
+        ipcRenderer.send(channel, ...args);
+    }//send
+}//IpcMainSender
 
  console.debug("Setting up electron API for the renderer...");
  contextBridge.exposeInMainWorld('electronAPI', {
 
-    signalReadiness: (stage: number) => {
+    signalReadiness: (stage: AppInitStage) => {
         console.debug(`Main window renderer: I am ready (stage ${stage})`);
-        ipcRenderer.send('renderer-ready', stage);
+        IpcMainSender.send('renderer-ready', stage);
     },
 
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => {
@@ -22,27 +32,27 @@ import { ContextMenuID } from './main/Menus';
     },
 
     showContextMenu: (menuID: ContextMenuID, ...args: unknown[]) => {
-        ipcRenderer.send('context-menu', menuID, ...args);
+        IpcMainSender.send('context-menu', menuID, ...args);
     },
 
     setDefaultDrawingFileName: (fileName: string) => {
-        ipcRenderer.send('set-default-drawing-filename', fileName);
+        IpcMainSender.send('set-default-drawing-filename', fileName);
     },
 
     completeDrawingSaving: (dwgData: string) => {
-        ipcRenderer.send("complete-drawing-saving", dwgData);
+        IpcMainSender.send("complete-drawing-saving", dwgData);
     },
 
     enableDeleteMenuItem: (enable: boolean) => {
-        ipcRenderer.send("enable-delete-menu-item", enable);
+        IpcMainSender.send("enable-delete-menu-item", enable);
     },
 
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => {
-        ipcRenderer.send("backend-server-connected", url, password, autoConnect);
+        IpcMainSender.send("backend-server-connected", url, password, autoConnect);
     },
 
     backendServerDisconnected: () => {
-        ipcRenderer.send("backend-server-disconnected");
+        IpcMainSender.send("backend-server-disconnected");
     },
 
  });

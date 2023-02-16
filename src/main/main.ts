@@ -8,7 +8,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import { app, BrowserWindow, dialog, ipcMain, Menu } from 'electron';
+import { app, BrowserWindow, dialog, Menu } from 'electron';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../package.json");
 import Settings from './Settings';
@@ -16,10 +16,12 @@ import Menus, {ContextMenuID} from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import console from 'console';
 import { AppInitStage } from '../renderer/ElectronAPI';
+import { IpcMainHooks } from './IpcMainHooks';
 
 const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
 
-let mainWindow: BrowserWindow;
+export let mainWindow: BrowserWindow;
+let ipcMainHooks: IpcMainHooks;
 export let menus: Menus;
 let defaultDrawingFileName: string;
 
@@ -57,19 +59,31 @@ function createWindow() {
         userPrefs.set('window', mainWindow.getBounds());
     });
 
-    ipcMain.on('context-menu', (_event, menuID: ContextMenuID, ...args: unknown[]) => {
+    return mainWindow;
+}//createWindow
+
+
+function initIpcMainHooks()
+{
+    const api = new IpcMainHooks();
+
+    api
+    .on('context-menu', (menuID: ContextMenuID, ...args: unknown[]) => {
         // console.debug("main: Context menu '%s'", menuID);
         menus.contextMenu(menuID, ...args);
-    });
+    })
 
-    ipcMain.on('renderer-ready', (_event, stage: number) => {initApp(mainWindow, stage)});
-    ipcMain.on('set-default-drawing-filename', (_event, fileName: string) => {
+    .on('renderer-ready', (stage: number) => {initApp(mainWindow, stage)})
+
+    .on('set-default-drawing-filename', (fileName: string) => {
         defaultDrawingFileName = fileName
-    });
-    ipcMain.on('enable-delete-menu-item', (_event, enable) => {
+    })
+
+    .on('enable-delete-menu-item', (enable: boolean) => {
         Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
-    });
-    ipcMain.on("backend-server-connected", (_event, url: string, password: string, autoConnect: boolean) => {
+    })
+
+    .on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
         userPrefs.set("server", {url, password, autoConnect});
         const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
         menuConnectToServer.visible = false;
@@ -77,9 +91,9 @@ function createWindow() {
         const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
         menuDisconnectFromServer.visible = true;
         menuDisconnectFromServer.enabled = true;
-    });
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    ipcMain.on("backend-server-disconnected", (_event) => {
+    })
+
+    .on("backend-server-disconnected", () => {
         userPrefs.set("server", "autoConnect", false);
         const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
         menuConnectToServer.visible = true;
@@ -87,14 +101,15 @@ function createWindow() {
         const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
         menuDisconnectFromServer.visible = false;
         menuDisconnectFromServer.enabled = false;
-    });
+    })
+    ;
 
-    return mainWindow;
-}//createWindow
+    return api;
+}//initIpcMainHooks
 
 
 // Initializing the application when it is ready to be initialized
-function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
+export function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
 {
     console.debug(`We've heard that the main window renderer is now ready (stage ${stage})`);
     switch (stage) {
@@ -135,6 +150,8 @@ function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
     mainWindow = createWindow();
+    ipcMainHooks = initIpcMainHooks();
+
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
@@ -184,7 +201,7 @@ export function saveDrawing()
     if (!defaultDrawingFileName) {
         saveDrawingAs();
     } else {
-        ipcMain.once("complete-drawing-saving", (_event, dwgData: string) => {
+        IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
                 console.debug(`About to save the drawing to the file "${defaultDrawingFileName}"`);
                 fs.writeFileSync(defaultDrawingFileName, dwgData);
         });
@@ -217,7 +234,7 @@ export function saveDrawingAs()
             return;
         }//if
         
-        ipcMain.once("complete-drawing-saving", (_event, dwgData: string) => {
+        IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
             console.debug(`About to save the drawing to the file "${filePath}"`);
             fs.writeFileSync(filePath!, dwgData);
         });
