@@ -22,11 +22,10 @@ export interface IpcMainChannels {
 export type IpcMainChannel = keyof IpcMainChannels;
 
 export class IpcMainHooks {
-    public on<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, handler: H): IpcMainHooks;
-    public on(channel: IpcMainChannel, handler: (...args: unknown[]) => void)
+    static on<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, handler: H): void;
+    static on(channel: IpcMainChannel, handler: (...args: unknown[]) => void)
     {
         ipcMain.on(channel, (event: IpcMainEvent, ...args: unknown[]) => handler(...args));
-        return this;
     }//on
 
     static once<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, handler: H): void;

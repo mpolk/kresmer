@@ -21,7 +21,6 @@ import { IpcMainHooks } from './IpcMainHooks';
 const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
 
 export let mainWindow: BrowserWindow;
-let ipcMainHooks: IpcMainHooks;
 export let menus: Menus;
 let defaultDrawingFileName: string;
 
@@ -65,25 +64,22 @@ function createWindow() {
 
 function initIpcMainHooks()
 {
-    const api = new IpcMainHooks();
-
-    api
-    .on('context-menu', (menuID: ContextMenuID, ...args: unknown[]) => {
+    IpcMainHooks.on('context-menu', (menuID: ContextMenuID, ...args: unknown[]) => {
         // console.debug("main: Context menu '%s'", menuID);
         menus.contextMenu(menuID, ...args);
-    })
+    });
 
-    .on('renderer-ready', (stage: number) => {initApp(mainWindow, stage)})
+    IpcMainHooks.on('renderer-ready', (stage: number) => {initApp(mainWindow, stage)});
 
-    .on('set-default-drawing-filename', (fileName: string) => {
+    IpcMainHooks.on('set-default-drawing-filename', (fileName: string) => {
         defaultDrawingFileName = fileName
-    })
+    });
 
-    .on('enable-delete-menu-item', (enable: boolean) => {
+    IpcMainHooks.on('enable-delete-menu-item', (enable: boolean) => {
         Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
-    })
+    });
 
-    .on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
+    IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
         userPrefs.set("server", {url, password, autoConnect});
         const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
         menuConnectToServer.visible = false;
@@ -91,9 +87,9 @@ function initIpcMainHooks()
         const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
         menuDisconnectFromServer.visible = true;
         menuDisconnectFromServer.enabled = true;
-    })
+    });
 
-    .on("backend-server-disconnected", () => {
+    IpcMainHooks.on("backend-server-disconnected", () => {
         userPrefs.set("server", "autoConnect", false);
         const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
         menuConnectToServer.visible = true;
@@ -101,10 +97,7 @@ function initIpcMainHooks()
         const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
         menuDisconnectFromServer.visible = false;
         menuDisconnectFromServer.enabled = false;
-    })
-    ;
-
-    return api;
+    });
 }//initIpcMainHooks
 
 
@@ -150,7 +143,7 @@ export function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
     mainWindow = createWindow();
-    ipcMainHooks = initIpcMainHooks();
+    initIpcMainHooks();
 
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
