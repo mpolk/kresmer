@@ -22,7 +22,7 @@ export type TransformMode = undefined | "scaling" | "rotation";
 
 class _NetworkComponentController {
     readonly kresmer: Kresmer;
-    readonly component: NetworkComponent;
+    public component: NetworkComponent;
     origin: Position;
     transform: Transform;
     public isGoingToBeDragged = false;

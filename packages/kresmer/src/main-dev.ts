@@ -17,7 +17,7 @@ async function init() {
     const stdlib = await (await fetch("stdlib.krel")).text();
     kresmer.loadLibrary(stdlib!);
     const autoload = await (await fetch("autoload.kre")).text();
-    kresmer.loadDrawing(autoload!);
+    await kresmer.loadDrawing(autoload!);
 
     kresmer
         .registerNetworkComponentClass(new NetworkComponentClass("GoldenKresmer", {

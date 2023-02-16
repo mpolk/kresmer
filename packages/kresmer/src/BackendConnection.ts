@@ -6,6 +6,9 @@
  *         Class implementing a connection to the backend server 
 \**************************************************************************/
 
+import NetworkComponent from "./NetworkComponent/NetworkComponent";
+import NetworkLink from "./NetworkLink/NetworkLink";
+
 export type BackendConnectionTestResult = {
     success: boolean,
     message?: string,
@@ -32,5 +35,17 @@ export default class BackendConnection {
             return {success: false, message: error as string};
         }//catch
     }//testConnection
+
+
+    async onNetworkComponentLoaded(component: NetworkComponent)
+    {
+        return undefined;
+    }//onNetworkComponentLoaded
+
+
+    async onNetworkLinkLoaded(link: NetworkLink)
+    {
+        return undefined;
+    }//onNetworkLinkLoaded
 
 }//BackendConnection

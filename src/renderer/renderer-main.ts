@@ -231,7 +231,7 @@ appCommandExecutor.on("load-drawing",
             }//if
         }//if
 
-        if (!kresmer.loadDrawing(drawingData, mergeOptions)) {
+        if (! await kresmer.loadDrawing(drawingData, mergeOptions)) {
             alert("There were errors during drawing load (see the log)");
         } else if (options?.drawingFileName && (!mergeOptions || mergeOptions === "erase-previous-content")) {
             window.electronAPI.setDefaultDrawingFileName(options.drawingFileName);

@@ -23,6 +23,7 @@ class KresmerEventFormats  {
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
     "canvas-right-click":               (nativeEvent: MouseEvent) => void;
+    "component-loaded":                 (component: NetworkComponent) => NetworkComponent | undefined;
     "component-added":                  (controller: NetworkComponentController) => void;
     "component-deleted":                (controller: NetworkComponentController) => void;
     "component-selected":               (component: NetworkComponent, isSelected: boolean) => void;
@@ -43,6 +44,7 @@ class KresmerEventFormats  {
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
     "mode-reset":                       () => void;
+    "link-loaded":                      (component: NetworkLink) => NetworkLink | undefined;
     "link-added":                       (link: NetworkLink) => void;
     "link-deleted":                     (link: NetworkLink) => void;
     "link-selected":                    (link: NetworkLink, isSelected: boolean) => void;
@@ -67,14 +69,14 @@ export type KresmerEvent = keyof KresmerEventFormats;
 export default class KresmerEventHooks {
 
     /** The map (event => handler) */
-    protected readonly eventHooks = new KresmerEventFormats;
+    protected readonly eventHandlers = new KresmerEventFormats;
 
     /* The following two auxiliary maps a used for internal KresmerEventFeatures testing
        for completeness: whether all events have corresponding handler placeholders 
        (i.e. empty protected methods) defined.
-       The first map collects all defined handler placeholders
+       The first map collects all defined handler hooks
     */
-    static readonly _placeholders: Partial<{[event in KresmerEvent]: string}> = {};
+    static readonly _definedHooks: Partial<{[event in KresmerEvent]: keyof KresmerEventHooks}> = {};
     // The second one contains all possible events
     static readonly _allEvents = new KresmerEventFormats;
 
@@ -82,10 +84,9 @@ export default class KresmerEventHooks {
      * @param event The event to setup handler for
      * @param handler The handler to set
      */
-    public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventFormats[Event]): KresmerEventHooks;
-    public on<Event extends KresmerEvent>(event: Event, handler: (...args: unknown[]) => void)
+    public on<Event extends KresmerEvent>(event: Event, handler: KresmerEventFormats[Event]): KresmerEventHooks
     {
-        this.eventHooks[event] = handler;
+        this.eventHandlers[event] = handler;
         return this;
     }//on
 
@@ -95,7 +96,7 @@ export default class KresmerEventHooks {
      */
     public off(event: KresmerEvent)
     {
-        delete this.eventHooks[event];
+        delete this.eventHandlers[event];
         return this;
     }//off
 
@@ -105,12 +106,12 @@ export default class KresmerEventHooks {
      * @param event Event to emit
      * @param args Arguments to pass to the handler
      */
-    public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventFormats[Event]>): void;
-    public emit<Event extends KresmerEvent>(event: Event, ...args: unknown[])
+    public emit<Event extends KresmerEvent>(event: Event, ...args: Parameters<KresmerEventFormats[Event]>): 
+        ReturnType<KresmerEventFormats[Event]>
     {
-        const placeholder = KresmerEventHooks._placeholders[event] as keyof KresmerEventHooks;
+        const placeholder = KresmerEventHooks._definedHooks[event];
         if (placeholder) {
-            (this[placeholder] as (...args: unknown[]) => void)(...args);
+            return (this[placeholder] as (...args: Parameters<KresmerEventFormats[Event]>) => ReturnType<KresmerEventFormats[Event]>)(...args);
         } else {
             throw new KresmerException(`emit: invalid event id "${event}"`);
         }//if
@@ -148,6 +149,13 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("canvas-right-click")
     protected onCanvasRightClick() {}
+
+    /**
+     * Is called when a network component is loaded from the drawing file
+     * @param controller Th component been loaded
+     */
+    @overridableHandler("component-loaded")
+    protected onComponentLoaded(component: NetworkComponent) {}
 
     /**
      * Is called when a network component is added to the drawing
@@ -266,6 +274,13 @@ export default class KresmerEventHooks {
     protected onModeReset() {}
 
     /**
+     * Is called when a network link is loaded from the drawing file
+     * @param controller The link been loaded
+     */
+    @overridableHandler("link-loaded")
+    protected onLinkLoaded(link: NetworkLink) {}
+
+    /**
      * Is called when a network component is added
      * @param link The link been added
      */
@@ -376,12 +391,13 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
             throw new KresmerException(`Method name "${propertyKey}" does not match the event id ("${event}")`);
         }//if
 
-        KresmerEventHooks._placeholders[event] = propertyKey;
+        KresmerEventHooks._definedHooks[event] = propertyKey as keyof KresmerEventHooks;
         descriptor.value = function(this: KresmerEventHooks, ...args: Parameters<KresmerEventFormats[Event]>) {
-            const handler = this.eventHooks[event];
+            const handler = this.eventHandlers[event];
             if (handler) {
-                (handler as (...args: unknown[]) => void)(...args);
+                return (handler as (...args: unknown[]) => unknown)(...args);
             }//if
+            return undefined;
         }//function
     }//function
 }//overridableHandler
@@ -392,7 +408,7 @@ function checked(target: typeof KresmerEventHooks)
 {
     const missedPlaceholders: string[] = [];
     Object.getOwnPropertyNames(KresmerEventHooks._allEvents).forEach(event => {
-        if (! (event in KresmerEventHooks._placeholders))
+        if (! (event in KresmerEventHooks._definedHooks))
             missedPlaceholders.push(event);
     })//foreach
     if (missedPlaceholders.length)

@@ -460,7 +460,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param dwgData Library data
      * @param mergeOptions Defines the way the loaded content should be merged with the existing one
      */
-    public loadDrawing(dwgData: string, mergeOptions?: DrawingMergeOptions): boolean
+    public async loadDrawing(dwgData: string, mergeOptions?: DrawingMergeOptions): Promise<boolean>
     {
         console.debug("Loading drawing...");
         // console.debug(dwgData);
@@ -498,16 +498,34 @@ export default class Kresmer extends KresmerEventHooks {
                             break;
                     }//switch
                 }//if
+                let updatedComponent = this.emit("component-loaded", element.component);
+                if (updatedComponent) {
+                    element.component = updatedComponent;
+                }//if
+                updatedComponent = await this.backendConnection?.onNetworkComponentLoaded(element.component);
+                if (updatedComponent) {
+                    element.component = updatedComponent;
+                }//if
                 this.addPositionedNetworkComponent(element);
             } else if (element instanceof NetworkLink) {
-                for (const vertex of element.vertices) {
+                let link = element;
+                for (const vertex of link.vertices) {
                     const componentName = vertex.initParams?.conn?.component;
                     if (componentName && componentRenames.has(componentName)) {
                         vertex.initParams!.conn!.component = componentRenames.get(componentName)!;
                     }//if
                 }//for
 
-                const linkName = element.name;
+                let updatedLink = this.emit("link-loaded", link);
+                if (updatedLink) {
+                    link = updatedLink;
+                }//if
+                updatedLink = await this.backendConnection?.onNetworkLinkLoaded(link);
+                if (updatedLink) {
+                    link = updatedLink;
+                }//if
+
+                const linkName = link.name;
                 if (this.linksByName.has(linkName)) {
                     switch (mergeOptions) {
                         case "merge-duplicates": {
@@ -519,14 +537,14 @@ export default class Kresmer extends KresmerEventHooks {
                             for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
                                 const newName = `${linkName}.${i}`;
                                 if (!(newName in this.linksByName)) {
-                                    element.name = newName;
+                                    link.name = newName;
                                     break;
                                 }//if
                             }//for
                             break;
                     }//switch
                 }//if
-                this.addLink(element);
+                this.addLink(link);
             } else {
                 console.error(`${element.message}\nSource: ${element.source}`);
                 wereErrors = true;
