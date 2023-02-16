@@ -11,26 +11,23 @@ import { ContextMenuID } from './main/Menus';
 import { AppInitStage, ElectronAPI } from './renderer/ElectronAPI';
 import { IpcMainChannel, IpcMainChannels } from './main/IpcMainHooks';
 
-class RendererToMainBridge {
-    static send<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): void;
-    static send(channel: IpcMainChannel, ...args: unknown[])
-    {
-        ipcRenderer.send(channel, ...args);
-    }//send
+function sendToMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): void;
+function sendToMain(channel: IpcMainChannel, ...args: unknown[])
+{
+    ipcRenderer.send(channel, ...args);
+}//sendToMain
 
-    static expose(methods: ElectronAPI)
-    {
-        contextBridge.exposeInMainWorld('electronAPI', methods);
-    }//expose
-}//RendererToMainBridge
-
+function exposeToRenderer(methods: ElectronAPI)
+{
+    contextBridge.exposeInMainWorld('electronAPI', methods);
+}//expose
 
 console.debug("Setting up electron API for the renderer...");
-RendererToMainBridge.expose({
+exposeToRenderer({
 
     signalReadiness: (stage: AppInitStage) => {
         console.debug(`Main window renderer: I am ready (stage ${stage})`);
-        RendererToMainBridge.send('renderer-ready', stage);
+        sendToMain('renderer-ready', stage);
     },
 
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => {
@@ -38,27 +35,27 @@ RendererToMainBridge.expose({
     },
 
     showContextMenu: (menuID: ContextMenuID, ...args: unknown[]) => {
-        RendererToMainBridge.send('context-menu', menuID, ...args);
+        sendToMain('context-menu', menuID, ...args);
     },
 
     setDefaultDrawingFileName: (fileName: string) => {
-        RendererToMainBridge.send('set-default-drawing-filename', fileName);
+        sendToMain('set-default-drawing-filename', fileName);
     },
 
     completeDrawingSaving: (dwgData: string) => {
-        RendererToMainBridge.send("complete-drawing-saving", dwgData);
+        sendToMain("complete-drawing-saving", dwgData);
     },
 
     enableDeleteMenuItem: (enable: boolean) => {
-        RendererToMainBridge.send("enable-delete-menu-item", enable);
+        sendToMain("enable-delete-menu-item", enable);
     },
 
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => {
-        RendererToMainBridge.send("backend-server-connected", url, password, autoConnect);
+        sendToMain("backend-server-connected", url, password, autoConnect);
     },
 
     backendServerDisconnected: () => {
-        RendererToMainBridge.send("backend-server-disconnected");
+        sendToMain("backend-server-disconnected");
     },
 
  });
