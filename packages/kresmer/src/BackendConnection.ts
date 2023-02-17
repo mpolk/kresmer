@@ -18,11 +18,16 @@ export default class BackendConnection {
 
     constructor (private serverURL: string, private password: string) {}
 
+    private static makeAuthHeader(password: string)
+    {
+        const id = window.btoa(unescape(encodeURIComponent(`Kresmer-client:${password}`)));
+        return `Basic ${id}`;
+    }//makeAuthHeader
+
     static async testConnection(serverURL: string, password: string): Promise<BackendConnectionTestResult>
     {
-        const id = btoa(`Kresmer-client:${password}`);
         const headers = new Headers({
-            "Authorization": `Basic ${id}`,
+            "Authorization": BackendConnection.makeAuthHeader(password),
         })
         try {
             const response = await fetch(`${serverURL}/test-connection`, {headers});

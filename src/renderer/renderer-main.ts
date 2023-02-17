@@ -370,6 +370,8 @@ appCommandExecutor.on("connect-to-server",
         savePassword: Boolean(password)
     }
 
+    forceUI = forceUI || !(await kresmer.testBackendConnection(connectionParams.serverURL, 
+                                                               connectionParams.password)).success;
     if (forceUI) {
         connectionParams = await vueBackendConnectionDialog.show(connectionParams);
         if (!connectionParams) {
