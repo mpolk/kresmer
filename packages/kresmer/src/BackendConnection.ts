@@ -6,6 +6,7 @@
  *         Class implementing a connection to the backend server 
 \**************************************************************************/
 
+import KresmerException from "./KresmerException";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
 
@@ -18,17 +19,17 @@ export default class BackendConnection {
 
     constructor (private serverURL: string, private password: string) {}
 
-    private static makeAuthHeader(password: string)
+    private static makeHeaders(password: string)
     {
         const id = window.btoa(unescape(encodeURIComponent(`Kresmer-client:${password}`)));
-        return `Basic ${id}`;
-    }//makeAuthHeader
+        return new Headers({
+            "Authorization": `Basic ${id}`,
+        })//Headers
+    }//makeHeaders
 
     static async testConnection(serverURL: string, password: string): Promise<BackendConnectionTestResult>
     {
-        const headers = new Headers({
-            "Authorization": BackendConnection.makeAuthHeader(password),
-        })
+        const headers = BackendConnection.makeHeaders(password);
         try {
             const response = await fetch(`${serverURL}/test-connection`, {headers});
             if (response.ok) {
@@ -44,7 +45,18 @@ export default class BackendConnection {
 
     async onNetworkComponentLoaded(component: NetworkComponent)
     {
-        return undefined;
+        const headers = BackendConnection.makeHeaders(this.password);
+        const data = JSON.stringify(component.props);
+        try {
+            const response = await fetch(`${this.serverURL}/component-loaded`, {
+                method: "POST",
+                headers,
+                body: data,
+            });
+            return undefined;
+        } catch (error) {
+            // throw new KresmerException(`Error while sending a request to the backend server: ${error}`);
+        }//catch
     }//onNetworkComponentLoaded
 
 
