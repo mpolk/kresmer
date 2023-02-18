@@ -370,10 +370,18 @@ appCommandExecutor.on("connect-to-server",
         savePassword: Boolean(password)
     }
 
-    forceUI = forceUI || !(await kresmer.testBackendConnection(connectionParams.serverURL, 
-                                                               connectionParams.password)).success;
+    let message: string|undefined;
+    if (!forceUI) {
+        const testResult = await kresmer.testBackendConnection(connectionParams.serverURL, 
+                                                               connectionParams.password);
+        if (!testResult.success) {
+            forceUI = true;
+            message = testResult.message;
+        }//if
+    }//if
+
     if (forceUI) {
-        connectionParams = await vueBackendConnectionDialog.show(connectionParams);
+        connectionParams = await vueBackendConnectionDialog.show(connectionParams, message);
         if (!connectionParams) {
             if (completionSignal) {
                 window.electronAPI.signalReadiness(completionSignal);

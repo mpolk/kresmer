@@ -36,13 +36,13 @@
         rootDiv.value!.addEventListener('shown.bs.modal', () => {btnOk.value!.focus()});
     })//mounted
 
-    async function show(args: {serverURL: string, password: string, autoConnect: boolean})
+    async function show(args: BackendConnectionParams, message: string|undefined)
     {
         data.serverURL = args.serverURL;
         data.password = args.password;
         data.autoConnect = args.autoConnect;
         data.savePassword = Boolean(args.password);
-        diagMessage.value = "";
+        diagMessage.value = message ?? "";
 
         if (!modal)
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
