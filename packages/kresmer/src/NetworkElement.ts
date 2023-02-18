@@ -141,6 +141,24 @@ export default abstract class NetworkElement {
         }//if
     }//propsToXML
 
+    public getData(): NetworkElementData
+    {
+        return {
+            name: this._name,
+            dbID: this._dbID,
+            props: {...this.props},
+        }
+    }//getData
+
+    public setData(data: NetworkElementData)
+    {
+        for (const propName in data.props) {
+            this.props[propName] = data.props[propName];
+        }//for
+
+        this.name = data.name;
+        this.dbID = data.dbID;
+    }//setData
 
     protected _isSelected = false;
     get isSelected() {return this._isSelected}
@@ -151,50 +169,33 @@ export default abstract class NetworkElement {
 }//NetworkElement
 
 
+export interface NetworkElementData {
+    name?: string,
+    dbID?: number|string,
+    props?: Record<string, unknown>, 
+}//NetworkElementData
+
+
 export class UpdateElementOp extends EditorOperation {
 
     constructor(private readonly element: NetworkElement, 
-                private readonly newProps: Record<string, unknown>, 
-                private readonly newName: string|undefined,
-                private readonly newDbID: number|string|undefined
+                private readonly newData: NetworkElementData, 
                 )
     {
         super();
-        this.oldProps = {...element.props};
-        this.oldName = this.element._name;
-        this.oldDbID = this.newDbID;
+        this.oldData = element.getData();
     }//ctor
 
-    private readonly oldProps: Record<string, unknown>;
-    private readonly oldName: string|undefined;
-    private readonly oldDbID: number|string|undefined;
+    private readonly oldData: NetworkElementData;
 
     override exec(): void 
     {
-        for (const propName in this.newProps) {
-            this.element.props[propName] = this.newProps[propName];
-        }//for
-
-        this.element.name = this.newName;
-        this.element.dbID = this.newDbID;
-
-        if (this.element instanceof NetworkComponent) {
-            this.element.updateConnectionPoints();
-        }//if
+        this.element.setData(this.newData);
     }//exec
 
     override undo(): void 
     {
-        for (const propName in this.oldProps) {
-            this.element.props[propName] = this.oldProps[propName];
-        }//for
-
-        this.element.name = this.oldName;
-        this.element.dbID = this.oldDbID;
-
-        if (this.element instanceof NetworkComponent) {
-            this.element.updateConnectionPoints();
-        }//if
+        this.element.setData(this.oldData);
     }//undo
 
 }//UpdateElementOp

@@ -8,7 +8,7 @@
 
 import { InjectionKey } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
-import NetworkElement from '../NetworkElement';
+import NetworkElement, {NetworkElementData} from '../NetworkElement';
 import ConnectionPointProxy from '../ConnectionPoint/ConnectionPointProxy';
 import Kresmer from "../Kresmer";
 
@@ -74,4 +74,10 @@ export default class NetworkComponent extends NetworkElement {
         }//for
     }//updateConnectionPoints
 
+
+    override setData(data: NetworkElementData)
+    {
+        super.setData(data);
+        this.updateConnectionPoints();
+    }//setData
 }//NetworkComponent

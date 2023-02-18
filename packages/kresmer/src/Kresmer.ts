@@ -939,7 +939,8 @@ export default class Kresmer extends KresmerEventHooks {
                         ) =>
         {
             const newPropsObj = Object.fromEntries(newProps.map(prop => [prop.name, prop.value]));
-            this.undoStack.execAndCommit(new UpdateElementOp(element, newPropsObj, newName, newDbID));
+            const newData = {props: newPropsObj, name: newName, dbID: newDbID};
+            this.undoStack.execAndCommit(new UpdateElementOp(element, newData));
         },//updateElement
 
     }//edAPI
