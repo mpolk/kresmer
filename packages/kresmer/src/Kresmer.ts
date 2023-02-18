@@ -498,17 +498,13 @@ export default class Kresmer extends KresmerEventHooks {
                             break;
                     }//switch
                 }//if
-                let updatedComponent = this.emit("component-loaded", element.component);
-                if (updatedComponent) {
-                    element.component = updatedComponent;
-                }//if
-                updatedComponent = await this.backendConnection?.onNetworkComponentLoaded(element.component);
-                if (updatedComponent) {
-                    element.component = updatedComponent;
+                this.emit("component-loaded", element.component);
+                if (element.component.dbID !== undefined) {
+                    await this.backendConnection?.onNetworkComponentLoaded(element.component);
                 }//if
                 this.addPositionedNetworkComponent(element);
             } else if (element instanceof NetworkLink) {
-                let link = element;
+                const link = element;
                 for (const vertex of link.vertices) {
                     const componentName = vertex.initParams?.conn?.component;
                     if (componentName && componentRenames.has(componentName)) {
@@ -516,13 +512,9 @@ export default class Kresmer extends KresmerEventHooks {
                     }//if
                 }//for
 
-                let updatedLink = this.emit("link-loaded", link);
-                if (updatedLink) {
-                    link = updatedLink;
-                }//if
-                updatedLink = await this.backendConnection?.onNetworkLinkLoaded(link);
-                if (updatedLink) {
-                    link = updatedLink;
+                this.emit("link-loaded", link);
+                if (link.dbID !== undefined) {
+                    await this.backendConnection?.onNetworkLinkLoaded(link);
                 }//if
 
                 const linkName = link.name;

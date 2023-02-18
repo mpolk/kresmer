@@ -23,7 +23,7 @@ class KresmerEventFormats  {
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
     "canvas-right-click":               (nativeEvent: MouseEvent) => void;
-    "component-loaded":                 (component: NetworkComponent) => NetworkComponent | undefined;
+    "component-loaded":                 (component: NetworkComponent) => boolean;
     "component-added":                  (controller: NetworkComponentController) => void;
     "component-deleted":                (controller: NetworkComponentController) => void;
     "component-selected":               (component: NetworkComponent, isSelected: boolean) => void;
@@ -44,7 +44,7 @@ class KresmerEventFormats  {
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
     "mode-reset":                       () => void;
-    "link-loaded":                      (component: NetworkLink) => NetworkLink | undefined;
+    "link-loaded":                      (component: NetworkLink) => boolean;
     "link-added":                       (link: NetworkLink) => void;
     "link-deleted":                     (link: NetworkLink) => void;
     "link-selected":                    (link: NetworkLink, isSelected: boolean) => void;

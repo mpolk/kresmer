@@ -7,6 +7,7 @@
 \**************************************************************************/
 
 import KresmerException from "./KresmerException";
+import NetworkElement from "./NetworkElement";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
 
@@ -43,26 +44,49 @@ export default class BackendConnection {
     }//testConnection
 
 
-    async onNetworkComponentLoaded(component: NetworkComponent)
+    private async onNetworkElementLoaded(component: NetworkElement, type: "component"|"link")
     {
         const headers = BackendConnection.makeHeaders(this.password);
-        const data = JSON.stringify(component.props);
+        const data = JSON.stringify(component.getData());
         try {
-            const response = await fetch(`${this.serverURL}/component-loaded`, {
+            const response = await fetch(`${this.serverURL}/${type}-loaded/${component.dbID}`, {
                 method: "POST",
                 headers,
                 body: data,
             });
-            return undefined;
+            if (!response.ok) {
+                throw new KresmerException(`Error while sending a request to the backend server: ${response.statusText}`);
+            }//if
+            let result = false;
+            const newData = JSON.parse(await response.text());
+
+            if (newData.name) {
+                component.name = newData.name;
+                result = true;
+            }//if
+
+            if (newData.props) {
+                for (const [key, value] of Object.entries(newData.props)) {
+                    component.props[key] = value;
+                }//for
+                result = true;
+            }//if
+            return result;
         } catch (error) {
-            // throw new KresmerException(`Error while sending a request to the backend server: ${error}`);
+            throw new KresmerException(`Error while sending a request to the backend server: ${error}`);
         }//catch
+    }//onNetworkElementLoaded
+
+
+    async onNetworkComponentLoaded(component: NetworkComponent)
+    {
+        return this.onNetworkElementLoaded(component, "component");
     }//onNetworkComponentLoaded
 
 
     async onNetworkLinkLoaded(link: NetworkLink)
     {
-        return undefined;
+        return this.onNetworkElementLoaded(link, "link");
     }//onNetworkLinkLoaded
 
 }//BackendConnection

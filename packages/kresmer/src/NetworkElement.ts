@@ -9,7 +9,6 @@
 
 import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
-import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import { EditorOperation } from "./UndoStack";
 import KresmerException from "./KresmerException";
 import { indent } from "./Utils";

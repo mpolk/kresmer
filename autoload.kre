@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="autoload" width="1000" height="1000">
-    <component class="ExtremeSwitch" name="core" height="50" n-ports="26">
-        <origin x="30" y="100" />
+    <component class="ExtremeSwitch" name="core" db-id="2903">
+        <origin x="30" y="100"/>
+        <props>
+            <prop name="height">50</prop>
+            <prop name="nPorts">26</prop>
+        </props>
     </component>
 
-    <component class="ExtremeSwitch">
-        <origin x="30" y="250" />
+    <component class="ExtremeSwitch" name="metro" db-id="1697">
+        <origin x="30" y="250"/>
         <props>
-            <prop name="name">metro</prop>
             <prop name="height">50</prop>
             <prop name="perspective">none</prop>
         </props>
     </component>
 
-    <component class="Catalyst">
-        <origin x="500" y="250" />
+    <component class="Catalyst" name="dru-core">
+        <origin x="500" y="250"/>
         <props>
-            <prop name="name">dru-core</prop>
             <prop name="height">50</prop>
             <prop name="perspective">right</prop>
         </props>
     </component>
 
-    <component class="Switch">
-        <origin x="100" y="450" />
+    <component class="Switch" name="dru-metro">
+        <origin x="100" y="450"/>
         <props>
-            <prop name="name">dru-metro</prop>
             <prop name="height">50</prop>
             <prop name="perspective">left</prop>
         </props>
@@ -37,11 +38,17 @@
         <vertex x="45" y="200"/>
         <vertex x="20" y="220"/>
     </link>
+
     <link class="twisted-pair" from="core:2" to="dru-core:2"/>
+
     <link class="twisted-pair" from="core:3" to="dru-core:3"/>
+
     <link class="twisted-pair" to="core:26"/>
 
-    <link class="twisted-pair" from="core:4" to="metro:1" name="core-metro-1"/>
-    <link class="twisted-pair" from="core:5" to="metro:2" name="core-metro-2"/>
-    <link class="twisted-pair" from="core:6" to="metro:3" name="core-metro-3"/>
+    <link class="twisted-pair" name="core-metro-1" from="core:4" to="metro:1"/>
+
+    <link class="twisted-pair" name="core-metro-2" from="core:5" to="metro:2"/>
+
+    <link class="twisted-pair" name="core-metro-3" from="core:6" to="metro:3"/>
+
 </kresmer-drawing>
