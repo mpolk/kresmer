@@ -28,11 +28,20 @@ export default class BackendConnection {
         })//Headers
     }//makeHeaders
 
+    private static makeURI(...parts: (string|number)[])
+    {
+        return "/kresmer-api/1.0/" + parts.map(part => encodeURIComponent(String(part))).join("/");
+    }//makeURI
+
+    private makeURL(...parts: (string|number)[]) {
+        return this.serverURL + BackendConnection.makeURI(...parts);
+    }//makeURL
+
     static async testConnection(serverURL: string, password: string): Promise<BackendConnectionTestResult>
     {
         const headers = BackendConnection.makeHeaders(password);
         try {
-            const response = await fetch(`${serverURL}/test-connection`, {headers});
+            const response = await fetch(serverURL + BackendConnection.makeURI("test-connection"), {headers});
             if (response.ok) {
                 return {success: true};
             } else {
@@ -44,12 +53,12 @@ export default class BackendConnection {
     }//testConnection
 
 
-    private async onNetworkElementLoaded(component: NetworkElement, type: "component"|"link")
+    private async onNetworkElementLoaded(element: NetworkElement, type: "component"|"link")
     {
         const headers = BackendConnection.makeHeaders(this.password);
-        const data = JSON.stringify(component.getData());
+        const data = JSON.stringify(element.getData());
         try {
-            const response = await fetch(`${this.serverURL}/${type}-loaded/${component.dbID}`, {
+            const response = await fetch(this.makeURL(type, "loaded", element.dbID!), {
                 method: "POST",
                 headers,
                 body: data,
@@ -61,13 +70,13 @@ export default class BackendConnection {
             const newData = JSON.parse(await response.text());
 
             if (newData.name) {
-                component.name = newData.name;
+                element.name = newData.name;
                 result = true;
             }//if
 
             if (newData.props) {
                 for (const [key, value] of Object.entries(newData.props)) {
-                    component.props[key] = value;
+                    element.props[key] = value;
                 }//for
                 result = true;
             }//if
