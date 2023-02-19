@@ -49,6 +49,11 @@
         return result;
     }//show
 
+    function setResult(value: DrawingMergeOptions)
+    {
+        showWarning.value = false;
+        result = value;
+    }//setResult
 
     function submit()
     {
@@ -58,7 +63,6 @@
             close(result);
         }//if
     }//submit
-
 
     function close(result: DrawingMergeOptions|null)
     {
@@ -81,28 +85,28 @@
             <div class="modal-body">
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="rbErasePreviousContent" name="mergeOptions"
-                           value="erase-previous-content" v-model="result" @click="showWarning = false">
+                           @click="setResult('erase-previous-content')">
                     <label class="form-check-label" for="rbErasePreviousContent">
                         Erase previous content
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="rbMergeDuplicates" name="mergeOptions"
-                           value="merge-duplicates" v-model="result" @click="showWarning = false">
+                           @click="setResult('merge-duplicates')">
                     <label class="form-check-label" for="rbMergeDuplicates">
                         Merge duplicates
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="rbRenameDuplicates" name="mergeOptions"
-                           value="rename-duplicates" v-model="result" @click="showWarning = false">
+                           @click="setResult('rename-duplicates')">
                     <label class="form-check-label" for="rbRenameDuplicates">
                         Rename duplicates
                     </label>
                 </div>
                 <div class="form-check">
                     <input class="form-check-input" type="radio" id="rbIgnoreDuplicates" name="mergeOptions"
-                           value="ignore-duplicates" v-model="result" @click="showWarning = false">
+                           @click="setResult('ignore-duplicates')">
                     <label class="form-check-label" for="rbIgnoreDuplicates">
                         Ignore duplicates
                     </label>
@@ -112,7 +116,7 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
+                <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
                 <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
             </div>
             </div>
