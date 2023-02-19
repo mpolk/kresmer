@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import KresmerException from "./KresmerException";
-import NetworkElement from "./NetworkElement";
+import NetworkElement, {NetworkElementData} from "./NetworkElement";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
 
@@ -25,6 +25,7 @@ export default class BackendConnection {
         const id = window.btoa(unescape(encodeURIComponent(`Kresmer-client:${password}`)));
         return new Headers({
             "Authorization": `Basic ${id}`,
+            "Content-Type": "application/json",
         })//Headers
     }//makeHeaders
 
@@ -67,10 +68,8 @@ export default class BackendConnection {
                 throw new KresmerException(`Error while sending a request to the backend server: ${response.statusText}`);
             }//if
             let result = false;
-            const rawData = await response.text();
-            if (!rawData) return result;
-            
-            const newData = JSON.parse(rawData);
+            const newData = response.json() as NetworkElementData;
+            if (!newData) return result;
 
             if (newData.name) {
                 element.name = newData.name;

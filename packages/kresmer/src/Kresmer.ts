@@ -969,7 +969,8 @@ export type DrawingMergeOptions =
 
 
 // Re-export child classes to API
-export {default as NetworkElement} from "./NetworkElement";
+export {default as NetworkElement } from "./NetworkElement";
+export type {NetworkElementData} from "./NetworkElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
 export {default as NetworkComponentController, type TransformMode} from "./NetworkComponent/NetworkComponentController";
