@@ -478,7 +478,7 @@ export default class Kresmer extends KresmerEventHooks {
             if (element instanceof DrawingHeaderData) {
                 drawingHeaderData = element;
             } else if (element instanceof NetworkComponentController) {
-                const componentName = element.component.name;
+                let componentName = element.component.name;
                 if (this.componentsByName.has(componentName)) {
                     switch (mergeOptions) {
                         case "merge-duplicates": {
@@ -498,9 +498,13 @@ export default class Kresmer extends KresmerEventHooks {
                             break;
                     }//switch
                 }//if
+                componentName = element.component.name;
                 this.emit("component-loaded", element.component);
                 if (element.component.dbID !== undefined) {
                     await this.backendConnection?.onNetworkComponentLoaded(element.component);
+                }//if
+                if (element.component.name !== componentName) {
+                    componentRenames.set(componentName, element.component.name);
                 }//if
                 this.addPositionedNetworkComponent(element);
             } else if (element instanceof NetworkLink) {
