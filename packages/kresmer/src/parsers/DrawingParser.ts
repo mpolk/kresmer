@@ -49,7 +49,7 @@ export default class DrawingParser {
             throw new DrawingParsingException("The root element does not define drawing name");
         }//if
 
-        yield new DrawingProperties(root.getAttribute("name")!, 
+        yield new DrawingHeaderData(root.getAttribute("name")!, 
                                     root.getAttribute("width"),
                                     root.getAttribute("height")
                                     );
@@ -395,7 +395,7 @@ export default class DrawingParser {
 
 }//DrawingParser
 
-export class DrawingProperties {
+export class DrawingHeaderData {
     constructor(public readonly name: string,
                 width: string|null,
                 height: string|null,
@@ -407,10 +407,10 @@ export class DrawingProperties {
 
     readonly width?: number;
     readonly height?: number;
-}//DrawingProperties
+}//DrawingHeaderData
 
 export type ParsedNode = 
-    DrawingProperties |
+    DrawingHeaderData |
     NetworkComponentController |
     NetworkLink |
     ParsingException

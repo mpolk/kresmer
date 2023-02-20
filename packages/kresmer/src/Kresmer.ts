@@ -16,7 +16,7 @@ import { Position, Transform, TransformFunctons, ITransform } from "./Transform/
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
 import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
-import DrawingParser, { DrawingProperties } from "./parsers/DrawingParser";
+import DrawingParser, { DrawingHeaderData } from "./parsers/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -468,15 +468,15 @@ export default class Kresmer extends KresmerEventHooks {
             this.eraseContent();
         }//if
 
-        let drawingProperties!: DrawingProperties;
+        let drawingHeaderData!: DrawingHeaderData;
         const componentRenames = new Map<string, string>();
 
         const parser = new DrawingParser(this);
         let wereErrors = false;
         for (const element of parser.parseXML(dwgData)) {
             //console.debug(element);
-            if (element instanceof DrawingProperties) {
-                drawingProperties = element;
+            if (element instanceof DrawingHeaderData) {
+                drawingHeaderData = element;
             } else if (element instanceof NetworkComponentController) {
                 const componentName = element.component.name;
                 if (this.componentsByName.has(componentName)) {
@@ -546,14 +546,14 @@ export default class Kresmer extends KresmerEventHooks {
         this.undoStack.reset();
         switch (mergeOptions) {
             case undefined: case "erase-previous-content":
-                this.drawingName = drawingProperties.name;
-                drawingProperties.width && (this.logicalBox.width = drawingProperties.width);
-                drawingProperties.height && (this.logicalBox.height = drawingProperties.height);
+                this.drawingName = drawingHeaderData.name;
+                drawingHeaderData.width && (this.logicalBox.width = drawingHeaderData.width);
+                drawingHeaderData.height && (this.logicalBox.height = drawingHeaderData.height);
                 this.isDirty = false;
                 break;
             default:
                 if (!this.drawingName) {
-                    this.drawingName = drawingProperties.name;
+                    this.drawingName = drawingHeaderData.name;
                 }//if
                 this.isDirty = true;
         }//switch
@@ -800,7 +800,7 @@ export default class Kresmer extends KresmerEventHooks {
     readonly edAPI = {
 
         /** Updates drawing properties */
-        updateDrawingProperties: (props: DrawingProperties) =>
+        updateDrawingProperties: (props: DrawingProps) =>
         {
             this.undoStack.execAndCommit(new UpdateDrawingPropsOp(this, props));
         },//updateDrawingProperties
@@ -947,11 +947,11 @@ export default class Kresmer extends KresmerEventHooks {
 
 export type DrawingProps = {
     /** The drawing name */
-    name?: string;
+    name?: string|undefined;
     /** The drawing logical width */
-    logicalWidth?: number;
+    logicalWidth?: number|undefined;
     /** The drawing logical height */
-    logicalHeight?: number;
+    logicalHeight?: number|undefined;
 }//DrawingProps
 
 
