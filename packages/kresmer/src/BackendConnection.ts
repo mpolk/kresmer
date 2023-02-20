@@ -68,7 +68,7 @@ export default class BackendConnection {
                 throw new KresmerException(`Error while sending a request to the backend server: ${response.statusText}`);
             }//if
             let result = false;
-            const newData = response.json() as NetworkElementData;
+            const newData = await response.json() as NetworkElementData;
             if (!newData) return result;
 
             if (newData.name) {
