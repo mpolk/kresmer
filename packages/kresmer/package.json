@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "author": "Dmitriy Stepanenko",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the core component",
-  "main": "dist/Kresmer.js",
+  "module": "dist/Kresmer.es.js",
+  "main": "dist/Kresmer.umd.js",
   "types": "dist/Kresmer.d.ts",
   "exports": {
     ".": {
