@@ -23,7 +23,7 @@ import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapt
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, DeleteLinkOp } from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
-import UndoStack from "./UndoStack";
+import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
@@ -88,7 +88,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** CSS styles collected component libraries */
     public styles: PostCSSRoot[] = [];
     /** Drawing name */
-    public drawingName?: string;
+    public drawingName = "?unnamed?";
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
@@ -799,6 +799,12 @@ export default class Kresmer extends KresmerEventHooks {
     /** Editor API functions (externally available operations with the drawing objects) */
     readonly edAPI = {
 
+        /** Updates drawing properties */
+        updateDrawingProperties: (props: DrawingProperties) =>
+        {
+            this.undoStack.execAndCommit(new UpdateDrawingPropsOp(this, props));
+        },//updateDrawingProperties
+
         createComponent: (componentClass: NetworkComponentClass, position?: Position) =>
         {
             const newComponent = new NetworkComponent(this, componentClass);
@@ -937,6 +943,48 @@ export default class Kresmer extends KresmerEventHooks {
 
     }//edAPI
 }//Kresmer
+
+
+export type DrawingProps = {
+    /** The drawing name */
+    name?: string;
+    /** The drawing logical width */
+    logicalWidth?: number;
+    /** The drawing logical height */
+    logicalHeight?: number;
+}//DrawingProps
+
+
+class UpdateDrawingPropsOp extends EditorOperation
+{
+    constructor(private readonly kresmer: Kresmer, private readonly newProps: DrawingProps)
+    {
+        super();
+        this.oldProps = {
+            name: kresmer.drawingName,
+            logicalWidth: kresmer.logicalWidth,
+            logicalHeight: kresmer.logicalHeight
+        }//oldProps
+    }//ctor
+
+    private readonly oldProps: Required<DrawingProps>;
+
+    override exec(): void
+    {
+        this.newProps.name && (this.kresmer.drawingName = this.newProps.name);
+        this.newProps.logicalWidth && (this.kresmer.logicalWidth = this.newProps.logicalWidth);
+        this.newProps.logicalHeight && (this.kresmer.logicalHeight = this.newProps.logicalHeight);
+    }//exec
+
+    override undo(): void
+    {
+        this.oldProps.name != this.kresmer.drawingName && (this.kresmer.drawingName = this.oldProps.name);
+        this.oldProps.logicalWidth != this.kresmer.logicalWidth && 
+            (this.kresmer.logicalBox.width = this.oldProps.logicalWidth);
+        this.oldProps.logicalHeight != this.kresmer.logicalHeight && 
+            (this.kresmer.logicalBox.height = this.oldProps.logicalHeight);
+    }//undo
+}//UpdateDrawingPropsOp
 
 
 /** Data type for Vue templates */

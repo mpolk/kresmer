@@ -46,9 +46,11 @@
         }//if
 
         close();
-        kresmer.drawingName = drawingName;
-        kresmer.logicalBox.width = drawingBox.width;
-        kresmer.logicalBox.height = drawingBox.height;
+        kresmer.edAPI.updateDrawingProperties({
+            name: drawingName, 
+            logicalWidth: drawingBox.width, 
+            logicalHeight: drawingBox.height
+        });
         updateWindowTitle();
     }//save
 
