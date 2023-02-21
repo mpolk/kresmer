@@ -203,7 +203,8 @@
                   v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
         </template>
         <style>
-            .switch-name, .switch-name.no-persp { font-family: sans-serif; fill: black; text-shadow: none}
+            .switch-name { font-family: sans-serif; fill: black; text-shadow: none}
+            .switch-name.no-persp { font-family: sans-serif!important; fill: black!important; text-shadow: none!important}
             .port-icon { fill: #525252; }
             .facet {fill: lightgray;}
             .top.facet { filter: brightness(0.7); }
@@ -233,6 +234,7 @@
             <Kre:SquarePort v-for="i in nPorts" v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2" 
                       v-bind:name="i"/>
         </template>
+        <!-- <style extends="SwitchBody"></style> -->
         <props>
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true" default="50"/>
@@ -262,6 +264,18 @@
         </props>
     </component-class>
 
+    <component-class name="Extreme-X590-24x-1q-2c">
+        <template>
+            <Kre:SwitchBody v-bind:name="name" v-bind:height="height" v-bind:n-ports="26"
+                        v-bind:perspective="perspective"/>
+        </template>
+        <!-- <style extends="ExtremeSwitch"></style> -->
+        <props>
+            <prop name="height" type="Number" required="true"/>
+            <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
+        </props>
+    </component-class>
+
     <component-class name="Hub">
         <template>
             <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
@@ -279,7 +293,7 @@
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
     </component-class>
-    
+
     <component-class name="Catalyst">
         <template>
             <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
