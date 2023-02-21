@@ -262,6 +262,24 @@
         </props>
     </component-class>
 
+    <component-class name="Hub">
+        <template>
+            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
+                        v-bind:perspective="perspective"/>
+        </template>
+        <style extends="Switch">
+            .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
+            .facet {fill: #ffcc00;}
+            .port-icon { fill: #ff6600; }
+            .port-icon.body { stroke: #ffcc00; }
+        </style>
+        <props>
+            <prop name="nPorts" type="Number" default="8" />
+            <prop name="height" type="Number" required="true"/>
+            <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
+        </props>
+    </component-class>
+    
     <component-class name="Catalyst">
         <template>
             <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
