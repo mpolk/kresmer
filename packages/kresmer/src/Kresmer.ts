@@ -355,9 +355,9 @@ export default class Kresmer extends KresmerEventHooks {
             let scope = ".kresmer";
             if (classScope) {
                 scope += ` .${classScope.name}`;
-                classScope.baseClasses?.forEach(baseClass => {
-                    additionalScopes.push(`${scope} .${baseClass.name}`);
-                });
+                if (classScope.baseClasses) {
+                    this.makeBaseClassScopes(additionalScopes, scope, classScope.baseClasses);
+                }//if
             }//if
 
             const additionalSelectors: string[] = [];
@@ -375,6 +375,17 @@ export default class Kresmer extends KresmerEventHooks {
 
         return ast1;
     }//scopeStyles
+
+    private makeBaseClassScopes(scopes: string[], prefix: string, baseClasses: NetworkElementClass[])
+    {
+        baseClasses.forEach(baseClass => {
+            const baseScope = `${prefix} .${baseClass.name}`;
+            scopes.push(baseScope);
+            if (baseClass.baseClasses) {
+                this.makeBaseClassScopes(scopes, baseScope, baseClass.baseClasses);
+            }//if
+        });
+    }//makeBaseClassScopes
  
     /**
      * Components currently placed to the drawing
