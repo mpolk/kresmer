@@ -7,16 +7,16 @@
 \**************************************************************************/
 
 import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref } from "vue";
-import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
+import {Root as PostCSSRoot} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
+import LibraryLoader from "./loaders/LibraryLoader";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp } from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
-import LibraryParser, { DefsLibNode, StyleLibNode } from "./parsers/LibraryParser";
-import DrawingParser, { DrawingHeaderData } from "./parsers/DrawingParser";
+import DrawingParser, { DrawingHeaderData } from "./loaders/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -27,7 +27,6 @@ import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
-import NetworkElementClass from "./NetworkElementClass";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 
@@ -263,7 +262,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (componentClass.style) {
-            this.styles.push(this.scopeStyles(componentClass.style, componentClass));
+            this.styles.push(this.libraryLoader.scopeStyles(componentClass.style, componentClass));
         }//if
 
         this.registeredComponentClasses.set(componentClass.name, componentClass);
@@ -295,7 +294,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (linkClass.style) {
-            this.styles.push(this.scopeStyles(linkClass.style, linkClass));
+            this.styles.push(this.libraryLoader.scopeStyles(linkClass.style, linkClass));
         }//if
 
         this.registeredLinkClasses.set(linkClass.name, linkClass);
@@ -312,80 +311,16 @@ export default class Kresmer extends KresmerEventHooks {
     }//getRegisteredLinkClasses
 
 
+    private readonly libraryLoader = new LibraryLoader(this);
+
     /**
      * Loads a component class library from the raw XML data
      * @param libData Library data
      */
     public loadLibrary(libData: string): boolean
     {
-        console.debug("Loading library...");
-        const parser = new LibraryParser();
-        let wereErrors = false;
-        for (const element of parser.parseXML(libData)) {
-            //console.debug(element);
-            if (element instanceof NetworkComponentClass) {
-                this.registerNetworkComponentClass(element);
-            } else if (element instanceof NetworkLinkClass) {
-                this.registerLinkClass(element);
-            } else if (element instanceof DefsLibNode) {
-                this.defs.push(element.data);
-                this.appKresmer.component(`GlobalDefs${this.defs.length - 1}`, {template: element.data});
-            } else if (element instanceof StyleLibNode) {
-                this.styles.push(this.scopeStyles(element.data));
-            } else {
-                console.error(`${element.message}\nSource: ${element.source}`);
-                wereErrors = true;
-            }//if
-        }//for
-        return !wereErrors;
+        return this.libraryLoader.loadLibrary(libData);
     }//loadLibrary
-
-    /**
-     * Adds global and component class scopes (optionally) to the CSS style definition
-     * @param ast Parsed CSS (Abstract Syntax Tree) to modify
-     * @param classScope An element class to apply as a scope
-     * @returns Modified AST
-     */
-    private scopeStyles(ast: PostCSSRoot, classScope?: NetworkElementClass)
-    {
-        const ast1 = ast.clone();
-
-        ast1.walkRules((rule: PostCSSRule) => {
-            const additionalScopes: string[] = [];
-            let scope = ".kresmer";
-            if (classScope) {
-                scope += ` .${classScope.name}`;
-                if (classScope.baseClasses) {
-                    this.makeBaseClassScopes(additionalScopes, scope, classScope.baseClasses);
-                }//if
-            }//if
-
-            const additionalSelectors: string[] = [];
-            rule.selectors.forEach(sel => {
-                additionalScopes.forEach(scope => {
-                    additionalSelectors.push(`${scope} ${sel}`);
-                });
-            });
-
-            rule.selectors = rule.selectors.map(sel => `${scope} ${sel}`);
-            if (additionalSelectors.length) {
-                rule.selector += `, ${additionalSelectors.join(", ")}`;
-            }//if
-        })
-
-        return ast1;
-    }//scopeStyles
-
-    private makeBaseClassScopes(scopes: string[], prefix: string, baseClasses: NetworkElementClass[])
-    {
-        baseClasses.forEach(baseClass => {
-            const baseScope = `${prefix} .${baseClass.name}`;
-            scopes.push(baseScope);
-            if (baseClass.baseClasses) {
-                this.makeBaseClassScopes(scopes, baseScope, baseClass.baseClasses);
-            }//if
-        });
-    }//makeBaseClassScopes
  
     /**
      * Components currently placed to the drawing
@@ -1041,6 +976,6 @@ export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
-export {default as ParsingException} from "./parsers/ParsingException";
+export {default as ParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPointProxy";
     
