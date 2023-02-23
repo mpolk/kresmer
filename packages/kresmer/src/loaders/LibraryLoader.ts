@@ -13,6 +13,7 @@ import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 
+/**A loader for network element class libraries */
 export default class LibraryLoader
 {
     constructor(private kresmer: Kresmer) {}

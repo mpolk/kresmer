@@ -11,12 +11,12 @@ import {Root as PostCSSRoot} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
+import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp } from "./NetworkComponent/NetworkComponentController";
 import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
-import DrawingParser, { DrawingHeaderData } from "./loaders/DrawingParser";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -129,7 +129,7 @@ export default class Kresmer extends KresmerEventHooks {
     readonly mountPoint: HTMLElement;
 
     /** Kresmer-backend server connection (if any) */
-    private backendConnection?: BackendConnection;
+    public backendConnection?: BackendConnection;
     /** 
      * Connects to the backend server
      * @param serverURL An URL of the backend server to connect to
@@ -326,7 +326,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Components currently placed to the drawing
      */
     public readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>());
-    private readonly componentsByName = new Map<string, number>();
+    public readonly componentsByName = new Map<string, number>();
 
     /**
      * Adds a new Network Component to the content of the drawing
@@ -374,7 +374,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Links currently placed to the drawing
      */
      readonly links = reactive(new MapWithZOrder<number, NetworkLink>());
-     protected readonly linksByName = new Map<string, number>();
+     readonly linksByName = new Map<string, number>();
 
     /**
      * Adds a new Link to the drawing
@@ -401,6 +401,8 @@ export default class Kresmer extends KresmerEventHooks {
     }//deleteLink
 
 
+    private readonly drawingLoader = new DrawingLoader(this);
+
     /**
      * Loads a component class library from the raw XML data
      * @param dwgData Library data
@@ -408,132 +410,14 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public async loadDrawing(dwgData: string, mergeOptions?: DrawingMergeOptions): Promise<boolean>
     {
-        console.debug("Loading drawing...");
-        // console.debug(dwgData);
-        if (mergeOptions === "erase-previous-content") {
-            this.eraseContent();
-        }//if
-
-        let drawingHeaderData!: DrawingHeaderData;
-        const componentRenames = new Map<string, string>();
-
-        const parser = new DrawingParser(this);
-        let wereErrors = false;
-        for (const element of parser.parseXML(dwgData)) {
-            //console.debug(element);
-            if (element instanceof DrawingHeaderData) {
-                drawingHeaderData = element;
-            } else if (element instanceof NetworkComponentController) {
-                let componentName = element.component.name;
-                if (this.componentsByName.has(componentName)) {
-                    switch (mergeOptions) {
-                        case "merge-duplicates": {
-                            const id = this.componentsByName.get(componentName)!;
-                            this.networkComponents.delete(id);
-                            break;
-                        }
-                        case "rename-duplicates":
-                            for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
-                                const newName = `${componentName}.${i}`;
-                                if (!(newName in this.componentsByName)) {
-                                    componentRenames.set(componentName, newName);
-                                    element.component.name = newName;
-                                    break;
-                                }//if
-                            }//for
-                            break;
-                    }//switch
-                }//if
-                componentName = element.component.name;
-                this.emit("component-loaded", element.component);
-                if (element.component.dbID !== undefined) {
-                    await this.backendConnection?.onNetworkComponentLoaded(element.component);
-                }//if
-                if (element.component.name !== componentName) {
-                    componentRenames.set(componentName, element.component.name);
-                }//if
-                this.addPositionedNetworkComponent(element);
-            } else if (element instanceof NetworkLink) {
-                const link = element;
-                for (const vertex of link.vertices) {
-                    const componentName = vertex.initParams?.conn?.component;
-                    if (componentName && componentRenames.has(componentName)) {
-                        vertex.initParams!.conn!.component = componentRenames.get(componentName)!;
-                    }//if
-                }//for
-
-                this.emit("link-loaded", link);
-                if (link.dbID !== undefined) {
-                    await this.backendConnection?.onNetworkLinkLoaded(link);
-                }//if
-
-                const linkName = link.name;
-                if (this.linksByName.has(linkName)) {
-                    switch (mergeOptions) {
-                        case "merge-duplicates": {
-                            const id = this.linksByName.get(linkName)!;
-                            this.links.delete(id);
-                            break;
-                        }
-                        case "rename-duplicates":
-                            for (let i = 1; i <= Number.MAX_SAFE_INTEGER; i++) {
-                                const newName = `${linkName}.${i}`;
-                                if (!(newName in this.linksByName)) {
-                                    link.name = newName;
-                                    break;
-                                }//if
-                            }//for
-                            break;
-                    }//switch
-                }//if
-                this.addLink(link);
-            } else {
-                console.error(`${element.message}\nSource: ${element.source}`);
-                wereErrors = true;
-            }//if
-        }//for
-
-        this.undoStack.reset();
-        switch (mergeOptions) {
-            case undefined: case "erase-previous-content":
-                this.drawingName = drawingHeaderData.name;
-                drawingHeaderData.width && (this.logicalBox.width = drawingHeaderData.width);
-                drawingHeaderData.height && (this.logicalBox.height = drawingHeaderData.height);
-                this.isDirty = false;
-                break;
-            default:
-                if (!this.drawingName) {
-                    this.drawingName = drawingHeaderData.name;
-                }//if
-                this.isDirty = true;
-        }//switch
-
-        return !wereErrors;
+        return this.drawingLoader.loadDrawing(dwgData, mergeOptions);
     }//loadDrawing
 
 
     /** Serializes the drawing data to the string and returns this string */
     public saveDrawing()
     {
-        let xml = `\
-<?xml version="1.0" encoding="utf-8"?>
-<?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="${this.drawingName}" width="${this.logicalBox.width}" height="${this.logicalBox.height}">
-`;
-
-        for (const controller of this.networkComponents.values()) {
-            if (!controller.component.isAutoInstantiated) {
-                xml += controller.toXML(1) + "\n\n";
-            }//for
-        }//for
-
-        for (const link of this.links.values()) {
-            xml += link.toXML(1) + "\n\n";
-        }//for
-
-        xml += "</kresmer-drawing>\n"
-        this.isDirty = false;
-        return xml;
+        return this.drawingLoader.saveDrawing();
     }//saveDrawing
 
 
@@ -957,13 +841,6 @@ export const GeneralTemplateFunctions = {
         }//if
     }//$global
 }//GeneralTemplateFunctions
-
-/** The options to perform drawing merge upon its loading */
-export type DrawingMergeOptions = 
-    "erase-previous-content" | 
-    "merge-duplicates" |
-    "rename-duplicates" |
-    "ignore-duplicates";
 
 
 // Re-export child classes to API
