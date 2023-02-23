@@ -34,10 +34,16 @@
 
     onMounted(() =>
     {
-        rootDiv.value!.addEventListener('shown.bs.modal', () => selComponentClass.value!.focus());
+        rootDiv.value!.addEventListener('shown.bs.modal', () => {
+            scalePreview();
+            selComponentClass.value!.focus();
+        });
     })//mounted
 
-    watch(result, async() => {
+    watch(result, scalePreview);
+
+    async function scalePreview()
+    {
         krePreview.eraseContent();
         krePreview.logicalWidth = previewWidth;
         krePreview.logicalHeight = previewHeight;
@@ -62,7 +68,7 @@
                 controller.origin.y = previewHeight/2 + d/2 - (componentPos.y + bBox.height/2);
             }//if
         }//if
-    });
+    }//scalePreview
 
     async function show()
     {
