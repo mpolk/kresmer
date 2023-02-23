@@ -234,7 +234,7 @@
             <Kre:SquarePort v-for="i in nPorts" v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2" 
                       v-bind:name="i"/>
         </template>
-        <style extends="SwitchBody"></style>
+        <style extends="SwitchBody"/>
         <props>
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true" default="50"/>
@@ -269,7 +269,7 @@
             <Kre:SwitchBody v-bind:name="name" v-bind:height="height" v-bind:n-ports="26"
                         v-bind:perspective="perspective"/>
         </template>
-        <!-- <style extends="ExtremeSwitch"></style> -->
+        <style extends="ExtremeSwitch"/>
         <props>
             <prop name="height" type="Number" required="true"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
