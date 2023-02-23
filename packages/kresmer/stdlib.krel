@@ -234,7 +234,7 @@
             <Kre:SquarePort v-for="i in nPorts" v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2" 
                       v-bind:name="i"/>
         </template>
-        <!-- <style extends="SwitchBody"></style> -->
+        <style extends="SwitchBody"></style>
         <props>
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true" default="50"/>
