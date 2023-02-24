@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="autoload" width="1000" height="1000">
-    <component class="ExtremeSwitch" name="core" db-id="2903">
+    <component class="Extreme-X590-24x" name="core" db-id="2903">
         <origin x="30" y="100"/>
         <props>
             <prop name="height">50</prop>
