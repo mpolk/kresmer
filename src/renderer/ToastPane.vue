@@ -7,8 +7,12 @@
 \**************************************************************************/
 
 <script lang="ts">
-    import { onMounted, ref, computed } from 'vue';
+    import { onMounted, ref, reactive, computed } from 'vue';
     import Toast from 'bootstrap/js/dist/toast';
+
+    export type ToastMessage = {message: string, title?: string, subtitle?: string, 
+                                severity?: "fatal"|"error"|"warning"|"info"};
+    const maxMessages = 5;
 
     export default {
         name: "toast-pane",
@@ -16,6 +20,7 @@
 </script>
 
 <script setup lang="ts">
+    const toastMessages = reactive<ToastMessage[]>([]);
     const message = ref(''); 
     const title = ref('');
     const subtitle = ref('');
@@ -28,13 +33,16 @@
     })//onMounted
 
     // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-    function show(args: {message: string, title?: string, subtitle?: string, 
-                         severity?: "fatal"|"error"|"warning"|"info"})
+    function show(toastMessage: ToastMessage)
     {
-        message.value = args.message;
-        title.value = args.title || '';
-        subtitle.value = args.subtitle || '';
-        severity.value = args.severity || null;
+        toastMessages.push(toastMessage);
+        if (toastMessages.length > maxMessages) {
+            toastMessages.shift();
+        }//if
+        message.value = toastMessage.message;
+        title.value = toastMessage.title || '';
+        subtitle.value = toastMessage.subtitle || '';
+        severity.value = toastMessage.severity || null;
         toast!.show();
     }//show
 
@@ -55,14 +63,16 @@
 
 <template>
     <div ref="divToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header" :class="headerClass" v-if="title">
-            <strong class="me-auto">{{title}}</strong>
-            <small v-if="subtitle">{{subtitle}}</small>
-            <button type="button" class="btn-close btn-close-white" 
-                    data-bs-dismiss="toast" aria-label="Close"></button>
-        </div>
-        <div class="toast-body">
-            {{message}}
-        </div>
+        <template  v-for="(tm, i) in toastMessages" :key="`tm[${i}]`">
+            <div class="toast-header" :class="headerClass" v-if="tm.title">
+                <strong class="me-auto">{{tm.title}}</strong>
+                <small v-if="tm.subtitle">{{tm.subtitle}}</small>
+                <button type="button" class="btn-close btn-close-white" 
+                        data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+            <div class="toast-body">
+                {{tm.message}}
+            </div>
+        </template>
     </div>
 </template>

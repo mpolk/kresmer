@@ -188,7 +188,10 @@ kresmer.on("connection-point-right-click", (connectionPoint: ConnectionPointProx
 
 kresmer.on("error", (error: KresmerException) => 
 {
-    vueToastPane.show({message: error.message, title: error.source, severity: error.severity});
+    vueToastPane.show({
+        message: error.message, 
+        title: error.source ?? "Error", 
+        severity: error.severity});
 });//onError
 
     
