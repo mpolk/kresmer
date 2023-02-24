@@ -41,6 +41,7 @@ export type StatusBarDisplayData = {
     hint: string,
     serverURL: string,
     drawingScale: number,
+    haveNotifications: boolean,
 };
 
 export const statusBarData: StatusBarDisplayData = reactive({
@@ -48,6 +49,7 @@ export const statusBarData: StatusBarDisplayData = reactive({
     hint: "",
     serverURL: "",
     drawingScale: 1,
+    haveNotifications: false,
 })//statusBarData
 
 export const vueStatusBar = createApp(StatusBar, {
@@ -66,7 +68,7 @@ const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMe
     InstanceType<typeof DrawingMergeDialog>;
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
     InstanceType<typeof BackendConnectionDialog>;
-const vueToastPane = createApp(ToastPane).mount("#divToastPane") as InstanceType<typeof ToastPane>;
+export const vueToastPane = createApp(ToastPane).mount("#divToastPane") as InstanceType<typeof ToastPane>;
 
 export function updateWindowTitle()
 {
@@ -85,7 +87,7 @@ export function updateWindowTitle()
 kresmer
     .on("got-dirty", updateWindowTitle)
     .on("drawing-mouse-leave", () => hints.reset())
-    .on("mode-reset", () => hints.reset())
+    .on("mode-reset", () => {hints.reset(); vueToastPane.hide();})
     .on("component-mouse-enter", () => hints.push(Hints.onComponentMouseEnter))
     .on("component-mouse-leave", () => hints.pop())
     .on("component-move-started", () => hints.push(Hints.onDrag))
@@ -191,7 +193,8 @@ kresmer.on("error", (error: KresmerException) =>
     vueToastPane.show({
         message: error.message, 
         title: error.source ?? "Error", 
-        severity: error.severity});
+        severity: error.severity
+    });
 });//onError
 
     

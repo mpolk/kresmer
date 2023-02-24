@@ -3,16 +3,18 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
  * ------------------------------------------------------------------------
- *        A loader for network element class libraries
+ *        A "toast" pane for displaying messages to the user
 \**************************************************************************/
 
 <script lang="ts">
-    import { onMounted, ref, reactive, computed } from 'vue';
+    import { onMounted, ref, reactive } from 'vue';
     import Toast from 'bootstrap/js/dist/toast';
+    import { statusBarData } from './renderer-main';
 
     export type ToastMessage = {message: string, title?: string, subtitle?: string, 
                                 severity?: "fatal"|"error"|"warning"|"info"};
     const maxMessages = 5;
+    const autoHideDelay = 5000;
 
     export default {
         name: "toast-pane",
@@ -21,54 +23,70 @@
 
 <script setup lang="ts">
     const toastMessages = reactive<ToastMessage[]>([]);
-    const message = ref(''); 
-    const title = ref('');
-    const subtitle = ref('');
-    const severity = ref<string|null>(null);
     let toast!: Toast;
     const divToast = ref<HTMLDivElement>();
+    let autoHideTimer: ReturnType<typeof setTimeout>|undefined;
 
     onMounted(() => {
-        toast = new Toast(divToast.value!);
+        toast = new Toast(divToast.value!, {autohide: false});
     })//onMounted
 
-    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
-    function show(toastMessage: ToastMessage)
+    function show(toastMessage?: ToastMessage)
     {
-        toastMessages.push(toastMessage);
-        if (toastMessages.length > maxMessages) {
-            toastMessages.shift();
+        if (toastMessage) {
+            toastMessages.push(toastMessage);
+            if (toastMessages.length > maxMessages) {
+                toastMessages.shift();
+            }//if
+            statusBarData.haveNotifications = true;
+            autoHideTimer = setTimeout(() => hide(), autoHideDelay);
+        } else if (autoHideTimer) {
+            clearTimeout(autoHideTimer);
+            autoHideTimer = undefined;
         }//if
-        message.value = toastMessage.message;
-        title.value = toastMessage.title || '';
-        subtitle.value = toastMessage.subtitle || '';
-        severity.value = toastMessage.severity || null;
-        toast!.show();
+        toast.show();
     }//show
 
-    const headerClass = computed((): string =>
+    function hide()
     {
-        switch (severity.value) {
+        toast.hide();
+    }//hide
+
+    function toggle()
+    {
+        if (toast.isShown()) {
+            hide();
+        } else {
+            show();
+        }//if
+    }//toggle
+
+    function headerClass(severity: string|undefined)
+    {
+        switch (severity) {
             case 'error':
-                return 'bg-danger text-dark';
+                return 'bg-danger text-light';
             case 'warning':
                 return 'bg-warning text-dark';
             default:
                 return '';
         }//switch
-    })//headerClass
+    }//headerClass
 
-    defineExpose({show});
+    function isEmpty()
+    {
+        return toastMessages.length === 0;
+    }//isEmpty
+
+    defineExpose({show, hide, toggle, isEmpty});
 </script>
 
 <template>
     <div ref="divToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
         <template  v-for="(tm, i) in toastMessages" :key="`tm[${i}]`">
-            <div class="toast-header" :class="headerClass" v-if="tm.title">
+            <div class="toast-header" :class="headerClass(tm.severity)" v-if="tm.title">
                 <strong class="me-auto">{{tm.title}}</strong>
                 <small v-if="tm.subtitle">{{tm.subtitle}}</small>
-                <button type="button" class="btn-close btn-close-white" 
-                        data-bs-dismiss="toast" aria-label="Close"></button>
             </div>
             <div class="toast-body">
                 {{tm.message}}

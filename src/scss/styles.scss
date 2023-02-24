@@ -1,1 +1,33 @@
+/**************************************************************************\
+ *                          👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ * ------------------------------------------------------------------------
+ *          Styles for embedding into the KresMer application
+\**************************************************************************/
+
+// Include Bootstrap
 @import "~bootstrap/scss/bootstrap";
+
+// Include Material Design Icons
+@font-face {
+    font-family: 'Material Symbols Outlined';
+    src: url("../fonts/MaterialSymbolsOutlined.woff2") format("woff2");
+}
+
+.material-symbols-outlined {
+    font-family: 'Material Symbols Outlined';
+    font-variation-settings:
+        'FILL' 0,
+        'wght' 400,
+        'GRAD' 200,
+        'opsz' 48;
+
+    &.filled {
+        font-variation-settings:
+            'FILL' 1,
+            'wght' 400,
+            'GRAD' 200,
+            'opsz' 48;
+    }
+}

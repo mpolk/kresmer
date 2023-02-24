@@ -14,7 +14,7 @@
 
 <script setup lang="ts">
     import { computed, onMounted, PropType, ref } from 'vue';
-    import {StatusBarDisplayData} from './renderer-main';
+    import {StatusBarDisplayData, vueToastPane} from './renderer-main';
 
     const props = defineProps({
         displayData: {type: Object as PropType<StatusBarDisplayData>, required: true},
@@ -48,10 +48,15 @@
         <div class="pane hint">
             {{displayData.hint}}
         </div>
-        <div class="pane right">
+        <div class="pane right" title="Notifications" style="cursor: pointer">
+            <span class="material-symbols-outlined" 
+                  :class="{filled: displayData.haveNotifications}"
+                  @click="vueToastPane.toggle">notifications</span>
+        </div>
+        <div class="pane right" title="Drawing display scale">
             {{drawingScale}}
         </div>
-        <div class="pane right">
+        <div class="pane right" title="Backend server URL currently connected">
             {{displayData.serverURL}}
         </div>
     </div>
@@ -62,7 +67,7 @@
         position: fixed;
         width: 100%;
         padding: 0.2rem 0;
-        font: status-bar; font-size: small;
+        font: status-bar; font-size: smaller;
         color: white;
         background-color: rgb(52, 122, 250);
 
