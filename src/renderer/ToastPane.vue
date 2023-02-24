@@ -13,10 +13,13 @@
     import { statusBarData } from './renderer-main';
 
     export type ToastMessage = {
+        seqNo?: number,
         message: string, title?: string, subtitle?: string, 
         severity?: "fatal"|"error"|"warning"|"info",
         timestamp?: Date,
     };
+
+    let messageCount = 0;
     const maxMessagesToShow = 5;
     const maxMessagesToKeep = 100;
     const autoHideDelay = 5000;
@@ -39,6 +42,7 @@
     function show(toastMessage?: ToastMessage)
     {
         if (toastMessage) {
+            toastMessage.seqNo = ++messageCount;
             toastMessage.timestamp = new Date();
             toastMessages.unshift(toastMessage);
             if (toastMessages.length > maxMessagesToKeep) {
@@ -60,10 +64,12 @@
 
     function toggle()
     {
-        if (toast.isShown()) {
-            hide();
-        } else {
-            show();
+        if (!isEmpty()) {
+            if (toast.isShown()) {
+                hide();
+            } else {
+                show();
+            }//if
         }//if
     }//toggle
 
@@ -93,6 +99,13 @@
         }//if
     }//deleteMessage
 
+    function clearToaster()
+    {
+        toastMessages.splice(0);
+        hide();
+        statusBarData.haveNotifications = false;
+    }//clearToaster
+
     const toastMessagesToShow = computed(() => {
         return toastMessages.slice(0, Math.min(toastMessages.length, maxMessagesToShow));
     })//toastMessagesToShow
@@ -102,7 +115,10 @@
 
 <template>
     <div ref="divToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <template  v-for="(tm, i) in toastMessagesToShow" :key="`tm[${i}]`">
+        <div class="toast-header">
+            <button type="button" class="btn-close me-auto" aria-label="Close" @click="clearToaster"></button>
+        </div>
+        <template  v-for="(tm, i) in toastMessagesToShow" :key="`tm[${tm.seqNo}]`">
             <div class="toast-header" :class="headerClass(tm.severity)" v-if="tm.title">
                 <strong class="me-auto">{{tm.title}}</strong>
                 <small v-if="tm.subtitle">{{tm.subtitle}}</small>
@@ -114,5 +130,8 @@
                 {{tm.message}}
             </div>
         </template>
+        <div class="toast-header" v-if="toastMessages.length > maxMessagesToShow"
+             :class="headerClass(toastMessages[maxMessagesToShow+1].severity)">
+        </div>
     </div>
 </template>
