@@ -211,7 +211,6 @@
             .side.facet { filter: brightness(0.5); }
         </style>
         <props>
-            <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true" default="50"/>
             <prop name="width" type="Number" required="true" default="312.5"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
@@ -246,17 +245,30 @@
     </component-class>
 
     <!-- Various breeds of Switches -->
-    <component-class name="ExtremeSwitch">
+    <component-class name="ExtremeSwitchBody">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
-                        v-bind:perspective="perspective"/>
+            <Kre:SwitchBody v-bind:name="name" v-bind:width="width" v-bind:height="height"
+                            v-bind:perspective="perspective"/>
         </template>
-        <style extends="Switch">
+        <style extends="SwitchBody">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
             .facet {fill: magenta;}
             .port-icon { fill: #651065; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
+        <props>
+            <prop name="width" type="Number" required="true" default="312.5"/>
+            <prop name="height" type="Number" required="true"/>
+            <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
+        </props>
+    </component-class>
+
+    <component-class name="ExtremeSwitch">
+        <template>
+            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
+                        v-bind:perspective="perspective"/>
+        </template>
+        <style extends="Switch, ExtremeSwitchBody"/>
         <props>
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true"/>
@@ -264,12 +276,12 @@
         </props>
     </component-class>
 
-    <component-class name="Extreme-X590-24x-1q-2c">
+    <component-class name="Extreme-X590-24x">
         <template>
-            <Kre:SwitchBody v-bind:name="name" v-bind:height="height" v-bind:n-ports="26"
+            <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:n-ports="26"
                         v-bind:perspective="perspective"/>
         </template>
-        <style extends="ExtremeSwitch"/>
+        <style extends="ExtremeSwitchBody"/>
         <props>
             <prop name="height" type="Number" required="true"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />

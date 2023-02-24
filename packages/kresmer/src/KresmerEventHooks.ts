@@ -18,6 +18,7 @@ import {toCamelCase} from "./Utils";
 
 /** A list of Kresmer events along with correponding handler definitions */
 class KresmerEventFormats  {
+    "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
@@ -117,6 +118,13 @@ export default class KresmerEventHooks {
         }//if
     }//emit
 
+
+    /**
+     * Is called when the error signal is emitted
+     * @param message A error message
+     */
+    @overridableHandler("error")
+    protected onError(error: KresmerException) {}
 
     /**
      * Is called when the dirtiness state change occurs

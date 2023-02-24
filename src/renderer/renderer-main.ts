@@ -11,10 +11,11 @@ import { createApp, reactive } from 'vue';
 // import vueDevtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
+import ToastPane from './ToastPane.vue';
 import DrawingPropsSidebar from './DrawingPropsSidebar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
-    DrawingMergeOptions, Position, ParsingException, 
+    DrawingMergeOptions, Position, KresmerException, KresmerParsingException, 
     NetworkComponentController, NetworkComponent,
     NetworkLink, NetworkElement, LinkVertex,
     TransformMode, ConnectionPointProxy,
@@ -65,6 +66,7 @@ const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMe
     InstanceType<typeof DrawingMergeDialog>;
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
     InstanceType<typeof BackendConnectionDialog>;
+const vueToastPane = createApp(ToastPane).mount("#divToastPane") as InstanceType<typeof ToastPane>;
 
 export function updateWindowTitle()
 {
@@ -183,6 +185,12 @@ kresmer.on("connection-point-right-click", (connectionPoint: ConnectionPointProx
 {
     window.electronAPI.showContextMenu("connection-point", connectionPoint.component.id, connectionPoint.name);
 });//onConnectionPointRightClick
+
+kresmer.on("error", (error: KresmerException) => 
+{
+    vueToastPane.show({message: error.message, title: error.source, severity: error.severity});
+});//onError
+
     
 
 // Processing application comand (coming from the main process)
@@ -205,7 +213,7 @@ appCommandExecutor.on("load-library", (libData: string, completionSignal?: AppIn
             alert("Library loaded successfully");
         }//if
     } catch (exc) {
-        if (exc instanceof ParsingException) {
+        if (exc instanceof KresmerParsingException) {
             alert(exc.message);
             console.error(`${exc.message}\nSource: ${exc.source}`);
         } else {
@@ -237,7 +245,7 @@ appCommandExecutor.on("load-drawing",
             window.electronAPI.setDefaultDrawingFileName(options.drawingFileName);
         }//if
     } catch (exc) {
-        if (exc instanceof ParsingException) {
+        if (exc instanceof KresmerParsingException) {
             alert(exc.message);
             console.error(`${exc.message}\nSource: ${exc.source}`);
         } else {

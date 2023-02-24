@@ -291,8 +291,9 @@ export default class DrawingParser {
 
         const classProps = elementClass.props;
         if (!classProps) {
-            throw new DrawingParsingException(
-                `Class ${elementClass} has no props, but the instance supplies some`);
+            this.kresmer.raiseError(new DrawingParsingException(
+                `Class "${elementClass}" has no props, but the instance supplies some`));
+            return props;
         }//if
 
         for (let propName in rawProps) {
@@ -307,9 +308,10 @@ export default class DrawingParser {
                     propName = toCamelCase(propName);
                     classProp = classProps[propName];
                     if (!classProp) {
-                        throw new DrawingParsingException(
+                        this.kresmer.raiseError(new DrawingParsingException(
                             `Class "${elementClass.name}" has no prop "${propName}", but the instance supplies some`,
-                            {source: `Component ${node.getAttribute("name")}`});
+                            {source: `Component "${node.getAttribute("name")}"`}));
+                        continue;
                     }//if
                 }//if
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any

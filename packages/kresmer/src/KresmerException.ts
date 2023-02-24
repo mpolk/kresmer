@@ -31,4 +31,4 @@ export default class KresmerException {
     }//ctor
 }//KresmerException
 
-export type KresmerExceptionSeverity = "error" | "warning";
+export type KresmerExceptionSeverity = "fatal" | "error" | "warning";

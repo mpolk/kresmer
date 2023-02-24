@@ -29,6 +29,7 @@ import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
+import { type } from "os";
 
 
 /**
@@ -158,6 +159,12 @@ export default class Kresmer extends KresmerEventHooks {
     readonly undoStack = new UndoStack(this);
     public undo() {this.undoStack.undo()}
     public redo() {this.undoStack.redo()}
+
+    /** Signals an application error */
+    public raiseError(exception: KresmerException)
+    {
+        this.emit("error", exception);
+    }//raiseError
 
     /** Shows whether the content was modified comparing to the last data loading */
     public get isDirty()
@@ -853,6 +860,8 @@ export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
-export {default as ParsingException} from "./loaders/ParsingException";
+export {default as KresmerException} from "./KresmerException";
+export {default as KresmerParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPointProxy";
+export type {DrawingMergeOptions} from "./loaders/DrawingLoader";
     
