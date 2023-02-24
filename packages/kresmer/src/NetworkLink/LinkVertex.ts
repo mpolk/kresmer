@@ -69,16 +69,16 @@ export default class LinkVertex {
             const component = this.link.kresmer.getComponentByName(this.initParams.conn.component);
             if (!component) {
                 this.link.kresmer.raiseError(new KresmerException(
-                    `Attempt to connect a link "${this.link.name}" \
-                    to the non-existing component ${this.initParams.conn.component}`));
+                    `Attempt to connect to the non-existing component "${this.initParams.conn.component}"`,
+                    {source: `Link "${this.link.name}"`}));
                 return this;
             }//if
             const connectionPoint = component.connectionPoints[this.initParams.conn.connectionPoint];
             if (!connectionPoint) {
                 this.link.kresmer.raiseError(new KresmerException(
-                    `Attempt to connect a link "${this.link.name}" \
-                    to the non-existing connection point \
-                    ${this.initParams.conn.component}:${this.initParams.conn.connectionPoint}`))
+                    `Attempt to connect to non-existing connection point \
+                    "${this.initParams.conn.component}:${this.initParams.conn.connectionPoint}"`,
+                    {source: `Link "${this.link.name}"`}))
                 return this;
             }//if
             this.connect(connectionPoint);

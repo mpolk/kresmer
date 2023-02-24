@@ -49,7 +49,7 @@
             {{displayData.hint}}
         </div>
         <div class="pane right" title="Notifications" style="cursor: pointer">
-            <span class="material-symbols-outlined" 
+            <span class="material-symbols-outlined d-inline-block" 
                   :class="{filled: displayData.haveNotifications}"
                   @click="vueToastPane.toggle">notifications</span>
         </div>

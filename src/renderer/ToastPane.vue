@@ -7,13 +7,18 @@
 \**************************************************************************/
 
 <script lang="ts">
-    import { onMounted, ref, reactive } from 'vue';
+    import { onMounted, ref, reactive, computed } from 'vue';
+    import {format} from 'date-fns';
     import Toast from 'bootstrap/js/dist/toast';
     import { statusBarData } from './renderer-main';
 
-    export type ToastMessage = {message: string, title?: string, subtitle?: string, 
-                                severity?: "fatal"|"error"|"warning"|"info"};
-    const maxMessages = 5;
+    export type ToastMessage = {
+        message: string, title?: string, subtitle?: string, 
+        severity?: "fatal"|"error"|"warning"|"info",
+        timestamp?: Date,
+    };
+    const maxMessagesToShow = 5;
+    const maxMessagesToKeep = 100;
     const autoHideDelay = 5000;
 
     export default {
@@ -34,9 +39,10 @@
     function show(toastMessage?: ToastMessage)
     {
         if (toastMessage) {
-            toastMessages.push(toastMessage);
-            if (toastMessages.length > maxMessages) {
-                toastMessages.shift();
+            toastMessage.timestamp = new Date();
+            toastMessages.unshift(toastMessage);
+            if (toastMessages.length > maxMessagesToKeep) {
+                toastMessages.pop();
             }//if
             statusBarData.haveNotifications = true;
             autoHideTimer = setTimeout(() => hide(), autoHideDelay);
@@ -78,15 +84,31 @@
         return toastMessages.length === 0;
     }//isEmpty
 
+    function deleteMessage(index: number)
+    {
+        toastMessages.splice(index, 1);
+        if (toastMessages.length === 0) {
+            hide();
+            statusBarData.haveNotifications = false;
+        }//if
+    }//deleteMessage
+
+    const toastMessagesToShow = computed(() => {
+        return toastMessages.slice(0, Math.min(toastMessages.length, maxMessagesToShow));
+    })//toastMessagesToShow
+
     defineExpose({show, hide, toggle, isEmpty});
 </script>
 
 <template>
     <div ref="divToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <template  v-for="(tm, i) in toastMessages" :key="`tm[${i}]`">
+        <template  v-for="(tm, i) in toastMessagesToShow" :key="`tm[${i}]`">
             <div class="toast-header" :class="headerClass(tm.severity)" v-if="tm.title">
                 <strong class="me-auto">{{tm.title}}</strong>
                 <small v-if="tm.subtitle">{{tm.subtitle}}</small>
+                <small class="text-dark">{{format(tm.timestamp!, "HH:MM:ss.sss")}}</small>
+                <button type="button" class="btn-close" :class='{"btn-close-white": tm.severity === "error"}'
+                        aria-label="Close" @click="deleteMessage(i)"></button>
             </div>
             <div class="toast-body">
                 {{tm.message}}
