@@ -48,16 +48,18 @@
         <div class="pane hint">
             {{displayData.hint}}
         </div>
-        <div class="pane right" title="Notifications" style="cursor: pointer">
-            <span class="material-symbols-outlined d-inline-block" 
-                  :class="{filled: displayData.haveNotifications}"
-                  @click="vueToastPane.toggle">notifications</span>
-        </div>
-        <div class="pane right" title="Drawing display scale">
-            {{drawingScale}}
-        </div>
-        <div class="pane right" title="Backend server URL currently connected">
-            {{displayData.serverURL}}
+        <div>
+            <div class="pane" title="Backend server URL currently connected">
+                {{displayData.serverURL}}
+            </div>
+            <div class="pane" title="Drawing display scale" style="cursor: default">
+                {{drawingScale}}
+            </div>
+            <div class="pane" title="Notifications" style="cursor: pointer">
+                <span class="material-symbols-outlined align-bottom" 
+                    :class="{filled: displayData.haveNotifications}"
+                    @click="vueToastPane.toggle">notifications</span>
+            </div>
         </div>
     </div>
 </template>
@@ -65,9 +67,13 @@
 <style lang="scss">
     .status-bar {
         position: fixed;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
         width: 100%;
         padding: 0.2rem 0;
-        font: status-bar; font-size: smaller;
+        font: status-bar; 
+        font-size: 0.85rem;
         color: white;
         background-color: rgb(52, 122, 250);
 
