@@ -3,6 +3,10 @@
   <xs:attribute name="name" />
   <xs:attribute name="x" />
   <xs:attribute name="y" />
+  <xs:attribute name="x1" />
+  <xs:attribute name="y1" />
+  <xs:attribute name="x2" />
+  <xs:attribute name="y2" />
   <xs:attribute name="d" />
   <xs:attribute name="cx" />
   <xs:attribute name="cy" />

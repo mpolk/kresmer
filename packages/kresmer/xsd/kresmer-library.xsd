@@ -78,6 +78,16 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="line" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="line-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:element name="polyline" minOccurs="0">
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
@@ -236,6 +246,17 @@
         <xs:attribute ref="v-bind:x"/>
         <xs:attribute name="y" type="xs:decimal"/>
         <xs:attribute ref="v-bind:y"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="line-attrs">
+        <xs:attribute name="x1" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:x1"/>
+        <xs:attribute name="y1" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:y1"/>
+        <xs:attribute name="x2" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:x2"/>
+        <xs:attribute name="y2" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:y2"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="circle-attrs">
