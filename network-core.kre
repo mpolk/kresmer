@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="autoload" width="1000" height="1000">
+<kresmer-drawing name="network-core" width="1000" height="1000">
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
         <origin x="141" y="117"/>
         <props>
@@ -10,7 +10,7 @@
     </component>
 
     <component class="ExtremeSwitch" name="metro" db-id="1697">
-        <origin x="59.58051815847807" y="392.872745781307"/>
+        <origin x="59" y="392"/>
         <props>
             <prop name="height">50</prop>
             <prop name="perspective">none</prop>
@@ -18,7 +18,7 @@
     </component>
 
     <component class="Catalyst" name="dru-core">
-        <origin x="539.0327978264683" y="427.4214503851118"/>
+        <origin x="539" y="427"/>
         <props>
             <prop name="height">50</prop>
             <prop name="perspective">right</prop>
@@ -34,9 +34,9 @@
     </component>
 
     <link class="twisted-pair" from="core:1" to="dru-core:1">
-        <vertex x="20" y="180"/>
-        <vertex x="45" y="200"/>
-        <vertex x="20" y="220"/>
+        <vertex x="176" y="312.4542482115801"/>
+        <vertex x="-21.388652558643642" y="312.4542482115801"/>
+        <vertex x="30.83896368304386" y="370.3906211022336"/>
     </link>
 
     <link class="twisted-pair" from="core:2" to="dru-core:2"/>

@@ -293,8 +293,7 @@
     <component-class name="Switch">
         <template>
             <Kre:SwitchBody v-bind:width="width" v-bind:height="height"
-                v-bind:perspective="perspective"
-                v-bind:name="name" v-bind:nPorts="nPorts" />
+                v-bind:perspective="perspective" v-bind:name="name" />
             <Kre:SquarePort v-for="i in nPorts"
                 v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2"
                 v-bind:name="i" />
@@ -357,7 +356,7 @@
         </template>
         <style extends="ExtremeSwitchBody" />
         <props>
-            <prop name="height" type="Number" required="true" />
+            <prop name="height" type="Number" required="true" default="75"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
         <computed-props>
@@ -381,7 +380,7 @@
         </template>
         <style extends="ExtremeSwitchBody" />
         <props>
-            <prop name="height" type="Number" required="true" />
+            <prop name="height" type="Number" required="true" default="75"/>
             <prop name="n-slots" type="Number" default="1" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
