@@ -33,7 +33,7 @@
         </props>
     </component>
 
-    <link class="twisted-pair" from="core:1" to="dru-core:1">
+    <link class="twisted-pair" from="core:1:1" to="dru-core:1">
         <vertex x="176" y="312.4542482115801"/>
         <vertex x="-21.388652558643642" y="312.4542482115801"/>
         <vertex x="30.83896368304386" y="370.3906211022336"/>
