@@ -25,7 +25,7 @@ export default class LibraryLoader
     public loadLibrary(libData: string): boolean
     {
         console.debug("Loading library...");
-        const parser = new LibraryParser();
+        const parser = new LibraryParser(this.kresmer);
         let wereErrors = false;
         for (const element of parser.parseXML(libData)) {
             //console.debug(element);

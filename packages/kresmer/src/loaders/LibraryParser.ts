@@ -14,11 +14,14 @@ import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
+import Kresmer from "../Kresmer";
 
 /**
  * Component library parser
  */
 export default class LibraryParser {
+
+    constructor(private kresmer: Kresmer) {}
 
     /**
      * Parses a library file contents and yields the sequence 
@@ -176,9 +179,15 @@ export default class LibraryParser {
                     const required = child.getAttribute("required"),
                         _default = child.getAttribute("default"),
                         choices = child.getAttribute("choices");
-                    if (!propName)
-                        throw new LibraryParsingException("Prop without the name",
-                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                    if (!propName) {
+                        this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
+                            {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
+                        continue;
+                    }//if
+                    // if (!_default) {
+                    //     this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" without a default value`,
+                    //         {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
+                    // }//if
 
                     switch (type) {
                         case "String":
