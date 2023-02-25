@@ -278,14 +278,20 @@
 
     <component-class name="Extreme-X590-24x">
         <template>
-            <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:n-ports="26"
-                        v-bind:perspective="perspective"/>
+            <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width" v-bind:perspective="perspective"/>
+            <template v-for="i in 12">
+                <Kre:SquarePort v-bind:x="height*i*0.4" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1"/>
+                <Kre:SquarePort v-bind:x="height*i*0.4" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2"/>
+            </template>
         </template>
         <style extends="ExtremeSwitchBody"/>
         <props>
             <prop name="height" type="Number" required="true"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
+        <computed-props>
+            <computed-prop name="width">props.height * 10</computed-prop>
+        </computed-props>
     </component-class>
 
     <component-class name="Hub">

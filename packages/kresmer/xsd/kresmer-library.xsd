@@ -13,12 +13,7 @@
                     <xs:element name="component-class">
                         <xs:complexType>
                             <xs:all>
-                                <xs:element name="template">
-                                    <xs:complexType mixed="true">
-                                        <xs:group ref="svg-elements"/>
-                                    </xs:complexType>
-                                </xs:element>
-        
+                                <xs:element ref="template"/>
                                 <xs:element ref="props" minOccurs="0"/>
                                 <xs:element ref="computed-props" minOccurs="0"/>
                                 <xs:element ref="defs" minOccurs="0"/>
@@ -145,6 +140,16 @@
             </xs:choice>
         </xs:sequence>
     </xs:group>
+
+    <xs:element name="template">
+        <xs:complexType mixed="true">
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:group ref="svg-elements"/>
+                <xs:element ref="template"/>
+            </xs:choice>
+            <xs:attributeGroup ref="vue-directives"/>
+        </xs:complexType>
+    </xs:element>
 
     <!-- Component props (translated to Vue props) -->
     <xs:element name="props">

@@ -4,7 +4,7 @@
     <component class="Extreme-X590-24x" name="core" db-id="2903">
         <origin x="30" y="100"/>
         <props>
-            <prop name="height">50</prop>
+            <prop name="height">75</prop>
             <prop name="nPorts">26</prop>
         </props>
     </component>
