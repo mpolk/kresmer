@@ -4,6 +4,9 @@
   <xs:attribute name="x" />
   <xs:attribute name="y" />
   <xs:attribute name="d" />
+  <xs:attribute name="cx" />
+  <xs:attribute name="cy" />
+  <xs:attribute name="r" />
   <xs:attribute name="width"  />
   <xs:attribute name="height" />
   <xs:attribute name="dir" />

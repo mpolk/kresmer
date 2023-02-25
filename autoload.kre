@@ -5,7 +5,6 @@
         <origin x="30" y="100"/>
         <props>
             <prop name="height">75</prop>
-            <prop name="nPorts">26</prop>
         </props>
     </component>
 

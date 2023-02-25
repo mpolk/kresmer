@@ -67,6 +67,17 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="circle" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="circle-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:element name="polyline" minOccurs="0">
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
@@ -141,15 +152,24 @@
         </xs:sequence>
     </xs:group>
 
-    <xs:element name="template">
-        <xs:complexType mixed="true">
-            <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:group ref="svg-elements"/>
-                <xs:element ref="template"/>
-            </xs:choice>
-            <xs:attributeGroup ref="vue-directives"/>
-        </xs:complexType>
-    </xs:element>
+    <!-- Template content (used in components) -->
+    <xs:complexType name="template" mixed="true">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+            <xs:group ref="svg-elements"/>
+            <xs:element name="template" type="internal-template"/>
+            <xs:element name="slot" minOccurs="0" maxOccurs="1"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="internal-template">
+        <xs:complexContent>
+            <xs:extension base="template">
+                <xs:attributeGroup ref="vue-directives"/>
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:element name="template" type="template"/>
 
     <!-- Component props (translated to Vue props) -->
     <xs:element name="props">
@@ -216,6 +236,15 @@
         <xs:attribute ref="v-bind:x"/>
         <xs:attribute name="y" type="xs:decimal"/>
         <xs:attribute ref="v-bind:y"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="circle-attrs">
+        <xs:attribute name="cx" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:cx"/>
+        <xs:attribute name="cy" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:cy"/>
+        <xs:attribute name="r" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:r"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="presentation-attrs">
