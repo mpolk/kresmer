@@ -218,12 +218,13 @@ export default class DrawingParser {
         if (matches) {
             return {pos: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}};
         } else {
-            matches = strData.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_]+)$/);
+            matches = strData.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_:]+)$/);
             if (matches) {
                 return {conn: {component: matches[1], connectionPoint: matches[2]}};
             } else {
-                throw new KresmerException(
-                    `Invalid link vertex specification: "${strData}"`);
+                this.kresmer.raiseError(new KresmerException(
+                    `Invalid link vertex specification: "${strData}"`));
+                return {};
             }//if
         }//if
     }//parseLinkEndpoint
