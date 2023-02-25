@@ -146,7 +146,7 @@
                       v-bind:points="`0,${h} ${w*0.15},${h*0.75} ${w*0.85},${h*0.75} ${w},${h}`"/>
             <rect class="port-icon far-end" v-bind:x="w*0.15" v-bind:y="h*0.05" 
                   v-bind:width="w*0.7" v-bind:height="h*0.7"/>
-            <slot></slot>
+            <slot/>
             <text v-bind:x="w/2" v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="h*0.8"
                   class="port-name">{{name}}</text>
             <connection-point v-bind:name="name" v-bind:d="h*0.8" v-bind:x="w/2" v-bind:y="w/2"/>
@@ -165,7 +165,7 @@
 
     <component-class name="SquarePort">
         <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name"><slot></slot></Kre:Port>
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name"><slot/></Kre:Port>
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25"/> <!-- diameter (or similar size parameter-->

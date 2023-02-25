@@ -242,7 +242,9 @@ export default class Kresmer extends KresmerEventHooks {
             template: `\
                 <NetworkComponentAdapter component-class="${componentClass.name}" 
                                          :x="x" :y="y" :transform="transform" :transform-origin="transformOrigin">
-                    <component :is="'${componentClass.vueName}'" v-bind="componentProps"/>
+                    <component :is="'${componentClass.vueName}'" v-bind="componentProps">
+                        <slot/>
+                    </component>
                 </NetworkComponentAdapter>`,
             props: {
                 ...componentClass.props,
