@@ -343,8 +343,8 @@
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:perspective="perspective" />
             <template v-for="i in 12">
-                <Kre:SfpPort v-bind:x="height*(i*0.5-0.1)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1" />
-                <Kre:SfpPort v-bind:x="height*(i*0.5-0.1)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
+                <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1" />
+                <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
             </template>
             <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" />
             <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" />
@@ -356,7 +356,7 @@
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
         <computed-props>
-            <computed-prop name="width">props.height * 9</computed-prop>
+            <computed-prop name="width">props.height * 9.1</computed-prop>
         </computed-props>
     </component-class>
 
