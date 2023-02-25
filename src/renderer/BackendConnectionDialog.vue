@@ -34,7 +34,7 @@
     onMounted(() =>
     {
         rootDiv.value!.addEventListener('shown.bs.modal', () => {btnOk.value!.focus()})
-        rootDiv.value!.addEventListener('hide.bs.modal', () => {resolvePromise!(null)});
+        rootDiv.value!.addEventListener('hidden.bs.modal', () => {resolvePromise!(null)});
     })//mounted
 
     async function show(args: BackendConnectionParams, message: string|undefined)
