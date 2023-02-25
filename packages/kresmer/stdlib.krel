@@ -162,7 +162,7 @@
                 v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="h*0.8"
                 class="port-name">{{name}}</text>
             <connection-point v-bind:name="name"
-                v-bind:d="h*0.8" v-bind:x="w/2" v-bind:y="w/2" />
+                v-bind:d="h*0.8" v-bind:x="w/2" v-bind:y="h/2" />
         </template>
         <style>
             .port-name {font-family: sans-serif; fill: white;}
@@ -183,23 +183,44 @@
             </Kre:Port>
         </template>
         <props>
-            <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar
-            size parameter-->
+            <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
         </props>
+    </component-class>
+
+    <component-class name="Ferrule">
+        <template>
+            <circle class="ferrule" v-bind:cx="cx" v-bind:cy="cy" v-bind:r="d/2" />
+        </template>
+        <props>
+            <prop name="cx" type="Number" required="true" default="0"/>
+            <prop name="cy" type="Number" required="true" default="0"/>
+            <prop name="d" type="Number" required="true" default="25" />
+        </props>
+        <style>
+            .ferrule {fill: #000000; stroke: #707070; stroke-width: 1px;}
+        </style>
     </component-class>
 
     <component-class name="SfpPort">
         <template>
             <Kre:SquarePort v-bind:d="d" v-bind:name="name">
-                <circle class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d*0.2" />
+                <Kre:Ferrule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:d="d*0.4" />
             </Kre:SquarePort>
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
         </props>
-        <style extends="SquarePort">
-            .ferrule {fill: #000000; stroke: #707070; stroke-width: 1px;}
-        </style>
+    </component-class>
+
+    <component-class name="XfpPort">
+        <template>
+            <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name">
+                <Kre:Ferrule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:d="h*0.4" />
+            </Kre:Port>
+        </template>
+        <props>
+            <prop name="h" type="Number" required="true" default="25" />
+        </props>
     </component-class>
 
 
@@ -293,8 +314,8 @@
         </template>
         <style extends="SwitchBody">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
-            .facet {fill: magenta;}
-            .port-icon { fill: #651065; }
+            .facet {fill: #d752ff;}
+            .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
         <props>
@@ -322,11 +343,12 @@
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:perspective="perspective" />
             <template v-for="i in 12">
-                <Kre:SfpPort v-bind:x="height*i*0.4" v-bind:y="height*0.15" v-bind:d="height/3"
-                    v-bind:name="i*2-1" />
-                <Kre:SfpPort v-bind:x="height*i*0.4"
-                    v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
+                <Kre:SfpPort v-bind:x="height*(i*0.5-0.1)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1" />
+                <Kre:SfpPort v-bind:x="height*(i*0.5-0.1)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
             </template>
+            <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" />
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" />
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" />
         </template>
         <style extends="ExtremeSwitchBody" />
         <props>
@@ -334,7 +356,7 @@
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
         </props>
         <computed-props>
-            <computed-prop name="width">props.height * 10</computed-prop>
+            <computed-prop name="width">props.height * 9</computed-prop>
         </computed-props>
     </component-class>
 
