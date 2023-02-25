@@ -115,8 +115,11 @@
 
 <template>
     <div ref="divToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="toast-header">
-            <button type="button" class="btn-close me-auto" aria-label="Close" @click="clearToaster"></button>
+        <div class="d-flex justify-content-between align-items-center">
+            <span class="m-auto">Notfications ({{toastMessages.length}})</span>
+            <button type="button" class="btn" title="Clear all" @click="clearToaster">
+                <span class="material-symbols-outlined">delete_sweep</span>
+            </button>
         </div>
         <template  v-for="(tm, i) in toastMessagesToShow" :key="`tm[${tm.seqNo}]`">
             <div class="toast-header" :class="headerClass(tm.severity)" v-if="tm.title">
@@ -131,7 +134,7 @@
             </div>
         </template>
         <div class="toast-header" v-if="toastMessages.length > maxMessagesToShow"
-             :class="headerClass(toastMessages[maxMessagesToShow+1].severity)">
+             :class="headerClass(toastMessages[maxMessagesToShow].severity)">
         </div>
     </div>
 </template>
