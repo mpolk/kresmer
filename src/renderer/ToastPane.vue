@@ -127,7 +127,7 @@
                 <small v-if="tm.subtitle">{{tm.subtitle}}</small>
                 <small class="text-dark">{{format(tm.timestamp!, "HH:MM:ss.sss")}}</small>
                 <button type="button" class="btn-close" :class='{"btn-close-white": tm.severity === "error"}'
-                        aria-label="Close" @click="deleteMessage(i)"></button>
+                        title="Delete notification" @click="deleteMessage(i)"></button>
             </div>
             <div class="toast-body">
                 {{tm.message}}
