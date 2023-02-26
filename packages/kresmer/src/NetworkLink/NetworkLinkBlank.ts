@@ -7,8 +7,8 @@
  ***************************************************************************/
 
 import { reactive } from "vue";
-import Kresmer from "../Kresmer";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
+import Kresmer, { KresmerException } from "../Kresmer";
+import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import NetworkLinkClass from "./NetworkLinkClass";
 import { Position } from "../Transform/Transform";
 
@@ -48,13 +48,14 @@ export default class NetworkLinkBlank {
         for (const element of elementsUnderCursor) {
             const connectionPointData = element.getAttribute("data-connection-point");
             if (connectionPointData) {
-                const [componentName, connectionPointName] = connectionPointData.split(':');
+                const {componentName, connectionPointName} = parseConnectionPointData(connectionPointData);
                 const component = this.kresmer.getComponentByName(componentName);
                 const connectionPoint = component?.connectionPoints[connectionPointName];
                 if (connectionPoint) {
                     this.kresmer._completeLinkCreation(connectionPoint);
                 } else {
-                    console.error('Reference to undefined connection point "%s"', connectionPointData);
+                    this.kresmer.raiseError(new KresmerException(
+                        `Reference to undefined connection point "${connectionPointData}"`));
                 }//if
                 return;
             }//if

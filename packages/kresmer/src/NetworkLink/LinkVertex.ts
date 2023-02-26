@@ -9,7 +9,7 @@
 import { Position } from "../Transform/Transform";
 import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
+import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
 
 /** Link Vertex (either connected or free) */
@@ -178,7 +178,7 @@ export default class LinkVertex {
         for (const element of elementsUnderCursor) {
             const connectionPointData = element.getAttribute("data-connection-point");
             if (connectionPointData) {
-                const [componentName, connectionPointName] = connectionPointData.split(':');
+                const {componentName, connectionPointName} = parseConnectionPointData(connectionPointData);
                 const component = this.link.kresmer.getComponentByName(componentName);
                 const connectionPoint = component?.connectionPoints[connectionPointName];
                 if (connectionPoint) {

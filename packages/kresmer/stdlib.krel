@@ -162,7 +162,7 @@
                 v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="h*0.8"
                 class="port-name">{{label}}<title>{{name}}</title></text>
             <connection-point v-bind:name="name"
-                v-bind:d="h*0.8" v-bind:x="w/2" v-bind:y="h/2" />
+                v-bind:d="h*0.8" v-bind:x="w/2" v-bind:y="h/2" v-bind:dir="dir" />
         </template>
         <style>
             .port-name {font-family: sans-serif; fill: white;}
@@ -173,6 +173,7 @@
         <props>
             <prop name="w" type="Number" required="true" default="25" />
             <prop name="h" type="Number" required="true" default="25" />
+            <prop name="dir" type="Number" default="180" />
         </props>
         <computed-props>
             <computed-prop name="label">String(props.name).split(':').slice(-1)[0]</computed-prop>
@@ -181,12 +182,13 @@
 
     <component-class name="SquarePort">
         <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name">
-                <slot />
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:dir="dir">
+                <slot/>
             </Kre:Port>
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
+            <prop name="dir" type="Number" default="180" />
         </props>
     </component-class>
 
@@ -206,23 +208,25 @@
 
     <component-class name="SfpPort">
         <template>
-            <Kre:SquarePort v-bind:d="d" v-bind:name="name">
+            <Kre:SquarePort v-bind:d="d" v-bind:name="name" v-bind:dir="dir">
                 <Kre:Ferrule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:d="d*0.4" />
             </Kre:SquarePort>
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
+            <prop name="dir" type="Number" default="180" />
         </props>
     </component-class>
 
     <component-class name="XfpPort">
         <template>
-            <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name">
+            <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:dir="dir">
                 <Kre:Ferrule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:d="h*0.4" />
             </Kre:Port>
         </template>
         <props>
             <prop name="h" type="Number" required="true" default="25" />
+            <prop name="dir" type="Number" default="180" />
         </props>
     </component-class>
 
@@ -320,7 +324,7 @@
         </template>
         <style extends="SwitchBody">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
-            .facet {fill: #d752ff;}
+            .facet {fill: #cf34fe;}
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
@@ -354,8 +358,8 @@
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
             </template>
             <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" />
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" />
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" />
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" dir="90" />
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" dir="90" />
         </template>
         <style extends="ExtremeSwitchBody" />
         <props>
@@ -379,8 +383,8 @@
                         v-bind:name="`${slot}:${i*2}`" />
                 </template>
                 <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:25`" />
-                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" />
-                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" />
+                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" dir="90" />
+                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" dir="90" />
             </template>
         </template>
         <style extends="ExtremeSwitchBody" />
@@ -438,6 +442,19 @@
             .segment.highlighted {stroke: #525440; stroke-width: 3px}
             .segment.selected {stroke: #525440; stroke-width: 4px}
             .vertex {stroke: #525440; stroke-width: 4px; fill: white; r: 6px}
+            .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
+            .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+        </style>
+    </link-class>
+
+    <link-class name="AOC" type="fiber-optics">
+        <style>
+            .link {stroke: #3a5e69;}
+            .padding {stroke-width: 8px;}
+            .segment {stroke-width: 4px;}
+            .segment.highlighted {stroke: #225767; stroke-width: 5px}
+            .segment.selected {stroke: #225767; stroke-width: 6px}
+            .vertex {stroke: #225767; stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
         </style>

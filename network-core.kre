@@ -49,4 +49,9 @@
 
     <link class="twisted-pair" name="core-metro-3" from="core:2:6" to="metro:3"/>
 
+    <link class="AOC" from="core:2:26" to="core:1:27">
+        <vertex x="853.7443644885985" y="215.4244032004967"/>
+        <vertex x="859.1638463301205" y="169.3588075475603"/>
+    </link>
+
 </kresmer-drawing>

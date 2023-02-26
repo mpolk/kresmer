@@ -48,3 +48,10 @@ export default class ConnectionPointProxy {
     }//updatePos
 
 }//ConnectionPointProxy
+
+
+export function parseConnectionPointData(connectionPointData: string)
+{
+    const [componentName, ...connectionPointParts] = connectionPointData.split(':');
+    return {componentName, connectionPointName: connectionPointParts.join(':')};
+}//parseConnectionPointData
