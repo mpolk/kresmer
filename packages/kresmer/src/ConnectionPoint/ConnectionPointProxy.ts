@@ -17,13 +17,16 @@ export default class ConnectionPointProxy {
      * Constructs a connection point
      * @param component The component this connection point belongs to
      * @param name The name of the connection point
-     * @param dir Prefered direction for the link connected here (angle from x-axis)
+     * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
      */
-    constructor(readonly component: NetworkComponent, readonly name: string|number, public dir: number)
+    constructor(readonly component: NetworkComponent, readonly name: string|number, dir0: number|string)
     {
-        this.dir0 = dir;
+        this.dir0 = (typeof dir0 === 'string') ? parseFloat(dir0) : dir0;
+        this.dir = this.dir0;
     }//ctor
 
+    /** The current value of the prefered direction */
+    public dir: number;
     /** The initial value of the prefered direction */
     readonly dir0: number;
 

@@ -184,7 +184,8 @@ export default class LinkVertex {
                 if (connectionPoint) {
                     this.connect(connectionPoint);
                 } else {
-                    console.error('Reference to undefined connection point "%s"', connectionPointData);
+                    this.link.kresmer.raiseError(new KresmerException(
+                        `Reference to undefined connection point "${connectionPointData}"`));
                 }//if
                 this.link.kresmer.undoStack.commitOperation();
                 this.link.kresmer.emit("link-vertex-connected", this);
