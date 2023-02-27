@@ -358,8 +358,8 @@
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
             </template>
             <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" />
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" dir="90" />
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" dir="90" />
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" v-bind:dir="90" />
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" v-bind:dir="90" />
         </template>
         <style extends="ExtremeSwitchBody" />
         <props>
@@ -383,8 +383,8 @@
                         v-bind:name="`${slot}:${i*2}`" />
                 </template>
                 <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:25`" />
-                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" dir="90" />
-                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" dir="90" />
+                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" v-bind:dir="90" />
+                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" v-bind:dir="90" />
             </template>
         </template>
         <style extends="ExtremeSwitchBody" />
