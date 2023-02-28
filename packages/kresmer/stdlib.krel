@@ -173,7 +173,7 @@
         <props>
             <prop name="w" type="Number" required="true" default="25" />
             <prop name="h" type="Number" required="true" default="25" />
-            <prop name="dir" type="Number" default="90" />
+            <prop name="dir" type="Number|String" default="90" />
         </props>
         <computed-props>
             <computed-prop name="label">String(props.name).split(':').slice(-1)[0]</computed-prop>
@@ -188,7 +188,7 @@
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
-            <prop name="dir" type="Number" default="90" />
+            <prop name="dir" type="Number|String" default="90" />
         </props>
     </component-class>
 
@@ -214,7 +214,7 @@
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
-            <prop name="dir" type="Number" default="90" />
+            <prop name="dir" type="Number|String" default="90" />
         </props>
     </component-class>
 
@@ -226,7 +226,7 @@
         </template>
         <props>
             <prop name="h" type="Number" required="true" default="25" />
-            <prop name="dir" type="Number" default="90" />
+            <prop name="dir" type="Number|String" default="90" />
         </props>
     </component-class>
 

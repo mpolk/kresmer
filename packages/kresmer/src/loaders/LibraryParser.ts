@@ -168,6 +168,14 @@ export default class LibraryParser {
 
     private parseProps(node: Element)
     {
+        const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown}> = {
+            "string": {propType: String, makeDefault: d => d}, 
+            "number": {propType: Number, makeDefault: Number},
+            "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
+            "object": {propType: Object, makeDefault: JSON.parse}, 
+            "array": {propType: Array, makeDefault: JSON.parse},
+        };
+
         const props: ComponentObjectPropsOptions = {};
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -189,36 +197,28 @@ export default class LibraryParser {
                     //         {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
                     // }//if
 
-                    switch (type) {
-                        case "String":
-                            prop.type = String;
+                    Object.getOwnPropertyNames(allowedTypes).forEach(typeName => {
+                        if (type?.toLowerCase() === typeName) {
+                            prop.type = allowedTypes[typeName].propType;
+                            if (_default != null)
+                                prop.default = allowedTypes[typeName].makeDefault(_default);
+                        }//if
+                    });
+
+                    if (!prop.type) {
+                        const tnames = Object.getOwnPropertyNames(allowedTypes).join("|");
+                        const matches = type?.match(new RegExp(`(?:(${tnames}) *\\| *)+(${tnames})`, "i")) ??
+                            type?.match(new RegExp(`\\[ *(?:(${tnames}), *)+(${tnames})\\ *]`, "i"));
+                        if (matches) {
+                            prop.type = matches.slice(1).map(type => allowedTypes[type.toLowerCase()].propType);
                             if (_default != null)
                                 prop.default = _default;
-                            break;
-                        case "Number":
-                            prop.type = Number;
-                            if (_default != null)
-                                prop.default = parseFloat(_default);
-                            break;
-                        case "Boolean":
-                            prop.type = Boolean;
-                            if (_default != null)
-                                prop.default = _default == "true";
-                            break;
-                        case "Object":
-                            prop.type = Object;
-                            if (_default != null)
-                                prop.default = JSON.parse(_default);
-                            break;
-                        case "Array":
-                            prop.type = Array;
-                            if (_default != null)
-                                prop.default = JSON.parse(_default);
-                            break;
-                        default:
-                            throw new LibraryParsingException(`Invalid prop type: ${prop.type}`,
-                                {source: `Component class ${node.parentElement?.getAttribute("name")}`});
-                    }//switch
+                        } else {
+                            this.kresmer.raiseError(new LibraryParsingException(`Invalid prop type: ${type}`,
+                                {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
+                            continue;
+                        }//if
+                    }//if
 
                     switch (required) {
                         case "true": case "false":
