@@ -21,7 +21,14 @@ export default class ConnectionPointProxy {
      */
     constructor(readonly component: NetworkComponent, readonly name: string|number, dir0: number|string)
     {
-        this.dir0 = (typeof dir0 === 'string') ? parseFloat(dir0) : dir0;
+        switch (dir0) {
+            case 'right': this.dir0 = 0; break;
+            case 'bottom': case 'down': this.dir0 = 90; break;
+            case 'left': this.dir0 = 180; break;
+            case 'top': case 'up': this.dir0 = 270; break;
+            default:
+                this.dir0 = Number(dir0);
+        }//switch
         this.dir = this.dir0;
     }//ctor
 
