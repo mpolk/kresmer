@@ -75,10 +75,8 @@
                     />
             </template>
         </template>
-        <template v-if="model.isSelected">
             <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
-                <link-vertex-vue :model="vertex" />
+                <link-vertex-vue :model="vertex"/>
             </template>
-        </template>
     </g>
 </template>

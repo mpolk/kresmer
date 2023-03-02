@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType, ref, inject } from 'vue';
+    import { PropType, ref, inject, watch, onUpdated, toRef, computed } from 'vue';
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
 
@@ -63,37 +63,53 @@
     {
         props.model.align();
     }//onDoubleClick
+
+    watch(props.model.coords, (newCoords) => {
+        if (props.model.link.isLoopback && props.model.isHead) {
+            props.model.link.updateHeadPosition(newCoords);
+        }//if
+    } , {deep: true});
+
+    watch(() => props.model.link.headPosition, () => {
+        if (!props.model.isHead && !props.model.isTail && props.model.link.isLoopback) {
+            const delta = {x: props.model.link.headPosition.x - props.model.link.prevHeadPosition.x,
+                           y: props.model.link.headPosition.y - props.model.link.prevHeadPosition.y};
+            props.model.moveBy(delta);
+        }//if
+    }, {deep: true});
     
 </script>
 
 <template>
-    <circle v-if="model.isDragged" ref="padding"
-        :cx="model.coords.x" :cy="model.coords.y" 
-        class="vertex padding"
-        style="cursor: move; stroke: none;"
-        :is-editable="isEditable"
-        @mouseup.stop="onMouseUp($event)"
-        @mousemove.stop="onMouseMove($event)"
-        @mouseleave.stop="onMouseLeave($event)"
-        />
-    <circle ref="circle"
-        :cx="model.coords.x" :cy="model.coords.y" 
-        class="vertex" :class="{connected: model.isConnected}"
-        style="cursor: move;"
-        :is-editable="isEditable"
-        @mousedown.stop="onMouseDown($event)"
-        @mouseup.stop="onMouseUp($event)"
-        @mousemove.stop="onMouseMove($event)"
-        @mouseleave.stop="onMouseLeave($event)"
-        @contextmenu="onRightClick($event)"
-        @dblclick="onDoubleClick()"
-        />
-    <Transition>
-        <circle v-if="model.showBlinker" ref="blinker"
+    <template v-if="model.link.isSelected">
+        <circle v-if="model.isDragged" ref="padding"
             :cx="model.coords.x" :cy="model.coords.y" 
-            class="vertex blinker"
+            class="vertex padding"
+            style="cursor: move; stroke: none;"
+            :is-editable="isEditable"
+            @mouseup.stop="onMouseUp($event)"
+            @mousemove.stop="onMouseMove($event)"
+            @mouseleave.stop="onMouseLeave($event)"
             />
-    </Transition>
+        <circle ref="circle"
+            :cx="model.coords.x" :cy="model.coords.y" 
+            class="vertex" :class="{connected: model.isConnected}"
+            style="cursor: move;"
+            :is-editable="isEditable"
+            @mousedown.stop="onMouseDown($event)"
+            @mouseup.stop="onMouseUp($event)"
+            @mousemove.stop="onMouseMove($event)"
+            @mouseleave.stop="onMouseLeave($event)"
+            @contextmenu="onRightClick($event)"
+            @dblclick="onDoubleClick()"
+            />
+        <Transition>
+            <circle v-if="model.showBlinker" ref="blinker"
+                :cx="model.coords.x" :cy="model.coords.y" 
+                class="vertex blinker"
+                />
+        </Transition>
+    </template>
 </template>
 
 <style lang="scss">

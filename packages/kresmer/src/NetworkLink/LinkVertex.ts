@@ -6,7 +6,7 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
-import { Position } from "../Transform/Transform";
+import { Position, Shift } from "../Transform/Transform";
 import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
@@ -30,6 +30,9 @@ export default class LinkVertex {
     private savedMousePos?: Position;
 
     showBlinker = false;
+
+    public get isHead() {return this.vertexNumber === 0;}
+    public get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
 
     toString()
     {
@@ -127,6 +130,14 @@ export default class LinkVertex {
         this.pos = newPos.pos;
         this.conn = newPos.conn;
     }//set anchor
+
+    public moveBy(delta: Shift)
+    {
+        if (!this.isConnected && this.pos) {
+            this.pos.x += delta.x;
+            this.pos.y += delta.y;
+        }//if
+    }//moveBy
 
 
     private getMousePosition(event: MouseEvent) {

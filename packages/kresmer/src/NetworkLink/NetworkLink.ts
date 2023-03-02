@@ -58,13 +58,22 @@ class _NetworkLink extends NetworkElement {
 
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
+    headPosition: Position = {x: 0, y: 0};
+    prevHeadPosition: Position = {x: 0, y: 0};
 
     readonly initVertices = () => {
         if (!this.verticesInitialized) {
             this.vertices.forEach(vertex => vertex.init());
+            ({x: this.headPosition.x, y: this.headPosition.y} = this.vertices[0].coords);
+            ({x: this.prevHeadPosition.x, y: this.prevHeadPosition.y} = this.headPosition);
             this.verticesInitialized = true;
         }//if
     }//initVertices
+
+    public updateHeadPosition(pos: Position) {
+        ({x: this.prevHeadPosition.x, y: this.prevHeadPosition.y} = this.headPosition);
+        ({x: this.headPosition.x, y: this.headPosition.y} = pos);
+    }//updateHeadPosition
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
@@ -82,6 +91,12 @@ class _NetworkLink extends NetworkElement {
         }//if
         return str;
     }//toString
+
+    public get isLoopback() {
+        const n = this.vertices.length - 1;
+        return this.vertices[0].isConnected && this.vertices[n].isConnected && 
+            this.vertices[0].anchor.conn!.component === this.vertices[n].anchor.conn!.component;
+    }//isLoopback
 
     public selectLink(this: NetworkLink)
     {
