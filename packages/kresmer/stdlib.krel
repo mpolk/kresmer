@@ -451,7 +451,7 @@
         <style>
             .link {stroke: #3a5e69;}
             .padding {stroke-width: 8px;}
-            .segment {stroke-width: 4px;}
+            .segment {stroke-width: 4px; stroke-linejoin: round;}
             .segment.highlighted {stroke: #225767; stroke-width: 5px}
             .segment.selected {stroke: #225767; stroke-width: 6px}
             .vertex {stroke: #225767; stroke-width: 4px; fill: white; r: 6px}

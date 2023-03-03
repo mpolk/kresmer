@@ -48,7 +48,11 @@
         return {
             cursor: props.model.isSelected ? "default" : "pointer",
         }
-    })//segmentClass
+    })//segmentStyle
+
+    const vertices = computed(() => {
+        return props.model.vertices.map(vertex => `${vertex.coords.x},${vertex.coords.y}`).join(" ");
+    })//vertices
 </script>
 
 <template>
@@ -56,6 +60,7 @@
         @mouseenter="isHighlighted = true"
         @mouseleave="isHighlighted = false"
         >
+        <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
         <template v-for="(vertex, i) in props.model.vertices" :key="`segment${i}`">
             <template v-if="i">
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
@@ -66,17 +71,10 @@
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
                     :style="segmentStyle"
                     />
-                <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
-                    :x2="vertex.coords.x" :y2="vertex.coords.y" 
-                    :class="segmentClass" style="fill: none;" :style="segmentStyle"
-                    @click.self="model.onClick(i - 1, $event)"
-                    @contextmenu.self="model.onRightClick(i - 1, $event)"
-                    @dblclick.self="model.onDoubleClick(i - 1, $event)"
-                    />
             </template>
         </template>
-            <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
-                <link-vertex-vue :model="vertex"/>
-            </template>
+        <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
+            <link-vertex-vue :model="vertex"/>
+        </template>
     </g>
 </template>
