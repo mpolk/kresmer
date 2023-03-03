@@ -114,9 +114,7 @@
 
 <style lang="scss">
     .connected {
-        opacity: 0.5;
-        filter: invert(100%);
-
+        opacity: 0.1;
         &:hover {
             opacity: 0.9;
         }
