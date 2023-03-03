@@ -18,7 +18,7 @@
         x: {type: Number, default: 0}, 
         y: {type: Number, default: 0}, 
         d: {type: Number, default: 0}, 
-        dir: {type: Number, default: 90},
+        dir: {type: [Number, String], default: 90},
     });
 
     const component = inject(NetworkComponent.injectionKey)!;

@@ -26,7 +26,7 @@
     </component>
 
     <component class="Switch" name="dru-metro">
-        <origin x="105" y="585"/>
+        <origin x="193.06657992473137" y="576.8707772377171"/>
         <props>
             <prop name="height">50</prop>
             <prop name="perspective">left</prop>
@@ -35,7 +35,7 @@
 
     <link class="twisted-pair" from="core:1:1" to="dru-core:1">
         <vertex x="176" y="312.4542482115801"/>
-        <vertex x="-21.388652558643642" y="312.4542482115801"/>
+        <vertex x="35.515906777336625" y="296.1958026870143"/>
         <vertex x="30.83896368304386" y="370.3906211022336"/>
     </link>
 
