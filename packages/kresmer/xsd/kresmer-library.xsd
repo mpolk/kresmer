@@ -143,6 +143,7 @@
                     <xs:complexType>
                         <xs:group ref="svg-elements"></xs:group>
                         <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>
                     </xs:complexType>

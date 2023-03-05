@@ -2,61 +2,36 @@
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="network-core" width="1000" height="1000">
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
-        <origin x="141" y="117"/>
+        <origin x="138.50647674322204" y="178.09131979106093"/>
         <props>
             <prop name="n-slots">2</prop>
             <prop name="height">75</prop>
         </props>
     </component>
 
-    <component class="ExtremeSwitch" name="metro" db-id="1697">
-        <origin x="59" y="392"/>
+    <component class="Extreme-X670-48x-Stack" name="metro" db-id="1697">
+        <origin x="21.597151148329942" y="501.71502329823187"/>
         <props>
-            <prop name="height">50</prop>
-            <prop name="perspective">none</prop>
+            <prop name="height">75</prop>
+            <prop name="perspective">center</prop>
+            <prop name="n-slots">2</prop>
         </props>
     </component>
-
-    <component class="Catalyst" name="dru-core">
-        <origin x="539" y="427"/>
-        <props>
-            <prop name="height">50</prop>
-            <prop name="perspective">right</prop>
-        </props>
-    </component>
-
-    <component class="Switch" name="dru-metro">
-        <origin x="193" y="576"/>
-        <props>
-            <prop name="height">50</prop>
-            <prop name="perspective">left</prop>
-        </props>
-    </component>
-
-    <link class="twisted-pair" from="core:1:1" to="dru-core:1">
-        <vertex x="176" y="312.4542482115801"/>
-        <vertex x="35.515906777336625" y="296.1958026870143"/>
-        <vertex x="30.83896368304386" y="370.3906211022336"/>
-    </link>
-
-    <link class="twisted-pair" from="core:1:2" to="dru-core:2"/>
-
-    <link class="twisted-pair" from="core:1:3" to="dru-core:3"/>
-
-    <link class="twisted-pair" name="core-metro-1" from="core:2:4" to="metro:1"/>
-
-    <link class="twisted-pair" name="core-metro-2" from="core:2:5" to="metro:2"/>
-
-    <link class="twisted-pair" name="core-metro-3" from="core:2:6" to="metro:3"/>
 
     <link class="AOC" from="core:2:26" to="core:1:27">
-        <vertex x="853.7443644885985" y="215.4244032004967"/>
-        <vertex x="853.7443644885985" y="169.25"/>
+        <vertex x="851.250834215161" y="276.5157270530358"/>
+        <vertex x="851.250834215161" y="230.34132385253906"/>
     </link>
 
     <link class="AOC" from="core:1:26" to="core:2:27">
-        <vertex x="881.6641868239418" y="140.75"/>
-        <vertex x="881.6641868239418" y="244.25"/>
+        <vertex x="879.1706565505043" y="201.84132385253906"/>
+        <vertex x="879.1706565505043" y="305.34132385253906"/>
+    </link>
+
+    <link class="twisted-pair" from="core:2:2" to="metro:1:12">
+        <vertex x="188.5064697265625" y="345.35297106375265"/>
+        <vertex x="240.15544220889194" y="345.35297106375265"/>
+        <vertex x="240.15544220889194" y="553.5621630047154"/>
     </link>
 
 </kresmer-drawing>
