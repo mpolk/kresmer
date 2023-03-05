@@ -297,6 +297,24 @@
         </computed-props>
     </component-class>
 
+    <component-class name="SwitchStackSlotBadge">
+        <template>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
+                class="slot-badge" />
+            <text v-bind:x="width/2" v-bind:y="height*0.75" v-bind:font-size="height*0.75"
+                text-anchor="middle" class="slot-badge-text">{{slot}}</text>
+        </template>
+        <style>
+            .slot-badge { fill: lightgray; rx: 3px; stroke: white; stroke-width: 2px}
+            .slot-badge-text { font-family: sans-serif; fill: black; vertical-align: middle;}
+        </style>
+        <props>
+            <prop name="slot" type="Number" required="true" />
+            <prop name="width" type="Number" required="true" />
+            <prop name="height" type="Number" required="true" />
+        </props>
+    </component-class>
+
     <component-class name="Switch">
         <template>
             <Kre:SwitchBody v-bind:width="width" v-bind:height="height"
@@ -339,8 +357,8 @@
     <component-class name="ExtremeSwitchStack">
         <template/>
         <style>
-            .slot-badge rect { fill: #7e0133; rx: 4; stroke: white; stroke-width: 1; stroke-opacity: 0.75;}
-            .slot-badge text { fill: #fff394; font-family: sans-serif;}
+            .slot-badge { fill: #7e0133; stroke: #e0d900; }
+            .slot-badge-text { fill: white; }
         </style>
     </component-class>
 
@@ -385,14 +403,8 @@
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                                    v-bind:n-slots="nSlots" v-bind:perspective="perspective" />
             <template v-for="slot in nSlots">
-                <g class="slot-badge">
-                    <rect v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
-                        v-bind:width = "height*0.25" v-bind:height = "height*0.25"
-                        />
-                    <text v-bind:x="height*0.15" v-bind:y="height*(-0.68 + slot)" v-bind:font-size="height*0.25">
-                        {{slot}}
-                    </text>
-                </g>
+                <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
+                    v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <template v-for="i in 12">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" dir="left" />
@@ -404,7 +416,7 @@
                 <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" dir="right" />
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, ExtremeSwitchStack"/>
+        <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
         <props>
             <prop name="height" type="Number" required="true" default="75"/>
             <prop name="width" type="Number"/>
@@ -441,14 +453,8 @@
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                                    v-bind:n-slots="nSlots" v-bind:perspective="perspective" />
             <template v-for="slot in nSlots">
-                <g class="slot-badge">
-                    <rect v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
-                        v-bind:width = "height*0.25" v-bind:height = "height*0.25"
-                        />
-                    <text v-bind:x="height*0.15" v-bind:y="height*(-0.68 + slot)" v-bind:font-size="height*0.25">
-                        {{slot}}
-                    </text>
-                </g>
+                <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
+                    v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <template v-for="i in 24">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" dir="left" />
@@ -457,7 +463,7 @@
                 </template>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, ExtremeSwitchStack"/>
+        <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
         <props>
             <prop name="height" type="Number" required="true" default="75"/>
             <prop name="width" type="Number"/>

@@ -2,7 +2,7 @@
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="network-core" width="1000" height="1000">
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
-        <origin x="138.50647674322204" y="178.09131979106093"/>
+        <origin x="138" y="178"/>
         <props>
             <prop name="n-slots">2</prop>
             <prop name="height">75</prop>
@@ -10,7 +10,7 @@
     </component>
 
     <component class="Extreme-X670-48x-Stack" name="metro" db-id="1697">
-        <origin x="21.597151148329942" y="501.71502329823187"/>
+        <origin x="21" y="501"/>
         <props>
             <prop name="height">75</prop>
             <prop name="perspective">center</prop>
@@ -30,7 +30,7 @@
 
     <link class="twisted-pair" from="core:2:2" to="metro:1:12">
         <vertex x="188.5064697265625" y="345.35297106375265"/>
-        <vertex x="240.15544220889194" y="345.35297106375265"/>
+        <vertex x="240.15544220889194" y="484.9902734433205"/>
         <vertex x="240.15544220889194" y="553.5621630047154"/>
     </link>
 
