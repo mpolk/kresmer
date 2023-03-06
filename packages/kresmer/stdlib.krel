@@ -238,7 +238,7 @@
             <line v-for="i in nSlots-1" x1="0" v-bind:y1="i*height"
                 v-bind:x2="width" v-bind:y2="i*height" class="slot-boundary" />
             <g
-                v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-1.4*height})`">
+                v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*height})`">
                 <polyline
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
                                                            ([0,0], [0,1], [1,1], [1,0]))"
@@ -248,24 +248,28 @@
                     class="facet" />
             </g>
             <g v-if="perspective === 'right'"
-                v-bind:transform="`scale(${width} ${-1.4*height}) skewX(20)`">
+                v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
                 <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
             </g>
-            <rect
-                v-if="perspective === 'right'" v-bind:x="width" y="0"
-                v-bind:width="height*2.26" v-bind:height="height"
-                class="side facet" transform="skewY(-32)" v-bind:transform-origin="`${width} 0`" />
+            <polygon
+                v-if="perspective === 'right'"
+                v-bind:points="`${width},0 ${width},${height*nSlots} 
+                                ${width+height*topFacetSize*1.732},${height*(nSlots - topFacetSize*1.2)} 
+                                ${width+height*topFacetSize*1.732},${-height*topFacetSize}`"
+                class="side facet" />
             <g
                 v-if="perspective === 'left'"
-                v-bind:transform="`scale(${width} ${-1.4*height}) skewX(-20)`">
+                v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
                 <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
             </g>
-            <rect
-                v-if="perspective === 'left'" v-bind:x="-height*2.26" y="0"
-                v-bind:width="height*2.26"
-                v-bind:height="height" class="side facet" transform="skewY(32)" />
+            <polygon
+                v-if="perspective === 'left'"
+                v-bind:points="`0,0 0,${height*nSlots} 
+                                ${-height*topFacetSize*1.732},${height*(nSlots - topFacetSize*1.2)} 
+                                ${-height*topFacetSize*1.732},${-height*topFacetSize}`"
+                class="side facet" />
             <text
                 v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="height*0.75"
                 text-anchor="middle" class="switch-name"
@@ -285,14 +289,17 @@
             <prop name="height" type="Number" required="true" default="50" />
             <prop name="width" type="Number" required="true" default="312.5" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
+            <prop name="top-facet-size" type="Number" default="1.4" />
+            <prop name="top-facet-skew" type="Number" default="60" />
         </props>
         <computed-props>
-            <computed-prop name="nameX">props.perspective === 'right' ? props.width*0.7 :
-                                        props.perspective === 'left' ? props.width*0.3 :
-                                        props.width*0.5
+            <computed-prop name="nameX">
+                props.perspective === 'right' ? props.width*0.7 :
+                props.perspective === 'left' ? props.width*0.3 :
+                props.width*0.5
             </computed-prop>
             <computed-prop name="nameY">
-                props.perspective === "none" ? -props.height*0.3 : -props.height*0.55
+                props.perspective === "none" ? -props.height*0.3 : -props.height*props.topFacetSize*0.393
             </computed-prop>
         </computed-props>
     </component-class>
@@ -338,7 +345,8 @@
     <component-class name="ExtremeSwitchBody">
         <template>
             <Kre:SwitchBody v-bind:name="name" v-bind:width="width" v-bind:height="height"
-                            v-bind:n-slots="nSlots" v-bind:perspective="perspective" />
+                            v-bind:n-slots="nSlots" v-bind:top-facet-size="topFacetSize" 
+                            v-bind:perspective="perspective" />
         </template>
         <style extends="SwitchBody">
             .switch-name { fill: white; text-shadow: 3px 3px 3px black; }
@@ -351,6 +359,7 @@
             <prop name="n-slots" type="Number" default="1" />
             <prop name="height" type="Number" required="true" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
+            <prop name="top-facet-size" type="Number" default="1.4" />
         </props>
     </component-class>
 
@@ -401,7 +410,8 @@
     <component-class name="Extreme-X590-24x-Stack">
         <template>
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
-                                   v-bind:n-slots="nSlots" v-bind:perspective="perspective" />
+                                   v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
+                                   v-bind:perspective="perspective" />
             <template v-for="slot in nSlots">
                 <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
