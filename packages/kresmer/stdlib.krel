@@ -255,8 +255,8 @@
             <polygon
                 v-if="perspective === 'right'"
                 v-bind:points="`${width},0 ${width},${height*nSlots} 
-                                ${width+height*topFacetSize*1.732},${height*(nSlots - topFacetSize*1.2)} 
-                                ${width+height*topFacetSize*1.732},${-height*topFacetSize}`"
+                                ${width+topFacetSkewShift},${height*(nSlots - topFacetSize*1.2)} 
+                                ${width+topFacetSkewShift},${-height*topFacetSize}`"
                 class="side facet" />
             <g
                 v-if="perspective === 'left'"
@@ -267,8 +267,8 @@
             <polygon
                 v-if="perspective === 'left'"
                 v-bind:points="`0,0 0,${height*nSlots} 
-                                ${-height*topFacetSize*1.732},${height*(nSlots - topFacetSize*1.2)} 
-                                ${-height*topFacetSize*1.732},${-height*topFacetSize}`"
+                                ${-topFacetSkewShift},${height*(nSlots - topFacetSize*1.2)} 
+                                ${-topFacetSkewShift},${-height*topFacetSize}`"
                 class="side facet" />
             <text
                 v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="height*0.75"
@@ -293,9 +293,12 @@
             <prop name="top-facet-skew" type="Number" default="60" />
         </props>
         <computed-props>
+            <computed-prop name="topFacetSkewShift">
+                props.height * props.topFacetSize * Math.tan(props.topFacetSkew * Math.PI/180)
+            </computed-prop>
             <computed-prop name="nameX">
-                props.perspective === 'right' ? props.width*0.7 :
-                props.perspective === 'left' ? props.width*0.3 :
+                props.perspective === 'right' ? props.width/2 + computedProps.topFacetSkewShift*0.393 :
+                props.perspective === 'left' ? props.width/2 - computedProps.topFacetSkewShift*0.393 :
                 props.width*0.5
             </computed-prop>
             <computed-prop name="nameY">
@@ -387,7 +390,7 @@
     <component-class name="Extreme-X590-24x">
         <template>
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                                   v-bind:perspective="perspective" />
+                                   v-bind:top-facet-size="1" v-bind:perspective="perspective" />
             <template v-for="i in 12">
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1" dir="left" />
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
@@ -441,7 +444,7 @@
     <component-class name="Extreme-X670-48x">
         <template>
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                                   v-bind:perspective="perspective" />
+                                   v-bind:top-facet-size="1" v-bind:perspective="perspective" />
             <template v-for="i in 24">
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1" dir="left" />
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
@@ -461,7 +464,8 @@
     <component-class name="Extreme-X670-48x-Stack">
         <template>
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
-                                   v-bind:n-slots="nSlots" v-bind:perspective="perspective" />
+                                   v-bind:top-facet-size="1" v-bind:n-slots="nSlots" 
+                                   v-bind:perspective="perspective" />
             <template v-for="slot in nSlots">
                 <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />

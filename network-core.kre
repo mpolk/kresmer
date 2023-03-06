@@ -6,7 +6,7 @@
         <props>
             <prop name="n-slots">2</prop>
             <prop name="height">75</prop>
-            <prop name="perspective">right</prop>
+            <prop name="perspective">center</prop>
         </props>
     </component>
 
