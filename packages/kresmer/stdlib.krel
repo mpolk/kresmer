@@ -471,9 +471,9 @@
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <template v-for="i in 24">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
-                        v-bind:name="`${slot}:${i*2-1}`" v-bind:dir="i &lt; 47 ? 'left' : 'right'" />
+                        v-bind:name="`${slot}:${i*2-1}`" v-bind:dir="i &lt; 24 ? 'left' : 'right'" />
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
-                        v-bind:name="`${slot}:${i*2}`"  v-bind:dir="i &lt; 47 ? 'down' : 'right'"/>
+                        v-bind:name="`${slot}:${i*2}`"  v-bind:dir="slot &lt; nSlots ? 'left' : i &lt; 24 ? 'down' : 'right'"/>
                 </template>
             </template>
         </template>
@@ -528,12 +528,12 @@
     <!-- Various link types -->
     <link-class name="twisted-pair" type="copper">
         <style>
-            .link {stroke: #8c8c8c;}
+            .link {stroke: #3b3b3b;}
             .padding {stroke-width: 8px;}
-            .segment {stroke-width: 2px;}
-            .segment.highlighted {stroke: #525440; stroke-width: 3px}
-            .segment.selected {stroke: #525440; stroke-width: 4px}
-            .vertex {stroke: #525440; stroke-width: 4px; fill: white; r: 6px}
+            .segment {stroke-width: 3px;}
+            .segment.highlighted {stroke: black; stroke-width: 4px}
+            .segment.selected {stroke: black; stroke-width: 5px}
+            .vertex {stroke: black; stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
         </style>

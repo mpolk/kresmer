@@ -11,7 +11,7 @@
     </component>
 
     <component class="Extreme-X670-48x-Stack" name="metro" db-id="1697">
-        <origin x="20.24676162838898" y="497"/>
+        <origin x="20" y="497"/>
         <props>
             <prop name="height">75</prop>
             <prop name="perspective">center</prop>
@@ -20,23 +20,29 @@
     </component>
 
     <link class="AOC" from="core:2:26" to="core:1:27">
-        <vertex x="851.250834215161" y="276.5157270530358"/>
-        <vertex x="851.250834215161" y="230.34132385253906"/>
+        <vertex x="841.2767411880491" y="276.75"/>
+        <vertex x="841.2767411880491" y="230.25"/>
     </link>
 
     <link class="AOC" from="core:1:26" to="core:2:27">
-        <vertex x="879.1706565505043" y="201.84132385253906"/>
-        <vertex x="879.1706565505043" y="305.34132385253906"/>
+        <vertex x="866.7030402666143" y="201.75"/>
+        <vertex x="866.7030402666143" y="305.25"/>
     </link>
 
     <link class="twisted-pair" from="core:2:2" to="metro:1:12">
         <vertex x="188.5064697265625" y="345.35297106375265"/>
         <vertex x="240.15544220889194" y="484.9902734433205"/>
-        <vertex x="240.15544220889194" y="553.5621630047154"/>
+        <vertex x="240.15544220889194" y="549.25"/>
     </link>
 
     <link class="AOC" from="metro:1:47" to="metro:2:48">
-        <vertex x="930.7156599617217" y="564.7830176602164"/>
+        <vertex x="994.0576416849411" y="520.75"/>
+        <vertex x="994.0576416849411" y="624.25"/>
+    </link>
+
+    <link class="AOC" from="metro:1:48" to="metro:2:47">
+        <vertex x="972.8626940023282" y="549.25"/>
+        <vertex x="972.8626940023282" y="595.75"/>
     </link>
 
 </kresmer-drawing>
