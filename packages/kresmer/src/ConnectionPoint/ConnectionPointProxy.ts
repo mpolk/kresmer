@@ -8,7 +8,7 @@
  * the Connection Point from outside of the Vue component hierarchy
 \****************************************************************************/
 
-import { reactive, ref } from "vue";
+import { nextTick, reactive, ref } from "vue";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import { Position } from "../Transform/Transform";
 
@@ -40,12 +40,17 @@ export default class ConnectionPointProxy {
     /** Absolute coordinates of the connection point */
     readonly coords = reactive<Position>({x: 0, y: 0});
 
+    private _isPositioned = false;
+    /** Indicates if the connection point is already positioned on the canvas */
+    get isPositioned() { return this._isPositioned; }
+
     /** The setter for the coords property - 
      * the vue-component calls it when the connection point position is updated */
     _setPos(coords: Position, dir: number)
     {
         ({x: this.coords.x, y: this.coords.y} = coords);
         this.dir = dir;
+        nextTick(() => {this._isPositioned = true;});
     }//_setPos
 
     /** A trigger variable that signals the vue-component that it should refresh coords */

@@ -65,16 +65,14 @@
     }//onDoubleClick
 
     watch(props.model.coords, (newCoords) => {
-        if (props.model.link.isLoopback && props.model.isHead) {
-            props.model.link.updateHeadPosition(newCoords);
+        if (props.model.link.isLoopback && props.model.isHead && props.model.anchor.conn!.isPositioned) {
+            props.model.link._onHeadMovement(newCoords);
         }//if
     } , {deep: true});
 
-    watch(() => props.model.link.headPosition, () => {
+    watch(() => props.model.link.headMove, () => {
         if (!props.model.isHead && !props.model.isTail && props.model.link.isLoopback) {
-            const delta = {x: props.model.link.headPosition.x - props.model.link.prevHeadPosition.x,
-                           y: props.model.link.headPosition.y - props.model.link.prevHeadPosition.y};
-            props.model.moveBy(delta);
+            props.model.moveBy(props.model.link.headMove);
         }//if
     }, {deep: true});
     

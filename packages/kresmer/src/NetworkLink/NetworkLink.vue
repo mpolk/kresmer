@@ -51,7 +51,9 @@
     })//segmentStyle
 
     const vertices = computed(() => {
-        return props.model.vertices.map(vertex => `${vertex.coords.x},${vertex.coords.y}`).join(" ");
+        const vcoords = props.model.vertices.map(vertex => `${vertex.coords.x},${vertex.coords.y}`).join(" ");
+        // console.log(`link-id: ${props.model.id} vertices: ${vcoords}`);
+        return vcoords;
     })//vertices
 </script>
 

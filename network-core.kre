@@ -11,7 +11,7 @@
     </component>
 
     <component class="Extreme-X670-48x-Stack" name="metro" db-id="1697">
-        <origin x="21" y="501"/>
+        <origin x="20.24676162838898" y="497"/>
         <props>
             <prop name="height">75</prop>
             <prop name="perspective">center</prop>
@@ -33,6 +33,10 @@
         <vertex x="188.5064697265625" y="345.35297106375265"/>
         <vertex x="240.15544220889194" y="484.9902734433205"/>
         <vertex x="240.15544220889194" y="553.5621630047154"/>
+    </link>
+
+    <link class="AOC" from="metro:1:47" to="metro:2:48">
+        <vertex x="930.7156599617217" y="564.7830176602164"/>
     </link>
 
 </kresmer-drawing>

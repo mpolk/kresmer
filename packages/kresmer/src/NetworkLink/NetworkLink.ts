@@ -41,39 +41,35 @@ class _NetworkLink extends NetworkElement {
         }
     ) {
         super(kresmer, _class instanceof NetworkLinkClass ? _class : NetworkLinkClass.getClass(_class), args);
-        (this as unknown as NetworkLink).constructVertices(args?.from, args?.to, args?.vertices);
-    }//ctor
-
-    private constructVertices(
-        this: NetworkLink,
-        from?: LinkVertexInitParams,
-        to?: LinkVertexInitParams,
-        vertices?: LinkVertexInitParams[],
-    ) {
+        const _this = this as unknown as NetworkLink;
         let i = 0;
-        this.vertices.push(new LinkVertex(this, i++, from));
-        vertices?.forEach(initParams => this.vertices.push(new LinkVertex(this, i++, initParams)));
-        this.vertices.push(new LinkVertex(this, i++, to));
-    }//constructVertices
+        this.vertices.push(new LinkVertex(_this, i++, args?.from));
+        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(_this, i++, initParams)));
+        this.vertices.push(new LinkVertex(_this, i++, args?.to));
+    }//ctor
 
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
-    headPosition: Position = {x: 0, y: 0};
-    prevHeadPosition: Position = {x: 0, y: 0};
 
     readonly initVertices = () => {
         if (!this.verticesInitialized) {
             this.vertices.forEach(vertex => vertex.init());
-            ({x: this.headPosition.x, y: this.headPosition.y} = this.vertices[0].coords);
-            ({x: this.prevHeadPosition.x, y: this.prevHeadPosition.y} = this.headPosition);
+            this.headPosition = this.vertices[0].coords;
             this.verticesInitialized = true;
         }//if
     }//initVertices
 
-    public updateHeadPosition(pos: Position) {
-        ({x: this.prevHeadPosition.x, y: this.prevHeadPosition.y} = this.headPosition);
-        ({x: this.headPosition.x, y: this.headPosition.y} = pos);
-    }//updateHeadPosition
+    private headPosition: Position = {x: 0, y: 0}; 
+    private prevHeadPosition: Position = {x: 0, y: 0};
+    public headMove = {x: 0, y: 0, trigger: 0};
+
+    public _onHeadMovement(newHeadPosition: Position) {
+        this.prevHeadPosition = this.headPosition;
+        this.headPosition = {...newHeadPosition};
+        this.headMove.x = this.headPosition.x - this.prevHeadPosition.x;
+        this.headMove.y = this.headPosition.y - this.prevHeadPosition.y;
+        this.headMove.trigger++;
+    }//_onHeadMovement
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
