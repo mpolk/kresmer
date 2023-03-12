@@ -63,13 +63,13 @@ class _NetworkLink extends NetworkElement {
     private prevHeadPosition: Position = {x: 0, y: 0};
     public headMove = {x: 0, y: 0, trigger: 0};
 
-    public _onHeadMovement(newHeadPosition: Position) {
+    public _trackHead(newHeadPosition: Position) {
         this.prevHeadPosition = this.headPosition;
         this.headPosition = {...newHeadPosition};
         this.headMove.x = this.headPosition.x - this.prevHeadPosition.x;
         this.headMove.y = this.headPosition.y - this.prevHeadPosition.y;
         this.headMove.trigger++;
-    }//_onHeadMovement
+    }//_trackHead
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;

@@ -13,7 +13,7 @@ const kresmer = new Kresmer('#kresmer');
 async function init() {
     const stdlib = await (await fetch("stdlib.krel")).text();
     kresmer.loadLibrary(stdlib!);
-    const autoload = await (await fetch("autoload.kre")).text();
+    const autoload = await (await fetch("network-core.kre")).text();
     kresmer.loadDrawing(autoload!);
 
     kresmer

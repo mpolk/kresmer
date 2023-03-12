@@ -64,17 +64,19 @@
         props.model.align();
     }//onDoubleClick
 
-    watch(props.model.coords, (newCoords) => {
-        if (props.model.link.isLoopback && props.model.isHead && props.model.anchor.conn!.isPositioned) {
-            props.model.link._onHeadMovement(newCoords);
-        }//if
-    } , {deep: true});
+    if (props.model.link.isLoopback && props.model.isHead) {
+        watch(props.model.coords, (newCoords) => {
+            if (props.model.anchor.conn!.isPositioned) {
+                props.model.link._trackHead(newCoords);
+            }//if
+        } , {deep: true});
+    }//if
 
-    watch(() => props.model.link.headMove, () => {
-        if (!props.model.isHead && !props.model.isTail && props.model.link.isLoopback) {
+    if (!props.model.isHead && !props.model.isTail && props.model.link.isLoopback) {
+        watch(props.model.link.headMove, () => {
             props.model.moveBy(props.model.link.headMove);
-        }//if
-    }, {deep: true});
+        }, {deep: true});
+    }//if
     
 </script>
 

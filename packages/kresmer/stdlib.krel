@@ -151,12 +151,6 @@
     <component-class name="Port">
         <template>
             <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
-            <polyline
-                class="port-icon bottom"
-                v-bind:points="`0,${h} ${w*0.15},${h*0.75} ${w*0.85},${h*0.75} ${w},${h}`" />
-            <rect
-                class="port-icon far-end" v-bind:x="w*0.15" v-bind:y="h*0.05"
-                v-bind:width="w*0.7" v-bind:height="h*0.7" />
             <slot />
             <text v-bind:x="w/2"
                 v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="h*0.8"
@@ -167,8 +161,6 @@
         <style>
             .port-name {font-family: sans-serif; fill: white;}
             .port-icon.body {stroke: white;}
-            .port-icon.bottom {filter: brightness(1.4)}
-            .port-icon.far-end {filter: brightness(0.7)}
         </style>
         <props>
             <prop name="w" type="Number" required="true" default="25" />
