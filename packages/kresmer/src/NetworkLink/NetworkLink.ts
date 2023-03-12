@@ -59,9 +59,21 @@ class _NetworkLink extends NetworkElement {
         }//if
     }//initVertices
 
+    get head() {
+        return this.vertices[0];
+    }//head
+
     private headPosition: Position = {x: 0, y: 0}; 
     private prevHeadPosition: Position = {x: 0, y: 0};
     public headMove = {x: 0, y: 0, trigger: 0};
+
+    public _onHeadPositioning() {
+        this.vertices.forEach(vertex => {
+            if (!vertex.isConnected) {
+                vertex.fixRelativePosition();
+            }//if
+        })//forEach
+    }//_onHeadPositioning
 
     public _trackHead(newHeadPosition: Position) {
         this.prevHeadPosition = this.headPosition;

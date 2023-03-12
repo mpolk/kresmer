@@ -26,6 +26,8 @@ export default class LinkVertex {
 
     public isGoingToBeDragged = false;
     public isDragged = false;
+    public dontTrackHead = false;
+    private posRelativeToHead: Position = {x: 0, y: 0};
     private dragStartPos?: Position;
     private savedMousePos?: Position;
 
@@ -97,8 +99,16 @@ export default class LinkVertex {
     pinUp(pos: Position)
     {
         this.pos = {...pos};
+        const headCoords = this.link.head.coords;
+        this.posRelativeToHead = {x: pos.x - headCoords.x, y: pos.y - headCoords.y};
         this.conn = undefined;
     }//pinUp
+
+    fixRelativePosition()
+    {
+        const headCoords = this.link.head.coords;
+        this.posRelativeToHead = {x: this.pos!.x - headCoords.x, y: this.pos!.y - headCoords.y};
+    }//fixRelativePosition
 
     connect(connectionPoint: ConnectionPointProxy)
     {
@@ -110,6 +120,9 @@ export default class LinkVertex {
     {
         if (this.conn) {
             return this.conn.coords;
+        } else if (!this.dontTrackHead && this.link.isLoopback) {
+            const headCoords = this.link.head.coords;
+            return {x: headCoords.x + this.posRelativeToHead.x, y: headCoords.y + this.posRelativeToHead.y};
         } else if (this.pos) {
             return this.pos;
         } else {
