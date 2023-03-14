@@ -18,16 +18,30 @@ export default class LinkVertex {
 
     constructor(public link: NetworkLink, public vertexNumber: number, public initParams?: LinkVertexInitParams) {}
 
-    get isConnected() {return Boolean(this.conn);}
-
     private pos?: Position;
-    private conn?: ConnectionPointProxy; 
+    private conn?: ConnectionPointProxy;
+
+    // This "manual" setter is used to adjust other vertices positioning mode accordingly 
+    // to the link's loopback mode
+    private setConn(value: ConnectionPointProxy|undefined) {
+        if (this.conn !== value) {
+            if (!this.isHead && !this.isTail || this.initParams) {
+                this.conn = value;
+            } else {
+                const wasLoopback = this.link.isLoopback;
+                this.conn = value;
+                if (wasLoopback !== this.link.isLoopback) {
+                    this.link.toggleVertexPositioningMode(this);
+                }//if
+            }//if
+        }//if
+    }//setConn
+    
     private savedConn?: ConnectionPointProxy;
+    get isConnected() {return Boolean(this.conn);}
 
     public isGoingToBeDragged = false;
     public isDragged = false;
-    public dontTrackHead = false;
-    private posRelativeToHead: Position = {x: 0, y: 0};
     private dragStartPos?: Position;
     private savedMousePos?: Position;
 
@@ -99,20 +113,13 @@ export default class LinkVertex {
     pinUp(pos: Position)
     {
         this.pos = {...pos};
-        const headCoords = this.link.head.coords;
-        this.posRelativeToHead = {x: pos.x - headCoords.x, y: pos.y - headCoords.y};
-        this.conn = undefined;
+        this.setConn(undefined);
     }//pinUp
 
-    fixRelativePosition()
-    {
-        const headCoords = this.link.head.coords;
-        this.posRelativeToHead = {x: this.pos!.x - headCoords.x, y: this.pos!.y - headCoords.y};
-    }//fixRelativePosition
 
     connect(connectionPoint: ConnectionPointProxy)
     {
-        this.conn = connectionPoint;
+        this.setConn(connectionPoint);
         this.pos = undefined;
     }//connect
 
@@ -120,9 +127,9 @@ export default class LinkVertex {
     {
         if (this.conn) {
             return this.conn.coords;
-        } else if (!this.dontTrackHead && this.link.isLoopback) {
+        } else if (this.pos && this.link.isLoopback) {
             const headCoords = this.link.head.coords;
-            return {x: headCoords.x + this.posRelativeToHead.x, y: headCoords.y + this.posRelativeToHead.y};
+            return {x: headCoords.x + this.pos.x, y: headCoords.y + this.pos.y};
         } else if (this.pos) {
             return this.pos;
         } else {
@@ -141,7 +148,7 @@ export default class LinkVertex {
     set anchor(newPos: LinkVertexAnchor)
     {
         this.pos = newPos.pos;
-        this.conn = newPos.conn;
+        this.setConn(newPos.conn);
     }//set anchor
 
     public moveBy(delta: Shift)
@@ -161,6 +168,9 @@ export default class LinkVertex {
     public startDrag(event: MouseEvent)
     {
         this.dragStartPos = {...this.coords};
+        if (this.link.isLoopback && !this.isConnected) {
+            this.dragStartPos = this.link.absPosToRel(this.dragStartPos);
+        }//if
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
         this.link.kresmer.deselectAllElements(this.link);
@@ -176,7 +186,7 @@ export default class LinkVertex {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
             this.savedConn = this.conn;
-            this.conn = undefined;
+            this.pinUp(this.coords);
         } else if (!this.isDragged) {
             return false;
         }//if
@@ -251,7 +261,7 @@ export default class LinkVertex {
         const sucPos = successor.coords;
 
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
-        const newPos = 
+        let newPos = 
             (predecessor.isConnected && predecessor.isEndpoint && (!successor.isConnected || !successor.isEndpoint)) ?
             this.alignBetweenConnectionAndPosition(predecessor, successor) :
             (successor.isConnected && successor.isEndpoint && (!predecessor.isConnected || !predecessor.isEndpoint)) ?
@@ -278,6 +288,9 @@ export default class LinkVertex {
         }//if
 
         if (shouldMove) {
+            if (this.link.isLoopback) {
+                newPos = this.link.absPosToRel(newPos!);
+            }//if
             this.pinUp(newPos!);
             this.link.kresmer.undoStack.commitOperation();
             this.link.kresmer.emit("link-vertex-moved", this);

@@ -54,7 +54,6 @@ class _NetworkLink extends NetworkElement {
     readonly initVertices = () => {
         if (!this.verticesInitialized) {
             this.vertices.forEach(vertex => vertex.init());
-            this.headPosition = this.vertices[0].coords;
             this.verticesInitialized = true;
         }//if
     }//initVertices
@@ -63,25 +62,15 @@ class _NetworkLink extends NetworkElement {
         return this.vertices[0];
     }//head
 
-    private headPosition: Position = {x: 0, y: 0}; 
-    private prevHeadPosition: Position = {x: 0, y: 0};
-    public headMove = {x: 0, y: 0, trigger: 0};
-
-    public _onHeadPositioning() {
+    public toggleVertexPositioningMode(except: LinkVertex)
+    {
+        const conversion = (this.isLoopback ? this.absPosToRel : this.relPosToAbs).bind(this);
         this.vertices.forEach(vertex => {
-            if (!vertex.isConnected) {
-                vertex.fixRelativePosition();
+            if (!vertex.isConnected && vertex !== except) {
+                vertex.pinUp(conversion(vertex.anchor.pos!));
             }//if
-        })//forEach
-    }//_onHeadPositioning
-
-    public _trackHead(newHeadPosition: Position) {
-        this.prevHeadPosition = this.headPosition;
-        this.headPosition = {...newHeadPosition};
-        this.headMove.x = this.headPosition.x - this.prevHeadPosition.x;
-        this.headMove.y = this.headPosition.y - this.prevHeadPosition.y;
-        this.headMove.trigger++;
-    }//_trackHead
+        });
+    }//toggleVertexPositioningMode
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
@@ -114,12 +103,30 @@ class _NetworkLink extends NetworkElement {
         }//if
     }//selectComponent
 
+    public absPosToRel(absPos: Position): Position
+    {
+        return {
+            x: absPos.x - this.head.coords.x,
+            y: absPos.y - this.head.coords.y,
+        }
+    }//absPosToRel
+
+    public relPosToAbs(absPos: Position): Position
+    {
+        return {
+            x: absPos.x + this.head.coords.x,
+            y: absPos.y + this.head.coords.y,
+        }
+    }//relPosToAbs
 
     public addVertex(this: NetworkLink, segmentNumber: number, mousePos: Position)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
         const vertexNumber = segmentNumber + 1;
-        const pos = this.kresmer.applyScreenCTM(mousePos);
+        let pos = this.kresmer.applyScreenCTM(mousePos);
+        if (this.isLoopback) {
+            pos = this.absPosToRel(pos);
+        }//if
         const vertex = new LinkVertex(this, vertexNumber, {pos}).init();
         this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
         return vertex;

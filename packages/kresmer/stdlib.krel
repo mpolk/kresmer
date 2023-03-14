@@ -465,7 +465,7 @@
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" v-bind:dir="i &lt; 24 ? 'left' : 'right'" />
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
-                        v-bind:name="`${slot}:${i*2}`"  v-bind:dir="slot &lt; nSlots ? 'left' : i &lt; 24 ? 'down' : 'right'"/>
+                        v-bind:name="`${slot}:${i*2}`"  v-bind:dir="i &lt; 24 ? 'down' : 'right'"/>
                 </template>
             </template>
         </template>

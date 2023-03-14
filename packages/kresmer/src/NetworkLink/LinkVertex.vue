@@ -64,27 +64,6 @@
         props.model.align();
     }//onDoubleClick
 
-    if (props.model.link.isLoopback && props.model.isHead) {
-        watch(() => props.model.anchor.conn!.isPositioned, (newState) => {
-            if (newState) {
-                props.model.link._onHeadPositioning();
-            }//if
-        } , {deep: true});
-    }//if
-
-    // if (props.model.link.isLoopback && props.model.isHead) {
-    //     watch(props.model.coords, (newCoords) => {
-    //         if (props.model.anchor.conn!.isPositioned) {
-    //             props.model.link._trackHead(newCoords);
-    //         }//if
-    //     } , {deep: true});
-    // }//if
-
-    // if (!props.model.isHead && !props.model.isTail && props.model.link.isLoopback) {
-    //     watch(props.model.link.headMove, () => {
-    //         props.model.moveBy(props.model.link.headMove);
-    //     }, {deep: true});
-    // }//if
     
 </script>
 
