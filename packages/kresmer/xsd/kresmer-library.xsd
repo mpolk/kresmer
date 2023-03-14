@@ -140,7 +140,11 @@
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attribute name="d" type="xs:decimal" />
                         <xs:attribute ref="v-bind:d" />
-                        <xs:attribute name="dir" type="xs:decimal" />
+                        <xs:attribute name="dir">
+                            <xs:simpleType>
+                                <xs:union memberTypes="xs:decimal directions"/>
+                            </xs:simpleType>
+                        </xs:attribute>
                         <xs:attribute ref="v-bind:dir" />
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>
@@ -334,6 +338,17 @@
             <xs:enumeration value="logical"/>
             <xs:enumeration value="copper"/>
             <xs:enumeration value="fiber-optics"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="directions">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="up"/>
+            <xs:enumeration value="top"/>
+            <xs:enumeration value="down"/>
+            <xs:enumeration value="bottom"/>
+            <xs:enumeration value="left"/>
+            <xs:enumeration value="right"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>
