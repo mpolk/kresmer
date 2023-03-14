@@ -101,9 +101,9 @@
 
 <style lang="scss">
     .connected {
-        opacity: 0.1;
+        opacity: 0.8;
         &:hover {
-            opacity: 0.9;
+            opacity: 1;
         }
     }
 

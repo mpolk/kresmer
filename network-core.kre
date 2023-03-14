@@ -20,19 +20,19 @@
     </component>
 
     <link class="twisted-pair" from="core:2:2:d" to="metro:1:12:l">
-        <vertex x="188.5064697265625" y="345.35297106375265"/>
-        <vertex x="240.15544220889194" y="484.9902734433205"/>
+        <vertex x="188" y="345.35297106375265"/>
+        <vertex x="240.15544220889194" y="345.35297106375265"/>
         <vertex x="240.15544220889194" y="549.25"/>
     </link>
 
     <link class="AOC" from="core:1:26:r" to="core:2:27:r">
-        <vertex x="85.21888875627269" y="0"/>
-        <vertex x="85.21888875627269" y="103.5"/>
+        <vertex x="71.50451084399367" y="0"/>
+        <vertex x="71.50451084399367" y="103.5"/>
     </link>
 
     <link class="AOC" from="core:1:27:r" to="core:2:26:r">
-        <vertex x="67.76422595882673" y="0"/>
-        <vertex x="67.76422595882673" y="46.5"/>
+        <vertex x="49.062801532991784" y="0"/>
+        <vertex x="49.062801532991784" y="46.5"/>
     </link>
 
     <link class="AOC" from="metro:1:47:r" to="metro:2:48:r">
@@ -41,8 +41,8 @@
     </link>
 
     <link class="AOC" from="metro:1:48:r" to="metro:2:47:r">
-        <vertex x="43.16846963402486" y="0"/>
-        <vertex x="43.16846963402486" y="46.5"/>
+        <vertex x="38.181423120468935" y="0"/>
+        <vertex x="38.181423120468935" y="46.5"/>
     </link>
 
 </kresmer-drawing>
