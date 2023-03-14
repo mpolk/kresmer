@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType, ref, inject, watch } from 'vue';
+    import { PropType, ref, inject } from 'vue';
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
 
