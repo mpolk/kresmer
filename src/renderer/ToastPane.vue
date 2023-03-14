@@ -19,7 +19,6 @@
         timestamp?: Date,
     };
 
-    let messageCount = 0;
     const maxMessagesToShow = 5;
     const maxMessagesToKeep = 100;
     const autoHideDelay = 5000;
@@ -31,6 +30,7 @@
 
 <script setup lang="ts">
     const toastMessages = reactive<ToastMessage[]>([]);
+    let messageCount = 0;
     let toast!: Toast;
     const divToast = ref<HTMLDivElement>();
     let autoHideTimer: ReturnType<typeof setTimeout>|undefined;
@@ -110,7 +110,7 @@
         return toastMessages.slice(0, Math.min(toastMessages.length, maxMessagesToShow));
     })//toastMessagesToShow
 
-    defineExpose({show, hide, toggle, isEmpty});
+    defineExpose({show, hide, toggle, isEmpty, messageCount});
 </script>
 
 <template>

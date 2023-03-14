@@ -52,10 +52,6 @@ export const statusBarData: StatusBarDisplayData = reactive({
     haveNotifications: false,
 })//statusBarData
 
-export const vueStatusBar = createApp(StatusBar, {
-    displayData: statusBarData,
-}).mount("#statusBar");
-
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
     InstanceType<typeof DrawingPropsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
@@ -69,6 +65,10 @@ const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMe
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
     InstanceType<typeof BackendConnectionDialog>;
 export const vueToastPane = createApp(ToastPane).mount("#divToastPane") as InstanceType<typeof ToastPane>;
+
+export const vueStatusBar = createApp(StatusBar, {
+    displayData: statusBarData,
+}).mount("#statusBar");
 
 export function updateWindowTitle()
 {
