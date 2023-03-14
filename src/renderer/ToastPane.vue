@@ -48,7 +48,7 @@
             if (toastMessages.length > maxMessagesToKeep) {
                 toastMessages.pop();
             }//if
-            statusBarData.haveNotifications = true;
+            statusBarData.notificationsCount = messageCount;
             autoHideTimer = setTimeout(() => hide(), autoHideDelay);
         } else if (autoHideTimer) {
             clearTimeout(autoHideTimer);
@@ -95,7 +95,7 @@
         toastMessages.splice(index, 1);
         if (toastMessages.length === 0) {
             hide();
-            statusBarData.haveNotifications = false;
+            statusBarData.notificationsCount = messageCount;
         }//if
     }//deleteMessage
 
@@ -103,14 +103,14 @@
     {
         toastMessages.splice(0);
         hide();
-        statusBarData.haveNotifications = false;
+        statusBarData.notificationsCount = messageCount;
     }//clearToaster
 
     const toastMessagesToShow = computed(() => {
         return toastMessages.slice(0, Math.min(toastMessages.length, maxMessagesToShow));
     })//toastMessagesToShow
 
-    defineExpose({show, hide, toggle, isEmpty, messageCount});
+    defineExpose({show, hide, toggle, isEmpty});
 </script>
 
 <template>

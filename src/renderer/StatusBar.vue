@@ -38,6 +38,8 @@
             return `1 : ${Math.round(100 / props.displayData.drawingScale) / 100}`;
         }//if
     })//drawingScale
+
+    const haveNotifications = computed(() => props.displayData.notificationsCount > 0);
 </script>
 
 <template>
@@ -55,9 +57,9 @@
             <div class="pane" title="Drawing display scale" style="cursor: default">
                 {{drawingScale}}
             </div>
-            <div class="pane" :title="`Notifications (${vueToastPane.messageCount})`" style="cursor: pointer">
+            <div class="pane" :title="`Notifications (${displayData.notificationsCount})`" style="cursor: pointer">
                 <span class="material-symbols-outlined align-bottom" 
-                    :class="{filled: displayData.haveNotifications}"
+                    :class="{filled: haveNotifications}"
                     @click="vueToastPane.toggle">notifications</span>
             </div>
         </div>

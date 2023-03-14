@@ -41,7 +41,7 @@ export type StatusBarDisplayData = {
     hint: string,
     serverURL: string,
     drawingScale: number,
-    haveNotifications: boolean,
+    notificationsCount: number,
 };
 
 export const statusBarData: StatusBarDisplayData = reactive({
@@ -49,7 +49,7 @@ export const statusBarData: StatusBarDisplayData = reactive({
     hint: "",
     serverURL: "",
     drawingScale: 1,
-    haveNotifications: false,
+    notificationsCount: 0,
 })//statusBarData
 
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
