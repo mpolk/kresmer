@@ -532,12 +532,12 @@
 
     <link-class name="AOC" type="fiber-optics">
         <style>
-            .link {stroke: #3a5e69;}
+            .link {stroke: #0098c7;}
             .padding {stroke-width: 8px;}
             .segment {stroke-width: 4px; stroke-linejoin: round;}
-            .segment.highlighted {stroke: #225767; stroke-width: 5px}
-            .segment.selected {stroke: #225767; stroke-width: 6px}
-            .vertex {stroke: #225767; stroke-width: 4px; fill: white; r: 6px}
+            .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
+            .segment.selected {stroke: #00b8f0; stroke-width: 6px}
+            .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
         </style>
