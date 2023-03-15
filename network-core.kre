@@ -30,7 +30,7 @@
     <link class="twisted-pair" from="core:2:2@d" to="metro:1:12@l">
         <vertex x="193.5894317626953" y="580.1090724837011"/>
         <vertex x="256.7602354197038" y="580.1090724837011"/>
-        <vertex x="256.7602354197038" y="735.0985717773438"/>
+        <vertex x="256.7602354197038" y="734.25"/>
     </link>
 
     <link class="DAC" from="core:1:26@r" to="core:2:27@r">

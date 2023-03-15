@@ -59,7 +59,7 @@
     <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"
         :data-connection-point="`${component.name}:${name}`"
         @contextmenu.stop="onRightClick()"
-        ><title>{{ name }}</title></circle>
+        ><title>{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title></circle>
 </template>
 
 <style lang="scss">

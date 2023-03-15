@@ -153,7 +153,7 @@
             <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
             <slot />
             <text v-bind:x="w/2"
-                v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="h*0.8"
+                v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="fontSize*h"
                 class="port-name">{{label}}<title>{{name}}</title></text>
             <connection-point v-bind:name="`${name}@u`" v-bind:d="cpDiameter" v-bind:x="w/2" v-bind:y="0" dir="up" />
             <connection-point v-bind:name="`${name}@r`" v-bind:d="cpDiameter" v-bind:x="w" v-bind:y="h/2" dir="right" />
@@ -167,21 +167,25 @@
         <props>
             <prop name="w" type="Number" required="true" default="25" />
             <prop name="h" type="Number" required="true" default="25" />
+            <prop name="prefix" type="String" default="" />
+            <prop name="font-size" type="Number" default="0.8"/>
         </props>
         <computed-props>
-            <computed-prop name="label">String(props.name).split(':').slice(-1)[0]</computed-prop>
-            <computed-prop name="cpDiameter">props.h*0.8</computed-prop>
+            <computed-prop name="label">String(props.name).replace(props.prefix, '')</computed-prop>
+            <computed-prop name="cpDiameter">props.h*0.7</computed-prop>
         </computed-props>
     </component-class>
 
     <component-class name="SquarePort">
         <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name">
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize">
                 <slot/>
             </Kre:Port>
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
+            <prop name="prefix" type="String" default="" />
+            <prop name="font-size" type="Number" default="0.8"/>
         </props>
     </component-class>
 
@@ -201,23 +205,27 @@
 
     <component-class name="SfpPort">
         <template>
-            <Kre:SquarePort v-bind:d="d" v-bind:name="name">
+            <Kre:SquarePort v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize">
                 <Kre:Ferrule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:d="d*0.4" />
             </Kre:SquarePort>
         </template>
         <props>
             <prop name="d" type="Number" required="true" default="25" /> <!-- diameter (or similar size parameter-->
+            <prop name="prefix" type="String" default="" />
+            <prop name="font-size" type="Number" default="0.8"/>
         </props>
     </component-class>
 
     <component-class name="XfpPort">
         <template>
-            <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name">
+            <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize">
                 <Kre:Ferrule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:d="h*0.4" />
             </Kre:Port>
         </template>
         <props>
             <prop name="h" type="Number" required="true" default="25" />
+            <prop name="prefix" type="String" default="" />
+            <prop name="font-size" type="Number" default="0.8"/>
         </props>
     </component-class>
 
@@ -269,7 +277,7 @@
         <style>
             .device-name { font-family: sans-serif; fill: black; text-shadow: none}
             .device-name.no-persp { font-family: sans-serif!important; fill: black!important; text-shadow: none!important}
-            .port-icon { fill: #525252; }
+            .port-icon { fill: #404040; }
             .facet {fill: lightgray;}
             .top.facet { filter: brightness(0.7); }
             .side.facet { filter: brightness(0.5); }
@@ -344,6 +352,7 @@
         </template>
         <style extends="SwitchBody">
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
+            .model-name { fill: white; }
             .facet {fill: #cf34fe;}
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
@@ -382,6 +391,8 @@
         <template>
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                                    v-bind:top-facet-size="1" v-bind:perspective="perspective" />
+            <text v-bind:x="height*7" v-bind:y="height/3" v-bind:font-size="height*0.25" 
+                  class="model-name">X590</text>
             <template v-for="i in 12">
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1" />
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" />
@@ -406,14 +417,16 @@
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                                    v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
                                    v-bind:perspective="perspective" />
+            <text v-bind:x="height*7" v-bind:y="height/3" v-bind:font-size="height*0.25" 
+                  class="model-name">X590</text>
             <template v-for="slot in nSlots">
                 <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <template v-for="i in 12">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
-                        v-bind:name="`${slot}:${i*2-1}`" />
+                        v-bind:name="`${slot}:${i*2-1}`" v-bind:prefix="`${slot}:`"/>
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
-                        v-bind:name="`${slot}:${i*2}`" />
+                        v-bind:name="`${slot}:${i*2}`" v-bind:prefix="`${slot}:`"/>
                 </template>
                 <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:25`" />
                 <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" />
@@ -462,9 +475,9 @@
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <template v-for="i in 24">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
-                        v-bind:name="`${slot}:${i*2-1}`" />
+                        v-bind:name="`${slot}:${i*2-1}`" v-bind:prefix="`${slot}:`" />
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
-                        v-bind:name="`${slot}:${i*2}`" />
+                        v-bind:name="`${slot}:${i*2}`" v-bind:prefix="`${slot}:`" />
                 </template>
             </template>
         </template>
@@ -544,13 +557,22 @@
         <template>
             <Kre:RouterBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                              v-bind:top-facet-size="1" v-bind:perspective="perspective" />
-            <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.8)" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="`et0/0/${i-1}`" />
+            <text v-bind:x="height*0.25" v-bind:y="height*0.25" v-bind:font-size="height*0.25" 
+                  class="model-name">MX204</text>
+            <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.8)" v-bind:y="height*0.53" v-bind:h="height/3" 
+                         v-bind:name="`et0/0/${i-1}`" prefix="et0/"/>
             <template v-for="i in 4">
-                <Kre:SfpPort v-bind:x="height*(i*0.5+5)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="`xe0/1/${i*2-2}`" />
-                <Kre:SfpPort v-bind:x="height*(i*0.5+5)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="`xe0/1/${i*2-1}`" />
+                <Kre:SfpPort v-bind:x="height*(i*0.5+5)" v-bind:y="height*0.15" v-bind:d="height/3" 
+                             v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"/>
+                <Kre:SfpPort v-bind:x="height*(i*0.5+5)" v-bind:y="height*0.53" v-bind:d="height/3" 
+                             v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7"/>
             </template>
         </template>
-        <style extends="RouterBody" />
+        <style extends="RouterBody">
+            .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
+            .model-name { fill: #ffffff; }
+            .facet {fill: #bababa;}
+        </style>
         <props>
             <prop name="height" type="Number" required="true" default="75"/>
             <prop name="width" type="Number"/>
