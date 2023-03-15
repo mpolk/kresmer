@@ -567,11 +567,15 @@
                 <Kre:SfpPort v-bind:x="height*(i*0.5+5)" v-bind:y="height*0.53" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7"/>
             </template>
+            <template v-for="i in 2">
+                <circle v-for="j in 2" v-bind:cx="height*(7.8+i*0.2)" v-bind:cy="height*(0.33+j*0.2)" v-bind:r="height*0.05" class="sync-port"/>
+            </template>
         </template>
         <style extends="RouterBody">
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
             .model-name { fill: #ffffff; }
             .facet {fill: #bababa;}
+            .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
         <props>
             <prop name="height" type="Number" required="true" default="75"/>
