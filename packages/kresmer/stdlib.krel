@@ -530,6 +530,19 @@
         </style>
     </link-class>
 
+    <link-class name="DAC" type="fiber-optics">
+        <style>
+            .link {stroke: #236e85;}
+            .padding {stroke-width: 8px;}
+            .segment {stroke-width: 4px; stroke-linejoin: round;}
+            .segment.highlighted {stroke: #2f97b6; stroke-width: 5px}
+            .segment.selected {stroke: #2f97b6; stroke-width: 6px}
+            .vertex {stroke: #2f97b6; stroke-width: 4px; fill: white; r: 6px}
+            .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
+            .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+        </style>
+    </link-class>
+
     <link-class name="AOC" type="fiber-optics">
         <style>
             .link {stroke: #0098c7;}
