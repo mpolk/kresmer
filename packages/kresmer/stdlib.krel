@@ -155,10 +155,10 @@
             <text v-bind:x="w/2"
                 v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="h*0.8"
                 class="port-name">{{label}}<title>{{name}}</title></text>
-            <connection-point v-bind:name="`${name}:u`" v-bind:d="cpDiameter" v-bind:x="w/2" v-bind:y="0" dir="up" />
-            <connection-point v-bind:name="`${name}:r`" v-bind:d="cpDiameter" v-bind:x="w" v-bind:y="h/2" dir="right" />
-            <connection-point v-bind:name="`${name}:d`" v-bind:d="cpDiameter" v-bind:x="w/2" v-bind:y="h" dir="down" />
-            <connection-point v-bind:name="`${name}:l`" v-bind:d="cpDiameter" v-bind:x="0" v-bind:y="h/2" dir="left" />
+            <connection-point v-bind:name="`${name}/u`" v-bind:d="cpDiameter" v-bind:x="w/2" v-bind:y="0" dir="up" />
+            <connection-point v-bind:name="`${name}/r`" v-bind:d="cpDiameter" v-bind:x="w" v-bind:y="h/2" dir="right" />
+            <connection-point v-bind:name="`${name}/d`" v-bind:d="cpDiameter" v-bind:x="w/2" v-bind:y="h" dir="down" />
+            <connection-point v-bind:name="`${name}/l`" v-bind:d="cpDiameter" v-bind:x="0" v-bind:y="h/2" dir="left" />
         </template>
         <style>
             .port-name {font-family: sans-serif; fill: white;}
