@@ -66,6 +66,6 @@
 
 <template>
     <g :transform="transform" :transform-origin="transformOrigin" :class="componentClass">
-        <slot></slot>
+        <slot/>
     </g>
 </template>

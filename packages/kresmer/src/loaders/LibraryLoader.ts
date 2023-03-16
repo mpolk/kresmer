@@ -40,7 +40,7 @@ export default class LibraryLoader
             } else if (element instanceof StyleLibNode) {
                 this.kresmer.styles.push(this.scopeStyles(element.data));
             } else {
-                console.error(`${element.message}\nSource: ${element.source}`);
+                this.kresmer.raiseError(element);
                 wereErrors = true;
             }//if
         }//for

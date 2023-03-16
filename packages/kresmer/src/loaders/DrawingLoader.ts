@@ -103,7 +103,7 @@ export default class DrawingLoader {
                 }//if
                 this.kresmer.addLink(link);
             } else {
-                console.error(`${element.message}\nSource: ${element.source}`);
+                this.kresmer.raiseError(element);
                 wereErrors = true;
             }//if
         }//for

@@ -29,4 +29,4 @@ dist-ssr
 xxx.kre
 
 # XML schemas actually belong to Kresmer component
-xsd
+./xsd/**
