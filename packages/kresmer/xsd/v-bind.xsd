@@ -28,4 +28,5 @@
   <xs:attribute name="transform" />
   <xs:attribute name="transform-origin" />
   <xs:attribute name="class" />
+  <xs:attribute name="style" />
 </xs:schema>

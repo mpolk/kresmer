@@ -280,7 +280,10 @@
             .device-name { font-family: sans-serif; fill: black; text-shadow: none}
             .device-name.no-persp { font-family: sans-serif!important; fill: black!important; text-shadow: none!important}
             .port-icon { fill: #404040; }
-            .facet {fill: lightgray;}
+            .facet {
+                --facet-color: lightgray;
+                fill: var(--facet-color); stroke: var(--facet-color); stroke-width: 0;
+            }
             .top.facet { filter: brightness(0.7); }
             .side.facet { filter: brightness(0.5); }
             .slot-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
@@ -544,7 +547,7 @@
                 v-bind:n-slots="nSlots" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew">
                 <template v-slot:topFacet="{}">
-                    <ellipse cx="0.5" cy="0.5" rx="0.35" ry="0.45" fill="none" stroke="white" stroke-width="0.02"/>
+                    <ellipse cx="0.5" cy="0.5" rx="0.35" ry="0.45" style="fill: none; stroke-width: 0.015" class="facet" />
                 </template>
             </Kre:SwitchBody>
         </template>
@@ -581,7 +584,7 @@
         <style extends="RouterBody">
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
             .model-name { fill: #ffffff; }
-            .facet {fill: #bababa;}
+            .facet {--facet-color: #b8b8b8;}
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
         <props>

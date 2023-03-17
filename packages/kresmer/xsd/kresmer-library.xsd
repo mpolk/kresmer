@@ -328,6 +328,8 @@
         <xs:attribute ref="v-bind:filter" />
         <xs:attribute name="class" type="xs:string"/>
         <xs:attribute ref="v-bind:class" />
+        <xs:attribute name="style" type="xs:string"/>
+        <xs:attribute ref="v-bind:style" />
     </xs:attributeGroup>
 
     <xs:attributeGroup name="transform-attrs">
