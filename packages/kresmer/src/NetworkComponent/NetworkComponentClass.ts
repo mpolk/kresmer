@@ -32,6 +32,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         defs?: Template,
         style?: PostCSSRoot,
         autoInstanciate?: boolean,
+        forEmbeddingOnly?: boolean,
         defaultContent?: string,
     })
     {
@@ -39,6 +40,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         this.template = params.template;
         this.autoInstanciate = Boolean(params.autoInstanciate);
         this.defaultContent = params.defaultContent;
+        this.forEmbeddingOnly = Boolean(params.forEmbeddingOnly);
         NetworkComponentClass.allClasses[name] = this;
     }//ctor
 
@@ -53,8 +55,10 @@ export default class NetworkComponentClass extends NetworkElementClass {
      * Template for the Vue-component for this class
      */
     public template: Template;
-    /** Specifies that a single class instance should be created after the class is registered */
+    /** Shows that the single class instance should be created automatically after the class is registered */
     readonly autoInstanciate: boolean;
+    /** Limits this class usage for embedding inside other components */
+    readonly forEmbeddingOnly: boolean;
     /** The default content for the component (i.e. its slot) */
     readonly defaultContent?: string;
 

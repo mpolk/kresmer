@@ -80,7 +80,8 @@
             krePreview = new Kresmer(divPreview.value!, {isEditable: false, 
                 logicalWidth: previewWidth, logicalHeight: previewHeight});
             componentClasses.value.forEach(item => {krePreview.registerNetworkComponentClass(item._class)});
-            componentClasses.value = componentClasses.value.filter(({name, _class}) => !_class.autoInstanciate);
+            componentClasses.value = componentClasses.value
+                .filter(({name, _class}) => !_class.autoInstanciate && !_class.forEmbeddingOnly);
             result.value = componentClasses.value[0]._class;
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
         }//if
