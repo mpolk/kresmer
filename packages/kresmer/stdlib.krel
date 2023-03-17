@@ -244,13 +244,13 @@
                 <polyline
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))"
                     class="facet" />
-                <slot name="topfacet"/>
+                <slot name="topFacet"/>
             </g>
             <g v-if="perspective === 'right'"
                 v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
                 <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
-                <slot name="topfacet"/>
+                <slot name="topFacet"/>
             </g>
             <polygon
                 v-if="perspective === 'right'"
@@ -263,7 +263,7 @@
                 v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
                 <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
-                <slot name="topfacet"/>
+                <slot name="topFacet"/>
             </g>
             <polygon
                 v-if="perspective === 'left'"
@@ -543,11 +543,11 @@
             <Kre:SwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:n-slots="nSlots" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew">
-                <template v-slot:topfacet="{}">
+                <template v-slot:topFacet="{}">
                     <ellipse cx="0.5" cy="0.5" rx="0.35" ry="0.45" fill="none" stroke="white" stroke-width="0.02"/>
                 </template>
             </Kre:SwitchBody>
-    </template>
+        </template>
         <style extends="SwitchBody"/>
         <props>
             <prop name="n-slots" type="Number" default="1" />

@@ -11,6 +11,8 @@
   <xs:attribute name="cx" />
   <xs:attribute name="cy" />
   <xs:attribute name="r" />
+  <xs:attribute name="rx" />
+  <xs:attribute name="ry" />
   <xs:attribute name="width"  />
   <xs:attribute name="height" />
   <xs:attribute name="dir" />

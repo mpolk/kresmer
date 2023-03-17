@@ -15,7 +15,7 @@
                     <xs:element name="component-class">
                         <xs:complexType>
                             <xs:all>
-                                <xs:element ref="template"/>
+                                <xs:element name="template" type="outermost-template"/>
                                 <xs:element ref="props" minOccurs="0"/>
                                 <xs:element ref="computed-props" minOccurs="0"/>
                                 <xs:element ref="defs" minOccurs="0"/>
@@ -73,6 +73,17 @@
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="circle-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attribute name="vector-effect"/>
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="ellipse" minOccurs="0">
+                    <xs:complexType>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="ellipse-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>
@@ -184,24 +195,24 @@
     </xs:group>
 
     <!-- Template content (used in components) -->
-    <xs:complexType name="template" mixed="true">
+    <xs:complexType name="outermost-template" mixed="true">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
             <xs:group ref="svg-elements"/>
             <xs:element ref="slot"/>
-            <xs:element name="template" type="internal-template"/>
+            <xs:element name="template" type="inner-template"/>
         </xs:choice>
     </xs:complexType>
 
-    <xs:complexType name="internal-template">
+    <xs:complexType name="inner-template">
         <xs:complexContent>
-            <xs:extension base="template">
+            <xs:extension base="outermost-template">
                 <xs:attributeGroup ref="vue-directives"/>
-                <xs:anyAttribute namespace="v-slot" processContents="skip"/>
+                <xs:anyAttribute namespace="v-slot" processContents="lax"/>
             </xs:extension>
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:element name="template" type="template"/>
+    <xs:element name="template" type="inner-template"/>
 
     <xs:element name="slot">
         <xs:complexType mixed="true">
@@ -294,6 +305,14 @@
         <xs:attribute ref="v-bind:cy"/>
         <xs:attribute name="r" type="xs:decimal"/>
         <xs:attribute ref="v-bind:r"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="ellipse-attrs">
+        <xs:attributeGroup ref="circle-attrs"/>
+        <xs:attribute name="rx" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:rx"/>
+        <xs:attribute name="ry" type="xs:decimal"/>
+        <xs:attribute ref="v-bind:ry"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="presentation-attrs">
