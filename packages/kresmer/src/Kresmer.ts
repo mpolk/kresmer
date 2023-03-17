@@ -243,8 +243,8 @@ export default class Kresmer extends KresmerEventHooks {
                 <NetworkComponentAdapter component-class="${componentClass.name}" 
                                          :x="x" :y="y" :transform="transform" :transform-origin="transformOrigin">
                     <component :is="'${componentClass.vueName}'" v-bind="componentProps">
-                        <template v-for="(slot, slotName) in $slots" v-slot:[slotName]>
-                            <slot :name="slotName"/>
+                        <template v-for="(slot, slotName) in $slots" v-slot:[slotName]="{...props}">
+                            <slot :name="slotName" v-bind="props"/>
                         </template>
                     </component>
                 </NetworkComponentAdapter>`,
