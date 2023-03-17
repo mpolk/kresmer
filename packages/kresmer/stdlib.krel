@@ -244,13 +244,13 @@
                 <polyline
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))"
                     class="facet" />
-                <slot name="topFacet"/>
+                <slot name="topFacetC"/>
             </g>
             <g v-if="perspective === 'right'"
                 v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
                 <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
-                <slot name="topFacet"/>
+                <slot name="topFacetLR"/>
             </g>
             <polygon
                 v-if="perspective === 'right'"
@@ -263,7 +263,7 @@
                 v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
                 <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
                 <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
-                <slot name="topFacet"/>
+                <slot name="topFacetLR"/>
             </g>
             <polygon
                 v-if="perspective === 'left'"
@@ -546,11 +546,14 @@
             <Kre:SwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:n-slots="nSlots" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew">
-                <template v-slot:topFacet="{}">
-                    <ellipse cx="0.5" cy="0.5" rx="0.35" ry="0.45" style="fill: none; stroke-width: 0.015" class="facet" />
+                <template v-slot:topFacetC="{}">
+                    <ellipse cx="0.5" cy="0.5" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
+                </template>
+                <template v-slot:topFacetLR="{}">
+                    <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
                 </template>
             </Kre:SwitchBody>
-        </template>
+    </template>
         <style extends="SwitchBody"/>
         <props>
             <prop name="n-slots" type="Number" default="1" />
@@ -566,7 +569,9 @@
         <template>
             <Kre:RouterBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                              v-bind:top-facet-size="1" v-bind:perspective="perspective" />
-            <text v-bind:x="height*0.25" v-bind:y="height*0.25" v-bind:font-size="height*0.25" 
+            <text v-bind:x="height*0.18" v-bind:y="height*0.25" v-bind:font-size="height*0.25" 
+                  class="model-name">Juniper</text>
+            <text v-bind:x="height*9" v-bind:y="height*0.25" text-anchor="end" v-bind:font-size="height*0.25" 
                   class="model-name">MX204</text>
             <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.8)" v-bind:y="height*0.53" v-bind:h="height/3" 
                          v-bind:name="`et0/0/${i-1}`" prefix="et0/"/>
