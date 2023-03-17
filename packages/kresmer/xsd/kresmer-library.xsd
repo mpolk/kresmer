@@ -188,6 +188,19 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="pattern">
+                    <xs:complexType>
+                        <xs:group ref="svg-elements"/>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attribute ref="viewBox"/>
+                        <xs:attribute name="patternUnits" type="coordSystem"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <!-- Embedded components -->
                 <xs:any namespace="Kre" processContents="lax"/>
             </xs:choice>
@@ -365,6 +378,24 @@
         <xs:attribute name="v-if"/>
         <xs:attribute name="v-else"/>
     </xs:attributeGroup>
+
+    <xs:attribute name="viewBox" type="four-numbers"/>
+    <xs:simpleType name="four-numbers">
+        <xs:restriction base="list-of-numbers">
+            <xs:minLength value="4"/>
+            <xs:maxLength value="4"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="list-of-numbers">
+        <xs:list itemType="xs:decimal"></xs:list>
+    </xs:simpleType>
+
+    <xs:simpleType name="coordSystem">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="userSpaceOnUse"/>
+            <xs:enumeration value="objectBoundingBox"/>
+        </xs:restriction>
+    </xs:simpleType>
 
     <xs:simpleType name="linkType">
         <xs:restriction base="xs:string">
