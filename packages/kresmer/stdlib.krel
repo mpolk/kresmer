@@ -551,7 +551,7 @@
                     <slot name="frontFacet" />
                 </template>
                 <template v-slot:topFacetC="{}">
-                    <ellipse cx="0.5" cy="0.5" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
+                    <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
                 </template>
                 <template v-slot:topFacetLR="{}">
                     <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
