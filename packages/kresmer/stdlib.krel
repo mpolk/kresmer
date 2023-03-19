@@ -358,7 +358,7 @@
         </template>
         <style extends="SwitchBody">
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
-            .model-name { fill: white; }
+            .model-name { fill: white; font-family: sans-serif; }
             .facet {fill: #cf34fe;}
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
@@ -571,8 +571,8 @@
 
     <component-class name="Juniper-MX204">
         <defs>
-            <pattern id="kre:std:Juniper-MX204-front-grid" viewBox="0 0 10 10" x="0" y="0" width="0.6%" height="0.6%" 
-                     patternUnits="userSpaceOnUse">
+            <pattern id="kre:std:Juniper-MX204-front-grid" viewBox="0 0 10 10" x="0" y="0" width="1%" height="10%" 
+                     patternUnits="objectBoundingBox">
                 <rect x="2" y="2" width="6" height="6" fill="#424242"/>
             </pattern>
         </defs>
@@ -619,9 +619,8 @@
         </template>
         <style extends="RouterBody">
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
-            .model-name { fill: #ffffff; }
+            .model-name { fill: #ffffff; font-family: sans-serif; }
             .facet {--facet-color: #b8b8b8;}
-            /*.facet.front {fill: url(#kre:std:Juniper-MX204-front);}*/
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
         <props>
