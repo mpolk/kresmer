@@ -53,11 +53,14 @@ class _NetworkComponentController {
         return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
-    public selectComponent(this: NetworkComponentController): void
+    public selectComponent(this: NetworkComponentController, deselectTheRest: boolean): void
     {
         if (!this.component.isSelected) {
-            this.kresmer.deselectAllElements(this);
+            if (deselectTheRest)
+                this.kresmer.deselectAllElements(this);
             this.component.isSelected = true;
+        } else if (!deselectTheRest) {
+            this.component.isSelected = false;
         }//if
     }//selectComponent
 
@@ -199,7 +202,7 @@ class _NetworkComponentController {
 
     public resetMode(this: NetworkComponentController)
     {
-        this.component.isSelected = false;
+        // this.component.isSelected = false;
         // this.isBeingTransformed = false;
         this.transformMode = undefined;
         //this.kresmer.onComponentExitingTransformMode(this);

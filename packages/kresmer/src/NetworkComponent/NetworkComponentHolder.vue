@@ -92,7 +92,7 @@
         }//if
 
         if (!props.controller.transformMode) {
-            props.controller.selectComponent();
+            props.controller.selectComponent(!event.shiftKey);
         }//if
     }//onMouseUp
 
