@@ -421,6 +421,12 @@ appCommandExecutor.on("disconnect-from-server", async () => {
     statusBarData.serverURL = "";
 });
 
+
+appCommandExecutor.on("escape", () => {
+    console.debug("Escape pressed");
+    kresmer.deselectAllElements();
+});
+
 // -------------------------------------------------------------------------------------------------
 // Let's go forward and do our work...
 window.electronAPI.signalReadiness(AppInitStage.HANDLERS_INITIALIZED);

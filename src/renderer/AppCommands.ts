@@ -22,6 +22,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "connect-to-server": (url: string, password: string, forceUI: boolean, 
                           completionSignal?: AppInitStage) => void,
     "disconnect-from-server": () => void,
+    "escape": () => void,
     "undo": () => void,
     "redo": () => void,
     "scale-drawing": (direction: ScaleDirection) => void,

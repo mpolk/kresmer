@@ -77,6 +77,7 @@ export default class Menus {
       {
         label: 'Edit',
         submenu: [
+          { label: 'Escape', accelerator: "Escape", visible: false, enabled: true, click: () => sendAppCommand("escape") },
           { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
           { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
