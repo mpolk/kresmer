@@ -67,13 +67,23 @@ class _NetworkComponentController {
     public startDrag(this: NetworkComponentController, event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
-        this.dragStartPos = {...this.origin};
+        this._startDrag();
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
         this.bringToTop();
-        this.kresmer.emit("component-move-started", this);
-        this.kresmer.undoStack.startOperation(new ComponentMoveOp(this));
+        if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
+            this.kresmer.undoStack.startOperation(new SelectionMoveOp(this.kresmer));
+            this.kresmer._startSelectionDragging(this);
+        } else {
+            this.kresmer.undoStack.startOperation(new ComponentMoveOp(this));
+        }//if
     }//startDrag
+
+    public _startDrag(this: NetworkComponentController)
+    {
+        this.dragStartPos = {...this.origin};
+        this.kresmer.emit("component-move-started", this);
+    }//_startDrag
 
     public drag(this: NetworkComponentController, event: MouseEvent)
     {
@@ -85,12 +95,21 @@ class _NetworkComponentController {
         }//if
             
         const mousePos = this.getMousePosition(event);
-        this.origin.x = mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x;
-        this.origin.y = mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y;
-        this.updateConnectionPoints();
-        this.kresmer.emit("component-being-moved", this);
+        const effectiveMove = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
+        this.moveFromStartPos(effectiveMove);
+        if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
+            this.kresmer._dragSelection(effectiveMove, this);
+        }//if
         return true;
     }//drag
+
+    public moveFromStartPos(this: NetworkComponentController, delta: Position)
+    {
+        this.origin.x = this.dragStartPos!.x + delta.x;
+        this.origin.y = this.dragStartPos!.y + delta.y;
+        this.updateConnectionPoints();
+        this.kresmer.emit("component-being-moved", this);
+    }//moveFromStartPos
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endDrag(this: NetworkComponentController, _event: MouseEvent)
@@ -98,6 +117,9 @@ class _NetworkComponentController {
         if (this.isDragged) {
             this.isDragged = false;
             this.updateConnectionPoints();
+            if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
+                this.kresmer._endSelectionDragging(this);
+            }//if
             this.kresmer.undoStack.commitOperation();
             this.kresmer.emit("component-moved", this);
             return true;
@@ -274,6 +296,44 @@ class ComponentMoveOp extends EditorOperation {
         this.controller.updateConnectionPoints();
     }//undo
 }//ComponentMoveOp
+
+class SelectionMoveOp extends EditorOperation {
+
+    constructor(kresmer: Kresmer)
+    {
+        super();
+        for (const [, controller] of kresmer.networkComponents) {
+            if (controller.component.isSelected) {
+                this.controllers.push(controller);
+                this.oldPos[controller.component.id] = {...controller.origin};
+            }//if
+        }//for
+    }//ctor
+
+    private controllers: NetworkComponentController[] = [];
+    private oldPos: Record<number, Position> = {};
+    private newPos: Record<number, Position> = {};
+
+    override onCommit(): void {
+        for (const controller of this.controllers) {
+            this.newPos[controller.component.id] = {...controller.origin};
+        }//for
+    }//onCommit
+
+    override exec(): void {
+        for (const controller of this.controllers) {
+            controller.origin = {...this.newPos[controller.component.id]};
+            controller.updateConnectionPoints();
+        }//for
+    }//exec
+
+    override undo(): void {
+        for (const controller of this.controllers) {
+            controller.origin = {...this.oldPos[controller.component.id]};
+            controller.updateConnectionPoints();
+        }//for
+    }//undo
+}//SelectionMoveOp
 
 class ComponentTransformOp extends EditorOperation {
 

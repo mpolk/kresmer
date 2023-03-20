@@ -14,7 +14,7 @@ import LibraryLoader from "./loaders/LibraryLoader";
 import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp } from "./NetworkComponent/NetworkComponentController";
-import { Position, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
+import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
 import TransformBoxVue from "./Transform/TransformBox.vue"
@@ -577,7 +577,23 @@ export default class Kresmer extends KresmerEventHooks {
         if (!(except instanceof NetworkLinkBlank)) {
             this._abortLinkCreation();
         }//if
+        this.selectedElement = undefined;
     }//deselectAllElements
+
+
+    /** Checks if more than one component is selected */
+    public get muiltipleComponentsSelected() {
+        if (!this._selectedElement)
+            return false;
+        
+        let n = 0;
+        for (const controller of this.networkComponents.values()) {
+            if (controller.component.isSelected && ++n > 1) {
+                return true;
+            }//if
+        }//for
+        return false;
+    }//muiltipleComponentsSelected
 
 
     /**
@@ -639,6 +655,33 @@ export default class Kresmer extends KresmerEventHooks {
         }//if
     }//_abortLinkCreation
 
+
+    public _startSelectionDragging(except: NetworkComponentController)
+    {
+        for (const controller of this.networkComponents.values()) {
+            if (controller.component.isSelected && controller !== except) {
+                controller._startDrag();
+            }//if
+        }//for
+    }//_startSelectionDragging
+
+    public _dragSelection(effectiveMove: Shift, except: NetworkComponentController)
+    {
+        for (const controller of this.networkComponents.values()) {
+            if (controller.component.isSelected && controller !== except) {
+                controller.moveFromStartPos(effectiveMove);
+            }//if
+        }//for
+    }//_dragSelection
+
+    public _endSelectionDragging(except: NetworkComponentController)
+    {
+        for (const controller of this.networkComponents.values()) {
+            if (controller.component.isSelected && controller !== except) {
+                this.emit("component-moved", controller);
+            }//if
+        }//for
+    }//_endSelectionDragging
 
     /** Editor API functions (externally available operations with the drawing objects) */
     readonly edAPI = {
