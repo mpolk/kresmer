@@ -423,12 +423,12 @@
             <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                                    v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
                                    v-bind:perspective="perspective" />
-            <text v-bind:x="height*7" v-bind:y="height/3" v-bind:font-size="height*0.25" 
-                  class="model-name">X590</text>
             <template v-for="slot in nSlots">
                 <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
-                <template v-for="i in 12">
+                <text v-bind:x="height*7" v-bind:y="height*(slot-0.67)" v-bind:font-size="height*0.25" 
+                    class="model-name">X590</text>
+                  <template v-for="i in 12">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" v-bind:prefix="`${slot}:`"/>
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 

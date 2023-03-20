@@ -20,6 +20,12 @@ export default class UndoStack {
     private operationInProgress?: EditorOperation;
     private purityMark = 0;
 
+    /** Returns the operation that is currently being executed */
+    get currentOperation()
+    {
+        return this.operationInProgress;
+    }//get currentOperation
+
     /**
      * Marks the start of the specified editor operation
      * @param op The operation started

@@ -17,6 +17,7 @@ import { indent } from "../Utils";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
 import { withZOrder  } from "../ZOrdering";
+import NetworkLink from "../NetworkLink/NetworkLink";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
@@ -72,8 +73,9 @@ class _NetworkComponentController {
         this.isGoingToBeDragged = true;
         this.bringToTop();
         if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
-            this.kresmer.undoStack.startOperation(new SelectionMoveOp(this.kresmer));
-            this.kresmer._startSelectionDragging(this);
+            const op = new SelectionMoveOp(this.kresmer);
+            this.kresmer.undoStack.startOperation(op);
+            this.kresmer._startSelectionDragging(this, op);
         } else {
             this.kresmer.undoStack.startOperation(new ComponentMoveOp(this));
         }//if
@@ -175,7 +177,8 @@ class _NetworkComponentController {
         this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startScale
 
-    public scale(this: NetworkComponentController, event: MouseEvent, zone: TransformBoxZone, bBox: SVGRect, center: Position)
+    public scale(this: NetworkComponentController, event: MouseEvent, zone: TransformBoxZone, 
+                 bBox: SVGRect, center: Position)
     {
         if (!this.isBeingTransformed)
             return false;
@@ -297,7 +300,7 @@ class ComponentMoveOp extends EditorOperation {
     }//undo
 }//ComponentMoveOp
 
-class SelectionMoveOp extends EditorOperation {
+export class SelectionMoveOp extends EditorOperation {
 
     constructor(kresmer: Kresmer)
     {
@@ -308,15 +311,33 @@ class SelectionMoveOp extends EditorOperation {
                 this.oldPos[controller.component.id] = {...controller.origin};
             }//if
         }//for
+        for (const [, link] of kresmer.links) {
+            if (link.isLoopback)
+                continue;
+            const fromComponent = link.vertices[0].anchor.conn?.component ?? undefined;
+            if (!fromComponent?.isSelected)
+                continue;
+            const toComponent = link.vertices[link.vertices.length-1].anchor.conn?.component ?? undefined;
+            if (!toComponent?.isSelected)
+                continue;
+            this.links.push(link);
+            this.oldVertexPos[link.id] = link.vertices.map(v => ({...v.coords}));
+        }//for
     }//ctor
 
-    private controllers: NetworkComponentController[] = [];
-    private oldPos: Record<number, Position> = {};
-    private newPos: Record<number, Position> = {};
+    public controllers: NetworkComponentController[] = [];
+    public links: NetworkLink[] = [];
+    public oldPos: Record<number, Position> = {};
+    private oldVertexPos: Record<number, Position[]> = {};
+    public newPos: Record<number, Position> = {};
+    private newVertexPos: Record<number, Position[]> = {};
 
     override onCommit(): void {
         for (const controller of this.controllers) {
             this.newPos[controller.component.id] = {...controller.origin};
+        }//for
+        for (const link of this.links) {
+            this.newVertexPos[link.id] = link.vertices.map(v => ({...v.coords}));
         }//for
     }//onCommit
 
@@ -325,12 +346,26 @@ class SelectionMoveOp extends EditorOperation {
             controller.origin = {...this.newPos[controller.component.id]};
             controller.updateConnectionPoints();
         }//for
+        for (const link of this.links) {
+            for (let i = 0; i < link.vertices.length; ++i) {
+                if (!link.vertices[i].isConnected) {
+                    link.vertices[i].pinUp(this.newVertexPos[link.id][i]);
+                }//if
+            }//for
+        }//for
     }//exec
 
     override undo(): void {
         for (const controller of this.controllers) {
             controller.origin = {...this.oldPos[controller.component.id]};
             controller.updateConnectionPoints();
+        }//for
+        for (const link of this.links) {
+            for (let i = 0; i < link.vertices.length; ++i) {
+                if (!link.vertices[i].isConnected) {
+                    link.vertices[i].pinUp(this.oldVertexPos[link.id][i]);
+                }//if
+            }//for
         }//for
     }//undo
 }//SelectionMoveOp

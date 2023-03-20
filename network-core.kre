@@ -20,7 +20,7 @@
     </component>
 
     <component class="Juniper-MX204" name="border">
-        <origin x="143" y="83"/>
+        <origin x="130.62499961081983" y="87.12500012972673"/>
         <props>
             <prop name="perspective">center</prop>
             <prop name="height">75</prop>
@@ -54,18 +54,18 @@
     </link>
 
     <link class="AOC" from="border:et0/0/2@d" to="core:2:25@l">
-        <vertex x="339.25" y="196.66150565278107"/>
+        <vertex x="326.875" y="196.66150565278107"/>
         <vertex x="627.1667195349285" y="196.66150565278107"/>
         <vertex x="627.1667195349285" y="404.75"/>
     </link>
 
     <link class="AOC" from="border:et0/0/1@d" to="core:1:25@u">
-        <vertex x="264.25" y="184.02928992000474"/>
+        <vertex x="251.875" y="184.02928992000474"/>
         <vertex x="685.5" y="184.02928992000474"/>
     </link>
 
     <link class="AOC" from="border:et0/0/0@d" to="(955, 167)">
-        <vertex x="189.25" y="167.01134635542226"/>
+        <vertex x="176.875" y="167"/>
     </link>
 
 </kresmer-drawing>

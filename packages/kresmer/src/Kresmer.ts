@@ -13,7 +13,8 @@ import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
 import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
-import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp } from "./NetworkComponent/NetworkComponentController";
+import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, SelectionMoveOp } 
+    from "./NetworkComponent/NetworkComponentController";
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
@@ -656,30 +657,58 @@ export default class Kresmer extends KresmerEventHooks {
     }//_abortLinkCreation
 
 
-    public _startSelectionDragging(except: NetworkComponentController)
+    /** 
+     * Starts dragging the selected components following the leading one 
+     * @param leader The controller of the component being dragged (directly)
+     * @param operation The operation being performed
+    */
+    public _startSelectionDragging(leader: NetworkComponentController, operation: SelectionMoveOp)
     {
-        for (const controller of this.networkComponents.values()) {
-            if (controller.component.isSelected && controller !== except) {
+        for (const controller of operation.controllers) {
+            if (controller.component.isSelected && controller !== leader) {
                 controller._startDrag();
             }//if
         }//for
     }//_startSelectionDragging
 
-    public _dragSelection(effectiveMove: Shift, except: NetworkComponentController)
+    /** 
+     * Performs a step of dragging the selected components following the leading one 
+     * @param effectiveMove The effective (current) move of the leading component
+     * @param leader The controller of the component being dragged (directly)
+    */
+    public _dragSelection(effectiveMove: Shift, leader: NetworkComponentController)
     {
-        for (const controller of this.networkComponents.values()) {
-            if (controller.component.isSelected && controller !== except) {
+        const operation = this.undoStack.currentOperation as SelectionMoveOp;
+        for (const controller of operation.controllers) {
+            if (controller.component.isSelected && controller !== leader) {
                 controller.moveFromStartPos(effectiveMove);
             }//if
         }//for
     }//_dragSelection
 
-    public _endSelectionDragging(except: NetworkComponentController)
+    /** 
+     * Finishes dragging the selected components following the leading one 
+     * @param leader The controller of the component was being dragged (directly)
+    */
+    public _endSelectionDragging(leader: NetworkComponentController)
     {
-        for (const controller of this.networkComponents.values()) {
-            if (controller.component.isSelected && controller !== except) {
+        const operation = this.undoStack.currentOperation as SelectionMoveOp;
+        for (const controller of operation.controllers) {
+            if (controller.component.isSelected && controller !== leader) {
                 this.emit("component-moved", controller);
             }//if
+        }//for
+        const oldPos = operation.oldPos[leader.component.id];
+        const newPos = {...leader.origin};
+        const effectiveMove = {x: newPos.x - oldPos.x, y: newPos.y - oldPos.y};
+        for (const link of operation.links) {
+            for (let i = 0; i < link.vertices.length; i++) {
+                const vertex = link.vertices[i];
+                if (!vertex.isConnected) {
+                    const oldPos = vertex.coords;
+                    vertex.pinUp({x: oldPos.x + effectiveMove.x, y: oldPos.y + effectiveMove.y});
+                }//if
+            }//for
         }//for
     }//_endSelectionDragging
 
