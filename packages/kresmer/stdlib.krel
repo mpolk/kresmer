@@ -155,10 +155,9 @@
             <text v-bind:x="w/2"
                 v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="fontSize*h"
                 class="port-name">{{label}}<title>{{name}}</title></text>
-            <connection-point v-bind:name="`${name}@u`" v-bind:d="cpDiameter" v-bind:x="w/2" v-bind:y="0" dir="up" />
-            <connection-point v-bind:name="`${name}@r`" v-bind:d="cpDiameter" v-bind:x="w" v-bind:y="h/2" dir="right" />
-            <connection-point v-bind:name="`${name}@d`" v-bind:d="cpDiameter" v-bind:x="w/2" v-bind:y="h" dir="down" />
-            <connection-point v-bind:name="`${name}@l`" v-bind:d="cpDiameter" v-bind:x="0" v-bind:y="h/2" dir="left" />
+            <connection-point 
+                v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0,   y: h/2}}" 
+                v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir}" />
         </template>
         <style>
             .port-name {font-family: sans-serif; fill: white;}
@@ -172,7 +171,6 @@
         </props>
         <computed-props>
             <computed-prop name="label">String(props.name).replace(props.prefix, '')</computed-prop>
-            <computed-prop name="cpDiameter">props.h*0.7</computed-prop>
         </computed-props>
     </component-class>
 

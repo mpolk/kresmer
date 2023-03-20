@@ -375,6 +375,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="vue-directives">
+        <xs:attribute name="v-bind"/>
         <xs:attribute name="v-for"/>
         <xs:attribute name="v-if"/>
         <xs:attribute name="v-else"/>
