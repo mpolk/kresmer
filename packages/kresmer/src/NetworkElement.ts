@@ -7,6 +7,7 @@
  * on the drawing 
  ***************************************************************************/
 
+import {v4 as uuidV4} from "uuid";
 import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
 import { EditorOperation } from "./UndoStack";
@@ -15,10 +16,13 @@ import { indent } from "./Utils";
 
 export default abstract class NetworkElement {
     /**
-     * 
+     * Creates a new Network Element
+     * @param kresmer The Kresmer instance this element belongs to
      * @param _class The class this Element should belong 
      *               (either Element class instance or its name)
      * @param args Instance creation arguments:
+     *             name: the name of the element
+     *             dbID: the ID of the corresponding database entity
      *             props: translates to the vue-component props
      */
      public constructor(
@@ -34,7 +38,9 @@ export default abstract class NetworkElement {
         this._class = _class;
         this.props = args?.props ?? {};
         this.id = NetworkElement.nextID++;
-        this._name = args?.name;
+        this._name = args?.name ? 
+            this.assertNameUniqueness(args.name) : 
+            `${this.getNamePrefix()}-${uuidV4()}`;
         this.dbID = (args?.dbID !== null) ? args?.dbID : undefined;
     }//ctor
 
@@ -54,37 +60,42 @@ export default abstract class NetworkElement {
     /** Return the number of props (excluding "name") */
     get propCount() { return Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length;}
 
+    private _name: string;
     /** A name for component lookup*/
-    public _name?: string;
     get name(): string
     {
-        return this.generateName(this._name);
+        return this._name;
     }//name
 
-    set name(newName: string|undefined)
+    set name(newName: string)
     {
         const oldName = this.name;
-        if (newName) {
-            this._name = newName;
-        } else {
-            this._name = undefined;
+        if (newName == oldName) {
+            return;
         }//if
+
+        if (!newName) {
+            throw new EmptyElementNameException();
+        }//if
+        
+        this._name = this.assertNameUniqueness(newName);
         this.kresmer._onElementRename(this, oldName);
     }//set name
 
-    public generateName(rawName: string|undefined)
-    {
-        if (rawName)
-            return rawName;
-        else
-            return this.getDefaultName();
-    }//generateName
 
-    get isNamed()
+    /** Check if the name is unique (among the elements of this type) and return it if it is */
+    abstract checkNameUniqueness(name: string): boolean;
+
+    private assertNameUniqueness(name: string): string
     {
-        return Boolean(this._name);
-    }//isNamed
-    abstract getDefaultName(): string;
+        if (!this.checkNameUniqueness(name)) {
+            throw new DuplicateElementNameException(name);
+        }//if
+        return name;
+    }//assertNameUniqueness
+
+    /** Returns the prefix for the automatic name generation for the elements of this type v*/
+    protected abstract getNamePrefix(): string;
 
 
     protected _dbID?: number|string;
@@ -155,7 +166,9 @@ export default abstract class NetworkElement {
             this.props[propName] = data.props[propName];
         }//for
 
-        this.name = data.name;
+        if (data.name !== undefined) {
+            this.name = data.name;
+        }//if
         this.dbID = data.dbID;
     }//setData
 
@@ -198,3 +211,16 @@ export class UpdateElementOp extends EditorOperation {
     }//undo
 
 }//UpdateElementOp
+
+
+export class EmptyElementNameException extends KresmerException {
+    constructor() {
+        super("Element name cannot be empty!");
+    }//ctor
+}//EmptyElementNameException
+
+export class DuplicateElementNameException extends KresmerException {
+    constructor(name: string) {
+        super(`Duplicate element name: ${name}`);
+    }//ctor
+}//DuplicateElementNameException

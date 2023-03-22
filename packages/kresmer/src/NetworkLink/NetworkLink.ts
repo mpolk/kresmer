@@ -75,10 +75,14 @@ class _NetworkLink extends NetworkElement {
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
 
-    override getDefaultName()
+    override getNamePrefix()
     {
-        return `Link${this.id}`;
-    }//getDefaultName
+        return "Link";
+    }//getNamePrefix
+
+    override checkNameUniqueness(name: string): boolean {
+        return name == this.name || !this.kresmer.linksByName.has(name);
+    }//checkNameUniqueness
 
     toString()
     {
@@ -181,7 +185,7 @@ class _NetworkLink extends NetworkElement {
     {
         const attrs = new Map<string, string>();
         attrs.set("class", this._class.name);
-        this.isNamed && attrs.set("name", this.name);
+        attrs.set("name", this.name);
         this.dbID && attrs.set("db-id", this.dbID.toString());
         (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
             attrs.set("from", this.vertices[0].toString());

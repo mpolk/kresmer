@@ -157,5 +157,5 @@ export default class DrawingLoader {
 export type DrawingMergeOptions = 
     "erase-previous-content" | 
     "merge-duplicates" |
-    "rename-duplicates" |
-    "ignore-duplicates";
+    "rename-duplicates"
+    ;

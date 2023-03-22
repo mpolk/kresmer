@@ -25,9 +25,26 @@
     const formValidated = ref(false);
 
     let elementToEdit: NetworkElement;
-    const elementName = ref<string|undefined>("");
-    const elementDisplayName = ref("");
-    watch(elementName, () => {elementDisplayName.value = elementToEdit.generateName(elementName.value)});
+    const elementName = ref<string>("");
+    const inpElementName = ref<HTMLInputElement>();
+    watch(elementName, () => {
+        formValidated.value = !validateElementName();
+    });
+
+    function validateElementName()
+    {
+        if (!elementName.value) {
+            inpElementName.value?.setCustomValidity("Duplicate element name!");
+            return false;
+        } else if (!elementToEdit.checkNameUniqueness(elementName.value!)) {
+            inpElementName.value?.setCustomValidity("Duplicate element name!");
+            return false;
+        } else {
+            inpElementName.value?.setCustomValidity("");
+            return true;
+        }//if
+    }//validateElementName
+
     let dbID: number|string|undefined;
 
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -41,8 +58,7 @@
         }//if
 
         elementToEdit = element;
-        elementName.value = element._name;
-        elementDisplayName.value = element.name;
+        elementName.value = element.name;
         dbID = element.dbID;
         elementProps.value = Object.keys(element._class.props)
             .map(name => 
@@ -108,7 +124,7 @@
                     input.setCustomValidity("Syntax error!");
                 }//if
             }//for
-            if (propsWithErrors.length) {
+            if (propsWithErrors.length || !validateElementName()) {
                 formValidated.value = true;
                 return;
             }//if
@@ -132,7 +148,7 @@
     <div ref="rootDiv" class="offcanvas offcanvas-end" tabindex="-1">
         <div class="offcanvas-header align-items-baseline">
             <div>
-                <h5 class="offcanvas-title">{{elementDisplayName}}</h5>
+                <h5 class="offcanvas-title">{{elementName}}</h5>
                 <h6 class="text-secondary">{{elementToEdit?.getClass()?.name}}</h6>
             </div>
             <button type="button" class="btn-close" @click="close"></button>
@@ -142,15 +158,16 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <td>name</td>
+                            <td><label for="inpElementName">name</label></td>
                             <td>
-                                <input class="form-control form-control-sm" v-model="elementName"/>
+                                <input id="inpElementName" type="text" class="form-control form-control-sm" 
+                                       v-model="elementName" ref="inpElementName"/>
                             </td>
                         </tr>
                         <tr>
-                            <td>dbID</td>
+                            <td><label for="inpDbID">dbID</label></td>
                             <td>
-                                <input class="form-control form-control-sm" v-model="dbID"/>
+                                <input id="inpDbID" type="number" class="form-control form-control-sm" v-model="dbID"/>
                             </td>
                         </tr>
                         <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">

@@ -104,13 +104,6 @@
                             Rename duplicates
                         </label>
                     </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" id="rbIgnoreDuplicates" name="mergeOptions"
-                            @click="setResult('ignore-duplicates')">
-                        <label class="form-check-label" for="rbIgnoreDuplicates">
-                            Ignore duplicates
-                        </label>
-                    </div>
                     <div v-if="showWarning" class="text-warning text-center">
                         Please choose one of the options above
                     </div>
