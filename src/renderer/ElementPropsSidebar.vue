@@ -13,7 +13,7 @@
 </script>
 
 <script setup lang="ts">
-    import { ref, watch } from 'vue';
+    import { computed, ref, watch } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { NetworkElement } from 'kresmer';
     import { updateWindowTitle } from './renderer-main';
@@ -26,7 +26,7 @@
 
     let elementToEdit: NetworkElement;
     const elementName = ref<string>("");
-    const inpElementName = ref<HTMLInputElement>();
+    const inpElementName = ref<HTMLInputElement>()!;
     watch(elementName, () => {
         formValidated.value = !validateElementName();
     });
@@ -34,16 +34,17 @@
     function validateElementName()
     {
         if (!elementName.value) {
-            inpElementName.value?.setCustomValidity("Duplicate element name!");
-            return false;
+            elementNameValidationMessage.value = "Element name is required!";
         } else if (!elementToEdit.checkNameUniqueness(elementName.value!)) {
-            inpElementName.value?.setCustomValidity("Duplicate element name!");
-            return false;
+            elementNameValidationMessage.value = "Duplicate element name!";
         } else {
-            inpElementName.value?.setCustomValidity("");
-            return true;
+            elementNameValidationMessage.value = "";
         }//if
+        inpElementName.value?.setCustomValidity(elementNameValidationMessage.value);
+        return !elementNameValidationMessage.value;
     }//validateElementName
+
+    const elementNameValidationMessage = ref("");
 
     let dbID: number|string|undefined;
 
@@ -162,6 +163,9 @@
                             <td>
                                 <input id="inpElementName" type="text" class="form-control form-control-sm" 
                                        v-model="elementName" ref="inpElementName"/>
+                                <div class="invalid-feedback">
+                                    {{ elementNameValidationMessage }}
+                                </div>
                             </td>
                         </tr>
                         <tr>
