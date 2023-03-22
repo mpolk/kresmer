@@ -13,7 +13,7 @@
 </script>
 
 <script setup lang="ts">
-    import { computed, ref, watch } from 'vue';
+    import { ref, watch } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { NetworkElement } from 'kresmer';
     import { updateWindowTitle } from './renderer-main';
