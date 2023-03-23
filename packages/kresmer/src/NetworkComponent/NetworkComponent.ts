@@ -6,7 +6,7 @@
  * Network Component - a generic network element instance 
  ***************************************************************************/
 
-import { InjectionKey, ref } from "vue";
+import { InjectionKey } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import NetworkElement, {NetworkElementData} from '../NetworkElement';
 import ConnectionPointProxy from '../ConnectionPoint/ConnectionPointProxy';
