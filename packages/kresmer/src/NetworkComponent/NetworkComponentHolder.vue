@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, PropType, onMounted, computed, provide, inject } from 'vue';
+    import { ref, PropType, onMounted, computed, provide, inject, watch, nextTick } from 'vue';
     import TransformBox from '../Transform/TransformBox.vue';
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponentController from "./NetworkComponentController";
@@ -42,15 +42,25 @@
         return {x: rect.x + rect.width/2, y: rect.y + rect.height/2};
     })//center
 
+    function updateBoundingBox()
+    {
+        applyTransform.value = false;
+            bBox.value = svg.value?.getBBox({stroke: true});
+            applyTransform.value = true;
+            if (props.controller.transform.nonEmpty) {
+                props.controller.updateConnectionPoints();
+            }//if
+    }//updateBoundingBox
+
     onMounted(() => {
-        bBox.value = svg.value?.getBBox({stroke: true});
-        applyTransform.value = true;
-        if (props.controller.transform.nonEmpty) {
-            props.controller.updateConnectionPoints();
-        }//if
+        updateBoundingBox();
         // eslint-disable-next-line vue/no-mutating-props
         props.controller.component.svg = svg.value;
     })//onMounted
+
+    watch(() => props.controller.component.propsUpdateIndicator, () => {
+        nextTick(updateBoundingBox);
+    })//watch(props.controller.component.propsUpdateWatcher
 
     const transform = computed(() => {
         if (props.controller.transform && applyTransform.value)

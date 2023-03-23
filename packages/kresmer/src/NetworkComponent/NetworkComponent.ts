@@ -6,7 +6,7 @@
  * Network Component - a generic network element instance 
  ***************************************************************************/
 
-import { InjectionKey } from "vue";
+import { InjectionKey, ref } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import NetworkElement, {NetworkElementData} from '../NetworkElement';
 import ConnectionPointProxy from '../ConnectionPoint/ConnectionPointProxy';
@@ -78,10 +78,12 @@ export default class NetworkComponent extends NetworkElement {
         }//for
     }//updateConnectionPoints
 
+    propsUpdateIndicator = 0;
 
     override setData(data: NetworkElementData)
     {
         super.setData(data);
+        this.propsUpdateIndicator++;
         this.updateConnectionPoints();
     }//setData
 }//NetworkComponent

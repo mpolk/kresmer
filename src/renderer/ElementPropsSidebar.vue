@@ -20,7 +20,7 @@
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>();
-    const propInputs = ref<[HTMLInputElement]>();
+    const propInputs = ref<HTMLInputElement[]>();
     const formEnabled = ref(false);
     const formValidated = ref(false);
 
