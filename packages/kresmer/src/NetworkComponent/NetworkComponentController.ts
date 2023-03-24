@@ -314,10 +314,10 @@ export class SelectionMoveOp extends EditorOperation {
         for (const [, link] of kresmer.links) {
             if (link.isLoopback)
                 continue;
-            const fromComponent = link.vertices[0].anchor.conn?.component ?? undefined;
+            const fromComponent = link.vertices[0].anchor.conn?.hostElement ?? undefined;
             if (!fromComponent?.isSelected)
                 continue;
-            const toComponent = link.vertices[link.vertices.length-1].anchor.conn?.component ?? undefined;
+            const toComponent = link.vertices[link.vertices.length-1].anchor.conn?.hostElement ?? undefined;
             if (!toComponent?.isSelected)
                 continue;
             this.links.push(link);
@@ -428,7 +428,7 @@ export class ComponentDeleteOp extends EditorOperation {
     override exec(): void {
         this.controller.kresmer.links.forEach(link => {
             link.vertices.forEach(vertex => {
-                if (vertex.isConnected && vertex.anchor.conn!.component === this.controller.component) {
+                if (vertex.isConnected && vertex.anchor.conn!.hostElement === this.controller.component) {
                     this.detachedVertices.set(vertex, vertex.anchor.conn!.name);
                     vertex.detach();
                 }//if

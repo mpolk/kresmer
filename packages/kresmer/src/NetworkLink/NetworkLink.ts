@@ -96,7 +96,7 @@ class _NetworkLink extends NetworkElement {
     public get isLoopback() {
         const n = this.vertices.length - 1;
         return this.vertices[0].isConnected && this.vertices[n].isConnected && 
-            this.vertices[0].anchor.conn!.component === this.vertices[n].anchor.conn!.component;
+            this.vertices[0].anchor.conn!.hostElement === this.vertices[n].anchor.conn!.hostElement;
     }//isLoopback
 
     public selectLink(this: NetworkLink)

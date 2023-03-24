@@ -9,17 +9,17 @@
 \****************************************************************************/
 
 import { nextTick, reactive, ref } from "vue";
-import NetworkComponent from "../NetworkComponent/NetworkComponent";
+import NetworkElement from "../NetworkElement";
 import { Position } from "../Transform/Transform";
 
 export default class ConnectionPointProxy {
     /**
      * Constructs a connection point
-     * @param component The component this connection point belongs to
+     * @param hostElement The network element this connection point belongs to
      * @param name The name of the connection point
      * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
      */
-    constructor(readonly component: NetworkComponent, readonly name: string|number, dir0: number|string)
+    constructor(readonly hostElement: NetworkElement, readonly name: string|number, dir0: number|string)
     {
         switch (dir0) {
             case 'right': this.dir0 = 0; break;
@@ -67,6 +67,14 @@ export default class ConnectionPointProxy {
 
 export function parseConnectionPointData(connectionPointData: string)
 {
-    const [componentName, ...connectionPointParts] = connectionPointData.split(':');
-    return {componentName, connectionPointName: connectionPointParts.join(':')};
+    // eslint-disable-next-line prefer-const
+    let [elementName, ...connectionPointParts] = connectionPointData.split(':');
+    let elementType: "component"|"link" = "component";
+    let connectionPointName: string|number = connectionPointParts.join(':');
+    if (elementName[0] === "-") {
+        elementType = "link";
+        elementName = elementName.slice(1);
+        connectionPointName = Number(connectionPointName);
+    }//if
+    return {elementName, elementType, connectionPointName};
 }//parseConnectionPointData

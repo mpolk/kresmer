@@ -21,6 +21,8 @@ export default class LinkVertex {
     private pos?: Position;
     private conn?: ConnectionPointProxy;
 
+    public ownConnectionPoint?: ConnectionPointProxy;
+
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
     // to the link's loopback mode
     private setConn(value: ConnectionPointProxy|undefined) {
@@ -53,7 +55,9 @@ export default class LinkVertex {
     toString()
     {
         if (this.conn) {
-            return `${this.conn.component.name}:${this.conn.name}`;
+            const elementName =  this.conn.hostElement instanceof NetworkLink ? 
+                `-${this.conn.hostElement.name}`: this.conn.hostElement.name;
+            return `${elementName}:${this.conn.name}`;
         } else if (this.pos) {
             return `(${this.pos.x.toFixed()}, ${this.pos.y.toFixed()})`
         } else {
@@ -64,7 +68,9 @@ export default class LinkVertex {
     public toXML()
     {
         if (this.conn) {
-            return `<vertex connect="${this.conn.component.name}:${this.conn.name}"/>`;
+            const elementName =  this.conn.hostElement instanceof NetworkLink ? 
+                `-${this.conn.hostElement.name}`: this.conn.hostElement.name;
+            return `<vertex connect="${elementName}:${this.conn.name}"/>`;
         } else if (this.pos) {
             return `<vertex x="${this.pos.x}" y="${this.pos.y}"/>`;
         } else {
@@ -212,9 +218,19 @@ export default class LinkVertex {
         for (const element of elementsUnderCursor) {
             const connectionPointData = element.getAttribute("data-connection-point");
             if (connectionPointData) {
-                const {componentName, connectionPointName} = parseConnectionPointData(connectionPointData);
-                const component = this.link.kresmer.getComponentByName(componentName);
-                const connectionPoint = component?.connectionPoints[connectionPointName];
+                const {elementName, elementType, connectionPointName} = parseConnectionPointData(connectionPointData);
+                let connectionPoint: ConnectionPointProxy | undefined;
+                switch (elementType) {
+                    case "component": {
+                        const component = this.link.kresmer.getComponentByName(elementName);
+                        connectionPoint = component?.connectionPoints[connectionPointName];
+                    } break;
+                    case "link": {
+                        const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
+                        const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
+                        connectionPoint = vertexToConnectTo?.ownConnectionPoint;
+                    } break;
+                }//switch
                 if (connectionPoint) {
                     this.connect(connectionPoint);
                 } else {

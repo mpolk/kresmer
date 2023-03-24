@@ -185,7 +185,7 @@ kresmer.on("link-vertex-being-moved", (vertex: LinkVertex) =>
 
 kresmer.on("connection-point-right-click", (connectionPoint: ConnectionPointProxy) =>
 {
-    window.electronAPI.showContextMenu("connection-point", connectionPoint.component.id, connectionPoint.name);
+    window.electronAPI.showContextMenu("connection-point", connectionPoint.hostElement.id, connectionPoint.name);
 });//onConnectionPointRightClick
 
 kresmer.on("error", (error: KresmerException) => 
@@ -197,7 +197,7 @@ kresmer.on("error", (error: KresmerException) =>
     });
 });//onError
 
-    
+
 
 // Processing application comand (coming from the main process)
 const appCommandExecutor = new AppCommandExecutor;

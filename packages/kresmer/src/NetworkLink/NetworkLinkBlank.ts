@@ -48,9 +48,19 @@ export default class NetworkLinkBlank {
         for (const element of elementsUnderCursor) {
             const connectionPointData = element.getAttribute("data-connection-point");
             if (connectionPointData) {
-                const {componentName, connectionPointName} = parseConnectionPointData(connectionPointData);
-                const component = this.kresmer.getComponentByName(componentName);
-                const connectionPoint = component?.connectionPoints[connectionPointName];
+                const {elementName, elementType, connectionPointName} = parseConnectionPointData(connectionPointData);
+                let connectionPoint: ConnectionPointProxy | undefined;
+                switch (elementType) {
+                    case "component": {
+                        const component = this.kresmer.getComponentByName(elementName);
+                        connectionPoint = component?.connectionPoints[connectionPointName];
+                    } break;
+                    case "link": {
+                        const linkToConnectTo = this.kresmer.getLinkByName(elementName);
+                        const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
+                        connectionPoint = vertexToConnectTo?.ownConnectionPoint;
+                    } break;
+                }//switch
                 if (connectionPoint) {
                     this.kresmer._completeLinkCreation(connectionPoint);
                 } else {
