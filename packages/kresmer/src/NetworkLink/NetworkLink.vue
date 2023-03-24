@@ -7,8 +7,9 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { computed, ref, onBeforeMount, PropType } from 'vue';
+    import { computed, ref, onBeforeMount, PropType, provide } from 'vue';
     import NetworkLink from './NetworkLink';
+    import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
     
     export default {
@@ -21,6 +22,8 @@
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
     });
+
+    provide(NetworkElement.ikHostElement, props.model);
 
     onBeforeMount(props.model.initVertices);
 

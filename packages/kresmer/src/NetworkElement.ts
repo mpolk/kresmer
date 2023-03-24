@@ -8,11 +8,13 @@
  ***************************************************************************/
 
 import {v4 as uuidV4} from "uuid";
+import { InjectionKey } from "vue";
 import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
 import { EditorOperation } from "./UndoStack";
 import KresmerException from "./KresmerException";
 import { indent } from "./Utils";
+import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 
 export default abstract class NetworkElement {
     /**
@@ -82,6 +84,11 @@ export default abstract class NetworkElement {
         this.kresmer._onElementRename(this, oldName);
     }//set name
 
+    /** A symbolic key for the component instance injection */
+    static readonly ikHostElement = Symbol() as InjectionKey<NetworkElement>;
+
+    /** A collection of this component connection points indexed by their names */
+    readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
 
     /** Check if the name is unique (among the elements of this type) and return it if it is */
     abstract checkNameUniqueness(name: string): boolean;

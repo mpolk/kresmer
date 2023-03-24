@@ -67,9 +67,6 @@ export default class NetworkComponent extends NetworkElement {
         return name == this.name || !this.kresmer.componentsByName.has(name);
     }//checkNameUniqueness
 
-    /** A collection of this component connection points indexed by their names */
-    readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
-
     /** Update component's connection points position to the actual values */
     public updateConnectionPoints()
     {

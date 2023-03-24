@@ -13,6 +13,7 @@
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponentController from "./NetworkComponentController";
     import NetworkComponent from "./NetworkComponent";
+    import NetworkElement from "../NetworkElement";
     import { Transform } from '../Transform/Transform';
     import Kresmer from '../Kresmer';
 
@@ -31,6 +32,7 @@
     const svg = ref<SVGSVGElement>()!;
     const trGroup = ref<SVGSVGElement>()!;
     provide(NetworkComponent.injectionKey, props.controller.component);
+    provide(NetworkElement.ikHostElement, props.controller.component);
 
     const applyTransform = ref(false);
     const bBox = ref<SVGRect>();

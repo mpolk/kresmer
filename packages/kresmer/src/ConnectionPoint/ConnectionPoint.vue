@@ -10,7 +10,7 @@
 <script setup lang="ts">
     import { inject, onMounted, ref, watch, nextTick } from 'vue';
     import Kresmer from '../Kresmer';
-    import NetworkComponent from '../NetworkComponent/NetworkComponent';
+    import NetworkElement from '../NetworkElement';
     import ConnectionPointProxy from './ConnectionPointProxy';
 
     const props = defineProps({
@@ -21,9 +21,9 @@
         dir: {type: [Number, String], default: 90},
     });
 
-    const component = inject(NetworkComponent.injectionKey)!;
-    const proxy = new ConnectionPointProxy(component, props.name, props.dir);
-    component.connectionPoints[props.name] = proxy;
+    const hostElement = inject(NetworkElement.ikHostElement)!;
+    const proxy = new ConnectionPointProxy(hostElement, props.name, props.dir);
+    hostElement.connectionPoints[props.name] = proxy;
 
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
@@ -57,7 +57,7 @@
 
 <template>
     <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"
-        :data-connection-point="`${component.name}:${name}`"
+        :data-connection-point="`${hostElement.name}:${name}`"
         @contextmenu.stop="onRightClick()"
         ><title>{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title></circle>
 </template>
