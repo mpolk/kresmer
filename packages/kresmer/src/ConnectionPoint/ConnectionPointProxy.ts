@@ -40,6 +40,9 @@ export default class ConnectionPointProxy {
     /** Absolute coordinates of the connection point */
     readonly coords = reactive<Position>({x: 0, y: 0});
 
+    /** Indicates if the connection point accepts connections */
+    isAcceptingConnections = true;
+
     private _isPositioned = false;
     /** Indicates if the connection point is already positioned on the canvas */
     get isPositioned() { return this._isPositioned; }

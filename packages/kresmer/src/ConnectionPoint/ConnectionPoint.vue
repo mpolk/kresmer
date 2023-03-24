@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject, onMounted, ref, watch, nextTick } from 'vue';
+    import { inject, onMounted, ref, watch, nextTick, computed } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkElement from '../NetworkElement';
     import ConnectionPointProxy from './ConnectionPointProxy';
@@ -28,6 +28,8 @@
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<SVGCircleElement>();
+
+    const dataAttr = computed(() => proxy.isAcceptingConnections ? `${hostElement.name}:${props.name}` : undefined);
 
     onMounted(updatePos);
     function updatePos()
@@ -57,7 +59,7 @@
 
 <template>
     <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"
-        :data-connection-point="`${hostElement.name}:${name}`"
+        :data-connection-point="dataAttr"
         @contextmenu.stop="onRightClick()"
         ><title>{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title></circle>
 </template>
