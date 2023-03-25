@@ -97,6 +97,14 @@ export default abstract class NetworkElement {
         this.connectionPoints[name] = connectionPoint;
     }//setConnectionPoint
 
+    /** Update component's connection points position to the actual values */
+    public updateConnectionPoints()
+    {
+        for (const name in this.connectionPoints) {
+            this.connectionPoints[name].updatePos();
+        }//for
+    }//updateConnectionPoints
+
     /** Check if the name is unique (among the elements of this type) and return it if it is */
     abstract checkNameUniqueness(name: string): boolean;
 

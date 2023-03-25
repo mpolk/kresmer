@@ -203,6 +203,7 @@ export default class LinkVertex {
             y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
         }
         this.link.kresmer.emit("link-vertex-being-moved", this);
+        this.ownConnectionPoint?.updatePos();
         return true;
     }//drag
 
@@ -228,6 +229,10 @@ export default class LinkVertex {
                     case "link": {
                         const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
                         const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
+                        if (vertexToConnectTo === this)
+                            continue;
+                        if (vertexToConnectTo?.isConnected && vertexToConnectTo?.conn === this.ownConnectionPoint)
+                            continue;
                         connectionPoint = vertexToConnectTo?.ownConnectionPoint;
                     } break;
                 }//switch
@@ -239,6 +244,7 @@ export default class LinkVertex {
                 }//if
                 this.link.kresmer.undoStack.commitOperation();
                 this.link.kresmer.emit("link-vertex-connected", this);
+                this.ownConnectionPoint?.updatePos();
                 return true;
             }//if
         }//for
@@ -251,6 +257,7 @@ export default class LinkVertex {
             this.savedConn = undefined;
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
+        this.ownConnectionPoint?.updatePos();
         return true;
     }//endDrag
 

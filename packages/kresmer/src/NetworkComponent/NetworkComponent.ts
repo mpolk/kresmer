@@ -66,14 +66,6 @@ export default class NetworkComponent extends NetworkElement {
         return name == this.name || !this.kresmer.componentsByName.has(name);
     }//checkNameUniqueness
 
-    /** Update component's connection points position to the actual values */
-    public updateConnectionPoints()
-    {
-        for (const name in this.connectionPoints) {
-            this.connectionPoints[name].updatePos();
-        }//for
-    }//updateConnectionPoints
-
     propsUpdateIndicator = 0;
 
     override setData(data: NetworkElementData)

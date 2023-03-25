@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { computed, ref, onBeforeMount, PropType, provide } from 'vue';
+    import { computed, ref, onBeforeMount, PropType, provide, onMounted } from 'vue';
     import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
@@ -26,6 +26,9 @@
     provide(NetworkElement.ikHostElement, props.model);
 
     onBeforeMount(props.model.initVertices);
+    onMounted(() => {
+        props.model.updateConnectionPoints();
+    })
 
     const isHighlighted = ref(false);
 

@@ -18,7 +18,7 @@
         name: {type: [String, Number], required: true},
         x: {type: Number, default: 0}, 
         y: {type: Number, default: 0}, 
-        d: {type: Number, default: 0}, 
+        d: {type: Number, default: 10}, 
         dir: {type: [Number, String], default: 90},
     });
 
@@ -28,7 +28,7 @@
 
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
-    const circle = ref<SVGCircleElement>();
+    const cpMarker = ref<SVGCircleElement>();
 
     const dataAttr = computed(() => {
         const hostName = hostElement instanceof NetworkLink ? `-${hostElement.name}` : hostElement.name;
@@ -40,14 +40,18 @@
     {
         const drawingRect = kresmer.drawingRect;
         const mountingRect = kresmer.mountPoint.getBoundingClientRect();
-        const matrix = circle.value!.getCTM()!;
-        const coords = {
-            x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
-               drawingRect.left + mountingRect.left /* - window.scrollX */,
-            y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - 
-               drawingRect.top + mountingRect.top /* - window.scrollY */,
-        };        
-        const rot = Math.atan2(matrix.b, matrix.a) / Math.PI * 180;
+        let coords = {x: props.x, y: props.y};
+        let rot = 0;
+        if (cpMarker.value?.ownerSVGElement != kresmer.rootSVG) {
+            const matrix = cpMarker.value!.getCTM()!;
+            coords = {
+                x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
+                drawingRect.left + mountingRect.left /* - window.scrollX */,
+                y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - 
+                drawingRect.top + mountingRect.top /* - window.scrollY */,
+            };        
+            rot = Math.atan2(matrix.b, matrix.a) / Math.PI * 180;
+        }//if
         proxy._setPos(coords, proxy.dir0 + rot);
     }//updatePos
 
@@ -62,14 +66,14 @@
 </script>
 
 <template>
-    <circle :cx="x" :cy="y" :r="d/2" class="connection-point" ref="circle"
+    <circle :cx="x" :cy="y" :r="d/2" class="connection-point-marker" ref="cpMarker"
         :data-connection-point="dataAttr"
         @contextmenu.stop="onRightClick()"
         ><title>{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title></circle>
 </template>
 
 <style lang="scss">
-    .connection-point {
+    .connection-point-marker {
         fill-opacity: 0;
         stroke-opacity: 0;
 
