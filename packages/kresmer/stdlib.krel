@@ -645,9 +645,7 @@
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
             .connection-point {
                 r: 8px;
-                fill: yellow;
-                stroke: rgb(184, 169, 0);
-                stroke-width: 1;
+                fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
             }
         </style>
     </link-class>
@@ -664,9 +662,7 @@
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
             .connection-point {
                 r: 8px;
-                fill: yellow;
-                stroke: rgb(184, 169, 0);
-                stroke-width: 1;
+                fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
             }
         </style>
     </link-class>
@@ -683,9 +679,7 @@
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
             .connection-point {
                 r: 8px;
-                fill: yellow;
-                stroke: rgb(184, 169, 0);
-                stroke-width: 1;
+                fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
             }
         </style>
     </link-class>

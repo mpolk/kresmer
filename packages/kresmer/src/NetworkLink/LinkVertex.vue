@@ -66,6 +66,11 @@
         props.model.onRightClick(event);
     }//onRightClick
 
+    function onClick()
+    {
+        props.model.link.selectLink();
+    }//onClick
+
     function onDoubleClick()
     {
         props.model.align();
@@ -76,7 +81,7 @@
 
 <template>
     <ConnectionPoint :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" 
-        @mousedown.stop="onMouseDown($event)"
+        @click="onClick"
         />
     <template v-if="model.link.isSelected">
         <circle v-if="model.isDragged" ref="padding"
