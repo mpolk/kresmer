@@ -5,11 +5,18 @@
  * --------------------------------------------------------------------------
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
-
-<script setup lang="ts">
+<script lang="ts">
     import { PropType, ref, inject } from 'vue';
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
+    import ConnectionPoint from '../ConnectionPoint/ConnectionPoint.vue';
+
+    export default {
+        components: {ConnectionPoint},
+    }
+</script>
+
+<script setup lang="ts">
 
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
@@ -68,6 +75,9 @@
 </script>
 
 <template>
+    <ConnectionPoint :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" 
+        @mousedown.stop="onMouseDown($event)"
+        />
     <template v-if="model.link.isSelected">
         <circle v-if="model.isDragged" ref="padding"
             :cx="model.coords.x" :cy="model.coords.y" 
@@ -90,16 +100,16 @@
             @contextmenu="onRightClick($event)"
             @dblclick="onDoubleClick()"
             />
-        <Transition>
-            <circle v-if="model.showBlinker" ref="blinker"
-                :cx="model.coords.x" :cy="model.coords.y" 
-                class="vertex blinker"
-                />
-        </Transition>
     </template>
+    <Transition>
+        <circle v-if="model.showBlinker" ref="blinker"
+            :cx="model.coords.x" :cy="model.coords.y" 
+            class="vertex blinker"
+            />
+    </Transition>
 </template>
 
-<style lang="scss">
+<style lang="scss" scoped>
     .connected {
         opacity: 0.8;
         &:hover {

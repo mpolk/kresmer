@@ -33,12 +33,12 @@
         <vertex x="215.5102341224366" y="738.375"/>
     </link>
 
-    <link class="DAC" name="Link-e88e08e4-9fe9-4532-8c8c-0277398a0e8b" from="core:1:26@r" to="core:2:27@r">
+    <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
         <vertex x="64.62951062778245" y="0"/>
         <vertex x="64.62951062778245" y="103.5"/>
     </link>
 
-    <link class="DAC" name="Link-3493758c-592c-4989-9bf1-58cea7974271" from="core:1:27@r" to="core:2:26@r">
+    <link class="DAC" name="core-stacking-2" from="core:1:27@r" to="core:2:26@r">
         <vertex x="42.187801316780565" y="0"/>
         <vertex x="42.187801316780565" y="46.5"/>
     </link>

@@ -162,6 +162,7 @@
         <style>
             .port-name {font-family: sans-serif; fill: white;}
             .port-icon.body {stroke: white;}
+            .connection-point {fill: yellow;}
         </style>
         <props>
             <prop name="w" type="Number" required="true" default="25" />
@@ -642,6 +643,12 @@
             .vertex {stroke: black; stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+            .connection-point {
+                r: 8px;
+                fill: yellow;
+                stroke: rgb(184, 169, 0);
+                stroke-width: 1;
+            }
         </style>
     </link-class>
 
@@ -655,6 +662,12 @@
             .vertex {stroke: #2f97b6; stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+            .connection-point {
+                r: 8px;
+                fill: yellow;
+                stroke: rgb(184, 169, 0);
+                stroke-width: 1;
+            }
         </style>
     </link-class>
 
@@ -668,6 +681,12 @@
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+            .connection-point {
+                r: 8px;
+                fill: yellow;
+                stroke: rgb(184, 169, 0);
+                stroke-width: 1;
+            }
         </style>
     </link-class>
 </kresmer-library>

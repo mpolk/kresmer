@@ -11,6 +11,7 @@
     import { inject, onMounted, ref, watch, nextTick, computed } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkElement from '../NetworkElement';
+    import NetworkLink from '../NetworkLink/NetworkLink';
     import ConnectionPointProxy from './ConnectionPointProxy';
 
     const props = defineProps({
@@ -29,7 +30,10 @@
     const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<SVGCircleElement>();
 
-    const dataAttr = computed(() => proxy.isAcceptingConnections ? `${hostElement.name}:${props.name}` : undefined);
+    const dataAttr = computed(() => {
+        const hostName = hostElement instanceof NetworkLink ? `-${hostElement.name}` : hostElement.name;
+        return proxy.isAcceptingConnections ? `${hostName}:${props.name}` : undefined
+    });
 
     onMounted(updatePos);
     function updatePos()
@@ -66,13 +70,12 @@
 
 <style lang="scss">
     .connection-point {
-        cursor: pointer; 
-        fill: yellow;
         fill-opacity: 0;
+        stroke-opacity: 0;
 
         &:hover {
             fill-opacity: 0.5;
-            // filter: url(#kre:fltCPHover);
+            stroke-opacity: 1;
         }
     }
 </style>
