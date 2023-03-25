@@ -53,7 +53,7 @@ export default class NetworkLinkBlank {
                 switch (elementType) {
                     case "component": {
                         const component = this.kresmer.getComponentByName(elementName);
-                        connectionPoint = component?.connectionPoints[connectionPointName];
+                        connectionPoint = component?.getConnectionPoint(connectionPointName);
                     } break;
                     case "link": {
                         const linkToConnectTo = this.kresmer.getLinkByName(elementName);

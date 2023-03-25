@@ -759,7 +759,7 @@ export default class Kresmer extends KresmerEventHooks {
                 console.error(`Trying to create a link from non-existing component (id=${fromComponentID})!`);
                 return;
             }//if
-            const fromConnectionPoint = fromComponent.connectionPoints[fromConnectionPointName];
+            const fromConnectionPoint = fromComponent.getConnectionPoint(fromConnectionPointName);
             if (!fromConnectionPoint) {
                 console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
                 return;

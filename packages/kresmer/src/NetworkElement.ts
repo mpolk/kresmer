@@ -88,7 +88,14 @@ export default abstract class NetworkElement {
     static readonly ikHostElement = Symbol() as InjectionKey<NetworkElement>;
 
     /** A collection of this component connection points indexed by their names */
-    readonly connectionPoints: Record<string, ConnectionPointProxy> = {};
+    protected readonly connectionPoints: Record<string|number, ConnectionPointProxy> = {};
+    /** Returns the connection with the given name */
+    getConnectionPoint(name: string|number) {return this.connectionPoints[name]}
+    /** Adds a connection point with the given name or replaces the existing one */
+    setConnectionPoint(name: string|number, connectionPoint: ConnectionPointProxy)
+    {
+        this.connectionPoints[name] = connectionPoint;
+    }//setConnectionPoint
 
     /** Check if the name is unique (among the elements of this type) and return it if it is */
     abstract checkNameUniqueness(name: string): boolean;

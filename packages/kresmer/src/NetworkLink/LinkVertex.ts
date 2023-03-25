@@ -98,7 +98,7 @@ export default class LinkVertex {
                     {source: `Link "${this.link.name}"`}));
                 return this;
             }//if
-            const connectionPoint = component.connectionPoints[this.initParams.conn.connectionPoint];
+            const connectionPoint = component.getConnectionPoint(this.initParams.conn.connectionPoint);
             if (!connectionPoint) {
                 this.link.kresmer.raiseError(new KresmerException(
                     `Attempt to connect to non-existing connection point \
@@ -223,7 +223,7 @@ export default class LinkVertex {
                 switch (elementType) {
                     case "component": {
                         const component = this.link.kresmer.getComponentByName(elementName);
-                        connectionPoint = component?.connectionPoints[connectionPointName];
+                        connectionPoint = component?.getConnectionPoint(connectionPointName);
                     } break;
                     case "link": {
                         const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);

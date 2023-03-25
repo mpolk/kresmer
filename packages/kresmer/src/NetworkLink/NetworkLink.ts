@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { InjectionKey } from "vue";
-import Kresmer from "../Kresmer";
+import Kresmer, { ConnectionPointProxy } from "../Kresmer";
 import KresmerException from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
@@ -50,6 +50,11 @@ class _NetworkLink extends NetworkElement {
 
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
+
+    override setConnectionPoint(name: string | number, connectionPoint: ConnectionPointProxy): void {
+        super.setConnectionPoint(name, connectionPoint);
+        this.vertices[name as number].ownConnectionPoint = connectionPoint;
+    }//setConnectionPoint
 
     readonly initVertices = () => {
         if (!this.verticesInitialized) {

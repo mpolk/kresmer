@@ -443,7 +443,7 @@ export class ComponentDeleteOp extends EditorOperation {
         nextTick(() => {
             this.controller.updateConnectionPoints();
             this.detachedVertices.forEach((connectionPointName, vertex) => {
-                vertex.connect(this.controller.component.connectionPoints[connectionPointName]);
+                vertex.connect(this.controller.component.getConnectionPoint(connectionPointName));
             });
         });
     }//undo

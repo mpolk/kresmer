@@ -24,7 +24,7 @@
 
     const hostElement = inject(NetworkElement.ikHostElement)!;
     const proxy = new ConnectionPointProxy(hostElement, props.name, props.dir);
-    hostElement.connectionPoints[props.name] = proxy;
+    hostElement.setConnectionPoint(props.name, proxy);
 
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
