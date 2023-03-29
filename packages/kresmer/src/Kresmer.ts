@@ -499,6 +499,21 @@ export default class Kresmer extends KresmerEventHooks {
             return undefined;
         return this.links.get(id);
     }//getLinkByName
+
+
+    /**
+     * Searches for the NetworkComponent or Link with the specified name.
+     * If name starts with "-" then the link is searched, otherwise the component is searched.
+     * @param name A name of the element to search for
+     * @returns The element if found or "undefined" otherwise
+     */
+    public getElementByName(name: string)
+    {
+        if (name.startsWith("-"))
+            return this.getLinkByName(name.slice(1));
+        else
+            return this.getComponentByName(name);
+    }//getElementByName
  
 
     /**

@@ -71,9 +71,9 @@ export default class DrawingLoader {
             } else if (element instanceof NetworkLink) {
                 const link = element;
                 for (const vertex of link.vertices) {
-                    const componentName = vertex.initParams?.conn?.component;
+                    const componentName = vertex.initParams?.conn?.cpHostElement;
                     if (componentName && componentRenames.has(componentName)) {
-                        vertex.initParams!.conn!.component = componentRenames.get(componentName)!;
+                        vertex.initParams!.conn!.cpHostElement = componentRenames.get(componentName)!;
                     }//if
                 }//for
 

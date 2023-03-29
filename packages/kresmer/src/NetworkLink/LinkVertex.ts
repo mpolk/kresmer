@@ -97,18 +97,18 @@ export default class LinkVertex {
         if (this.initParams?.pos) {
             this.pinUp(this.initParams.pos);
         } else if (this.initParams?.conn) {
-            const component = this.link.kresmer.getComponentByName(this.initParams.conn.component);
-            if (!component) {
+            const cpHostElement = this.link.kresmer.getElementByName(this.initParams.conn.cpHostElement);
+            if (!cpHostElement) {
                 this.link.kresmer.raiseError(new KresmerException(
-                    `Attempt to connect to the non-existing component "${this.initParams.conn.component}"`,
+                    `Attempt to connect to the non-existing component "${this.initParams.conn.cpHostElement}"`,
                     {source: `Link "${this.link.name}"`}));
                 return this;
             }//if
-            const connectionPoint = component.getConnectionPoint(this.initParams.conn.connectionPoint);
+            const connectionPoint = cpHostElement.getConnectionPoint(this.initParams.conn.connectionPoint);
             if (!connectionPoint) {
                 this.link.kresmer.raiseError(new KresmerException(
                     `Attempt to connect to non-existing connection point \
-                    "${this.initParams.conn.component}:${this.initParams.conn.connectionPoint}"`,
+                    "${this.initParams.conn.cpHostElement}:${this.initParams.conn.connectionPoint}"`,
                     {source: `Link "${this.link.name}"`}))
                 return this;
             }//if
@@ -417,7 +417,7 @@ export default class LinkVertex {
 export interface LinkVertexInitParams  {
     pos?: Position, 
     conn?: {
-        component: string, 
+        cpHostElement: string, 
         connectionPoint: string
     },
     connectionPoint?: ConnectionPointProxy,
