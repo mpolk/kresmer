@@ -748,20 +748,20 @@ export default class Kresmer extends KresmerEventHooks {
         /**
          * Starts link creation pulling in from the specified connection point
          * @param linkClass A class of the new link
-         * @param fromComponentID A component from which the link is started
+         * @param fromElementID A component from which the link is started
          * @param fromConnectionPointName A connection point from which the link is started
          */
-        startLinkCreation: (linkClass: NetworkLinkClass, fromComponentID: number, 
+        startLinkCreation: (linkClass: NetworkLinkClass, fromElementID: number, 
                             fromConnectionPointName: string|number) =>
         {
-            const fromComponent = this.getComponentById(fromComponentID);
+            const fromComponent = this.getComponentById(fromElementID) ?? this.getLinkById(fromElementID);
             if (!fromComponent) {
-                console.error(`Trying to create a link from non-existing component (id=${fromComponentID})!`);
+                console.error(`Trying to create a link from non-existing component (id=${fromElementID})!`);
                 return;
             }//if
             const fromConnectionPoint = fromComponent.getConnectionPoint(fromConnectionPointName);
             if (!fromConnectionPoint) {
-                console.error(`Trying to create a link from non-existing connection point (${fromComponentID}:${fromConnectionPointName})!`);
+                console.error(`Trying to create a link from non-existing connection point (${fromElementID}:${fromConnectionPointName})!`);
                 return;
             }//if
             this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint);
