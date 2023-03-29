@@ -41,7 +41,7 @@ export default class ConnectionPointProxy {
     readonly coords = reactive<Position>({x: 0, y: 0});
 
     /** Indicates if the connection point accepts connections */
-    isAcceptingConnections = true;
+    isActive = true;
 
     private _isPositioned = false;
     /** Indicates if the connection point is already positioned on the canvas */

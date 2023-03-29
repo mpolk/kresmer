@@ -51,9 +51,11 @@ class _NetworkLink extends NetworkElement {
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
 
-    override setConnectionPoint(name: string | number, connectionPoint: ConnectionPointProxy): void {
-        super.setConnectionPoint(name, connectionPoint);
-        this.vertices[name as number].ownConnectionPoint = connectionPoint;
+    override addConnectionPoint(name: string | number, connectionPoint: ConnectionPointProxy): void {
+        super.addConnectionPoint(name, connectionPoint);
+        const vertex = this.vertices[name as number];
+        connectionPoint.isActive = !vertex.isConnected;
+        vertex.ownConnectionPoint = connectionPoint;
     }//setConnectionPoint
 
     readonly initVertices = () => {

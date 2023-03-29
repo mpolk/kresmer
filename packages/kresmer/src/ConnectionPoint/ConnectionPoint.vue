@@ -24,7 +24,7 @@
 
     const hostElement = inject(NetworkElement.ikHostElement)!;
     const proxy = new ConnectionPointProxy(hostElement, props.name, props.dir);
-    hostElement.setConnectionPoint(props.name, proxy);
+    hostElement.addConnectionPoint(props.name, proxy);
 
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
@@ -32,7 +32,7 @@
 
     const dataAttr = computed(() => {
         const hostName = hostElement instanceof NetworkLink ? `-${hostElement.name}` : hostElement.name;
-        return proxy.isAcceptingConnections ? `${hostName}:${props.name}` : undefined
+        return proxy.isActive ? `${hostName}:${props.name}` : undefined
     });
 
     onMounted(updatePos);

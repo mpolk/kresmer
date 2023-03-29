@@ -72,9 +72,9 @@
         <vertex x="952.1845878966325" y="101.65292075312018"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt-1:0" to="(1064, 167)"/>
+    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:2" to="(1064, 167)"/>
 
-    <link class="AOC" name="uplink-dipt-3" from="-uplink-dipt-2:0" to="(1062, 235)">
+    <link class="AOC" name="uplink-dipt-3" from="-uplink-dipt:2" to="(1062, 235)">
         <vertex x="954.9695994241152" y="235.33347407229192"/>
     </link>
 

@@ -42,6 +42,7 @@ export default class LinkVertex {
             } else if (oldConn) {
                 oldConn.hostElement.unregisterConnectedLink(this.link);
             }//if
+            if (this.ownConnectionPoint) this.ownConnectionPoint.isActive = !this.conn;
         }//if
     }//setConn
     
@@ -235,6 +236,8 @@ export default class LinkVertex {
                     } break;
                 }//switch
                 if (connectionPoint) {
+                    if (!connectionPoint.isActive)
+                        continue;
                     this.connect(connectionPoint);
                 } else {
                     this.link.kresmer.raiseError(new KresmerException(

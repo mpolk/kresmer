@@ -62,6 +62,8 @@ export default class NetworkLinkBlank {
                     } break;
                 }//switch
                 if (connectionPoint) {
+                    if (!connectionPoint.isActive)
+                        continue;
                     this.kresmer._completeLinkCreation(connectionPoint);
                 } else {
                     this.kresmer.raiseError(new KresmerException(

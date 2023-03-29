@@ -93,7 +93,7 @@ export default abstract class NetworkElement {
     /** Returns the connection with the given name */
     getConnectionPoint(name: string|number) {return this.connectionPoints[name]}
     /** Adds a connection point with the given name or replaces the existing one */
-    setConnectionPoint(name: string|number, connectionPoint: ConnectionPointProxy)
+    addConnectionPoint(name: string|number, connectionPoint: ConnectionPointProxy)
     {
         this.connectionPoints[name] = connectionPoint;
     }//setConnectionPoint
