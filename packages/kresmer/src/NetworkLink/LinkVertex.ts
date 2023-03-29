@@ -450,9 +450,11 @@ class VertexMoveOp extends EditorOperation {
 
     override undo(): void {
         this.vertex.anchor = this.oldAnchor;
+        this.vertex.ownConnectionPoint?.updatePos();
     }//undo
 
     override exec(): void {
         this.vertex.anchor = this.newAnchor!;
+        this.vertex.ownConnectionPoint?.updatePos();
     }//exec
 }//VertexMoveOp
