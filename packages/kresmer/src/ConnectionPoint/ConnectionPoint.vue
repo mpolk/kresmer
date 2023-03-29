@@ -66,11 +66,11 @@
 </script>
 
 <template>
-    <circle :cx="x" :cy="y" :r="d/2" fill="none" stroke="none" ref="cpMarker"/>
-    <circle v-if="proxy.isActive" :cx="x" :cy="y" :r="d/2" class="connection-point-marker"
+    <circle v-if="proxy.isActive" :cx="x" :cy="y" :r="d/2" class="connection-point-marker" ref="cpMarker"
         :data-connection-point="dataAttr"
         @contextmenu.stop="onRightClick()"
         ><title>{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title></circle>
+    <circle v-else :cx="x" :cy="y" :r="d/2" fill="none" stroke="none" ref="cpMarker"/>
 </template>
 
 <style lang="scss">

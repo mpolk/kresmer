@@ -37,12 +37,7 @@
 
     function onMouseUp(event: MouseEvent)
     {
-        if (isEditable && props.model.endDrag(event)) { 
-            props.model.link.restoreZPosition();
-            return;
-        }//if
-
-        // props.model.link.selectLink();
+        isEditable && props.model.endDrag(event);
     }//onMouseUp
 
     function onMouseMove(event: MouseEvent)

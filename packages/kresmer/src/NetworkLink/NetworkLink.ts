@@ -111,6 +111,7 @@ class _NetworkLink extends NetworkElement {
         if (!this.isSelected) {
             this.kresmer.deselectAllElements(this);
             this.isSelected = true;
+            this.bringToTop();
         }//if
     }//selectComponent
 

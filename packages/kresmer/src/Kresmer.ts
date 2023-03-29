@@ -584,10 +584,16 @@ export default class Kresmer extends KresmerEventHooks {
     public deselectAllElements(except?: NetworkComponentController | NetworkLink | NetworkLinkBlank)
     {
         this.networkComponents.forEach(controller => {
-            (controller !== except) && (controller.component.isSelected = false);
+            if (controller !== except) {
+                controller.component.isSelected = false;
+                controller.restoreZPosition();
+            }//if
         });
         this.links.forEach(link => {
-            (link !== except) && (link.isSelected = false);
+            if (link !== except) {
+                link.isSelected = false;
+                link.restoreZPosition();
+            }//if
         });
 
         if (!(except instanceof NetworkLinkBlank)) {
