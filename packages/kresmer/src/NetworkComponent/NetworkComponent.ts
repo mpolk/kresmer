@@ -74,4 +74,10 @@ export default class NetworkComponent extends NetworkElement {
         this.propsUpdateIndicator++;
         this.updateConnectionPoints();
     }//setData
+
+    override updateConnectionPoints()
+    {
+        super.updateConnectionPoints();
+        this.connectedLinks.forEach(link => link.updateConnectionPoints());
+    }//updateConnectionPoints
 }//NetworkComponent

@@ -11,6 +11,7 @@ import {v4 as uuidV4} from "uuid";
 import { InjectionKey } from "vue";
 import Kresmer from "./Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
+import NetworkLink from "./NetworkLink/NetworkLink";
 import { EditorOperation } from "./UndoStack";
 import KresmerException from "./KresmerException";
 import { indent } from "./Utils";
@@ -104,6 +105,12 @@ export default abstract class NetworkElement {
             this.connectionPoints[name].updatePos();
         }//for
     }//updateConnectionPoints
+
+    /** A collection of links connected to this network element */
+    readonly connectedLinks = new Set<NetworkLink>();
+    public registerConnectedLink(link: NetworkLink) { this.connectedLinks.add(link);}
+    public unregisterConnectedLink(link: NetworkLink) { this.connectedLinks.delete(link);}
+
 
     /** Check if the name is unique (among the elements of this type) and return it if it is */
     abstract checkNameUniqueness(name: string): boolean;

@@ -25,16 +25,22 @@ export default class LinkVertex {
 
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
     // to the link's loopback mode
-    private setConn(value: ConnectionPointProxy|undefined) {
-        if (this.conn !== value) {
+    private setConn(newValue: ConnectionPointProxy|undefined) {
+        if (this.conn !== newValue) {
+            const oldConn = this.conn;
             if (!this.isHead && !this.isTail || this.initParams) {
-                this.conn = value;
+                this.conn = newValue;
             } else {
                 const wasLoopback = this.link.isLoopback;
-                this.conn = value;
+                this.conn = newValue;
                 if (wasLoopback !== this.link.isLoopback) {
                     this.link.toggleVertexPositioningMode(this);
                 }//if
+            }//if
+            if (this.conn) {
+                this.conn.hostElement.registerConnectedLink(this.link);
+            } else if (oldConn) {
+                oldConn.hostElement.unregisterConnectedLink(this.link);
             }//if
         }//if
     }//setConn
