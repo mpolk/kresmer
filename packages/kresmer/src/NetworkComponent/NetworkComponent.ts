@@ -6,7 +6,7 @@
  * Network Component - a generic network element instance 
  ***************************************************************************/
 
-import { InjectionKey } from "vue";
+import { InjectionKey, nextTick } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import NetworkElement, {NetworkElementData} from '../NetworkElement';
 import Kresmer from "../Kresmer";
@@ -78,6 +78,6 @@ export default class NetworkComponent extends NetworkElement {
     override updateConnectionPoints()
     {
         super.updateConnectionPoints();
-        this.connectedLinks.forEach(link => link.updateConnectionPoints());
+        nextTick(() => this.connectedLinks.forEach(link => link.updateConnectionPoints()));
     }//updateConnectionPoints
 }//NetworkComponent

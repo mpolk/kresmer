@@ -352,6 +352,7 @@ export class SelectionMoveOp extends EditorOperation {
                     link.vertices[i].pinUp(this.newVertexPos[link.id][i]);
                 }//if
             }//for
+            link.updateConnectionPoints();
         }//for
     }//exec
 
@@ -366,6 +367,7 @@ export class SelectionMoveOp extends EditorOperation {
                     link.vertices[i].pinUp(this.oldVertexPos[link.id][i]);
                 }//if
             }//for
+            link.updateConnectionPoints();
         }//for
     }//undo
 }//SelectionMoveOp
