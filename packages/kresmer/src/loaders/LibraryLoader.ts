@@ -62,8 +62,8 @@ export default class LibraryLoader
             let scope = ".kresmer";
             if (classScope) {
                 scope += ` .${classScope.name}`;
-                if (classScope.baseClasses) {
-                    this.makeBaseClassScopes(additionalScopes, scope, classScope.baseClasses);
+                if (classScope.styleBaseClasses) {
+                    this.makeBaseClassScopes(additionalScopes, scope, classScope.styleBaseClasses);
                 }//if
             }//if
 
@@ -88,8 +88,8 @@ export default class LibraryLoader
         baseClasses.forEach(baseClass => {
             const baseScope = `${prefix} .${baseClass.name}`;
             scopes.push(baseScope);
-            if (baseClass.baseClasses) {
-                this.makeBaseClassScopes(scopes, baseScope, baseClass.baseClasses);
+            if (baseClass.styleBaseClasses) {
+                this.makeBaseClassScopes(scopes, baseScope, baseClass.styleBaseClasses);
             }//if
         });
     }//makeBaseClassScopes
