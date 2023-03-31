@@ -17,3 +17,8 @@ export function indent(indentLevel: number)
 {
     return " ".repeat(indentLevel * 4);
 }//indent
+
+export function svgDataURI(content: string) {
+    const body = content.replace(/"/g, "'");
+    return 'data:image/svg+xml,' + encodeURIComponent(body);
+}//svgDataURI
