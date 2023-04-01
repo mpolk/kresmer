@@ -632,8 +632,17 @@
         </computed-props>
     </component-class>
 
+    <!-- ********************************** Links ****************************** -->
+    <link-class name="abstract-link" instantiate="extend">
+        <props>
+            <prop name="startLabel" type="string" />
+            <prop name="endLabel" type="string" />
+        </props>
+    </link-class>
+
     <!-- Various link types -->
     <link-class name="twisted-pair" type="copper">
+        <extends base="abstract-link" />
         <style>
             .link {stroke: #3b3b3b;}
             .padding {stroke-width: 8px;}
@@ -651,6 +660,7 @@
     </link-class>
 
     <link-class name="DAC" type="fiber-optics">
+        <extends base="abstract-link" />
         <style>
             .link {stroke: #236e85;}
             .padding {stroke-width: 8px;}
@@ -668,6 +678,7 @@
     </link-class>
 
     <link-class name="AOC" type="fiber-optics">
+        <extends base="abstract-link" />
         <style>
             .link {stroke: #0098c7;}
             .padding {stroke-width: 8px;}

@@ -48,7 +48,7 @@ export default class LibraryLoader
     }//loadLibrary
 
     /**
-     * Adds global and component class scopes (optionally) to the CSS style definition
+     * Adds global and (optionally) component class scopes to the CSS style definition
      * @param ast Parsed CSS (Abstract Syntax Tree) to modify
      * @param classScope An element class to apply as a scope
      * @returns Modified AST

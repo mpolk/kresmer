@@ -68,7 +68,7 @@
         <vertex x="176.25" y="167"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:2" to="(1064, 103)">
+    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:2" to="(1064, 103)" end-label="to DIPT switch (port 10)">
         <vertex x="952.1845878966325" y="101.65292075312018"/>
     </link>
 

@@ -37,6 +37,12 @@
                     <xs:element name="link-class">
                         <xs:complexType>
                             <xs:all>
+                                <xs:element name="extends" minOccurs="0">
+                                    <xs:complexType>
+                                        <xs:attribute name="base" use="required"/>
+                                        <xs:anyAttribute/>
+                                    </xs:complexType>
+                                </xs:element>
                                 <xs:element ref="props" minOccurs="0"/>
                                 <xs:element ref="computed-props" minOccurs="0"/>
                                 <xs:element ref="defs" minOccurs="0"/>
@@ -45,6 +51,13 @@
 
                             <xs:attribute name="name" use="required" />
                             <xs:attribute name="type" type="linkType"/>
+                            <xs:attribute name="instantiate">
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="extend"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
+                            </xs:attribute>
                         </xs:complexType>
                     </xs:element>
                     

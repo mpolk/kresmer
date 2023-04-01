@@ -142,10 +142,14 @@ export default class LibraryParser {
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
-        let baseClasses: NetworkLinkClass[] | undefined;
+        let baseClass: NetworkLinkClass | undefined;
+        let styleBaseClasses: NetworkLinkClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
+                case "extends":
+                    baseClass = this.parseClassInheritance(child);
+                    break
                 case "props":
                     props = this.parseProps(child);
                     break;
@@ -156,15 +160,35 @@ export default class LibraryParser {
                     defs = child;
                     break;
                 case "style":
-                    baseClasses = child.getAttribute("extends")?.split(/ *, */)
+                    styleBaseClasses = child.getAttribute("extends")?.split(/ *, */)
                         .map(className => NetworkLinkClass.getClass(className));
-                    style = this.parseCSS(child.innerHTML, baseClasses);
+                    style = this.parseCSS(child.innerHTML, styleBaseClasses);
                     break;
             }//switch
         }//for
 
-        return new NetworkLinkClass(className, {baseClasses, props, computedProps, defs, style})
+        return new NetworkLinkClass(className, {baseClass: baseClass, styleBaseClasses, props, computedProps, defs, style})
     }//parseLinkClassNode
+
+
+    private parseClassInheritance(node: Element)
+    {
+        const baseClassName = node.getAttribute("base");
+        if (!baseClassName) {
+            this.kresmer.raiseError(new LibraryParsingException("Base class name is not specified", 
+                                    {source: `Link ${node.parentElement!.getAttribute("name")}`}));
+            return undefined;
+        }//if
+
+        const baseClass = NetworkLinkClass.getClass(baseClassName);
+        if (!baseClass) {
+            this.kresmer.raiseError(new LibraryParsingException(`Base class ${baseClassName} does not exist`, 
+                                    {source: `Link ${node.parentElement!.getAttribute("name")}`}));
+            return undefined;
+        }//if
+
+        return baseClass;
+    }//parseClassInheritance
 
 
     private parseProps(node: Element)

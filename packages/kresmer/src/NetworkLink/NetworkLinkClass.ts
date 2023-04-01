@@ -24,16 +24,23 @@ export default class NetworkLinkClass extends NetworkElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params: {
-        baseClasses?: NetworkLinkClass[],
+        baseClass?: NetworkLinkClass,
+        styleBaseClasses?: NetworkLinkClass[],
         props?: ComponentObjectPropsOptions,
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
     })
     {
+        if (params.baseClass) {
+            params.props = {...params.baseClass.props, ...params.props};
+        }//if
         super(name, params);
         NetworkLinkClass.allClasses[name] = this;
+        this.baseClass = params.baseClass;
     }//ctor
+
+    readonly baseClass?: NetworkLinkClass;
 
     private static allClasses: Record<string, NetworkLinkClass> = {};
     /**
