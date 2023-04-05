@@ -12,7 +12,7 @@
 export default class KresmerException {
     public readonly message: string;
     public readonly severity: KresmerExceptionSeverity;
-    public readonly source?: string;
+    public source?: string;
 
     constructor(message: string, options?: {
         severity?: KresmerExceptionSeverity,

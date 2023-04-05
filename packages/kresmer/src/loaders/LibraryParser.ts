@@ -15,6 +15,7 @@ import {ComputedProps} from "../NetworkElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 import Kresmer from "../Kresmer";
+import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
 
 /**
  * Component library parser
@@ -143,12 +144,13 @@ export default class LibraryParser {
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let baseClass: NetworkLinkClass | undefined;
+        let baseClassPropBindings: NetworkElementProps | undefined;
         let styleBaseClasses: NetworkLinkClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "extends":
-                    baseClass = this.parseClassInheritance(child);
+                    ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child) ?? {});
                     break
                 case "props":
                     props = this.parseProps(child);
@@ -167,7 +169,7 @@ export default class LibraryParser {
             }//switch
         }//for
 
-        return new NetworkLinkClass(className, {baseClass: baseClass, styleBaseClasses, props, computedProps, defs, style})
+        return new NetworkLinkClass(className, {baseClass, styleBaseClasses, props, baseClassPropBindings, computedProps, defs, style})
     }//parseLinkClassNode
 
 
@@ -187,7 +189,15 @@ export default class LibraryParser {
             return undefined;
         }//if
 
-        return baseClass;
+        const baseClassRawProps: NetworkElementRawProps = {};
+        for (const attrName of node.getAttributeNames()) {
+            if (attrName !== "base") {
+                baseClassRawProps[attrName] = node.getAttribute(attrName)!;
+            }//if
+        }//for
+        const baseClassPropBindings = DrawingParser.normalizeProps(baseClassRawProps, baseClass);
+
+        return {baseClass, baseClassPropBindings};
     }//parseClassInheritance
 
 

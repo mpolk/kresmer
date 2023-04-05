@@ -95,14 +95,14 @@ export default class DrawingParser {
         if (!componentClass) 
             throw new DrawingParsingException(`Unknown component class "${className}"`);
 
-        const propsFromAttributes: RawProps = {};
+        const propsFromAttributes: NetworkElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
             if (attrName !== "class" && attrName !== "db-id") {
                 propsFromAttributes[attrName] = node.getAttribute(attrName)!;
             }//if
         }//for
 
-        let propsFromChildNodes: RawProps = {};
+        let propsFromChildNodes: NetworkElementRawProps = {};
         let content: string | undefined;
         let transform = new Transform;
         const origin: {x?: number, y?: number} = {};
@@ -148,7 +148,7 @@ export default class DrawingParser {
             }//for
         }//if
 
-        const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, componentClass);
+        const props = this._normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, componentClass);
         let componentName: string|undefined|null = node.getAttribute("name");
         if ("name" in props) {
             componentName = props["name"].toString();
@@ -171,7 +171,7 @@ export default class DrawingParser {
         if (!linkClass) 
             throw new DrawingParsingException(`Unknown link class "${className}"`);
 
-        const propsFromAttributes: RawProps = {};
+        const propsFromAttributes: NetworkElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
             switch (attrName) {
                 case "class": case "db-id": case "from": case "to":
@@ -181,7 +181,7 @@ export default class DrawingParser {
             }//switch
         }//for
 
-        let propsFromChildNodes: RawProps = {};
+        let propsFromChildNodes: NetworkElementRawProps = {};
         const vertices: LinkVertexInitParams[] = [];
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -195,7 +195,7 @@ export default class DrawingParser {
             }//switch
         }//for
 
-        const props = this.normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
+        const props = this._normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, linkClass);
         let linkName: string|undefined|null = node.getAttribute("name");
         if ("name" in props) {
             linkName = props["name"].toString();
@@ -258,9 +258,9 @@ export default class DrawingParser {
     }//parseLinkVertex
 
 
-    private parseProps(node: Element): RawProps
+    private parseProps(node: Element): NetworkElementRawProps
     {
-        const rawProps: RawProps = {};
+        const rawProps: NetworkElementRawProps = {};
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -283,18 +283,32 @@ export default class DrawingParser {
     }//parseProps
 
 
-    private normalizeProps(rawProps: RawProps, node: Element, elementClass: NetworkElementClass): Props
+    private _normalizeProps(rawProps: NetworkElementRawProps, node: Element, elementClass: NetworkElementClass): NetworkElementProps
     {
-        const props: Props = {};
+        try {
+            return DrawingParser.normalizeProps(rawProps, elementClass);
+        } catch (exc) {
+            if (exc instanceof ParsingException) {
+                exc.source = `Element ${node.getAttribute("name")}`;
+                this.kresmer.raiseError(exc);
+                return {};
+            }//if
+            throw exc;
+        }//catch
+    }//_normalizetProps
+
+
+    static normalizeProps(rawProps: NetworkElementRawProps, elementClass: NetworkElementClass): NetworkElementProps
+    {
+        const props: NetworkElementProps = {};
         if (Object.keys(rawProps).length  === 0) {
             return props;
         }//if
 
         const classProps = elementClass.props;
         if (!classProps) {
-            this.kresmer.raiseError(new DrawingParsingException(
-                `Class "${elementClass}" has no props, but the instance supplies some`));
-            return props;
+            throw new ParsingException(
+                `Class "${elementClass}" has no props, but the instance supplies some`);
         }//if
 
         for (let propName in rawProps) {
@@ -309,9 +323,8 @@ export default class DrawingParser {
                     propName = toCamelCase(propName);
                     classProp = classProps[propName];
                     if (!classProp) {
-                        this.kresmer.raiseError(new DrawingParsingException(
-                            `Class "${elementClass.name}" has no prop "${propName}", but the instance supplies some`,
-                            {source: `Component "${node.getAttribute("name")}"`}));
+                        throw new ParsingException(
+                            `Class "${elementClass.name}" has no prop "${propName}", but the instance supplies one`);
                         continue;
                     }//if
                 }//if
@@ -420,8 +433,8 @@ export type ParsedNode =
     ;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Props = Record<string, string|number|object|boolean|any[]>;
-type RawProps = Record<string, string>;
+export type NetworkElementProps = Record<string, string|number|object|boolean|any[]>;
+export type NetworkElementRawProps = Record<string, string>;
 
 export class DrawingParsingException extends ParsingException {
     constructor(message: string, options?: {
