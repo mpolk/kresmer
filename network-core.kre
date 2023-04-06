@@ -69,10 +69,10 @@
         <vertex x="860.3096080655865" y="168.39250576374135"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1053, 53)">
+    <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1105, 55)">
         <vertex x="910.4094149843912" y="54.30772478591353"/>
         <props>
-            <prop name="endLabel">to DIPT switch (port 9)</prop>
+            <prop name="endLabel">к свичу ДИПТ (порт 9)</prop>
         </props>
     </link>
 

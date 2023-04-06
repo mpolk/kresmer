@@ -21,6 +21,8 @@
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
+        startLabel: {type: String, required: false},
+        endLabel: {type: String, required: false},
     });
 
     provide(NetworkElement.ikHostElement, props.model);
@@ -81,6 +83,18 @@
         </template>
         <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
             <link-vertex-vue :model="vertex"/>
+        </template>
+        <template v-if="startLabel">
+            <text :x="model.vertices[0].coords.x" :y="model.vertices[0].coords.y" 
+                class="label" style="text-anchor: middle; dominant-baseline: middle;">
+                {{startLabel}}
+            </text>
+        </template>
+        <template v-if="endLabel">
+            <text :x="model.vertices[model.vertices.length-1].coords.x" :y="model.vertices[model.vertices.length-1].coords.y" 
+                class="label" style="text-anchor: end; dominant-baseline: bottom;">
+                {{endLabel}}
+            </text>
         </template>
     </g>
 </template>
