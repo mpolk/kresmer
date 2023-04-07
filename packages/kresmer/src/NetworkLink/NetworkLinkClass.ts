@@ -39,10 +39,9 @@ export default class NetworkLinkClass extends NetworkElementClass {
         }//if
         super(name, params);
         NetworkLinkClass.allClasses[name] = this;
-        this.baseClass = params.baseClass;
     }//ctor
 
-    readonly baseClass?: NetworkLinkClass;
+    override readonly usesEmbedding = false;
 
     private static allClasses: Record<string, NetworkLinkClass> = {};
     /**

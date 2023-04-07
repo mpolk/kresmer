@@ -62,8 +62,15 @@ export default class LibraryLoader
             let scope = ".kresmer";
             if (classScope) {
                 scope += ` .${classScope.name}`;
+                const baseClasses: NetworkElementClass[] = [];
+                if (classScope.baseClass) {
+                    baseClasses.push(classScope.baseClass);
+                }//if
                 if (classScope.styleBaseClasses) {
-                    this.makeBaseClassScopes(additionalScopes, scope, classScope.styleBaseClasses);
+                    baseClasses.push(...classScope.styleBaseClasses);
+                }//if
+                if (baseClasses.length) {
+                    this.makeBaseClassScopes(additionalScopes, scope, baseClasses);
                 }//if
             }//if
 
@@ -86,10 +93,17 @@ export default class LibraryLoader
     private makeBaseClassScopes(scopes: string[], prefix: string, baseClasses: NetworkElementClass[])
     {
         baseClasses.forEach(baseClass => {
-            const baseScope = `${prefix} .${baseClass.name}`;
+            const baseScope = baseClass.usesEmbedding ? `${prefix} .${baseClass.name}` : prefix;
             scopes.push(baseScope);
+            const grandBaseClasses: NetworkElementClass[] = [];
+            if (baseClass.baseClass) {
+                grandBaseClasses.push(baseClass.baseClass);
+            }//if
             if (baseClass.styleBaseClasses) {
-                this.makeBaseClassScopes(scopes, baseScope, baseClass.styleBaseClasses);
+                grandBaseClasses.push(...baseClass.styleBaseClasses);
+            }//if
+        if (grandBaseClasses.length) {
+                this.makeBaseClassScopes(scopes, baseScope, grandBaseClasses);
             }//if
         });
     }//makeBaseClassScopes

@@ -638,6 +638,9 @@
             <prop name="startLabel" type="string" />
             <prop name="endLabel" type="string" />
         </props>
+        <style>
+            .padding {stroke-width: 8px;}
+        </style>
     </link-class>
 
     <!-- Various link types -->
@@ -645,7 +648,6 @@
         <extends base="abstract-link" />
         <style>
             .link {stroke: #3b3b3b;}
-            .padding {stroke-width: 8px;}
             .segment {stroke-width: 3px;}
             .segment.highlighted {stroke: black; stroke-width: 4px}
             .segment.selected {stroke: black; stroke-width: 5px}
@@ -663,7 +665,7 @@
         <extends base="abstract-link" />
         <style>
             .link {stroke: #236e85;}
-            .padding {stroke-width: 8px;}
+            .padding {stroke-width: 10px;}
             .segment {stroke-width: 4px; stroke-linejoin: round;}
             .segment.highlighted {stroke: #2f97b6; stroke-width: 5px}
             .segment.selected {stroke: #2f97b6; stroke-width: 6px}
@@ -681,7 +683,7 @@
         <extends base="abstract-link" />
         <style>
             .link {stroke: #0098c7;}
-            .padding {stroke-width: 8px;}
+            .padding {stroke-width: 10px;}
             .segment {stroke-width: 4px; stroke-linejoin: round;}
             .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
             .segment.selected {stroke: #00b8f0; stroke-width: 6px}

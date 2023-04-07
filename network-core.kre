@@ -27,10 +27,13 @@
         </props>
     </component>
 
-    <link class="twisted-pair" name="Link-f563765a-04f1-4985-830b-4c2fc3b131c3" from="core:2:2@d" to="metro:1:12@l">
+    <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro:1:12@l">
         <vertex x="179.25" y="580.1090724837011"/>
         <vertex x="215.5102341224366" y="580.1090724837011"/>
         <vertex x="215.5102341224366" y="738.375"/>
+        <props>
+            <prop name="startLabel">metro</prop>
+        </props>
     </link>
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
@@ -76,10 +79,10 @@
         </props>
     </link>
 
-    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1051, 86)">
+    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1103, 86)">
         <vertex x="914.5869322756153" y="86.33535735196507"/>
         <props>
-            <prop name="endLabel">to DIPT switch (port 10)</prop>
+            <prop name="endLabel">к свичу ДИПТ (порт 10)</prop>
         </props>
     </link>
 
@@ -87,10 +90,10 @@
         <vertex x="914.5869322756154" y="157.3531513027751"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1047, 122)">
+    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1102, 123)">
         <vertex x="917.3719438030979" y="122.54050720924076"/>
         <props>
-            <prop name="endLabel">to DIPT switch (port 11)</prop>
+            <prop name="endLabel">к свичу ДИПТ (порт 11)</prop>
         </props>
     </link>
 

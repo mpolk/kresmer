@@ -164,6 +164,9 @@ export default class LibraryParser {
                 case "style":
                     styleBaseClasses = child.getAttribute("extends")?.split(/ *, */)
                         .map(className => NetworkLinkClass.getClass(className));
+                    if (baseClass && !styleBaseClasses?.includes(baseClass)) {
+                        styleBaseClasses = styleBaseClasses ? [baseClass, ...styleBaseClasses] : [baseClass];
+                    }//if
                     style = this.parseCSS(child.innerHTML, styleBaseClasses);
                     break;
             }//switch

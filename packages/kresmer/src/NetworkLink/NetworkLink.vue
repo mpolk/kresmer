@@ -58,9 +58,12 @@
         }
     })//segmentStyle
 
-    const vertices = computed(() => 
-        props.model.vertices.map(vertex => `${vertex.coords.x},${vertex.coords.y}`).join(" ")
-    )//vertices
+    const path = computed(() => {
+        const path = props.model.vertices.map(vertex => `L${vertex.coords.x},${vertex.coords.y}`).join(" ");
+        return `M${props.model.vertices[0].coords.x},${props.model.vertices[0].coords.y} ${path}`;
+    })//path
+
+    const pathID = computed(() => `kre:link${props.model.id}path`)
 </script>
 
 <template>
@@ -68,7 +71,17 @@
         @mouseenter="isHighlighted = true"
         @mouseleave="isHighlighted = false"
         >
-        <polyline :points="vertices" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
+        <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
+        <text v-if="startLabel" class="label" style="cursor: default; text-anchor: start; baseline-shift: 30%;">
+            <textPath :href="`#${pathID}`">
+            {{startLabel}}
+            </textPath>
+        </text>
+        <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; baseline-shift: 30%;">
+            <textPath :href="`#${pathID}`" startOffset="100%">
+            {{endLabel}}
+            </textPath>
+        </text>
         <template v-for="(vertex, i) in props.model.vertices" :key="`segment${i}`">
             <template v-if="i">
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
@@ -83,18 +96,6 @@
         </template>
         <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
             <link-vertex-vue :model="vertex"/>
-        </template>
-        <template v-if="startLabel">
-            <text :x="model.vertices[0].coords.x" :y="model.vertices[0].coords.y" 
-                class="label" style="text-anchor: middle; dominant-baseline: middle;">
-                {{startLabel}}
-            </text>
-        </template>
-        <template v-if="endLabel">
-            <text :x="model.vertices[model.vertices.length-1].coords.x" :y="model.vertices[model.vertices.length-1].coords.y" 
-                class="label" style="text-anchor: end; dominant-baseline: bottom;">
-                {{endLabel}}
-            </text>
         </template>
     </g>
 </template>

@@ -44,6 +44,8 @@ export default class NetworkComponentClass extends NetworkElementClass {
         NetworkComponentClass.allClasses[name] = this;
     }//ctor
 
+    override readonly usesEmbedding = true;
+    
     private static allClasses: Record<string, NetworkComponentClass> = {};
     /**
      *  Returns the class with the given name (if exists)
