@@ -221,10 +221,10 @@
             <prop name="key-position" type="String" choices="top,bottom" default="top" />
         </props>
         <computed-props>
-            <computed-prop name="q">0.41</computed-prop>
+            <computed-prop name="q">0.4</computed-prop>
         </computed-props>
         <style>
-            .border {fill: none; stroke: #897c61;}
+            .border {fill: none; stroke: #898761;}
         </style>
     </component-class>
 
