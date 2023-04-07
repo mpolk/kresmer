@@ -59,9 +59,9 @@ export default class LibraryLoader
 
         ast1.walkRules((rule: PostCSSRule) => {
             const additionalScopes: string[] = [];
-            let scope = ".kresmer";
+            let firstScope = ".kresmer";
             if (classScope) {
-                scope += ` .${classScope.name}`;
+                firstScope += ` .${classScope.name}`;
                 const baseClasses: NetworkElementClass[] = [];
                 if (classScope.baseClass) {
                     baseClasses.push(classScope.baseClass);
@@ -70,18 +70,23 @@ export default class LibraryLoader
                     baseClasses.push(...classScope.styleBaseClasses);
                 }//if
                 if (baseClasses.length) {
-                    this.makeBaseClassScopes(additionalScopes, scope, baseClasses);
+                    this.makeBaseClassScopes(additionalScopes, firstScope, baseClasses);
                 }//if
             }//if
 
             const additionalSelectors: string[] = [];
             rule.selectors.forEach(sel => {
                 additionalScopes.forEach(scope => {
-                    additionalSelectors.push(`${scope} ${sel}`);
+                    if (scope != firstScope) {
+                        const additionalSelector = `${scope} ${sel}`;
+                        if (additionalSelectors.indexOf(additionalSelector) == -1) {
+                            additionalSelectors.push(additionalSelector);
+                        }//if
+                    }//if
                 });
             });
 
-            rule.selectors = rule.selectors.map(sel => `${scope} ${sel}`);
+            rule.selectors = rule.selectors.map(sel => `${firstScope} ${sel}`);
             if (additionalSelectors.length) {
                 rule.selector += `, ${additionalSelectors.join(", ")}`;
             }//if
@@ -102,7 +107,7 @@ export default class LibraryLoader
             if (baseClass.styleBaseClasses) {
                 grandBaseClasses.push(...baseClass.styleBaseClasses);
             }//if
-        if (grandBaseClasses.length) {
+            if (grandBaseClasses.length) {
                 this.makeBaseClassScopes(scopes, baseScope, grandBaseClasses);
             }//if
         });
