@@ -640,13 +640,6 @@
         </props>
         <style>
             .padding {stroke-width: 8px;}
-        </style>
-    </link-class>
-
-    <!-- Various link types -->
-    <link-class name="twisted-pair" type="copper">
-        <extends base="abstract-link" />
-        <style>
             .link {stroke: #3b3b3b;}
             .segment {stroke-width: 3px;}
             .segment.highlighted {stroke: black; stroke-width: 4px}
@@ -661,6 +654,11 @@
         </style>
     </link-class>
 
+    <!-- Various link types -->
+    <link-class name="twisted-pair" type="copper">
+        <extends base="abstract-link" />
+    </link-class>
+
     <link-class name="DAC" type="fiber-optics">
         <extends base="abstract-link" />
         <style>
@@ -670,12 +668,6 @@
             .segment.highlighted {stroke: #2f97b6; stroke-width: 5px}
             .segment.selected {stroke: #2f97b6; stroke-width: 6px}
             .vertex {stroke: #2f97b6; stroke-width: 4px; fill: white; r: 6px}
-            .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
-            .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
-            .connection-point-marker {
-                r: 8px;
-                fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
-            }
         </style>
     </link-class>
 
@@ -688,12 +680,6 @@
             .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
             .segment.selected {stroke: #00b8f0; stroke-width: 6px}
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
-            .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
-            .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
-            .connection-point-marker {
-                r: 8px;
-                fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
-            }
         </style>
     </link-class>
 </kresmer-library>

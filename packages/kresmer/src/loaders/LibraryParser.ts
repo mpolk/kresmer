@@ -172,6 +172,10 @@ export default class LibraryParser {
             }//switch
         }//for
 
+        if (!style && baseClass) {
+            style = this.parseCSS("", [baseClass]);
+        }//if
+
         return new NetworkLinkClass(className, {baseClass, styleBaseClasses, props, baseClassPropBindings, computedProps, defs, style})
     }//parseLinkClassNode
 
