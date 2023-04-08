@@ -8,7 +8,7 @@
 
 <script lang="ts">
     import { computed, ref, onBeforeMount, PropType, provide, onMounted } from 'vue';
-    import NetworkLink from './NetworkLink';
+    import NetworkLink, {linkMarkers} from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
     
@@ -23,6 +23,8 @@
         model: {type: Object as PropType<NetworkLink>, required: true},
         startLabel: {type: String, required: false},
         endLabel: {type: String, required: false},
+        startMarker: {type: String, required: false},
+        endMarker: {type: String, required: false},
     });
 
     provide(NetworkElement.ikHostElement, props.model);
@@ -52,9 +54,25 @@
         }
     })//segmentClass
 
-    const segmentStyle = computed(() => {
+    const cursorStyle = computed(() => {
         return {
             cursor: props.model.isSelected ? "default" : "pointer",
+        }
+    })//segmentStyle
+
+    const segmentStyle = computed(() => {
+        return {
+            cursor: cursorStyle.value.cursor,
+            markerStart: props.startMarker === "arrow" ? `url(#${linkMarkers.arrow})` :
+                props.startMarker === "circle" ? `url(#${linkMarkers.circle})` : 
+                props.startMarker === "square" ? `url(#${linkMarkers.square})`: 
+                props.startMarker === "diamond" ? `url(#${linkMarkers.diamond})`: 
+                "none",
+            markerEnd: props.endMarker === "arrow" ? `url(#${linkMarkers.arrow})` :
+                props.endMarker === "circle" ? `url(#${linkMarkers.circle})` : 
+                props.endMarker === "square" ? `url(#${linkMarkers.square})`: 
+                props.endMarker === "diamond" ? `url(#${linkMarkers.diamond})`: 
+                "none",
         }
     })//segmentStyle
 
@@ -73,14 +91,10 @@
         >
         <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
         <text v-if="startLabel" class="label" style="cursor: default; text-anchor: start; baseline-shift: 30%;">
-            <textPath :href="`#${pathID}`">
-            {{startLabel}}
-            </textPath>
+            <textPath :href="`#${pathID}`">{{startLabel}}</textPath>
         </text>
         <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; baseline-shift: 30%;">
-            <textPath :href="`#${pathID}`" startOffset="100%">
-            {{endLabel}}
-            </textPath>
+            <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}</textPath>
         </text>
         <template v-for="(vertex, i) in props.model.vertices" :key="`segment${i}`">
             <template v-if="i">
@@ -90,7 +104,7 @@
                     @click.self="model.onClick(i - 1, $event)"
                     @contextmenu.self="model.onRightClick(i - 1, $event)"
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
-                    :style="segmentStyle"
+                    :style="cursorStyle"
                     />
             </template>
         </template>

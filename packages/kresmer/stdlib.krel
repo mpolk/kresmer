@@ -667,6 +667,8 @@
             <prop name="acceptMediaTypes" type="string" />
             <prop name="startLabel" type="string" />
             <prop name="endLabel" type="string" />
+            <prop name="startMarker" type="string" choices="arrow,circle,square,diamond"/>
+            <prop name="endMarker" type="string" choices="arrow,circle,square,diamond"/>
         </props>
         <style>
             .padding {stroke-width: 8px;}
@@ -710,6 +712,7 @@
             .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
             .segment.selected {stroke: #00b8f0; stroke-width: 6px}
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
+            .marker {fill: #0098c7; stroke: #0098c7; stroke-width: 1px;}
         </style>
     </link-class>
 
