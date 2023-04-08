@@ -79,22 +79,22 @@
         <vertex x="910.4094149843912" y="54.30772478591353"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1103, 86)">
+    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1105, 86)">
         <props>
             <prop name="endLabel">к свичу ДИПТ (порт 10)</prop>
         </props>
-        <vertex x="914.5869322756153" y="86.33535735196507"/>
+        <vertex x="909.5998857620592" y="86.33535735196507"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-4" from="-uplink-dipt:3" to="(1049, 157)">
-        <vertex x="919.5739787891714" y="156.10638967438612"/>
+    <link class="AOC" name="uplink-dipt-4" from="-uplink-dipt:3" to="(1048, 156)">
+        <vertex x="912.0934090188375" y="156.10638967438612"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1102, 123)">
+    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1107, 124)">
         <props>
             <prop name="endLabel">к свичу ДИПТ (порт 11)</prop>
         </props>
-        <vertex x="917.3719438030979" y="122.54050720924076"/>
+        <vertex x="912.384897289542" y="123.78726883762975"/>
     </link>
 
 </kresmer-drawing>

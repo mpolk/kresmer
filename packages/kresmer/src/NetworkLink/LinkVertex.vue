@@ -79,6 +79,10 @@
         @click="onClick"
         />
     <template v-if="model.link.isSelected">
+        <template v-if="model.isDragged">
+            <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />
+            <line x1="0" :y1="model.coords.y" :x2="model.link.kresmer.drawingRect.width" :y2="model.coords.y" class="crosshair" />
+        </template>
         <circle v-if="model.isDragged" ref="padding"
             :cx="model.coords.x" :cy="model.coords.y" 
             class="vertex padding"
@@ -125,5 +129,11 @@
     }
     .v-enter-from, .v-leave-to {
         opacity: 0;
+    }
+
+    .crosshair {
+        stroke: #5b5b5b;
+        stroke-width: 1;
+        // stroke-dasharray: 5, 5;
     }
 </style>
