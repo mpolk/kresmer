@@ -204,13 +204,13 @@
 
     <component-class name="PluginModule" instantiate="embed">
         <template>
-            <polyline v-if="keyPosition === 'top'"
-                v-bind:points="`${cx+h*0.25},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}
-                                ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`" 
-                class="border" v-bind:stroke-width="Math.min(w, h)*0.12" />
-            <polyline v-if="keyPosition === 'bottom'"
-                v-bind:points="`${cx+h*0.25},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}
-                                ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`" 
+            <polyline v-bind:points="
+                keyPosition === 'top' ?
+                    `${cx+h*0.25},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}
+                     ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`
+                :
+                    `${cx+h*0.25},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}
+                     ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`" 
                 class="border" v-bind:stroke-width="Math.min(w, h)*0.12" />
         </template>
         <props>
