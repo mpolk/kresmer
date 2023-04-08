@@ -663,6 +663,8 @@
     <!-- ********************************** Links ****************************** -->
     <link-class name="abstract-link" instantiate="extend">
         <props>
+            <prop name="mediaType" type="string" />
+            <prop name="acceptMediaTypes" type="string" />
             <prop name="startLabel" type="string" />
             <prop name="endLabel" type="string" />
         </props>
@@ -683,12 +685,12 @@
     </link-class>
 
     <!-- Various link types -->
-    <link-class name="twisted-pair" type="copper">
-        <extends base="abstract-link" />
+    <link-class name="twisted-pair">
+        <extends media-type="twisted-pair" accept-media-types="none">abstract-link</extends>
     </link-class>
 
-    <link-class name="DAC" type="fiber-optics">
-        <extends base="abstract-link" />
+    <link-class name="DAC">
+        <extends base="abstract-link" media-type="DAC" accept-media-types="none"/>
         <style>
             .link {stroke: #236e85;}
             .padding {stroke-width: 10px;}
@@ -699,8 +701,8 @@
         </style>
     </link-class>
 
-    <link-class name="AOC" type="fiber-optics">
-        <extends base="abstract-link" />
+    <link-class name="AOC">
+        <extends base="abstract-link" media-type="AOC" accept-media-types="none"/>
         <style>
             .link {stroke: #0098c7;}
             .padding {stroke-width: 10px;}
@@ -710,4 +712,15 @@
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
         </style>
     </link-class>
-</kresmer-library>
+
+    <link-class name="AOC-fan">
+        <extends base="abstract-link" media-type="AOC-fan" accept-media-types="AOC"/>
+        <style>
+            .link {stroke: #0098c7;}
+            .padding {stroke-width: 10px;}
+            .segment {stroke-width: 4px; stroke-linejoin: round;}
+            .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
+            .segment.selected {stroke: #00b8f0; stroke-width: 6px}
+            .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
+        </style>
+    </link-class></kresmer-library>

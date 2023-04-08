@@ -182,7 +182,7 @@ export default class LibraryParser {
 
     private parseClassInheritance(node: Element)
     {
-        const baseClassName = node.getAttribute("base");
+        const baseClassName = node.textContent || node.getAttribute("base");
         if (!baseClassName) {
             this.kresmer.raiseError(new LibraryParsingException("Base class name is not specified", 
                                     {source: `Link ${node.parentElement!.getAttribute("name")}`}));
@@ -198,7 +198,7 @@ export default class LibraryParser {
 
         const baseClassRawProps: NetworkElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
-            if (attrName !== "base") {
+            if (attrName !== "base" || node.textContent) {
                 baseClassRawProps[attrName] = node.getAttribute(attrName)!;
             }//if
         }//for
