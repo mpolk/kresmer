@@ -206,12 +206,12 @@ class _NetworkLink extends NetworkElement {
             return `${indent(indentLevel)}<link ${attrStr}/>`;
         } else {
             const xml = [`${indent(indentLevel)}<link ${attrStr}>`];
+
+            xml.push(...this.propsToXML(indentLevel));
     
             for (let i = 1; i <= n - 1; i++) {
                 xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
             }//for
-
-            xml.push(...this.propsToXML(indentLevel));
 
             xml.push(`${indent(indentLevel)}</link>`);
             return xml.join("\n");

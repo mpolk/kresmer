@@ -686,7 +686,7 @@
 
     <!-- Various link types -->
     <link-class name="twisted-pair">
-        <extends media-type="twisted-pair" accept-media-types="none">abstract-link</extends>
+        <extends base="abstract-link" media-type="twisted-pair" accept-media-types="none"/>
     </link-class>
 
     <link-class name="DAC">
@@ -714,13 +714,8 @@
     </link-class>
 
     <link-class name="AOC-fan">
-        <extends base="abstract-link" media-type="AOC-fan" accept-media-types="AOC"/>
+        <extends base="AOC" media-type="AOC-fan" accept-media-types="AOC"/>
         <style>
-            .link {stroke: #0098c7;}
-            .padding {stroke-width: 10px;}
-            .segment {stroke-width: 4px; stroke-linejoin: round;}
-            .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
-            .segment.selected {stroke: #00b8f0; stroke-width: 6px}
-            .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
+            .segment {stroke-width: 5px; }
         </style>
     </link-class></kresmer-library>
