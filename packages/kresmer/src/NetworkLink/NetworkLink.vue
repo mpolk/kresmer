@@ -94,7 +94,7 @@
             <textPath :href="`#${pathID}`">{{startLabel}}</textPath>
         </text>
         <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; dominant-baseline: ideographic;">
-            <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}</textPath>
+            <textPath :href="`#${pathID}`" startOffset="98%">{{endLabel}}</textPath>
         </text>
         <template v-for="(vertex, i) in props.model.vertices" :key="`segment${i}`">
             <template v-if="i">
