@@ -75,6 +75,7 @@
     <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1105, 55)">
         <props>
             <prop name="endLabel">к свичу ДИПТ (порт 9)</prop>
+            <prop name="endMarker">arrow</prop>
         </props>
         <vertex x="910.4094149843912" y="54.30772478591353"/>
     </link>
@@ -82,6 +83,7 @@
     <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1105, 86)">
         <props>
             <prop name="endLabel">к свичу ДИПТ (порт 10)</prop>
+            <prop name="endMarker">arrow</prop>
         </props>
         <vertex x="909.5998857620592" y="86.33535735196507"/>
     </link>
@@ -96,6 +98,7 @@
     <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1107, 124)">
         <props>
             <prop name="endLabel">к свичу ДИПТ (порт 11)</prop>
+            <prop name="endMarker">arrow</prop>
         </props>
         <vertex x="912.384897289542" y="123.78726883762975"/>
     </link>

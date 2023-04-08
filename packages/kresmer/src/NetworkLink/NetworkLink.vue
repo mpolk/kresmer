@@ -90,10 +90,10 @@
         @mouseleave="isHighlighted = false"
         >
         <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
-        <text v-if="startLabel" class="label" style="cursor: default; text-anchor: start; baseline-shift: 30%;">
+        <text v-if="startLabel" class="label" style="cursor: default; text-anchor: start; dominant-baseline: ideographic;">
             <textPath :href="`#${pathID}`">{{startLabel}}</textPath>
         </text>
-        <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; baseline-shift: 30%;">
+        <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; dominant-baseline: ideographic;">
             <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}</textPath>
         </text>
         <template v-for="(vertex, i) in props.model.vertices" :key="`segment${i}`">

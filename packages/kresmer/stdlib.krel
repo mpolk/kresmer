@@ -683,6 +683,7 @@
                 r: 8px;
                 fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
             }
+            .label {font-family: sans-serif; font-size: 1rem; fill: black;}
         </style>
     </link-class>
 
@@ -700,6 +701,7 @@
             .segment.highlighted {stroke: #2f97b6; stroke-width: 5px}
             .segment.selected {stroke: #2f97b6; stroke-width: 6px}
             .vertex {stroke: #2f97b6; stroke-width: 4px; fill: white; r: 6px}
+            .label {fill: #2f97b6;}
         </style>
     </link-class>
 
@@ -712,7 +714,7 @@
             .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
             .segment.selected {stroke: #00b8f0; stroke-width: 6px}
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
-            .marker {fill: #0098c7; stroke: #0098c7; stroke-width: 1px;}
+            .label {fill: #0098c7;}
         </style>
     </link-class>
 
