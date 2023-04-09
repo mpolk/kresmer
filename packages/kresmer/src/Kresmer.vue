@@ -19,13 +19,12 @@
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
     import NetworkLink from './NetworkLink/NetworkLink';
     import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
-    import LinkMarkers from './NetworkLink/LinkMarkers.vue';
     import { BoxSize } from './Transform/Transform';
 
     export default {
         name: "Kresmer",
         components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, 
-                      NetworkLinkVue, NetworkLinkBlankVue, LinkMarkers },
+                      NetworkLinkVue, NetworkLinkBlankVue },
     }
 </script>
 
@@ -134,7 +133,9 @@
             <template v-for="_class of networkComponentClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
-            <LinkMarkers />
+            <template v-for="_class of linkClasses.values()">
+                <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
+            </template>
         </defs>
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 

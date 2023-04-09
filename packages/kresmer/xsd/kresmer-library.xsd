@@ -212,6 +212,25 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="marker">
+                    <xs:complexType>
+                        <xs:group ref="svg-elements"/>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attribute name="markerUnits" type="coordSystem"/>
+                        <xs:attribute name="markerWidth" type="xs:decimal"/>
+                        <xs:attribute name="markerHeight" type="xs:decimal"/>
+                        <xs:attribute ref="viewBox"/>
+                        <xs:attribute name="orient"/>
+                        <xs:attribute name="refX" type="xs:decimal"/>
+                        <xs:attribute name="refY" type="xs:decimal"/>
+                        <xs:attribute name="preserveAspectRatio"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <!-- Embedded components -->
                 <xs:any namespace="Kre" processContents="lax"/>
             </xs:choice>
