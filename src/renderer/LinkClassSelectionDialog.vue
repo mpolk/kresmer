@@ -36,14 +36,15 @@
 
     function shown()
     {
-        // selLinkClass.value!.focus();
-        btnOk.value!.focus();
+        selLinkClass.value!.focus();
+        //btnOk.value!.focus();
     }//shown
 
 
     async function show()
     {
         linkClasses.value = [...kresmer.getRegisteredLinkClasses()]
+            .filter(([name, _class]) => !_class.isAbstract)
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
         result = linkClasses.value[0]._class;
@@ -85,7 +86,7 @@
                 </div>
                 <form @submit.prevent="">
                     <div class="modal-body">
-                        <select class="form-select" v-model="result" ref="selLinkClass" :size="selectSize">
+                        <select class="form-select" v-model="result" ref="selLinkClass" :size="selectSize" @dblclick="submit">
                             <option v-for="cl in linkClasses" 
                                 :value="cl._class" 
                                 :key="`class[${cl.name}]`">

@@ -43,6 +43,8 @@ export default class NetworkLinkClass extends NetworkElementClass {
 
     override readonly usesEmbedding = false;
 
+    get isAbstract() {return this.name[0] === '?'}
+
     private static allClasses: Record<string, NetworkLinkClass> = {};
     /**
      *  Returns the class with the given name (if exists)

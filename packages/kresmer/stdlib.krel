@@ -661,7 +661,7 @@
     </component-class>
 
     <!-- ********************************** Links ****************************** -->
-    <link-class name="abstract-link" instantiate="extend">
+    <link-class name="?abstract-link">
         <defs>
             <marker id="kre:link-marker-circle" markerWidth="3" markerHeight="3" refX="5" refY="5" viewBox="0 0 10 10">
                 <circle r="5" cx="5" cy="5" fill="context-stroke" stroke="context-stroke" />
@@ -704,11 +704,11 @@
 
     <!-- Various link types -->
     <link-class name="twisted-pair">
-        <extends base="abstract-link" media-type="twisted-pair" accept-media-types="none"/>
+        <extends base="?abstract-link" media-type="twisted-pair" accept-media-types="none"/>
     </link-class>
 
     <link-class name="DAC">
-        <extends base="abstract-link" media-type="DAC" accept-media-types="none"/>
+        <extends base="?abstract-link" media-type="DAC" accept-media-types="none"/>
         <style>
             .link {stroke: #236e85;}
             .padding {stroke-width: 10px;}
@@ -721,7 +721,7 @@
     </link-class>
 
     <link-class name="AOC">
-        <extends base="abstract-link" media-type="AOC" accept-media-types="none"/>
+        <extends base="?abstract-link" media-type="AOC" accept-media-types="none"/>
         <style>
             .link {stroke: #0098c7;}
             .padding {stroke-width: 10px;}
