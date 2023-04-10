@@ -667,14 +667,16 @@
                 <circle r="5" cx="5" cy="5" fill="context-stroke" stroke="context-stroke" />
             </marker>
             <marker id="kre:link-marker-arrow" markerWidth="5" markerHeight="3" refX="5" refY="5" viewBox="0 0 10 10" 
-                    orient="auto" preserveAspectRatio="none">
+                    orient="auto-start-reverse" preserveAspectRatio="none">
                 <polygon points="0,0 10,5 0,10 2,5" fill="context-stroke" stroke="context-stroke"/>
             </marker>
-            <marker id="kre:link-marker-square" markerWidth="3" markerHeight="3" refX="5" refY="5" viewBox="0 0 10 10">
-                <polygon points="0,0 0,10 10,10 10,0" fill="context-stroke" stroke="context-stroke"/>
+            <marker id="kre:link-marker-square" markerWidth="3" markerHeight="3" refX="5" refY="5" viewBox="0 0 10 10"
+                    orient="auto-start-reverse">
+                <rect x="0" y="0" width="10" height="10" fill="context-stroke" stroke="context-stroke"/>
             </marker>
-            <marker id="kre:link-marker-diamond" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10">
-                <polygon points="0,5 5,0 10,5 5,10" fill="context-stroke" stroke="context-stroke"/>
+            <marker id="kre:link-marker-diamond" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10"
+                    orient="auto-start-reverse">
+            <polygon points="0,5 5,0 10,5 5,10" fill="context-stroke" stroke="context-stroke"/>
             </marker>
         </defs>
         <props>
