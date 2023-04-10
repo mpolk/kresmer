@@ -8,7 +8,7 @@
 
 <script lang="ts">
     import { computed, ref, onBeforeMount, PropType, provide, onMounted } from 'vue';
-    import NetworkLink, {linkMarkers} from './NetworkLink';
+    import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
     
@@ -63,16 +63,8 @@
     const segmentStyle = computed(() => {
         return {
             cursor: cursorStyle.value.cursor,
-            markerStart: props.startMarker === "arrow" ? `url(#${linkMarkers.arrow})` :
-                props.startMarker === "circle" ? `url(#${linkMarkers.circle})` : 
-                props.startMarker === "square" ? `url(#${linkMarkers.square})`: 
-                props.startMarker === "diamond" ? `url(#${linkMarkers.diamond})`: 
-                "none",
-            markerEnd: props.endMarker === "arrow" ? `url(#${linkMarkers.arrow})` :
-                props.endMarker === "circle" ? `url(#${linkMarkers.circle})` : 
-                props.endMarker === "square" ? `url(#${linkMarkers.square})`: 
-                props.endMarker === "diamond" ? `url(#${linkMarkers.diamond})`: 
-                "none",
+            markerStart: props.startMarker ? `url(#kre:link-marker-${props.startMarker})` : "none",
+            markerEnd: props.endMarker ? `url(#kre:link-marker-${props.endMarker})` : "none",
         }
     })//segmentStyle
 

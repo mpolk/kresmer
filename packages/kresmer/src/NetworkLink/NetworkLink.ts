@@ -286,10 +286,3 @@ class DeleteVertexOp extends AddVertexOp {
         super.exec();
     }//undo
 }//DeleteVertexOp
-
-export const linkMarkers = {
-    arrow: "kre:link-marker-arrow",
-    circle: "kre:link-marker-circle",
-    square: "kre:link-marker-square",
-    diamond: "kre:link-marker-diamond",
-} as const;
