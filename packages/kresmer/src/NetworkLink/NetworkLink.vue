@@ -77,8 +77,7 @@
     })//segmentStyle
 
     const path = computed(() => {
-        const path = props.model.vertices.map(vertex => `L${vertex.coords.x},${vertex.coords.y}`).join(" ");
-        return `M${props.model.vertices[0].coords.x},${props.model.vertices[0].coords.y} ${path}`;
+        return props.model.vertices.map((vertex, i) => `${i ? 'L' : 'M'}${vertex.coords.x},${vertex.coords.y}`).join(" ");
     })//path
 
     const pathID = computed(() => `kre:link${props.model.id}path`)
