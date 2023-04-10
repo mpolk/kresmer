@@ -195,6 +195,14 @@ export default abstract class NetworkElement {
             this.props[propName] = data.props[propName];
         }//for
 
+        if (data.props) {
+            for (const propName in this.props) {
+                if (data.props[propName] === undefined) {
+                    delete this.props[propName];
+                }//if
+            }//for
+        }//if
+
         if (data.name !== undefined) {
             this.name = data.name;
         }//if

@@ -15,8 +15,8 @@
 <script setup lang="ts">
     import { ref, watch } from 'vue';
     import { Offcanvas } from 'bootstrap';
-    import { NetworkElement } from 'kresmer';
-    import { updateWindowTitle } from './renderer-main';
+    import { NetworkElement, NetworkElementClass, NetworkLink } from 'kresmer';
+    import { kresmer, updateWindowTitle } from './renderer-main';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>();
@@ -30,6 +30,9 @@
     watch(elementName, () => {
         formValidated.value = !validateElementName();
     });
+
+    const allClasses = ref<{name: string, _class: NetworkElementClass}[]>([]);
+    let elementClassName = "";
 
     function validateElementName()
     {
@@ -49,7 +52,7 @@
     let dbID: number|string|undefined;
 
     // eslint-disable-next-line @typescript-eslint/ban-types
-    type ElementProp = {name: string, value: unknown, type: Function, validValues?: string[]};
+    type ElementProp = {name: string, value: unknown, type: Function, required: boolean, validValues?: string[]};
     const elementProps = ref<ElementProp[]>([]);
 
     function show(element: NetworkElement)
@@ -57,6 +60,14 @@
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
+
+        const classes = element instanceof NetworkLink ? 
+            [...kresmer.getRegisteredLinkClasses()].filter(([name, _class]) => !_class.isAbstract) : 
+            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.autoInstanciate && !_class.forEmbeddingOnly);
+        allClasses.value = classes
+            .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
+            .map(([name, _class]) => {return {name, _class}});
+        elementClassName = element._class.name;
 
         elementToEdit = element;
         elementName.value = element.name;
@@ -69,6 +80,7 @@
                         name, 
                         value: element.props[name], 
                         type: element._class.props[name].type,
+                        required: element._class.props[name].required,
                         validValues,
                     }
                 });
@@ -150,7 +162,11 @@
         <div class="offcanvas-header align-items-baseline">
             <div>
                 <h5 class="offcanvas-title">{{elementName}}</h5>
-                <h6 class="text-secondary">{{elementToEdit?.getClass()?.name}}</h6>
+                <h6 class="text-secondary">
+                    <select class="form-select form-select-sm" v-model="elementClassName">
+                        <option v-for="ec in allClasses" :value="ec.name" :key="ec.name">{{ec.name}}</option>
+                    </select>
+                </h6>
             </div>
             <button type="button" class="btn-close" @click="close"></button>
          </div>
@@ -180,6 +196,7 @@
                                 <select v-if="prop.validValues" ref="propInputs" :data-prop-name="prop.name"
                                        class="form-select form-select-sm"
                                        v-model="prop.value">
+                                    <option v-if="!prop.required" :value="undefined"></option>
                                     <option v-for="(choice, i) in prop.validValues" 
                                             :key="`${prop.name}[${i}]`">{{ choice }}</option>
                                 </select>

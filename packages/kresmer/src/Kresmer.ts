@@ -948,6 +948,7 @@ export const GeneralTemplateFunctions = {
 
 // Re-export child classes to API
 export {default as NetworkElement } from "./NetworkElement";
+export {default as NetworkElementClass } from "./NetworkElementClass";
 export type {NetworkElementData} from "./NetworkElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
