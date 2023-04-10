@@ -54,7 +54,7 @@ export default class LinkVertex {
     private dragStartPos?: Position;
     private savedMousePos?: Position;
 
-    showBlinker = false;
+    isBlinking = false;
 
     public get isHead() {return this.vertexNumber === 0;}
     public get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
@@ -62,15 +62,24 @@ export default class LinkVertex {
     toString()
     {
         if (this.conn) {
-            const elementName =  this.conn.hostElement instanceof NetworkLink ? 
-                `-${this.conn.hostElement.name}`: this.conn.hostElement.name;
-            return `${elementName}:${this.conn.name}`;
+            return this.conn.toString();
         } else if (this.pos) {
             return `(${this.pos.x.toFixed()}, ${this.pos.y.toFixed()})`
         } else {
             return "()";
         }//if
     }//toString
+
+    get displayString()
+    {
+        if (this.conn) {
+            return this.conn.displayString;
+        } else if (this.pos) {
+            return `(${this.pos.x.toFixed()}, ${this.pos.y.toFixed()})`
+        } else {
+            return "()";
+        }//if
+    }//displayString
 
     public toXML()
     {
@@ -401,8 +410,8 @@ export default class LinkVertex {
 
     public blink()
     {
-        this.showBlinker = true;
-        setTimeout(() => {this.showBlinker = false}, 500);
+        this.isBlinking = true;
+        setTimeout(() => {this.isBlinking = false}, 500);
     }//blink
 
 

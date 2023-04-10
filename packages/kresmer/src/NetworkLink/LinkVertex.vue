@@ -106,7 +106,7 @@
             />
     </template>
     <Transition>
-        <circle v-if="model.showBlinker" ref="blinker"
+        <circle v-if="model.isBlinking" ref="blinker"
             :cx="model.coords.x" :cy="model.coords.y" 
             class="vertex blinker"
             />

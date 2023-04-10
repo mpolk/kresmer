@@ -96,7 +96,7 @@
                     @contextmenu.self="model.onRightClick(i - 1, $event)"
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
                     :style="cursorStyle"
-                    />
+                    ><title>{{model.displayString}}</title></line>
             </template>
         </template>
         <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">

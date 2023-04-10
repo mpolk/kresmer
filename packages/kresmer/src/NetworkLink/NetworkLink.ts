@@ -100,6 +100,44 @@ class _NetworkLink extends NetworkElement {
         return str;
     }//toString
 
+    get displayString()
+    {
+        let str = `${this.name}: ${this.getClass().name}`;
+        if (this.verticesInitialized) {
+            str += ` (${this.vertices[0].displayString} => ${this.vertices[this.vertices.length - 1].displayString})`;
+        }//if
+        return str;
+    }//displayString
+
+    public toXML(indentLevel: number): string 
+    {
+        const attrs = new Map<string, string>();
+        attrs.set("class", this._class.name);
+        attrs.set("name", this.name);
+        this.dbID && attrs.set("db-id", this.dbID.toString());
+        (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
+            attrs.set("from", this.vertices[0].toString());
+        const n = this.vertices.length - 1;
+        (this.vertices[n].isConnected || this.vertices[n].anchor.pos) && 
+            attrs.set("to", this.vertices[n].toString());
+
+        const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
+        if (this.vertices.length <= 2 && this.propCount == 0) {
+            return `${indent(indentLevel)}<link ${attrStr}/>`;
+        } else {
+            const xml = [`${indent(indentLevel)}<link ${attrStr}>`];
+
+            xml.push(...this.propsToXML(indentLevel));
+    
+            for (let i = 1; i <= n - 1; i++) {
+                xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
+            }//for
+
+            xml.push(`${indent(indentLevel)}</link>`);
+            return xml.join("\n");
+        }//if
+    }//toXML
+
     public get isLoopback() {
         const n = this.vertices.length - 1;
         return this.vertices[0].isConnected && this.vertices[n].isConnected && 
@@ -187,36 +225,6 @@ class _NetworkLink extends NetworkElement {
         this.selectLink();
         this.kresmer.emit("link-double-click", this, segmentNumber, event);
     }//onDoubleClick
-
-
-    public toXML(indentLevel: number): string 
-    {
-        const attrs = new Map<string, string>();
-        attrs.set("class", this._class.name);
-        attrs.set("name", this.name);
-        this.dbID && attrs.set("db-id", this.dbID.toString());
-        (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
-            attrs.set("from", this.vertices[0].toString());
-        const n = this.vertices.length - 1;
-        (this.vertices[n].isConnected || this.vertices[n].anchor.pos) && 
-            attrs.set("to", this.vertices[n].toString());
-
-        const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
-        if (this.vertices.length <= 2 && this.propCount == 0) {
-            return `${indent(indentLevel)}<link ${attrStr}/>`;
-        } else {
-            const xml = [`${indent(indentLevel)}<link ${attrStr}>`];
-
-            xml.push(...this.propsToXML(indentLevel));
-    
-            for (let i = 1; i <= n - 1; i++) {
-                xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
-            }//for
-
-            xml.push(`${indent(indentLevel)}</link>`);
-            return xml.join("\n");
-        }//if
-    }//toXML
 
 }//_NetworkLink
 

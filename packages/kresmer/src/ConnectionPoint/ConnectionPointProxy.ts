@@ -10,6 +10,7 @@
 
 import { nextTick, reactive, ref } from "vue";
 import NetworkElement from "../NetworkElement";
+import NetworkLink from "../NetworkLink/NetworkLink";
 import { Position } from "../Transform/Transform";
 
 export default class ConnectionPointProxy {
@@ -31,6 +32,13 @@ export default class ConnectionPointProxy {
         }//switch
         this.dir = this.dir0;
     }//ctor
+
+    toString() { 
+        const prefix = this.hostElement instanceof NetworkLink ? "-" : "";
+        return `${prefix}${this.hostElement.name}:${this.name}`; 
+    }//toString
+
+    get displayString() { return this.toString().replace(/@[a-z0-9]+$/, ""); }
 
     /** The current value of the prefered direction */
     public dir: number;
