@@ -220,7 +220,7 @@
     <svg ref="svg" v-bind="controller.origin" 
         class="network-component" 
         :class="{
-            [controller.component._class.name]: true,
+            [controller.component.getClass().name]: true,
             selected: controller.component.isSelected,
             dragged: controller.isDragged, 
             beingTransformed: controller.isBeingTransformed

@@ -48,9 +48,19 @@ export default abstract class NetworkElement {
     }//ctor
 
     readonly kresmer: Kresmer;
-    /** Element class */
-    readonly _class: NetworkElementClass;
+    /** Element's class */
+    private _class: NetworkElementClass;
+    /** Return the element's class */
     getClass() {return this._class}
+    /** Change the element's class */
+    public changeClass(newClass: NetworkElementClass)
+    {
+        if (newClass.constructor !== this._class.constructor) {
+            throw new IncompatibleElementClassException(this, newClass);
+        }//if
+        this._class = newClass;
+    }//changeClass
+
     /** Return the vue-component name corresponding to this link */
     get vueName() {return this._class.vueName}
 
@@ -165,7 +175,7 @@ export default abstract class NetworkElement {
         this._dbID = newDbID;
     }//dbID
 
-
+    /** Returns the XML representation of the element */
     public *propsToXML(indentLevel: number)
     {
         if (Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length) {
@@ -180,6 +190,7 @@ export default abstract class NetworkElement {
         }//if
     }//propsToXML
 
+    /** Returns the element "mutable" data, i.e. the data meant to updatable by the host process */
     public getData(): NetworkElementData
     {
         return {
@@ -189,6 +200,7 @@ export default abstract class NetworkElement {
         }
     }//getData
 
+    /** Sets the element "mutable" data, i.e. the data meant to updatable by the host process */
     public setData(data: NetworkElementData)
     {
         for (const propName in data.props) {
@@ -210,6 +222,7 @@ export default abstract class NetworkElement {
     }//setData
 
     protected _isSelected = false;
+    /** Indicates if the element is currently selected */
     get isSelected() {return this._isSelected}
     set isSelected(reallyIs: boolean) {
         this._isSelected = reallyIs;
@@ -218,6 +231,7 @@ export default abstract class NetworkElement {
 }//NetworkElement
 
 
+/** Element's mutable data, i.e. the data meant to updatable by the host process */
 export interface NetworkElementData {
     name?: string,
     dbID?: number|string,
@@ -261,3 +275,10 @@ export class DuplicateElementNameException extends KresmerException {
         super(`Duplicate element name: ${name}`);
     }//ctor
 }//DuplicateElementNameException
+
+export class IncompatibleElementClassException extends KresmerException {
+    constructor(element: NetworkElement, newClass: NetworkElementClass) {
+        super(`Trying to change the element'class to the incompatible one (${newClass.name})!`,
+            {source: `Element ${element.name} (${element.getClass().name})`});
+    }//ctor
+}//IncompatibleElementClassException

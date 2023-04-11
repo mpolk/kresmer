@@ -32,7 +32,26 @@
     });
 
     const allClasses = ref<{name: string, _class: NetworkElementClass}[]>([]);
-    let elementClassName = "";
+    let elementClass: NetworkElementClass;
+
+    function changeClass() {
+        const newClass = elementClass;
+        elementToEdit.changeClass(newClass);
+        const newProps = Object.keys(newClass.props)
+            .map(name => 
+                {
+                    const validValues = newClass.props[name].validator?.validValues;
+                    return {
+                        name, 
+                        value: elementToEdit.props[name], 
+                        type: newClass.props[name].type,
+                        required: newClass.props[name].required,
+                        validValues,
+                    }
+                });
+        elementProps.value = newProps;
+        formValidated.value = false;
+    }//changeClass
 
     function validateElementName()
     {
@@ -67,20 +86,20 @@
         allClasses.value = classes
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
-        elementClassName = element._class.name;
+        elementClass = element.getClass();
 
         elementToEdit = element;
         elementName.value = element.name;
         dbID = element.dbID;
-        elementProps.value = Object.keys(element._class.props)
+        elementProps.value = Object.keys(element.getClass().props)
             .map(name => 
                 {
-                    const validValues = element._class.props[name].validator?.validValues;
+                    const validValues = element.getClass().props[name].validator?.validValues;
                     return {
                         name, 
                         value: element.props[name], 
-                        type: element._class.props[name].type,
-                        required: element._class.props[name].required,
+                        type: element.getClass().props[name].type,
+                        required: element.getClass().props[name].required,
                         validValues,
                     }
                 });
@@ -163,8 +182,8 @@
             <div>
                 <h5 class="offcanvas-title">{{elementName}}</h5>
                 <h6 class="text-secondary">
-                    <select class="form-select form-select-sm" v-model="elementClassName">
-                        <option v-for="ec in allClasses" :value="ec.name" :key="ec.name">{{ec.name}}</option>
+                    <select class="form-select form-select-sm" v-model="elementClass" @change="changeClass">
+                        <option v-for="ec in allClasses" :value="ec._class" :key="ec.name">{{ec.name}}</option>
                     </select>
                 </h6>
             </div>

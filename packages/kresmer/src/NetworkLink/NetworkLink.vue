@@ -38,7 +38,7 @@
 
     const linkClass = computed(() => {
         return {
-            [props.model._class.name]: true,
+            [props.model.getClass().name]: true,
             link: true,
             selected: props.model.isSelected,
             highlighted: isHighlighted.value,

@@ -112,7 +112,7 @@ class _NetworkLink extends NetworkElement {
     public toXML(indentLevel: number): string 
     {
         const attrs = new Map<string, string>();
-        attrs.set("class", this._class.name);
+        attrs.set("class", this.getClass().name);
         attrs.set("name", this.name);
         this.dbID && attrs.set("db-id", this.dbID.toString());
         (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 

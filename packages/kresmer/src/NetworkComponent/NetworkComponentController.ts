@@ -248,7 +248,7 @@ class _NetworkComponentController {
     public toXML(indentLevel: number): string 
     {
         const attrs = new Map<string, string>();
-        attrs.set("class", this.component._class.name);
+        attrs.set("class", this.component.getClass().name);
         attrs.set("name", this.component.name);
         this.component.dbID && attrs.set("db-id", this.component.dbID.toString());
 
