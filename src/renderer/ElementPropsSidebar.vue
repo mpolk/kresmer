@@ -34,14 +34,30 @@
     });
 
     const allClasses = ref<{name: string, _class: NetworkElementClass}[]>([]);
-    let elementClass: NetworkElementClass;
+    const elementClass = ref<NetworkElementClass>();
 
+    
     function changeClass() {
-        const newClass = elementClass;
+        const newClass = elementClass.value!;
 
         if (elementToEdit instanceof NetworkComponent) {
+            if (!confirm(`\
+Changing component class will disconnect all links connected to it.
+Also, the values of the component properties that absent in the new class will be lost.
+
+Continue?`)) {
+                elementClass.value = elementToEdit.getClass();
+                return;
+            }//if
             kresmer.edAPI.changeComponentClass(elementToEdit, newClass as NetworkComponentClass);
         } else if (elementToEdit instanceof NetworkLink) {
+            if (!confirm(`\
+Changing link class will disconnect will make the values of the link properties that absent in the new class will be lost.
+
+Continue?`)) {
+                elementClass.value = elementToEdit.getClass();
+                return;
+            }//if
             kresmer.edAPI.changeLinkClass(elementToEdit, newClass as NetworkLinkClass);
         }//if
 
@@ -101,7 +117,7 @@
         allClasses.value = classes
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
-        elementClass = element.getClass();
+        elementClass.value = element.getClass();
 
         elementToEdit = element;
         elementName.value = element.name;
@@ -186,7 +202,7 @@
             <div>
                 <h5 class="offcanvas-title">{{elementName}}</h5>
                 <h6 class="text-secondary">
-                    <select class="form-select form-select-sm" v-model="elementClass" @change="changeClass">
+                    <select class="form-select form-select-sm" v-model="elementClass" @change="changeClass()">
                         <option v-for="ec in allClasses" :value="ec._class" :key="ec.name">{{ec.name}}</option>
                     </select>
                 </h6>
