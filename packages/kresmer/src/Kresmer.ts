@@ -12,7 +12,7 @@ import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
 import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
-import NetworkComponent from "./NetworkComponent/NetworkComponent";
+import NetworkComponent, {ChangeComponentClassOp} from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, SelectionMoveOp } 
     from "./NetworkComponent/NetworkComponentController";
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
@@ -22,7 +22,7 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import NetworkLink, { AddLinkOp, DeleteLinkOp } from "./NetworkLink/NetworkLink";
+import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp } from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
@@ -767,6 +767,16 @@ export default class Kresmer extends KresmerEventHooks {
         },//deleteComponent
 
         /**
+         * Changes class of the specified component
+         * @param componentID A component to modify ID
+         * @param newClass A new class of the component
+         */
+        changeComponentClass: (component: NetworkComponent, newClass: NetworkComponentClass) =>
+        {
+            this.undoStack.execAndCommit(new ChangeComponentClassOp(component, newClass));
+        },//changeComponentClass
+
+        /**
          * Starts link creation pulling in from the specified connection point
          * @param linkClass A class of the new link
          * @param fromElementID A component from which the link is started
@@ -788,6 +798,16 @@ export default class Kresmer extends KresmerEventHooks {
             this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint);
             this.vueKresmer.$forceUpdate();
         },//startLinkCreation
+
+        /**
+         * Changes class of the specified link
+         * @param linkID A link to modify ID
+         * @param newClass A new class of the link
+         */
+        changeLinkClass: (link: NetworkLink, newClass: NetworkLinkClass) =>
+        {
+            this.undoStack.execAndCommit(new ChangeLinkClassOp(link, newClass));
+        },//changeLinkClass
 
         /**
          * Deletes a Link using an undoable editor operation

@@ -15,7 +15,9 @@
 <script setup lang="ts">
     import { ref, watch } from 'vue';
     import { Offcanvas } from 'bootstrap';
-    import { NetworkElement, NetworkElementClass, NetworkLink } from 'kresmer';
+    import { NetworkElement, NetworkElementClass, 
+             NetworkComponent, NetworkComponentClass, 
+             NetworkLink, NetworkLinkClass } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
 
     let offCanvas: Offcanvas | undefined;
@@ -36,22 +38,35 @@
 
     function changeClass() {
         const newClass = elementClass;
-        elementToEdit.changeClass(newClass);
-        const newProps = Object.keys(newClass.props)
+
+        if (elementToEdit instanceof NetworkComponent) {
+            kresmer.edAPI.changeComponentClass(elementToEdit, newClass as NetworkComponentClass);
+        } else if (elementToEdit instanceof NetworkLink) {
+            kresmer.edAPI.changeLinkClass(elementToEdit, newClass as NetworkLinkClass);
+        }//if
+
+        elementProps.value = buildElementProps(newClass);
+        formValidated.value = false;
+    }//changeClass
+
+
+    function buildElementProps(_class: NetworkElementClass)
+    {
+        const props = Object.keys(_class.props)
             .map(name => 
                 {
-                    const validValues = newClass.props[name].validator?.validValues;
+                    const validValues = _class.props[name].validator?.validValues;
                     return {
                         name, 
                         value: elementToEdit.props[name], 
-                        type: newClass.props[name].type,
-                        required: newClass.props[name].required,
+                        type: _class.props[name].type,
+                        required: _class.props[name].required,
                         validValues,
                     }
                 });
-        elementProps.value = newProps;
-        formValidated.value = false;
-    }//changeClass
+        return props;
+    }//buildElementProps
+
 
     function validateElementName()
     {
@@ -91,18 +106,7 @@
         elementToEdit = element;
         elementName.value = element.name;
         dbID = element.dbID;
-        elementProps.value = Object.keys(element.getClass().props)
-            .map(name => 
-                {
-                    const validValues = element.getClass().props[name].validator?.validValues;
-                    return {
-                        name, 
-                        value: element.props[name], 
-                        type: element.getClass().props[name].type,
-                        required: element.getClass().props[name].required,
-                        validValues,
-                    }
-                });
+        elementProps.value = buildElementProps(element.getClass());
         formEnabled.value = true;
         offCanvas.show();
     }//show

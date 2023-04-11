@@ -10,6 +10,8 @@ import { InjectionKey, nextTick } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import NetworkElement, {NetworkElementData} from '../NetworkElement';
 import Kresmer from "../Kresmer";
+import { EditorOperation } from "../UndoStack";
+import LinkVertex from "../NetworkLink/LinkVertex";
 
 /**
  * Network Component - a generic network element instance 
@@ -39,6 +41,11 @@ export default class NetworkComponent extends NetworkElement {
         this.content = args?.content ?? componentClass.defaultContent;
         this.isAutoInstantiated = Boolean(args?.isAutoInstantiated);
     }//ctor
+
+    declare protected _class: NetworkComponentClass;
+    override getClass(): NetworkComponentClass {
+        return this._class;
+    }//getClass
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkComponent>;
@@ -81,3 +88,39 @@ export default class NetworkComponent extends NetworkElement {
         nextTick(() => this.connectedLinks.forEach(link => link.updateConnectionPoints()));
     }//updateConnectionPoints
 }//NetworkComponent
+
+
+export class ChangeComponentClassOp extends EditorOperation {
+
+    constructor(private component: NetworkComponent, private newClass: NetworkComponentClass)
+    {
+        super();
+        this.oldClass = component.getClass();
+    }//ctor
+
+    private readonly oldClass: NetworkComponentClass;
+    private detachedVertices = new Map<LinkVertex, string|number>();
+
+    override exec(): void {
+        this.component.kresmer.links.forEach(link => {
+            link.vertices.forEach(vertex => {
+                if (vertex.isConnected && vertex.anchor.conn!.hostElement === this.component) {
+                    this.detachedVertices.set(vertex, vertex.anchor.conn!.name);
+                    vertex.detach();
+                }//if
+            })//vertices
+        })//links
+
+        this.component.changeClass(this.newClass);
+    }//exec
+
+    override undo(): void {
+        this.component.changeClass(this.oldClass);
+        nextTick(() => {
+            this.component.updateConnectionPoints();
+            this.detachedVertices.forEach((connectionPointName, vertex) => {
+                vertex.connect(this.component.getConnectionPoint(connectionPointName));
+            });
+        });
+    }//undo
+}//ChangeComponentClassOp

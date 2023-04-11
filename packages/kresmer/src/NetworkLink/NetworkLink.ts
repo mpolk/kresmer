@@ -48,6 +48,11 @@ class _NetworkLink extends NetworkElement {
         this.vertices.push(new LinkVertex(_this, i++, args?.to));
     }//ctor
 
+    declare protected _class: NetworkLinkClass;
+    override getClass(): NetworkLinkClass {
+        return this._class;
+    }//getClass
+
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
 
@@ -281,6 +286,25 @@ export class DeleteLinkOp extends EditorOperation {
         });
     }//undo
 }//DeleteLinkOp
+
+export class ChangeLinkClassOp extends EditorOperation {
+
+    constructor(private link: NetworkLink, private newClass: NetworkLinkClass)
+    {
+        super();
+        this.oldClass = link.getClass();
+    }//ctor
+
+    private readonly oldClass: NetworkLinkClass;
+
+    override exec(): void {
+        this.link.changeClass(this.newClass);
+    }//exec
+
+    override undo(): void {
+        this.link.changeClass(this.oldClass);
+    }//undo
+}//ChangeLinkClassOp
 
 class AddVertexOp extends EditorOperation {
 

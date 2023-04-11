@@ -49,7 +49,7 @@ export default abstract class NetworkElement {
 
     readonly kresmer: Kresmer;
     /** Element's class */
-    private _class: NetworkElementClass;
+    protected _class: NetworkElementClass;
     /** Return the element's class */
     getClass() {return this._class}
     /** Change the element's class */
