@@ -6,7 +6,7 @@
  * Network Link - data object 
  ***************************************************************************/
 
-import { InjectionKey } from "vue";
+import { InjectionKey, nextTick } from "vue";
 import Kresmer, { ConnectionPointProxy } from "../Kresmer";
 import KresmerException from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
@@ -249,13 +249,36 @@ export class AddLinkOp extends EditorOperation {
     }//undo
 }//AddLinkOp
 
-export class DeleteLinkOp extends AddLinkOp {
+export class DeleteLinkOp extends EditorOperation {
+
+    constructor (protected link: NetworkLink)
+    {
+        super();
+    }//ctor
+
+    private detachedVertices = new Map<LinkVertex, string|number>();
+
     override exec(): void {
-        super.undo();
+        this.link.kresmer.links.forEach(link => {
+            link.vertices.forEach(vertex => {
+                if (vertex.isConnected && vertex.anchor.conn!.hostElement === this.link) {
+                    this.detachedVertices.set(vertex, vertex.anchor.conn!.name);
+                    vertex.detach();
+                }//if
+            })//vertices
+        })//links
+
+        this.link.kresmer.deleteLink(this.link);
     }//exec
 
     override undo(): void {
-        super.exec();
+        this.link.kresmer.addLink(this.link);
+        nextTick(() => {
+            this.link.updateConnectionPoints();
+            this.detachedVertices.forEach((connectionPointName, vertex) => {
+                vertex.connect(this.link.getConnectionPoint(connectionPointName));
+            });
+        });
     }//undo
 }//DeleteLinkOp
 
