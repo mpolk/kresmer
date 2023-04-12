@@ -205,7 +205,7 @@ Continue?`)) {
             <div>
                 <h5 class="offcanvas-title">{{elementName}}</h5>
                 <h6 class="text-secondary">
-                    <select class="form-select form-select-sm" v-model="elementClass" @change="changeClass">
+                    <select class="form-select form-select-sm text-secondary" v-model="elementClass" @change="changeClass">
                         <option v-for="ec in allClasses" :value="ec._class" :key="ec.name">{{ec.name}}</option>
                     </select>
                 </h6>
