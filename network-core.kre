@@ -24,6 +24,7 @@
         <props>
             <prop name="perspective">center</prop>
             <prop name="height">75</prop>
+            <prop name="ip-address">193.110.112.32</prop>
         </props>
     </component>
 

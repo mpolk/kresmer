@@ -654,6 +654,7 @@
             <prop name="height" type="Number" required="true" default="75"/>
             <prop name="width" type="Number"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
+            <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" />
         </props>
         <computed-props>
             <computed-prop name="width">props.width ?? props.height * 9.1</computed-prop>

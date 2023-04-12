@@ -72,12 +72,14 @@ Continue?`)) {
             .map(name => 
                 {
                     const validValues = _class.props[name].validator?.validValues;
+                    const pattern = _class.props[name].validator?.pattern;
                     return {
                         name, 
                         value: elementToEdit.props[name], 
                         type: _class.props[name].type,
                         required: _class.props[name].required,
                         validValues,
+                        pattern,
                     }
                 });
         return props;
@@ -102,7 +104,8 @@ Continue?`)) {
     let dbID: number|string|undefined;
 
     // eslint-disable-next-line @typescript-eslint/ban-types
-    type ElementProp = {name: string, value: unknown, type: Function, required: boolean, validValues?: string[]};
+    type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
+                        validValues?: string[], pattern?: string};
     const elementProps = ref<ElementProp[]>([]);
 
     function show(element: NetworkElement)
@@ -202,13 +205,13 @@ Continue?`)) {
             <div>
                 <h5 class="offcanvas-title">{{elementName}}</h5>
                 <h6 class="text-secondary">
-                    <select class="form-select form-select-sm" v-model="elementClass" @change="changeClass()">
+                    <select class="form-select form-select-sm" v-model="elementClass" @change="changeClass">
                         <option v-for="ec in allClasses" :value="ec._class" :key="ec.name">{{ec.name}}</option>
                     </select>
                 </h6>
             </div>
             <button type="button" class="btn-close" @click="close"></button>
-         </div>
+        </div>
         <div class="offcanvas-body">
             <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
                 <table class="table table-bordered">
@@ -252,6 +255,7 @@ Continue?`)) {
                                     v-model="prop.value"/>
                                 <input v-else 
                                     ref="propInputs" :data-prop-name="prop.name"
+                                    :pattern="prop.pattern"
                                     class="form-control form-control-sm"
                                     v-model="prop.value"/>
                                 <div class="invalid-feedback">

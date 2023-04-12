@@ -228,7 +228,8 @@ export default class LibraryParser {
                     const type = child.getAttribute("type");
                     const required = child.getAttribute("required"),
                         _default = child.getAttribute("default"),
-                        choices = child.getAttribute("choices");
+                        choices = child.getAttribute("choices"),
+                        pattern = child.getAttribute("pattern");
                     if (!propName) {
                         this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
                             {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
@@ -278,6 +279,17 @@ export default class LibraryParser {
                             return typeof value == "string" && validValues.includes(value);
                         }//validator
                         validator.validValues = validValues;
+                        prop.validator = validator;
+                    }//if
+
+                    if (pattern) {
+                        const rePattern = new RegExp(pattern);
+                        const validator = (value: unknown) => {
+                            return typeof value == "string" && (
+                                    Boolean(value.match(rePattern)) || (value === "" && !required)
+                                );
+                        }//validator
+                        validator.pattern = pattern;
                         prop.validator = validator;
                     }//if
 
