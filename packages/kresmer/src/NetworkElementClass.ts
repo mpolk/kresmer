@@ -25,6 +25,7 @@ export default abstract class NetworkElementClass {
     public constructor(name: string, params: {
         baseClass?: NetworkElementClass,
         styleBaseClasses?: NetworkElementClass[],
+        propsBaseClasses?: NetworkElementClass[],
         props?: ComponentObjectPropsOptions,
         computedProps?: ComputedProps,
         defs?: Template,
@@ -34,6 +35,7 @@ export default abstract class NetworkElementClass {
         this.name = name;
         this.baseClass = params.baseClass;
         this.styleBaseClasses = params.styleBaseClasses;
+        this.propsBaseClasses = params.propsBaseClasses;
         this.props = params.props ?? {};
         this.computedProps = params.computedProps;
         this.defs = params.defs;
@@ -44,8 +46,10 @@ export default abstract class NetworkElementClass {
     readonly name: string;
     /** Base class (for the element as a whole) */
     readonly baseClass?: NetworkElementClass;
-    /** A list of the style base classes */
+    /** A list of the base classes for this class CSS */
     readonly styleBaseClasses?: NetworkElementClass[];
+    /** A list of the base classes for this class props set */
+    readonly propsBaseClasses?: NetworkElementClass[];
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */

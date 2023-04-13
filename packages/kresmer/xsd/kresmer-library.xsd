@@ -271,6 +271,7 @@
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+            <xs:attribute name="extend"/>
         </xs:complexType>
     </xs:element>
 

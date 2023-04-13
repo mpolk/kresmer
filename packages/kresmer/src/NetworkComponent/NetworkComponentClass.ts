@@ -25,7 +25,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params: {
-        baseClasses?: NetworkComponentClass[],
+        styleBaseClasses?: NetworkComponentClass[],
         template: Template,
         props?: ComponentObjectPropsOptions,
         computedProps?: ComputedProps,

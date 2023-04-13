@@ -68,17 +68,17 @@
         <vertex x="685.25" y="181.27928983352027"/>
     </link>
 
-    <link class="AOC-fan" name="uplink-dipt" from="border:et0/0/0@d" to="(860, 104)">
+    <link class="AOC-fan" name="uplink-dipt" from="border:et0/0/0@d" to="(860, 98)">
         <vertex x="176.25" y="167"/>
-        <vertex x="860.3096080655865" y="168.39250576374135"/>
+        <vertex x="860" y="167"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1105, 55)">
+    <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1104, 65)">
         <props>
             <prop name="endLabel">к свичу ДИПТ (порт 9)</prop>
             <prop name="endMarker">arrow</prop>
         </props>
-        <vertex x="910.4094149843912" y="54.30772478591353"/>
+        <vertex x="911.6561766127802" y="65.52857944141451"/>
     </link>
 
     <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1105, 86)">
@@ -89,19 +89,19 @@
         <vertex x="909.5998857620592" y="86.33535735196507"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-4" from="-uplink-dipt:3" to="(1048, 156)">
+    <link class="AOC" name="uplink-dipt-4" from="-uplink-dipt:3" to="(1049, 131)">
         <props>
             <prop name="endMarker">circle</prop>
         </props>
-        <vertex x="912.0934090188375" y="156.10638967438612"/>
+        <vertex x="913.3401706472266" y="131.17115710660616"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1107, 124)">
+    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1103, 109)">
         <props>
             <prop name="endLabel">к свичу ДИПТ (порт 11)</prop>
             <prop name="endMarker">arrow</prop>
         </props>
-        <vertex x="912.384897289542" y="123.78726883762975"/>
+        <vertex x="911.138135661153" y="108.82612929696178"/>
     </link>
 
 </kresmer-drawing>

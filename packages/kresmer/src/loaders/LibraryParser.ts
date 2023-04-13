@@ -91,7 +91,8 @@ export default class LibraryParser {
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
-        let baseClasses: NetworkComponentClass[] | undefined;
+        let propsBaseClasses: NetworkComponentClass[] | undefined;
+        let styleBaseClasses: NetworkComponentClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -99,7 +100,9 @@ export default class LibraryParser {
                     template = child;
                     break;
                 case "props":
-                    props = this.parseProps(child);
+                    propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
+                        .map(className => NetworkComponentClass.getClass(className));
+                    props = this.parseProps(child, propsBaseClasses);
                     break;
                 case "computed-props":
                     computedProps = this.parseComputedProps(child);
@@ -108,9 +111,9 @@ export default class LibraryParser {
                     defs = child;
                     break;
                 case "style":
-                    baseClasses = child.getAttribute("extends")?.split(/ *, */)
+                    styleBaseClasses = child.getAttribute("extends")?.split(/ *, */)
                         .map(className => NetworkComponentClass.getClass(className));
-                    style = this.parseCSS(child.innerHTML, baseClasses);
+                    style = this.parseCSS(child.innerHTML, styleBaseClasses);
                     break;
             }//switch
         }//for
@@ -128,7 +131,7 @@ export default class LibraryParser {
         }//if
 
 
-        return new NetworkComponentClass(className, {baseClasses, template, props, computedProps, defs, 
+        return new NetworkComponentClass(className, {styleBaseClasses, template, props, computedProps, defs, 
                                                      style, autoInstanciate, defaultContent, forEmbeddingOnly});
     }//parseComponentClassNode
 
@@ -150,7 +153,7 @@ export default class LibraryParser {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "extends":
-                    ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child) ?? {});
+                    ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, NetworkLinkClass) ?? {});
                     break
                 case "props":
                     props = this.parseProps(child);
@@ -180,7 +183,7 @@ export default class LibraryParser {
     }//parseLinkClassNode
 
 
-    private parseClassInheritance(node: Element)
+    private parseClassInheritance<T extends typeof NetworkComponentClass|typeof NetworkLinkClass>(node: Element, baseClassCtor: T)
     {
         const baseClassName = node.textContent || node.getAttribute("base");
         if (!baseClassName) {
@@ -189,7 +192,7 @@ export default class LibraryParser {
             return undefined;
         }//if
 
-        const baseClass = NetworkLinkClass.getClass(baseClassName);
+        const baseClass = baseClassCtor.getClass(baseClassName) as InstanceType<T>;
         if (!baseClass) {
             this.kresmer.raiseError(new LibraryParsingException(`Base class ${baseClassName} does not exist`, 
                                     {source: `Link ${node.parentElement!.getAttribute("name")}`}));
@@ -208,7 +211,7 @@ export default class LibraryParser {
     }//parseClassInheritance
 
 
-    private parseProps(node: Element)
+    private parseProps(node: Element, propsBaseClasses?: NetworkElementClass[])
     {
         const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown}> = {
             "string": {propType: String, makeDefault: d => d}, 
@@ -219,6 +222,7 @@ export default class LibraryParser {
         };
 
         const props: ComponentObjectPropsOptions = {};
+        propsBaseClasses?.forEach(baseClass => this.collectBaseClassProps(props, baseClass));
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -235,10 +239,6 @@ export default class LibraryParser {
                             {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
                         continue;
                     }//if
-                    // if (!_default) {
-                    //     this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" without a default value`,
-                    //         {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
-                    // }//if
 
                     Object.getOwnPropertyNames(allowedTypes).forEach(typeName => {
                         if (type?.toLowerCase() === typeName) {
@@ -301,6 +301,17 @@ export default class LibraryParser {
 
         return props;
     }//parseProps
+
+
+    private collectBaseClassProps(acc: ComponentObjectPropsOptions, _class: NetworkElementClass)
+    {
+         _class.propsBaseClasses?.forEach(baseClass => {
+            this.collectBaseClassProps(acc, baseClass);
+        });
+        for (const propName in _class.props) {
+            acc[propName] = _class.props[propName];
+        }//for
+    }//collectBaseClassProps
 
 
     private parseComputedProps(node: Element)
