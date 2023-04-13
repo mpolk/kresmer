@@ -140,6 +140,17 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="a">
+                    <xs:complexType mixed="true">
+                        <xs:group ref="svg-elements" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="text-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="href-attrs"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:element name="use" minOccurs="0">
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
@@ -403,6 +414,13 @@
         <xs:attribute name="v-for"/>
         <xs:attribute name="v-if"/>
         <xs:attribute name="v-else"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="href-attrs">
+        <xs:attribute name="href" type="xs:string"/>
+        <xs:attribute ref="v-bind:href"/>
+        <xs:attribute name="target"/>
+        <xs:attribute ref="v-bind:target"/>
     </xs:attributeGroup>
 
     <xs:attribute name="viewBox" type="four-numbers"/>

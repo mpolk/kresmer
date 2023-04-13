@@ -29,4 +29,6 @@
   <xs:attribute name="transform-origin" />
   <xs:attribute name="class" />
   <xs:attribute name="style" />
+  <xs:attribute name="href" />
+  <xs:attribute name="target" />
 </xs:schema>
