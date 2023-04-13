@@ -256,10 +256,12 @@
         </props>
     </component-class>
 
+    <!-- Props to inherit in various managed devices (switches, routers etc.) -->
     <component-class name="ManagedDevice" instantiate="embed">
         <template/>
         <props>
             <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" />
+            <prop name="management-protocol" type="String" />
         </props>
     </component-class>
 
@@ -309,10 +311,24 @@
                 v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="height*0.75"
                 text-anchor="middle" class="device-name"
                 v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
+            <template v-if="ipAddress">
+                <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" target="_blank">
+                    <text
+                        v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="heig*0.25"
+                        text-anchor="middle" class="ip-address href"
+                        v-bind:class='{"no-persp": perspective === "none"}'>{{ipAddress}}</text></a>
+                <text v-else=""
+                    v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="height*0.25"
+                    text-anchor="middle" class="ip-address"
+                    v-bind:class='{"no-persp": perspective === "none"}'>{{ipAddress}}</text>
+            </template>
         </template>
         <style>
             .device-name { font-family: sans-serif; fill: black; text-shadow: none}
             .device-name.no-persp { font-family: sans-serif!important; fill: black!important; text-shadow: none!important}
+            .ip-address { font-family: sans-serif; }
+            a { text-decoration: none; }
+            a:hover { text-decoration: underline; }
             .port-icon { fill: #404040; }
             .facet {
                 --facet-color: lightgray;
@@ -322,7 +338,7 @@
             .side.facet { filter: brightness(0.5); }
             .slot-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
         </style>
-        <props>
+        <props extend="ManagedDevice">
             <prop name="n-slots" type="Number" default="1" />
             <prop name="height" type="Number" required="true" default="50" />
             <prop name="width" type="Number" required="true" default="312.5" />
@@ -365,14 +381,17 @@
 
     <component-class name="Switch">
         <template>
-            <Kre:SwitchBody v-bind:width="width" v-bind:height="height"
-                v-bind:perspective="perspective" v-bind:name="name" />
+            <Kre:SwitchBody 
+                v-bind:width="width" v-bind:height="height"
+                v-bind:perspective="perspective" v-bind:name="name" 
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                />
             <Kre:SquarePort v-for="i in nPorts"
                 v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2"
                 v-bind:name="i" />
         </template>
         <style extends="SwitchBody" />
-        <props>
+        <props extend="SwitchBody">
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true" default="50" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
@@ -385,18 +404,22 @@
     <!-- Various breeds of Switches -->
     <component-class name="ExtremeSwitchBody" instantiate="embed">
         <template>
-            <Kre:SwitchBody v-bind:name="name" v-bind:width="width" v-bind:height="height"
-                            v-bind:n-slots="nSlots" v-bind:top-facet-size="topFacetSize" 
-                            v-bind:perspective="perspective" />
+            <Kre:SwitchBody 
+                v-bind:name="name" v-bind:width="width" v-bind:height="height"
+                v-bind:n-slots="nSlots" v-bind:top-facet-size="topFacetSize" 
+                v-bind:perspective="perspective" 
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                />
         </template>
         <style extends="SwitchBody">
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
+            .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
             .model-name { fill: white; font-family: sans-serif; }
             .facet {fill: #cf34fe;}
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
-        <props>
+        <props extend="SwitchBody">
             <prop name="width" type="Number" required="true" default="312.5" />
             <prop name="n-slots" type="Number" default="1" />
             <prop name="height" type="Number" required="true" />
@@ -415,11 +438,14 @@
 
     <component-class name="ExtremeSwitch">
         <template>
-            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
-                v-bind:perspective="perspective" />
+            <Kre:Switch 
+                v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
+                v-bind:perspective="perspective" 
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                />
         </template>
         <style extends="Switch, ExtremeSwitchBody" />
-        <props extend="ManagedDevice">
+        <props extend="SwitchBody">
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
@@ -428,8 +454,11 @@
 
     <component-class name="Extreme-X590-24x">
         <template>
-            <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                                   v-bind:top-facet-size="1" v-bind:perspective="perspective" />
+            <Kre:ExtremeSwitchBody 
+                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
+                v-bind:top-facet-size="1" v-bind:perspective="perspective" 
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                />
             <text v-bind:x="height*7" v-bind:y="height/3" v-bind:font-size="height*0.25" 
                   class="model-name">X590</text>
             <template v-for="i in 12">
@@ -440,7 +469,7 @@
             <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" />
             <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" />
         </template>
-        <style extends="ExtremeSwitchBody" />
+        <style extends="ExtremeSwitch" />
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75"/>
             <prop name="width" type="Number"/>
@@ -453,9 +482,12 @@
 
     <component-class name="Extreme-X590-24x-Stack">
         <template>
-            <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
-                                   v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
-                                   v-bind:perspective="perspective" />
+            <Kre:ExtremeSwitchBody 
+                v-bind:name="name" v-bind:height="height" v-bind:width="width"
+                v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
+                v-bind:perspective="perspective" 
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                />
             <template v-for="slot in nSlots">
                 <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
@@ -486,8 +518,11 @@
 
     <component-class name="Extreme-X670-48x">
         <template>
-            <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                                   v-bind:top-facet-size="1" v-bind:perspective="perspective" />
+            <Kre:ExtremeSwitchBody 
+                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
+                v-bind:top-facet-size="1" v-bind:perspective="perspective" 
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                />
             <template v-for="i in 24">
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1" />
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" key-position="bottom" />
@@ -506,9 +541,12 @@
 
     <component-class name="Extreme-X670-48x-Stack">
         <template>
-            <Kre:ExtremeSwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
-                                   v-bind:top-facet-size="1" v-bind:n-slots="nSlots" 
-                                   v-bind:perspective="perspective" />
+            <Kre:ExtremeSwitchBody 
+                v-bind:name="name" v-bind:height="height" v-bind:width="width"
+                v-bind:top-facet-size="1" v-bind:n-slots="nSlots" 
+                v-bind:perspective="perspective" 
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                />
             <template v-for="slot in nSlots">
                 <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
@@ -548,7 +586,7 @@
             .port-icon { fill: #ff6600; }
             .port-icon.body { stroke: #ffcc00; }
         </style>
-        <props>
+        <props extend="ManagedDevice">
             <prop name="nPorts" type="Number" default="8" />
             <prop name="height" type="Number" required="true" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
@@ -579,7 +617,9 @@
         <template>
             <Kre:SwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:n-slots="nSlots" v-bind:perspective="perspective" 
-                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew">
+                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                >
                 <template v-slot:frontFacet="{}">
                     <slot name="frontFacet" />
                 </template>
@@ -592,7 +632,7 @@
             </Kre:SwitchBody>
     </template>
         <style extends="SwitchBody"/>
-        <props>
+        <props extend="ManagedDevice">
             <prop name="n-slots" type="Number" default="1" />
             <prop name="height" type="Number" required="true" default="50" />
             <prop name="width" type="Number" required="true" default="312.5" />
@@ -610,8 +650,11 @@
             </pattern>
         </defs>
         <template>
-            <Kre:RouterBody v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                             v-bind:top-facet-size="1" v-bind:perspective="perspective">
+            <Kre:RouterBody 
+                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
+                v-bind:top-facet-size="1" v-bind:perspective="perspective"
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                >
                 <template v-slot:frontFacet="{}">
                     <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 
                           v-bind:height="height*0.84" v-bind:width="width-height*0.16" 
@@ -652,11 +695,12 @@
         </template>
         <style extends="RouterBody">
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
+            .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
             .model-name { fill: #ffffff; font-family: sans-serif; }
             .facet {--facet-color: #b8b8b8;}
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
-        <props extend="ManagedDevice">
+        <props extend="RouterBody">
             <prop name="height" type="Number" required="true" default="75"/>
             <prop name="width" type="Number"/>
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" />

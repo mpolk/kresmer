@@ -7,6 +7,7 @@
             <prop name="n-slots">2</prop>
             <prop name="height">75</prop>
             <prop name="perspective">center</prop>
+            <prop name="ip-address"></prop>
         </props>
     </component>
 
@@ -25,6 +26,7 @@
             <prop name="perspective">center</prop>
             <prop name="height">75</prop>
             <prop name="ip-address">193.110.112.32</prop>
+            <prop name="management-protocol">ssh:</prop>
         </props>
     </component>
 
