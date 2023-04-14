@@ -8,15 +8,19 @@
             <prop name="height">75</prop>
             <prop name="perspective">center</prop>
             <prop name="ip-address"></prop>
+            <prop name="ip-address">193.110.112.33</prop>
+            <prop name="n-ports">72</prop>
         </props>
     </component>
 
-    <component class="Extreme-X670-48x-Stack" name="metro" db-id="1697">
+    <component class="Extreme-X670-48x-Stack" name="metro-switch" db-id="1697">
         <origin x="-2" y="686"/>
         <props>
             <prop name="height">75</prop>
             <prop name="perspective">center</prop>
             <prop name="n-slots">2</prop>
+            <prop name="ip-address">172.28.48.6</prop>
+            <prop name="n-ports">48</prop>
         </props>
     </component>
 
@@ -30,9 +34,9 @@
         </props>
     </component>
 
-    <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro:1:12@l">
+    <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:12@l">
         <props>
-            <prop name="startLabel">metro</prop>
+            <prop name="start-label">metro</prop>
         </props>
         <vertex x="179.25" y="580.1090724837011"/>
         <vertex x="215.5102341224366" y="580.1090724837011"/>
@@ -49,12 +53,12 @@
         <vertex x="42.187801316780565" y="46.5"/>
     </link>
 
-    <link class="DAC" name="Link-3f04b95a-21a1-4c03-9c58-8f90b97c084a" from="metro:1:47@r" to="metro:2:48@r">
+    <link class="DAC" name="Link-3f04b95a-21a1-4c03-9c58-8f90b97c084a" from="metro-switch:1:47@r" to="metro-switch:2:48@r">
         <vertex x="61.606191135840504" y="0"/>
         <vertex x="61.606191135840504" y="103.5"/>
     </link>
 
-    <link class="DAC" name="Link-6a30cb74-8b0f-428c-bc13-737de5f77bfd" from="metro:1:48@r" to="metro:2:47@r">
+    <link class="DAC" name="Link-6a30cb74-8b0f-428c-bc13-737de5f77bfd" from="metro-switch:1:48@r" to="metro-switch:2:47@r">
         <vertex x="38.181423120468935" y="0"/>
         <vertex x="38.181423120468935" y="46.5"/>
     </link>
@@ -77,31 +81,31 @@
 
     <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1104, 65)">
         <props>
-            <prop name="endLabel">к свичу ДИПТ (порт 9)</prop>
-            <prop name="endMarker">arrow</prop>
+            <prop name="end-label">к свичу ДИПТ (порт 9)</prop>
+            <prop name="end-marker">arrow</prop>
         </props>
         <vertex x="911.6561766127802" y="65.52857944141451"/>
     </link>
 
     <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1105, 86)">
         <props>
-            <prop name="endLabel">к свичу ДИПТ (порт 10)</prop>
-            <prop name="endMarker">arrow</prop>
+            <prop name="end-label">к свичу ДИПТ (порт 10)</prop>
+            <prop name="end-marker">arrow</prop>
         </props>
         <vertex x="909.5998857620592" y="86.33535735196507"/>
     </link>
 
     <link class="AOC" name="uplink-dipt-4" from="-uplink-dipt:3" to="(1049, 131)">
         <props>
-            <prop name="endMarker">circle</prop>
+            <prop name="end-marker">circle</prop>
         </props>
         <vertex x="913.3401706472266" y="131.17115710660616"/>
     </link>
 
     <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1103, 109)">
         <props>
-            <prop name="endLabel">к свичу ДИПТ (порт 11)</prop>
-            <prop name="endMarker">arrow</prop>
+            <prop name="end-label">к свичу ДИПТ (порт 11)</prop>
+            <prop name="end-marker">arrow</prop>
         </props>
         <vertex x="911.138135661153" y="108.82612929696178"/>
     </link>

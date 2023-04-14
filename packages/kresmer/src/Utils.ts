@@ -6,12 +6,15 @@
  *    Utility functions
 \**************************************************************************/
 
-
 export function toCamelCase(s: string): string
 {
     return s.replaceAll(/-([a-z])/g, (_, p1) => p1.toUpperCase());
 }//toCamelCase
 
+export function toKebabCase(s: string): string
+{
+    return s.replaceAll(/([A-Z])/g, (_, p1) => `-${p1.toLowerCase()}`);
+}//toKebabCase
 
 export function indent(indentLevel: number)
 {

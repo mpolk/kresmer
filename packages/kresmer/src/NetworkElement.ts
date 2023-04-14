@@ -14,7 +14,7 @@ import NetworkElementClass from "./NetworkElementClass";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import { EditorOperation } from "./UndoStack";
 import KresmerException from "./KresmerException";
-import { indent } from "./Utils";
+import { indent, toKebabCase } from "./Utils";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 
 export default abstract class NetworkElement {
@@ -183,7 +183,7 @@ export default abstract class NetworkElement {
             for (const propName in this.props) {
                 const propValue = this.props[propName];
                 if (propName !== "name" && typeof propValue !== "undefined") {
-                    yield `${indent(indentLevel+2)}<prop name="${propName}">${propValue}</prop>`;
+                    yield `${indent(indentLevel+2)}<prop name="${toKebabCase(propName)}">${propValue}</prop>`;
                 }//if
             }//for
             yield `${indent(indentLevel+1)}</props>`;
