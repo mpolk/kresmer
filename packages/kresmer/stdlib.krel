@@ -586,11 +586,7 @@
             .port-icon { fill: #ff6600; }
             .port-icon.body { stroke: #ffcc00; }
         </style>
-        <props extend="ManagedDevice">
-            <prop name="nPorts" type="Number" default="8" />
-            <prop name="height" type="Number" required="true" />
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
-        </props>
+        <props extend="Switch"/>
     </component-class>
 
     <component-class name="Catalyst">
@@ -603,10 +599,7 @@
             .facet {fill: darkcyan;}
             .port-icon {fill: #005757;}
         </style>
-        <props extend="ManagedDevice">
-            <prop name="nPorts" type="Number" default="8" />
-            <prop name="height" type="Number" required="true" />
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
+        <props extend="Switch">
         </props>
     </component-class>
 
@@ -632,14 +625,7 @@
             </Kre:SwitchBody>
     </template>
         <style extends="SwitchBody"/>
-        <props extend="ManagedDevice">
-            <prop name="n-slots" type="Number" default="1" />
-            <prop name="height" type="Number" required="true" default="50" />
-            <prop name="width" type="Number" required="true" default="312.5" />
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" />
-            <prop name="top-facet-size" type="Number" default="1.4" />
-            <prop name="top-facet-skew" type="Number" default="60" />
-        </props>
+        <props extend="SwitchBody"/>
     </component-class>
 
     <component-class name="Juniper-MX204">
