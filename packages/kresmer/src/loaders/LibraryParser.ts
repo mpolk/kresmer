@@ -131,7 +131,7 @@ export default class LibraryParser {
         }//if
 
 
-        return new NetworkComponentClass(className, {styleBaseClasses, template, props, computedProps, defs, 
+        return new NetworkComponentClass(className, {styleBaseClasses, propsBaseClasses, template, props, computedProps, defs, 
                                                      style, autoInstanciate, defaultContent, forEmbeddingOnly});
     }//parseComponentClassNode
 
@@ -148,6 +148,7 @@ export default class LibraryParser {
         let style: PostCSSRoot | undefined;
         let baseClass: NetworkLinkClass | undefined;
         let baseClassPropBindings: NetworkElementProps | undefined;
+        let propsBaseClasses: NetworkLinkClass[] | undefined;
         let styleBaseClasses: NetworkLinkClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -156,7 +157,9 @@ export default class LibraryParser {
                     ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, NetworkLinkClass) ?? {});
                     break
                 case "props":
-                    props = this.parseProps(child);
+                    propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
+                        .map(className => NetworkLinkClass.getClass(className));
+                    props = this.parseProps(child, propsBaseClasses);
                     break;
                 case "computed-props":
                     computedProps = this.parseComputedProps(child);
@@ -179,7 +182,8 @@ export default class LibraryParser {
             style = this.parseCSS("", [baseClass]);
         }//if
 
-        return new NetworkLinkClass(className, {baseClass, styleBaseClasses, props, baseClassPropBindings, computedProps, defs, style})
+        return new NetworkLinkClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
+                                                baseClassPropBindings, computedProps, defs, style})
     }//parseLinkClassNode
 
 
@@ -222,7 +226,11 @@ export default class LibraryParser {
         };
 
         const props: ComponentObjectPropsOptions = {};
-        propsBaseClasses?.forEach(baseClass => this.collectBaseClassProps(props, baseClass));
+        propsBaseClasses?.forEach(baseClass => {
+            for (const propName in baseClass.props) {
+                props[propName] = baseClass.props[propName];
+            }//for
+        });
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -301,17 +309,6 @@ export default class LibraryParser {
 
         return props;
     }//parseProps
-
-
-    private collectBaseClassProps(acc: ComponentObjectPropsOptions, _class: NetworkElementClass)
-    {
-         _class.propsBaseClasses?.forEach(baseClass => {
-            this.collectBaseClassProps(acc, baseClass);
-        });
-        for (const propName in _class.props) {
-            acc[propName] = _class.props[propName];
-        }//for
-    }//collectBaseClassProps
 
 
     private parseComputedProps(node: Element)
