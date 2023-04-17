@@ -6,13 +6,15 @@
  *    Utility functions
 \**************************************************************************/
 
-export function toCamelCase(s: string): string
+export function toCamelCase(s: string|null)
 {
+    if (!s) return "";
     return s.replaceAll(/-([a-z])/g, (_, p1) => p1.toUpperCase());
 }//toCamelCase
 
-export function toKebabCase(s: string): string
+export function toKebabCase(s: string|null)
 {
+    if (!s) return "";
     return s.replaceAll(/([A-Z])/g, (_, p1) => `-${p1.toLowerCase()}`);
 }//toKebabCase
 
