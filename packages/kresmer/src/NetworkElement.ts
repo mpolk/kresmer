@@ -14,7 +14,7 @@ import NetworkElementClass from "./NetworkElementClass";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import { EditorOperation } from "./UndoStack";
 import KresmerException from "./KresmerException";
-import { indent, toKebabCase } from "./Utils";
+import { encodeHtmlEntities, indent, toKebabCase } from "./Utils";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 
 export default abstract class NetworkElement {
@@ -181,9 +181,14 @@ export default abstract class NetworkElement {
         if (Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length) {
             yield `${indent(indentLevel+1)}<props>`;
             for (const propName in this.props) {
-                const propValue = this.props[propName];
+                let propValue: string;
+                if (typeof this.props[propName] === "object") {
+                    propValue = JSON.stringify(this.props[propName]);
+                } else {
+                    propValue = String(this.props[propName]);
+                }//if
                 if (propName !== "name" && typeof propValue !== "undefined") {
-                    yield `${indent(indentLevel+2)}<prop name="${toKebabCase(propName)}">${propValue}</prop>`;
+                    yield `${indent(indentLevel+2)}<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(propValue)}</prop>`;
                 }//if
             }//for
             yield `${indent(indentLevel+1)}</props>`;

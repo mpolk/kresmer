@@ -27,3 +27,9 @@ export function svgDataURI(content: string) {
     const body = content.replace(/"/g, "'");
     return 'data:image/svg+xml,' + encodeURIComponent(body);
 }//svgDataURI
+
+export function encodeHtmlEntities(s: string|null)
+{
+    if (!s) return "";
+    return s.replace(/[<>&]/g, i =>  '&#'+i.charCodeAt(0)+';');
+}//encodeHtmlEntities
