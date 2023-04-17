@@ -140,6 +140,15 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="title" minOccurs="0">
+                    <xs:complexType mixed="true">
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="text-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:element name="a">
                     <xs:complexType mixed="true">
                         <xs:group ref="svg-elements" minOccurs="0" maxOccurs="unbounded"/>
