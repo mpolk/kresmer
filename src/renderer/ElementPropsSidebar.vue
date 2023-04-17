@@ -80,6 +80,7 @@ Continue?`)) {
                         required: _class.props[name].required,
                         validValues,
                         pattern,
+                        isExpanded: false,
                     }
                 });
         return props;
@@ -105,7 +106,7 @@ Continue?`)) {
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
-                        validValues?: string[], pattern?: string};
+                        validValues?: string[], pattern?: string, isExpanded?: boolean};
     const elementProps = ref<ElementProp[]>([]);
 
     function show(element: NetworkElement)
@@ -233,16 +234,28 @@ Continue?`)) {
                             </td>
                         </tr>
                         <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">
-                            <td>{{ prop.name }}</td>
+                            <td @click="prop.isExpanded = !prop.isExpanded">
+                                <label class="form-label form-label-sm" :for="`inpProp[${prop.name}]`">{{ prop.name }}</label>
+                                <button type="button" class="btn btn-sm" v-if="prop.type === Object || prop.type === Array">
+                                    <span class="material-symbols-outlined" v-if="!prop.isExpanded">expand_more</span>
+                                    <span class="material-symbols-outlined" v-else>expand_less</span>
+                                </button>
+                                <template v-if="prop.isExpanded && prop.type === Object">
+                                    <div class="row" v-for="subPropName in Object.keys(prop.value as object).sort()" 
+                                         :key="`${prop.name}[${subPropName}]`">
+                                        <div class="col text-end text-secondary">{{ subPropName }}</div>
+                                    </div>
+                                </template>
+                            </td>
                             <td>
                                 <select v-if="prop.validValues" ref="propInputs" :data-prop-name="prop.name"
-                                       class="form-select form-select-sm"
+                                       class="form-select form-select-sm" :id="`inpProp[${prop.name}]`"
                                        v-model="prop.value">
                                     <option v-if="!prop.required" :value="undefined"></option>
                                     <option v-for="(choice, i) in prop.validValues" 
                                             :key="`${prop.name}[${i}]`">{{ choice }}</option>
                                 </select>
-                                <input v-else-if="prop.type === Number" type="number" 
+                                <input v-else-if="prop.type === Number" type="number" :id="`inpProp[${prop.name}]`"
                                     ref="propInputs" :data-prop-name="prop.name"
                                     class="form-control form-control-sm text-end"
                                     v-model="prop.value"/>
@@ -250,11 +263,11 @@ Continue?`)) {
                                                   /*calm Vue typechecker*/ 
                                                   && (typeof prop.value === 'boolean' || 
                                                       typeof prop.value === 'undefined')" type="checkbox"
-                                    ref="propInputs" :data-prop-name="prop.name"
+                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                                     class="form-check-input"
                                     v-model="prop.value"/>
                                 <input v-else 
-                                    ref="propInputs" :data-prop-name="prop.name"
+                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                                     :pattern="prop.pattern"
                                     class="form-control form-control-sm"
                                     v-model="prop.value"/>
