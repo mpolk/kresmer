@@ -16,6 +16,7 @@ import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
 import Kresmer from "../Kresmer";
 import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
+import { toCamelCase } from "../Utils";
 
 /**
  * Component library parser
@@ -235,7 +236,7 @@ export default class LibraryParser {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "prop": {
-                    const propName = child.getAttribute("name");
+                    const propName = toCamelCase(child.getAttribute("name"));
                     const prop: Prop<unknown, unknown> = {};
                     const type = child.getAttribute("type");
                     const required = child.getAttribute("required"),

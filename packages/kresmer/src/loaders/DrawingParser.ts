@@ -265,7 +265,7 @@ export default class DrawingParser {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "prop": {
-                    const propName = child.getAttribute("name");
+                    const propName = toCamelCase(child.getAttribute("name"));
                     if (!propName) {
                         throw new DrawingParsingException("Prop without the name",
                             {source: `Component ${node.parentElement?.getAttribute("name")}`});
@@ -295,7 +295,7 @@ export default class DrawingParser {
             }//if
             throw exc;
         }//catch
-    }//_normalizetProps
+    }//_normalizeProps
 
 
     static normalizeProps(rawProps: NetworkElementRawProps, elementClass: NetworkElementClass): NetworkElementProps
