@@ -269,7 +269,7 @@ Continue?`)) {
                         </tr>
                         <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">
                             <td>
-                                <label class="form-label form-label-sm" :for="`inpProp[${prop.name}]`"
+                                <label class="form-label text-sm" :for="`inpProp[${prop.name}]`"
                                        @click="prop.isExpanded = !prop.isExpanded">{{ prop.name }}</label>
                                 <button type="button" class="btn btn-sm" v-if="prop.type === Object || prop.type === Array"
                                        @click="prop.isExpanded = !prop.isExpanded">
@@ -308,10 +308,14 @@ Continue?`)) {
                                         <div v-for="subPropName in Object.keys(prop.value).sort(collateSubprops)" class="row"
                                              :key="`${prop.name}.${subPropName}`">
                                             <div class="col">
-                                                <input v-if="typeof prop.value[subPropName] === 'number'" type="number" 
-                                                    class="form-control form-control-sm" v-model="prop.value[subPropName]" />
+                                                <input v-if="typeof (prop.value as Record<string, any>)[subPropName] === 'number'" 
+                                                    type="number" class="form-control form-control-sm" 
+                                                    v-model="(prop.value as Record<string, any>)[subPropName]" />
+                                                <input v-if="typeof (prop.value as Record<string, any>)[subPropName] === 'boolean'"
+                                                    type="checkbox" class="form-control form-control-sm"
+                                                    v-model="(prop.value as Record<string, any>)[subPropName]" />
                                                 <input v-else type="text" class="form-control form-control-sm"
-                                                    v-model="prop.value[subPropName]" />
+                                                    v-model="(prop.value as Record<string, any>)[subPropName]" />
                                             </div>
                                         </div>
                                     </template>
