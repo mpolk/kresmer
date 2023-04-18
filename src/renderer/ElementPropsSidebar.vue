@@ -197,6 +197,39 @@ Continue?`)) {
         formEnabled.value = false;
     }//close
 
+    function compareSubprops(s1: string, s2: string): number
+    {
+        const chunks1 = s1.split(/[:.]/), chunks2 = s2.split(/[:.]/);
+        if (chunks1.length < chunks2.length)
+            return -1;
+        if (chunks1.length > chunks2.length)
+            return 1;
+
+        for (let i = 0; i < chunks1.length; i++) {
+            const c1 = chunks1[i], c2 = chunks2[i];
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const isNum1 = !isNaN(c1 as any), isNum2 = !isNaN(c2 as any);
+            if (!isNum1 && !isNum2) {
+                if (c1 < c2)
+                    return -1;
+                if (c1 > c2)
+                    return 1;
+                continue;
+            }//if
+            if (!isNum1)
+                return 1;
+            if (!isNum2)
+                return -1;
+            const n1 = parseInt(c1), n2 = parseInt(c2);
+            if (n1 < n2)
+                return -1;
+            if (n1 > n2)
+                return 1;
+        }//for
+
+        return 0;
+    }//sortSubprops
+
     defineExpose({show});
 </script>
 
@@ -234,14 +267,16 @@ Continue?`)) {
                             </td>
                         </tr>
                         <tr v-for="prop in elementProps" :key="`prop[${prop.name}]`">
-                            <td @click="prop.isExpanded = !prop.isExpanded">
-                                <label class="form-label form-label-sm" :for="`inpProp[${prop.name}]`">{{ prop.name }}</label>
-                                <button type="button" class="btn btn-sm" v-if="prop.type === Object || prop.type === Array">
+                            <td>
+                                <label class="form-label form-label-sm" :for="`inpProp[${prop.name}]`"
+                                       @click="prop.isExpanded = !prop.isExpanded">{{ prop.name }}</label>
+                                <button type="button" class="btn btn-sm" v-if="prop.type === Object || prop.type === Array"
+                                       @click="prop.isExpanded = !prop.isExpanded">
                                     <span class="material-symbols-outlined" v-if="!prop.isExpanded">expand_more</span>
                                     <span class="material-symbols-outlined" v-else>expand_less</span>
                                 </button>
                                 <template v-if="prop.isExpanded && prop.type === Object">
-                                    <div class="row" v-for="subPropName in Object.keys(prop.value as object).sort()" 
+                                    <div class="row" v-for="subPropName in Object.keys(prop.value as object).sort(compareSubprops)" 
                                          :key="`${prop.name}[${subPropName}]`">
                                         <div class="col text-end text-secondary">{{ subPropName }}</div>
                                     </div>
