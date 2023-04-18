@@ -128,6 +128,7 @@ Continue?`)) {
         dbID = element.dbID;
         elementProps.value = buildElementProps(element.getClass());
         formEnabled.value = true;
+        formValidated.value = false;
         offCanvas.show();
     }//show
 
@@ -275,7 +276,7 @@ Continue?`)) {
                                     <span class="material-symbols-outlined" v-if="!prop.isExpanded">expand_more</span>
                                     <span class="material-symbols-outlined" v-else>expand_less</span>
                                 </button>
-                                <template v-if="prop.isExpanded && prop.type === Object">
+                                <template v-if="prop.isExpanded && prop.type === Object && prop.value">
                                     <div class="row" v-for="subPropName in Object.keys(prop.value as object).sort(compareSubprops)" 
                                          :key="`${prop.name}[${subPropName}]`">
                                         <div class="col text-end text-secondary">{{ subPropName }}</div>
@@ -287,7 +288,7 @@ Continue?`)) {
                                        class="form-select form-select-sm" :id="`inpProp[${prop.name}]`"
                                        v-model="prop.value">
                                     <option v-if="!prop.required" :value="undefined"></option>
-                                    <option v-for="(choice, i) in prop.validValues" 
+                                    <option v-for="(choice, i) in prop.validValues"  class="text-secondary"
                                             :key="`${prop.name}[${i}]`">{{ choice }}</option>
                                 </select>
                                 <input v-else-if="prop.type === Number" type="number" :id="`inpProp[${prop.name}]`"
@@ -301,6 +302,10 @@ Continue?`)) {
                                     ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                                     class="form-check-input"
                                     v-model="prop.value"/>
+                                <input v-else-if="prop.type === Object"
+                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
+                                    class="form-control form-control-sm text-secondary" readonly
+                                    :value="JSON.stringify(prop.value)"/>
                                 <input v-else 
                                     ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                                     :pattern="prop.pattern"
