@@ -229,7 +229,7 @@
             <computed-prop name="q">0.4</computed-prop>
         </computed-props>
         <style>
-            .border {fill: none; stroke: #898761;}
+            .border {fill: none; stroke: #8998a9;}
         </style>
     </component-class>
 

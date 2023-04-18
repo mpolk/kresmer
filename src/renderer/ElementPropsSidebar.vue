@@ -198,7 +198,7 @@ Continue?`)) {
         formEnabled.value = false;
     }//close
 
-    function compareSubprops(s1: string, s2: string): number
+    function collateSubprops(s1: string, s2: string): number
     {
         const chunks1 = s1.split(/[:.]/), chunks2 = s2.split(/[:.]/);
         if (chunks1.length < chunks2.length)
@@ -229,7 +229,7 @@ Continue?`)) {
         }//for
 
         return 0;
-    }//sortSubprops
+    }//collateSubprops
 
     defineExpose({show});
 </script>
@@ -277,7 +277,7 @@ Continue?`)) {
                                     <span class="material-symbols-outlined" v-else>expand_less</span>
                                 </button>
                                 <template v-if="prop.isExpanded && prop.type === Object && prop.value">
-                                    <div class="row" v-for="subPropName in Object.keys(prop.value as object).sort(compareSubprops)" 
+                                    <div class="row" v-for="subPropName in Object.keys(prop.value as object).sort(collateSubprops)" 
                                          :key="`${prop.name}[${subPropName}]`">
                                         <div class="col text-end text-secondary">{{ subPropName }}</div>
                                     </div>
@@ -295,17 +295,27 @@ Continue?`)) {
                                     ref="propInputs" :data-prop-name="prop.name"
                                     class="form-control form-control-sm text-end"
                                     v-model="prop.value"/>
-                                <input v-else-if="prop.type === Boolean 
-                                                  /*calm Vue typechecker*/ 
-                                                  && (typeof prop.value === 'boolean' || 
-                                                      typeof prop.value === 'undefined')" type="checkbox"
+                                <input v-else-if="prop.type === Boolean" type="checkbox"
                                     ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                                     class="form-check-input"
                                     v-model="prop.value"/>
-                                <input v-else-if="prop.type === Object"
-                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                                    class="form-control form-control-sm text-secondary" readonly
-                                    :value="JSON.stringify(prop.value)"/>
+                                <template v-else-if="prop.type === Object">
+                                    <input
+                                        ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
+                                        class="form-control form-control-sm text-secondary" readonly
+                                        :value="JSON.stringify(prop.value)"/>
+                                    <template v-if="prop.value && prop.isExpanded">
+                                        <div v-for="subPropName in Object.keys(prop.value).sort(collateSubprops)" class="row"
+                                             :key="`${prop.name}.${subPropName}`">
+                                            <div class="col">
+                                                <input v-if="typeof prop.value[subPropName] === 'number'" type="number" 
+                                                    class="form-control form-control-sm" v-model="prop.value[subPropName]" />
+                                                <input v-else type="text" class="form-control form-control-sm"
+                                                    v-model="prop.value[subPropName]" />
+                                            </div>
+                                        </div>
+                                    </template>
+                                </template>
                                 <input v-else 
                                     ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                                     :pattern="prop.pattern"
