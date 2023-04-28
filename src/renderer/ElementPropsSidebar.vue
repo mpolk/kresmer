@@ -269,10 +269,11 @@ Continue?`)) {
                     <div class="col border-bottom border-start me-0">
                         <label class="form-label" :for="`inpProp[${prop.name}]`"
                                 @click="prop.isExpanded = !prop.isExpanded">{{ prop.name }}</label>
-                        <button type="button" class="btn btn-sm" v-if="prop.type === Object || prop.type === Array"
+                        <button type="button" class="btn btn-sm pb-0" v-if="prop.type === Object || prop.type === Array"
                                 @click="prop.isExpanded = !prop.isExpanded">
-                            <span class="material-symbols-outlined" v-if="!prop.isExpanded">expand_more</span>
-                            <span class="material-symbols-outlined" v-else>expand_less</span>
+                            <span class="material-symbols-outlined align-top">
+                                {{`expand_${prop.isExpanded ? "less" : "more"}`}}
+                            </span>
                         </button>
                     </div>
                     <div class="col ms-0 ps-0">
@@ -307,9 +308,10 @@ Continue?`)) {
                         </div>
                     </div>
                     <div v-if="prop.isExpanded && prop.type === Object && prop.value">
-                        <div class="row" v-for="subPropName in Object.keys(prop.value).sort(collateSubprops)" 
+                        <div class="row" v-for="(subPropName, spi) in Object.keys(prop.value).sort(collateSubprops)" 
                                 :key="`${prop.name}[${subPropName}]`">
-                            <div class="col text-end text-secondary me-0 border-start">{{ subPropName }}</div>
+                            <div class="col text-end text-secondary me-0 border-start border-bottom"
+                                 :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">{{ subPropName }}</div>
                             <div class="col ps-0">
                                 <input v-if="typeof (prop.value as Record<string, any>)[subPropName] === 'number'" 
                                     type="number" class="form-control form-control-sm" 
