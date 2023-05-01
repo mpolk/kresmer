@@ -7,12 +7,6 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    export default {
-        name: "ElementPropsSidebar",
-    }
-</script>
-
-<script setup lang="ts">
     import { ref, watch } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { NetworkElement, NetworkElementClass, 
@@ -20,6 +14,12 @@
              NetworkLink, NetworkLinkClass } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
 
+    export default {
+        name: "ElementPropsSidebar",
+    }
+</script>
+
+<script setup lang="ts">
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>();
     const propInputs = ref<HTMLInputElement[]>();
@@ -32,10 +32,37 @@
     watch(elementName, () => {
         formValidated.value = !validateElementName();
     });
+    let dbID: number|string|undefined;
 
-    const allClasses = ref<{name: string, _class: NetworkElementClass}[]>([]);
+    /**
+     * Displays the sidebars and allows to edit the element
+     * @param element An element to edit
+     */
+     function show(element: NetworkElement)
+    {
+        if (!offCanvas) {
+            offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
+        }//if
+
+        const classes = element instanceof NetworkLink ? 
+            [...kresmer.getRegisteredLinkClasses()].filter(([name, _class]) => !_class.isAbstract) : 
+            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.autoInstanciate && !_class.forEmbeddingOnly);
+        allClasses.value = classes
+            .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
+            .map(([name, _class]) => {return {name, _class}});
+        elementClass.value = element.getClass();
+
+        elementToEdit = element;
+        elementName.value = element.name;
+        dbID = element.dbID;
+        elementProps.value = buildElementPropsArray(element.getClass());
+        formEnabled.value = true;
+        formValidated.value = false;
+        offCanvas.show();
+    }//show
+
     const elementClass = ref<NetworkElementClass>();
-
+    const allClasses = ref<{name: string, _class: NetworkElementClass}[]>([]);
     
     function changeClass() {
         const newClass = elementClass.value!;
@@ -52,7 +79,7 @@ Continue?`)) {
             kresmer.edAPI.changeComponentClass(elementToEdit, newClass as NetworkComponentClass);
         } else if (elementToEdit instanceof NetworkLink) {
             if (!confirm(`\
-Changing link class will disconnect will make the values of the link properties that absent in the new class will be lost.
+Changing link class will make the values of the link properties that absent in the new class to be lost.
 
 Continue?`)) {
                 elementClass.value = elementToEdit.getClass();
@@ -61,12 +88,24 @@ Continue?`)) {
             kresmer.edAPI.changeLinkClass(elementToEdit, newClass as NetworkLinkClass);
         }//if
 
-        elementProps.value = buildElementProps(newClass);
+        elementProps.value = buildElementPropsArray(newClass);
         formValidated.value = false;
     }//changeClass
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
+                        validValues?: string[], pattern?: string, isExpanded?: boolean};
+    /**
+     * An array of the element props (with values)
+     */
+    const elementProps = ref<ElementProp[]>([]);
 
-    function buildElementProps(_class: NetworkElementClass)
+    /**
+     * Builds an array of the element props (with values)
+     * based on element's class  and the values taken from the dialog inputs
+     * @param _class An element class
+     */
+    function buildElementPropsArray(_class: NetworkElementClass)
     {
         const props = Object.keys(_class.props)
             .map(name => 
@@ -84,8 +123,7 @@ Continue?`)) {
                     }
                 });
         return props;
-    }//buildElementProps
-
+    }//buildElementPropsArray
 
     function validateElementName()
     {
@@ -102,42 +140,14 @@ Continue?`)) {
 
     const elementNameValidationMessage = ref("");
 
-    let dbID: number|string|undefined;
-
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
-                        validValues?: string[], pattern?: string, isExpanded?: boolean};
-    const elementProps = ref<ElementProp[]>([]);
-
-    function show(element: NetworkElement)
-    {
-        if (!offCanvas) {
-            offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
-        }//if
-
-        const classes = element instanceof NetworkLink ? 
-            [...kresmer.getRegisteredLinkClasses()].filter(([name, _class]) => !_class.isAbstract) : 
-            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.autoInstanciate && !_class.forEmbeddingOnly);
-        allClasses.value = classes
-            .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
-            .map(([name, _class]) => {return {name, _class}});
-        elementClass.value = element.getClass();
-
-        elementToEdit = element;
-        elementName.value = element.name;
-        dbID = element.dbID;
-        elementProps.value = buildElementProps(element.getClass());
-        formEnabled.value = true;
-        formValidated.value = false;
-        offCanvas.show();
-    }//show
-
+    /** Validates a single prop (after parsing it) and returns its values (if it's found to be valid) or null
+     * otherwise. "Undefined" is considered a valid value. */
     function validateProp(prop: ElementProp)
     {
         let v: unknown;
         let wasError = false;
         switch (prop.type) {
-            case Object: case Array:
+            case Array:
                 try {
                     v = JSON.parse(prop.value as string);
                     if (prop.type === Object) {
@@ -164,6 +174,10 @@ Continue?`)) {
         return wasError ? null : v;
     }//validateProp
 
+
+    /**
+     * Saves the updated data to the element
+     */
     function save()
     {
         const propsWithErrors: string[] = [];
@@ -192,12 +206,14 @@ Continue?`)) {
         updateWindowTitle();
     }//save
 
+    /** Closes (hides) the sidebar */
     function close()
     {
         offCanvas!.hide();
         formEnabled.value = false;
     }//close
 
+    /** A c */
     function collateSubprops(s1: string, s2: string): number
     {
         const chunks1 = s1.split(/[:.]/), chunks2 = s2.split(/[:.]/);
@@ -236,6 +252,7 @@ Continue?`)) {
 
 <template>
     <div ref="rootDiv" class="offcanvas offcanvas-end" tabindex="-1">
+        <!-- Sidebar header -->
         <div class="offcanvas-header align-items-baseline">
             <div>
                 <h5 class="offcanvas-title">{{elementName}}</h5>
@@ -247,8 +264,10 @@ Continue?`)) {
             </div>
             <button type="button" class="btn-close" @click="close"></button>
         </div>
+        <!-- Sidebar body -->
         <div class="offcanvas-body">
             <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
+                <!-- Element name -->
                 <div class="row">
                     <div class="col border-start border-bottom border-top me-0"><label for="inpElementName">name</label></div>
                     <div class="col ps-0 ms-0">
@@ -259,13 +278,16 @@ Continue?`)) {
                         </div>
                     </div>
                 </div>
+                <!-- Element DB identifier -->
                 <div class="row">
                     <div class="col border-start border-bottom me-0"><label for="inpDbID">dbID</label></div>
                     <div class="col ps-0 ms-0">
                         <input id="inpDbID" type="number" class="form-control form-control-sm" v-model="dbID"/>
                     </div>
                 </div>
+                <!-- Element props -->
                 <div class="row" v-for="prop in elementProps" :key="`prop[${prop.name}]`">
+                    <!-- Prop name -->
                     <div class="col border-bottom border-start me-0">
                         <label class="form-label" :for="`inpProp[${prop.name}]`"
                                 @click="prop.isExpanded = !prop.isExpanded">{{ prop.name }}</label>
@@ -276,6 +298,7 @@ Continue?`)) {
                             </span>
                         </button>
                     </div>
+                    <!-- Prop value -->
                     <div class="col ms-0 ps-0">
                         <select v-if="prop.validValues" ref="propInputs" :data-prop-name="prop.name"
                                 class="form-select form-select-sm" :id="`inpProp[${prop.name}]`"
@@ -307,11 +330,14 @@ Continue?`)) {
                             Syntax error!
                         </div>
                     </div>
+                    <!-- Subprops (if exist) -->
                     <div v-if="prop.isExpanded && prop.type === Object && prop.value">
                         <div class="row" v-for="(subPropName, spi) in Object.keys(prop.value).sort(collateSubprops)" 
                                 :key="`${prop.name}[${subPropName}]`">
+                            <!-- Subprop name -->
                             <div class="col text-end text-secondary me-0 border-start border-bottom"
                                  :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">{{ subPropName }}</div>
+                            <!-- Subprop value -->
                             <div class="col ps-0">
                                 <input v-if="typeof (prop.value as Record<string, any>)[subPropName] === 'number'" 
                                     type="number" class="form-control form-control-sm" 
