@@ -54,20 +54,20 @@
         return `${n * props.controller.drawingScale}${matches[2]}`;
     }//scaled
 
-    // function scaledOffset(size: string|number)
-    // {
-    //     if (scale.value >= 1)
-    //         return 0;
-    //     const matches = size.toString().match(/^([0-9.]+)(.+)$/);
-    //     if (!matches)
-    //         return undefined;
+    function scaledOffset(size: string|number)
+    {
+        if (props.controller.drawingScale >= 1)
+            return 0;
+        const matches = size.toString().match(/^([0-9.]+)(.+)$/);
+        if (!matches)
+            return undefined;
 
-    //     const n = parseFloat(matches[1]);
-    //     return `${n * 0.5 * (1 - scale.value)}${matches[2]}`;
-    // }//scaledOffset
+        const n = parseFloat(matches[1]);
+        return `${n * 0.5 * (1 - props.controller.drawingScale)}${matches[2]}`;
+    }//scaledOffset
 
-    // const x = computed(() => scaledOffset(props.drawingWidth));
-    // const y = computed(() => scaledOffset(props.drawingHeight));
+    const x = computed(() => scaledOffset(props.mountingBox.width));
+    const y = computed(() => scaledOffset(props.mountingBox.height));
     const width = computed(() => scaled(props.mountingBox.width));
     const height = computed(() => scaled(props.mountingBox.height));
     const viewBox = computed(() => {
@@ -117,8 +117,8 @@
 
 <template>
     <svg class="kresmer" ref="rootSVG" 
-        xx-style="{marginLeft: x, marginTop: y, marginRight: 0, marginBottom: 0}" 
-        :width = "width" :height="height" :viewBox="viewBox"
+        :style="{marginLeft: x, marginTop: y}" 
+        :width="width" :height="height" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
         @contextmenu.self="onCanvasRightClick($event)"
         @mousemove.prevent.self=""

@@ -32,7 +32,10 @@ import { AppInitStage } from './ElectronAPI.d';
 // }//if
   
 
-export const kresmer = new Kresmer('#kresmer');
+const mountingPoint = document.querySelector("#kresmer") as HTMLElement;
+const mountingBox = mountingPoint?.getBoundingClientRect();
+export const kresmer = new Kresmer(mountingPoint, 
+    {mountingWidth: mountingBox.width, mountingHeight: mountingBox.height});
 
 export const hints = new Hints;
 
