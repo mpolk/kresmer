@@ -89,15 +89,18 @@ class _NetworkComponentController {
 
     public drag(this: NetworkComponentController, event: MouseEvent)
     {
+        const mousePos = this.getMousePosition(event);
+        const effectiveMove = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
+
         if (this.isGoingToBeDragged) {
+            if (Math.hypot(effectiveMove.x, effectiveMove.y) < 2)
+                return false;
             this.isGoingToBeDragged = false;
             this.isDragged = true;
         } else if (!this.isDragged) {
             return false;
         }//if
             
-        const mousePos = this.getMousePosition(event);
-        const effectiveMove = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
         this.moveFromStartPos(effectiveMove);
         if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
             this.kresmer._dragSelection(effectiveMove, this);
