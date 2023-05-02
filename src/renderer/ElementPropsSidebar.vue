@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { ref, watch } from 'vue';
+    import { nextTick, ref, watch } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
     import { NetworkElement, NetworkElementClass, 
              NetworkComponent, NetworkComponentClass, 
@@ -114,7 +114,9 @@ Continue?`)) {
                     const pattern = _class.props[name].validator?.pattern;
                     return {
                         name, 
-                        value: elementToEdit.props[name], 
+                        value: _class.props[name].type === Object ? {...elementToEdit.props[name] as object} :
+                            _class.props[name].type === Array ? [...elementToEdit.props[name] as unknown[]] :
+                            elementToEdit.props[name], 
                         type: _class.props[name].type,
                         required: _class.props[name].required,
                         validValues,
@@ -256,17 +258,59 @@ Continue?`)) {
      */
     function addSubprop(propName: string, type: "string"|"number"|"boolean")
     {
-        propToAddSubPropTo.value = propName;
-        newSubPropType.value = type;
-        if (!dlgNewSubProp)
-            dlgNewSubProp = new Modal("#dlgNewSubProp", {backdrop: "static", keyboard: true});
-        dlgNewSubProp.show();
+        propToAddSubpropTo.value = propName;
+        newSubpropType.value = type;
+        if (!dlgNewSubprop) {
+            const el = document.querySelector("#dlgNewSubprop")!;
+            el.addEventListener("shown.bs.modal", () => inpNewSubpropName.value!.focus());
+            dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
+        }//if
+        dlgNewSubprop.show();
     }//addSubprop
 
-    let dlgNewSubProp!: Modal;
-    const propToAddSubPropTo = ref("");
-    const newSubPropName = ref("");
-    const newSubPropType = ref("");
+    /** Callback for completing adding a new field or the Object-type prop */
+    function completeAddingSubprop()
+    {
+        if (!newSubpropName.value) {
+            alert("Subproperty name cannot be empty!");
+            return;
+        }//if
+
+        const i = elementProps.value.findIndex(prop => prop.name == propToAddSubpropTo.value);
+        const prop = elementProps.value[i];
+        if (!prop.value) {
+            prop.value = {};
+        }//if
+        const propValue = prop.value as Record<string, unknown>;
+
+        if (Object.hasOwn(propValue, newSubpropName.value)) {
+            alert(`Subprop "${newSubpropName.value}" already exists in the prop "${prop.name}"`);
+            return;
+        }//if
+
+        switch (newSubpropType.value) {
+            case "string":
+                propValue[newSubpropName.value] = "";
+                break;
+        }//switch
+        dlgNewSubprop.hide();
+        prop.isExpanded = true;
+        nextTick(() => {
+            const inpToFocus = document.getElementById(subpropInputID(prop.name, newSubpropName.value)) as HTMLInputElement;
+            inpToFocus.focus();
+        });
+    }//completeAddingSubprop
+
+    let dlgNewSubprop!: Modal;
+    const propToAddSubpropTo = ref("");
+    const newSubpropName = ref("");
+    const inpNewSubpropName = ref<HTMLInputElement>();
+    const newSubpropType = ref<"string"|"number"|"boolean">("string");
+
+    function subpropInputID(propName: string, subpropName: string)
+    {
+        return `inpSubprop[${propName},${subpropName}]`;
+    }//subpropInputID
 
     defineExpose({show});
 </script>
@@ -362,23 +406,26 @@ Continue?`)) {
                     </div>
                     <!-- Subprops (if exist) -->
                     <div v-if="prop.isExpanded && prop.type === Object && prop.value">
-                        <div class="row" v-for="(subPropName, spi) in Object.keys(prop.value).sort(collateSubprops)" 
-                                :key="`${prop.name}[${subPropName}]`">
+                        <div class="row" v-for="(subpropName, spi) in Object.keys(prop.value).sort(collateSubprops)" 
+                                :key="`${prop.name}[${subpropName}]`">
                             <!-- Subprop name -->
                             <div class="col text-end text-secondary me-0 border-start border-bottom"
                                  :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">
-                                 {{ subPropName }}
+                                 {{ subpropName }}
                             </div>
                             <!-- Subprop value -->
                             <div class="col ps-0">
-                                <input v-if="typeof (prop.value as Record<string, any>)[subPropName] === 'number'" 
+                                <input v-if="typeof (prop.value as Record<string, any>)[subpropName] === 'number'" 
                                     type="number" class="form-control form-control-sm" 
-                                    v-model="(prop.value as Record<string, any>)[subPropName]" />
-                                <input v-if="typeof (prop.value as Record<string, any>)[subPropName] === 'boolean'"
+                                    :id="subpropInputID(prop.name, subpropName)"
+                                    v-model="(prop.value as Record<string, any>)[subpropName]" />
+                                <input v-if="typeof (prop.value as Record<string, any>)[subpropName] === 'boolean'"
                                     type="checkbox" class="form-control form-control-sm"
-                                    v-model="(prop.value as Record<string, any>)[subPropName]" />
+                                    :id="subpropInputID(prop.name, subpropName)"
+                                    v-model="(prop.value as Record<string, any>)[subpropName]" />
                                 <input v-else type="text" class="form-control form-control-sm"
-                                    v-model="(prop.value as Record<string, any>)[subPropName]" />
+                                    :id="subpropInputID(prop.name, subpropName)"
+                                    v-model="(prop.value as Record<string, any>)[subpropName]" />
                             </div>
                         </div>
                     </div>
@@ -391,22 +438,22 @@ Continue?`)) {
     </div>
 
     <!-- Dialog for adding subprops -->
-    <div class="modal" tabindex="-1" id="dlgNewSubProp">
+    <div class="modal" tabindex="-1" id="dlgNewSubprop">
         <div class="modal-dialog">
-            <div class="modal-content">
+            <form class="modal-content">
                 <div class="modal-header">
-                    Adding a <strong> {{ newSubPropType }}</strong> field to the "{{ propToAddSubPropTo }}" prop
+                    Adding a&nbsp;<strong>{{ newSubpropType }}</strong>&nbsp;field to the "{{ propToAddSubpropTo }}" prop
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <label class="form-label" for="inpNewSubPropName">Name</label>
-                    <input type="text" class="form-control" id="inpNewSubPropName" v-model="newSubPropName"/>
+                    <label class="form-label" for="inpNewSubpropName">Name</label>
+                    <input type="text" class="form-control" id="inpNewSubpropName" ref="inpNewSubpropName" v-model="newSubpropName"/>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-sm btn-primary">Ok</button>
-                    <button type="button" class="btn btn-sm btn-secondary">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-primary" @click.prevent="completeAddingSubprop">Ok</button>
+                    <button type="button" class="btn btn-sm btn-secondary" @click="dlgNewSubprop.hide">Cancel</button>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </template>

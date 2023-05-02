@@ -34,6 +34,7 @@
             <prop name="height">75</prop>
             <prop name="ip-address">193.110.112.32</prop>
             <prop name="management-protocol">ssh:</prop>
+            <prop name="port-descriptions">{"et0/0/0":"DIPT","et0/0/1":"core-switch-25","et0/0/2":"core-switch-26","xe0/1/0":"RostNet","xe0/1/1":"Eurotel","xe0/1/3":"EliteLine(SDS)-1","xe0/1/4":"EliteLine(SDS)-2"}</prop>
         </props>
     </component>
 
