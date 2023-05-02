@@ -8,7 +8,7 @@
 
 <script lang="ts">
     import { ref, watch } from 'vue';
-    import { Offcanvas } from 'bootstrap';
+    import { Modal, Offcanvas } from 'bootstrap';
     import { NetworkElement, NetworkElementClass, 
              NetworkComponent, NetworkComponentClass, 
              NetworkLink, NetworkLinkClass } from 'kresmer';
@@ -213,7 +213,9 @@ Continue?`)) {
         formEnabled.value = false;
     }//close
 
-    /** A c */
+    /** A callback for sorting subproperties. 
+     * Tries to provide an order natural for switch ports: 
+     * 1:1 1:2 1:10 2:1 2:10 ... */
     function collateSubprops(s1: string, s2: string): number
     {
         const chunks1 = s1.split(/[:.]/), chunks2 = s2.split(/[:.]/);
@@ -246,6 +248,25 @@ Continue?`)) {
 
         return 0;
     }//collateSubprops
+
+    /**
+     * Adds a new subprop (field) to the given pop
+     * @param propName A prop to add the subprop to
+     * @param type A type of the new subprop
+     */
+    function addSubprop(propName: string, type: "string"|"number"|"boolean")
+    {
+        propToAddSubPropTo.value = propName;
+        newSubPropType.value = type;
+        if (!dlgNewSubProp)
+            dlgNewSubProp = new Modal("#dlgNewSubProp", {backdrop: "static", keyboard: true});
+        dlgNewSubProp.show();
+    }//addSubprop
+
+    let dlgNewSubProp!: Modal;
+    const propToAddSubPropTo = ref("");
+    const newSubPropName = ref("");
+    const newSubPropType = ref("");
 
     defineExpose({show});
 </script>
@@ -316,10 +337,19 @@ Continue?`)) {
                             class="form-check-input"
                             v-model="prop.value"/>
                         <template v-else-if="prop.type === Object">
-                            <input
-                                ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                                class="form-control form-control-sm text-secondary" readonly
-                                :value="JSON.stringify(prop.value)"/>
+                            <div class="input-group input-group-sm">
+                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                        data-bs-toggle="dropdown" title="Add subproperty">
+                                    <span class="material-symbols-outlined">add</span>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li><a class="dropdown-item" @click="addSubprop(prop.name, 'string')">string</a></li>
+                                </ul>
+                                <input
+                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
+                                    class="form-control form-control-sm text-secondary" readonly
+                                    :value="JSON.stringify(prop.value)"/>
+                            </div>
                         </template>
                         <input v-else 
                             ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
@@ -336,7 +366,9 @@ Continue?`)) {
                                 :key="`${prop.name}[${subPropName}]`">
                             <!-- Subprop name -->
                             <div class="col text-end text-secondary me-0 border-start border-bottom"
-                                 :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">{{ subPropName }}</div>
+                                 :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">
+                                 {{ subPropName }}
+                            </div>
                             <!-- Subprop value -->
                             <div class="col ps-0">
                                 <input v-if="typeof (prop.value as Record<string, any>)[subPropName] === 'number'" 
@@ -355,6 +387,26 @@ Continue?`)) {
                     <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- Dialog for adding subprops -->
+    <div class="modal" tabindex="-1" id="dlgNewSubProp">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    Adding a <strong> {{ newSubPropType }}</strong> field to the "{{ propToAddSubPropTo }}" prop
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label" for="inpNewSubPropName">Name</label>
+                    <input type="text" class="form-control" id="inpNewSubPropName" v-model="newSubPropName"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-primary">Ok</button>
+                    <button type="button" class="btn btn-sm btn-secondary">Cancel</button>
+                </div>
+            </div>
         </div>
     </div>
 </template>
