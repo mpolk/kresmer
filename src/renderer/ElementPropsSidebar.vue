@@ -292,7 +292,14 @@ Continue?`)) {
             case "string":
                 propValue[newSubpropName.value] = "";
                 break;
+            case "number":
+                propValue[newSubpropName.value] = 0;
+                break;
+            case "boolean":
+                propValue[newSubpropName.value] = false;
+                break;
         }//switch
+
         dlgNewSubprop.hide();
         prop.isExpanded = true;
         nextTick(() => {
@@ -388,6 +395,8 @@ Continue?`)) {
                                 </button>
                                 <ul class="dropdown-menu">
                                     <li><a class="dropdown-item" @click="addSubprop(prop.name, 'string')">string</a></li>
+                                    <li><a class="dropdown-item" @click="addSubprop(prop.name, 'number')">number</a></li>
+                                    <li><a class="dropdown-item" @click="addSubprop(prop.name, 'boolean')">boolean</a></li>
                                 </ul>
                                 <input
                                     ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
@@ -411,16 +420,18 @@ Continue?`)) {
                             <!-- Subprop name -->
                             <div class="col text-end text-secondary me-0 border-start border-bottom"
                                  :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">
-                                 {{ subpropName }}
+                                 <label class="form-label" :for="subpropInputID(prop.name, subpropName)">
+                                    {{ subpropName }}
+                                </label>
                             </div>
                             <!-- Subprop value -->
                             <div class="col ps-0">
                                 <input v-if="typeof (prop.value as Record<string, any>)[subpropName] === 'number'" 
-                                    type="number" class="form-control form-control-sm" 
+                                    type="number" class="form-control form-control-sm text-end" 
                                     :id="subpropInputID(prop.name, subpropName)"
                                     v-model="(prop.value as Record<string, any>)[subpropName]" />
-                                <input v-if="typeof (prop.value as Record<string, any>)[subpropName] === 'boolean'"
-                                    type="checkbox" class="form-control form-control-sm"
+                                <input v-else-if="typeof (prop.value as Record<string, any>)[subpropName] === 'boolean'"
+                                    type="checkbox" class="form-check-input form-check-input-sm"
                                     :id="subpropInputID(prop.name, subpropName)"
                                     v-model="(prop.value as Record<string, any>)[subpropName]" />
                                 <input v-else type="text" class="form-control form-control-sm"
