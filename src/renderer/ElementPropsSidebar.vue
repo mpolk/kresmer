@@ -95,7 +95,7 @@ Continue?`)) {
     // eslint-disable-next-line @typescript-eslint/ban-types
     type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
                         validValues?: string[], pattern?: string, isExpanded?: boolean, 
-                        category?: NetworkElementPropCategory};
+                        category?: NetworkElementPropCategory, default?: string};
     /**
      * An array of the element props (with values)
      */
@@ -123,6 +123,7 @@ Continue?`)) {
                         category: _class.props[name].category,
                         validValues,
                         pattern,
+                        default: _class.props[name].default,
                         isExpanded: false,
                     }
                 })
@@ -415,6 +416,7 @@ Continue?`)) {
                             <input v-else-if="prop.type === Number" type="number" :id="`inpProp[${prop.name}]`"
                                 ref="propInputs" :data-prop-name="prop.name"
                                 class="form-control form-control-sm text-end"
+                                :placeholder="prop.default"
                                 v-model="prop.value"/>
                             <input v-else-if="prop.type === Boolean" type="checkbox"
                                 ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
@@ -439,6 +441,7 @@ Continue?`)) {
                                 ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                                 :pattern="prop.pattern"
                                 class="form-control form-control-sm"
+                                :placeholder="prop.default"
                                 v-model="prop.value"/>
                             <div class="invalid-feedback">
                                 Syntax error!

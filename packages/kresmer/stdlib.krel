@@ -657,7 +657,7 @@
                     <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
                 </template>
             </Kre:SwitchBody>
-    </template>
+        </template>
         <style extends="SwitchBody"/>
         <props extend="SwitchBody"/>
     </component-class>
@@ -675,13 +675,10 @@
                 v-bind:top-facet-size="1" v-bind:perspective="perspective"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:comment="comment"
-                >
-                <template v-slot:frontFacet="{}">
-                    <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 
-                          v-bind:height="height*0.84" v-bind:width="width-height*0.16" 
-                          fill="url(#kre:std:Juniper-MX204-front-grid)"/>
-                </template>
-            </Kre:RouterBody>
+                />
+            <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 
+                    v-bind:height="height*0.84" v-bind:width="width-height*0.16" 
+                    fill="url(#kre:std:Juniper-MX204-front-grid)"/>
             <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 
                   v-bind:height="height*0.25" v-bind:width="height*1.1" 
                   class="facet"/>
