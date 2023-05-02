@@ -7,7 +7,7 @@
  * (the word "class" here means a runtime class, not a Typescript one)
  ***************************************************************************/
 
-import { ComponentObjectPropsOptions } from "vue";
+import { Prop } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "./Kresmer";
 
@@ -26,7 +26,7 @@ export default abstract class NetworkElementClass {
         baseClass?: NetworkElementClass,
         styleBaseClasses?: NetworkElementClass[],
         propsBaseClasses?: NetworkElementClass[],
-        props?: ComponentObjectPropsOptions,
+        props?: NetworkElementClassProps,
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
@@ -53,7 +53,7 @@ export default abstract class NetworkElementClass {
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */
-    readonly props: ComponentObjectPropsOptions;
+    readonly props: NetworkElementClassProps;
     /** Computed props (aka just computed) definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
     /** SVG Defs for this class */
@@ -82,3 +82,7 @@ export interface ComputedProp {
 
 /** Network Component computed props - translate to the common Vue computed properties */
 export type ComputedProps = Record<string, ComputedProp>;
+
+export enum NetworkElementPropCategory {Geometry=1,  Presentation, Hardware, Network}
+export type NetworkElementClassProp = Prop<unknown, unknown> & {category?: NetworkElementPropCategory};
+export type NetworkElementClassProps = Record<string, NetworkElementClassProp>;

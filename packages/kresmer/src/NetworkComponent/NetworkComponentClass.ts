@@ -7,10 +7,9 @@
  * (the word "class" here means a runtime class, not a Typescript one)
  ***************************************************************************/
 
-import { ComponentObjectPropsOptions } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import { ComputedProps } from "../NetworkElementClass";
+import { ComputedProps, NetworkElementClassProps } from "../NetworkElementClass";
 import NetworkElementClass from "../NetworkElementClass";
 
 /**
@@ -28,7 +27,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         propsBaseClasses?: NetworkComponentClass[],
         styleBaseClasses?: NetworkComponentClass[],
         template: Template,
-        props?: ComponentObjectPropsOptions,
+        props?: NetworkElementClassProps,
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,

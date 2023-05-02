@@ -9,7 +9,7 @@
 <script lang="ts">
     import { nextTick, ref, watch } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
-    import { NetworkElement, NetworkElementClass, 
+    import { NetworkElement, NetworkElementClass, NetworkElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
              NetworkLink, NetworkLinkClass } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
@@ -94,7 +94,8 @@ Continue?`)) {
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
-                        validValues?: string[], pattern?: string, isExpanded?: boolean};
+                        validValues?: string[], pattern?: string, isExpanded?: boolean, 
+                        category?: NetworkElementPropCategory};
     /**
      * An array of the element props (with values)
      */
@@ -119,10 +120,23 @@ Continue?`)) {
                             elementToEdit.props[name], 
                         type: _class.props[name].type,
                         required: _class.props[name].required,
+                        category: _class.props[name].category,
                         validValues,
                         pattern,
                         isExpanded: false,
                     }
+                })
+            .sort((p1, p2) => 
+                {
+                    if (!p1.category && p2.category || p1.category < p2.category)
+                        return -1;
+                    if (p1.category && !p2.category || p1.category > p2.category)
+                        return 1;
+                    if (p1.name < p2.name)
+                        return -1;
+                    if (p1.name > p2.name)
+                        return 1;
+                    return 0;
                 });
         return props;
     }//buildElementPropsArray
@@ -370,91 +384,99 @@ Continue?`)) {
                     </div>
                 </div>
                 <!-- Element props -->
-                <div class="row" v-for="prop in elementProps" :key="`prop[${prop.name}]`">
-                    <!-- Prop name -->
-                    <div class="col border-bottom border-start me-0">
-                        <label class="form-label" :for="`inpProp[${prop.name}]`"
-                                @click="prop.isExpanded = !prop.isExpanded">{{ prop.name }}</label>
-                        <button type="button" class="btn btn-sm pb-0" v-if="prop.type === Object || prop.type === Array"
-                                @click="prop.isExpanded = !prop.isExpanded">
-                            <span class="material-symbols-outlined align-top">
-                                {{`expand_${prop.isExpanded ? "less" : "more"}`}}
-                            </span>
-                        </button>
+                <template v-for="(prop, i) in elementProps" :key="`prop[${prop.name}]`">
+                    <div v-if="prop.category && (i === 0 || prop.category !== elementProps[i-1].category)" class="row">
+                        <div class="col border-bottom text-primary text-opacity-75 pt-1 me-0">
+                            {{ NetworkElementPropCategory[prop.category] }}
+                        </div>
+                        <div class="col ms-0 ps-0"></div>
                     </div>
-                    <!-- Prop value -->
-                    <div class="col ms-0 ps-0">
-                        <select v-if="prop.validValues" ref="propInputs" :data-prop-name="prop.name"
-                                class="form-select form-select-sm" :id="`inpProp[${prop.name}]`"
-                                v-model="prop.value">
-                            <option v-if="!prop.required" :value="undefined"></option>
-                            <option v-for="(choice, i) in prop.validValues"  class="text-secondary"
-                                    :key="`${prop.name}[${i}]`">{{ choice }}</option>
-                        </select>
-                        <input v-else-if="prop.type === Number" type="number" :id="`inpProp[${prop.name}]`"
-                            ref="propInputs" :data-prop-name="prop.name"
-                            class="form-control form-control-sm text-end"
-                            v-model="prop.value"/>
-                        <input v-else-if="prop.type === Boolean" type="checkbox"
-                            ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                            class="form-check-input"
-                            v-model="prop.value"/>
-                        <div v-else-if="prop.type === Object" class="input-group input-group-sm">
-                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                                    data-bs-toggle="dropdown" title="Add subproperty">
-                                <span class="material-symbols-outlined">add</span>
+                    <div class="row">
+                        <!-- Prop name -->
+                        <div class="col border-bottom border-start me-0">
+                            <label class="form-label" :for="`inpProp[${prop.name}]`"
+                                    @click="prop.isExpanded = !prop.isExpanded">{{ prop.name }}</label>
+                            <button type="button" class="btn btn-sm pb-0" v-if="prop.type === Object || prop.type === Array"
+                                    @click="prop.isExpanded = !prop.isExpanded">
+                                <span class="material-symbols-outlined align-top">
+                                    {{`expand_${prop.isExpanded ? "less" : "more"}`}}
+                                </span>
                             </button>
-                            <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" @click="addSubprop(prop.name, 'string')">string</a></li>
-                                <li><a class="dropdown-item" @click="addSubprop(prop.name, 'number')">number</a></li>
-                                <li><a class="dropdown-item" @click="addSubprop(prop.name, 'boolean')">boolean</a></li>
-                            </ul>
-                            <input
+                        </div>
+                        <!-- Prop value -->
+                        <div class="col ms-0 ps-0">
+                            <select v-if="prop.validValues" ref="propInputs" :data-prop-name="prop.name"
+                                    class="form-select form-select-sm" :id="`inpProp[${prop.name}]`"
+                                    v-model="prop.value">
+                                <option v-if="!prop.required" :value="undefined"></option>
+                                <option v-for="(choice, i) in prop.validValues"  class="text-secondary"
+                                        :key="`${prop.name}[${i}]`">{{ choice }}</option>
+                            </select>
+                            <input v-else-if="prop.type === Number" type="number" :id="`inpProp[${prop.name}]`"
+                                ref="propInputs" :data-prop-name="prop.name"
+                                class="form-control form-control-sm text-end"
+                                v-model="prop.value"/>
+                            <input v-else-if="prop.type === Boolean" type="checkbox"
                                 ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                                class="form-control form-control-sm text-secondary" readonly
-                                :value="JSON.stringify(prop.value)"/>
-                        </div>
-                        <input v-else 
-                            ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                            :pattern="prop.pattern"
-                            class="form-control form-control-sm"
-                            v-model="prop.value"/>
-                        <div class="invalid-feedback">
-                            Syntax error!
-                        </div>
-                    </div>
-                    <!-- Subprops (if exist) -->
-                    <div v-if="prop.isExpanded && prop.type === Object && prop.value">
-                        <div class="row" v-for="(subpropName, spi) in Object.keys(prop.value).sort(collateSubprops)" 
-                                :key="`${prop.name}[${subpropName}]`">
-                            <!-- Subprop name -->
-                            <div class="col text-end text-secondary me-0 border-start border-bottom"
-                                 :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">
-                                 <label class="form-label" :for="subpropInputID(prop.name, subpropName)">
-                                    {{ subpropName }}
-                                </label>
-                                <button type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 pb-0" 
-                                        title="Delete subproperty" @click="deleteSubprop(prop.name, subpropName)">
-                                    <span class="material-symbols-outlined align-top">close</span>
+                                class="form-check-input"
+                                v-model="prop.value"/>
+                            <div v-else-if="prop.type === Object" class="input-group input-group-sm mb-1">
+                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                        data-bs-toggle="dropdown" title="Add subproperty">
+                                    <span class="material-symbols-outlined">add</span>
                                 </button>
+                                <ul class="dropdown-menu">
+                                    <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(prop.name, 'string')">string</a></li>
+                                    <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(prop.name, 'number')">number</a></li>
+                                    <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(prop.name, 'boolean')">boolean</a></li>
+                                </ul>
+                                <input
+                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
+                                    class="form-control form-control-sm text-secondary" readonly
+                                    :value="JSON.stringify(prop.value)"/>
                             </div>
-                            <!-- Subprop value -->
-                            <div class="col ps-0">
-                                <input v-if="typeof (prop.value as Record<string, any>)[subpropName] === 'number'" 
-                                    type="number" class="form-control form-control-sm text-end" 
-                                    :id="subpropInputID(prop.name, subpropName)"
-                                    v-model="(prop.value as Record<string, any>)[subpropName]" />
-                                <input v-else-if="typeof (prop.value as Record<string, any>)[subpropName] === 'boolean'"
-                                    type="checkbox" class="form-check-input form-check-input-sm"
-                                    :id="subpropInputID(prop.name, subpropName)"
-                                    v-model="(prop.value as Record<string, any>)[subpropName]" />
-                                <input v-else type="text" class="form-control form-control-sm"
-                                    :id="subpropInputID(prop.name, subpropName)"
-                                    v-model="(prop.value as Record<string, any>)[subpropName]" />
+                            <input v-else 
+                                ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
+                                :pattern="prop.pattern"
+                                class="form-control form-control-sm"
+                                v-model="prop.value"/>
+                            <div class="invalid-feedback">
+                                Syntax error!
+                            </div>
+                        </div>
+                        <!-- Subprops (if exist) -->
+                        <div v-if="prop.isExpanded && prop.type === Object && prop.value">
+                            <div class="row" v-for="(subpropName, spi) in Object.keys(prop.value).sort(collateSubprops)" 
+                                    :key="`${prop.name}[${subpropName}]`">
+                                <!-- Subprop name -->
+                                <div class="col text-end text-secondary me-0 border-start border-bottom"
+                                    :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">
+                                    <label class="form-label" :for="subpropInputID(prop.name, subpropName)">
+                                        {{ subpropName }}
+                                    </label>
+                                    <button type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 pb-0" 
+                                            title="Delete subproperty" @click="deleteSubprop(prop.name, subpropName)">
+                                        <span class="material-symbols-outlined align-top">close</span>
+                                    </button>
+                                </div>
+                                <!-- Subprop value -->
+                                <div class="col ps-0">
+                                    <input v-if="typeof (prop.value as Record<string, any>)[subpropName] === 'number'" 
+                                        type="number" class="form-control form-control-sm text-end" 
+                                        :id="subpropInputID(prop.name, subpropName)"
+                                        v-model="(prop.value as Record<string, any>)[subpropName]" />
+                                    <input v-else-if="typeof (prop.value as Record<string, any>)[subpropName] === 'boolean'"
+                                        type="checkbox" class="form-check-input form-check-input-sm"
+                                        :id="subpropInputID(prop.name, subpropName)"
+                                        v-model="(prop.value as Record<string, any>)[subpropName]" />
+                                    <input v-else type="text" class="form-control form-control-sm"
+                                        :id="subpropInputID(prop.name, subpropName)"
+                                        v-model="(prop.value as Record<string, any>)[subpropName]" />
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </template>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>
                 </div>

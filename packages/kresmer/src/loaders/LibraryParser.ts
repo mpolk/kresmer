@@ -6,9 +6,8 @@
  *                     Component library parser
 \**************************************************************************/
 
-import { ComponentObjectPropsOptions, Prop } from "vue";
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import NetworkElementClass from "../NetworkElementClass";
+import NetworkElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps } from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
@@ -88,7 +87,7 @@ export default class LibraryParser {
         const forEmbeddingOnly = node.getAttribute("instantiate") === "embed";
 
         let template: Element | undefined;
-        let props: ComponentObjectPropsOptions = {};
+        let props: NetworkElementClassProps = {};
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
@@ -143,7 +142,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 
-        let props: ComponentObjectPropsOptions = {};
+        let props: NetworkElementClassProps = {};
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
@@ -226,7 +225,7 @@ export default class LibraryParser {
             "array": {propType: Array, makeDefault: JSON.parse},
         };
 
-        const props: ComponentObjectPropsOptions = {};
+        const props: NetworkElementClassProps = {};
         propsBaseClasses?.forEach(baseClass => {
             for (const propName in baseClass.props) {
                 props[propName] = baseClass.props[propName];
@@ -237,12 +236,13 @@ export default class LibraryParser {
             switch (child.nodeName) {
                 case "prop": {
                     const propName = toCamelCase(child.getAttribute("name"));
-                    const prop: Prop<unknown, unknown> = {};
+                    const prop: NetworkElementClassProp = {};
                     const type = child.getAttribute("type");
                     const required = child.getAttribute("required"),
                         _default = child.getAttribute("default"),
                         choices = child.getAttribute("choices"),
-                        pattern = child.getAttribute("pattern");
+                        pattern = child.getAttribute("pattern"),
+                        category = child.getAttribute("category");
                     if (!propName) {
                         this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
                             {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
@@ -301,6 +301,19 @@ export default class LibraryParser {
                         validator.pattern = pattern;
                         prop.validator = validator;
                     }//if
+
+                    switch (category) {
+                        case "Geometry":
+                        case "Presentation":
+                        case "Network":
+                        case "Hardware":
+                            prop.category = NetworkElementPropCategory[category];
+                        // eslint-disable-next-line no-fallthrough
+                        case null:
+                            break;
+                        default: 
+                            this.kresmer.raiseError(new LibraryParsingException(`Invalid prop category: "${category}"`));
+                    }//switch
 
                     props[propName] = prop;
                     break;
