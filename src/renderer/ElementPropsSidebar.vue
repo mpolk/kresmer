@@ -308,6 +308,18 @@ Continue?`)) {
         });
     }//completeAddingSubprop
 
+    /**
+     * Deletes the specified subprop from the given property
+     * @param propName Prop to delete the subprop from
+     * @param subpropName Subprop to delete
+     */
+    function deleteSubprop(propName: string, subpropName: string)
+    {
+        const i = elementProps.value.findIndex(prop => prop.name == propName);
+        const prop = elementProps.value[i];
+        delete (prop.value as Record<string, unknown>)[subpropName];
+    }// deleteSubprop
+
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref("");
     const newSubpropName = ref("");
@@ -387,23 +399,21 @@ Continue?`)) {
                             ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                             class="form-check-input"
                             v-model="prop.value"/>
-                        <template v-else-if="prop.type === Object">
-                            <div class="input-group input-group-sm">
-                                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                                        data-bs-toggle="dropdown" title="Add subproperty">
-                                    <span class="material-symbols-outlined">add</span>
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li><a class="dropdown-item" @click="addSubprop(prop.name, 'string')">string</a></li>
-                                    <li><a class="dropdown-item" @click="addSubprop(prop.name, 'number')">number</a></li>
-                                    <li><a class="dropdown-item" @click="addSubprop(prop.name, 'boolean')">boolean</a></li>
-                                </ul>
-                                <input
-                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                                    class="form-control form-control-sm text-secondary" readonly
-                                    :value="JSON.stringify(prop.value)"/>
-                            </div>
-                        </template>
+                        <div v-else-if="prop.type === Object" class="input-group input-group-sm">
+                            <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
+                                    data-bs-toggle="dropdown" title="Add subproperty">
+                                <span class="material-symbols-outlined">add</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" @click="addSubprop(prop.name, 'string')">string</a></li>
+                                <li><a class="dropdown-item" @click="addSubprop(prop.name, 'number')">number</a></li>
+                                <li><a class="dropdown-item" @click="addSubprop(prop.name, 'boolean')">boolean</a></li>
+                            </ul>
+                            <input
+                                ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
+                                class="form-control form-control-sm text-secondary" readonly
+                                :value="JSON.stringify(prop.value)"/>
+                        </div>
                         <input v-else 
                             ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
                             :pattern="prop.pattern"
@@ -423,6 +433,10 @@ Continue?`)) {
                                  <label class="form-label" :for="subpropInputID(prop.name, subpropName)">
                                     {{ subpropName }}
                                 </label>
+                                <button type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 pb-0" 
+                                        title="Delete subproperty" @click="deleteSubprop(prop.name, subpropName)">
+                                    <span class="material-symbols-outlined align-top">close</span>
+                                </button>
                             </div>
                             <!-- Subprop value -->
                             <div class="col ps-0">
