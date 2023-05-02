@@ -177,7 +177,7 @@ Continue?`)) {
                 }
                 break;
             case Number:
-                if (prop.value === undefined) {
+                if (prop.value === undefined || prop.value === "") {
                     v = undefined;
                 } else {
                     v = parseFloat(prop.value as string);
