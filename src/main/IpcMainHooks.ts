@@ -17,6 +17,7 @@ export interface IpcMainChannels {
     "enable-delete-menu-item": (enable: boolean) => void;
     "backend-server-connected": (url: string, password: string, autoConnect: boolean) => void;
     "backend-server-disconnected": () => void;
+    "open-url": (url: string) => void;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;

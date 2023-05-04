@@ -71,7 +71,11 @@ export default class Kresmer extends KresmerEventHooks {
             .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
             .component("ConnectionPoint", ConnectionPointVue)
             // register the functions that can be used in templates
-            .config.globalProperties = {...GeneralTemplateFunctions, ...TransformFunctons}
+            .config.globalProperties = {
+                ...GeneralTemplateFunctions, 
+                ...TransformFunctons,
+                $openURL: this.openURL,
+            }
             ;
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
@@ -191,6 +195,20 @@ export default class Kresmer extends KresmerEventHooks {
     {
         this.vueKresmer.$forceUpdate();
     }//forceUpdate
+
+    /**
+     * Opens an URL. First it tries to delegate opening an URL to the host and then
+     * (if the host returns false) opens an URL on its own.
+     * @param url An URL to open
+     * @param target Navigation target
+     */
+    public readonly openURL = (url: string, target = "_self") =>
+    {
+        console.log(`openURL("${url}")`);
+        if (this.onOpenUrl(url, target))
+            return;
+        window.open(url, target);
+    }//openURL
 
     /** A list of all Component Classes, registered by Kresmer */
     protected readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();

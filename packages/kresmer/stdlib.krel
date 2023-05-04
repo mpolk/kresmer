@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-library.xsd"?>
-<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-slot="v-slot">
+<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <!-- Test data (just for fun)-->
     <defs>
         <text id="kre:std:Crown">👑</text>
@@ -270,6 +270,7 @@
         <props>
             <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network"/>
             <prop name="management-protocol" type="String" category="Network" />
+            <prop name="management-ref-target" type="String" choices="_self,_blank" category="Network" />
             <prop name="comment" type="String" />
             <prop name="port-descriptions" type="object" default="{}" category="Network"/>
         </props>
@@ -323,7 +324,8 @@
                 text-anchor="middle" class="device-name"
                 v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
             <template v-if="ipAddress">
-                <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" target="_blank">
+                <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" target="_blank"
+                    v-on:click.prevent="$openURL(managementProtocol + ipAddress, managementRefTarget)">
                     <text
                         v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="height*0.25"
                         text-anchor="middle" class="ip-address href"
@@ -395,7 +397,8 @@
             <Kre:SwitchBody 
                 v-bind:width="width" v-bind:height="height"
                 v-bind:perspective="perspective" v-bind:name="name" 
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol" 
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <Kre:SquarePort v-for="i in nPorts"
@@ -421,6 +424,7 @@
                 v-bind:n-slots="nSlots" v-bind:top-facet-size="topFacetSize" 
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
         </template>
@@ -455,6 +459,7 @@
                 v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
         </template>
@@ -472,6 +477,7 @@
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <text v-bind:x="height*7" v-bind:y="height/3" v-bind:font-size="height*0.25" 
@@ -504,6 +510,7 @@
                 v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <template v-for="slot in nSlots">
@@ -545,6 +552,7 @@
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <template v-for="i in 24">
@@ -572,6 +580,7 @@
                 v-bind:top-facet-size="1" v-bind:n-slots="nSlots" 
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <template v-for="slot in nSlots">
@@ -645,6 +654,7 @@
                 v-bind:n-slots="nSlots" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 >
                 <template v-slot:frontFacet="{}">
@@ -674,6 +684,7 @@
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 

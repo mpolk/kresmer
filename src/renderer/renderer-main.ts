@@ -200,6 +200,12 @@ kresmer.on("error", (error: KresmerException) =>
     });
 });//onError
 
+kresmer.on("open-url", (url: string) => {
+    console.debug(`Passing url ${url} to the main process`);
+    window.electronAPI.openURL(url);
+    return true;
+});//onOpenURL
+
 
 
 // Processing application comand (coming from the main process)

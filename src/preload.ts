@@ -58,6 +58,10 @@ exposeToRenderer({
         sendToMain("backend-server-disconnected");
     },
 
+    openURL: (url: string) => {
+        sendToMain("open-url", url);
+    },
+
  });
  console.debug("Finished setting up electron API for the renderer");
  

@@ -18,6 +18,7 @@ export interface ElectronAPI {
     enableDeleteMenuItem: (enable: boolean) => void,
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => void,
     backendServerDisconnected: () => void,
+    openURL: (url: string) => void,
 }//IElectronAPI
 
 

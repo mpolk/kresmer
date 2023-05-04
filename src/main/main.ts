@@ -104,6 +104,11 @@ function initIpcMainHooks()
         menuDisconnectFromServer.visible = false;
         menuDisconnectFromServer.enabled = false;
     });
+
+    IpcMainHooks.on("open-url", url => {
+        console.log(`trying to open external link ${url}`);
+        shell.openExternal(url);
+    });
 }//initIpcMainHooks
 
 

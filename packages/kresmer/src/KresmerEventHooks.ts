@@ -20,6 +20,7 @@ import {toCamelCase} from "./Utils";
 class KresmerEventFormats  {
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
+    "open-url":                         (url: string, target?: string) => boolean;
     "drawing-scale":                    (newScale: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
@@ -132,6 +133,13 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("got-dirty")
     protected onGotDirty(isDirty: boolean) {}
+
+    /**
+     * Is called when an HTML-link on the drawing is clicked
+     * @param url A new dirtiness state
+     */
+    @overridableHandler("open-url")
+    protected onOpenUrl(url: string, target?: string): boolean { return false; }
 
     /**
      * Is called when the global drawing scale change occurs
