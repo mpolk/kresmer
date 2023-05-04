@@ -77,6 +77,10 @@ export default class DrawingParser {
                             throw exc;
                     }//catch
                     break;
+                case "parsererror":
+                    yield new DrawingParsingException(
+                        `Syntax error: "${(node as HTMLElement).innerText}"`);
+                    break;
                 default:
                     yield new DrawingParsingException(
                         `Invalid top-level node in drawing: "${node.nodeName}"`);

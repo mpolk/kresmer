@@ -69,6 +69,10 @@ export default class LibraryParser {
                 case "style":
                     yield new StyleLibNode(this.parseCSS(node.innerHTML));
                     break;
+                case "parsererror":
+                    yield new LibraryParsingException(
+                        `Syntax error: "${(node as HTMLElement).innerText}"`);
+                    break;
                 default:
                     yield new LibraryParsingException(
                         `Invalid top-level node in library: "${node.nodeName}"`);
