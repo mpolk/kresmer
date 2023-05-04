@@ -8,7 +8,7 @@
 
 import path from 'path';
 import fs from 'fs';
-import { app, BrowserWindow, dialog, Menu } from 'electron';
+import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../package.json");
 import Settings from './Settings';
@@ -56,6 +56,12 @@ function createWindow() {
 
     mainWindow.on('resize', () => {
         userPrefs.set('window', mainWindow.getBounds());
+    });
+
+    mainWindow.webContents.setWindowOpenHandler(({url})  => {
+        console.log(`navigate to ${url}`);
+        shell.openExternal(url);
+        return {action: "deny"}
     });
 
     return mainWindow;
