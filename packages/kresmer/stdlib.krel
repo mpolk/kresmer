@@ -324,8 +324,9 @@
                 text-anchor="middle" class="device-name"
                 v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
             <template v-if="ipAddress">
-                <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" target="_blank"
-                    v-on:click.prevent="$openURL(managementProtocol + ipAddress, managementRefTarget)">
+                <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" 
+                   v-bind:target="managementRefTarget"
+                   v-on:click.prevent="$openURL(managementProtocol + ipAddress, managementRefTarget)">
                     <text
                         v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="height*0.25"
                         text-anchor="middle" class="ip-address href"
