@@ -330,11 +330,16 @@
                     <text
                         v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="height*0.25"
                         text-anchor="middle" class="ip-address href"
-                        v-bind:class='{"no-persp": perspective === "none"}'>{{ipAddress}}</text></a>
+                        v-bind:class='{"no-persp": perspective === "none"}'>
+                        {{ipAddress}}
+                    </text>
+                </a>
                 <text v-else=""
                     v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="height*0.25"
                     text-anchor="middle" class="ip-address"
-                    v-bind:class='{"no-persp": perspective === "none"}'>{{ipAddress}}</text>
+                    v-bind:class='{"no-persp": perspective === "none"}'>
+                    {{ipAddress}}
+                </text>
             </template>
         </template>
         <style>
