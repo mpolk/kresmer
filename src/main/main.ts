@@ -58,14 +58,26 @@ function createWindow() {
         userPrefs.set('window', mainWindow.getBounds());
     });
 
-    mainWindow.webContents.setWindowOpenHandler(({url})  => {
-        console.log(`navigate to ${url}`);
-        shell.openExternal(url);
-        return {action: "deny"}
+    mainWindow.webContents.setWindowOpenHandler(({url}) => {
+        openURL(url);
+        return {action: "deny"} as const;
+    });
+    mainWindow.webContents.on("will-navigate", (event, url) => {
+        if (url != mainWindow.webContents.getURL()) {
+            event.preventDefault();
+            openURL(url);
+        }//if
     });
 
     return mainWindow;
 }//createWindow
+
+
+function openURL(url: string)
+{
+    console.debug(`trying to open external link ${url}`);
+    shell.openExternal(url);
+}//openURL
 
 
 function initIpcMainHooks()
@@ -105,10 +117,7 @@ function initIpcMainHooks()
         menuDisconnectFromServer.enabled = false;
     });
 
-    IpcMainHooks.on("open-url", url => {
-        console.log(`trying to open external link ${url}`);
-        shell.openExternal(url);
-    });
+    IpcMainHooks.on("open-url", openURL);
 }//initIpcMainHooks
 
 

@@ -204,7 +204,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public readonly openURL = (url: string, target = "_self") =>
     {
-        console.log(`openURL("${url}")`);
+        console.debug(`openURL("${url}")`);
         if (this.onOpenUrl(url, target))
             return;
         window.open(url, target);
