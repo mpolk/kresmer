@@ -241,10 +241,6 @@ export default class Kresmer extends KresmerEventHooks {
                 ...componentClass.props,
                 componentId: {type: Number},
                 name: {type: [String, Number]},
-                // the next two props are added just to relax Vue prop passing mechanism, which 
-                // does not like xmlns:* attributes leaked from DOMParser
-                "xmlns:Kre": {type: String},
-                "xmlns:v-bind": {type: String},
             },
         // ...and the one for its adapter (used for component-in-component embedding)
         }).component(componentClass.adapterVueName, {
@@ -274,10 +270,6 @@ export default class Kresmer extends KresmerEventHooks {
                 y: {type: [Number, String] as PropType<number|string>, default: 0},
                 transform: {type: [Object, String] as PropType<ITransform|string>},
                 transformOrigin: {type: [Object, String] as PropType<Position|string>},
-                // the next two props are added just to relax Vue prop passing mechanism, which 
-                // does not like xmlns:* attributes leaked from DOMParser
-                "xmlns:Kre": {type: String},
-                "xmlns:v-bind": {type: String},
             },
         });
 
