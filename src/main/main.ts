@@ -8,7 +8,8 @@
 
 import path from 'path';
 import fs from 'fs';
-import { app, BrowserWindow, dialog, Menu, shell } from 'electron';
+import { exec } from 'child_process';
+import { app, BrowserWindow, dialog, Menu, protocol, shell } from 'electron';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../package.json");
 import Settings from './Settings';
@@ -27,6 +28,7 @@ let defaultDrawingFileName: string;
 export const userPrefs = new Settings("user-prefs.json", {
     window: {width: 800, height: 600},
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
+    customManagementProtocols: [] as {name: string, cmd: string}[],
 });
 
 function createWindow() {
@@ -59,10 +61,18 @@ function createWindow() {
     });
 
     mainWindow.webContents.setWindowOpenHandler(({url}) => {
+        for (const proto of userPrefs.get("customManagementProtocols")) {
+            if (url.startsWith(`${proto.name}:`))
+                return {action: "allow"};
+        }//for
         openURL(url);
         return {action: "deny"} as const;
     });
     mainWindow.webContents.on("will-navigate", (event, url) => {
+        for (const proto of userPrefs.get("customManagementProtocols")) {
+            if (url.startsWith(`${proto.name}:`))
+                return;
+        }//for
         if (url != mainWindow.webContents.getURL()) {
             event.preventDefault();
             openURL(url);
@@ -164,6 +174,18 @@ export function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
 app.whenReady().then(() => {
     mainWindow = createWindow();
     initIpcMainHooks();
+
+    for (const proto of userPrefs.get("customManagementProtocols")) {
+        const protoPrefix = new RegExp(`^${proto.name}(:/*)?`);
+        protocol.registerFileProtocol(proto.name, request => {
+            console.debug(`Trying to open custom protocol link ${request.url}`);
+            const params = request.url.replace(protoPrefix, "");
+            const cmd = proto.cmd.replaceAll("$*", params);
+            exec(cmd, (error, stdout, stderr) => {
+                console.debug(`error: ${error?.message}\nstdout: ${stdout}\nstederr: ${stderr}`);
+            });
+        });
+    }//for
 
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the

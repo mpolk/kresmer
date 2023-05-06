@@ -11,7 +11,7 @@ import * as path from 'path';
 import { app } from 'electron';
 import * as fs from 'fs';
 
-type RegValue = string | number | boolean;
+type RegValue = string | number | boolean | Record<string, string>[];
 interface RegData {[key: string]: RegValue|RegData}
 
 export default class Settings<Registry extends RegData>
@@ -55,7 +55,7 @@ export default class Settings<Registry extends RegData>
     public set(...args: (string|RegData|RegValue)[])
     {
         this._set(this.data, args.slice(0, -1) as string[], args[args.length - 1] as RegData|RegValue);
-        fs.writeFileSync(this.fileName, JSON.stringify(this.data));
+        this.save();
         return this;
     }//set
 
@@ -68,4 +68,8 @@ export default class Settings<Registry extends RegData>
         }//if
     }//_set
 
+    public save()
+    {
+        fs.writeFileSync(this.fileName, JSON.stringify(this.data));
+    }//save
 }//Settings
