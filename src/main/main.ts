@@ -25,16 +25,17 @@ export let mainWindow: BrowserWindow;
 export let menus: Menus;
 let defaultDrawingFileName: string;
 
-export const userPrefs = new Settings("user-prefs.json", {
+export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
     customManagementProtocols: [] as {name: string, cmd: string}[],
 });
 
-function createWindow() {
+/** Create the main app window */
+function createMainWindow() {
     // Create the browser window
     const windowOptions = {
-        ...userPrefs.get("window"),
+        ...localSettings.get("window"),
         title: "Kresmer",
         icon: path.join(__dirname, "../logo.png"),
         webPreferences: {
@@ -57,39 +58,44 @@ function createWindow() {
     }//if
 
     mainWindow.on('resize', () => {
-        userPrefs.set('window', mainWindow.getBounds());
+        localSettings.set('window', mainWindow.getBounds());
     });
 
     mainWindow.webContents.setWindowOpenHandler(({url}) => {
-        for (const proto of userPrefs.get("customManagementProtocols")) {
+        for (const proto of localSettings.get("customManagementProtocols")) {
             if (url.startsWith(`${proto.name}:`))
                 return {action: "allow"};
         }//for
-        openURL(url);
+        openUrlWithSystemBrowser(url);
         return {action: "deny"} as const;
     });
     mainWindow.webContents.on("will-navigate", (event, url) => {
-        for (const proto of userPrefs.get("customManagementProtocols")) {
+        for (const proto of localSettings.get("customManagementProtocols")) {
             if (url.startsWith(`${proto.name}:`))
                 return;
         }//for
         if (url != mainWindow.webContents.getURL()) {
             event.preventDefault();
-            openURL(url);
+            openUrlWithSystemBrowser(url);
         }//if
     });
 
     return mainWindow;
-}//createWindow
+}//createMainWindow
 
 
-function openURL(url: string)
+/**
+ * Open an URL with the default system browser
+ * @param url An URL to open
+ */
+function openUrlWithSystemBrowser(url: string)
 {
     console.debug(`trying to open external link ${url}`);
     shell.openExternal(url);
-}//openURL
+}//openUrlWithSystemBrowser
 
 
+/** Initialize IPC entries for the main process */
 function initIpcMainHooks()
 {
     IpcMainHooks.on('context-menu', (menuID: ContextMenuID, ...args: unknown[]) => {
@@ -97,7 +103,7 @@ function initIpcMainHooks()
         menus.contextMenu(menuID, ...args);
     });
 
-    IpcMainHooks.on('renderer-ready', (stage: number) => {initApp(mainWindow, stage)});
+    IpcMainHooks.on('renderer-ready', (stage: number) => {initApp(stage)});
 
     IpcMainHooks.on('set-default-drawing-filename', (fileName: string) => {
         defaultDrawingFileName = fileName
@@ -108,7 +114,7 @@ function initIpcMainHooks()
     });
 
     IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
-        userPrefs.set("server", {url, password, autoConnect});
+        localSettings.set("server", {url, password, autoConnect});
         const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
         menuConnectToServer.visible = false;
         menuConnectToServer.enabled = false;
@@ -118,7 +124,7 @@ function initIpcMainHooks()
     });
 
     IpcMainHooks.on("backend-server-disconnected", () => {
-        userPrefs.set("server", "autoConnect", false);
+        localSettings.set("server", "autoConnect", false);
         const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
         menuConnectToServer.visible = true;
         menuConnectToServer.enabled = true;
@@ -127,17 +133,21 @@ function initIpcMainHooks()
         menuDisconnectFromServer.enabled = false;
     });
 
-    IpcMainHooks.on("open-url", openURL);
+    IpcMainHooks.on("open-url", openUrlWithSystemBrowser);
 }//initIpcMainHooks
 
 
-// Initializing the application when it is ready to be initialized
-export function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
+/** Perform the next step of the App initialization in response to the signals received from the renderer process.
+ *  Acts as an coroutine together with the renderer initialization procedure. When the renderer completes
+ *  the next stage of its initialization it signals about its readiness with the corresponding AppInitStage.* code.
+ * @param stage The ID of the initializtion stage just completed by the renderer process
+ */
+export function initApp(stage: AppInitStage)
 {
     console.debug(`We've heard that the main window renderer is now ready (stage ${stage})`);
     switch (stage) {
         case AppInitStage.HANDLERS_INITIALIZED: 
-            if (userPrefs.get("server", "autoConnect")) {
+            if (localSettings.get("server", "autoConnect")) {
                 requestConnectToServer(false, AppInitStage.CONNECTED_TO_BACKEND);
                 break
             }//if
@@ -168,29 +178,41 @@ export function initApp(mainWindow: BrowserWindow, stage: AppInitStage)
     }//switch
 }//initApp
 
+
+/** Register custom management protocols for network devices 
+ *  to open management sessions from the on-drawing hyper-links */
+function registerCustomManagementProtocols()
+{
+    for (const proto of localSettings.get("customManagementProtocols")) {
+        const protoPrefix = new RegExp(`^${proto.name}(:/*)?`);
+        protocol.registerFileProtocol(proto.name, request => {
+            console.debug(`Trying to open custom protocol link ${request.url}`);
+            const allParams = request.url.replace(protoPrefix, "");
+            const params = allParams.split(/ +/);
+            let cmd = proto.cmd.replaceAll("$*", allParams);
+            for (let i = 0; i < params.length; i++) {
+                cmd = cmd.replaceAll(`$${i+1}`, params[i]);
+            }//for
+            exec(cmd, (error, stdout, stderr) => {
+                console.debug(`Executed handler for url ${request.url}.\nError: ${error?.message}\nstdout: ${stdout}\nstederr: ${stderr}`);
+            });
+        });
+    }//for
+}//registerCustomManagementProtocols
+
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    mainWindow = createWindow();
+    mainWindow = createMainWindow();
     initIpcMainHooks();
-
-    for (const proto of userPrefs.get("customManagementProtocols")) {
-        const protoPrefix = new RegExp(`^${proto.name}(:/*)?`);
-        protocol.registerFileProtocol(proto.name, request => {
-            console.debug(`Trying to open custom protocol link ${request.url}`);
-            const params = request.url.replace(protoPrefix, "");
-            const cmd = proto.cmd.replaceAll("$*", params);
-            exec(cmd, (error, stdout, stderr) => {
-                console.debug(`error: ${error?.message}\nstdout: ${stdout}\nstederr: ${stderr}`);
-            });
-        });
-    }//for
+    registerCustomManagementProtocols();
 
     app.on('activate', function () {
         // On macOS it's common to re-create a window in the app when the
         // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) createWindow()
+        if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
     })
 });
 
@@ -298,8 +320,8 @@ export function loadLibrary()
 
 export function requestConnectToServer(forceUI: boolean, completionSignal?: AppInitStage)
 {
-    sendAppCommand("connect-to-server", userPrefs.get("server", "url"), 
-                    userPrefs.get("server", "password"), forceUI, completionSignal);
+    sendAppCommand("connect-to-server", localSettings.get("server", "url"), 
+                    localSettings.get("server", "password"), forceUI, completionSignal);
 }//requestConnectToServer
 
 export function requestDisconnectFromServer()
