@@ -8,7 +8,7 @@
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 import { Position } from "kresmer";
 import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing, 
-         requestConnectToServer, requestDisconnectFromServer } from "./main";
+         requestConnectToServer, requestDisconnectFromServer, localSettings } from "./main";
 
 const isMac = process.platform === 'darwin'
 
@@ -86,6 +86,7 @@ export default class Menus {
             id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")},
           { type: 'separator' },
           { label: "Drawing properties...", click: () => sendAppCommand("edit-drawing-properties", {x: 0, y: 0})},
+          { label: "Application settings...", click: () => sendAppCommand("edit-app-settings", localSettings.data)},
           ]
       },
       // { role: 'viewMenu' }
@@ -99,6 +100,9 @@ export default class Menus {
           { label: 'Reset zoom', accelerator: "Control+0", click: () => sendAppCommand("scale-drawing", "0")},
           { label: 'Zoom In', accelerator: "Control+Plus", click: () => sendAppCommand("scale-drawing", "+")},
           { label: 'Zoom Out', accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-")},
+          { type: 'separator' },
+          { label: 'Grid', id: "toggle-grid", click: () => sendAppCommand("toggle-grid") },
+          { label: 'Rulers', id: "toggle-rulers", click: () => sendAppCommand("toggle-rulers") },
           { type: 'separator' },
           { role: 'togglefullscreen' }
         ]

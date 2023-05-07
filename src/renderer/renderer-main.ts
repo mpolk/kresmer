@@ -12,6 +12,7 @@ import { createApp, reactive } from 'vue';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
 import ToastPane from './ToastPane.vue';
+import AppSettingsSidebar from './AppSettingsSidebar.vue';
 import DrawingPropsSidebar from './DrawingPropsSidebar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
@@ -26,6 +27,7 @@ import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import { AppInitStage } from './ElectronAPI.d';
+import { LocalSettings } from '../main/main';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -57,6 +59,8 @@ export const statusBarData: StatusBarDisplayData = reactive({
 
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
     InstanceType<typeof DrawingPropsSidebar>;
+const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsSidebar") as 
+    InstanceType<typeof AppSettingsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
 const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#dlgLinkClassSelection") as
@@ -283,6 +287,10 @@ appCommandExecutor.on("save-drawing", () =>
 
 appCommandExecutor.on("edit-drawing-properties", () => {
     vueDrawingPropsSidebar.show();
+});
+
+appCommandExecutor.on("edit-app-settings", (appSettings: LocalSettings) => {
+    vueAppSettingsSidebar.show(appSettings);
 });
 
 appCommandExecutor.on("delete-selected-element", () =>

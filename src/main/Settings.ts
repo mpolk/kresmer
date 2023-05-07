@@ -17,16 +17,17 @@ interface RegData {[key: string]: RegValue|RegData}
 export default class Settings<Registry extends RegData>
 {
     private fileName: string;
-    private data: RegData;
+    private _data: Registry;
+    get data() {return this._data}
 
     public constructor(fileName: string, private defaults: Registry)
     {
         this.fileName = path.join(app.getPath("userData"), fileName);
         
         try {
-            this.data = JSON.parse(fs.readFileSync(this.fileName, "utf8"));
+            this._data = JSON.parse(fs.readFileSync(this.fileName, "utf8"));
         } catch (error) {
-            this.data = defaults;
+            this._data = defaults;
         }//catch
     }//ctor
 
@@ -34,7 +35,7 @@ export default class Settings<Registry extends RegData>
     public get<K1 extends keyof Registry, K2 extends keyof Registry[K1], V extends Registry[K1][K2]>(key1: K1, key2: K2): V;
     public get(...keys: string[])
     {
-        return this._get(this.data, keys, this.defaults);
+        return this._get(this._data, keys, this.defaults);
     }//if
 
     private _get(data: RegData, keys: string[], defaults: RegData): RegData|RegValue
@@ -54,7 +55,7 @@ export default class Settings<Registry extends RegData>
                V extends Registry[K1][K2]>(key1: K1, key2: K2, value: V): Settings<Registry>;
     public set(...args: (string|RegData|RegValue)[])
     {
-        this._set(this.data, args.slice(0, -1) as string[], args[args.length - 1] as RegData|RegValue);
+        this._set(this._data, args.slice(0, -1) as string[], args[args.length - 1] as RegData|RegValue);
         this.save();
         return this;
     }//set
@@ -70,6 +71,6 @@ export default class Settings<Registry extends RegData>
 
     public save()
     {
-        fs.writeFileSync(this.fileName, JSON.stringify(this.data));
+        fs.writeFileSync(this.fileName, JSON.stringify(this._data));
     }//save
 }//Settings

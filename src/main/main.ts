@@ -28,8 +28,17 @@ let defaultDrawingFileName: string;
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
-    customManagementProtocols: [] as {name: string, cmd: string}[],
+    customManagementProtocols: [] as CustomManagementProtocol[],
 });
+
+export type LocalSettings = {
+    customManagementProtocols: CustomManagementProtocol[],
+}//LocalSettings
+
+export type CustomManagementProtocol = {
+    name: string,
+    cmd: string,
+}//CustomManagementProtocol
 
 /** Create the main app window */
 function createMainWindow() {

@@ -9,8 +9,10 @@
 import { ContextMenuCommands } from "../main/Menus";
 import { DrawingMergeOptions } from "kresmer";
 import { AppInitStage } from "./ElectronAPI";
+import { LocalSettings } from "../main/main";
 
 export interface AppCommandFormats extends ContextMenuCommands {
+    "edit-app-settings": (appSettings: LocalSettings) => void,
     "load-library": (libData: string, completionSignal?: number) => void,
     "load-drawing": (drawingData: string, 
                      options?: {
@@ -26,6 +28,8 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "undo": () => void,
     "redo": () => void,
     "scale-drawing": (direction: ScaleDirection) => void,
+    "toggle-grid": () => void,
+    "toggle-rulers": () => void,
     "delete-selected-element": () => void,
     "add-component": (position?: {x: number, y: number}) => void,
 }//AppCommandFormats
