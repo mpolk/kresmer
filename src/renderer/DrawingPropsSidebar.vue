@@ -74,23 +74,29 @@
                 <table class="table table-bordered">
                     <tbody>
                         <tr>
-                            <td>name</td>
-                            <td>
-                                <input class="form-control form-control-sm" v-model="drawingName"/>
+                            <td class="p-1 align-middle">
+                                <label class="form-label text-secondary mb-0" for="inpDrawingName">name</label>
+                            </td>
+                            <td class="p-1">
+                                <input class="form-control form-control-sm border-0" id="inpDrawingName" v-model="drawingName"/>
                             </td>
                         </tr>
                         <tr>
-                            <td>width</td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm text-end" 
-                                       v-model="drawingBox.width"/>
+                            <td class="p-1 align-middle">
+                                <label class="form-label text-secondary mb-0" for="inpDrawingWidth">width</label>
+                            </td>
+                            <td class="p-1">
+                                <input type="number" class="form-control form-control-sm text-end border-0" 
+                                    id="inpDrawingWidth" v-model="drawingBox.width"/>
                             </td>
                         </tr>
                         <tr>
-                            <td>height</td>
-                            <td>
-                                <input type="number" class="form-control form-control-sm text-end" 
-                                       v-model="drawingBox.height"/>
+                            <td class="p-1 align-middle">
+                                <label class="form-label text-secondary mb-0" for="inpDrawingHeight">height</label>
+                            </td>
+                            <td class="p-1">
+                                <input type="number" class="form-control form-control-sm text-end border-0" 
+                                    id="inpDrawingHeight" v-model="drawingBox.height"/>
                             </td>
                         </tr>
                     </tbody>
