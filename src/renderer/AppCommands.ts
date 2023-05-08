@@ -9,10 +9,10 @@
 import { ContextMenuCommands } from "../main/Menus";
 import { DrawingMergeOptions } from "kresmer";
 import { AppInitStage } from "./ElectronAPI";
-import { LocalSettings } from "../main/main";
+import { AppSettings } from "../main/main";
 
 export interface AppCommandFormats extends ContextMenuCommands {
-    "edit-app-settings": (appSettings: LocalSettings) => void,
+    "edit-app-settings": (appSettings: AppSettings) => void,
     "load-library": (libData: string, completionSignal?: number) => void,
     "load-drawing": (drawingData: string, 
                      options?: {

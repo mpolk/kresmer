@@ -31,9 +31,9 @@ export const localSettings = new Settings("local-settings.json", {
     customManagementProtocols: [] as CustomManagementProtocol[],
 });
 
-export type LocalSettings = {
+export type AppSettings = {
     customManagementProtocols: CustomManagementProtocol[],
-}//LocalSettings
+}//AppSettings
 
 export type CustomManagementProtocol = {
     name: string,

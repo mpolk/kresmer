@@ -62,11 +62,12 @@ export default class Settings<Registry extends RegData>
 
     private _set(data: RegData, keys: string[], newValue: RegData|RegValue)
     {
-        if (keys.length == 1 || !(keys[0] in data)) {
-            data[keys[0]] = newValue;
-        } else {
+        if (keys.length > 1 && keys[0] in data)
             this._set(data[keys[0]] as RegData, keys.slice(1), newValue);
-        }//if
+        else if (Array.isArray(newValue))
+            data[keys[0]] = [...newValue];
+        else
+            data[keys[0]] = newValue;
     }//_set
 
     public save()

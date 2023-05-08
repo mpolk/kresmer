@@ -7,10 +7,10 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { nextTick, ref, watch } from 'vue';
+    import { nextTick, ref } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
-    import { kresmer, updateWindowTitle } from './renderer-main';
-    import { LocalSettings } from '../main/main';
+    import { updateAppSettings } from './renderer-main';
+    import { AppSettings } from '../main/main';
 
     export default {
         name: "AppSettingsSidebar",
@@ -22,18 +22,18 @@
     const rootDiv = ref<HTMLDivElement>();
     const formEnabled = ref(false);
     const formValidated = ref(false);
-    const appSettings = ref<LocalSettings>();
+    const appSettings = ref<AppSettings>();
 
     /**
      * Displays the sidebars and allows to edit application settings
      */
-     function show(inSettings: LocalSettings)
+     function show(inSettings: AppSettings)
     {
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
 
-        appSettings.value = inSettings;
+        appSettings.value = {...inSettings};
 
         formEnabled.value = true;
         formValidated.value = false;
@@ -46,6 +46,7 @@
      */
     function save()
     {
+        updateAppSettings(appSettings.value!);
         close();
     }//save
 
@@ -57,81 +58,57 @@
     }//close
 
     /**
-     * Adds a new subprop (field) to the given pop
-     * @param propName A prop to add the subprop to
-     * @param type A type of the new subprop
+     * Adds a new management protocol
      */
-    // function addSubprop(propName: string, type: "string"|"number"|"boolean")
-    // {
-    //     propToAddSubpropTo.value = propName;
-    //     newSubpropType.value = type;
-    //     if (!dlgNewSubprop) {
-    //         const el = document.querySelector("#dlgNewSubprop")!;
-    //         el.addEventListener("shown.bs.modal", () => inpNewSubpropName.value!.focus());
-    //         dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
-    //     }//if
-    //     dlgNewSubprop.show();
-    // }//addSubprop
+    function addProtocol()
+    {
+        if (!dlgNewProtocol) {
+            const el = document.querySelector("#dlgNewProtocol")!;
+            el.addEventListener("shown.bs.modal", () => inpNewProtocolName.value!.focus());
+            dlgNewProtocol = new Modal(el, {backdrop: "static", keyboard: true});
+        }//if
+        dlgNewProtocol.show();
+    }//addProtocol
 
     /** Callback for completing adding a new field or the Object-type prop */
     function completeAddingProtocol()
     {
-    //     if (!newSubpropName.value) {
-    //         alert("Subproperty name cannot be empty!");
-    //         return;
-    //     }//if
+        if (!newProtocolName.value) {
+            alert("Protocol name cannot be empty!");
+            return;
+        }//if
 
-    //     const i = elementProps.value.findIndex(prop => prop.name == propToAddSubpropTo.value);
-    //     const prop = elementProps.value[i];
-    //     if (!prop.value) {
-    //         prop.value = {};
-    //     }//if
-    //     const propValue = prop.value as Record<string, unknown>;
+        if (appSettings.value!.customManagementProtocols.find(proto => proto.name === newProtocolName.value) ) {
+            alert(`Protocol "${newProtocolName.value}" already exists"`);
+            return;
+        }//if
 
-    //     if (Object.hasOwn(propValue, newSubpropName.value)) {
-    //         alert(`Subprop "${newSubpropName.value}" already exists in the prop "${prop.name}"`);
-    //         return;
-    //     }//if
+        appSettings.value!.customManagementProtocols.push({name: newProtocolName.value, cmd: ""});
 
-    //     switch (newSubpropType.value) {
-    //         case "string":
-    //             propValue[newSubpropName.value] = "";
-    //             break;
-    //         case "number":
-    //             propValue[newSubpropName.value] = 0;
-    //             break;
-    //         case "boolean":
-    //             propValue[newSubpropName.value] = false;
-    //             break;
-    //     }//switch
-
-    //     dlgNewSubprop.hide();
-    //     prop.isExpanded = true;
-    //     nextTick(() => {
-    //         const inpToFocus = document.getElementById(subpropInputID(prop.name, newSubpropName.value)) as HTMLInputElement;
-    //         inpToFocus.focus();
-    //     });
+        dlgNewProtocol.hide();
+        nextTick(() => {
+            const i = appSettings.value!.customManagementProtocols.length - 1;
+            const inpToFocus = document.getElementById(protocolInputID(i)) as HTMLInputElement;
+            inpToFocus.focus();
+        });
     }//completeAddingProtocol
 
     /**
-     * Deletes the specified subprop from the given property
-     * @param propName Prop to delete the subprop from
-     * @param subpropName Subprop to delete
+     * Deletes the specified management protocol
+     * @param i An index of the protocol to delete
      */
-    // function deleteSubprop(propName: string, subpropName: string)
-    // {
-    //     const i = elementProps.value.findIndex(prop => prop.name == propName);
-    //     const prop = elementProps.value[i];
-    //     delete (prop.value as Record<string, unknown>)[subpropName];
-    // }// deleteSubprop
+    function deleteProtocol(i: number)
+    {
+        appSettings.value!.customManagementProtocols.splice(i, 1);
+    }//deleteProtocol
 
     let dlgNewProtocol!: Modal;
     const newProtocolName = ref("");
     const inpNewProtocolName = ref<HTMLInputElement>();
 
-    function protocolInputID(protocolName: string)
+    function protocolInputID(i: number)
     {
-        return `inpProtocol[${protocolName}]`;
+        return `inpProtocol[${appSettings.value?.customManagementProtocols[i]?.name}]`;
     }//protocolInputID
 
     defineExpose({show});
@@ -149,18 +126,30 @@
         <!-- Sidebar body -->
         <div class="offcanvas-body">
             <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
-                <div class="row"><div class="col">Management protocols</div></div>
+                <div class="row">
+                    <div class="col d-flex justify-content-between">
+                        <span>Management protocols</span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
+                            title="Add protocol" @click="addProtocol">
+                        <span class="material-symbols-outlined align-top">add</span>
+                    </button>
+                    </div>
+                </div>
                 <div class="row"><div class="col">
                     <table class="table table-bordered">
                         <tbody>
-                            <tr v-for="proto in appSettings?.customManagementProtocols" :key="`proto[${proto}]`">
-                                <td class="p-1 align-middle">
-                                    <label class="form-label text-secondary mb-0" :for="protocolInputID(proto.name)">
+                            <tr v-for="(proto, i) in appSettings?.customManagementProtocols" :key="`proto[${i}]`">
+                                <td class="p-1 d-flex justify-content-between align-items-center">
+                                    <label class="form-label text-secondary mb-0" :for="protocolInputID(i)">
                                         {{ proto.name }}
                                     </label>
+                                    <button type="button" class="btn btn-sm btn-outline-light" 
+                                            title="Delete protocol" @click="deleteProtocol(i)">
+                                        <span class="material-symbols-outlined align-top">close</span>
+                                    </button>
                                 </td>
                                 <td class="p-1">
-                                    <input class="form-control form-control-sm" :id="protocolInputID(proto.name)" v-model="proto.cmd"/>
+                                    <input class="form-control form-control-sm border-0" :id="protocolInputID(i)" v-model="proto.cmd"/>
                                 </td>
                             </tr>
                         </tbody>

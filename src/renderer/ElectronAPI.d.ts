@@ -8,9 +8,11 @@
 
 import {IpcRendererEvent} from 'electron';
 import { ContextMenus, ContextMenuID } from './main/menus';
+import { AppSettings } from '../main/main';
 
 export interface ElectronAPI {
     signalReadiness: (stage: AppInitStage) => void,
+    updateAppSettings: (newAppSettings: AppSettings) => void,
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => void,
     showContextMenu: <MenuID extends ContextMenuID>(menuID: MenuID, ...args: Parameters<ContextMenus[MenuID]>) => void,
     setDefaultDrawingFileName: (fileName: string) => void,

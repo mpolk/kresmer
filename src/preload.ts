@@ -10,6 +10,7 @@ import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { ContextMenuID } from './main/Menus';
 import { AppInitStage, ElectronAPI } from './renderer/ElectronAPI';
 import { IpcMainChannel, IpcMainChannels } from './main/IpcMainHooks';
+import { AppSettings } from './main/main';
 
 function sendToMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): void;
 function sendToMain(channel: IpcMainChannel, ...args: unknown[])
@@ -28,6 +29,10 @@ exposeToRenderer({
     signalReadiness: (stage: AppInitStage) => {
         console.debug(`Main window renderer: I am ready (stage ${stage})`);
         sendToMain('renderer-ready', stage);
+    },
+
+    updateAppSettings: (newAppSettings: AppSettings) => {
+        sendToMain("update-app-settings", newAppSettings);
     },
 
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => {

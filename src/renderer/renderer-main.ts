@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { IpcRendererEvent } from 'electron';
-import { createApp, reactive } from 'vue';
+import { createApp, reactive, toRaw } from 'vue';
 // import vueDevtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
@@ -27,7 +27,7 @@ import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import { AppInitStage } from './ElectronAPI.d';
-import { LocalSettings } from '../main/main';
+import { AppSettings } from '../main/main';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -289,9 +289,14 @@ appCommandExecutor.on("edit-drawing-properties", () => {
     vueDrawingPropsSidebar.show();
 });
 
-appCommandExecutor.on("edit-app-settings", (appSettings: LocalSettings) => {
+appCommandExecutor.on("edit-app-settings", (appSettings: AppSettings) => {
     vueAppSettingsSidebar.show(appSettings);
 });
+
+export function updateAppSettings(newAppSettings: AppSettings)
+{
+    window.electronAPI.updateAppSettings(toRaw(newAppSettings));
+}//updateAppSettings
 
 appCommandExecutor.on("delete-selected-element", () =>
 {

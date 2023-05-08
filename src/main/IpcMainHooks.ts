@@ -8,8 +8,10 @@
 import { ipcMain, IpcMainEvent } from "electron";
 import { AppInitStage } from "../renderer/ElectronAPI";
 import { ContextMenuID } from "./Menus";
+import { AppSettings } from "./main";
 
 export interface IpcMainChannels {
+    "update-app-settings": (newAppSettings: AppSettings) => void;
     "context-menu": (menuID: ContextMenuID, ...args: unknown[]) => void;
     "renderer-ready": (stage: AppInitStage) => void;
     "set-default-drawing-filename": (fileName: string) => void;
