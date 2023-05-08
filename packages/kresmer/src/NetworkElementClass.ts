@@ -84,5 +84,9 @@ export interface ComputedProp {
 export type ComputedProps = Record<string, ComputedProp>;
 
 export enum NetworkElementPropCategory {Geometry=1,  Presentation, Hardware, Network}
-export type NetworkElementClassProp = Prop<unknown, unknown> & {category?: NetworkElementPropCategory};
+export type NetworkElementClassProp = Prop<unknown, unknown> & 
+    {
+        category?: NetworkElementPropCategory,
+        description?: string,
+    };
 export type NetworkElementClassProps = Record<string, NetworkElementClassProp>;

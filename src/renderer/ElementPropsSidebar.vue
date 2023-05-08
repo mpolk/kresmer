@@ -95,7 +95,7 @@ Continue?`)) {
     // eslint-disable-next-line @typescript-eslint/ban-types
     type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
                         validValues?: string[], pattern?: string, isExpanded?: boolean, 
-                        category?: NetworkElementPropCategory, default?: string};
+                        category?: NetworkElementPropCategory, default?: string, description?: string};
     /**
      * An array of the element props (with values)
      */
@@ -124,6 +124,7 @@ Continue?`)) {
                         validValues,
                         pattern,
                         default: _class.props[name].default,
+                        description: _class.props[name].description,
                         isExpanded: false,
                     }
                 })
@@ -396,7 +397,11 @@ Continue?`)) {
                         <!-- Prop name -->
                         <div class="col border-bottom border-start me-0">
                             <label class="form-label" :for="`inpProp[${prop.name}]`"
-                                    @click="prop.isExpanded = !prop.isExpanded">{{ prop.name }}</label>
+                                :title="prop.description"
+                                @click="prop.isExpanded = !prop.isExpanded"
+                                >
+                                {{ prop.name }}
+                            </label>
                             <button type="button" class="btn btn-sm pb-0" v-if="prop.type === Object || prop.type === Array"
                                     @click="prop.isExpanded = !prop.isExpanded">
                                 <span class="material-symbols-outlined align-top">

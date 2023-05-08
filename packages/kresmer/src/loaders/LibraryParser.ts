@@ -246,7 +246,8 @@ export default class LibraryParser {
                         _default = child.getAttribute("default"),
                         choices = child.getAttribute("choices"),
                         pattern = child.getAttribute("pattern"),
-                        category = child.getAttribute("category");
+                        category = child.getAttribute("category"),
+                        description = child.getAttribute("description");
                     if (!propName) {
                         this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
                             {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
@@ -318,6 +319,9 @@ export default class LibraryParser {
                         default: 
                             this.kresmer.raiseError(new LibraryParsingException(`Invalid prop category: "${category}"`));
                     }//switch
+
+                    if (description)
+                        prop.description = description;
 
                     props[propName] = prop;
                     break;

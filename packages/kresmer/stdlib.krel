@@ -166,11 +166,11 @@
             .connection-point-marker {fill: yellow;}
         </style>
         <props>
-            <prop name="w" type="Number" required="true" default="25" category="Geometry"/>
-            <prop name="h" type="Number" required="true" default="25" category="Geometry"/>
-            <prop name="prefix" type="String" default="" />
+            <prop name="w" type="Number" required="true" default="25" category="Geometry" description="Port icon width"/>
+            <prop name="h" type="Number" required="true" default="25" category="Geometry" description="Port icon height"/>
+            <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
-            <prop name="description" type="String" />
+            <prop name="description" type="String" description="Port description for displaying in tooltip or similar"/>
         </props>
         <computed-props>
             <computed-prop name="label">String(props.name).replace(props.prefix, '')</computed-prop>
@@ -186,10 +186,10 @@
             </Kre:Port>
         </template>
         <props>
-            <prop name="d" type="Number" required="true" default="25" category="Geometry"/> <!-- diameter (or similar size parameter-->
-            <prop name="prefix" type="String" default="" />
+            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area" />
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
-            <prop name="description" type="String" />
+            <prop name="description" type="String" description="Port description for displaying in tooltip or similar" />
         </props>
     </component-class>
 
@@ -223,7 +223,7 @@
             <prop name="cy" type="Number" required="true" default="0" category="Geometry"/>
             <prop name="w" type="Number" required="true" default="25" category="Geometry"/>
             <prop name="h" type="Number" required="true" default="25" category="Geometry"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" />
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
         <computed-props>
             <computed-prop name="q">0.4</computed-prop>
@@ -241,10 +241,7 @@
             </Kre:SquarePort>
         </template>
         <props extend="SquarePort">
-            <prop name="d" type="Number" required="true" default="25" category="Geometry" /> <!-- diameter (or similar size parameter) -->
-            <prop name="prefix" type="String" default="" />
-            <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" />
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
     </component-class>
 
@@ -268,11 +265,15 @@
     <component-class name="ManagedDevice" instantiate="embed">
         <template/>
         <props>
-            <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network"/>
-            <prop name="management-protocol" type="String" category="Network" />
-            <prop name="management-ref-target" type="String" choices="_self,_blank" category="Network" />
-            <prop name="comment" type="String" />
-            <prop name="port-descriptions" type="object" default="{}" category="Network"/>
+            <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network"
+                description="Device management ip-address"/>
+            <prop name="management-protocol" type="String" category="Network"
+                description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
+            <prop name="management-ref-target" type="String" choices="_self,_blank" category="Network"
+                description="Target for on-drawing hyperlinks"/>
+            <prop name="comment" type="String" description="Device general info"/>
+            <prop name="port-descriptions" type="object" default="{}" category="Network" 
+                description="Ports info for displaying in tooltips and similar"/>
         </props>
     </component-class>
 
@@ -357,10 +358,11 @@
             .slot-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
         </style>
         <props extend="ManagedDevice">
-            <prop name="n-slots" type="Number" default="1" category="Hardware" />
+            <prop name="n-slots" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" />
+            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" 
+                  description="Visual perspective of the switch image"/>
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
             <prop name="top-facet-skew" type="Number" default="60" category="Geometry" />
         </props>
@@ -414,7 +416,7 @@
         <props extend="SwitchBody">
             <prop name="nPorts" type="Number" default="8" category="Hardware" />
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" />
+            <prop name="width" type="Number" category="Geometry"/>
         </props>
         <computed-props>
             <computed-prop name="width">props.height * (0.25 + 0.75*props.nPorts)</computed-prop>
@@ -444,8 +446,6 @@
         <props extend="SwitchBody">
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="height" type="Number" required="true" category="Geometry" />
-            <prop name="n-slots" type="Number" default="1" category="Hardware" />
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" />
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
         </props>
     </component-class>
@@ -469,10 +469,8 @@
                 />
         </template>
         <style extends="Switch, ExtremeSwitchBody" />
-        <props extend="SwitchBody">
+        <props extend="ExtremeSwitchBody">
             <prop name="nPorts" type="Number" default="8" category="Hardware" />
-            <prop name="height" type="Number" required="true" category="Geometry"/>
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation"/>
         </props>
     </component-class>
 
@@ -501,7 +499,6 @@
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation"/>
         </props>
         <computed-props>
             <computed-prop name="width">props.width ?? props.height * 9.1</computed-prop>
@@ -543,8 +540,6 @@
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
-            <prop name="n-slots" type="Number" default="1" category="Hardware"/>
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation"/>
         </props>
         <computed-props>
             <computed-prop name="width">props.width ?? props.height * 9.1</computed-prop>
