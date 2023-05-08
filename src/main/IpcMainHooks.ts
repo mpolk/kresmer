@@ -20,6 +20,8 @@ export interface IpcMainChannels {
     "backend-server-connected": (url: string, password: string, autoConnect: boolean) => void;
     "backend-server-disconnected": () => void;
     "open-url": (url: string) => void;
+    "grid-shown-or-hidden": (shown: boolean) => void;
+    "rulers-shown-or-hidden": (shown: boolean) => void;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;

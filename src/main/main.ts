@@ -146,7 +146,15 @@ function initIpcMainHooks()
 
     IpcMainHooks.on("update-app-settings", (newAppSettings) => {
         localSettings.set("customManagementProtocols", newAppSettings.customManagementProtocols);
-    })
+    });
+
+    IpcMainHooks.on("grid-shown-or-hidden", shown => {
+        Menu.getApplicationMenu()!.getMenuItemById("toggleGrid")!.checked = shown;
+    });
+
+    IpcMainHooks.on("rulers-shown-or-hidden", shown => {
+        Menu.getApplicationMenu()!.getMenuItemById("toggleRulers")!.checked = shown;
+    });
 }//initIpcMainHooks
 
 
