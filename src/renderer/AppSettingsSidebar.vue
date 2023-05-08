@@ -33,7 +33,7 @@
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
 
-        appSettings.value = {...inSettings};
+        appSettings.value = inSettings;
 
         formEnabled.value = true;
         formValidated.value = false;

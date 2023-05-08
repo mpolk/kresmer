@@ -143,6 +143,10 @@ function initIpcMainHooks()
     });
 
     IpcMainHooks.on("open-url", openUrlWithSystemBrowser);
+
+    IpcMainHooks.on("update-app-settings", (newAppSettings) => {
+        localSettings.set("customManagementProtocols", newAppSettings.customManagementProtocols);
+    })
 }//initIpcMainHooks
 
 
