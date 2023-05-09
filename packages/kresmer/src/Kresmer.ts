@@ -44,6 +44,8 @@ export default class Kresmer extends KresmerEventHooks {
         logicalWidth?: number,
         logicalHeight?: number,
         isEditable?: boolean,
+        showRulers?: boolean,
+        showGrid?: boolean,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -52,16 +54,11 @@ export default class Kresmer extends KresmerEventHooks {
         options?.logicalWidth && (this.logicalBox.width = options.logicalWidth);
         options?.logicalHeight && (this.logicalBox.height = options.logicalHeight);
         options?.isEditable !== undefined && (this.isEditable = options.isEditable);
+        this.showRulers = Boolean(options?.showRulers);
+        this.showGrid = Boolean(options?.showGrid);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
-            networkComponents: this.networkComponents,
-            networkComponentClasses: this.registeredComponentClasses,
-            links: this.links,
-            linkClasses: this.registeredLinkClasses,
-            mountingBox: this.mountingBox,
-            logicalBox: this.logicalBox,
-            isEditable: this.isEditable,
         });
 
         this.appKresmer
@@ -93,6 +90,14 @@ export default class Kresmer extends KresmerEventHooks {
     public styles: PostCSSRoot[] = [];
     /** Drawing name */
     public drawingName = "?unnamed?";
+    /** Should the drawing border rulers be shown? */
+    get showRulers() {return this._showRulers.value}
+    set showRulers(show: boolean) {this._showRulers.value = show}
+    protected _showRulers = ref(false);
+    /** Should the drawing grid be shown? */
+    get showGrid() {return this._showGrid.value}
+    set showGrid(show: boolean) {this._showGrid.value = show}
+    protected _showGrid = ref(false);
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
@@ -211,7 +216,7 @@ export default class Kresmer extends KresmerEventHooks {
     }//openURL
 
     /** A list of all Component Classes, registered by Kresmer */
-    protected readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();
+    public readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();
     /** Returns a list of all Component Classes, registered by Kresmer */
     public getRegisteredComponentClasses() {return this.registeredComponentClasses.entries()}
 
@@ -325,7 +330,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * A list of all Link Classes, registered by Kresmer
      */
-    protected readonly registeredLinkClasses = new Map<string, NetworkLinkClass>();
+    public readonly registeredLinkClasses = new Map<string, NetworkLinkClass>();
     /** Returns a list of all Link Classes, registered by Kresmer */
     public getRegisteredLinkClasses() {
         return this.registeredLinkClasses.entries();

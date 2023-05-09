@@ -21,6 +21,8 @@ export interface ElectronAPI {
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => void,
     backendServerDisconnected: () => void,
     openURL: (url: string) => void,
+    rulersShownOrHidden: (shown: boolean) => void,
+    gridShownOrHidden: (shown: boolean) => void,
 }//IElectronAPI
 
 

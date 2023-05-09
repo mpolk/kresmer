@@ -67,6 +67,14 @@ exposeToRenderer({
         sendToMain("open-url", url);
     },
 
+    rulersShownOrHidden: (shown: boolean) => {
+        sendToMain("rulers-shown-or-hidden", shown);
+    },
+
+    gridShownOrHidden: (shown: boolean) => {
+        sendToMain("grid-shown-or-hidden", shown);
+    },
+
  });
  console.debug("Finished setting up electron API for the renderer");
  

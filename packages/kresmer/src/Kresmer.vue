@@ -9,17 +9,11 @@
 <script lang="ts">
     import { PropType, ref, computed, provide } from 'vue';
     import Kresmer from './Kresmer';
-    import { MapWithZOrder } from './ZOrdering';
-    import NetworkComponentClass from './NetworkComponent/NetworkComponentClass';
-    import NetworkComponentController from './NetworkComponent/NetworkComponentController';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
-    import NetworkLink from './NetworkLink/NetworkLink';
-    import NetworkLinkClass from './NetworkLink/NetworkLinkClass';
-    import { BoxSize } from './Transform/Transform';
 
     export default {
         name: "Kresmer",
@@ -32,17 +26,12 @@
 
     const props = defineProps({
         controller: {type: Object as PropType<Kresmer>, required: true},
-        networkComponents: {type: Object as PropType<MapWithZOrder<number, NetworkComponentController>>, required: true},
-        networkComponentClasses: {type: Object as PropType<Map<string, NetworkComponentClass>>, required: true},
-        links: {type: Object as PropType<MapWithZOrder<number, NetworkLink>>, required: true},
-        linkClasses: {type: Object as PropType<Map<string, NetworkLinkClass>>, required: true},
-        mountingBox: {type: Object as PropType<BoxSize>, required: true},
-        logicalBox: {type: Object as PropType<BoxSize>, required: true},
     });
 
     provide(Kresmer.ikKresmer, props.controller);
     provide(Kresmer.ikIsEditable, props.controller.isEditable);
     const rootSVG = ref<SVGSVGElement>();
+    const boundingRect = computed(() => rootSVG.value!.getBBox());
 
     function scaled(size: string|number)
     {
@@ -66,12 +55,12 @@
         return `${n * 0.5 * (1 - props.controller.drawingScale)}${matches[2]}`;
     }//scaledOffset
 
-    const x = computed(() => scaledOffset(props.mountingBox.width));
-    const y = computed(() => scaledOffset(props.mountingBox.height));
-    const width = computed(() => scaled(props.mountingBox.width));
-    const height = computed(() => scaled(props.mountingBox.height));
+    const x = computed(() => scaledOffset(props.controller.mountingBox.width));
+    const y = computed(() => scaledOffset(props.controller.mountingBox.height));
+    const width = computed(() => scaled(props.controller.mountingBox.width));
+    const height = computed(() => scaled(props.controller.mountingBox.height));
     const viewBox = computed(() => {
-        return `0 0 ${props.logicalBox.width} ${props.logicalBox.height}`;
+        return `0 0 ${props.controller.logicalBox.width} ${props.controller.logicalBox.height}`;
     });
 
     const styles = computed(() => {
@@ -130,27 +119,33 @@
             <TransformBoxFilters />
             <ConnectionPointFilters />
             <component v-for="(_, i) in controller.defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
-            <template v-for="_class of networkComponentClasses.values()">
+            <template v-for="_class of controller.registeredComponentClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
-            <template v-for="_class of linkClasses.values()">
+            <template v-for="_class of controller.registeredLinkClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
         </defs>
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 
+        <template v-if="controller.showRulers">
+            <g class="ruler">
+                <rect class="axis" :x="boundingRect.x" :y="boundingRect.y" :width="boundingRect.width" :height="boundingRect.height"/>
+            </g>
+        </template>
+
         <NetworkComponentHolder 
-            v-for="controller in networkComponents.sorted" 
-            :key="`networkComponent${controller.component.id}`" :controller="controller"
+            v-for="componentController in controller.networkComponents.sorted" 
+            :key="`networkComponent${componentController.component.id}`" :controller="componentController"
                 >
-            <component :is="controller.component.vueName" v-bind="controller.component.props"
-                   :component-id="controller.component.id" :name="controller.component.name"
+            <component :is="componentController.component.vueName" v-bind="componentController.component.props"
+                   :component-id="componentController.component.id" :name="componentController.component.name"
                 >
-                {{controller.component.content}}
+                {{componentController.component.content}}
             </component>
         </NetworkComponentHolder>
 
-        <NetworkLinkVue v-for="link in links.sorted" v-bind="link.props" :key="`link${link.id}`" :model="link" />
+        <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.props" :key="`link${link.id}`" :model="link" />
         <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
     </svg>
 </template>
@@ -165,6 +160,13 @@
         svg.network-component {
             overflow: visible;
             cursor: default;
+        }
+
+        .ruler {
+            .axis {
+                outline: gray solid 1px;
+                fill: none;
+            }
         }
     }
 </style>

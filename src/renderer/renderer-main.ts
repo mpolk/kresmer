@@ -38,6 +38,8 @@ const mountingPoint = document.querySelector("#kresmer") as HTMLElement;
 const mountingBox = mountingPoint?.getBoundingClientRect();
 export const kresmer = new Kresmer(mountingPoint, 
     {mountingWidth: mountingBox.width, mountingHeight: mountingBox.height});
+window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
+window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 
 export const hints = new Hints;
 
@@ -387,6 +389,16 @@ appCommandExecutor.on("scale-drawing", direction => {
         case "+": kresmer.changeScale(Math.SQRT2); break;
         case "0": kresmer.changeScale(); break;
     }//switch
+});
+
+appCommandExecutor.on("toggle-rulers", () => {
+    kresmer.showRulers = !kresmer.showRulers;
+    window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
+});
+
+appCommandExecutor.on("toggle-grid", () => {
+    kresmer.showGrid = !kresmer.showGrid;
+    window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 });
 
 export type BackendConnectionParams = {
