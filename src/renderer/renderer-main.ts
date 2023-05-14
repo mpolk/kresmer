@@ -34,13 +34,6 @@ import { AppSettings } from '../main/main';
 // }//if
   
 
-const mountingPoint = document.querySelector("#kresmer") as HTMLElement;
-const mountingBox = mountingPoint?.getBoundingClientRect();
-export const kresmer = new Kresmer(mountingPoint, 
-    {mountingWidth: mountingBox.width, mountingHeight: mountingBox.height});
-window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
-window.electronAPI.gridShownOrHidden(kresmer.showGrid);
-
 export const hints = new Hints;
 
 export type StatusBarDisplayData = {
@@ -59,6 +52,27 @@ export const statusBarData: StatusBarDisplayData = reactive({
     notificationsCount: 0,
 })//statusBarData
 
+export const vueStatusBar = createApp(StatusBar, {
+    displayData: statusBarData,
+}).mount("#statusBar") as InstanceType<typeof StatusBar>;
+
+export const kresmer = new Kresmer("#kresmer");
+setKresmerSize();
+statusBarData.drawingScale = kresmer.drawingScale;
+window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
+window.electronAPI.gridShownOrHidden(kresmer.showGrid);
+
+function setKresmerSize()
+{
+    const body = document.querySelector("body") as HTMLElement;
+    const mountingBox = body.getBoundingClientRect();
+    mountingBox.height -= vueStatusBar.getHeight();
+    kresmer.mountingWidth = mountingBox.width;
+    kresmer.mountingHeight = mountingBox.height;
+}//setKresmerSize
+
+window.addEventListener("resize", setKresmerSize);
+
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
     InstanceType<typeof DrawingPropsSidebar>;
 const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsSidebar") as 
@@ -74,10 +88,6 @@ const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMe
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
     InstanceType<typeof BackendConnectionDialog>;
 export const vueToastPane = createApp(ToastPane).mount("#divToastPane") as InstanceType<typeof ToastPane>;
-
-export const vueStatusBar = createApp(StatusBar, {
-    displayData: statusBarData,
-}).mount("#statusBar");
 
 export function updateWindowTitle()
 {
@@ -385,9 +395,9 @@ appCommandExecutor.on("connect-connection-point", async (
 
 appCommandExecutor.on("scale-drawing", direction => {
     switch (direction) {
-        case "-": kresmer.changeScale(Math.SQRT1_2); break;
-        case "+": kresmer.changeScale(Math.SQRT2); break;
-        case "0": kresmer.changeScale(); break;
+        case "-": kresmer.changeScaleFactor(Math.SQRT1_2); break;
+        case "+": kresmer.changeScaleFactor(Math.SQRT2); break;
+        case "0": kresmer.changeScaleFactor(); break;
     }//switch
 });
 

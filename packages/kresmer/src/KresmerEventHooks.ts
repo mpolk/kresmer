@@ -21,7 +21,7 @@ class KresmerEventFormats  {
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
-    "drawing-scale":                    (newScale: number) => void;
+    "drawing-scale":                    (newScaleFactor: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
     "canvas-right-click":               (nativeEvent: MouseEvent) => void;

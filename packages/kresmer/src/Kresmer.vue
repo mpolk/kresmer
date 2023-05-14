@@ -30,8 +30,7 @@
 
     provide(Kresmer.ikKresmer, props.controller);
     provide(Kresmer.ikIsEditable, props.controller.isEditable);
-    const rootSVG = ref<SVGSVGElement>();
-    const boundingRect = computed(() => rootSVG.value!.getBBox());
+    const rootSVG = ref<SVGSVGElement>()!;
 
     function scaled(size: string|number)
     {
@@ -40,27 +39,27 @@
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * props.controller.drawingScale}${matches[2]}`;
+        return `${n * props.controller.scaleFactor}${matches[2]}`;
     }//scaled
 
     function scaledOffset(size: string|number)
     {
-        if (props.controller.drawingScale >= 1)
+        if (props.controller.scaleFactor >= 1)
             return 0;
         const matches = size.toString().match(/^([0-9.]+)(.+)$/);
         if (!matches)
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * 0.5 * (1 - props.controller.drawingScale)}${matches[2]}`;
+        return `${n * 0.5 * (1 - props.controller.scaleFactor)}${matches[2]}`;
     }//scaledOffset
 
-    const x = computed(() => scaledOffset(props.controller.mountingBox.width));
-    const y = computed(() => scaledOffset(props.controller.mountingBox.height));
-    const width = computed(() => scaled(props.controller.mountingBox.width));
-    const height = computed(() => scaled(props.controller.mountingBox.height));
+    const x = computed(() => scaledOffset(props.controller.mountingWidth));
+    const y = computed(() => scaledOffset(props.controller.mountingHeight));
+    const width = computed(() => scaled(props.controller.mountingWidth));
+    const height = computed(() => scaled(props.controller.mountingHeight));
     const viewBox = computed(() => {
-        return `0 0 ${props.controller.logicalBox.width} ${props.controller.logicalBox.height}`;
+        return `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`;
     });
 
     const styles = computed(() => {
@@ -88,7 +87,7 @@
 
     function onMouseWheel(event: WheelEvent)
     {
-        props.controller.changeScale(Math.pow(1.05, event.deltaY * -0.01));
+        props.controller.changeScaleFactor(Math.pow(1.05, event.deltaY * -0.01));
     }//onMouseWheel
 
     function onMouseEnter()
@@ -130,7 +129,8 @@
 
         <template v-if="controller.showRulers">
             <g class="ruler">
-                <rect class="axis" :x="boundingRect.x" :y="boundingRect.y" :width="boundingRect.width" :height="boundingRect.height"/>
+                <rect class="axis" :x="1" :y="1" 
+                    :width="controller.logicalWidth-2" :height="controller.logicalHeight-2"/>
             </g>
         </template>
 

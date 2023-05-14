@@ -20,10 +20,15 @@
         displayData: {type: Object as PropType<StatusBarDisplayData>, required: true},
     });
 
+    const divStatusBar = ref<HTMLDivElement>()!;
     const bottom = ref(0);
+    let height = 0;
+    function getHeight() {return height}
+
     function stickToBottom()
     {
         bottom.value = document.body.scrollHeight;
+        height = divStatusBar.value!.clientHeight;
     }//stickToBottom
 
     onMounted(() => {
@@ -40,10 +45,12 @@
     })//drawingScale
 
     const haveNotifications = computed(() => props.displayData.notificationsCount > 0);
+
+    defineExpose({getHeight});
 </script>
 
 <template>
-    <div class="status-bar" :style="{bottom}">
+    <div class="status-bar" :style="{bottom}" ref="divStatusBar">
         <div class="pane selected-element">
             {{displayData.selectedElement}}
         </div>

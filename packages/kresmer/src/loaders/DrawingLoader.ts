@@ -112,8 +112,8 @@ export default class DrawingLoader {
         switch (mergeOptions) {
             case undefined: case "erase-previous-content":
                 this.kresmer.drawingName = drawingHeaderData.name;
-                drawingHeaderData.width && (this.kresmer.logicalBox.width = drawingHeaderData.width);
-                drawingHeaderData.height && (this.kresmer.logicalBox.height = drawingHeaderData.height);
+                drawingHeaderData.width && (this.kresmer.logicalWidth = drawingHeaderData.width);
+                drawingHeaderData.height && (this.kresmer.logicalHeight = drawingHeaderData.height);
                 this.kresmer.isDirty = false;
                 break;
             default:
@@ -133,7 +133,7 @@ export default class DrawingLoader {
         let xml = `\
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalBox.width}" height="${this.kresmer.logicalBox.height}">
+<kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}">
 `;
 
         for (const controller of this.kresmer.networkComponents.values()) {

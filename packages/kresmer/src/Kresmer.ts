@@ -101,35 +101,53 @@ export default class Kresmer extends KresmerEventHooks {
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
-    readonly mountingBox: {width: number|string, height: number|string} = reactive({width: "100%", height: "100%"});
+    protected readonly mountingBox: {width: number|string, height: number|string} = reactive({width: "100%", height: "100%"});
     get mountingWidth() {return this.mountingBox.width}
-    set mountingWidth(newWidth) {this.mountingBox.width = newWidth}
+    set mountingWidth(newWidth) {
+        this.mountingBox.width = newWidth;
+        this.emit("drawing-scale", this.drawingScale);
+    }
     get mountingHeight() {return this.mountingBox.height}
-    set mountingHeight(newHeight) {this.mountingBox.height = newHeight}
+    set mountingHeight(newHeight) {
+        this.mountingBox.height = newHeight;
+        this.emit("drawing-scale", this.drawingScale);
+    }
 
     /** Sets the drawing area dimensions in SVG logical units 
      * (component sizes are measuring relative to this sizes) */
-    readonly logicalBox = reactive({width: 1000, height: 1000});
+    protected readonly logicalBox = reactive({width: 1000, height: 1000});
     get logicalWidth() {return this.logicalBox.width}
-    set logicalWidth(newWidth) {this.logicalBox.width = newWidth}
+    set logicalWidth(newWidth) {
+        this.logicalBox.width = newWidth;
+        this.emit("drawing-scale", this.drawingScale);
+    }
     get logicalHeight() {return this.logicalBox.height}
-    set logicalHeight(newHeight) {this.logicalBox.height = newHeight}
+    set logicalHeight(newHeight) {
+        this.logicalBox.height = newHeight;
+        this.emit("drawing-scale", this.drawingScale);
+    }
 
     /** Drawing scale (visual) */
-    private _drawingScale = ref(1);
-    get drawingScale() {return this._drawingScale.value}
-    set drawingScale(newScale) {
-        this._drawingScale.value = newScale;
-        this.emit("drawing-scale", this._drawingScale.value);
+    get drawingScale() {
+        const xScale = this.rootSVG.width.baseVal.value / this.logicalWidth,
+              yScale = this.rootSVG.height.baseVal.value / this.logicalHeight;
+        return Math.min(xScale, yScale) * this._scaleFactor.value;
+    }//drawingScale
+
+    private _scaleFactor = ref(1);
+    get scaleFactor() {return this._scaleFactor.value}
+    set scaleFactor(newScale) {
+        this._scaleFactor.value = newScale;
+        this.emit("drawing-scale", this.drawingScale);
     }
-    changeScale(factor?: number)
+    changeScaleFactor(factor?: number)
     {
         if (factor) {
-            this.drawingScale *= factor;
+            this.scaleFactor *= factor;
         } else {
-            this.drawingScale = 1;
+            this.scaleFactor = 1;
         }//if
-    }//changeScale
+    }//changeScaleFactor
 
     /** Determines whether the drawing is editable */
     isEditable = true;
@@ -952,9 +970,9 @@ class UpdateDrawingPropsOp extends EditorOperation
     {
         this.oldProps.name != this.kresmer.drawingName && (this.kresmer.drawingName = this.oldProps.name);
         this.oldProps.logicalWidth != this.kresmer.logicalWidth && 
-            (this.kresmer.logicalBox.width = this.oldProps.logicalWidth);
+            (this.kresmer.logicalWidth = this.oldProps.logicalWidth);
         this.oldProps.logicalHeight != this.kresmer.logicalHeight && 
-            (this.kresmer.logicalBox.height = this.oldProps.logicalHeight);
+            (this.kresmer.logicalHeight = this.oldProps.logicalHeight);
     }//undo
 }//UpdateDrawingPropsOp
 
