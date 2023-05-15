@@ -395,9 +395,9 @@ appCommandExecutor.on("connect-connection-point", async (
 
 appCommandExecutor.on("scale-drawing", direction => {
     switch (direction) {
-        case "-": kresmer.changeScaleFactor(Math.SQRT1_2); break;
-        case "+": kresmer.changeScaleFactor(Math.SQRT2); break;
-        case "0": kresmer.changeScaleFactor(); break;
+        case "-": kresmer.changeZoomFactor(Math.SQRT1_2); break;
+        case "+": kresmer.changeZoomFactor(Math.SQRT2); break;
+        case "0": kresmer.changeZoomFactor(); break;
     }//switch
 });
 

@@ -39,19 +39,19 @@
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * props.controller.scaleFactor}${matches[2]}`;
+        return `${n * props.controller.zoomFactor}${matches[2]}`;
     }//scaled
 
     function scaledOffset(size: string|number)
     {
-        if (props.controller.scaleFactor >= 1)
+        if (props.controller.zoomFactor >= 1)
             return 0;
         const matches = size.toString().match(/^([0-9.]+)(.+)$/);
         if (!matches)
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * 0.5 * (1 - props.controller.scaleFactor)}${matches[2]}`;
+        return `${n * 0.5 * (1 - props.controller.zoomFactor)}${matches[2]}`;
     }//scaledOffset
 
     const x = computed(() => scaledOffset(props.controller.mountingWidth));
@@ -61,6 +61,21 @@
     const viewBox = computed(() => {
         return `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`;
     });
+
+    // const rulerBox = computed(() => {
+    //     props.controller.mountingHeight;
+    //     props.controller.mountingWidth;
+    //     props.controller.zoomFactor;
+    //     const drawingWidth = rootSVG.value!.width.baseVal.value / props.controller.zoomFactor;
+    //     const drawingHeight = rootSVG.value!.height.baseVal.value / props.controller.zoomFactor;
+    //     const [x, width] = props.controller.baseYScale >= props.controller.baseXScale ? 
+    //         [0, props.controller.logicalWidth] : 
+    //         [(props.controller.logicalWidth - drawingWidth) / 2, drawingWidth];
+    //     const [y, height] = props.controller.baseXScale >= props.controller.baseYScale ?
+    //         [0, props.controller.logicalHeight] : 
+    //         [(props.controller.logicalHeight - drawingHeight) / 2, drawingHeight];
+    //     return {x, y, width, height};
+    // });
 
     const styles = computed(() => {
         return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
@@ -87,7 +102,7 @@
 
     function onMouseWheel(event: WheelEvent)
     {
-        props.controller.changeScaleFactor(Math.pow(1.05, event.deltaY * -0.01));
+        props.controller.changeZoomFactor(Math.pow(1.05, event.deltaY * -0.01));
     }//onMouseWheel
 
     function onMouseEnter()
@@ -129,8 +144,7 @@
 
         <template v-if="controller.showRulers">
             <g class="ruler">
-                <rect class="axis" :x="1" :y="1" 
-                    :width="controller.logicalWidth-2" :height="controller.logicalHeight-2"/>
+                <rect class="axis" x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
             </g>
         </template>
 
@@ -165,6 +179,10 @@
         .ruler {
             .axis {
                 outline: gray solid 1px;
+                fill: none;
+            }
+            .boundaries {
+                outline: pink solid 1px;
                 fill: none;
             }
         }
