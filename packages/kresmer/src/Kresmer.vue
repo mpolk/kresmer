@@ -68,11 +68,10 @@
         props.controller.zoomFactor;
         const drawingWidth = rootSVG.value!.width.baseVal.value;
         const drawingHeight = rootSVG.value!.height.baseVal.value;
-        const [x, width] = (props.controller.baseYScale >= props.controller.baseXScale ? 
-            [0, 1] : [(1 - drawingWidth / drawingHeight) / 2, drawingWidth / drawingHeight])
+        const aspectRatio = drawingWidth / drawingHeight * props.controller.logicalHeight / props.controller.logicalWidth;
+        const [x, width] = (aspectRatio <= 1 ? [0, 1] : [(1 - aspectRatio) / 2, aspectRatio])
             .map(x => x * props.controller.logicalWidth);
-        const [y, height] = (props.controller.baseXScale >= props.controller.baseYScale ?
-            [0, 1] : [(1 - drawingHeight / drawingWidth) / 2, drawingHeight / drawingWidth])
+        const [y, height] = (aspectRatio >= 1 ? [0, 1] : [(1 - 1/aspectRatio) / 2, 1/aspectRatio])
             .map(y => y * props.controller.logicalHeight);
         return {x, y, width, height};
     });
