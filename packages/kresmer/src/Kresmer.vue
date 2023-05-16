@@ -62,20 +62,20 @@
         return `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`;
     });
 
-    // const rulerBox = computed(() => {
-    //     props.controller.mountingHeight;
-    //     props.controller.mountingWidth;
-    //     props.controller.zoomFactor;
-    //     const drawingWidth = rootSVG.value!.width.baseVal.value / props.controller.zoomFactor;
-    //     const drawingHeight = rootSVG.value!.height.baseVal.value / props.controller.zoomFactor;
-    //     const [x, width] = props.controller.baseYScale >= props.controller.baseXScale ? 
-    //         [0, props.controller.logicalWidth] : 
-    //         [(props.controller.logicalWidth - drawingWidth) / 2, drawingWidth];
-    //     const [y, height] = props.controller.baseXScale >= props.controller.baseYScale ?
-    //         [0, props.controller.logicalHeight] : 
-    //         [(props.controller.logicalHeight - drawingHeight) / 2, drawingHeight];
-    //     return {x, y, width, height};
-    // });
+    const rulerBox = computed(() => {
+        props.controller.mountingHeight;
+        props.controller.mountingWidth;
+        props.controller.zoomFactor;
+        const drawingWidth = rootSVG.value!.width.baseVal.value;
+        const drawingHeight = rootSVG.value!.height.baseVal.value;
+        const [x, width] = (props.controller.baseYScale >= props.controller.baseXScale ? 
+            [0, 1] : [(1 - drawingWidth / drawingHeight) / 2, drawingWidth / drawingHeight])
+            .map(x => x * props.controller.logicalWidth);
+        const [y, height] = (props.controller.baseXScale >= props.controller.baseYScale ?
+            [0, 1] : [(1 - drawingHeight / drawingWidth) / 2, drawingHeight / drawingWidth])
+            .map(y => y * props.controller.logicalHeight);
+        return {x, y, width, height};
+    });
 
     const styles = computed(() => {
         return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
@@ -144,7 +144,8 @@
 
         <template v-if="controller.showRulers">
             <g class="ruler">
-                <rect class="axis" x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
+                <rect class="axis" v-bind="rulerBox"/>
+                <rect class="boundaries" x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
             </g>
         </template>
 
