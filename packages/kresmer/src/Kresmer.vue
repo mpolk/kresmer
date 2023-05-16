@@ -32,7 +32,7 @@
     provide(Kresmer.ikIsEditable, props.controller.isEditable);
     const rootSVG = ref<SVGSVGElement>()!;
 
-    function scaled(size: string|number)
+    function zoomed(size: string|number)
     {
         const matches = size.toString().match(/^([0-9.]+)(.+)$/);
         if (!matches)
@@ -40,9 +40,9 @@
 
         const n = parseFloat(matches[1]);
         return `${n * props.controller.zoomFactor}${matches[2]}`;
-    }//scaled
+    }//zoomed
 
-    function scaledOffset(size: string|number)
+    function zoomedOffset(size: string|number)
     {
         if (props.controller.zoomFactor >= 1)
             return 0;
@@ -52,12 +52,12 @@
 
         const n = parseFloat(matches[1]);
         return `${n * 0.5 * (1 - props.controller.zoomFactor)}${matches[2]}`;
-    }//scaledOffset
+    }//zoomedOffset
 
-    const x = computed(() => scaledOffset(props.controller.mountingWidth));
-    const y = computed(() => scaledOffset(props.controller.mountingHeight));
-    const width = computed(() => scaled(props.controller.mountingWidth));
-    const height = computed(() => scaled(props.controller.mountingHeight));
+    const x = computed(() => zoomedOffset(props.controller.mountingWidth));
+    const y = computed(() => zoomedOffset(props.controller.mountingHeight));
+    const width = computed(() => zoomed(props.controller.mountingWidth));
+    const height = computed(() => zoomed(props.controller.mountingHeight));
     const viewBox = computed(() => {
         return `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`;
     });

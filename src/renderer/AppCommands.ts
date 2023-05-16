@@ -35,7 +35,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
 }//AppCommandFormats
 
 export type AppCommand = keyof AppCommandFormats;
-export type ScaleDirection = "+"|"-"|"0";
+export type ScaleDirection = "+"|"-"|"0"|"1";
 
 export class AppCommandExecutor {
 

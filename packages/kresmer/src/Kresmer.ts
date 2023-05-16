@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
@@ -105,12 +105,12 @@ export default class Kresmer extends KresmerEventHooks {
     get mountingWidth() {return this.mountingBox.width}
     set mountingWidth(newWidth) {
         this.mountingBox.width = newWidth;
-        this.emit("drawing-scale", this.drawingScale);
+        nextTick(this.notifyOfScaleChange);
     }
     get mountingHeight() {return this.mountingBox.height}
     set mountingHeight(newHeight) {
         this.mountingBox.height = newHeight;
-        this.emit("drawing-scale", this.drawingScale);
+        nextTick(this.notifyOfScaleChange);
     }
 
     /** Sets the drawing area dimensions in SVG logical units 
@@ -119,12 +119,12 @@ export default class Kresmer extends KresmerEventHooks {
     get logicalWidth() {return this.logicalBox.width}
     set logicalWidth(newWidth) {
         this.logicalBox.width = newWidth;
-        this.emit("drawing-scale", this.drawingScale);
+        nextTick(this.notifyOfScaleChange);
     }
     get logicalHeight() {return this.logicalBox.height}
     set logicalHeight(newHeight) {
         this.logicalBox.height = newHeight;
-        this.emit("drawing-scale", this.drawingScale);
+        nextTick(this.notifyOfScaleChange);
     }
 
     /** Drawing scale (visual) */
@@ -136,8 +136,12 @@ export default class Kresmer extends KresmerEventHooks {
     get zoomFactor() {return this._zoomFactor.value}
     set zoomFactor(newScale) {
         this._zoomFactor.value = newScale;
-        this.emit("drawing-scale", this.drawingScale);
+        nextTick(this.notifyOfScaleChange);
     }
+    protected notifyOfScaleChange = () =>
+    {
+        this.emit("drawing-scale", this.drawingScale);
+    }//notifyOfScaleChange
     changeZoomFactor(factor?: number)
     {
         if (factor) {
@@ -147,8 +151,8 @@ export default class Kresmer extends KresmerEventHooks {
         }//if
     }//changeZoomFactor
 
-    get baseXScale() {return this.rootSVG.width.baseVal.value / this.logicalWidth}
-    get baseYScale() {return this.rootSVG.height.baseVal.value / this.logicalHeight}
+    get baseXScale() {return this.rootSVG.width.baseVal.value / this.logicalWidth / this._zoomFactor.value}
+    get baseYScale() {return this.rootSVG.height.baseVal.value / this.logicalHeight / this._zoomFactor.value}
     get baseScale() {return Math.min(this.baseXScale, this.baseYScale)}
 
     /** Determines whether the drawing is editable */

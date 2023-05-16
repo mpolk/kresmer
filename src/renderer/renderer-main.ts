@@ -398,6 +398,10 @@ appCommandExecutor.on("scale-drawing", direction => {
         case "-": kresmer.changeZoomFactor(Math.SQRT1_2); break;
         case "+": kresmer.changeZoomFactor(Math.SQRT2); break;
         case "0": kresmer.changeZoomFactor(); break;
+        case "1": 
+            if (kresmer.drawingScale != 1) 
+                kresmer.zoomFactor = 1/kresmer.baseScale; 
+            break;
     }//switch
 });
 
