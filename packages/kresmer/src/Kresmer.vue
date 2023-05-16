@@ -102,7 +102,7 @@
 
     function onMouseWheel(event: WheelEvent)
     {
-        props.controller.changeZoomFactor(Math.pow(1.05, event.deltaY * -0.01));
+        props.controller._onMouseWheel(event);
     }//onMouseWheel
 
     function onMouseEnter()

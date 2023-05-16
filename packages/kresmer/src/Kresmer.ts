@@ -142,18 +142,16 @@ export default class Kresmer extends KresmerEventHooks {
     {
         this.emit("drawing-scale", this.drawingScale);
     }//notifyOfScaleChange
-    changeZoomFactor(factor?: number)
-    {
-        if (factor) {
-            this.zoomFactor *= factor;
-        } else {
-            this.zoomFactor = 1;
-        }//if
-    }//changeZoomFactor
 
     get baseXScale() {return this.rootSVG.width.baseVal.value / this.logicalWidth / this._zoomFactor.value}
     get baseYScale() {return this.rootSVG.height.baseVal.value / this.logicalHeight / this._zoomFactor.value}
     get baseScale() {return Math.min(this.baseXScale, this.baseYScale)}
+
+    public _onMouseWheel(event: WheelEvent)
+    {
+        this.zoomFactor *= Math.pow(1.05, event.deltaY * -0.01);
+    }//_onMouseWheel
+
 
     /** Determines whether the drawing is editable */
     isEditable = true;

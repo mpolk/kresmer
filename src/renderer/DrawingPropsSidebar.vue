@@ -29,7 +29,7 @@
     function show()
     {
         drawingName = kresmer.drawingName;
-        drawingBox = {...kresmer.logicalBox};
+        drawingBox = {width: kresmer.logicalWidth, height: kresmer.logicalHeight};
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
