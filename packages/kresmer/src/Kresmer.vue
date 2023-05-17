@@ -150,10 +150,19 @@
         </defs>
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 
+        <template v-if="controller.showGrid">
+            <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10)" :key="`x-grid${x}`">
+                <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"/>
+            </template>
+            <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 10)" :key="`y-grid${y}`">
+                <line class="grid" :x1="rulerBox.x" :y1="y" :x2="rulerBox.x + rulerBox.width" :y2="y"/>
+            </template>
+        </template>
         <template v-if="controller.showRulers">
-            <g class="ruler">
+            <g class="rulers">
                 <rect class="axis" v-bind="rulerBox"/>
-                <rect class="boundaries" x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
+                <rect :class="{boundaries: true, strong: controller.showGrid}" 
+                      x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
                 <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10, 50)" :key="`tx-marking${x}`">
                     <line class="marking" :x1="x" :y1="rulerBox.y" 
                                           :x2="x" :y2="rulerBox.y + tensMarkingsLength"/>
@@ -225,7 +234,7 @@
             cursor: default;
         }
 
-        .ruler {
+        .rulers {
             .axis {
                 stroke: gray; stroke-width: 1px;
                 fill: none;
@@ -233,6 +242,9 @@
             .boundaries {
                 stroke: pink; stroke-width: 1px;
                 fill: none;
+                &.strong {
+                    stroke: red;
+                }
             }
             .marking {
                 stroke: gray; stroke-width: 1px;
@@ -258,6 +270,10 @@
                     dominant-baseline: middle;
                 }
             }
+        }
+
+        .grid {
+            stroke: lightgray; stroke-width: 1px;
         }
     }
 </style>
