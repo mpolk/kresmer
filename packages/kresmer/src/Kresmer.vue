@@ -76,6 +76,16 @@
         return {x, y, width, height};
     });
 
+    function rulerMarkings(from: number, to: number, step: number) {
+        const xs: number[] = [];
+        for (let x = Math.ceil(from / step) * step; x < Math.floor(to / step) * step; x += step) {
+            xs.push(x);
+        }//for
+        return xs;
+    }//rulerMarkings
+
+    const tensMarkingsLength = 5, fiftiesMarkingsLength = 7, hundredsMarkingsLength = 10;
+
     const styles = computed(() => {
         return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
     });
@@ -145,6 +155,18 @@
             <g class="ruler">
                 <rect class="axis" v-bind="rulerBox"/>
                 <rect class="boundaries" x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
+                <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10)" :key="`tx-marking${x}`">
+                    <line class="marking" :x1="x" :y1="rulerBox.y" 
+                                          :x2="x" :y2="rulerBox.y + tensMarkingsLength"/>
+                    <line class="marking" :x1="x" :y1="rulerBox.y + rulerBox.height" 
+                                          :x2="x" :y2="rulerBox.y + rulerBox.height - tensMarkingsLength"/>
+                </template>
+                <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 10)" :key="`ly-marking${y}`">
+                    <line class="marking" :x1="rulerBox.x" :y1="y" 
+                                        :x2="rulerBox.x + tensMarkingsLength" :y2="y"/>
+                    <line class="marking" :x1="rulerBox.x + rulerBox.width" :y1="y" 
+                                        :x2="rulerBox.x + rulerBox.width - tensMarkingsLength" :y2="y"/>
+                </template>
             </g>
         </template>
 
@@ -178,11 +200,15 @@
 
         .ruler {
             .axis {
-                outline: gray solid 1px;
+                stroke: gray; stroke-width: 1px;
                 fill: none;
             }
             .boundaries {
-                outline: pink solid 1px;
+                stroke: pink; stroke-width: 1px;
+                fill: none;
+            }
+            .marking {
+                stroke: gray; stroke-width: 1px;
                 fill: none;
             }
         }
