@@ -171,6 +171,7 @@
                 <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 100)" :key="`hx-marking${x}`">
                     <line class="marking" :x1="x" :y1="rulerBox.y" 
                                           :x2="x" :y2="rulerBox.y + hundredsMarkingsLength"/>
+                    <text class="marking-text" :x="x" :y="rulerBox.y + hundredsMarkingsLength * 1.2">{{ x }}</text>
                     <line class="marking" :x1="x" :y1="rulerBox.y + rulerBox.height" 
                                           :x2="x" :y2="rulerBox.y + rulerBox.height - hundredsMarkingsLength"/>
                 </template>
@@ -186,7 +187,7 @@
                     <line class="marking" :x1="rulerBox.x + rulerBox.width" :y1="y" 
                                           :x2="rulerBox.x + rulerBox.width - fiftiesMarkingsLength" :y2="y"/>
                 </template>
-                <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 100)" :key="`fy-marking${y}`">
+                <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 100)" :key="`hy-marking${y}`">
                     <line class="marking" :x1="rulerBox.x" :y1="y" 
                                           :x2="rulerBox.x + hundredsMarkingsLength" :y2="y"/>
                     <line class="marking" :x1="rulerBox.x + rulerBox.width" :y1="y" 
@@ -235,6 +236,12 @@
             .marking {
                 stroke: gray; stroke-width: 1px;
                 fill: none;
+            }
+            .marking-text {
+                // stroke: gray; stroke-width: 1px;
+                fill: gray;
+                text-anchor: middle;
+                dominant-baseline: ideographic;
             }
         }
     }
