@@ -58,9 +58,7 @@
     const y = computed(() => zoomedOffset(props.controller.mountingHeight));
     const width = computed(() => zoomed(props.controller.mountingWidth));
     const height = computed(() => zoomed(props.controller.mountingHeight));
-    const viewBox = computed(() => {
-        return `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`;
-    });
+    const viewBox = computed(() => `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`);
 
     const rulerBox = computed(() => {
         props.controller.mountingHeight;
@@ -191,8 +189,10 @@
                 <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 100)" :key="`hy-marking${y}`">
                     <line class="marking" :x1="rulerBox.x" :y1="y" 
                                           :x2="rulerBox.x + hundredsMarkingsLength" :y2="y"/>
+                    <text class="marking-text left" :x="rulerBox.x + hundredsMarkingsLength * 1.2" :y="y">{{ y }}</text>
                     <line class="marking" :x1="rulerBox.x + rulerBox.width" :y1="y" 
                                           :x2="rulerBox.x + rulerBox.width - hundredsMarkingsLength" :y2="y"/>
+                    <text class="marking-text right" :x="rulerBox.x + rulerBox.width - hundredsMarkingsLength * 1.2" :y="y">{{ y }}</text>
                 </template>
             </g>
         </template>
@@ -248,6 +248,14 @@
                 &.bottom {
                     text-anchor: middle;
                     // dominant-baseline: ideographic;
+                }
+                &.left {
+                    // text-anchor: start;
+                    dominant-baseline: middle;
+                }
+                &.right {
+                    text-anchor: end;
+                    dominant-baseline: middle;
                 }
             }
         }
