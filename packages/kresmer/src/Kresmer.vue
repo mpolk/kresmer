@@ -78,7 +78,7 @@
 
     function rulerMarkings(from: number, to: number, step: number, except?: number) {
         const xs: number[] = [];
-        for (let x = Math.ceil(from / step) * step; x < Math.floor(to / step) * step; x += step) {
+        for (let x = Math.ceil(from / step) * step; x <= Math.floor(to / step) * step; x += step) {
             if (!except || x % except)
                 xs.push(x);
         }//for
@@ -171,9 +171,10 @@
                 <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 100)" :key="`hx-marking${x}`">
                     <line class="marking" :x1="x" :y1="rulerBox.y" 
                                           :x2="x" :y2="rulerBox.y + hundredsMarkingsLength"/>
-                    <text class="marking-text" :x="x" :y="rulerBox.y + hundredsMarkingsLength * 1.2">{{ x }}</text>
+                    <text class="marking-text top" :x="x" :y="rulerBox.y + hundredsMarkingsLength * 1.2">{{ x }}</text>
                     <line class="marking" :x1="x" :y1="rulerBox.y + rulerBox.height" 
                                           :x2="x" :y2="rulerBox.y + rulerBox.height - hundredsMarkingsLength"/>
+                    <text class="marking-text bottom" :x="x" :y="rulerBox.y + rulerBox.height - hundredsMarkingsLength * 1.2">{{ x }}</text>
                 </template>
                 <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 10, 50)" :key="`ty-marking${y}`">
                     <line class="marking" :x1="rulerBox.x" :y1="y" 
@@ -240,8 +241,14 @@
             .marking-text {
                 // stroke: gray; stroke-width: 1px;
                 fill: gray;
-                text-anchor: middle;
-                dominant-baseline: ideographic;
+                &.top {
+                    text-anchor: middle;
+                    dominant-baseline: hanging;
+                }
+                &.bottom {
+                    text-anchor: middle;
+                    // dominant-baseline: ideographic;
+                }
             }
         }
     }
