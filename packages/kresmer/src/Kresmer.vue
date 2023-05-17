@@ -7,7 +7,7 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide } from 'vue';
+    import { PropType, ref, computed, provide, watch, nextTick, watchEffect } from 'vue';
     import Kresmer from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
@@ -59,6 +59,17 @@
     const width = computed(() => zoomed(props.controller.mountingWidth));
     const height = computed(() => zoomed(props.controller.mountingHeight));
     const viewBox = computed(() => `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`);
+
+    const drawingOrigin = {x: 0, y: 0};
+    provide(Kresmer.ikDrawingOrigin, drawingOrigin);
+    watch([x, y], () => {
+        nextTick(() => {
+            const styles = getComputedStyle(rootSVG.value!);
+            console.debug(styles);
+            drawingOrigin.x = parseInt(styles.marginLeft);
+            drawingOrigin.y = parseInt(styles.marginTop);
+        })
+    }, {immediate: true});
 
     const rulerBox = computed(() => {
         props.controller.mountingHeight;

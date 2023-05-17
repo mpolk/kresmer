@@ -29,6 +29,7 @@
 
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
+    const drawingOrigin = inject(Kresmer.ikDrawingOrigin)!;
     const cpMarker = ref<SVGCircleElement>();
     const dataAttr = computed(() => {
         const hostName = hostIsLink ? `-${hostElement.name}` : hostElement.name;
@@ -46,9 +47,9 @@
             const matrix = cpMarker.value!.getCTM()!;
             coords = {
                 x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
-                drawingRect.left + mountingRect.left /* - window.scrollX */,
+                    drawingRect.left + mountingRect.left + drawingOrigin.x,
                 y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - 
-                drawingRect.top + mountingRect.top /* - window.scrollY */,
+                    drawingRect.top + mountingRect.top + drawingOrigin.y,
             };        
             rot = Math.atan2(matrix.b, matrix.a) / Math.PI * 180;
         }//if

@@ -152,6 +152,9 @@ export default class Kresmer extends KresmerEventHooks {
         this.zoomFactor *= Math.pow(1.05, event.deltaY * -0.01);
     }//_onMouseWheel
 
+    /** A key for drawing origin injection */
+    static readonly ikDrawingOrigin = Symbol() as InjectionKey<Position>;
+
 
     /** Determines whether the drawing is editable */
     isEditable = true;
