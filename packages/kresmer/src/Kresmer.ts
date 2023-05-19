@@ -155,7 +155,6 @@ export default class Kresmer extends KresmerEventHooks {
     /** A key for drawing origin injection */
     static readonly ikDrawingOrigin = Symbol() as InjectionKey<Position>;
 
-
     /** Determines whether the drawing is editable */
     isEditable = true;
     /** A symbolic key for the editability flag injection */

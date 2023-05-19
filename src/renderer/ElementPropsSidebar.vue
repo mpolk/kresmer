@@ -14,6 +14,11 @@
              NetworkLink, NetworkLinkClass } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
 
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    export type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
+                        validValues?: string[], pattern?: string, isExpanded?: boolean, 
+                        category?: NetworkElementPropCategory, default?: string, description?: string};
+
     export default {
         name: "ElementPropsSidebar",
     }
@@ -92,10 +97,6 @@ Continue?`)) {
         formValidated.value = false;
     }//changeClass
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
-                        validValues?: string[], pattern?: string, isExpanded?: boolean, 
-                        category?: NetworkElementPropCategory, default?: string, description?: string};
     /**
      * An array of the element props (with values)
      */
