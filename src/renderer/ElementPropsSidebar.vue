@@ -13,6 +13,7 @@
              NetworkComponent, NetworkComponentClass, 
              NetworkLink, NetworkLinkClass } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
+    import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
 
     // eslint-disable-next-line @typescript-eslint/ban-types
     export type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
@@ -21,6 +22,7 @@
 
     export default {
         name: "ElementPropsSidebar",
+        components: {ElementPropEditor},
     }
 </script>
 
@@ -47,6 +49,9 @@
     {
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
+            const el = document.querySelector("#dlgNewSubprop")!;
+            el.addEventListener("shown.bs.modal", () => inpNewSubpropName.value!.focus());
+            dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
         }//if
 
         const classes = element instanceof NetworkLink ? 
@@ -232,56 +237,15 @@ Continue?`)) {
         formEnabled.value = false;
     }//close
 
-    /** A callback for sorting subproperties. 
-     * Tries to provide an order natural for switch ports: 
-     * 1:1 1:2 1:10 2:1 2:10 ... */
-    function collateSubprops(s1: string, s2: string): number
-    {
-        const chunks1 = s1.split(/[:.]/), chunks2 = s2.split(/[:.]/);
-        if (chunks1.length < chunks2.length)
-            return -1;
-        if (chunks1.length > chunks2.length)
-            return 1;
-
-        for (let i = 0; i < chunks1.length; i++) {
-            const c1 = chunks1[i], c2 = chunks2[i];
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const isNum1 = !isNaN(c1 as any), isNum2 = !isNaN(c2 as any);
-            if (!isNum1 && !isNum2) {
-                if (c1 < c2)
-                    return -1;
-                if (c1 > c2)
-                    return 1;
-                continue;
-            }//if
-            if (!isNum1)
-                return 1;
-            if (!isNum2)
-                return -1;
-            const n1 = parseInt(c1), n2 = parseInt(c2);
-            if (n1 < n2)
-                return -1;
-            if (n1 > n2)
-                return 1;
-        }//for
-
-        return 0;
-    }//collateSubprops
-
     /**
      * Adds a new subprop (field) to the given pop
      * @param propName A prop to add the subprop to
      * @param type A type of the new subprop
      */
-    function addSubprop(propName: string, type: "string"|"number"|"boolean")
+     function addSubprop(propName: string, type: "string"|"number"|"boolean")
     {
         propToAddSubpropTo.value = propName;
         newSubpropType.value = type;
-        if (!dlgNewSubprop) {
-            const el = document.querySelector("#dlgNewSubprop")!;
-            el.addEventListener("shown.bs.modal", () => inpNewSubpropName.value!.focus());
-            dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
-        }//if
         dlgNewSubprop.show();
     }//addSubprop
 
@@ -325,28 +289,12 @@ Continue?`)) {
         });
     }//completeAddingSubprop
 
-    /**
-     * Deletes the specified subprop from the given property
-     * @param propName Prop to delete the subprop from
-     * @param subpropName Subprop to delete
-     */
-    function deleteSubprop(propName: string, subpropName: string)
-    {
-        const i = elementProps.value.findIndex(prop => prop.name == propName);
-        const prop = elementProps.value[i];
-        delete (prop.value as Record<string, unknown>)[subpropName];
-    }// deleteSubprop
-
+    const propEditors = ref<InstanceType<typeof ElementPropEditor>[]>([]);
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref("");
     const newSubpropName = ref("");
     const inpNewSubpropName = ref<HTMLInputElement>();
     const newSubpropType = ref<"string"|"number"|"boolean">("string");
-
-    function subpropInputID(propName: string, subpropName: string)
-    {
-        return `inpSubprop[${propName},${subpropName}]`;
-    }//subpropInputID
 
     defineExpose({show});
 </script>
@@ -388,104 +336,8 @@ Continue?`)) {
                         </td>
                     </tr>
                     <!-- Element props -->
-                    <template v-for="(prop, i) in elementProps" :key="`prop[${prop.name}]`">
-                        <tr v-if="prop.category && (i === 0 || prop.category !== elementProps[i-1].category)">
-                            <td colspan="2" class="border-0 text-primary text-opacity-75">
-                                {{ NetworkElementPropCategory[prop.category] }}
-                            </td>
-                        </tr>
-                        <tr>
-                            <!-- Prop name -->
-                            <td class="align-middle p-1">
-                                <label class="form-label mb-0" :for="`inpProp[${prop.name}]`"
-                                    :title="prop.description"
-                                    @click="prop.isExpanded = !prop.isExpanded"
-                                    >
-                                    {{ prop.name }}
-                                </label>
-                                <button type="button" class="btn btn-sm" v-if="prop.type === Object || prop.type === Array"
-                                        @click="prop.isExpanded = !prop.isExpanded">
-                                    <span class="material-symbols-outlined align-top">
-                                        {{`expand_${prop.isExpanded ? "less" : "more"}`}}
-                                    </span>
-                                </button>
-                            </td>
-                            <!-- Prop value -->
-                            <td class="p-1">
-                                <select v-if="prop.validValues" ref="propInputs" :data-prop-name="prop.name"
-                                        class="form-select form-select-sm border-0" :id="`inpProp[${prop.name}]`"
-                                        v-model="prop.value">
-                                    <option v-if="!prop.required" :value="undefined"></option>
-                                    <option v-for="(choice, i) in prop.validValues" class="text-secondary"
-                                            :key="`${prop.name}[${i}]`">{{ choice }}</option>
-                                </select>
-                                <input v-else-if="prop.type === Number" type="number" :id="`inpProp[${prop.name}]`"
-                                    ref="propInputs" :data-prop-name="prop.name"
-                                    class="form-control form-control-sm text-end border-0"
-                                    :placeholder="prop.default"
-                                    v-model="prop.value"/>
-                                <input v-else-if="prop.type === Boolean" type="checkbox"
-                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                                    class="form-check-input"
-                                    v-model="prop.value"/>
-                                <div v-else-if="prop.type === Object" class="input-group input-group-sm mb-1">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                                            data-bs-toggle="dropdown" title="Add subproperty">
-                                        <span class="material-symbols-outlined">add</span>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(prop.name, 'string')">string</a></li>
-                                        <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(prop.name, 'number')">number</a></li>
-                                        <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(prop.name, 'boolean')">boolean</a></li>
-                                    </ul>
-                                    <input
-                                        ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                                        class="form-control form-control-sm text-secondary border-0" readonly
-                                        :value="JSON.stringify(prop.value)"/>
-                                </div>
-                                <input v-else 
-                                    ref="propInputs" :data-prop-name="prop.name" :id="`inpProp[${prop.name}]`"
-                                    :pattern="prop.pattern"
-                                    class="form-control form-control-sm border-0"
-                                    :placeholder="prop.default"
-                                    v-model="prop.value"/>
-                                <div class="invalid-feedback">
-                                    Syntax error!
-                                </div>
-                            </td>
-                        </tr>
-                        <!-- Subprops (if exist) -->
-                        <template v-if="prop.isExpanded && prop.type === Object && prop.value">
-                            <tr v-for="(subpropName, spi) in Object.keys(prop.value).sort(collateSubprops)" 
-                                    :key="`${prop.name}[${subpropName}]`">
-                                <!-- Subprop name -->
-                                <td class="align-middle text-end text-secondary p-1"
-                                    :style="spi < Object.keys(prop.value).length-1 ? 'border-bottom-style: dotted!important' : ''">
-                                    <label class="form-label mb-0" :for="subpropInputID(prop.name, subpropName)">
-                                        {{ subpropName }}
-                                    </label>
-                                    <button type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 pb-0" 
-                                            title="Delete subproperty" @click="deleteSubprop(prop.name, subpropName)">
-                                        <span class="material-symbols-outlined align-top">close</span>
-                                    </button>
-                                </td>
-                                <!-- Subprop value -->
-                                <td class="p-1">
-                                    <input v-if="typeof (prop.value as Record<string, any>)[subpropName] === 'number'" 
-                                        type="number" class="form-control form-control-sm text-end border-0" 
-                                        :id="subpropInputID(prop.name, subpropName)"
-                                        v-model="(prop.value as Record<string, any>)[subpropName]" />
-                                    <input v-else-if="typeof (prop.value as Record<string, any>)[subpropName] === 'boolean'"
-                                        type="checkbox" class="form-check-input form-check-input-sm"
-                                        :id="subpropInputID(prop.name, subpropName)"
-                                        v-model="(prop.value as Record<string, any>)[subpropName]" />
-                                    <input v-else type="text" class="form-control form-control-sm border-0"
-                                        :id="subpropInputID(prop.name, subpropName)"
-                                        v-model="(prop.value as Record<string, any>)[subpropName]" />
-                                </td>
-                            </tr>
-                        </template>
-                    </template>
+                    <ElementPropEditor v-for="prop in elementProps" :key="`prop[${prop.name}]`" ref="propEditors"
+                        :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" @add-subprop="addSubprop"/>
                 </tbody></table>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>

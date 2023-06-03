@@ -8,54 +8,29 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType, nextTick, ref } from 'vue';
+    import { PropType } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementProp } from './ElementPropsSidebar.vue';
 
     export default {
         name: "ElementPropEditor",
     }
+
+    export function subpropInputID(propName: string, subpropName: string)
+    {
+        return `inpSubprop[${propName},${subpropName}]`;
+    }//subpropInputID
 </script>
 
 <script setup lang="ts">
     const props = defineProps({
-        propToEdit: {type: Object as PropType<ElementProp>, required: true}
-    })
+        propToEdit: {type: Object as PropType<ElementProp>, required: true},
+        dlgNewSubprop: {type: Object as PropType<Modal>, required: true},
+    });
 
-
-    /** Validates a single prop (after parsing it) and returns its values (if it's found to be valid) or null
-     * otherwise. "Undefined" is considered a valid value. */
-    function validateProp(prop: ElementProp)
-    {
-        let v: unknown;
-        let wasError = false;
-        switch (prop.type) {
-            case Array:
-                try {
-                    v = JSON.parse(prop.value as string);
-                    if (prop.type === Object) {
-                        wasError = typeof v !== "object";
-                    } else {
-                        wasError = !Array.isArray(v);
-                    }//if
-                } catch {
-                    wasError = true;
-                }
-                break;
-            case Number:
-                if (prop.value === undefined || prop.value === "") {
-                    v = undefined;
-                } else {
-                    v = parseFloat(prop.value as string);
-                    wasError = isNaN(v as number);
-                }//if
-                break;
-            default:
-                v = prop.value;
-        }//switch
-
-        return wasError ? null : v;
-    }//validateProp
+    const emit = defineEmits<{
+        (e: "add-subprop", propName: string, type: "string"|"number"|"boolean"): void,
+    }>();
 
     /** A callback for sorting subproperties. 
      * Tries to provide an order natural for switch ports: 
@@ -94,61 +69,6 @@
     }//collateSubprops
 
     /**
-     * Adds a new subprop (field) to the given pop
-     * @param propName A prop to add the subprop to
-     * @param type A type of the new subprop
-     */
-    function addSubprop(propName: string, type: "string"|"number"|"boolean")
-    {
-        propToAddSubpropTo.value = propName;
-        newSubpropType.value = type;
-        if (!dlgNewSubprop) {
-            const el = document.querySelector("#dlgNewSubprop")!;
-            el.addEventListener("shown.bs.modal", () => inpNewSubpropName.value!.focus());
-            dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
-        }//if
-        dlgNewSubprop.show();
-    }//addSubprop
-
-    /** Callback for completing adding a new field or the Object-type prop */
-    function completeAddingSubprop()
-    {
-        if (!newSubpropName.value) {
-            alert("Subproperty name cannot be empty!");
-            return;
-        }//if
-
-        if (!props.propToEdit.value) {
-            props.propToEdit.value = {};
-        }//if
-        const propValue = props.propToEdit.value as Record<string, unknown>;
-
-        if (Object.hasOwn(propValue, newSubpropName.value)) {
-            alert(`Subprop "${newSubpropName.value}" already exists in the prop "${props.propToEdit.name}"`);
-            return;
-        }//if
-
-        switch (newSubpropType.value) {
-            case "string":
-                propValue[newSubpropName.value] = "";
-                break;
-            case "number":
-                propValue[newSubpropName.value] = 0;
-                break;
-            case "boolean":
-                propValue[newSubpropName.value] = false;
-                break;
-        }//switch
-
-        dlgNewSubprop.hide();
-        props.propToEdit.isExpanded = true;
-        nextTick(() => {
-            const inpToFocus = document.getElementById(subpropInputID(props.propToEdit.name, newSubpropName.value)) as HTMLInputElement;
-            inpToFocus.focus();
-        });
-    }//completeAddingSubprop
-
-    /**
      * Deletes the specified subprop from the given property
      * @param propName Prop to delete the subprop from
      * @param subpropName Subprop to delete
@@ -157,17 +77,6 @@
     {
         delete (props.propToEdit.value as Record<string, unknown>)[subpropName];
     }// deleteSubprop
-
-    let dlgNewSubprop!: Modal;
-    const propToAddSubpropTo = ref("");
-    const newSubpropName = ref("");
-    const inpNewSubpropName = ref<HTMLInputElement>();
-    const newSubpropType = ref<"string"|"number"|"boolean">("string");
-
-    function subpropInputID(propName: string, subpropName: string)
-    {
-        return `inpSubprop[${propName},${subpropName}]`;
-    }//subpropInputID
 
 </script>
 
@@ -212,9 +121,9 @@
                     <span class="material-symbols-outlined">add</span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(propToEdit.name, 'string')">string</a></li>
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(propToEdit.name, 'number')">number</a></li>
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="addSubprop(propToEdit.name, 'boolean')">boolean</a></li>
+                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit.name, 'string')">string</a></li>
+                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit.name, 'number')">number</a></li>
+                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit.name, 'boolean')">boolean</a></li>
                 </ul>
                 <input
                     ref="propInputs" :data-prop-name="propToEdit.name" :id="`inpProp[${propToEdit.name}]`"
