@@ -8,7 +8,7 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType } from 'vue';
+    import { PropType, computed } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementProp } from './ElementPropsSidebar.vue';
 
@@ -26,6 +26,7 @@
     const props = defineProps({
         propToEdit: {type: Object as PropType<ElementProp>, required: true},
         dlgNewSubprop: {type: Object as PropType<Modal>, required: true},
+        subpropLevel: {type: Number, default: 0},
     });
 
     const emit = defineEmits<{
@@ -78,6 +79,12 @@
         delete (props.propToEdit.value as Record<string, unknown>)[subpropName];
     }// deleteSubprop
 
+    function subpropNameCellStyle(index: number) {
+        let style = `padding-left: ${props.subpropLevel + 1.25}rem;`;
+        if (index < Object.keys(props.propToEdit.value as object).length-1)
+            style += ' border-bottom-style: dotted!important;';
+        return style;
+    }//subpropNameCellStyle
 </script>
 
 <template>
@@ -143,11 +150,10 @@
     </tr>
     <!-- Subprops (if exist) -->
     <template v-if="propToEdit.isExpanded && propToEdit.type === Object && propToEdit.value">
-        <tr v-for="(subpropName, spi) in Object.keys(propToEdit.value).sort(collateSubprops)" 
-                :key="`${propToEdit.name}[${subpropName}]`">
+        <tr v-for="(subpropName, i) in Object.keys(propToEdit.value).sort(collateSubprops)" 
+            :key="`${propToEdit.name}[${subpropName}]`">
             <!-- Subprop name -->
-            <td class="align-middle text-end text-secondary p-1"
-                :style="spi < Object.keys(propToEdit.value).length-1 ? 'border-bottom-style: dotted!important' : ''">
+            <td class="align-middle text-secondary" :style="subpropNameCellStyle(i)">
                 <label class="form-label mb-0" :for="subpropInputID(propToEdit.name, subpropName)">
                     {{ subpropName }}
                 </label>
