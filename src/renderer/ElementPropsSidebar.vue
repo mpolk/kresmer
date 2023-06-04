@@ -289,7 +289,6 @@ Continue?`)) {
         });
     }//completeAddingSubprop
 
-    const propEditors = ref<InstanceType<typeof ElementPropEditor>[]>([]);
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref("");
     const newSubpropName = ref("");
@@ -342,8 +341,7 @@ Continue?`)) {
                                 {{ NetworkElementPropCategory[prop.category] }}
                             </td>
                         </tr>
-                        <ElementPropEditor ref="propEditors"
-                            :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" @add-subprop="addSubprop"/>
+                        <ElementPropEditor :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" @add-subprop="addSubprop"/>
                     </template>
                 </tbody></table>
                 <div class="d-flex justify-content-end">
