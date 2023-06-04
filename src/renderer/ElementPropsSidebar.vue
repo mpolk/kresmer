@@ -336,8 +336,15 @@ Continue?`)) {
                         </td>
                     </tr>
                     <!-- Element props -->
-                    <ElementPropEditor v-for="prop in elementProps" :key="`prop[${prop.name}]`" ref="propEditors"
-                        :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" @add-subprop="addSubprop"/>
+                    <template v-for="(prop, i) in elementProps" :key="`prop[${prop.name}]`">
+                        <tr v-if="prop.category && (i === 0 || prop.category !== elementProps[i-1].category)">
+                            <td colspan="2" class="border-0 text-primary text-opacity-75">
+                                {{ NetworkElementPropCategory[prop.category] }}
+                            </td>
+                        </tr>
+                        <ElementPropEditor ref="propEditors"
+                            :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" @add-subprop="addSubprop"/>
+                    </template>
                 </tbody></table>
                 <div class="d-flex justify-content-end">
                     <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>
