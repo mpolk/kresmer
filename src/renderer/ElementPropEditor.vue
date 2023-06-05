@@ -140,7 +140,7 @@
      */
     function deleteSubprop(propName: string, subpropName: string)
     {
-        delete (props.propToEdit.value as Record<string, unknown>)[subpropName];
+        delete getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[subpropName];
     }// deleteSubprop
 
     /**
