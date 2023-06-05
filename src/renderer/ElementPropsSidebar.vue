@@ -15,10 +15,13 @@
     import { kresmer, updateWindowTitle } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
 
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    export type ElementProp = {name: string, value: unknown, type: Function, required: boolean, 
-                        validValues?: string[], pattern?: string, isExpanded?: boolean, 
-                        category?: NetworkElementPropCategory, default?: string, description?: string};
+    export type ElementPropDescriptor = {
+        // eslint-disable-next-line @typescript-eslint/ban-types
+        name: string, value: unknown, type: Function, required: boolean, 
+        validValues?: string[], pattern?: string, isExpanded?: boolean, 
+        category?: NetworkElementPropCategory, default?: string, description?: string,
+        parentProp?: ElementPropDescriptor,
+    };
 
     export default {
         name: "ElementPropsSidebar",
@@ -40,6 +43,11 @@
         formValidated.value = !validateElementName();
     });
     let dbID: number|string|undefined;
+
+    /**
+     * An array of the element props (with values)
+     */
+     const elementPropDescriptors = ref<ElementPropDescriptor[]>([]);
 
     /**
      * Displays the sidebars and allows to edit the element
@@ -65,7 +73,7 @@
         elementToEdit = element;
         elementName.value = element.name;
         dbID = element.dbID;
-        elementProps.value = buildElementPropsArray(element.getClass());
+        elementPropDescriptors.value = buildElementPropDescriptors(element.getClass());
         formEnabled.value = true;
         formValidated.value = false;
         offCanvas.show();
@@ -98,23 +106,18 @@ Continue?`)) {
             kresmer.edAPI.changeLinkClass(elementToEdit, newClass as NetworkLinkClass);
         }//if
 
-        elementProps.value = buildElementPropsArray(newClass);
+        elementPropDescriptors.value = buildElementPropDescriptors(newClass);
         formValidated.value = false;
     }//changeClass
-
-    /**
-     * An array of the element props (with values)
-     */
-    const elementProps = ref<ElementProp[]>([]);
 
     /**
      * Builds an array of the element props (with values)
      * based on element's class  and the values taken from the dialog inputs
      * @param _class An element class
      */
-    function buildElementPropsArray(_class: NetworkElementClass)
+    function buildElementPropDescriptors(_class: NetworkElementClass): ElementPropDescriptor[]
     {
-        const props = Object.keys(_class.props)
+        const descriptors = Object.keys(_class.props)
             .map(name => 
                 {
                     const validValues = _class.props[name].validator?.validValues;
@@ -146,8 +149,8 @@ Continue?`)) {
                         return 1;
                     return 0;
                 });
-        return props;
-    }//buildElementPropsArray
+        return descriptors;
+    }//buildElementPropDescriptors
 
     function validateElementName()
     {
@@ -166,7 +169,7 @@ Continue?`)) {
 
     /** Validates a single prop (after parsing it) and returns its values (if it's found to be valid) or null
      * otherwise. "Undefined" is considered a valid value. */
-    function validateProp(prop: ElementProp)
+    function validateProp(prop: ElementPropDescriptor)
     {
         let v: unknown;
         let wasError = false;
@@ -205,7 +208,7 @@ Continue?`)) {
     function save()
     {
         const propsWithErrors: string[] = [];
-        for (const prop of elementProps.value) {
+        for (const prop of elementPropDescriptors.value) {
             if (validateProp(prop) === null) {
                 propsWithErrors.push(prop.name);
             }//if
@@ -226,7 +229,7 @@ Continue?`)) {
         }//if
 
         close();
-        elementToEdit.kresmer.edAPI.updateElement(elementToEdit, elementProps.value, elementName.value, dbID);
+        elementToEdit.kresmer.edAPI.updateElement(elementToEdit, elementPropDescriptors.value, elementName.value, dbID);
         updateWindowTitle();
     }//save
 
@@ -257,8 +260,8 @@ Continue?`)) {
             return;
         }//if
 
-        const i = elementProps.value.findIndex(prop => prop.name == propToAddSubpropTo.value);
-        const prop = elementProps.value[i];
+        const i = elementPropDescriptors.value.findIndex(prop => prop.name == propToAddSubpropTo.value);
+        const prop = elementPropDescriptors.value[i];
         if (!prop.value) {
             prop.value = {};
         }//if
@@ -335,8 +338,8 @@ Continue?`)) {
                         </td>
                     </tr>
                     <!-- Element props -->
-                    <template v-for="(prop, i) in elementProps" :key="`prop[${prop.name}]`">
-                        <tr v-if="prop.category && (i === 0 || prop.category !== elementProps[i-1].category)">
+                    <template v-for="(prop, i) in elementPropDescriptors" :key="`prop[${prop.name}]`">
+                        <tr v-if="prop.category && (i === 0 || prop.category !== elementPropDescriptors[i-1].category)">
                             <td colspan="2" class="border-0 text-primary text-opacity-75">
                                 {{ NetworkElementPropCategory[prop.category] }}
                             </td>

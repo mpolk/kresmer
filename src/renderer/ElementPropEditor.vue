@@ -8,15 +8,15 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType, computed } from 'vue';
+    import { PropType } from 'vue';
     import { Modal } from 'bootstrap';
-    import { ElementProp } from './ElementPropsSidebar.vue';
+    import { ElementPropDescriptor } from './ElementPropsSidebar.vue';
 
     export default {
         name: "ElementPropEditor",
     }
 
-    export function subpropInputID(propName: string, subpropName: string)
+    export function subpropInputID(propName: string, subpropName?: string)
     {
         return `inpSubprop[${propName},${subpropName}]`;
     }//subpropInputID
@@ -24,9 +24,11 @@
 
 <script setup lang="ts">
     const props = defineProps({
-        propToEdit: {type: Object as PropType<ElementProp>, required: true},
+        propToEdit: {type: Object as PropType<ElementPropDescriptor>, required: true},
         dlgNewSubprop: {type: Object as PropType<Modal>, required: true},
         subpropLevel: {type: Number, default: 0},
+        subpropIndex: {type: Number, default: 0},
+        parentPropName: {type: String},
     });
 
     const emit = defineEmits<{
@@ -70,6 +72,35 @@
     }//collateSubprops
 
     /**
+     * Builds an array of the subproperty descriptors of the specified (sub)prop
+     * @param _class An element class
+     */
+    function buildSubpropDescriptors(parentPropValue: Record<string, unknown>): ElementPropDescriptor[]
+    {
+        const descriptors = Object.keys(parentPropValue)
+            .map(name => 
+                {
+                    const type = Array.isArray(parentPropValue[name]) ? Array :
+                        typeof parentPropValue[name] === "object" ? Object :
+                        typeof parentPropValue[name] === "number" ? Number :
+                        typeof parentPropValue[name] === "boolean" ? Boolean :
+                        String;
+                    return {
+                        name, 
+                        value: type === Object ? {...parentPropValue[name] as object} :
+                            type === Array ? [...parentPropValue[name] as unknown[]] :
+                            parentPropValue[name], 
+                        type,
+                        required: false,
+                        isExpanded: false,
+                        parentProp: props.propToEdit,
+                    }
+                })
+            .sort((p1, p2) => collateSubprops(p1.name, p2.name));
+        return descriptors;
+    }//buildSubpropDescriptors
+
+    /**
      * Deletes the specified subprop from the given property
      * @param propName Prop to delete the subprop from
      * @param subpropName Subprop to delete
@@ -79,9 +110,13 @@
         delete (props.propToEdit.value as Record<string, unknown>)[subpropName];
     }// deleteSubprop
 
+    /**
+     * Builds CSS for the table cell containing (sub-)prop name
+     * @param index Subprop index within the subprop list
+     */
     function subpropNameCellStyle(index: number) {
-        let style = `padding-left: ${props.subpropLevel + 1.25}rem;`;
-        if (index < Object.keys(props.propToEdit.value as object).length-1)
+        let style = `padding-left: ${props.subpropLevel + 0.25}rem;`;
+        if (typeof props.propToEdit.value === "object" && index < Object.keys(props.propToEdit.value!).length-1)
             style += ' border-bottom-style: dotted!important;';
         return style;
     }//subpropNameCellStyle
@@ -90,13 +125,17 @@
 <template>
     <tr>
         <!-- Prop name -->
-        <td class="align-middle p-1">
-            <label class="form-label mb-0" :for="`inpProp[${propToEdit.name}]`"
+        <td class="align-middle py-1 pe-1" :style="subpropNameCellStyle(subpropIndex)">
+            <label class="form-label mb-0" :for="subpropInputID(propToEdit.name)"
                 :title="propToEdit.description"
                 @click="propToEdit.isExpanded = !propToEdit.isExpanded"
                 >
                 {{ propToEdit.name }}
             </label>
+            <button v-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 py-0" 
+                    title="Delete subproperty" @click="deleteSubprop(parentPropName!, propToEdit.name)">
+                <span class="material-symbols-outlined align-top">close</span>
+            </button>
             <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
                     @click="propToEdit.isExpanded = !propToEdit.isExpanded">
                 <span class="material-symbols-outlined align-top">
@@ -107,19 +146,19 @@
         <!-- Prop value -->
         <td class="p-1">
             <select v-if="propToEdit.validValues" ref="propInputs" :data-prop-name="propToEdit.name"
-                    class="form-select form-select-sm border-0" :id="`inpProp[${propToEdit.name}]`"
+                    class="form-select form-select-sm border-0" :id="subpropInputID(propToEdit.name)"
                     v-model="propToEdit.value">
                 <option v-if="!propToEdit.required" :value="undefined"></option>
                 <option v-for="(choice, i) in propToEdit.validValues" class="text-secondary"
                         :key="`${propToEdit.name}[${i}]`">{{ choice }}</option>
             </select>
-            <input v-else-if="propToEdit.type === Number" type="number" :id="`inpProp[${propToEdit.name}]`"
+            <input v-else-if="propToEdit.type === Number" type="number" :id="subpropInputID(propToEdit.name)"
                 ref="propInputs" :data-prop-name="propToEdit.name"
                 class="form-control form-control-sm text-end border-0"
                 :placeholder="propToEdit.default"
                 v-model="propToEdit.value"/>
             <input v-else-if="propToEdit.type === Boolean" type="checkbox"
-                ref="propInputs" :data-prop-name="propToEdit.name" :id="`inpProp[${propToEdit.name}]`"
+                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
                 class="form-check-input"
                 v-model="propToEdit.value"/>
             <div v-else-if="propToEdit.type === Object" class="input-group input-group-sm mb-1">
@@ -133,12 +172,12 @@
                     <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit.name, 'boolean')">boolean</a></li>
                 </ul>
                 <input
-                    ref="propInputs" :data-prop-name="propToEdit.name" :id="`inpProp[${propToEdit.name}]`"
+                    ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
                     class="form-control form-control-sm text-secondary border-0" readonly
                     :value="JSON.stringify(propToEdit.value)"/>
             </div>
             <input v-else 
-                ref="propInputs" :data-prop-name="propToEdit.name" :id="`inpProp[${propToEdit.name}]`"
+                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
                 :pattern="propToEdit.pattern"
                 class="form-control form-control-sm border-0"
                 :placeholder="propToEdit.default"
@@ -150,32 +189,9 @@
     </tr>
     <!-- Subprops (if exist) -->
     <template v-if="propToEdit.isExpanded && propToEdit.type === Object && propToEdit.value">
-        <tr v-for="(subpropName, i) in Object.keys(propToEdit.value).sort(collateSubprops)" 
-            :key="`${propToEdit.name}[${subpropName}]`">
-            <!-- Subprop name -->
-            <td class="align-middle text-secondary" :style="subpropNameCellStyle(i)">
-                <label class="form-label mb-0" :for="subpropInputID(propToEdit.name, subpropName)">
-                    {{ subpropName }}
-                </label>
-                <button type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 pb-0" 
-                        title="Delete subproperty" @click="deleteSubprop(propToEdit.name, subpropName)">
-                    <span class="material-symbols-outlined align-top">close</span>
-                </button>
-            </td>
-            <!-- Subprop value -->
-            <td class="p-1">
-                <input v-if="typeof (propToEdit.value as Record<string, any>)[subpropName] === 'number'" 
-                    type="number" class="form-control form-control-sm text-end border-0" 
-                    :id="subpropInputID(propToEdit.name, subpropName)"
-                    v-model="(propToEdit.value as Record<string, any>)[subpropName]" />
-                <input v-else-if="typeof (propToEdit.value as Record<string, any>)[subpropName] === 'boolean'"
-                    type="checkbox" class="form-check-input form-check-input-sm"
-                    :id="subpropInputID(propToEdit.name, subpropName)"
-                    v-model="(propToEdit.value as Record<string, any>)[subpropName]" />
-                <input v-else type="text" class="form-control form-control-sm border-0"
-                    :id="subpropInputID(propToEdit.name, subpropName)"
-                    v-model="(propToEdit.value as Record<string, any>)[subpropName]" />
-            </td>
-        </tr>
+        <ElementPropEditor v-for="(subprop, i) in buildSubpropDescriptors(propToEdit.value as Record<string, any>)" 
+            :key="`${propToEdit.name}[${subprop.name}]`" 
+            :prop-to-edit="subprop" :dlg-new-subprop="dlgNewSubprop" :subprop-level="subpropLevel+1" 
+            :parent-prop-name="propToEdit.name" :subprop-index="i"/>
     </template>
 </template>
