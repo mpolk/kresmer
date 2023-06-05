@@ -28,7 +28,6 @@
         dlgNewSubprop: {type: Object as PropType<Modal>, required: true},
         subpropLevel: {type: Number, default: 0},
         subpropIndex: {type: Number, default: 0},
-        parentPropName: {type: String},
     });
 
     const emit = defineEmits<{
@@ -126,19 +125,19 @@
     <tr>
         <!-- Prop name -->
         <td class="align-middle py-1 pe-1" :style="subpropNameCellStyle(subpropIndex)">
-            <label class="form-label mb-0" :for="subpropInputID(propToEdit.name)"
+            <label class="form-label mb-0" :class="{'text-secondary': subpropLevel}" :for="subpropInputID(propToEdit.name)"
                 :title="propToEdit.description"
                 @click="propToEdit.isExpanded = !propToEdit.isExpanded"
                 >
                 {{ propToEdit.name }}
             </label>
             <button v-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 py-0" 
-                    title="Delete subproperty" @click="deleteSubprop(parentPropName!, propToEdit.name)">
-                <span class="material-symbols-outlined align-top">close</span>
+                    title="Delete subproperty" @click="deleteSubprop(propToEdit.parentProp!.name, propToEdit.name)">
+                <span class="material-symbols-outlined">close</span>
             </button>
             <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
                     @click="propToEdit.isExpanded = !propToEdit.isExpanded">
-                <span class="material-symbols-outlined align-top">
+                <span class="material-symbols-outlined">
                     {{`expand_${propToEdit.isExpanded ? "less" : "more"}`}}
                 </span>
             </button>
@@ -192,6 +191,6 @@
         <ElementPropEditor v-for="(subprop, i) in buildSubpropDescriptors(propToEdit.value as Record<string, any>)" 
             :key="`${propToEdit.name}[${subprop.name}]`" 
             :prop-to-edit="subprop" :dlg-new-subprop="dlgNewSubprop" :subprop-level="subpropLevel+1" 
-            :parent-prop-name="propToEdit.name" :subprop-index="i"/>
+            :subprop-index="i"/>
     </template>
 </template>
