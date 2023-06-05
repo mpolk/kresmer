@@ -20,7 +20,7 @@
         name: string, value: unknown, type: Function, required: boolean, 
         validValues?: string[], pattern?: string, isExpanded?: boolean, 
         category?: NetworkElementPropCategory, default?: string, description?: string,
-        parentProp?: ElementPropDescriptor,
+        parentPropDescriptor?: ElementPropDescriptor,
     };
 
     export default {

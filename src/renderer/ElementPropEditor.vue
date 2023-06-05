@@ -8,7 +8,7 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType } from 'vue';
+    import { PropType, computed } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor } from './ElementPropsSidebar.vue';
 
@@ -92,12 +92,46 @@
                         type,
                         required: false,
                         isExpanded: false,
-                        parentProp: props.propToEdit,
+                        parentPropDescriptor: props.propToEdit,
                     }
                 })
             .sort((p1, p2) => collateSubprops(p1.name, p2.name));
         return descriptors;
     }//buildSubpropDescriptors
+
+    /** Builds the model object for the value of the prop being edited  */
+    const subpropModel = computed({
+        get() {
+            if (props.subpropLevel == 0)
+                return props.propToEdit.value;
+            else
+                return getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
+        },
+        set(newValue) {
+            if (props.subpropLevel == 0)
+                props.propToEdit.value = newValue;
+            else
+                getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
+        }
+    })//subpropModel
+
+    /**  The root (the ultimate parent) of the (sub)property being edited */
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    let rootProp = props.propToEdit;
+    const rootPath: string[] = [];
+    while (rootProp.parentPropDescriptor) {
+        rootPath.unshift(rootProp.name);
+        rootProp = rootProp.parentPropDescriptor;
+    }//while
+
+    /** Finds the immediate parent object of the subproperty being edited */
+    function getSubpropParentObject(parentObject: Record<string, unknown>, depth: number): Record<string, unknown>
+    {
+        if (depth == 0)
+            return parentObject;
+        else
+            return getSubpropParentObject(parentObject[rootPath[depth-1]] as Record<string, unknown>, depth-1);
+    }//getSubpropParentObject
 
     /**
      * Deletes the specified subprop from the given property
@@ -132,7 +166,7 @@
                 {{ propToEdit.name }}
             </label>
             <button v-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 py-0" 
-                    title="Delete subproperty" @click="deleteSubprop(propToEdit.parentProp!.name, propToEdit.name)">
+                    title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
                 <span class="material-symbols-outlined">close</span>
             </button>
             <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
@@ -146,7 +180,7 @@
         <td class="p-1">
             <select v-if="propToEdit.validValues" ref="propInputs" :data-prop-name="propToEdit.name"
                     class="form-select form-select-sm border-0" :id="subpropInputID(propToEdit.name)"
-                    v-model="propToEdit.value">
+                    v-model="subpropModel">
                 <option v-if="!propToEdit.required" :value="undefined"></option>
                 <option v-for="(choice, i) in propToEdit.validValues" class="text-secondary"
                         :key="`${propToEdit.name}[${i}]`">{{ choice }}</option>
@@ -155,11 +189,11 @@
                 ref="propInputs" :data-prop-name="propToEdit.name"
                 class="form-control form-control-sm text-end border-0"
                 :placeholder="propToEdit.default"
-                v-model="propToEdit.value"/>
+                v-model="subpropModel"/>
             <input v-else-if="propToEdit.type === Boolean" type="checkbox"
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
                 class="form-check-input"
-                v-model="propToEdit.value"/>
+                v-model="subpropModel"/>
             <div v-else-if="propToEdit.type === Object" class="input-group input-group-sm mb-1">
                 <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
                         data-bs-toggle="dropdown" title="Add subproperty">
@@ -180,7 +214,7 @@
                 :pattern="propToEdit.pattern"
                 class="form-control form-control-sm border-0"
                 :placeholder="propToEdit.default"
-                v-model="propToEdit.value"/>
+                v-model="subpropModel"/>
             <div class="invalid-feedback">
                 Syntax error!
             </div>
