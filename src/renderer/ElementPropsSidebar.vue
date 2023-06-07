@@ -18,7 +18,7 @@
     export type ElementPropDescriptor = {
         // eslint-disable-next-line @typescript-eslint/ban-types
         name: string, value: unknown, type: Function, required: boolean, 
-        validValues?: string[], pattern?: string, isExpanded?: boolean, 
+        validValues?: string[], pattern?: string, 
         category?: NetworkElementPropCategory, default?: string, description?: string,
         parentPropDescriptor?: ElementPropDescriptor,
     };
@@ -285,7 +285,6 @@ Continue?`)) {
         }//switch
 
         dlgNewSubprop.hide();
-        prop.isExpanded = true;
         nextTick(() => {
             const inpToFocus = document.getElementById(subpropInputID(prop.name, newSubpropName.value)) as HTMLInputElement;
             inpToFocus.focus();

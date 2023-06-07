@@ -8,7 +8,7 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType, computed } from 'vue';
+    import { PropType, computed, ref } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor } from './ElementPropsSidebar.vue';
 
@@ -29,6 +29,8 @@
         subpropLevel: {type: Number, default: 0},
         subpropIndex: {type: Number, default: 0},
     });
+
+    const isExpanded = ref(false);
 
     const emit = defineEmits<{
         (e: "add-subprop", propName: string, type: "string"|"number"|"boolean"): void,
@@ -105,24 +107,26 @@
             if (props.subpropLevel == 0)
                 return props.propToEdit.value;
             else
-                return getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
+                return getSubpropParentObject(rootProp.value.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
         },
         set(newValue) {
             if (props.subpropLevel == 0)
                 props.propToEdit.value = newValue;
             else
-                getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
+                getSubpropParentObject(rootProp.value.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
         }
     })//subpropModel
 
     /**  The root (the ultimate parent) of the (sub)property being edited */
-    // eslint-disable-next-line vue/no-setup-props-destructure
-    let rootProp = props.propToEdit;
+    const rootProp = computed(() => {
+        let rootProp = props.propToEdit;
+        while (rootProp.parentPropDescriptor) {
+            rootPath.unshift(rootProp.name);
+            rootProp = rootProp.parentPropDescriptor;
+        }//while
+        return rootProp
+    });
     const rootPath: string[] = [];
-    while (rootProp.parentPropDescriptor) {
-        rootPath.unshift(rootProp.name);
-        rootProp = rootProp.parentPropDescriptor;
-    }//while
 
     /** Finds the immediate parent object of the subproperty being edited */
     function getSubpropParentObject(parentObject: Record<string, unknown>, depth: number): Record<string, unknown>
@@ -161,7 +165,7 @@
         <td class="align-middle py-1 pe-1" :style="subpropNameCellStyle(subpropIndex)">
             <label class="form-label mb-0" :class="{'text-secondary': subpropLevel}" :for="subpropInputID(propToEdit.name)"
                 :title="propToEdit.description"
-                @click="propToEdit.isExpanded = !propToEdit.isExpanded"
+                @click="isExpanded = !isExpanded"
                 >
                 {{ propToEdit.name }}
             </label>
@@ -170,9 +174,9 @@
                 <span class="material-symbols-outlined">close</span>
             </button>
             <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
-                    @click="propToEdit.isExpanded = !propToEdit.isExpanded">
+                    @click="isExpanded = !isExpanded">
                 <span class="material-symbols-outlined">
-                    {{`expand_${propToEdit.isExpanded ? "less" : "more"}`}}
+                    {{`expand_${isExpanded ? "less" : "more"}`}}
                 </span>
             </button>
         </td>
@@ -221,7 +225,7 @@
         </td>
     </tr>
     <!-- Subprops (if exist) -->
-    <template v-if="propToEdit.isExpanded && propToEdit.type === Object && propToEdit.value">
+    <template v-if="isExpanded && propToEdit.type === Object && propToEdit.value">
         <ElementPropEditor v-for="(subprop, i) in buildSubpropDescriptors(propToEdit.value as Record<string, any>)" 
             :key="`${propToEdit.name}[${subprop.name}]`" 
             :prop-to-edit="subprop" :dlg-new-subprop="dlgNewSubprop" :subprop-level="subpropLevel+1" 
