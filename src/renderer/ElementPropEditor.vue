@@ -107,26 +107,24 @@
             if (props.subpropLevel == 0)
                 return props.propToEdit.value;
             else
-                return getSubpropParentObject(rootProp.value.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
+                return getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
         },
         set(newValue) {
             if (props.subpropLevel == 0)
                 props.propToEdit.value = newValue;
             else
-                getSubpropParentObject(rootProp.value.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
+                getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
         }
     })//subpropModel
 
     /**  The root (the ultimate parent) of the (sub)property being edited */
-    const rootProp = computed(() => {
-        let rootProp = props.propToEdit;
-        while (rootProp.parentPropDescriptor) {
-            rootPath.unshift(rootProp.name);
-            rootProp = rootProp.parentPropDescriptor;
-        }//while
-        return rootProp
-    });
+    // eslint-disable-next-line vue/no-setup-props-destructure
+    let rootProp = props.propToEdit;
     const rootPath: string[] = [];
+    while (rootProp.parentPropDescriptor) {
+        rootPath.unshift(rootProp.name);
+        rootProp = rootProp.parentPropDescriptor;
+    }//while
 
     /** Finds the immediate parent object of the subproperty being edited */
     function getSubpropParentObject(parentObject: Record<string, unknown>, depth: number): Record<string, unknown>
