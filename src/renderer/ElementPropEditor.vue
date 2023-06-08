@@ -16,9 +16,17 @@
         name: "ElementPropEditor",
     }
 
-    export function subpropInputID(propName: string, subpropName?: string)
+    export function subpropInputID(parentProp: ElementPropDescriptor, subpropName?: string)
     {
-        return `inpSubprop[${propName},${subpropName}]`;
+        const path: string[] = [];
+        let prop: ElementPropDescriptor|undefined = parentProp;
+        while (prop) {
+            path.unshift(prop.name);
+            prop = prop.parentPropDescriptor;
+        }//while
+        if (subpropName)
+            path.push(subpropName);
+        return `inpSubprop[${path.join(".")}]`;
     }//subpropInputID
 </script>
 
@@ -81,17 +89,14 @@
         const descriptors = Object.keys(parentPropValue)
             .map(name => 
                 {
-                    const type = Array.isArray(parentPropValue[name]) ? Array :
-                        typeof parentPropValue[name] === "object" ? Object :
-                        typeof parentPropValue[name] === "number" ? Number :
-                        typeof parentPropValue[name] === "boolean" ? Boolean :
-                        String;
                     return {
                         name, 
-                        value: type === Object ? {...parentPropValue[name] as object} :
-                            type === Array ? [...parentPropValue[name] as unknown[]] :
-                            parentPropValue[name], 
-                        type,
+                        value: parentPropValue[name], 
+                        type: Array.isArray(parentPropValue[name]) ? Array :
+                            typeof parentPropValue[name] === "object" ? Object :
+                            typeof parentPropValue[name] === "number" ? Number :
+                            typeof parentPropValue[name] === "boolean" ? Boolean :
+                            String,
                         required: false,
                         isExpanded: false,
                         parentPropDescriptor: props.propToEdit,
@@ -171,7 +176,7 @@
     <tr>
         <!-- Prop name -->
         <td class="align-middle py-1 pe-1" :style="subpropNameCellStyle(subpropIndex)">
-            <label class="form-label mb-0" :class="{'text-secondary': subpropLevel}" :for="subpropInputID(propToEdit.name)"
+            <label class="form-label mb-0" :class="{'text-secondary': subpropLevel}" :for="subpropInputID(propToEdit)"
                 :title="propToEdit.description"
                 @click="isExpanded = !isExpanded"
                 >
@@ -191,19 +196,19 @@
         <!-- Prop value -->
         <td class="p-1">
             <select v-if="propToEdit.validValues" ref="propInputs" :data-prop-name="propToEdit.name"
-                    class="form-select form-select-sm border-0" :id="subpropInputID(propToEdit.name)"
+                    class="form-select form-select-sm border-0" :id="subpropInputID(propToEdit)"
                     v-model="subpropModel">
                 <option v-if="!propToEdit.required" :value="undefined"></option>
                 <option v-for="(choice, i) in propToEdit.validValues" class="text-secondary"
                         :key="`${propToEdit.name}[${i}]`">{{ choice }}</option>
             </select>
-            <input v-else-if="propToEdit.type === Number" type="number" :id="subpropInputID(propToEdit.name)"
+            <input v-else-if="propToEdit.type === Number" type="number" :id="subpropInputID(propToEdit)"
                 ref="propInputs" :data-prop-name="propToEdit.name"
                 class="form-control form-control-sm text-end border-0"
                 :placeholder="propToEdit.default"
                 v-model="subpropModel"/>
             <input v-else-if="propToEdit.type === Boolean" type="checkbox"
-                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
+                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-check-input"
                 v-model="subpropModel"/>
             <div v-else-if="propToEdit.type === Object" class="input-group input-group-sm mb-1">
@@ -217,12 +222,12 @@
                     <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'boolean')">boolean</a></li>
                 </ul>
                 <input
-                    ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
+                    ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                     class="form-control form-control-sm text-secondary border-0" readonly
                     :value="JSON.stringify(propToEdit.value)"/>
             </div>
             <input v-else 
-                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
+                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 :pattern="propToEdit.pattern"
                 class="form-control form-control-sm border-0"
                 :placeholder="propToEdit.default"

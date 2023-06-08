@@ -284,7 +284,7 @@ Continue?`)) {
 
         dlgNewSubprop.hide();
         nextTick(() => {
-            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!.name, newSubpropName.value)) as HTMLInputElement;
+            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName.value)) as HTMLInputElement;
             inpToFocus.focus();
         });
     }//completeAddingSubprop
