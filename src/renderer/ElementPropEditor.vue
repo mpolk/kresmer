@@ -8,9 +8,9 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType, computed, ref } from 'vue';
+    import { PropType, computed, inject, ref, toRaw, watch } from 'vue';
     import { Modal } from 'bootstrap';
-    import { ElementPropDescriptor } from './ElementPropsSidebar.vue';
+    import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
 
     export default {
         name: "ElementPropEditor",
@@ -39,6 +39,25 @@
     });
 
     const isExpanded = ref(false);
+    const expansionTrigger = inject(ikExpansionTrigger);
+    watch(() => expansionTrigger?.value, () => {
+        if (comparePropDescriptors(expansionTrigger?.value, props.propToEdit)) {
+            isExpanded.value = true;
+        }//if
+    });
+
+    function comparePropDescriptors(d1: ElementPropDescriptor|undefined, d2: ElementPropDescriptor|undefined): boolean
+    {
+        if (d1 && !d2)
+            return false;
+        if (!d1 && d2)
+            return false;
+        if (!d1 && !d2)
+            return true;
+        if (d1!.name != d2!.name)
+            return false;
+        return comparePropDescriptors(d1!.parentPropDescriptor, d2!.parentPropDescriptor);
+    }//comparePropDescriptors
 
     const emit = defineEmits<{
         (e: "add-subprop", parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"): void,

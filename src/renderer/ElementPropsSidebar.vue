@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { nextTick, ref, watch } from 'vue';
+    import { InjectionKey, Ref, nextTick, provide, ref, watch } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
     import { NetworkElement, NetworkElementClass, NetworkElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
@@ -22,6 +22,8 @@
         category?: NetworkElementPropCategory, default?: string, description?: string,
         parentPropDescriptor?: ElementPropDescriptor,
     };
+
+    export const ikExpansionTrigger = Symbol() as InjectionKey<Ref<ElementPropDescriptor|undefined>>;
 
     export default {
         name: "ElementPropsSidebar",
@@ -43,6 +45,9 @@
         formValidated.value = !validateElementName();
     });
     let dbID: number|string|undefined;
+
+    const expansionTrigger = ref<ElementPropDescriptor|undefined>();
+    provide(ikExpansionTrigger, expansionTrigger);
 
     /**
      * An array of the element props (with values)
@@ -283,6 +288,7 @@ Continue?`)) {
         }//switch
 
         dlgNewSubprop.hide();
+        expansionTrigger.value = propToAddSubpropTo.value!;
         nextTick(() => {
             const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName.value)) as HTMLInputElement;
             inpToFocus.focus();
