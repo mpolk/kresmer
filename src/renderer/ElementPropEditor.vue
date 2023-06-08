@@ -33,7 +33,7 @@
     const isExpanded = ref(false);
 
     const emit = defineEmits<{
-        (e: "add-subprop", propName: string, type: "string"|"number"|"boolean"): void,
+        (e: "add-subprop", parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"): void,
     }>();
 
     /** A callback for sorting subproperties. 
@@ -155,6 +155,16 @@
             style += ' border-bottom-style: dotted!important;';
         return style;
     }//subpropNameCellStyle
+
+    /**
+     * Bubbles a descendant "add-subprop" event
+     * @param parentProp A property to add subprop to
+     * @param type A new subprop type
+     */
+    function onDescendantAddSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean")
+    {
+        emit("add-subprop", parentProp, type);
+    }//onDescendantAddSubprop
 </script>
 
 <template>
@@ -202,9 +212,9 @@
                     <span class="material-symbols-outlined">add</span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit.name, 'string')">string</a></li>
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit.name, 'number')">number</a></li>
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit.name, 'boolean')">boolean</a></li>
+                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'string')">string</a></li>
+                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'number')">number</a></li>
+                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'boolean')">boolean</a></li>
                 </ul>
                 <input
                     ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit.name)"
@@ -227,6 +237,7 @@
         <ElementPropEditor v-for="(subprop, i) in buildSubpropDescriptors(propToEdit.value as Record<string, any>)" 
             :key="`${propToEdit.name}[${subprop.name}]`" 
             :prop-to-edit="subprop" :dlg-new-subprop="dlgNewSubprop" :subprop-level="subpropLevel+1" 
-            :subprop-index="i"/>
+            :subprop-index="i"
+            @add-subprop="onDescendantAddSubprop"/>
     </template>
 </template>

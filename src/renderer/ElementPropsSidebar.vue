@@ -242,12 +242,12 @@ Continue?`)) {
 
     /**
      * Adds a new subprop (field) to the given pop
-     * @param propName A prop to add the subprop to
+     * @param parentProp A prop to add the subprop to
      * @param type A type of the new subprop
      */
-     function addSubprop(propName: string, type: "string"|"number"|"boolean")
+     function addSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean")
     {
-        propToAddSubpropTo.value = propName;
+        propToAddSubpropTo.value = parentProp;
         newSubpropType.value = type;
         dlgNewSubprop.show();
     }//addSubprop
@@ -260,39 +260,37 @@ Continue?`)) {
             return;
         }//if
 
-        const i = elementPropDescriptors.value.findIndex(prop => prop.name == propToAddSubpropTo.value);
-        const prop = elementPropDescriptors.value[i];
-        if (!prop.value) {
-            prop.value = {};
+        if (!propToAddSubpropTo.value!.value) {
+            propToAddSubpropTo.value!.value = {};
         }//if
-        const propValue = prop.value as Record<string, unknown>;
+        const parentPropValue = propToAddSubpropTo.value!.value as Record<string, unknown>;
 
-        if (Object.hasOwn(propValue, newSubpropName.value)) {
-            alert(`Subprop "${newSubpropName.value}" already exists in the prop "${prop.name}"`);
+        if (Object.hasOwn(parentPropValue, newSubpropName.value)) {
+            alert(`Subprop "${newSubpropName.value}" already exists in the prop "${propToAddSubpropTo.value!.name}"`);
             return;
         }//if
 
         switch (newSubpropType.value) {
             case "string":
-                propValue[newSubpropName.value] = "";
+                parentPropValue[newSubpropName.value] = "";
                 break;
             case "number":
-                propValue[newSubpropName.value] = 0;
+                parentPropValue[newSubpropName.value] = 0;
                 break;
             case "boolean":
-                propValue[newSubpropName.value] = false;
+                parentPropValue[newSubpropName.value] = false;
                 break;
         }//switch
 
         dlgNewSubprop.hide();
         nextTick(() => {
-            const inpToFocus = document.getElementById(subpropInputID(prop.name, newSubpropName.value)) as HTMLInputElement;
+            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!.name, newSubpropName.value)) as HTMLInputElement;
             inpToFocus.focus();
         });
     }//completeAddingSubprop
 
     let dlgNewSubprop!: Modal;
-    const propToAddSubpropTo = ref("");
+    const propToAddSubpropTo = ref<ElementPropDescriptor>();
     const newSubpropName = ref("");
     const inpNewSubpropName = ref<HTMLInputElement>();
     const newSubpropType = ref<"string"|"number"|"boolean">("string");
@@ -358,7 +356,7 @@ Continue?`)) {
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header">
-                    Adding a&nbsp;<strong>{{ newSubpropType }}</strong>&nbsp;field to the "{{ propToAddSubpropTo }}" prop
+                    Adding a&nbsp;<strong>{{ newSubpropType }}</strong>&nbsp;field to the "{{ propToAddSubpropTo?.name }}" prop
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
