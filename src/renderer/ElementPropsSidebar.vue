@@ -62,6 +62,9 @@
     {
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
+            rootDiv.value!.addEventListener("hidden.bs.offcanvas", (event) => {
+                formEnabled.value = false;
+            });
             const el = document.querySelector("#dlgNewSubprop")!;
             el.addEventListener("shown.bs.modal", () => inpNewSubpropName.value!.focus());
             dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
@@ -122,6 +125,20 @@ Continue?`)) {
      */
     function buildElementPropDescriptors(_class: NetworkElementClass): ElementPropDescriptor[]
     {
+        function clone(x: unknown): unknown
+        {
+            if (Array.isArray(x))
+                return x.map(el => clone(el));
+            else if (typeof x === "object") {
+                const y: Record<string, unknown> = {};
+                for (const k in x) {
+                    y[k] = clone(x[k as keyof typeof x]);
+                }//for
+                return y;
+            } else
+                return x;
+        }//clone
+
         const descriptors = Object.keys(_class.props)
             .map(name => 
                 {
@@ -129,9 +146,7 @@ Continue?`)) {
                     const pattern = _class.props[name].validator?.pattern;
                     return {
                         name, 
-                        value: _class.props[name].type === Object ? {...elementToEdit.props[name] as object} :
-                            _class.props[name].type === Array ? [...elementToEdit.props[name] as unknown[]] :
-                            elementToEdit.props[name], 
+                        value: clone(elementToEdit.props[name]), 
                         type: _class.props[name].type,
                         required: _class.props[name].required,
                         category: _class.props[name].category,
@@ -324,7 +339,7 @@ Continue?`)) {
                 <table class="table table-bordered"><tbody>
                     <!-- Element name -->
                     <tr>
-                        <td class="align-middle p-1"><label class="form-lable mb-0" for="inpElementName">name</label></td>
+                        <td class="align-middle p-1"><label class="form-label mb-0" for="inpElementName">name</label></td>
                         <td class="p-1">
                             <input id="inpElementName" type="text" class="form-control form-control-sm border-0" 
                                     v-model="elementName" ref="inpElementName"/>
