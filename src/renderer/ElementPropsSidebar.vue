@@ -300,6 +300,9 @@ Continue?`)) {
             case "boolean":
                 parentPropValue[newSubpropName] = false;
                 break;
+            case "object":
+                parentPropValue[newSubpropName] = {};
+                break;
         }//switch
 
         dlgNewSubprop.hide();
@@ -315,7 +318,7 @@ Continue?`)) {
     // eslint-disable-next-line prefer-const
     let newSubpropName = "";
     const inpNewSubpropName = ref<HTMLInputElement>();
-    const newSubpropType = ref<"string"|"number"|"boolean">("string");
+    const newSubpropType = ref<"string"|"number"|"boolean"|"object">("string");
 
     defineExpose({show});
 </script>

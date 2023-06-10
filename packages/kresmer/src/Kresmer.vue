@@ -65,7 +65,7 @@
     watch([x, y], () => {
         nextTick(() => {
             const styles = getComputedStyle(rootSVG.value!);
-            console.debug(styles);
+            // console.debug(styles);
             drawingOrigin.x = parseInt(styles.marginLeft);
             drawingOrigin.y = parseInt(styles.marginTop);
         })

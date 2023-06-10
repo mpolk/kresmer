@@ -60,7 +60,7 @@
     });
 
     const emit = defineEmits<{
-        (e: "add-subprop", parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"): void,
+        (e: "add-subprop", parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"|"object"): void,
     }>();
 
     /** A callback for sorting subproperties. 
@@ -221,9 +221,10 @@
                         <span class="material-symbols-outlined">add</span>
                     </button>
                     <ul class="dropdown-menu">
-                        <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'string')">string</a></li>
-                        <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'number')">number</a></li>
-                        <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'boolean')">boolean</a></li>
+                        <li v-for="type in ['string', 'number', 'boolean', 'object']" :key="`add-${type}-subprop`" 
+                            style="cursor: pointer;">
+                            <a class="dropdown-item" @click="emit('add-subprop', propToEdit, type as any)">{{type}}</a>
+                        </li>
                     </ul>
                 </div>
                 <button v-else-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light" 
