@@ -8,7 +8,7 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType, computed, inject, ref, toRaw, watch } from 'vue';
+    import { PropType, computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
 

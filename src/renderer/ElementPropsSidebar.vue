@@ -275,7 +275,7 @@ Continue?`)) {
     /** Callback for completing adding a new field or the Object-type prop */
     function completeAddingSubprop()
     {
-        if (!newSubpropName.value) {
+        if (!newSubpropName) {
             alert("Subproperty name cannot be empty!");
             return;
         }//if
@@ -285,34 +285,35 @@ Continue?`)) {
         }//if
         const parentPropValue = propToAddSubpropTo.value!.value as Record<string, unknown>;
 
-        if (Object.hasOwn(parentPropValue, newSubpropName.value)) {
-            alert(`Subprop "${newSubpropName.value}" already exists in the prop "${propToAddSubpropTo.value!.name}"`);
+        if (Object.hasOwn(parentPropValue, newSubpropName)) {
+            alert(`Subprop "${newSubpropName}" already exists in the prop "${propToAddSubpropTo.value!.name}"`);
             return;
         }//if
 
         switch (newSubpropType.value) {
             case "string":
-                parentPropValue[newSubpropName.value] = "";
+                parentPropValue[newSubpropName] = "";
                 break;
             case "number":
-                parentPropValue[newSubpropName.value] = 0;
+                parentPropValue[newSubpropName] = 0;
                 break;
             case "boolean":
-                parentPropValue[newSubpropName.value] = false;
+                parentPropValue[newSubpropName] = false;
                 break;
         }//switch
 
         dlgNewSubprop.hide();
         expansionTrigger.value = propToAddSubpropTo.value!;
         nextTick(() => {
-            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName.value)) as HTMLInputElement;
+            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName)) as HTMLInputElement;
             inpToFocus.focus();
         });
     }//completeAddingSubprop
 
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref<ElementPropDescriptor>();
-    const newSubpropName = ref("");
+    // eslint-disable-next-line prefer-const
+    let newSubpropName = "";
     const inpNewSubpropName = ref<HTMLInputElement>();
     const newSubpropType = ref<"string"|"number"|"boolean">("string");
 
