@@ -166,7 +166,8 @@
      */
     function deleteSubprop(propName: string, subpropName: string)
     {
-        delete getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[subpropName];
+        if (confirm(`Delete subproperty "${subpropName}"? Are you sure?`))
+            delete getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[subpropName];
     }// deleteSubprop
 
     /**
@@ -194,23 +195,42 @@
 <template>
     <tr>
         <!-- Prop name -->
-        <td class="align-middle py-1 pe-1" :style="subpropNameCellStyle(subpropIndex)">
-            <label class="form-label mb-0" :class="{'text-secondary': subpropLevel}" :for="subpropInputID(propToEdit)"
-                :title="propToEdit.description"
-                @click="isExpanded = !isExpanded"
-                >
-                {{ propToEdit.name }}
-            </label>
-            <button v-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light pe-0 ps-1 py-0" 
-                    title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
-                <span class="material-symbols-outlined">close</span>
-            </button>
-            <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
-                    @click="isExpanded = !isExpanded">
-                <span class="material-symbols-outlined">
-                    {{`expand_${isExpanded ? "less" : "more"}`}}
-                </span>
-            </button>
+        <td class="py-1 pe-1 align-middle" :style="subpropNameCellStyle(subpropIndex)">
+            <div class="d-flex align-items-center justify-content-between">
+                <div class="d-inline-block">
+                    <label class="form-label mb-0" :class="{'text-secondary': subpropLevel}" :for="subpropInputID(propToEdit)"
+                        :title="propToEdit.description"
+                        @click="isExpanded = !isExpanded"
+                        >
+                        {{ propToEdit.name }}
+                    </label>
+                    <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
+                            @click="isExpanded = !isExpanded">
+                        <span class="material-symbols-outlined">
+                            {{`expand_${isExpanded ? "less" : "more"}`}}
+                        </span>
+                    </button>
+                </div>
+                <div v-if="propToEdit.type === Object" class="btn-group">
+                    <button v-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light" 
+                            title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
+                        <span class="material-symbols-outlined">close</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle" 
+                            data-bs-toggle="dropdown" title="Add subproperty">
+                        <span class="material-symbols-outlined">add</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'string')">string</a></li>
+                        <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'number')">number</a></li>
+                        <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'boolean')">boolean</a></li>
+                    </ul>
+                </div>
+                <button v-else-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light" 
+                        title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
         </td>
         <!-- Prop value -->
         <td class="p-1">
@@ -230,21 +250,10 @@
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-check-input"
                 v-model="subpropModel"/>
-            <div v-else-if="propToEdit.type === Object" class="input-group input-group-sm mb-1">
-                <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle" 
-                        data-bs-toggle="dropdown" title="Add subproperty">
-                    <span class="material-symbols-outlined">add</span>
-                </button>
-                <ul class="dropdown-menu">
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'string')">string</a></li>
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'number')">number</a></li>
-                    <li style="cursor: pointer;"><a class="dropdown-item" @click="emit('add-subprop', propToEdit, 'boolean')">boolean</a></li>
-                </ul>
-                <input
-                    ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                    class="form-control form-control-sm text-secondary border-0" readonly
-                    :value="JSON.stringify(propToEdit.value)"/>
-            </div>
+            <input v-else-if="propToEdit.type === Object"
+                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
+                class="form-control form-control-sm text-secondary border-0" readonly
+                :value="JSON.stringify(propToEdit.value)"/>
             <input v-else 
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 :pattern="propToEdit.pattern"
