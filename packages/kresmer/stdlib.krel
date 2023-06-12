@@ -152,9 +152,10 @@
         <template>
             <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
             <slot />
+            <rect v-if="portInfo?.operStatus" v-bind:width="h*0.2" v-bind:height="h*0.2" class="status-indicator" />
             <text v-bind:x="w/2"
                 v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="fontSize*h"
-                class="port-name">{{label}}</text>
+                class="port-name" v-bind:class="{disabled: !(portInfo?.adminStatus ?? true)}">{{label}}</text>
             <title>{{title}}</title>
             <connection-point
                 v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0,   y: h/2}}" 
@@ -162,7 +163,9 @@
         </template>
         <style>
             .port-name {font-family: sans-serif; fill: white;}
+            .port-name.disabled {fill: lightgray; opacity: 0.75;}
             .port-icon.body {stroke: white;}
+            .status-indicator {fill: #b7f598; stroke: green; stroke-width: 1px}
             .connection-point-marker {fill: yellow;}
         </style>
         <props>
