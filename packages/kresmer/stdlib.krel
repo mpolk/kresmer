@@ -520,11 +520,11 @@
                         v-bind:port-info="portsInfo[`${slot}:${i*2}`]" key-position="bottom"/>
                 </template>
                 <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:25`" 
-                             v-bind:port-info="portsInfo[25]"/>
+                             v-bind:port-info="portsInfo[`${slot}:25`]"/>
                 <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" 
-                             v-bind:port-info="portsInfo[26]"/>
+                             v-bind:port-info="portsInfo[`${slot}:26`]"/>
                 <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" 
-                             v-bind:port-info="portsInfo[27]"/>
+                             v-bind:port-info="portsInfo[`${slot}:27`]"/>
             </template>
         </template>
         <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
