@@ -170,15 +170,14 @@
             <prop name="h" type="Number" required="true" default="25" category="Geometry" description="Port icon height"/>
             <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
-            <prop name="description" type="String" description="Port description for displaying in tooltip or similar"/>
-            <prop name="speed" type="String" description="Port speed"/>
+            <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
         </props>
         <computed-props>
             <computed-prop name="label">String(props.name).replace(props.prefix, '')</computed-prop>
             <computed-prop name="title">
                 props.name + 
-                    (props.description ? ` ${props.description}` : '') +
-                    (props.speed ? ` ${props.speed}` : '')
+                    (props.portInfo?.description ? ` ${props.portInfo.description}` : '') +
+                    (props.portInfo?.speed ? ` (${props.portInfo.speed})` : '')
             </computed-prop>
         </computed-props>
     </component-class>
@@ -226,7 +225,7 @@
     <component-class name="SfpPort" instantiate="embed">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                            v-bind:description="description" v-bind:speed="speed">
+                    v-bind:port-info="portInfo">
                 <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
@@ -239,7 +238,7 @@
     <component-class name="XfpPort" instantiate="embed">
         <template>
             <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
-                      v-bind:description="description" v-bind:speed="speed">
+                    v-bind:port-info="portInfo">
                 <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
@@ -248,8 +247,7 @@
             <prop name="prefix" type="String" default="" />
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
             <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" />
-            <prop name="description" type="String" />
-            <prop name="speed" type="String" description="Port speed"/>
+            <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
         </props>
     </component-class>
 
@@ -402,7 +400,7 @@
                 />
             <Kre:Port v-for="i in nPorts"
                 v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2"
-                v-bind:name="i" v-bind:description="portsInfo[i]?.description" v-bind:speed="portsInfo[i]?.speed"
+                v-bind:name="i" v-bind:port-info="portsInfo[i]"
                 />
         </template>
         <style extends="SwitchBody" />
@@ -480,13 +478,13 @@
                   class="model-name">X590</text>
             <template v-for="i in 12">
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" 
-                             v-bind:name="i*2-1" v-bind:description="portsInfo[i*2-1]?.description" v-bind:speed="portsInfo[i*2-1]?.speed"/>
+                             v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" 
-                             v-bind:name="i*2" v-bind:description="portsInfo[i*2]?.description" v-bind:speed="portsInfo[i*2]?.speed" key-position="bottom" />
+                             v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom" />
             </template>
-            <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" v-bind:description="portsInfo[25]?.description" v-bind:speed="portsInfo[25]?.speed"/>
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" v-bind:description="portsInfo[26]?.description" v-bind:speed="portsInfo[26]?.speed" />
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" v-bind:description="portsInfo[27]?.description" v-bind:speed="portsInfo[27]?.speed"/>
+            <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" v-bind:port-info="portsInfo[25]"/>
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" v-bind:port-info="portsInfo[26]"/>
+            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" v-bind:port-info="portsInfo[27]"/>
         </template>
         <style extends="ExtremeSwitch" />
         <props extend="ExtremeSwitch">
@@ -516,17 +514,17 @@
                   <template v-for="i in 12">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" v-bind:prefix="`${slot}:`" 
-                        v-bind:description="portsInfo[`${slot}:${i*2-1}`]?.description" v-bind:speed="portsInfo[`${slot}:${i*2-1}`]?.speed"/>
+                        v-bind:port-info="portsInfo[`${slot}:${i*2-1}`]"/>
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2}`" v-bind:prefix="`${slot}:`" 
-                        v-bind:description="portsInfo[`${slot}:${i*2}`]?.description" v-bind:speed="portsInfo[`${slot}:${i*2}`]?.speed" key-position="bottom"/>
+                        v-bind:port-info="portsInfo[`${slot}:${i*2}`]" key-position="bottom"/>
                 </template>
                 <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:25`" 
-                             v-bind:description="portsInfo[`${slot}:25`]?.description" />
+                             v-bind:port-info="portsInfo[25]"/>
                 <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" 
-                             v-bind:description="portsInfo[`${slot}:26`]?.description" />
+                             v-bind:port-info="portsInfo[26]"/>
                 <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" 
-                             v-bind:description="portsInfo[`${slot}:27`]?.description" />
+                             v-bind:port-info="portsInfo[27]"/>
             </template>
         </template>
         <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
@@ -550,9 +548,9 @@
                 />
             <template v-for="i in 24">
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1"
-                             v-bind:description="portsInfo[i*2-1]?.description" />
+                             v-bind:port-info="portsInfo[i*2-1]" />
                 <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" key-position="bottom"
-                             v-bind:description="portsInfo[i*2]?.description" />
+                             v-bind:port-info="portsInfo[i*2]" />
             </template>
         </template>
         <style extends="ExtremeSwitchBody" />
@@ -582,10 +580,10 @@
                 <template v-for="i in 24">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" v-bind:prefix="`${slot}:`"
-                        v-bind:description="portsInfo[`${slot}:${i*2-1}`]?.description" />
+                        v-bind:port-info="portsInfo[`${slot}:${i*2-1}`]" />
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2}`" v-bind:prefix="`${slot}:`" key-position="bottom"
-                        v-bind:description="portsInfo[`${slot}:${i*2}`]?.description" />
+                        v-bind:port-info="portsInfo[`${slot}:${i*2}`]" />
                     </template>
             </template>
         </template>
@@ -698,17 +696,17 @@
                   class="facet"/>
             <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.8)" v-bind:y="height*0.53" v-bind:h="height/3" 
                          v-bind:name="`et0/0/${i-1}`" prefix="et0/"
-                         v-bind:description="portsInfo[`et0/0/${i-1}`]?.description"/>
+                         v-bind:port-info="portsInfo[`et0/0/${i-1}`]"/>
             <rect v-bind:x="height*4.9" v-bind:y="height*0.08" 
                   v-bind:height="height*0.9" v-bind:width="height*2.1" 
                   class="facet"/>
             <template v-for="i in 4">
                 <Kre:SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.15" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"
-                             v-bind:description="portsInfo[`xe0/1/${i*2-2}`]?.description"/>
+                             v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]"/>
                 <Kre:SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.53" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7" key-position="bottom"
-                             v-bind:description="portsInfo[`xe0/1/${i*2-1}`]?.description"/>
+                             v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]"/>
             </template>
             <rect v-bind:x="height*7.35" v-bind:y="height*0.45" 
                   v-bind:height="height*0.5" v-bind:width="height*0.5" 
