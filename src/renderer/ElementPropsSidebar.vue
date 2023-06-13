@@ -72,7 +72,7 @@
 
         const classes = element instanceof NetworkLink ? 
             [...kresmer.getRegisteredLinkClasses()].filter(([name, _class]) => !_class.isAbstract) : 
-            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.autoInstanciate && !_class.forEmbeddingOnly);
+            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.forEmbeddingOnly);
         allClasses.value = classes
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
@@ -265,7 +265,7 @@ Continue?`)) {
      * @param parentProp A prop to add the subprop to
      * @param type A type of the new subprop
      */
-     function addSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean")
+     function addSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"|"object")
     {
         propToAddSubpropTo.value = parentProp;
         newSubpropType.value = type;

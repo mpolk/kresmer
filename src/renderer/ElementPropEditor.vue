@@ -186,7 +186,7 @@
      * @param parentProp A property to add subprop to
      * @param type A new subprop type
      */
-    function onDescendantAddSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean")
+    function onDescendantAddSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"|"object")
     {
         emit("add-subprop", parentProp, type);
     }//onDescendantAddSubprop

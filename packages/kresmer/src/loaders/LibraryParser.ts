@@ -90,7 +90,6 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
-        const autoInstanciate = node.getAttribute("instantiate") === "auto";
         const forEmbeddingOnly = node.getAttribute("instantiate") === "embed";
 
         let template: Element | undefined;
@@ -139,7 +138,7 @@ export default class LibraryParser {
 
 
         return new NetworkComponentClass(className, {styleBaseClasses, propsBaseClasses, template, props, computedProps, defs, 
-                                                     style, autoInstanciate, defaultContent, forEmbeddingOnly});
+                                                     style, defaultContent, forEmbeddingOnly});
     }//parseComponentClassNode
 
 

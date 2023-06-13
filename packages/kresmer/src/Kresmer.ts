@@ -328,13 +328,6 @@ export default class Kresmer extends KresmerEventHooks {
         }//if
 
         this.registeredComponentClasses.set(componentClass.name, componentClass);
-
-        // automatically create a single component instance if required
-        if (componentClass.autoInstanciate) {
-            const component = new NetworkComponent(this, componentClass.name, 
-                                                   {isAutoInstantiated: true});
-            this.placeNetworkComponent(component, {x: 0, y: 0});
-        }//if
         return this;
     }//registerNetworkComponentClass
 
