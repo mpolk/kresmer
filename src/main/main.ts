@@ -40,6 +40,17 @@ export type CustomManagementProtocol = {
     cmd: string,
 }//CustomManagementProtocol
 
+let drawingToAutoload: string;
+
+/** Parses the command line and save its parameters to the global vars */
+function parseCommandLine()
+{
+    const argv = [...process.argv];
+    console.debug(`argv=${argv}`);
+    drawingToAutoload = argv[1] == "." ? argv[2] : argv[1];
+}//parseCommandLine
+
+
 /** Create the main app window */
 function createMainWindow() {
     // Create the browser window
@@ -182,15 +193,12 @@ export function initApp(stage: AppInitStage)
             break;
         }
         case AppInitStage.STDLIB_LOADED: {
-            const argv = process.argv;
-            console.debug(`argv=${argv}`);
-            const autoload = argv[1] == "." ? argv[2] : argv[1];
-            if (fs.existsSync(autoload)) {
-                defaultDrawingFileName = autoload;
-                const dwgData = fs.readFileSync(autoload, "utf-8");
+            if (fs.existsSync(drawingToAutoload)) {
+                defaultDrawingFileName = drawingToAutoload;
+                const dwgData = fs.readFileSync(drawingToAutoload, "utf-8");
                 sendAppCommand("load-drawing", dwgData, 
                                 {
-                                    drawingFileName: autoload, 
+                                    drawingFileName: drawingToAutoload, 
                                     completionSignal: AppInitStage.DRAWING_LOADED, 
                                 });
             }//if
@@ -226,6 +234,7 @@ function registerCustomManagementProtocols()
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+    parseCommandLine();
     mainWindow = createMainWindow();
     initIpcMainHooks();
     registerCustomManagementProtocols();
