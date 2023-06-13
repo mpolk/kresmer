@@ -87,7 +87,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Global SVG Defs */
     public readonly defs: Template[] = [];
     /** CSS styles collected component libraries */
-    public styles: PostCSSRoot[] = [];
+    public styles: PostCSSRoot[] = reactive([]);
     /** Drawing name */
     public drawingName = "?unnamed?";
     /** Should the drawing border rulers be shown? */
