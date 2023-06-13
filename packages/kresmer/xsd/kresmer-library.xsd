@@ -52,6 +52,8 @@
                             <xs:attribute name="name" use="required" />
                         </xs:complexType>
                     </xs:element>
+
+                    <xs:element name="template" type="named-outermost-template"/>
                     
                 </xs:choice>
             </xs:sequence>
@@ -258,6 +260,14 @@
             <xs:element ref="slot"/>
             <xs:element name="template" type="inner-template"/>
         </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="named-outermost-template">
+        <xs:complexContent>
+            <xs:extension base="outermost-template">
+                <xs:attribute name="name"/>
+            </xs:extension>
+        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="inner-template">

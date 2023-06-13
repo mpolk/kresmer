@@ -2,12 +2,12 @@
 <?xml-model href="xsd/kresmer-library.xsd"?>
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <!-- Crossing arrows traditionally used to be drawn on the top of routers and switches -->
-    <component-class name="CrossArrows" instantiate="auto">
-        <template> {{$global("crossArrows", [ [0.1,0.5], [0.2,0.7], [0.2,0.6], [0.4,0.6], [0.4,0.8],
+    <template name="cross-arrows"> 
+        {{$global("crossArrows", [ [0.1,0.5], [0.2,0.7], [0.2,0.6], [0.4,0.6], [0.4,0.8],
             [0.3,0.8], [0.5,0.9], [0.7,0.8], [0.6,0.8], [0.6,0.6], [0.8,0.6], [0.8,0.7], [0.9,0.5],
             [0.8,0.3], [0.8,0.4], [0.6,0.4], [0.6,0.2], [0.7,0.2], [0.5,0.1], [0.3,0.2], [0.4,0.2],
-            [0.4,0.4], [0.2,0.4], [0.2,0.3] ])}} </template>
-    </component-class>
+            [0.4,0.4], [0.2,0.4], [0.2,0.3] ])}}
+    </template>
 
     <!-- Switch or router port -->
     <component-class name="Port" instantiate="embed">

@@ -13,7 +13,7 @@ import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity } from "../KresmerException";
-import Kresmer from "../Kresmer";
+import Kresmer, { Template } from "../Kresmer";
 import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
 import { toCamelCase } from "../Utils";
 
@@ -68,6 +68,9 @@ export default class LibraryParser {
                     break;
                 case "style":
                     yield new StyleLibNode(this.parseCSS(node.innerHTML));
+                    break;
+                case "template":
+                    yield new StandaloneTemplate(node, node.getAttribute("name") ?? undefined);
                     break;
                 case "parsererror":
                     yield new LibraryParsingException(
@@ -432,10 +435,15 @@ export class StyleLibNode {
     }//ctor
 }//StyleLibNode
 
+export class StandaloneTemplate {
+    constructor(readonly data: Template, readonly name?: string) {/**/}
+}//StandaloneTemplate
+
 type ParsedNode = NetworkComponentClass | 
                   NetworkLinkClass |
                   DefsLibNode | 
-                  StyleLibNode | 
+                  StyleLibNode |
+                  StandaloneTemplate |
                   ParsingException;
 
 export class LibraryParsingException extends ParsingException {
