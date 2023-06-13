@@ -6,7 +6,8 @@
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "main": "dist/main/main.js",
   "config": {
-    "port": 5173
+    "port": 5173,
+    "args": "network-core.kre -L ./lib"
   },
   "scripts": {
     "build-only": "vite build",
@@ -22,10 +23,10 @@
     "test:unit": "cypress open --component",
     "test:unit:ci": "cypress run --component --quiet --reporter spec",
     "lint": "eslint -c .eslintrc.cjs --ext .ts ./src",
-    "app:dev0": "npm run build-component && npm run ts && concurrently vite \"electron . network-core.kre\" \"npm run watch\"",
-    "app:dev": "npm run build-component && npm run ts && concurrently \"npm run -w kresmer build-watch\" vite \"electron . network-core.kre\" \"npm run watch\"",
+    "app:dev0": "npm run build-component && npm run ts && concurrently vite \"electron . ${npm_package_config_args}\" \"npm run watch\"",
+    "app:dev": "npm run build-component && npm run ts && concurrently \"npm run -w kresmer build-watch\" vite \"electron . ${npm_package_config_args}\" \"npm run watch\"",
     "app:build": "run-s build-component vite:build ts && electron-builder",
-    "app:preview": "run-s build-component vite:build ts && electron . network-core.kre"
+    "app:preview": "run-s build-component vite:build ts && electron . ${npm_package_config_args}"
   },
   "build": {
     "appId": "kresmer",

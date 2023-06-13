@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library.xsd"?>
+<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+    <!-- Test data (just for fun)-->
+    <defs>
+        <text id="kre:std:Crown">👑</text>
+    </defs>
+
+    <component-class name="YellowRectangle">
+        <template>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
+                v-bind:fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true" default="300" />
+            <prop name="height" type="Number" required="true" default="100" />
+            <prop name="fill" type="String" default="yellow" />
+        </props>
+    </component-class>
+
+    <component-class name="Rectangle">
+        <template>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
+                v-bind:fill="fill"></rect>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true" default="300" />
+            <prop name="height" type="Number" required="true" default="100" />
+            <prop name="fill" type="String" default="yellow" />
+        </props>
+    </component-class>
+
+
+    <component-class name="Text">
+        <template>
+            <text x="0" y="0" v-bind:fill="color" v-bind:font-size="fontSize"
+                v-bind:font-family="fontFamily">
+                <slot>Text</slot>
+            </text>
+        </template>
+        <props>
+            <prop name="color" type="String" default="black" />
+            <prop name="font-size" type="String" default="32" />
+            <prop name="font-family" type="String" />
+        </props>
+    </component-class>
+
+    <component-class name="BorderedKresmer">
+        <template>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
+                v-bind:fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
+            <use
+                href="#kre:std:Crown" x="10" y="30" />
+            <text x="40" y="30" v-bind:fill="textColor"
+                v-bind:font-size="fontSize" v-bind:font-family="fontFamily">{{text}}</text>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true" default="200" />
+            <prop name="height" type="Number" required="true" default="50" />
+            <prop name="fill" type="String" default="yellow" />
+            <prop name="text" type="String" default="BorderedKresmer" />
+            <prop name="textColor" type="String" default="black" />
+            <prop name="font-size" type="String" />
+            <prop name="font-family" type="String" />
+        </props>
+    </component-class>
+
+    <component-class name="PatrioticKresmer">
+        <template>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height/2" fill="blue" />
+            <rect
+                x="0" v-bind:y="height/2" v-bind:width="width" v-bind:height="height/2"
+                fill="yellow" />
+            <text v-bind:x="width*0.2" v-bind:y="height/1.7" fill="white"
+                v-bind:font-size="fontSize" v-bind:font-family="fontFamily">{{text}}</text>
+            <text
+                v-bind:x="width*0.2 + 1" v-bind:y="height/1.7 + 1" fill="blue"
+                v-bind:font-size="fontSize" v-bind:font-family="fontFamily">{{text}}</text>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true" default="500" />
+            <prop name="height" type="Number" required="true" default="50" />
+            <prop name="text" type="String" default="Справжний Кресмер" />
+            <prop name="font-size" type="String" default="28" />
+            <prop name="font-family" type="String" default="sans-serif" />
+        </props>
+    </component-class>
+
+    <component-class name="Crown">
+        <template>
+            <text x="0" y="0" v-bind:stroke="color" v-bind:font-size="fontSize">👑</text>
+        </template>
+        <props>
+            <prop name="fontSize" type="String" />
+            <prop name="color" type="String" default="gold" />
+        </props>
+    </component-class>
+
+    <component-class name="SilverKresmer">
+        <template>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
+                vector-effect="non-scaling-stroke"
+                stroke="silver" stroke-width="8px" stroke-opacity="0.5" />
+            <text
+                v-bind:x="width*0.25" v-bind:y="height*0.6" stroke="silver"
+                v-bind:font-size="fontSize">{{text}}</text>
+            <Kre:Crown v-bind:x="10"
+                v-bind:y="height*0.6" v-bind:font-size="fontSize" color="silver" />
+            <text
+                v-bind:x="width*0.75 + i*22" v-bind:y="height*0.6" fill="silver"
+                v-bind:font-size="fontSize" v-for="i in 3">⚜</text>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true" default="400" />
+            <prop name="height" type="Number" required="true" default="50" />
+            <prop name="text" type="String" default="Silver Kresmer" />
+            <prop name="font-size" type="String" default="32" />
+            <prop name="font-family" type="String" default="sans-serif" />
+        </props>
+    </component-class>
+
+    <component-class name="Lilly">
+        <template>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
+                vector-effect="non-scaling-stroke"
+                stroke="silver" stroke-width="8px" stroke-opacity="0.5" />
+            <text
+                v-bind:x="width*0.015" v-bind:y="height*0.76" fill="silver"
+                v-bind:font-size="fontSize">⚜</text>
+        </template>
+        <props>
+            <prop name="width" type="Number" required="true" default="256" />
+            <prop name="height" type="Number" required="true" default="256" />
+            <prop name="text" type="String" default="Silver Kresmer" />
+            <prop name="font-size" type="String" default="200" />
+            <prop name="font-family" type="String" default="sans-serif" />
+        </props>
+    </component-class>
+</kresmer-library>

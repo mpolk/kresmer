@@ -41,13 +41,57 @@ export type CustomManagementProtocol = {
 }//CustomManagementProtocol
 
 let drawingToAutoload: string;
+const libsToLoad: string[] = ["./stdlib.krel"];
 
 /** Parses the command line and save its parameters to the global vars */
 function parseCommandLine()
 {
     const argv = [...process.argv];
     console.debug(`argv=${argv}`);
-    drawingToAutoload = argv[1] == "." ? argv[2] : argv[1];
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const exePath = argv.shift();
+    if (argv[0] == ".")
+        argv.shift();
+
+    while (argv.length) {
+        const arg = argv.shift()!;
+        if (arg.startsWith('-')) {
+            const option = arg.slice(1);
+            const key = option[0];
+            switch (key) {
+                case 'l': {
+                    let lib: string|undefined;
+                    if (option.length > 1)
+                        lib = option.slice(1);
+                    else
+                        lib = argv.shift();
+                    if (!lib)
+                        console.error("-l command line options should have an argument!");
+                    else if (libsToLoad.findIndex(l => l === lib) < 0)
+                        libsToLoad.push(lib);
+                    break;
+                }
+                case 'L': {
+                    let libPath: string|undefined;
+                    if (option.length > 1)
+                        libPath = option.slice(1);
+                    else
+                        libPath = argv.shift();
+                    if (!libPath) {
+                        console.error("-L command line options should have an argument!");
+                    } else {
+                        fs.readdirSync(libPath).forEach(lib => {
+                            if (lib.endsWith(".krel"))
+                                libsToLoad.push(path.join(libPath!, lib));
+                        });
+                    }//if
+                    break;
+                }
+            }//switch
+        } else {
+            drawingToAutoload = arg;
+        }//if
+    }//while
 }//parseCommandLine
 
 
@@ -186,10 +230,13 @@ export function initApp(stage: AppInitStage)
         // eslint-disable-next-line no-fallthrough
         case AppInitStage.CONNECTED_TO_BACKEND: {
             console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`)
-            const libData = fs.readFileSync("./stdlib.krel", "utf-8");
-            console.debug("Standard library loaded in memory");
-            sendAppCommand("load-library", libData, AppInitStage.STDLIB_LOADED);
-            console.debug("Standard library loaded to Kresmer");
+            for (let i = 0; i < libsToLoad.length; i++) {
+                const lib = libsToLoad[i];
+                const libData = fs.readFileSync(lib, "utf-8");
+                console.debug(`Library ${lib} loaded in memory`);
+                sendAppCommand("load-library", libData, i < libsToLoad.length-1 ? AppInitStage.STDLIB_LOADED : undefined);
+                console.debug(`Library ${lib} loaded to Kresmer`);
+            }//for
             break;
         }
         case AppInitStage.STDLIB_LOADED: {

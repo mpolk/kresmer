@@ -23,7 +23,7 @@
         "windows": {
             "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
         },
-        "args": [".", "network-core.kre"],
+        "args": [".", "network-core.kre", "-L./lib"],
         "outputCapture": "std"
     }]
 }

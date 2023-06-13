@@ -235,13 +235,18 @@ window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args
     appCommandExecutor.execute(command, ...args);
 });
 
+let stdlibLoaded = false;
+
 appCommandExecutor.on("load-library", (libData: string, completionSignal?: AppInitStage) =>
 { 
     try {
         if (!kresmer.loadLibrary(libData)) {
             alert("There were errors during library load (see the log)");
-        } else if (completionSignal === undefined) {
-            alert("Library loaded successfully");
+        } else {
+            if (stdlibLoaded)
+                alert("Library loaded successfully");
+            if (completionSignal)
+                stdlibLoaded = true;
         }//if
     } catch (exc) {
         if (exc instanceof KresmerParsingException) {
