@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library.xsd"?>
+<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+
+    <component-class name="Catalyst">
+        <template>
+            <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
+                v-bind:perspective="perspective" 
+                v-bind:comment="comment"
+                />
+        </template>
+        <style extends="Switch">
+            .device-name { fill: yellow; text-shadow: 3px 3px 3px black; }
+            .facet {fill: darkcyan;}
+            .port-icon {fill: #005757;}
+        </style>
+        <props extend="Switch">
+        </props>
+    </component-class>
+
+</kresmer-library>
