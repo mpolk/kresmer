@@ -2,9 +2,9 @@
 <?xml-model href="xsd/kresmer-library.xsd"?>
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
-    <component-class name="ExtremeSwitchBody" instantiate="embed">
+    <component-class name="_ExtremeSwitchBody">
         <template>
-            <Kre:SwitchBody 
+            <Kre:_SwitchBody 
                 v-bind:name="name" v-bind:width="width" v-bind:height="height"
                 v-bind:n-slots="nSlots" v-bind:top-facet-size="topFacetSize" 
                 v-bind:perspective="perspective" 
@@ -13,7 +13,7 @@
                 v-bind:comment="comment"
                 />
         </template>
-        <style extends="SwitchBody">
+        <style extends="_SwitchBody">
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
             .model-name { fill: white; font-family: sans-serif; }
@@ -21,14 +21,14 @@
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
-        <props extend="SwitchBody">
+        <props extend="_SwitchBody">
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="height" type="Number" required="true" category="Geometry" />
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
         </props>
     </component-class>
 
-    <component-class name="ExtremeSwitchStack" instantiate="embed">
+    <component-class name="_ExtremeSwitchStack">
         <template/>
         <style>
             .slot-badge { fill: #7e0133; stroke: #e0d900; }
@@ -46,15 +46,15 @@
                 v-bind:comment="comment"
                 />
         </template>
-        <style extends="Switch, ExtremeSwitchBody" />
-        <props extend="ExtremeSwitchBody">
+        <style extends="Switch, _ExtremeSwitchBody" />
+        <props extend="_ExtremeSwitchBody">
             <prop name="nPorts" type="Number" default="8" category="Hardware" />
         </props>
     </component-class>
 
     <component-class name="Extreme-X590-24x">
         <template>
-            <Kre:ExtremeSwitchBody 
+            <Kre:_ExtremeSwitchBody 
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
@@ -64,14 +64,14 @@
             <text v-bind:x="height*7" v-bind:y="height/3" v-bind:font-size="height*0.25" 
                   class="model-name">X590</text>
             <template v-for="i in 12">
-                <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" 
+                <Kre:_SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" 
                              v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
-                <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" 
+                <Kre:_SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" 
                              v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom" />
             </template>
-            <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" v-bind:port-info="portsInfo[25]"/>
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" v-bind:port-info="portsInfo[26]"/>
-            <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" v-bind:port-info="portsInfo[27]"/>
+            <Kre:_XfpPort v-bind:x="height*7" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="25" v-bind:port-info="portsInfo[25]"/>
+            <Kre:_XfpPort v-bind:x="height*8" v-bind:y="height*0.15" v-bind:h="height/3" v-bind:name="26" v-bind:port-info="portsInfo[26]"/>
+            <Kre:_XfpPort v-bind:x="height*8" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="27" v-bind:port-info="portsInfo[27]"/>
         </template>
         <style extends="ExtremeSwitch" />
         <props extend="ExtremeSwitch">
@@ -85,7 +85,7 @@
 
     <component-class name="Extreme-X590-24x-Stack">
         <template>
-            <Kre:ExtremeSwitchBody 
+            <Kre:_ExtremeSwitchBody 
                 v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
                 v-bind:perspective="perspective" 
@@ -94,27 +94,27 @@
                 v-bind:comment="comment"
                 />
             <template v-for="slot in nSlots">
-                <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
+                <Kre:_SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <text v-bind:x="height*7" v-bind:y="height*(slot-0.67)" v-bind:font-size="height*0.25" 
                     class="model-name">X590</text>
                   <template v-for="i in 12">
-                    <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
+                    <Kre:_SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" v-bind:prefix="`${slot}:`" 
                         v-bind:port-info="portsInfo[`${slot}:${i*2-1}`]"/>
-                    <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
+                    <Kre:_SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2}`" v-bind:prefix="`${slot}:`" 
                         v-bind:port-info="portsInfo[`${slot}:${i*2}`]" key-position="bottom"/>
                 </template>
-                <Kre:XfpPort v-bind:x="height*7" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:25`" 
+                <Kre:_XfpPort v-bind:x="height*7" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:25`" 
                              v-bind:port-info="portsInfo[`${slot}:25`]"/>
-                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" 
+                <Kre:_XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.85)" v-bind:h="height/3" v-bind:name="`${slot}:26`" 
                              v-bind:port-info="portsInfo[`${slot}:26`]"/>
-                <Kre:XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" 
+                <Kre:_XfpPort v-bind:x="height*8" v-bind:y="height*(slot-0.47)" v-bind:h="height/3" v-bind:name="`${slot}:27`" 
                              v-bind:port-info="portsInfo[`${slot}:27`]"/>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
+        <style extends="_ExtremeSwitchBody, _SwitchStackSlotBadge, _ExtremeSwitchStack"/>
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
@@ -126,7 +126,7 @@
 
     <component-class name="Extreme-X670-48x">
         <template>
-            <Kre:ExtremeSwitchBody 
+            <Kre:_ExtremeSwitchBody 
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
@@ -134,13 +134,13 @@
                 v-bind:comment="comment"
                 />
             <template v-for="i in 24">
-                <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1"
+                <Kre:_SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="i*2-1"
                              v-bind:port-info="portsInfo[i*2-1]" />
-                <Kre:SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" key-position="bottom"
+                <Kre:_SfpPort v-bind:x="height*(i*0.5-0.2)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="i*2" key-position="bottom"
                              v-bind:port-info="portsInfo[i*2]" />
             </template>
         </template>
-        <style extends="ExtremeSwitchBody" />
+        <style extends="_ExtremeSwitchBody" />
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
@@ -153,7 +153,7 @@
 
     <component-class name="Extreme-X670-48x-Stack">
         <template>
-            <Kre:ExtremeSwitchBody 
+            <Kre:_ExtremeSwitchBody 
                 v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:top-facet-size="1" v-bind:n-slots="nSlots" 
                 v-bind:perspective="perspective" 
@@ -162,19 +162,19 @@
                 v-bind:comment="comment"
                 />
             <template v-for="slot in nSlots">
-                <Kre:SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
+                <Kre:_SwitchStackSlotBadge v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <template v-for="i in 24">
-                    <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
+                    <Kre:_SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2-1}`" v-bind:prefix="`${slot}:`"
                         v-bind:port-info="portsInfo[`${slot}:${i*2-1}`]" />
-                    <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
+                    <Kre:_SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.47)" v-bind:d="height/3" 
                         v-bind:name="`${slot}:${i*2}`" v-bind:prefix="`${slot}:`" key-position="bottom"
                         v-bind:port-info="portsInfo[`${slot}:${i*2}`]" />
                     </template>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
+        <style extends="_ExtremeSwitchBody, _SwitchStackSlotBadge, _ExtremeSwitchStack"/>
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>

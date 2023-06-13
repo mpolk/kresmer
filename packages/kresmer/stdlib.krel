@@ -10,7 +10,7 @@
     </template>
 
     <!-- Switch or router port -->
-    <component-class name="Port" instantiate="embed">
+    <component-class name="_Port">
         <template>
             <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
             <slot />
@@ -47,7 +47,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Ferrule" instantiate="embed">
+    <component-class name="_Ferrule">
         <template>
             <circle class="ferrule" v-bind:cx="cx" v-bind:cy="cy" v-bind:r="d/2" />
         </template>
@@ -61,7 +61,7 @@
         </style>
     </component-class>
 
-    <component-class name="PluginModule" instantiate="embed">
+    <component-class name="_PluginModule">
         <template>
             <polyline v-bind:points="
                 keyPosition === 'top' ?
@@ -87,25 +87,25 @@
         </style>
     </component-class>
 
-    <component-class name="SfpPort" instantiate="embed">
+    <component-class name="_SfpPort">
         <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+            <Kre:_Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
-                <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
-            </Kre:Port>
+                <Kre:_PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+            </Kre:_Port>
         </template>
-        <props extend="Port">
+        <props extend="_Port">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
     </component-class>
 
-    <component-class name="XfpPort" instantiate="embed">
+    <component-class name="_XfpPort">
         <template>
-            <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
+            <Kre:_Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
                     v-bind:port-info="portInfo">
-                <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
-            </Kre:Port>
+                <Kre:_PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
+            </Kre:_Port>
         </template>
         <props>
             <prop name="h" type="Number" required="true" default="25" category="Geometry" />
@@ -117,7 +117,7 @@
     </component-class>
 
     <!-- Props to inherit in various managed devices (switches, routers etc.) -->
-    <component-class name="ManagedDevice" instantiate="embed">
+    <component-class name="_ManagedDevice">
         <template/>
         <props>
             <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network"
@@ -133,7 +133,7 @@
     </component-class>
 
     <!-- General switch -->
-    <component-class name="SwitchBody" instantiate="embed">
+    <component-class name="_SwitchBody">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height*nSlots" class="facet front"/>
@@ -212,7 +212,7 @@
             .side.facet { filter: brightness(0.5); }
             .slot-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
         </style>
-        <props extend="ManagedDevice">
+        <props extend="_ManagedDevice">
             <prop name="n-slots" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
@@ -236,7 +236,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="SwitchStackSlotBadge" instantiate="embed">
+    <component-class name="_SwitchStackSlotBadge">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 class="slot-badge" />
@@ -256,20 +256,20 @@
 
     <component-class name="Switch">
         <template>
-            <Kre:SwitchBody 
+            <Kre:_SwitchBody 
                 v-bind:width="width" v-bind:height="height"
                 v-bind:perspective="perspective" v-bind:name="name" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol" 
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
-            <Kre:Port v-for="i in nPorts"
+            <Kre:_Port v-for="i in nPorts"
                 v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2"
                 v-bind:name="i" v-bind:port-info="portsInfo[i]"
                 />
         </template>
-        <style extends="SwitchBody" />
-        <props extend="SwitchBody">
+        <style extends="_SwitchBody" />
+        <props extend="_SwitchBody">
             <prop name="nPorts" type="Number" default="8" category="Hardware" />
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
             <prop name="width" type="Number" category="Geometry"/>
@@ -303,9 +303,9 @@
 
     <!-- General router body (differ form the switch body only with a circle on the top facet -->
 
-    <component-class name="RouterBody" instantiate="embed">
+    <component-class name="_RouterBody">
         <template>
-            <Kre:SwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
+            <Kre:_SwitchBody v-bind:name="name" v-bind:height="height" v-bind:width="width"
                 v-bind:n-slots="nSlots" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
@@ -321,10 +321,10 @@
                 <template v-slot:topFacetLR="{}">
                     <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
                 </template>
-            </Kre:SwitchBody>
+            </Kre:_SwitchBody>
         </template>
-        <style extends="SwitchBody"/>
-        <props extend="SwitchBody"/>
+        <style extends="_SwitchBody"/>
+        <props extend="_SwitchBody"/>
     </component-class>
 
 
