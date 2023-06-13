@@ -14,7 +14,7 @@ import { app, BrowserWindow, dialog, Menu, protocol, shell } from 'electron';
 const packageJson = require("../../package.json");
 import Settings from './Settings';
 import Menus, {ContextMenuID} from "./Menus";
-import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
+import { AppCommand, AppCommandFormats, LoadLibraryOptions } from '../renderer/AppCommands';
 import console from 'console';
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
@@ -234,7 +234,10 @@ export function initApp(stage: AppInitStage)
                 const lib = libsToLoad[i];
                 const libData = fs.readFileSync(lib, "utf-8");
                 console.debug(`Library ${lib} loaded in memory`);
-                sendAppCommand("load-library", libData, i < libsToLoad.length-1 ? AppInitStage.STDLIB_LOADED : undefined);
+                const options: LoadLibraryOptions = {libraryFileName: lib};
+                if (i == libsToLoad.length-1)
+                    options.completionSignal = AppInitStage.STDLIB_LOADED;
+                sendAppCommand("load-library", libData, options);
                 console.debug(`Library ${lib} loaded to Kresmer`);
             }//for
             break;
@@ -390,7 +393,7 @@ export function loadLibrary()
 
     if (filePath) {
         const libData = fs.readFileSync(filePath[0], "utf-8");
-        sendAppCommand("load-library", libData);
+        sendAppCommand("load-library", libData, {libraryFileName: filePath[0], notifyUser: true});
     }//if
 }//loadLibrary
 

@@ -21,7 +21,7 @@ import Kresmer, {
     NetworkLink, NetworkElement, LinkVertex,
     TransformMode, ConnectionPointProxy,
  } from 'kresmer';
-import { AppCommandExecutor } from './AppCommands';
+import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
 import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
@@ -235,18 +235,14 @@ window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args
     appCommandExecutor.execute(command, ...args);
 });
 
-let stdlibLoaded = false;
 
-appCommandExecutor.on("load-library", (libData: string, completionSignal?: AppInitStage) =>
+appCommandExecutor.on("load-library", (libData: string, options?: LoadLibraryOptions) =>
 { 
     try {
         if (!kresmer.loadLibrary(libData)) {
             alert("There were errors during library load (see the log)");
-        } else {
-            if (stdlibLoaded)
-                alert("Library loaded successfully");
-            if (completionSignal)
-                stdlibLoaded = true;
+        } else if (options?.notifyUser) {
+            alert("Library loaded successfully");
         }//if
     } catch (exc) {
         if (exc instanceof KresmerParsingException) {
@@ -257,14 +253,13 @@ appCommandExecutor.on("load-library", (libData: string, completionSignal?: AppIn
         }//if
     }//catch
 
-    if (completionSignal !== undefined) {
-        window.electronAPI.signalReadiness(completionSignal);
+    if (options?.completionSignal !== undefined) {
+        window.electronAPI.signalReadiness(options?.completionSignal);
     }//if
 });//loadLibrary
 
 
-appCommandExecutor.on("load-drawing", 
-    async (drawingData: string, options?: {drawingFileName?: string, completionSignal?: AppInitStage}) =>
+appCommandExecutor.on("load-drawing", async (drawingData: string, options?: LoadDrawingOptions) =>
 {
     try {
         let mergeOptions: DrawingMergeOptions|undefined;

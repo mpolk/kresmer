@@ -11,15 +11,21 @@ import { DrawingMergeOptions } from "kresmer";
 import { AppInitStage } from "./ElectronAPI";
 import { AppSettings } from "../main/main";
 
+export interface LoadLibraryOptions {
+    libraryFileName?: string, 
+    completionSignal?: number,
+    notifyUser?: boolean,
+}//LoadLibraryOptions
+export interface LoadDrawingOptions {
+    drawingFileName?: string, 
+    mergeOptions?: DrawingMergeOptions,
+    completionSignal?: number,
+}//LoadDrawingOptions
+
 export interface AppCommandFormats extends ContextMenuCommands {
     "edit-app-settings": (appSettings: AppSettings) => void,
-    "load-library": (libData: string, completionSignal?: number) => void,
-    "load-drawing": (drawingData: string, 
-                     options?: {
-                        drawingFileName?: string, 
-                        mergeOptions?: DrawingMergeOptions,
-                        completionSignal?: number,
-                    }) => void,
+    "load-library": (libData: string, options?: LoadLibraryOptions) => void,
+    "load-drawing": (drawingData: string, options?: LoadDrawingOptions) => void,
     "save-drawing": () => void,
     "connect-to-server": (url: string, password: string, forceUI: boolean, 
                           completionSignal?: AppInitStage) => void,
