@@ -13,7 +13,7 @@ import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
 import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
-import NetworkComponent, {ChangeComponentClassOp} from "./NetworkComponent/NetworkComponent";
+import NetworkComponent, {ChangeComponentClassOp, NetworkComponentFunctions} from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, SelectionMoveOp } 
     from "./NetworkComponent/NetworkComponentController";
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
@@ -73,6 +73,7 @@ export default class Kresmer extends KresmerEventHooks {
             .config.globalProperties = {
                 ...GeneralTemplateFunctions, 
                 ...TransformFunctons,
+                ...NetworkComponentFunctions,
                 $openURL: this.openURL,
             }
             ;
