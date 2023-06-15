@@ -10,7 +10,7 @@
             </pattern>
         </defs>
         <template>
-            <Kre:_RouterBody 
+            <Kre:RouterBody 
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
@@ -33,17 +33,17 @@
             <rect v-bind:x="height*0.08" v-bind:y="height*0.45" 
                   v-bind:height="height*0.5" v-bind:width="height*4.1" 
                   class="facet"/>
-            <Kre:_XfpPort v-for="i in 4" v-bind:x="height*(i-0.8)" v-bind:y="height*0.53" v-bind:h="height/3" 
+            <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.8)" v-bind:y="height*0.53" v-bind:h="height/3" 
                          v-bind:name="`et0/0/${i-1}`" prefix="et0/"
                          v-bind:port-info="portsInfo[`et0/0/${i-1}`]"/>
             <rect v-bind:x="height*4.9" v-bind:y="height*0.08" 
                   v-bind:height="height*0.9" v-bind:width="height*2.1" 
                   class="facet"/>
             <template v-for="i in 4">
-                <Kre:_SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.15" v-bind:d="height/3" 
+                <Kre:SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.15" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"
                              v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]"/>
-                <Kre:_SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.53" v-bind:d="height/3" 
+                <Kre:SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.53" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7" key-position="bottom"
                              v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]"/>
             </template>
@@ -55,14 +55,14 @@
                         v-bind:r="height*0.05" class="sync-port"/>
             </template>
         </template>
-        <style extends="_RouterBody">
+        <style extends="RouterBody">
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #faffd6; text-shadow: 1px 1px 1px black;}
             .model-name { fill: #ffffff; font-family: sans-serif; }
             .facet {--facet-color: #b8b8b8;}
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
-        <props extend="_RouterBody">
+        <props extend="RouterBody">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
         </props>
