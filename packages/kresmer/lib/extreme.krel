@@ -2,7 +2,7 @@
 <?xml-model href="xsd/kresmer-library.xsd"?>
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
-    <component-class name="_ExtremeSwitchBody">
+    <component-class name="_ExtremeSwitchBody" category=".switch-parts">
         <template>
             <Kre:_SwitchBody 
                 v-bind:name="name" v-bind:width="width" v-bind:height="height"
@@ -28,7 +28,7 @@
         </props>
     </component-class>
 
-    <component-class name="_ExtremeSwitchStack">
+    <component-class name="_ExtremeSwitchStack" category=".switch-parts">
         <template/>
         <style>
             .slot-badge { fill: #7e0133; stroke: #e0d900; }
@@ -36,7 +36,7 @@
         </style>
     </component-class>
 
-    <component-class name="ExtremeSwitch">
+    <component-class name="ExtremeSwitch" category="Switches">
         <template>
             <Kre:Switch 
                 v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
@@ -52,7 +52,7 @@
         </props>
     </component-class>
 
-    <component-class name="Extreme-X590-24x-Stack">
+    <component-class name="Extreme-X590-24x-Stack" category="Switches">
         <template>
             <Kre:_ExtremeSwitchBody 
                 v-bind:name="name" v-bind:height="height" v-bind:width="width"
@@ -93,7 +93,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Extreme-X590-24x">
+    <component-class name="Extreme-X590-24x" category="Switches">
         <template>
             <Kre:Extreme-X590-24x-Stack
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
@@ -107,7 +107,7 @@
         <props extend="Extreme-X590-24x-Stack" except="nSlots"/>
     </component-class>
 
-    <component-class name="Extreme-X670-48x-Stack">
+    <component-class name="Extreme-X670-48x-Stack" category="Switches">
         <template>
             <Kre:_ExtremeSwitchBody 
                 v-bind:name="name" v-bind:height="height" v-bind:width="width"
@@ -142,7 +142,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Extreme-X670-48x">
+    <component-class name="Extreme-X670-48x" category="Switches">
         <template>
             <Kre:Extreme-X670-48x-Stack
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 

@@ -72,7 +72,7 @@
 
         const classes = element instanceof NetworkLink ? 
             [...kresmer.getRegisteredLinkClasses()].filter(([name, _class]) => !_class.isAbstract) : 
-            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.forEmbeddingOnly);
+            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.isAbstract);
         allClasses.value = classes
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});

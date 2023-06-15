@@ -87,6 +87,7 @@ export default class LibraryParser {
     private parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
+        const category = node.getAttribute("category")?.split('/') ?? undefined;
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
@@ -136,13 +137,14 @@ export default class LibraryParser {
 
 
         return new NetworkComponentClass(className, {styleBaseClasses, propsBaseClasses, template, props, computedProps, defs, 
-                                                     style, defaultContent});
+                                                     style, defaultContent, category});
     }//parseComponentClassNode
 
 
     private parseLinkClassNode(node: Element)
     {
         const className = node.getAttribute("name");
+        const category = node.getAttribute("category")?.split('/') ?? undefined;
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 
@@ -187,7 +189,7 @@ export default class LibraryParser {
         }//if
 
         return new NetworkLinkClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
-                                                baseClassPropBindings, computedProps, defs, style})
+                                                baseClassPropBindings, computedProps, defs, style, category})
     }//parseLinkClassNode
 
 

@@ -30,6 +30,7 @@ export default abstract class NetworkElementClass {
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
+        category?: string[],
     })
     {
         this.name = name;
@@ -40,6 +41,7 @@ export default abstract class NetworkElementClass {
         this.computedProps = params.computedProps;
         this.defs = params.defs;
         this.style = params.style;
+        this.category = params.category;
     }//ctor
 
     /** Class name */
@@ -60,6 +62,10 @@ export default abstract class NetworkElementClass {
     readonly defs?: Template;
     /** CSS styles defined in this class */
     readonly style?: PostCSSRoot;
+    /** Class category (for ordering and usability) */
+    readonly category?: string[];
+    /** Limits this class usage for embedding or inheritance */
+    get isAbstract(): boolean {return (this.category?.findIndex(cat => cat.startsWith('.')) ?? -1) >= 0}
 
     /**
      * Returns the name of the vue-component for this class

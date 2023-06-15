@@ -31,6 +31,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
+        category?: string[],
         defaultContent?: string,
     })
     {
@@ -53,8 +54,6 @@ export default class NetworkComponentClass extends NetworkElementClass {
      * Template for the Vue-component for this class
      */
     public template: Template;
-    /** Limits this class usage for embedding inside other components */
-    get forEmbeddingOnly(): boolean {return this.name.startsWith('_')}
     /** The default content for the component (i.e. its slot) */
     readonly defaultContent?: string;
 

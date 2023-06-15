@@ -32,6 +32,7 @@ export default class NetworkLinkClass extends NetworkElementClass {
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
+        category?: string[],
     })
     {
         if (params.baseClass) {
@@ -42,8 +43,6 @@ export default class NetworkLinkClass extends NetworkElementClass {
     }//ctor
 
     override readonly usesEmbedding = false;
-
-    get isAbstract() {return this.name[0] === '_'}
 
     private static allClasses: Record<string, NetworkLinkClass> = {};
     /**

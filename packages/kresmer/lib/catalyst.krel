@@ -2,7 +2,7 @@
 <?xml-model href="xsd/kresmer-library.xsd"?>
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
-    <component-class name="Catalyst">
+    <component-class name="Catalyst" category="Switches">
         <template>
             <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
                 v-bind:perspective="perspective" 
