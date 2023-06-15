@@ -195,7 +195,7 @@
 
     function onMouseLeaveFromTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        // onMouseUpInTransformBox(zone, event);
+        onMouseUpInTransformBox(zone, event);
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {
