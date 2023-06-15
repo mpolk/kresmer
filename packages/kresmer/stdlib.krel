@@ -94,7 +94,7 @@
                 <Kre:_PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:_Port>
         </template>
-        <props extend="_Port">
+        <props extend="_Port" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>

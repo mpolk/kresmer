@@ -106,7 +106,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
                         .map(className => NetworkComponentClass.getClass(className));
-                    props = this.parseProps(child, propsBaseClasses);
+                    props = this.parseProps(child, propsBaseClasses, child.getAttribute("except")?.split(/ *, */));
                     break;
                 case "computed-props":
                     computedProps = this.parseComputedProps(child);
@@ -163,7 +163,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
                         .map(className => NetworkLinkClass.getClass(className));
-                    props = this.parseProps(child, propsBaseClasses);
+                    props = this.parseProps(child, propsBaseClasses, child.getAttribute("except")?.split(/ *, */));
                     break;
                 case "computed-props":
                     computedProps = this.parseComputedProps(child);
@@ -219,7 +219,7 @@ export default class LibraryParser {
     }//parseClassInheritance
 
 
-    private parseProps(node: Element, propsBaseClasses?: NetworkElementClass[])
+    private parseProps(node: Element, propsBaseClasses?: NetworkElementClass[], exceptProps?: string[])
     {
         const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown}> = {
             "string": {propType: String, makeDefault: d => d}, 
@@ -232,7 +232,8 @@ export default class LibraryParser {
         const props: NetworkElementClassProps = {};
         propsBaseClasses?.forEach(baseClass => {
             for (const propName in baseClass.props) {
-                props[propName] = baseClass.props[propName];
+                if (!exceptProps || exceptProps.findIndex(exc => exc === propName) < 0)
+                    props[propName] = baseClass.props[propName];
             }//for
         });
         for (let i = 0; i < node.children.length; i++) {
