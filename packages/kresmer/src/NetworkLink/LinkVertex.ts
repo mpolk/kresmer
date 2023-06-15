@@ -224,40 +224,44 @@ export default class LinkVertex {
 
         this.isDragged = false;
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
-        for (const element of elementsUnderCursor) {
-            const connectionPointData = element.getAttribute("data-connection-point");
-            if (connectionPointData) {
-                const {elementName, elementType, connectionPointName} = parseConnectionPointData(connectionPointData);
-                let connectionPoint: ConnectionPointProxy | undefined;
-                switch (elementType) {
-                    case "component": {
-                        const component = this.link.kresmer.getComponentByName(elementName);
-                        connectionPoint = component?.getConnectionPoint(connectionPointName);
-                    } break;
-                    case "link": {
-                        const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
-                        const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
-                        if (vertexToConnectTo === this)
+        const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
+
+        if (stickToConnectionPoints) {
+            for (const element of elementsUnderCursor) {
+                const connectionPointData = element.getAttribute("data-connection-point");
+                if (connectionPointData) {
+                    const {elementName, elementType, connectionPointName} = parseConnectionPointData(connectionPointData);
+                    let connectionPoint: ConnectionPointProxy | undefined;
+                    switch (elementType) {
+                        case "component": {
+                            const component = this.link.kresmer.getComponentByName(elementName);
+                            connectionPoint = component?.getConnectionPoint(connectionPointName);
+                        } break;
+                        case "link": {
+                            const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
+                            const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
+                            if (vertexToConnectTo === this)
+                                continue;
+                            if (vertexToConnectTo?.isConnected && vertexToConnectTo?.conn === this.ownConnectionPoint)
+                                continue;
+                            connectionPoint = vertexToConnectTo?.ownConnectionPoint;
+                        } break;
+                    }//switch
+                    if (connectionPoint) {
+                        if (!connectionPoint.isActive)
                             continue;
-                        if (vertexToConnectTo?.isConnected && vertexToConnectTo?.conn === this.ownConnectionPoint)
-                            continue;
-                        connectionPoint = vertexToConnectTo?.ownConnectionPoint;
-                    } break;
-                }//switch
-                if (connectionPoint) {
-                    if (!connectionPoint.isActive)
-                        continue;
-                    this.connect(connectionPoint);
-                } else {
-                    this.link.kresmer.raiseError(new KresmerException(
-                        `Reference to undefined connection point "${connectionPointData}"`));
+                        this.connect(connectionPoint);
+                    } else {
+                        this.link.kresmer.raiseError(new KresmerException(
+                            `Reference to undefined connection point "${connectionPointData}"`));
+                    }//if
+                    this.link.kresmer.undoStack.commitOperation();
+                    this.link.kresmer.emit("link-vertex-connected", this);
+                    this.ownConnectionPoint?.updatePos();
+                    return true;
                 }//if
-                this.link.kresmer.undoStack.commitOperation();
-                this.link.kresmer.emit("link-vertex-connected", this);
-                this.ownConnectionPoint?.updatePos();
-                return true;
-            }//if
-        }//for
+            }//for
+        }//if
 
         this.link.kresmer.undoStack.commitOperation();
         if (this.savedConn) {
