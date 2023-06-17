@@ -4,7 +4,7 @@
  *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  * Network Component Class - a generic network element class
- * (the word "class" here means a runtime class, not a Typescript one)
+ * (the word "class" here means a Kresmer class, not a Typescript one)
  ***************************************************************************/
 
 import { Prop } from "vue";

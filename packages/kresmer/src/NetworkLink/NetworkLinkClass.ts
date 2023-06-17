@@ -4,7 +4,7 @@
  *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  * Network Link Class - a network link class
- * (the word "class" here means a runtime class, not a Typescript one)
+ * (the word "class" here means a Kresmer class, not a Typescript one)
  ***************************************************************************/
 
 import {Root as PostCSSRoot} from 'postcss';
