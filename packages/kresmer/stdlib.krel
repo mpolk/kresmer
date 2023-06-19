@@ -116,7 +116,7 @@
         </props>
     </component-class>
 
-    <!-- Props to inherit in various managed devices (switches, routers etc.) -->
+    <!-- General device prototypes -->
     <component-class name="ManagedDevice" category=".general">
         <template/>
         <props>
@@ -130,6 +130,102 @@
             <prop name="ports-info" type="object" default="{}" category="Network" 
                 description="Ports info for displaying in tooltips and similar"/>
         </props>
+    </component-class>
+
+    <component-class name="RackMountDevice" category=".general">
+        <template>
+            <title v-if="comment">{{comment}}</title>
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="unitHeight*nUnits" class="facet front"/>
+            <slot name="frontFacet"/>
+            <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
+                <polyline
+                    v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
+                                                           ([0,0], [0,1], [1,1], [1,0]))"
+                    class="top facet" />
+                <slot name="topFacetC"/>
+            </g>
+            <g v-if="perspective === 'right'"
+                v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
+                <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
+                <slot name="topFacetLR"/>
+            </g>
+            <polygon
+                v-if="perspective === 'right'"
+                v-bind:points="`${width},0 ${width},${unitHeight*nUnits} 
+                                ${width+topFacetSkewShift},${unitHeight*(nUnits - topFacetSize*1.2)} 
+                                ${width+topFacetSkewShift},${-unitHeight*topFacetSize}`"
+                class="side facet" />
+            <g
+                v-if="perspective === 'left'"
+                v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
+                <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
+                <slot name="topFacetLR"/>
+            </g>
+            <polygon
+                v-if="perspective === 'left'"
+                v-bind:points="`0,0 0,${unitHeight*nUnits} 
+                                ${-topFacetSkewShift},${unitHeight*(nUnits - topFacetSize*1.2)} 
+                                ${-topFacetSkewShift},${-unitHeight*topFacetSize}`"
+                class="side facet" />
+            <text
+                v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
+                text-anchor="middle" class="device-name"
+                v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
+            <template v-if="ipAddress">
+                <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" 
+                   v-bind:target="managementRefTarget">
+                    <text
+                        v-bind:x="nameX" v-bind:y="nameY + unitHeight*0.25" v-bind:font-size="unitHeight*0.25"
+                        text-anchor="middle" class="ip-address href"
+                        v-bind:class='{"no-persp": perspective === "none"}'>
+                        {{ipAddress}}
+                    </text>
+                </a>
+                <text v-else=""
+                    v-bind:x="nameX" v-bind:y="nameY + unitHeight*0.25" v-bind:font-size="unitHeight*0.25"
+                    text-anchor="middle" class="ip-address"
+                    v-bind:class='{"no-persp": perspective === "none"}'>
+                    {{ipAddress}}
+                </text>
+            </template>
+        </template>
+        <style>
+            .device-name { font-family: sans-serif; fill: black; text-shadow: none}
+            .device-name.no-persp { font-family: sans-serif!important; fill: black!important; text-shadow: none!important}
+            .ip-address { font-family: sans-serif; }
+            a { text-decoration: none; }
+            a:hover { text-decoration: underline; }
+            .port-icon { fill: #404040; }
+            .facet {
+                --facet-color: lightgray;
+                fill: var(--facet-color); stroke: var(--facet-color); stroke-width: 0;
+            }
+            .top.facet { filter: brightness(0.7); }
+            .side.facet { filter: brightness(0.5); }
+            .slot-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
+        </style>
+        <props extend="ManagedDevice">
+            <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
+            <prop name="unitHeight" type="Number" required="true" default="50" category="Geometry" />
+            <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
+            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" 
+                  description="Visual perspective of the device image"/>
+            <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
+            <prop name="top-facet-skew" type="Number" default="60" category="Geometry" />
+        </props>
+        <computed-props>
+            <computed-prop name="topFacetSkewShift">
+                props.unitHeight * props.topFacetSize * Math.tan(props.topFacetSkew * Math.PI/180)
+            </computed-prop>
+            <computed-prop name="nameX">
+                props.perspective === 'right' ? props.width/2 + computedProps.topFacetSkewShift*0.393 :
+                props.perspective === 'left' ? props.width/2 - computedProps.topFacetSkewShift*0.393 :
+                props.width*0.5
+            </computed-prop>
+            <computed-prop name="nameY">
+                props.perspective === "none" ? -props.unitHeight*0.3 : -props.unitHeight*props.topFacetSize*0.393
+            </computed-prop>
+        </computed-props>
     </component-class>
 
     <!-- General switch -->
