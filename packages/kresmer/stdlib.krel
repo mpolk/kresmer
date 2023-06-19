@@ -206,7 +206,7 @@
         </style>
         <props extend="ManagedDevice">
             <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
-            <prop name="unitHeight" type="Number" required="true" default="50" category="Geometry" />
+            <prop name="unitHeight" type="Number" required="true" default="75" category="Geometry" />
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" 
                   description="Visual perspective of the device image"/>

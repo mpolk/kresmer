@@ -42,61 +42,61 @@
         </defs>
         <template>
             <Kre:ServerBody
-                v-bind:name="name" v-bind:unit-height="height" v-bind:width="width"
+                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
                 v-bind:perspective="perspective"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
             />
-            <rect v-bind:x="height*0.08" v-bind:y="height*0.08"
-                v-bind:height="height*0.84" v-bind:width="width-height*0.16"
+            <rect v-bind:x="unitHeight*0.08" v-bind:y="unitHeight*0.08"
+                v-bind:height="unitHeight*0.84" v-bind:width="width-unitHeight*0.16"
                 fill="url(#kre:std:server-front-grid)" />
-            <rect v-bind:x="height*0.08"
-                v-bind:y="height*0.08"
-                v-bind:height="height*0.5" v-bind:width="height*0.2*Math.max(name.length, 8)"
+            <rect v-bind:x="unitHeight*0.08"
+                v-bind:y="unitHeight*0.08"
+                v-bind:height="unitHeight*0.5" v-bind:width="unitHeight*0.2*Math.max(name.length, 8)"
                 class="facet" />
-            <text v-bind:x="height*0.18" v-bind:y="height*0.25"
-                v-bind:font-size="height*0.25"
+            <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.25"
+                v-bind:font-size="unitHeight*0.25"
                 class="device-name">{{name}}</text>
             <template v-if="ipAddress">
                 <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress"
                     v-bind:target="managementRefTarget">
-                    <text v-bind:x="height*0.18" v-bind:y="height*0.5" v-bind:font-size="height*0.2"
+                    <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.5" v-bind:font-size="unitHeight*0.2"
                         class="ip-address">{{ipAddress}}</text>
                 </a>
                 <text v-else=""
-                    v-bind:x="height*0.18" v-bind:y="height*0.5" v-bind:font-size="height*0.2"
+                    v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.5" v-bind:font-size="unitHeight*0.2"
                     class="ip-address">{{ipAddress}}</text>
             </template>
             <rect
-                v-bind:x="height*8.1" v-bind:y="height*0.08"
-                v-bind:height="height*0.25" v-bind:width="height"
+                v-bind:x="unitHeight*8.1" v-bind:y="unitHeight*0.08"
+                v-bind:height="unitHeight*0.25" v-bind:width="unitHeight"
                 class="facet" />
             <rect
-                v-bind:x="height*8.15" v-bind:y="height*0.085"
-                v-bind:height="height*0.2" v-bind:width="height*0.86"
+                v-bind:x="unitHeight*8.15" v-bind:y="unitHeight*0.085"
+                v-bind:height="unitHeight*0.2" v-bind:width="unitHeight*0.86"
                 class="facet top" />
-            <circle v-bind:cx="height*8.27" v-bind:cy="height*0.18"
-                v-bind:r="height*0.05" v-bind:stroke-width="height*0.03" class="green led" />
+            <circle v-bind:cx="unitHeight*8.27" v-bind:cy="unitHeight*0.18"
+                v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03" class="green led" />
             <circle
-                v-bind:cx="height*8.47" v-bind:cy="height*0.18" v-bind:r="height*0.05"
-                v-bind:stroke-width="height*0.03" class="dark-green led" />
+                v-bind:cx="unitHeight*8.47" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05"
+                v-bind:stroke-width="unitHeight*0.03" class="dark-green led" />
             <circle
-                v-bind:cx="height*8.67" v-bind:cy="height*0.18" v-bind:r="height*0.05"
-                v-bind:stroke-width="height*0.03" class="green led" />
-            <circle v-bind:cx="height*8.87"
-                v-bind:cy="height*0.18" v-bind:r="height*0.05" v-bind:stroke-width="height*0.03"
+                v-bind:cx="unitHeight*8.67" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05"
+                v-bind:stroke-width="unitHeight*0.03" class="green led" />
+            <circle v-bind:cx="unitHeight*8.87"
+                v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03"
                 class="red led" />
-            <rect v-bind:x="height*4.9" v-bind:y="height*0.08"
-                v-bind:height="height*0.9" v-bind:width="height*2.1"
+            <rect v-bind:x="unitHeight*4.9" v-bind:y="unitHeight*0.08"
+                v-bind:height="unitHeight*0.9" v-bind:width="unitHeight*2.1"
                 class="facet" />
             <template v-for="i in 4">
-                <Kre:SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.15"
-                    v-bind:d="height/3"
+                <Kre:SfpPort v-bind:x="unitHeight*(i*0.5+4.5)" v-bind:y="unitHeight*0.15"
+                    v-bind:d="unitHeight/3"
                     v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"
                     v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]" />
                 <Kre:SfpPort
-                    v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.53" v-bind:d="height/3"
+                    v-bind:x="unitHeight*(i*0.5+4.5)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3"
                     v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7"
                     key-position="bottom"
                     v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]" />
@@ -112,12 +112,11 @@
             .led.dark-green {stroke: #007a00; fill: #16b616}
             .led.red {stroke: #ad0101; fill: #d50101}
         </style>
-        <props extend="ServerBody" except="unit-height, top-facet-size, top-facet-skew">
-            <prop name="height" type="Number" required="true" default="75" category="Geometry" />
+        <props extend="ServerBody" except="top-facet-size, top-facet-skew">
             <prop name="width" type="Number" category="Geometry" />
         </props>
         <computed-props>
-            <computed-prop name="width">props.width || props.height * 9.1</computed-prop>
+            <computed-prop name="width">props.width || props.unitHeight * 9.1</computed-prop>
         </computed-props>
     </component-class>
 
