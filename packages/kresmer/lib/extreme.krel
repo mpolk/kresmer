@@ -63,7 +63,7 @@
                 v-bind:comment="comment"
                 />
             <template v-for="slot in nSlots">
-                <Kre:SwitchStackSlotBadge v-if="nSlots > 1" v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
+                <Kre:StackSlotBadge v-if="nSlots > 1" v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <text v-bind:x="height*7" v-bind:y="height*(slot-0.67)" v-bind:font-size="height*0.25" 
                     class="model-name">X590</text>
@@ -83,7 +83,7 @@
                               v-bind:name="$portName(27, slot, nSlots)" v-bind:port-info="portsInfo[$portName(27, slot, nSlots)]"/>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
+        <style extends="ExtremeSwitchBody, StackSlotBadge, ExtremeSwitchStack"/>
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
@@ -118,7 +118,7 @@
                 v-bind:comment="comment"
                 />
             <template v-for="slot in nSlots">
-                <Kre:SwitchStackSlotBadge v-if="nSlots > 1" v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
+                <Kre:StackSlotBadge v-if="nSlots > 1" v-bind:x="height*0.1" v-bind:y="height*(-0.9 + slot)"
                     v-bind:width = "height*0.25" v-bind:height = "height*0.25" v-bind:slot="slot" />
                 <template v-for="i in 24">
                     <Kre:SfpPort v-bind:x="height*(i*0.5)" v-bind:y="height*(slot-0.85)" v-bind:d="height/3" 
@@ -130,7 +130,7 @@
                     </template>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, SwitchStackSlotBadge, ExtremeSwitchStack"/>
+        <style extends="ExtremeSwitchBody, StackSlotBadge, ExtremeSwitchStack"/>
         <props extend="ExtremeSwitch">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>

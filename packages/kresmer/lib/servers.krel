@@ -5,103 +5,31 @@
     <!-- General server -->
     <component-class name="ServerBody" category=".server-parts">
         <template>
-            <title v-if="comment">{{comment}}</title>
-            <rect x="0" y="0" v-bind:width="width" v-bind:height="height*nSlots" class="facet front"/>
-            <slot name="frontFacet"/>
-            <line v-for="i in nSlots-1" x1="0" v-bind:y1="i*height"
-                v-bind:x2="width" v-bind:y2="i*height" class="slot-boundary" />
-            <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*height})`">
-                <polyline
-                    v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
-                                                           ([0,0], [0,1], [1,1], [1,0]))"
-                    class="top facet" />
-                <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                <slot name="topFacetC"/>
-            </g>
-            <g v-if="perspective === 'right'"
-                v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
-                <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
-                <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                <slot name="topFacetLR"/>
-            </g>
-            <polygon
-                v-if="perspective === 'right'"
-                v-bind:points="`${width},0 ${width},${height*nSlots} 
-                                ${width+topFacetSkewShift},${height*(nSlots - topFacetSize*1.2)} 
-                                ${width+topFacetSkewShift},${-height*topFacetSize}`"
-                class="side facet" />
-            <g
-                v-if="perspective === 'left'"
-                v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*height})`">
-                <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
-                <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                <slot name="topFacetLR"/>
-            </g>
-            <polygon
-                v-if="perspective === 'left'"
-                v-bind:points="`0,0 0,${height*nSlots} 
-                                ${-topFacetSkewShift},${height*(nSlots - topFacetSize*1.2)} 
-                                ${-topFacetSkewShift},${-height*topFacetSize}`"
-                class="side facet" />
-            <text
-                v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="height*0.75"
-                text-anchor="middle" class="device-name"
-                v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
-            <template v-if="ipAddress">
-                <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" 
-                   v-bind:target="managementRefTarget">
-                    <text
-                        v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="height*0.25"
-                        text-anchor="middle" class="ip-address href"
-                        v-bind:class='{"no-persp": perspective === "none"}'>
-                        {{ipAddress}}
-                    </text>
-                </a>
-                <text v-else=""
-                    v-bind:x="nameX" v-bind:y="nameY + height*0.25" v-bind:font-size="height*0.25"
-                    text-anchor="middle" class="ip-address"
-                    v-bind:class='{"no-persp": perspective === "none"}'>
-                    {{ipAddress}}
-                </text>
-            </template>
+            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="height" v-bind:width="width"
+                v-bind:n-units="nSlots" v-bind:perspective="perspective" 
+                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
+                v-bind:comment="comment"
+                >
+                <template v-slot:frontFacet="{}">
+                    <slot name="frontFacet" />
+                </template>
+                <template v-slot:topFacetC="{}">
+                    <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
+                    <slot name="topFacetC"/>
+                </template>
+                <template v-slot:topFacetLR="{}">
+                    <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
+                    <slot name="topFacetLR"/>
+                </template>
+            </Kre:RackMountDevice>
         </template>
-        <style>
-            .device-name { font-family: sans-serif; fill: black; text-shadow: none}
-            .device-name.no-persp { font-family: sans-serif!important; fill: black!important; text-shadow: none!important}
-            .ip-address { font-family: sans-serif; }
-            a { text-decoration: none; }
-            a:hover { text-decoration: underline; }
-            .port-icon { fill: #404040; }
-            .facet {
-                --facet-color: lightgray;
-                fill: var(--facet-color); stroke: var(--facet-color); stroke-width: 0;
-            }
-            .top.facet { filter: brightness(0.7); }
-            .side.facet { filter: brightness(0.5); }
-            .slot-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
-        </style>
-        <props extend="ManagedDevice">
+        <style extends="RackMountDevice"/>
+        <props extend="RackMountDevice" except="nUnits, unitHeight">
             <prop name="n-slots" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
-            <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
-            <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" 
-                  description="Visual perspective of the switch image"/>
-            <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
-            <prop name="top-facet-skew" type="Number" default="60" category="Geometry" />
         </props>
-        <computed-props>
-            <computed-prop name="topFacetSkewShift">
-                props.height * props.topFacetSize * Math.tan(props.topFacetSkew * Math.PI/180)
-            </computed-prop>
-            <computed-prop name="nameX">
-                props.perspective === 'right' ? props.width/2 + computedProps.topFacetSkewShift*0.393 :
-                props.perspective === 'left' ? props.width/2 - computedProps.topFacetSkewShift*0.393 :
-                props.width*0.5
-            </computed-prop>
-            <computed-prop name="nameY">
-                props.perspective === "none" ? -props.height*0.3 : -props.height*props.topFacetSize*0.393
-            </computed-prop>
-        </computed-props>
     </component-class>
 
     <component-class name="Server" category="Servers">
