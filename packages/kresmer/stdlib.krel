@@ -261,8 +261,7 @@
                     <slot name="frontFacet" />
                 </template>
                 <template v-slot:topFacetC="{}">
-                    <polyline
-                        v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
+                    <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
                     <slot name="topFacetC"/>
                 </template>
                 <template v-slot:topFacetLR="{}">
@@ -274,7 +273,7 @@
         <style extends="RackMountDevice">
             .facet { --facet-color: lightgray; }
         </style>
-        <props extend="RackMountDevice" except="nUnits, unitHeight">
+        <props extend="RackMountDevice" except="n-units, unit-height">
             <prop name="n-slots" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
         </props>
@@ -344,8 +343,7 @@
                 </template>
                 <template v-slot:topFacetC="{}">
                     <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                    <polyline
-                        v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
+                    <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
                     <slot name="topFacetC"/>
                 </template>
                 <template v-slot:topFacetLR="{}">

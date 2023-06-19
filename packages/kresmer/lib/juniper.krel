@@ -62,7 +62,7 @@
             .facet {--facet-color: #b8b8b8;}
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
-        <props extend="RouterBody">
+        <props extend="RouterBody" except="slot-height">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
         </props>
