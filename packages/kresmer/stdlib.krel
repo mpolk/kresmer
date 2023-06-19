@@ -167,11 +167,11 @@
                                 ${-topFacetSkewShift},${unitHeight*(nUnits - topFacetSize*1.2)} 
                                 ${-topFacetSkewShift},${-unitHeight*topFacetSize}`"
                 class="side facet" />
-            <text
+            <text v-if="showDeviceName"
                 v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
                 text-anchor="middle" class="device-name"
                 v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
-            <template v-if="ipAddress">
+            <template v-if="ipAddress &amp;&amp; showIpAddress">
                 <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" 
                    v-bind:target="managementRefTarget">
                     <text
@@ -212,6 +212,8 @@
                   description="Visual perspective of the device image"/>
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
             <prop name="top-facet-skew" type="Number" default="60" category="Geometry" />
+            <prop name="show-device-name" type="boolean" default="true" />
+            <prop name="show-ip-address" type="boolean" default="true" />
         </props>
         <computed-props>
             <computed-prop name="topFacetSkewShift">
