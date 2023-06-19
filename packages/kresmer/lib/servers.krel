@@ -5,8 +5,8 @@
     <!-- General server -->
     <component-class name="ServerBody" category=".server-parts">
         <template>
-            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="height" v-bind:width="width"
-                v-bind:n-units="nSlots" v-bind:perspective="perspective" 
+            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
+                v-bind:n-units="nUnits" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
@@ -26,10 +26,7 @@
             </Kre:RackMountDevice>
         </template>
         <style extends="RackMountDevice"/>
-        <props extend="RackMountDevice" except="nUnits, unitHeight">
-            <prop name="n-slots" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
-            <prop name="height" type="Number" required="true" default="50" category="Geometry" />
-        </props>
+        <props extend="RackMountDevice"/>
     </component-class>
 
     <component-class name="Server" category="Servers">
@@ -41,7 +38,7 @@
         </defs>
         <template>
             <Kre:ServerBody 
-                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
+                v-bind:name="name" v-bind:unit-height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
@@ -92,7 +89,7 @@
             .facet {--facet-color: #b8b8b8;}
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
-        <props extend="ServerBody">
+        <props extend="ServerBody" except="n-units, unit-height">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
         </props>
