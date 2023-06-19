@@ -11,7 +11,7 @@
         </defs>
         <template>
             <Kre:RouterBody 
-                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
+                v-bind:name="name" v-bind:slot-height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"

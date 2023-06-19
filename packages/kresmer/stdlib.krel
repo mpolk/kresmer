@@ -331,7 +331,7 @@
 
     <component-class name="RouterBody" category=".router-parts">
         <template>
-            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="height" v-bind:width="width"
+            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="slotHeight" v-bind:width="width"
                 v-bind:n-units="nSlots" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
@@ -339,7 +339,7 @@
                 v-bind:comment="comment"
                 >
                 <template v-slot:frontFacet="{}">
-                    <line v-for="i in nSlots-1" x1="0" v-bind:y1="i*height" v-bind:x2="width" v-bind:y2="i*height" class="slot-boundary" />
+                    <line v-for="i in nSlots-1" x1="0" v-bind:y1="i*slotHeight" v-bind:x2="width" v-bind:y2="i*slotHeight" class="slot-boundary" />
                     <slot name="frontFacet" />
                 </template>
                 <template v-slot:topFacetC="{}">
@@ -358,7 +358,7 @@
         <style extends="RackMountDevice"/>
         <props extend="RackMountDevice" except="nUnits, unitHeight">
             <prop name="n-slots" type="Number" default="1" category="Hardware" description="The number of slots (devices) in the stack"/>
-            <prop name="height" type="Number" required="true" default="50" category="Geometry" />
+            <prop name="slot-height" type="Number" required="true" default="50" category="Geometry" />
         </props>
     </component-class>
 
