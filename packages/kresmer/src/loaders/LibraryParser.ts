@@ -107,7 +107,8 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
                         .map(className => NetworkComponentClass.getClass(className));
-                    props = this.parseProps(child, propsBaseClasses, child.getAttribute("except")?.split(/ *, */));
+                    props = this.parseProps(child, propsBaseClasses, 
+                                            child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc)));
                     break;
                 case "computed-props":
                     computedProps = this.parseComputedProps(child);
