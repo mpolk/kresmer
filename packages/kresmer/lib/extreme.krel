@@ -5,7 +5,7 @@
     <component-class name="ExtremeSwitchBody" category=".switch-parts">
         <template>
             <Kre:SwitchBody 
-                v-bind:name="name" v-bind:width="width" v-bind:height="height"
+                v-bind:name="name" v-bind:width="width" v-bind:unit-height="height"
                 v-bind:n-slots="nSlots" v-bind:top-facet-size="topFacetSize" 
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
@@ -21,7 +21,7 @@
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
-        <props extend="SwitchBody">
+        <props extend="SwitchBody" except="unit-height">
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="height" type="Number" required="true" category="Geometry" />
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
