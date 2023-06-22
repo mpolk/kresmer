@@ -216,7 +216,7 @@ export default class LibraryParser {
                 baseClassRawProps[attrName] = node.getAttribute(attrName)!;
             }//if
         }//for
-        const baseClassPropBindings = DrawingParser.normalizeProps(baseClassRawProps, baseClass);
+        const baseClassPropBindings = DrawingParser.normalizeProps(baseClassRawProps, baseClass, this.kresmer);
 
         return {baseClass, baseClassPropBindings};
     }//parseClassInheritance

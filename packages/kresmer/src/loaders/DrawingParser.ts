@@ -290,7 +290,7 @@ export default class DrawingParser {
     private _normalizeProps(rawProps: NetworkElementRawProps, node: Element, elementClass: NetworkElementClass): NetworkElementProps
     {
         try {
-            return DrawingParser.normalizeProps(rawProps, elementClass);
+            return DrawingParser.normalizeProps(rawProps, elementClass, this.kresmer);
         } catch (exc) {
             if (exc instanceof ParsingException) {
                 exc.source = `Element ${node.getAttribute("name")}`;
@@ -302,7 +302,7 @@ export default class DrawingParser {
     }//_normalizeProps
 
 
-    static normalizeProps(rawProps: NetworkElementRawProps, elementClass: NetworkElementClass): NetworkElementProps
+    static normalizeProps(rawProps: NetworkElementRawProps, elementClass: NetworkElementClass, kresmer: Kresmer): NetworkElementProps
     {
         const props: NetworkElementProps = {};
         if (Object.keys(rawProps).length  === 0) {
@@ -311,8 +311,8 @@ export default class DrawingParser {
 
         const classProps = elementClass.props;
         if (!classProps) {
-            throw new ParsingException(
-                `Class "${elementClass}" has no props, but the instance supplies some`);
+            kresmer.raiseError(new ParsingException(
+                `Class "${elementClass}" has no props, but the instance supplies some`));
         }//if
 
         for (let propName in rawProps) {
@@ -327,8 +327,8 @@ export default class DrawingParser {
                     propName = toCamelCase(propName);
                     classProp = classProps[propName];
                     if (!classProp) {
-                        throw new ParsingException(
-                            `Class "${elementClass.name}" has no prop "${propName}", but the instance supplies one`);
+                        kresmer.raiseError(new ParsingException(
+                            `Class "${elementClass.name}" has no prop "${propName}", but the instance supplies one`));
                         continue;
                     }//if
                 }//if
