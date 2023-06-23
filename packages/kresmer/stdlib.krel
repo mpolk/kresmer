@@ -251,14 +251,14 @@
     <component-class name="SwitchBody" category=".switch-parts">
         <template>
             <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-units="nUnits" v-bind:perspective="perspective" 
+                v-bind:n-units="nStackUnits" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 >
                 <template v-slot:frontFacet="{}">
-                    <line v-for="i in nUnits-1" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
+                    <line v-for="i in nStackUnits-1" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
                     <slot name="frontFacet" />
                 </template>
                 <template v-slot:topFacetC="{}">
@@ -275,7 +275,7 @@
             .facet { --facet-color: lightgray; }
         </style>
         <props extend="RackMountDevice" except="n-units">
-            <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
+            <prop name="n-stack-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
         </props>
     </component-class>
 
