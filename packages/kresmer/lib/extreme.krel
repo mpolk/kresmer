@@ -6,7 +6,7 @@
         <template>
             <Kre:SwitchBody 
                 v-bind:name="name" v-bind:width="width" v-bind:unit-height="unitHeight"
-                v-bind:n-slots="nSlots" v-bind:top-facet-size="topFacetSize" 
+                v-bind:n-units="nUnits" v-bind:top-facet-size="topFacetSize" 
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
@@ -30,8 +30,8 @@
     <component-class name="ExtremeSwitchStack" category=".switch-parts">
         <template/>
         <style>
-            .slot-badge { fill: #7e0133; stroke: #e0d900; }
-            .slot-badge-text { fill: white; }
+            .unit-badge { fill: #7e0133; stroke: #e0d900; }
+            .unit-badge-text { fill: white; }
         </style>
     </component-class>
 
@@ -53,34 +53,34 @@
         <template>
             <Kre:ExtremeSwitchBody 
                 v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-slots="nSlots" v-bind:top-facet-size="1" 
+                v-bind:n-units="nUnits" v-bind:top-facet-size="1" 
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
-            <template v-for="slot in nSlots">
-                <Kre:StackSlotBadge v-if="nSlots > 1" v-bind:x="unitHeight*0.1" v-bind:y="unitHeight*(-0.9 + slot)"
-                    v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:slot="slot" />
-                <text v-bind:x="unitHeight*7" v-bind:y="unitHeight*(slot-0.67)" v-bind:font-size="unitHeight*0.25" 
+            <template v-for="unit in nUnits">
+                <Kre:StackUnitBadge v-if="nUnits > 1" v-bind:x="unitHeight*0.1" v-bind:y="unitHeight*(-0.9 + unit)"
+                    v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
+                <text v-bind:x="unitHeight*7" v-bind:y="unitHeight*(unit-0.67)" v-bind:font-size="unitHeight*0.25" 
                     class="model-name">X590</text>
                   <template v-for="i in 12">
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(slot-0.85)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2-1, slot, nSlots)" v-bind:prefix="`${slot}:`" 
-                        v-bind:port-info="portsInfo[$portName(i*2-1, slot, nSlots)]"/>
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(slot-0.47)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2, slot, nSlots)" v-bind:prefix="`${slot}:`" 
-                        v-bind:port-info="portsInfo[$portName(i*2, slot, nSlots)]" key-position="bottom"/>
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)" v-bind:d="unitHeight/3" 
+                        v-bind:name="$portName(i*2-1, unit, nUnits)" v-bind:prefix="`${unit}:`" 
+                        v-bind:port-info="portsInfo[$portName(i*2-1, unit, nUnits)]"/>
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)" v-bind:d="unitHeight/3" 
+                        v-bind:name="$portName(i*2, unit, nUnits)" v-bind:prefix="`${unit}:`" 
+                        v-bind:port-info="portsInfo[$portName(i*2, unit, nUnits)]" key-position="bottom"/>
                 </template>
-                <Kre:XfpPort v-bind:x="unitHeight*7" v-bind:y="unitHeight*(slot-0.47)" v-bind:h="unitHeight/3" 
-                              v-bind:name="$portName(25, slot, nSlots)" v-bind:port-info="portsInfo[$portName(25, slot, nSlots)]"/>
-                <Kre:XfpPort v-bind:x="unitHeight*8" v-bind:y="unitHeight*(slot-0.85)" v-bind:h="unitHeight/3"
-                              v-bind:name="$portName(26, slot, nSlots)" v-bind:port-info="portsInfo[$portName(26, slot, nSlots)]"/>
-                <Kre:XfpPort v-bind:x="unitHeight*8" v-bind:y="unitHeight*(slot-0.47)" v-bind:h="unitHeight/3"
-                              v-bind:name="$portName(27, slot, nSlots)" v-bind:port-info="portsInfo[$portName(27, slot, nSlots)]"/>
+                <Kre:XfpPort v-bind:x="unitHeight*7" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3" 
+                              v-bind:name="$portName(25, unit, nUnits)" v-bind:port-info="portsInfo[$portName(25, unit, nUnits)]"/>
+                <Kre:XfpPort v-bind:x="unitHeight*8" v-bind:y="unitHeight*(unit-0.85)" v-bind:h="unitHeight/3"
+                              v-bind:name="$portName(26, unit, nUnits)" v-bind:port-info="portsInfo[$portName(26, unit, nUnits)]"/>
+                <Kre:XfpPort v-bind:x="unitHeight*8" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3"
+                              v-bind:name="$portName(27, unit, nUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nUnits)]"/>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, StackSlotBadge, ExtremeSwitchStack"/>
+        <style extends="ExtremeSwitchBody, StackUnitBadge, ExtremeSwitchStack"/>
         <props extend="ExtremeSwitchBody">
             <prop name="width" type="Number" category="Geometry"/>
         </props>
@@ -97,36 +97,36 @@
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
-                n-slots="1"
+                n-units="1"
                 />
         </template>
-        <props extend="Extreme-X590-24x-Stack" except="nSlots"/>
+        <props extend="Extreme-X590-24x-Stack" except="nUnits"/>
     </component-class>
 
     <component-class name="Extreme-X670-48x-Stack" category="Switches">
         <template>
             <Kre:ExtremeSwitchBody 
                 v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:top-facet-size="1" v-bind:n-slots="nSlots" 
+                v-bind:top-facet-size="1" v-bind:n-units="nUnits" 
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
-            <template v-for="slot in nSlots">
-                <Kre:StackSlotBadge v-if="nSlots > 1" v-bind:x="unitHeight*0.1" v-bind:y="unitHeight*(-0.9 + slot)"
-                    v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:slot="slot" />
+            <template v-for="unit in nUnits">
+                <Kre:StackUnitBadge v-if="nUnits > 1" v-bind:x="unitHeight*0.1" v-bind:y="unitHeight*(-0.9 + unit)"
+                    v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
                 <template v-for="i in 24">
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(slot-0.85)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2-1, slot, nSlots)" v-bind:prefix="`${slot}:`"
-                        v-bind:port-info="portsInfo[$portName(i*2-1, slot, nSlots)]" />
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(slot-0.47)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2, slot, nSlots)" v-bind:prefix="`${slot}:`" key-position="bottom"
-                        v-bind:port-info="portsInfo[$portName(i*2, slot, nSlots)]" />
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)" v-bind:d="unitHeight/3" 
+                        v-bind:name="$portName(i*2-1, unit, nUnits)" v-bind:prefix="`${unit}:`"
+                        v-bind:port-info="portsInfo[$portName(i*2-1, unit, nUnits)]" />
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)" v-bind:d="unitHeight/3" 
+                        v-bind:name="$portName(i*2, unit, nUnits)" v-bind:prefix="`${unit}:`" key-position="bottom"
+                        v-bind:port-info="portsInfo[$portName(i*2, unit, nUnits)]" />
                     </template>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, StackSlotBadge, ExtremeSwitchStack"/>
+        <style extends="ExtremeSwitchBody, StackUnitBadge, ExtremeSwitchStack"/>
         <props extend="ExtremeSwitchBody">
             <prop name="width" type="Number" category="Geometry"/>
         </props>
@@ -143,10 +143,10 @@
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
-                n-slots="1"
+                n-units="1"
                 />
         </template>
-        <props extend="Extreme-X670-48x-Stack" except="nSlots" />
+        <props extend="Extreme-X670-48x-Stack" except="nUnits" />
     </component-class>
 
 </kresmer-library>

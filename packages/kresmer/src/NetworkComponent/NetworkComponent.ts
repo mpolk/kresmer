@@ -127,12 +127,12 @@ export class ChangeComponentClassOp extends EditorOperation {
 
 /** Network component-related functions for using in templates */
 export const NetworkComponentFunctions = {
-    /** Makes the full name of the port based on the slot number and the total number of slots */
-    $portName: function(portName: string, slotNumber?: number, nSlots?: number): string
+    /** Makes the full name of the port based on the unit number and the total number of units */
+    $portName: function(portName: string, unitNumber?: number, nUnits?: number): string
     {
-        if (!slotNumber || !nSlots || nSlots == 1)
+        if (!unitNumber || !nUnits || nUnits == 1)
             return portName;
         else
-            return `${slotNumber}:${portName}`;
+            return `${unitNumber}:${portName}`;
     },//$portName
 }//NetworkComponentFunctions

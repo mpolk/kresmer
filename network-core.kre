@@ -4,7 +4,7 @@
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
         <origin x="129" y="283"/>
         <props>
-            <prop name="n-slots">2</prop>
+            <prop name="n-units">2</prop>
             <prop name="unit-height">75</prop>
             <prop name="perspective">center</prop>
             <prop name="ip-address">193.110.112.33</prop>
@@ -19,7 +19,7 @@
         <props>
             <prop name="unit-height">75</prop>
             <prop name="perspective">center</prop>
-            <prop name="n-slots">2</prop>
+            <prop name="n-units">2</prop>
             <prop name="ip-address">172.28.48.6</prop>
             <prop name="comment">metro (второй после core, служит для подключения хабов городской сети)</prop>
             <prop name="management-protocol">telnet:</prop>
