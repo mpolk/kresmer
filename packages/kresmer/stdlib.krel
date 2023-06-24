@@ -127,8 +127,6 @@
             <prop name="management-ref-target" type="String" choices="_self,_blank" category="Network"
                 description="Target for on-drawing hyperlinks"/>
             <prop name="comment" type="String" description="Device general info"/>
-            <prop name="ports-info" type="object" default="{}" category="Network" 
-                description="Ports info for displaying in tooltips and similar"/>
         </props>
     </component-class>
 
@@ -276,6 +274,8 @@
         </style>
         <props extend="RackMountDevice" except="n-units">
             <prop name="n-stack-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
+            <prop name="ports-info" type="object" default="{}" category="Network" 
+                description="Ports info for displaying in tooltips and similar"/>
         </props>
     </component-class>
 
@@ -354,9 +354,9 @@
             </Kre:RackMountDevice>
         </template>
         <style extends="RackMountDevice"/>
-        <props extend="RackMountDevice" except="nUnits, unitHeight">
-            <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
-            <prop name="unit-height" type="Number" required="true" default="50" category="Geometry" />
+        <props extend="RackMountDevice">
+            <prop name="ports-info" type="object" default="{}" category="Network" 
+                description="Ports info for displaying in tooltips and similar"/>
         </props>
     </component-class>
 

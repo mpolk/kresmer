@@ -90,17 +90,17 @@
             <rect v-bind:x="unitHeight*4.9" v-bind:y="unitHeight*0.08"
                 v-bind:height="unitHeight*0.9" v-bind:width="unitHeight*2.1"
                 class="facet" />
-            <template v-for="i in 4">
-                <Kre:SfpPort v-bind:x="unitHeight*(i*0.5+4.5)" v-bind:y="unitHeight*0.15"
-                    v-bind:d="unitHeight/3"
-                    v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"
-                    v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]" />
-                <Kre:SfpPort
-                    v-bind:x="unitHeight*(i*0.5+4.5)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3"
-                    v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7"
-                    key-position="bottom"
-                    v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]" />
-            </template>
+            <Kre:SfpPort v-for="([name, uplink], i) in uplinks" 
+                v-bind:x="firstUplinkX + unitHeight*i*0.5" v-bind:y="unitHeight*0.15"
+                v-bind:d="unitHeight/3"
+                v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7"
+                v-bind:port-info="uplink" />
+            <Kre:SfpPort v-for="([name, downlink], i) in downlinks" 
+                v-bind:x="firstDownlinkX + unitHeight*i*0.5" v-bind:y="unitHeight*0.53"
+                v-bind:d="unitHeight/3"
+                v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7"
+                key-position="bottom"
+                v-bind:port-info="downlink" />
         </template>
         <style extends="ServerBody">
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
@@ -114,9 +114,18 @@
         </style>
         <props extend="ServerBody" except="top-facet-size, top-facet-skew">
             <prop name="width" type="Number" category="Geometry" />
+            <prop name="perspective" type="String" choices="left,right,center,none" default="none" category="Presentation" 
+                  description="Visual perspective of the device image"/>
+            <prop name="interfaces" type="Object" category="Network" />
         </props>
         <computed-props>
             <computed-prop name="width">props.width || props.unitHeight * 9.1</computed-prop>
+            <computed-prop name="uplinks">Object.entries(props.interfaces).filter(([_, int]) => int.direction === "uplink")</computed-prop>
+            <computed-prop name="nUplinks">computedProps.uplinks.length</computed-prop>
+            <computed-prop name="firstUplinkX">computedProps.width/2 - computedProps.nUplinks*0.5*props.unitHeight/3</computed-prop>
+            <computed-prop name="downlinks">Object.entries(props.interfaces).filter(([_, int]) => int.direction === "downlink")</computed-prop>
+            <computed-prop name="nDownlinks">computedProps.downlinks.length</computed-prop>
+            <computed-prop name="firstDownlinkX">computedProps.width/2 - computedProps.nDownlinks*0.5*props.unitHeight/3</computed-prop>
         </computed-props>
     </component-class>
 
