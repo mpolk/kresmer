@@ -183,7 +183,7 @@ export default abstract class NetworkElement {
             for (const propName in this.props) {
                 let propValue: string;
                 if (typeof this.props[propName] === "object") {
-                    propValue = JSON.stringify(this.props[propName]);
+                    propValue = JSON.stringify(this.props[propName], undefined, 2);
                 } else {
                     propValue = String(this.props[propName]);
                 }//if
