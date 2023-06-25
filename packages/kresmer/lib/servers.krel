@@ -87,16 +87,17 @@
             <circle v-bind:cx="unitHeight*8.87"
                 v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03"
                 class="red led" />
-            <rect v-bind:x="(width - portPanelWidth)/2" v-bind:y="unitHeight*0.08"
-                v-bind:height="unitHeight*0.9" v-bind:width="portPanelWidth"
-                class="facet" />
+            <rect v-bind:x="(width - uplinkPortPanelWidth)/2" v-bind:y="unitHeight*0.08"
+                v-bind:height="unitHeight*0.45" v-bind:width="uplinkPortPanelWidth" class="facet" />
+            <rect v-bind:x="(width - downlinkPortPanelWidth)/2" v-bind:y="unitHeight*0.45"
+                v-bind:height="unitHeight*0.45" v-bind:width="downlinkPortPanelWidth" class="facet" />
             <Kre:SfpPort v-for="([name, uplink], i) in uplinks" 
-                v-bind:x="firstUplinkX + unitHeight*i*0.5" v-bind:y="unitHeight*0.15"
+                v-bind:x="firstUplinkX + unitHeight*i*0.4" v-bind:y="unitHeight*0.15"
                 v-bind:d="unitHeight/3"
                 v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7"
                 v-bind:port-info="uplink" />
             <Kre:SfpPort v-for="([name, downlink], i) in downlinks" 
-                v-bind:x="firstDownlinkX + unitHeight*i*0.5" v-bind:y="unitHeight*0.53"
+                v-bind:x="firstDownlinkX + unitHeight*i*0.4" v-bind:y="unitHeight*0.53"
                 v-bind:d="unitHeight/3"
                 v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7"
                 key-position="bottom"
@@ -106,7 +107,7 @@
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #faffd6; text-shadow: 1px 1px 1px black;}
             .model-name { fill: #ffffff; font-family: sans-serif; }
-            .facet {--facet-color: #3b3b3b;}
+            .facet {--facet-color: #545454;}
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
             .led.green {stroke: #009900; fill: #1fd11f}
             .led.dark-green {stroke: #007a00; fill: #16b616}
@@ -122,13 +123,14 @@
             <computed-prop name="width">props.width || props.unitHeight * 9.1</computed-prop>
             <computed-prop name="uplinks">Object.entries(props.interfaces).filter(([_, int]) => int.direction === "uplink")</computed-prop>
             <computed-prop name="nUplinks">computedProps.uplinks.length</computed-prop>
-            <computed-prop name="uplinkPortRowLength">(computedProps.nUplinks*0.5-1/6)*props.unitHeight</computed-prop>
+            <computed-prop name="uplinkPortRowLength">(computedProps.nUplinks*0.4-1/15)*props.unitHeight</computed-prop>
             <computed-prop name="firstUplinkX">(computedProps.width - computedProps.uplinkPortRowLength)/2</computed-prop>
             <computed-prop name="downlinks">Object.entries(props.interfaces).filter(([_, int]) => int.direction === "downlink")</computed-prop>
             <computed-prop name="nDownlinks">computedProps.downlinks.length</computed-prop>
-            <computed-prop name="downlinkPortRowLength">(computedProps.nDownlinks*0.5-1/6)*props.unitHeight</computed-prop>
+            <computed-prop name="downlinkPortRowLength">(computedProps.nDownlinks*0.4-1/15)*props.unitHeight</computed-prop>
             <computed-prop name="firstDownlinkX">(computedProps.width - computedProps.downlinkPortRowLength)/2</computed-prop>
-            <computed-prop name="portPanelWidth">Math.max(computedProps.uplinkPortRowLength, computedProps.downlinkPortRowLength)*1.05</computed-prop>
+            <computed-prop name="uplinkPortPanelWidth">computedProps.uplinkPortRowLength + props.unitHeight*0.15</computed-prop>
+            <computed-prop name="downlinkPortPanelWidth">computedProps.downlinkPortRowLength + props.unitHeight*0.15</computed-prop>
         </computed-props>
     </component-class>
 
