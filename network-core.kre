@@ -34,35 +34,35 @@
             <prop name="management-protocol">ssh:</prop>
             <prop name="comment">Пограничный маршрутизатор</prop>
             <prop name="ports-info">{
-  "et0/0/0": {
-    "description": "DIPT",
-    "speed": "40G"
-  },
-  "et0/0/1": {
-    "description": "core-switch-1",
-    "speed": "40G"
-  },
-  "et0/0/2": {
-    "description": "core-switch-2",
-    "speed": "40G"
-  },
-  "xe0/1/0": {
-    "description": "Rostnet",
-    "speed": "10G"
-  },
-  "xe0/1/1": {
-    "description": "Eurotel",
-    "speed": "10G"
-  },
-  "xe0/1/3": {
-    "description": "Elitline-1",
-    "speed": "10G"
-  },
-  "xe0/1/4": {
-    "description": "Elitline-2",
-    "speed": "10G"
-  }
-}</prop>
+                  "et0/0/0": {
+                    "description": "DIPT",
+                    "speed": "40G"
+                  },
+                  "et0/0/1": {
+                    "description": "core-switch-1",
+                    "speed": "40G"
+                  },
+                  "et0/0/2": {
+                    "description": "core-switch-2",
+                    "speed": "40G"
+                  },
+                  "xe0/1/0": {
+                    "description": "Rostnet",
+                    "speed": "10G"
+                  },
+                  "xe0/1/1": {
+                    "description": "Eurotel",
+                    "speed": "10G"
+                  },
+                  "xe0/1/3": {
+                    "description": "Elitline-1",
+                    "speed": "10G"
+                  },
+                  "xe0/1/4": {
+                    "description": "Elitline-2",
+                    "speed": "10G"
+                  }
+                }</prop>
         </props>
     </component>
 
@@ -73,52 +73,53 @@
             <prop name="ip-address">193.110.112.20</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
-  "xge0": {
-    "direction": "uplink",
-    "speed": "10G",
-    "media": "sm-optics"
-  },
-  "eth0": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  },
-  "eth1": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  },
-  "eth2": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  },
-  "eth3": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  },
-  "eth4": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  },
-  "eth5": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  },
-  "eth6": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  },
-  "eth7": {
-    "direction": "downlink",
-    "speed": "1G",
-    "media": "copper"
-  }
-}</prop>
+                  "xge0": {
+                    "direction": "uplink",
+                    "speed": "10G",
+                    "media": "sm-optics"
+                  },
+                  "eth0": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth1": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth2": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth3": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth4": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth5": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth6": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth7": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  }
+                }</prop>
+            <prop name="width">400</prop>
         </props>
     </component>
 
