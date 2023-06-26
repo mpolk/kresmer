@@ -53,38 +53,38 @@
                 fill="url(#kre:std:server-front-grid)" />
             <rect v-bind:x="unitHeight*0.08"
                 v-bind:y="unitHeight*0.08"
-                v-bind:height="unitHeight*0.5" v-bind:width="unitHeight*0.2*Math.max(name.length, 8)"
+                v-bind:height="unitHeight*0.45" v-bind:width="unitHeight*0.15*Math.max(name.length, 8)"
                 class="facet" />
             <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.25"
-                v-bind:font-size="unitHeight*0.25"
+                v-bind:font-size="unitHeight*0.2"
                 class="device-name">{{name}}</text>
             <template v-if="ipAddress">
                 <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress"
                     v-bind:target="managementRefTarget">
-                    <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.5" v-bind:font-size="unitHeight*0.2"
+                    <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.45" v-bind:font-size="unitHeight*0.15"
                         class="ip-address">{{ipAddress}}</text>
                 </a>
                 <text v-else=""
-                    v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.5" v-bind:font-size="unitHeight*0.2"
+                    v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.45" v-bind:font-size="unitHeight*0.15"
                     class="ip-address">{{ipAddress}}</text>
             </template>
             <rect
-                v-bind:x="unitHeight*8.1" v-bind:y="unitHeight*0.08"
+                v-bind:x="width - unitHeight" v-bind:y="unitHeight*0.08"
                 v-bind:height="unitHeight*0.25" v-bind:width="unitHeight"
                 class="facet" />
             <rect
-                v-bind:x="unitHeight*8.15" v-bind:y="unitHeight*0.085"
+                v-bind:x="width - unitHeight*0.95" v-bind:y="unitHeight*0.085"
                 v-bind:height="unitHeight*0.2" v-bind:width="unitHeight*0.86"
                 class="facet top" />
-            <circle v-bind:cx="unitHeight*8.27" v-bind:cy="unitHeight*0.18"
+            <circle v-bind:cx="width - unitHeight*0.83" v-bind:cy="unitHeight*0.18"
                 v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03" class="green led" />
             <circle
-                v-bind:cx="unitHeight*8.47" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05"
+                v-bind:cx="width - unitHeight*0.63" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05"
                 v-bind:stroke-width="unitHeight*0.03" class="dark-green led" />
             <circle
-                v-bind:cx="unitHeight*8.67" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05"
+                v-bind:cx="width - unitHeight*0.43" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05"
                 v-bind:stroke-width="unitHeight*0.03" class="green led" />
-            <circle v-bind:cx="unitHeight*8.87"
+            <circle v-bind:cx="width - unitHeight*0.23"
                 v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03"
                 class="red led" />
             <rect v-bind:x="(width - uplinkPortPanelWidth)/2" v-bind:y="unitHeight*0.08"
