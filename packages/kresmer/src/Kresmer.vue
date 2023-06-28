@@ -164,10 +164,18 @@
 
         <template v-if="controller.showGrid">
             <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10)" :key="`x-grid${x}`">
-                <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"/>
+                <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"
+                    @mousedown.self="onMouseDownOnCanvas($event)"
+                    @contextmenu.self="onCanvasRightClick($event)"
+                    @mousemove.prevent.self=""
+                    />
             </template>
             <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 10)" :key="`y-grid${y}`">
-                <line class="grid" :x1="rulerBox.x" :y1="y" :x2="rulerBox.x + rulerBox.width" :y2="y"/>
+                <line class="grid" :x1="rulerBox.x" :y1="y" :x2="rulerBox.x + rulerBox.width" :y2="y"
+                    @mousedown.self="onMouseDownOnCanvas($event)"
+                    @contextmenu.self="onCanvasRightClick($event)"
+                    @mousemove.prevent.self=""
+                    />
             </template>
         </template>
         <template v-if="controller.showRulers">
