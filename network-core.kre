@@ -820,7 +820,7 @@
                     "description": "Dvor19",
                     "speed": "1G",
                     "adminStatus": true,
-                    "operStatus": false,
+                    "operStatus": true,
                     "statusMonitoring": true,
                     "speedMonitoring": false
                   },
@@ -1428,15 +1428,15 @@
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-2" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
-        <vertex x="122" y="614.5472252308846"/>
-        <vertex x="60.202233614524566" y="614.5472252308846"/>
+        <vertex x="122" y="608.155150398954"/>
+        <vertex x="60.202233614524566" y="608.155150398954"/>
         <vertex x="60.202233614524566" y="850.4203584067875"/>
         <vertex x="590.1340408325195" y="850.4203584067875"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-3" from="Kamakura:eth3@d" to="metro-switch:2:27@u">
-        <vertex x="152" y="635.0085353235946"/>
-        <vertex x="79.80226454200262" y="635.0085353235946"/>
+        <vertex x="152" y="630.7471521023076"/>
+        <vertex x="79.80226454200262" y="630.7471521023076"/>
         <vertex x="79.80226454200262" y="768.4973261958305"/>
         <vertex x="627.6340408325195" y="768.4973261958305"/>
     </link>

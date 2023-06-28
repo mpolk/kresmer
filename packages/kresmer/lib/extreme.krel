@@ -60,7 +60,7 @@
                 v-bind:comment="comment"
                 />
             <template v-for="unit in nStackUnits">
-                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.1" v-bind:y="unitHeight*(-0.9 + unit)"
+                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)"
                     v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
                 <text v-bind:x="unitHeight*7" v-bind:y="unitHeight*(unit-0.67)" v-bind:font-size="unitHeight*0.25" 
                     class="model-name">X590</text>
@@ -114,7 +114,7 @@
                 v-bind:comment="comment"
                 />
             <template v-for="unit in nStackUnits">
-                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.1" v-bind:y="unitHeight*(-0.9 + unit)"
+                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)"
                     v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
                 <template v-for="i in 24">
                     <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)" v-bind:d="unitHeight/3" 
