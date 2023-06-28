@@ -501,7 +501,7 @@
     </component>
 
     <component class="Extreme-X670-48x-Stack" name="metro-switch" db-id="1697">
-        <origin x="1" y="693"/>
+        <origin x="90.13404231279776" y="689.7782876272482"/>
         <props>
             <prop name="unit-height">75</prop>
             <prop name="perspective">center</prop>
@@ -570,7 +570,7 @@
                     "description": "Dvor34",
                     "speed": "10G",
                     "adminStatus": true,
-                    "operStatus": true,
+                    "operStatus": false,
                     "statusMonitoring": true,
                     "speedMonitoring": false
                   },
@@ -820,7 +820,7 @@
                     "description": "Dvor19",
                     "speed": "1G",
                     "adminStatus": true,
-                    "operStatus": true,
+                    "operStatus": false,
                     "statusMonitoring": true,
                     "speedMonitoring": false
                   },
@@ -1329,15 +1329,14 @@
         </props>
     </component>
 
-    <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:12@l">
+    <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:12@d">
         <props>
             <prop name="start-label">metro</prop>
         </props>
         <vertex x="179" y="451.240577573632"/>
         <vertex x="7.425340119907958" y="451.240577573632"/>
-        <vertex x="7.425340119907958" y="603.7349632172137"/>
-        <vertex x="218.73194649518834" y="603.7349632172137"/>
-        <vertex x="218.73194649518834" y="745.25"/>
+        <vertex x="7.425340119907958" y="759.5688024756329"/>
+        <vertex x="327.63404083251953" y="759.5688024756329"/>
     </link>
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
@@ -1413,28 +1412,30 @@
         <vertex x="166.14321899414062" y="470.37000642175195"/>
     </link>
 
-    <link class="twisted-pair" name="Link-95376903-4745-4f17-b8d5-dfddaf60b163" from="Kamakura:eth0@d" to="metro-switch:1:26@l">
+    <link class="twisted-pair" name="Link-95376903-4745-4f17-b8d5-dfddaf60b163" from="Kamakura:eth0@d" to="metro-switch:1:26@d">
         <vertex x="62.073904037475586" y="594.9428848348188"/>
-        <vertex x="483.7865137444991" y="594.9428848348188"/>
-        <vertex x="483.7865137444991" y="745.25"/>
+        <vertex x="20.642069118093808" y="594.9428848348188"/>
+        <vertex x="20.642069118093808" y="760.1515844106927"/>
+        <vertex x="590.1340408325195" y="760.1515844106927"/>
     </link>
 
     <link class="twisted-pair" name="Link-8ecca935-a026-422a-b8d9-2a8b6d74a708" from="Kamakura:eth1@d" to="metro-switch:1:27@u">
-        <vertex x="92.07390403747559" y="585.2777477165635"/>
-        <vertex x="538.5" y="585.2777477165635"/>
+        <vertex x="92" y="692.8416342103274"/>
+        <vertex x="627.6340408325195" y="692.8416342103274"/>
     </link>
 
-    <link class="twisted-pair" name="Link-20475bf5-3699-47fa-a4ef-2dfe3f524fdf" from="Kamakura:eth2@d" to="metro-switch:2:26@l">
-        <vertex x="122" y="574.5387064740578"/>
-        <vertex x="479.2304767065971" y="574.5387064740578"/>
-        <vertex x="479.2304767065971" y="820.25"/>
+    <link class="twisted-pair" name="Link-20475bf5-3699-47fa-a4ef-2dfe3f524fdf" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
+        <vertex x="122" y="614.5472252308846"/>
+        <vertex x="49.63080808821053" y="614.5472252308846"/>
+        <vertex x="49.63080808821053" y="850.4203584067875"/>
+        <vertex x="590.1340408325195" y="850.4203584067875"/>
     </link>
 
     <link class="twisted-pair" name="Link-6b0f22dc-e913-4634-a0c3-3b0e2827f027" from="Kamakura:eth3@d" to="metro-switch:2:27@u">
-        <vertex x="152" y="563.799665231552"/>
-        <vertex x="519.2619301574621" y="563.799665231552"/>
-        <vertex x="519.2619301574621" y="767.8414488391612"/>
-        <vertex x="538.5" y="767.8414488391612"/>
+        <vertex x="152" y="635.0085353235946"/>
+        <vertex x="69.98594083899673" y="635.0085353235946"/>
+        <vertex x="69.98594083899673" y="768.4973261958305"/>
+        <vertex x="627.6340408325195" y="768.4973261958305"/>
     </link>
 
 </kresmer-drawing>
