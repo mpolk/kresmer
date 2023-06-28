@@ -501,7 +501,7 @@
     </component>
 
     <component class="Extreme-X670-48x-Stack" name="metro-switch" db-id="1697">
-        <origin x="90.13404231279776" y="689.7782876272482"/>
+        <origin x="90" y="689"/>
         <props>
             <prop name="unit-height">75</prop>
             <prop name="perspective">center</prop>
@@ -1365,9 +1365,10 @@
         <vertex x="636.7917198376241" y="410.25"/>
     </link>
 
-    <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@u">
+    <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@l">
         <vertex x="251.25" y="181.27928983352027"/>
-        <vertex x="685.25" y="181.27928983352027"/>
+        <vertex x="644.2028613832748" y="181.27928983352027"/>
+        <vertex x="644.2028613832748" y="335.25"/>
     </link>
 
     <link class="AOC-fan" name="uplink-dipt" from="border:et0/0/0@d" to="(860, 98)">
@@ -1412,29 +1413,31 @@
         <vertex x="166.14321899414062" y="470.37000642175195"/>
     </link>
 
-    <link class="twisted-pair" name="Link-95376903-4745-4f17-b8d5-dfddaf60b163" from="Kamakura:eth0@d" to="metro-switch:1:26@d">
-        <vertex x="62.073904037475586" y="594.9428848348188"/>
-        <vertex x="20.642069118093808" y="594.9428848348188"/>
+    <link class="twisted-pair" name="metro-kamakura-0" from="Kamakura:eth0@d" to="metro-switch:1:26@d">
+        <vertex x="62" y="574.5551356054989"/>
+        <vertex x="20.642069118093808" y="574.5551356054989"/>
         <vertex x="20.642069118093808" y="760.1515844106927"/>
         <vertex x="590.1340408325195" y="760.1515844106927"/>
     </link>
 
-    <link class="twisted-pair" name="Link-8ecca935-a026-422a-b8d9-2a8b6d74a708" from="Kamakura:eth1@d" to="metro-switch:1:27@u">
-        <vertex x="92" y="692.8416342103274"/>
+    <link class="twisted-pair" name="metro-kamakura-1" from="Kamakura:eth1@d" to="metro-switch:1:27@u">
+        <vertex x="92" y="588.1262456085103"/>
+        <vertex x="40.12140273675835" y="588.1262456085103"/>
+        <vertex x="40.12140273675835" y="692.8416342103274"/>
         <vertex x="627.6340408325195" y="692.8416342103274"/>
     </link>
 
-    <link class="twisted-pair" name="Link-20475bf5-3699-47fa-a4ef-2dfe3f524fdf" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
+    <link class="twisted-pair" name="metro-kamakura-2" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
         <vertex x="122" y="614.5472252308846"/>
-        <vertex x="49.63080808821053" y="614.5472252308846"/>
-        <vertex x="49.63080808821053" y="850.4203584067875"/>
+        <vertex x="60.202233614524566" y="614.5472252308846"/>
+        <vertex x="60.202233614524566" y="850.4203584067875"/>
         <vertex x="590.1340408325195" y="850.4203584067875"/>
     </link>
 
-    <link class="twisted-pair" name="Link-6b0f22dc-e913-4634-a0c3-3b0e2827f027" from="Kamakura:eth3@d" to="metro-switch:2:27@u">
+    <link class="twisted-pair" name="metro-kamakura-3" from="Kamakura:eth3@d" to="metro-switch:2:27@u">
         <vertex x="152" y="635.0085353235946"/>
-        <vertex x="69.98594083899673" y="635.0085353235946"/>
-        <vertex x="69.98594083899673" y="768.4973261958305"/>
+        <vertex x="79.80226454200262" y="635.0085353235946"/>
+        <vertex x="79.80226454200262" y="768.4973261958305"/>
         <vertex x="627.6340408325195" y="768.4973261958305"/>
     </link>
 
