@@ -3,13 +3,16 @@
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
     <component-class name="Juniper-MX204" category="Routers">
-        <defs>
-            <pattern id="kre:std:Juniper-MX204-front-grid" viewBox="0 0 10 10" x="0" y="0" width="1%" height="10%" 
-                     patternUnits="objectBoundingBox">
-                <rect x="2" y="2" width="6" height="6" fill="#424242"/>
-            </pattern>
-        </defs>
         <template>
+            <defs>
+                <pattern v-bind:id="`kre:std:Juniper-MX204-front-grid-${componentId}`" patternUnits="userSpaceOnUse" 
+                        v-bind:width="height*0.057866906" v-bind:height="height*0.1" viewBox="0 0 29 50.115" 
+                        >
+                    <rect x="0" y="0" width="100%" height="100%" fill="#454545"/>
+                    <path d="M14.498 16.858L0 8.488.002-8.257l14.5-8.374L29-8.26l-.002 16.745zm0 50.06L0 58.548l.002-16.745 14.5-8.373L29 41.8l-.002 16.744zM28.996 41.8l-14.498-8.37.002-16.744L29 8.312l14.498 8.37-.002 16.745zm-29 0l-14.498-8.37.002-16.744L0 8.312l14.498 8.37-.002 16.745z"
+                        style="stroke-width: 8.5; stroke: #b8b8b8; fill: none;"/>
+                </pattern>
+            </defs>
             <Kre:RouterBody 
                 v-bind:name="name" v-bind:unit-height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective"
@@ -19,31 +22,31 @@
                 />
             <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 
                     v-bind:height="height*0.84" v-bind:width="width-height*0.16" 
-                    fill="url(#kre:std:Juniper-MX204-front-grid)"/>
-            <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 
+                    v-bind:fill="`url(#kre:std:Juniper-MX204-front-grid-${componentId})`"/>
+            <rect v-bind:x="height*0.07" v-bind:y="height*0.07" 
                   v-bind:height="height*0.25" v-bind:width="height*1.1" 
                   class="facet"/>
             <text v-bind:x="height*0.18" v-bind:y="height*0.25" v-bind:font-size="height*0.25" 
                   class="model-name">Juniper</text>
-            <rect v-bind:x="height*8.1" v-bind:y="height*0.08" 
+            <rect v-bind:x="height*8.1" v-bind:y="height*0.07" 
                   v-bind:height="height*0.25" v-bind:width="height" 
                   class="facet"/>
             <text v-bind:x="height*9" v-bind:y="height*0.25" text-anchor="end" v-bind:font-size="height*0.25" 
                   class="model-name">MX204</text>
-            <rect v-bind:x="height*0.08" v-bind:y="height*0.45" 
+            <rect v-bind:x="height*0.3" v-bind:y="height*0.45" 
                   v-bind:height="height*0.5" v-bind:width="height*4.1" 
                   class="facet"/>
-            <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.8)" v-bind:y="height*0.53" v-bind:h="height/3" 
+            <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.58)" v-bind:y="height*0.53" v-bind:h="height/3" 
                          v-bind:name="`et0/0/${i-1}`" prefix="et0/"
                          v-bind:port-info="portsInfo[`et0/0/${i-1}`]"/>
-            <rect v-bind:x="height*4.9" v-bind:y="height*0.08" 
-                  v-bind:height="height*0.9" v-bind:width="height*2.1" 
+            <rect v-bind:x="height*4.85" v-bind:y="height*0.07" 
+                  v-bind:height="height*0.9" v-bind:width="height*2.2" 
                   class="facet"/>
             <template v-for="i in 4">
-                <Kre:SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.15" v-bind:d="height/3" 
+                <Kre:SfpPort v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.15" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"
                              v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]"/>
-                <Kre:SfpPort v-bind:x="height*(i*0.5+4.5)" v-bind:y="height*0.53" v-bind:d="height/3" 
+                <Kre:SfpPort v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.53" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7" key-position="bottom"
                              v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]"/>
             </template>
