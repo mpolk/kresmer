@@ -30,6 +30,8 @@
 
     provide(Kresmer.ikKresmer, props.controller);
     provide(Kresmer.ikIsEditable, props.controller.isEditable);
+    provide(Kresmer.ikSnapToGrid, props.controller.snapToGrid);
+    provide(Kresmer.ikSnappingToGridStep, props.controller.snappingToGridStep);
     const rootSVG = ref<SVGSVGElement>()!;
 
     function zoomed(size: string|number)

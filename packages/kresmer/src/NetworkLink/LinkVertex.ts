@@ -6,11 +6,13 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
+import { inject } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
+import Kresmer from "../Kresmer";
 
 /** Link Vertex (either connected or free) */
 
@@ -263,6 +265,12 @@ export default class LinkVertex {
             }//for
         }//if
 
+        if (this.link.kresmer.snapToGrid) {
+            this.pos = {
+                x: Math.round(this.pos!.x / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep,
+                y: Math.round(this.pos!.y / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep
+            };
+        }//if
         this.link.kresmer.undoStack.commitOperation();
         if (this.savedConn) {
             if (this.conn !== this. savedConn) {

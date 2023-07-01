@@ -46,6 +46,8 @@ export default class Kresmer extends KresmerEventHooks {
         isEditable?: boolean,
         showRulers?: boolean,
         showGrid?: boolean,
+        snapToGrid?: boolean,
+        snappingToGridStep?: number,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -56,6 +58,8 @@ export default class Kresmer extends KresmerEventHooks {
         options?.isEditable !== undefined && (this.isEditable = options.isEditable);
         this.showRulers = Boolean(options?.showRulers);
         this.showGrid = Boolean(options?.showGrid);
+        this.snapToGrid = options?.snapToGrid ?? true;
+        options?.snappingToGridStep && (this.snappingToGridStep = options.snappingToGridStep);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -163,6 +167,15 @@ export default class Kresmer extends KresmerEventHooks {
     static readonly ikIsEditable = Symbol() as InjectionKey<boolean>;
     /** The element Kresmer was mounted on */
     readonly mountPoint: HTMLElement;
+
+    /** Determines if components and link vertices should snap to the grid when being dragged and dropped */
+    snapToGrid = true;
+    /** A symbolic key for the snap-to-grid flag injection */
+    static readonly ikSnapToGrid = Symbol() as InjectionKey<boolean>;
+    /** A step (granularity) of snapping to the grid */
+    snappingToGridStep = 1;
+    /** A symbolic key for the snap-to-grid step injection */
+    static readonly ikSnappingToGridStep = Symbol() as InjectionKey<number>;
 
     /** Kresmer-backend server connection (if any) */
     public backendConnection?: BackendConnection;

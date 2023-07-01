@@ -121,6 +121,12 @@ class _NetworkComponentController {
     {
         if (this.isDragged) {
             this.isDragged = false;
+            if (this.kresmer.snapToGrid) {
+                this.origin = {
+                    x: Math.round(this.origin.x / this.kresmer.snappingToGridStep) * this.kresmer.snappingToGridStep,
+                    y: Math.round(this.origin.y / this.kresmer.snappingToGridStep) * this.kresmer.snappingToGridStep,
+                };
+            }//if
             this.updateConnectionPoints();
             if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
                 this.kresmer._endSelectionDragging(this);
