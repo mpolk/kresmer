@@ -6,13 +6,11 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
-import { inject } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
-import Kresmer from "../Kresmer";
 
 /** Link Vertex (either connected or free) */
 
