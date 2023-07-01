@@ -72,6 +72,8 @@ export default abstract class NetworkElement {
     readonly props: Record<string, unknown>;
     /** Return the number of props (excluding "name") */
     get propCount() { return Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length;}
+    /** A set of the prop names marking "dynamic" values, i.e. name that came from the DB (back-end) */
+    readonly dynamicPropValues = new Set<string>();
 
     private _name: string;
     /** A name for component lookup*/
@@ -181,6 +183,8 @@ export default abstract class NetworkElement {
         if (Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length) {
             yield `${indent(indentLevel+1)}<props>`;
             for (const propName in this.props) {
+                if (!this.kresmer.saveDynamicPropValues && this.dynamicPropValues.has(propName))
+                    continue;
                 let propValue: string;
                 if (typeof this.props[propName] === "object") {
                     propValue = JSON.stringify(this.props[propName], undefined, 2).split("\n")

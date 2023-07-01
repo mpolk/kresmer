@@ -478,6 +478,9 @@ export default class Kresmer extends KresmerEventHooks {
         return this.drawingLoader.saveDrawing();
     }//saveDrawing
 
+    /** Determines whether "dynamic" element prop values should be saved with the drawing */
+    saveDynamicPropValues = false;
+
 
     /** Erases everything that is in the drawing now */
     public eraseContent()
