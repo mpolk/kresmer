@@ -8,7 +8,7 @@
 
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
-import LibraryParser, { DefsLibNode, StandaloneTemplate, StyleLibNode } from "./LibraryParser";
+import LibraryParser, { DefsLibNode, StyleLibNode } from "./LibraryParser";
 import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
@@ -39,8 +39,6 @@ export default class LibraryLoader
                     .component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
             } else if (element instanceof StyleLibNode) {
                 this.kresmer.styles.push(this.scopeStyles(element.data));
-            } else if (element instanceof StandaloneTemplate) {
-                this.kresmer.addStandaloneTemplate(element);
             } else {
                 this.kresmer.raiseError(element);
                 wereErrors = true;

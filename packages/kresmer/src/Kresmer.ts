@@ -8,7 +8,6 @@
 
 import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
-import {v4 as uuidV4} from "uuid";
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
@@ -31,7 +30,6 @@ import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
-import { StandaloneTemplate } from "./loaders/LibraryParser";
 
 
 /**
@@ -91,15 +89,6 @@ export default class Kresmer extends KresmerEventHooks {
     public readonly defs: Template[] = [];
     /** CSS styles collected component libraries */
     public styles: PostCSSRoot[] = reactive([]);
-    /** "Standalone" templates - rudimentary template-only autoinstantiated components */
-    public standaloneTemplates = new Map<string, Template>();
-    public addStandaloneTemplate(standaloneTemplate: StandaloneTemplate)
-    {
-        const name = standaloneTemplate.name ? `standaloneTemplate-${standaloneTemplate.name}` :
-            `standaloneTemplate-${uuidV4()}`;
-        this.standaloneTemplates.set(name, standaloneTemplate.data);
-        this.appKresmer.component(name, {template: standaloneTemplate.data});
-    }//addStandaloneTemplate
 
     /** Drawing name */
     public drawingName = "?unnamed?";

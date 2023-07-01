@@ -46,8 +46,6 @@
                             <xs:attribute name="category" />
                         </xs:complexType>
                     </xs:element>
-
-                    <xs:element name="template" type="named-outermost-template"/>
                     
                 </xs:choice>
             </xs:sequence>
@@ -352,7 +350,7 @@
 
     <!-- Local and global definitions (translated to SVG defs) -->
     <xs:element name="defs">
-        <xs:complexType>
+        <xs:complexType mixed="true">
             <xs:group ref="svg-elements"></xs:group>
         </xs:complexType>
     </xs:element>

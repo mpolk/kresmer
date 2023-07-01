@@ -160,7 +160,6 @@
             </template>
         </defs>
         <defs v-if="controller.styles.length" v-html="styles"></defs>
-        <component v-for="name in controller.standaloneTemplates.keys()" :key="name" :is="name"/>
 
         <template v-if="controller.showGrid">
             <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10)" :key="`x-grid${x}`">
