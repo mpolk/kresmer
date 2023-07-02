@@ -118,7 +118,7 @@
             <prop name="width" type="Number" category="Geometry" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="none" category="Presentation" 
                   description="Visual perspective of the device image"/>
-            <prop name="interfaces" type="Object" category="Network" />
+            <prop name="interfaces" type="Object" category="Network" default="{}"/>
         </props>
         <computed-props>
             <computed-prop name="width">props.width || props.unitHeight * 9.1</computed-prop>
