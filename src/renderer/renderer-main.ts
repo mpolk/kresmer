@@ -23,7 +23,7 @@ import Kresmer, {
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
-import ComponentClassSelectionDialog from './ComponentClassSelectionDialog.vue';
+import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import { AppInitStage } from './ElectronAPI.d';
@@ -81,8 +81,8 @@ const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#compon
     InstanceType<typeof ComponentPropsSidebar>;
 const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#dlgLinkClassSelection") as
     InstanceType<typeof LinkClassSelectionDialog>;
-const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionDialog).mount("#dlgComponentClassSelection") as
-    InstanceType<typeof ComponentClassSelectionDialog>;
+const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionSidebar).mount("#componentClassSelectionSidebar") as
+    InstanceType<typeof ComponentClassSelectionSidebar>;
 const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
     InstanceType<typeof DrawingMergeDialog>;
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
