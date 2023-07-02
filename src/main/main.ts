@@ -30,14 +30,14 @@ export const localSettings = new Settings("local-settings.json", {
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
     snapToGrid: true as boolean,
     snappingToGridStep: 1,
-    saveDynamicPropsWithDrawing: false as boolean,
+    saveDynamicPropValuesWithDrawing: false as boolean,
     customManagementProtocols: [] as CustomManagementProtocol[],
 });
 
 export type AppSettings = {
     snapToGrid: boolean,
     snappingToGridStep: number,
-    saveDynamicPropsWithDrawing: boolean,
+    saveDynamicPropValuesWithDrawing: boolean,
     customManagementProtocols: CustomManagementProtocol[],
 }//AppSettings
 

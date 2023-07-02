@@ -307,6 +307,9 @@ appCommandExecutor.on("edit-app-settings", (appSettings: AppSettings) => {
 
 export function updateAppSettings(newAppSettings: AppSettings)
 {
+    kresmer.snapToGrid = newAppSettings.snapToGrid;
+    kresmer.snappingToGridStep = newAppSettings.snappingToGridStep;
+    kresmer.saveDynamicPropValuesWithDrawing = newAppSettings.saveDynamicPropValuesWithDrawing;
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
 

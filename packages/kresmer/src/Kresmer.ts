@@ -48,6 +48,7 @@ export default class Kresmer extends KresmerEventHooks {
         showGrid?: boolean,
         snapToGrid?: boolean,
         snappingToGridStep?: number,
+        saveDynamicPropValuesWithDrawing?: boolean,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -60,6 +61,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.showGrid = Boolean(options?.showGrid);
         this.snapToGrid = options?.snapToGrid ?? true;
         options?.snappingToGridStep && (this.snappingToGridStep = options.snappingToGridStep);
+        this.saveDynamicPropValuesWithDrawing = Boolean(options?.saveDynamicPropValuesWithDrawing);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,

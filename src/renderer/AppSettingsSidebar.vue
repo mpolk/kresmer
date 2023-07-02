@@ -138,6 +138,14 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label" for="cbSaveDynamicPropsWithDrawing">Save dynamic props with the drawing</label>
+                            <input type="checkbox" id="cbSaveDynamicPropsWithDrawing" class="form-check-input" v-model="appSettings!.saveDynamicPropValuesWithDrawing" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row pt-2">
                     <div class="col d-flex justify-content-between">
                         <span>Management protocols</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
