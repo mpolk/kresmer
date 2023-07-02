@@ -12,6 +12,7 @@ import { AppSettings } from '../main/main';
 
 export interface ElectronAPI {
     signalReadiness: (stage: AppInitStage) => void,
+    initialAppSettings: AppSettings,
     updateAppSettings: (newAppSettings: AppSettings) => void,
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => void,
     showContextMenu: <MenuID extends ContextMenuID>(menuID: MenuID, ...args: Parameters<ContextMenus[MenuID]>) => void,

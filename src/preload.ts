@@ -23,6 +23,8 @@ function exposeToRenderer(methods: ElectronAPI)
     contextBridge.exposeInMainWorld('electronAPI', methods);
 }//expose
 
+const initialAppSettings = JSON.parse(process.argv.find(arg => arg.startsWith("--app-settings="))!.replace("--app-settings=", ""));
+
 console.debug("Setting up electron API for the renderer...");
 exposeToRenderer({
 
@@ -30,6 +32,8 @@ exposeToRenderer({
         console.debug(`Main window renderer: I am ready (stage ${stage})`);
         sendToMain('renderer-ready', stage);
     },
+
+    initialAppSettings,
 
     updateAppSettings: (newAppSettings: AppSettings) => {
         sendToMain("update-app-settings", newAppSettings);

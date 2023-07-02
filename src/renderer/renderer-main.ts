@@ -56,7 +56,7 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar") as InstanceType<typeof StatusBar>;
 
-export const kresmer = new Kresmer("#kresmer");
+export const kresmer = new Kresmer("#kresmer", window.electronAPI.initialAppSettings);
 setKresmerSize();
 statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);

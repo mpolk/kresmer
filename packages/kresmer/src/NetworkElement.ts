@@ -183,7 +183,7 @@ export default abstract class NetworkElement {
         if (Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length) {
             yield `${indent(indentLevel+1)}<props>`;
             for (const propName in this.props) {
-                if (!this.kresmer.saveDynamicPropValues && this.dynamicPropValues.has(propName))
+                if (!this.kresmer.saveDynamicPropValuesWithDrawing && this.dynamicPropValues.has(propName))
                     continue;
                 let propValue: string;
                 if (typeof this.props[propName] === "object") {

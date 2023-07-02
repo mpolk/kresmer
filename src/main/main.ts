@@ -28,10 +28,16 @@ let defaultDrawingFileName: string;
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
+    snapToGrid: true as boolean,
+    snappingToGridStep: 1,
+    saveDynamicPropsWithDrawing: false as boolean,
     customManagementProtocols: [] as CustomManagementProtocol[],
 });
 
 export type AppSettings = {
+    snapToGrid: boolean,
+    snappingToGridStep: number,
+    saveDynamicPropsWithDrawing: boolean,
     customManagementProtocols: CustomManagementProtocol[],
 }//AppSettings
 
@@ -104,6 +110,7 @@ function createMainWindow() {
         icon: path.join(__dirname, "../logo.png"),
         webPreferences: {
             preload: path.join(__dirname, '../preload.js'),
+            additionalArguments: [`--app-settings=${JSON.stringify(localSettings.data)}`],
         }
     }//windowOptions
     const mainWindow = new BrowserWindow(windowOptions);
@@ -200,7 +207,11 @@ function initIpcMainHooks()
     IpcMainHooks.on("open-url", openUrlWithSystemBrowser);
 
     IpcMainHooks.on("update-app-settings", (newAppSettings) => {
-        localSettings.set("customManagementProtocols", newAppSettings.customManagementProtocols);
+        console.debug("old settings: ", localSettings);
+        console.debug("new settings: ", newAppSettings);
+        for (const key in newAppSettings) {
+            localSettings.set(key as keyof AppSettings, newAppSettings[key as keyof AppSettings]);
+        }//for
     });
 
     IpcMainHooks.on("grid-shown-or-hidden", shown => {

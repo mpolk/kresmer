@@ -127,6 +127,17 @@
         <div class="offcanvas-body">
             <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
                 <div class="row">
+                    <div class="col">
+                        <div class="form-check d-inline-block">
+                            <label class="form-check-label" for="cbSnapToGrid">Snap to grid,</label>
+                            <input type="checkbox" id="cbSnapToGrid" class="form-check-input" v-model="appSettings!.snapToGrid" />
+                        </div>
+                        &nbsp;<label class="form-label me-1" for="cbSnappingToGridStep">step</label>
+                        <input type="number" id="cbSnappingToGridStep" class="form-control form-control-sm text-end d-inline-block"
+                            style="width: 4rem" v-model="appSettings!.snappingToGridStep" />
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col d-flex justify-content-between">
                         <span>Management protocols</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 

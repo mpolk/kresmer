@@ -29,6 +29,12 @@ export default class Settings<Registry extends RegData>
         } catch (error) {
             this._data = defaults;
         }//catch
+
+        for (const key in defaults) {
+            if (!(key in this._data)) {
+                this._data[key] = defaults[key];
+            }//if
+        }//for
     }//ctor
 
     public get<K1 extends keyof Registry, V extends Registry[K1]>(key1: K1): V;

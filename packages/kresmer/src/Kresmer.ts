@@ -479,7 +479,7 @@ export default class Kresmer extends KresmerEventHooks {
     }//saveDrawing
 
     /** Determines whether "dynamic" element prop values should be saved with the drawing */
-    saveDynamicPropValues = false;
+    saveDynamicPropValuesWithDrawing = false;
 
 
     /** Erases everything that is in the drawing now */
