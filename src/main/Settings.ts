@@ -78,6 +78,6 @@ export default class Settings<Registry extends RegData>
 
     public save()
     {
-        fs.writeFileSync(this.fileName, JSON.stringify(this._data));
+        fs.writeFileSync(this.fileName, JSON.stringify(this._data, undefined, 2));
     }//save
 }//Settings

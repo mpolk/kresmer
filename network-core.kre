@@ -213,8 +213,8 @@
     <link class="twisted-pair" name="metro-kamakura-1" from="Kamakura:eth1@d" to="metro-switch:1:27@u">
         <vertex x="92" y="588.1262456085103"/>
         <vertex x="40.12140273675835" y="588.1262456085103"/>
-        <vertex x="40.12140273675835" y="692.8416342103274"/>
-        <vertex x="627.5" y="692.8416342103274"/>
+        <vertex x="40.12140273675835" y="682"/>
+        <vertex x="627.5" y="682"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-2" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
