@@ -34,14 +34,12 @@
         props.model.updateConnectionPoints();
     })
 
-    const isHighlighted = ref(false);
-
     const linkClass = computed(() => {
         return {
             [props.model.getClass().name]: true,
             link: true,
             selected: props.model.isSelected,
-            highlighted: isHighlighted.value,
+            highlighted: props.model.isHighlighted,
         }
     })//linkClass
 
@@ -50,7 +48,7 @@
             link: true,
             segment: true,
             selected: props.model.isSelected,
-            highlighted: isHighlighted.value,
+            highlighted: props.model.isHighlighted,
         }
     })//segmentClass
 
@@ -77,8 +75,8 @@
 
 <template>
     <g :class="linkClass" 
-        @mouseenter="isHighlighted = true"
-        @mouseleave="isHighlighted = false"
+        @mouseenter="model.onMouseEnter"
+        @mouseleave="model.onMouseLeave"
         >
         <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
         <text v-if="startLabel" class="label" style="cursor: default; text-anchor: start; dominant-baseline: ideographic;">
@@ -87,7 +85,7 @@
         <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; dominant-baseline: ideographic;">
             <textPath :href="`#${pathID}`" startOffset="98%">{{endLabel}}</textPath>
         </text>
-        <template v-for="(vertex, i) in props.model.vertices" :key="`segment${i}`">
+        <template v-for="(vertex, i) in model.vertices" :key="`segment${i}`">
             <template v-if="i">
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
                     :x2="vertex.coords.x" :y2="vertex.coords.y" 

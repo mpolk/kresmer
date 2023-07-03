@@ -53,6 +53,8 @@ class _NetworkLink extends NetworkElement {
         return this._class;
     }//getClass
 
+    isHighlighted = false;
+
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
 
@@ -207,6 +209,19 @@ class _NetworkLink extends NetworkElement {
         return this.vertices[vertexNumber].align();
     }//alignVertex
 
+    public onMouseEnter()
+    {
+        this.isHighlighted = true;
+        (this as unknown as NetworkLink).bringToTop();
+    }//onMouseEnter
+
+    public onMouseLeave()
+    {
+        if (this.isHighlighted) {
+            (this as unknown as NetworkLink).restoreZPosition();
+            this.isHighlighted = false;
+        }//if
+    }//onMouseLeave
 
     public onClick(this: NetworkLink, segmentNumber: number, event: MouseEvent)
     {
