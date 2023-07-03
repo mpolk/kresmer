@@ -237,6 +237,7 @@
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attribute ref="viewBox"/>
                         <xs:attribute name="patternUnits" type="coordSystem"/>
+                        <xs:attribute name="preserveAspectRatio" type="preserveAspectRatioOptions"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -271,15 +272,13 @@
             <xs:group ref="svg-elements"/>
             <xs:element ref="slot"/>
             <xs:element name="template" type="inner-template"/>
+            <xs:element name="component">
+                <xs:complexType>
+                    <xs:attribute ref="v-bind:is" use="required"/>
+                    <xs:anyAttribute processContents="lax"/>
+                </xs:complexType>
+            </xs:element>
         </xs:choice>
-    </xs:complexType>
-
-    <xs:complexType name="named-outermost-template">
-        <xs:complexContent>
-            <xs:extension base="outermost-template">
-                <xs:attribute name="name"/>
-            </xs:extension>
-        </xs:complexContent>
     </xs:complexType>
 
     <xs:complexType name="inner-template">
@@ -484,6 +483,21 @@
         <xs:restriction base="xs:string">
             <xs:enumeration value="userSpaceOnUse"/>
             <xs:enumeration value="objectBoundingBox"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="preserveAspectRatioOptions">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="none"/>
+            <xs:enumeration value="xMinYMin"/>
+            <xs:enumeration value="xMidYMin"/>
+            <xs:enumeration value="xMaxYMin"/>
+            <xs:enumeration value="xMinYMid"/>
+            <xs:enumeration value="xMidYMid"/>
+            <xs:enumeration value="xMaxYMid"/>
+            <xs:enumeration value="xMinYMax"/>
+            <xs:enumeration value="xMidYMax"/>
+            <xs:enumeration value="xMaxYMax"/>
         </xs:restriction>
     </xs:simpleType>
 

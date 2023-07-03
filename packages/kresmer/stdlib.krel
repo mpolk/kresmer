@@ -90,6 +90,53 @@
         </style>
     </component-class>
 
+    <component-class name="RJ45" category=".ports">
+        <defs>
+            <pattern id="kre:std:rj45-contacts" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" 
+                preserveAspectRatio="none">
+                <rect x="2" y="0" width="6" height="10" fill="#b28e01" />
+            </pattern>
+        </defs>
+        <template>
+            <polyline v-bind:points="
+                keyPosition === 'top' ?
+                    `${cx+h*0.25},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}
+                     ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`
+                :
+                    `${cx+h*0.25},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}
+                     ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`" 
+                class="border" v-bind:stroke-width="Math.min(w, h)*0.16" />
+            <rect v-bind:x="w*0.2" v-bind:y="keyPosition === 'top' ? h*0.5 : h*0.2" v-bind:width="w*0.6" v-bind:height="h*0.3" 
+                  fill="url(#kre:std:rj45-contacts)"/>
+        </template>
+        <props>
+            <prop name="cx" type="Number" required="true" default="0" category="Geometry"/>
+            <prop name="cy" type="Number" required="true" default="0" category="Geometry"/>
+            <prop name="w" type="Number" required="true" default="25" category="Geometry"/>
+            <prop name="h" type="Number" required="true" default="25" category="Geometry"/>
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
+        </props>
+        <computed-props>
+            <computed-prop name="q">0.4</computed-prop>
+        </computed-props>
+        <style>
+            .border {fill: none; stroke: #597865;}
+        </style>
+    </component-class>
+
+    <component-class name="RJ45Port" category=".ports">
+        <template>
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+                    v-bind:port-info="portInfo">
+                <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+            </Kre:Port>
+        </template>
+        <props extend="Port" except="w,h">
+            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
+        </props>
+    </component-class>
+
     <component-class name="SfpPort" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 

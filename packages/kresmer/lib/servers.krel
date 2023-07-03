@@ -62,11 +62,11 @@
             <template v-if="ipAddress">
                 <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress"
                     v-bind:target="managementRefTarget">
-                    <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.45" v-bind:font-size="unitHeight*0.15"
+                    <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.42" v-bind:font-size="unitHeight*0.15"
                         class="ip-address">{{ipAddress}}</text>
                 </a>
                 <text v-else=""
-                    v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.45" v-bind:font-size="unitHeight*0.15"
+                    v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.42" v-bind:font-size="unitHeight*0.15"
                     class="ip-address">{{ipAddress}}</text>
             </template>
             <rect
@@ -92,17 +92,19 @@
                 v-bind:height="unitHeight*0.45" v-bind:width="uplinkPortPanelWidth" class="facet" />
             <rect v-bind:x="(width - downlinkPortPanelWidth)/2" v-bind:y="unitHeight*0.45"
                 v-bind:height="unitHeight*0.5" v-bind:width="downlinkPortPanelWidth" class="facet" />
-            <Kre:SfpPort v-for="([name, uplink], i) in uplinks" 
+            <component v-bind:is="interface.media == 'copper' ? 'Kre:RJ45Port' : `Kre:SfpPort`" 
+                v-for="([name, interface], i) in uplinks" 
                 v-bind:x="firstUplinkX + unitHeight*i*0.4" v-bind:y="unitHeight*0.15"
                 v-bind:d="unitHeight/3"
                 v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7"
-                v-bind:port-info="uplink" />
-            <Kre:SfpPort v-for="([name, downlink], i) in downlinks" 
+                v-bind:port-info="interface" />
+            <component v-bind:is="interface.media == 'copper' ? 'Kre:RJ45Port' : `Kre:SfpPort`" 
+                v-for="([name, interface], i) in downlinks" 
                 v-bind:x="firstDownlinkX + unitHeight*i*0.4" v-bind:y="unitHeight*0.53"
                 v-bind:d="unitHeight/3"
                 v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7"
                 key-position="bottom"
-                v-bind:port-info="downlink" />
+                v-bind:port-info="interface" />
         </template>
         <style extends="ServerBody">
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
