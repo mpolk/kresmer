@@ -45,6 +45,7 @@
     })//mounted
 
     watch(result, scalePreview);
+    watch(selectedCategory, onCategorySelection);
 
     async function scalePreview()
     {
@@ -107,8 +108,6 @@
             categories.value.unshift("");
         selectedCategory.value = categories.value[0];
 
-        onCategorySelection();
-
         offCanvas.show();
         const promise = new Promise<NetworkComponentClass|null>((resolve) => {
             resolvePromise = resolve;
@@ -144,8 +143,7 @@
                     <div class="offcanvas-body">
                         <div class="row">
                             <div class="col">
-                                <select class="form-select" v-model="selectedCategory" :size="selectSize"  ref="selCategory" 
-                                        @change="onCategorySelection">
+                                <select class="form-select" v-model="selectedCategory" :size="selectSize"  ref="selCategory">
                                     <option v-for="cat in categories" :value="cat" :key="`category-${cat}`">
                                         {{ cat }}
                                     </option>
@@ -169,7 +167,8 @@
                         </div>
                         <div class="row justify-content-end mt-3">
                             <div class="col-auto">
-                                <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
+                                <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>&nbsp;
+                                <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
                             </div>
                         </div>
                     </div>
