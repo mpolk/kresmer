@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { computed, ref, onBeforeMount, PropType, provide, onMounted } from 'vue';
+    import { computed, onBeforeMount, PropType, provide, onMounted } from 'vue';
     import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
