@@ -13,11 +13,12 @@
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
+    import NetworkLinkFilters from './NetworkLink/NetworkLinkFilters.vue';
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
 
     export default {
         name: "Kresmer",
-        components: { NetworkComponentHolder, TransformBoxFilters, ConnectionPointFilters, 
+        components: { NetworkComponentHolder, NetworkLinkFilters, TransformBoxFilters, ConnectionPointFilters, 
                       NetworkLinkVue, NetworkLinkBlankVue },
     }
 </script>
@@ -152,6 +153,7 @@
         >
         <defs>
             <TransformBoxFilters />
+            <NetworkLinkFilters />
             <ConnectionPointFilters />
             <component v-for="(_, i) in controller.defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
             <template v-for="_class of controller.registeredComponentClasses.values()">

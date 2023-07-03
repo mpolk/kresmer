@@ -440,8 +440,8 @@
         </props>
         <style>
             .padding {stroke-width: 8px;}
-            .link {stroke: #3b3b3b;}
-            .segment {stroke-width: 3px;}
+            .link {stroke: #3b3b3b}
+            .segment {stroke-width: 2px; stroke-linecap: round; xx-filter: url(#kre:fltLinkFilter)}
             .segment.highlighted {stroke: black; stroke-width: 4px}
             .segment.selected {stroke: black; stroke-width: 5px}
             .vertex {stroke: black; stroke-width: 4px; fill: white; r: 6px}
@@ -458,6 +458,9 @@
     <!-- Various link types -->
     <link-class name="twisted-pair" category="copper-links">
         <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
+        <style>
+            .segment {stroke: #3d3d3d}
+        </style>
     </link-class>
 
     <link-class name="DAC" category="copper-links">
@@ -465,7 +468,7 @@
         <style>
             .link {stroke: #236e85;}
             .padding {stroke-width: 10px;}
-            .segment {stroke-width: 4px; stroke-linejoin: round;}
+            .segment {stroke-width: 3px; stroke-linejoin: round;}
             .segment.highlighted {stroke: #2f97b6; stroke-width: 5px}
             .segment.selected {stroke: #2f97b6; stroke-width: 6px}
             .vertex {stroke: #2f97b6; stroke-width: 4px; fill: white; r: 6px}
@@ -478,7 +481,7 @@
         <style>
             .link {stroke: #0098c7;}
             .padding {stroke-width: 10px;}
-            .segment {stroke-width: 4px; stroke-linejoin: round;}
+            .segment {stroke-width: 3px; stroke-linejoin: round;}
             .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
             .segment.selected {stroke: #00b8f0; stroke-width: 6px}
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
@@ -489,7 +492,7 @@
     <link-class name="AOC-fan" category="optical-links">
         <extends base="AOC" media-type="AOC-fan" accept-media-types="AOC"/>
         <style>
-            .segment {stroke-width: 5px; }
+            .segment {stroke-width: 4px; }
         </style>
     </link-class>
 </kresmer-library>
