@@ -6,7 +6,7 @@
         <text id="kre:std:Crown">👑</text>
     </defs>
 
-    <component-class name="YellowRectangle">
+    <component-class name="YellowRectangle" category="Kresmer Art">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 v-bind:fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
@@ -18,7 +18,7 @@
         </props>
     </component-class>
 
-    <component-class name="Rectangle">
+    <component-class name="Rectangle" category="Kresmer Art">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 v-bind:fill="fill"></rect>
@@ -31,7 +31,7 @@
     </component-class>
 
 
-    <component-class name="Text">
+    <component-class name="Text" category="Kresmer Art">
         <template>
             <text x="0" y="0" v-bind:fill="color" v-bind:font-size="fontSize"
                 v-bind:font-family="fontFamily">
@@ -45,7 +45,7 @@
         </props>
     </component-class>
 
-    <component-class name="BorderedKresmer">
+    <component-class name="BorderedKresmer" category="Kresmer Art">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 v-bind:fill="fill" stroke="black" stroke-width="5px" stroke-opacity="0.5"></rect>
@@ -65,7 +65,7 @@
         </props>
     </component-class>
 
-    <component-class name="PatrioticKresmer">
+    <component-class name="PatrioticKresmer" category="Kresmer Art">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height/2" fill="blue" />
             <rect
@@ -86,7 +86,7 @@
         </props>
     </component-class>
 
-    <component-class name="Crown">
+    <component-class name="Crown" category="Kresmer Art">
         <template>
             <text x="0" y="0" v-bind:stroke="color" v-bind:font-size="fontSize">👑</text>
         </template>
@@ -96,7 +96,7 @@
         </props>
     </component-class>
 
-    <component-class name="SilverKresmer">
+    <component-class name="SilverKresmer" category="Kresmer Art">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 vector-effect="non-scaling-stroke"
@@ -119,7 +119,7 @@
         </props>
     </component-class>
 
-    <component-class name="Lilly">
+    <component-class name="Lilly" category="Kresmer Art">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 vector-effect="non-scaling-stroke"
