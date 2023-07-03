@@ -84,7 +84,7 @@ export default class LibraryParser {
     private parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
-        const category = node.getAttribute("category")?.split('/') ?? undefined;
+        const category = node.getAttribute("category") ?? undefined;
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
@@ -142,7 +142,7 @@ export default class LibraryParser {
     private parseLinkClassNode(node: Element)
     {
         const className = node.getAttribute("name");
-        const category = node.getAttribute("category")?.split('/') ?? undefined;
+        const category = node.getAttribute("category") ?? undefined;
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 

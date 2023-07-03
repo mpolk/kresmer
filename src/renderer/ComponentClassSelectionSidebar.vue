@@ -13,7 +13,7 @@
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref, computed, watch, nextTick } from 'vue';
+    import { onMounted, ref, watch, nextTick } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import Kresmer, { NetworkComponentClass, NetworkComponent, NetworkComponentController } from 'kresmer';
     import { kresmer } from './renderer-main';
@@ -21,22 +21,26 @@
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
     const selComponentClass = ref<HTMLSelectElement>();
+    const selCategory = ref<HTMLSelectElement>();
     const btnOk = ref<HTMLButtonElement>();
     const divPreview = ref<HTMLDivElement>();
     let resolvePromise!: (result: NetworkComponentClass|null) => void;
 
     const result = ref<NetworkComponentClass|null>(null);
     const componentClasses = ref<{name: string, _class: NetworkComponentClass}[]>([]);
-    const selectSize = computed(() => Math.min(componentClasses.value.length, 10));
-    let krePreview: Kresmer;
+    const categories = ref<string[]>([]);
+    const selectedCategory = ref<string>();
+
+    const selectSize = 10;
     const previewWidth = 400;
     const previewHeight = 400;
+    let krePreview: Kresmer;
 
     onMounted(() =>
     {
         rootDiv.value!.addEventListener('shown.bs.offcanvas', () => {
             scalePreview();
-            selComponentClass.value!.focus();
+            selCategory.value!.focus();
         });
     })//mounted
 
@@ -70,21 +74,40 @@
         }//if
     }//scalePreview
 
+    function onCategorySelection()
+    {
+        componentClasses.value = Array.from(kresmer.getRegisteredComponentClasses())
+                .map(([name, _class]) => {return {name, _class}})
+                .sort((c1, c2) => c1.name < c2.name ? -1 : c1.name > c2.name ? 1 : 0)
+                ;
+        componentClasses.value = componentClasses.value.filter(({name, _class}) => (_class.category ?? "") == selectedCategory.value);
+        result.value = componentClasses.value[0]._class;
+    }//onCategorySelection
+
     async function show()
     {
         if (!offCanvas) {
-            componentClasses.value = [...kresmer.getRegisteredComponentClasses()]
-                .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
-                .map(([name, _class]) => {return {name, _class}});
-
-            krePreview = new Kresmer(divPreview.value!, {isEditable: false, 
-                logicalWidth: previewWidth, logicalHeight: previewHeight});
-            componentClasses.value.forEach(item => {krePreview.registerNetworkComponentClass(item._class)});
-            componentClasses.value = componentClasses.value
-                .filter(({name, _class}) => !_class.isAbstract);
-            result.value = componentClasses.value[0]._class;
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: 'static'});
+            krePreview = new Kresmer(divPreview.value!, {isEditable: false, logicalWidth: previewWidth, logicalHeight: previewHeight});
+            for (const [_, _class] of kresmer.getRegisteredComponentClasses()) {
+                krePreview.registerNetworkComponentClass(_class);
+            }//for
         }//if
+
+        const categorySet = new Set<string>();
+        let haveUncategorizedClasses = false;
+        for (const [_, _class] of kresmer.getRegisteredComponentClasses()) {
+            if (!_class.category)
+                haveUncategorizedClasses = true;
+            else if (!_class.category.startsWith("."))
+                categorySet.add(_class.category);
+        }//for
+        categories.value = Array.from(categorySet).sort();
+        if (haveUncategorizedClasses)
+            categories.value.unshift("");
+        selectedCategory.value = categories.value[0];
+
+        onCategorySelection();
 
         offCanvas.show();
         const promise = new Promise<NetworkComponentClass|null>((resolve) => {
@@ -120,6 +143,14 @@
                 <form @submit.prevent="">
                     <div class="offcanvas-body">
                         <div class="row">
+                            <div class="col">
+                                <select class="form-select" v-model="selectedCategory" :size="selectSize"  ref="selCategory" 
+                                        @change="onCategorySelection">
+                                    <option v-for="cat in categories" :value="cat" :key="`category-${cat}`">
+                                        {{ cat }}
+                                    </option>
+                                </select>
+                            </div>
                             <div class="col">
                                 <select class="form-select" v-model="result" ref="selComponentClass" 
                                         :size="selectSize" @dblclick="submit">

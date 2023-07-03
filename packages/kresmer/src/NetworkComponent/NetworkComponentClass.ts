@@ -31,7 +31,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
-        category?: string[],
+        category?: string,
         defaultContent?: string,
     })
     {
