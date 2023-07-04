@@ -75,7 +75,7 @@ class _NetworkLink extends NetworkElement {
             this.tail.anchor.conn!.hostElement.propagateHighlightingUp(newValue);
     }//propagateHighlightingUp
 
-    get hasHighlightedUplinks()
+    private get hasHighlightedUplinks()
     {
         for (const vertex of this.vertices) {
             if (vertex.anchor.conn?.hostElement instanceof NetworkLink && 
