@@ -17,7 +17,7 @@
             <prop name="unit-height">75</prop>
             <prop name="perspective">center</prop>
             <prop name="n-stack-units">2</prop>
-            <prop name="management-protocol">telnet:</prop>
+            <prop name="management-protocol">ssh:</prop>
         </props>
     </component>
 
@@ -130,23 +130,23 @@
     </link>
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
-        <vertex x="64.62951062778245" y="0"/>
-        <vertex x="64.62951062778245" y="103.5"/>
+        <vertex x="50" y="0"/>
+        <vertex x="50" y="103.5"/>
     </link>
 
     <link class="DAC" name="core-stacking-2" from="core:1:27@r" to="core:2:26@r">
-        <vertex x="42.187801316780565" y="0"/>
-        <vertex x="42.187801316780565" y="46.5"/>
+        <vertex x="32" y="0"/>
+        <vertex x="32" y="46.5"/>
     </link>
 
     <link class="DAC" name="metro-stacking-1" from="metro-switch:1:47@r" to="metro-switch:2:48@r">
-        <vertex x="61.606191135840504" y="0"/>
-        <vertex x="61.606191135840504" y="103.5"/>
+        <vertex x="44" y="0"/>
+        <vertex x="44" y="103.5"/>
     </link>
 
     <link class="DAC" name="metro-stacking-2" from="metro-switch:1:48@r" to="metro-switch:2:47@r">
-        <vertex x="38.181423120468935" y="0"/>
-        <vertex x="38.181423120468935" y="46.5"/>
+        <vertex x="28" y="0"/>
+        <vertex x="28" y="46.5"/>
     </link>
 
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">

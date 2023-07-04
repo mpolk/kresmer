@@ -53,7 +53,37 @@ class _NetworkLink extends NetworkElement {
         return this._class;
     }//getClass
 
-    isHighlighted = false;
+    private _isHighlighted = false
+    private _highlightDownlinks = false;
+    get isHighlighted() {return this._isHighlighted || this.hasHighlightedUplinks}
+    set isHighlighted(newValue: boolean) {
+        this._highlightDownlinks = this._isHighlighted = newValue;
+        this.propagateHighlightingUp(newValue, false);
+    }//set isHighlighted
+
+    private propagateHighlightingUp(newValue: boolean, updateSelf = true)
+    {
+        if (updateSelf) {
+            if (this._isHighlighted == newValue)
+                return;
+            this._isHighlighted = newValue;
+        }//if
+
+        if (this.head.isConnected && this.head.anchor.conn!.hostElement instanceof NetworkLink)
+            this.head.anchor.conn!.hostElement.propagateHighlightingUp(newValue);
+        if (this.tail.isConnected && this.tail.anchor.conn!.hostElement instanceof NetworkLink)
+            this.tail.anchor.conn!.hostElement.propagateHighlightingUp(newValue);
+    }//propagateHighlightingUp
+
+    get hasHighlightedUplinks()
+    {
+        for (const vertex of this.vertices) {
+            if (vertex.anchor.conn?.hostElement instanceof NetworkLink && 
+                (vertex.anchor.conn.hostElement._highlightDownlinks || vertex.anchor.conn.hostElement.hasHighlightedUplinks)) 
+                return true;
+        }//for
+        return false;
+    }//hasHighlightedUplinks
 
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
@@ -75,6 +105,10 @@ class _NetworkLink extends NetworkElement {
     get head() {
         return this.vertices[0];
     }//head
+
+    get tail() {
+        return this.vertices[this.vertices.length-1];
+    }//tail
 
     public toggleVertexPositioningMode(except: LinkVertex)
     {
