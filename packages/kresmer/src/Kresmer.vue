@@ -13,13 +13,14 @@
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
+    import LinkBundleVue from './NetworkLink/LinkBundle.vue';
     import NetworkLinkFilters from './NetworkLink/NetworkLinkFilters.vue';
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
 
     export default {
         name: "Kresmer",
         components: { NetworkComponentHolder, NetworkLinkFilters, TransformBoxFilters, ConnectionPointFilters, 
-                      NetworkLinkVue, NetworkLinkBlankVue },
+                      NetworkLinkVue, LinkBundleVue, NetworkLinkBlankVue },
     }
 </script>
 
@@ -240,6 +241,7 @@
             </component>
         </NetworkComponentHolder>
 
+        <LinkBundleVue v-for="(bundle, i) in controller.linkBundles" :key="`bundle${i}`" :model="bundle" />
         <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.props" :key="`link${link.id}`" :model="link" />
         <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
     </svg>

@@ -11,6 +11,7 @@ import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
+import LinkBundle from "./LinkBundle";
 
 /** Link Vertex (either connected or free) */
 
@@ -48,6 +49,8 @@ export default class LinkVertex {
     
     private savedConn?: ConnectionPointProxy;
     get isConnected() {return Boolean(this.conn);}
+
+    bundleMembership?: BundleMembership;
 
     public isGoingToBeDragged = false;
     public isDragged = false;
@@ -282,6 +285,29 @@ export default class LinkVertex {
     }//endDrag
 
 
+    // private tryToJoinBundle()
+    // {
+    //     for (const [_, link] of this.link.kresmer.links) {
+    //         if (link !== this.link) {
+    //             for (let i = 0; i < link.vertices.length - 1; i++) {
+                    
+    //             }//for
+    //         }//if
+    //     }//for
+    // }//tryToJoinBundle
+
+    private isBetween(prev: LinkVertex, next: LinkVertex): boolean
+    {
+        if (prev.coords.x == next.coords.x)
+            return this.coords.x == prev.coords.x;
+        if (this.coords.x == prev.coords.x)
+            return false;
+        const fi1 = (next.coords.y - prev.coords.y) / (next.coords.x - prev.coords.x);
+        const fi2 = (this.coords.y - prev.coords.y) / (this.coords.x - prev.coords.x);
+        return fi1 == fi2;
+    }//isBetween
+
+
     public onRightClick(event: MouseEvent)
     {
         this.link.kresmer.emit("link-vertex-right-click", this, event);
@@ -450,6 +476,13 @@ interface LinkVertexAnchor {
     pos?: Position;
     conn?: ConnectionPointProxy; 
 }//LinkVertexExtAnchor
+
+/** Descriptor indicating this vertex membership in some link bundle */
+interface BundleMembership {
+    bundle: LinkBundle,
+    prevVertex?: LinkVertex,
+    nextVertex?: LinkVertex,
+}//BundleMembership
 
 // Editor operations
 class VertexMoveOp extends EditorOperation {

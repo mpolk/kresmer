@@ -30,6 +30,7 @@ import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
+import LinkBundle from "./NetworkLink/LinkBundle";
 
 
 /**
@@ -433,20 +434,23 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-     readonly links = reactive(new MapWithZOrder<number, NetworkLink>());
-     readonly linksByName = new Map<string, number>();
+    readonly links = reactive(new MapWithZOrder<number, NetworkLink>());
+    readonly linksByName = new Map<string, number>();
+
+    /** Links bundles (visual aggregates) currently on the drawing */
+    readonly linkBundles = new Array<LinkBundle>();
 
     /**
      * Adds a new Link to the drawing
      * @param link A Link to add
      */
-     public addLink(link: NetworkLink)
-     {
+    public addLink(link: NetworkLink)
+    {
         this.links.add(link);
         this.linksByName.set(link.name, link.id);
         this.emit("link-added", link);
         return this;
-     }//addLink
+    }//addLink
 
     /**
      * Deletes a Link from the content of the drawing

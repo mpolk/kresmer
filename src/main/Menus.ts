@@ -35,6 +35,9 @@ export interface ContextMenuCommands {
     "add-vertex": ContextMenuHandler<"link">,
     "delete-link": ContextMenuHandler<"link">,
     "edit-link-properties": ContextMenuHandler<"link">,
+    "create-bundle": ContextMenuHandler<"link">,
+    "delete-bundle": ContextMenuHandler<"link">,
+    "add-segment-to-bundle": ContextMenuHandler<"link">,
 
     "align-vertex": ContextMenuHandler<"link-vertex">,
     "delete-vertex": ContextMenuHandler<"link-vertex">,
@@ -132,6 +135,11 @@ export default class Menus {
         "link": [
             {label: "Align vertices", id: "align-vertices"},
             {label: "Add vertex", id: "add-vertex"},
+            {type: 'separator'},
+            {label: "Create bundle", id: "create-bundle"},
+            {label: "Delete bundle", id: "delete-bundle"},
+            {label: "Add segment to the bundle", id: "add-segment-to-bundle"},
+            {type: 'separator'},
             {label: "Delete link", id: "delete-link"},
             {type: 'separator'},
             {label: "Properties...", id: "edit-link-properties"},
