@@ -15,10 +15,16 @@ const isMac = process.platform === 'darwin'
 export interface ContextMenus {
   "drawing": (mousePos: Position) => void,
   "component": (componentID: number) => void,
-  "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
+  "link": (linkID: number, segmentNumber: number, mousePos: Position, menuOptions: LinkContextMenuOptions) => void,
   "link-vertex": (linkID: number, vertexNumber: number) => void,
   "connection-point": (componentID: number, connectionPointName: number) => void,
 }//ContextMenus
+
+export interface LinkContextMenuOptions {
+  canCreateBundle?: boolean,
+  canDeleteBundle?: boolean,
+  canAddSegmentToBundle?: boolean,
+}//LinkContextMenuOptions
 
 export type ContextMenuID = keyof ContextMenus;
 
@@ -47,7 +53,7 @@ export interface ContextMenuCommands {
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
 type ContextMenuItemConstructorOptions = 
-    Omit<MenuItemConstructorOptions, "id"> & {id?: ContextMenuCommandID};
+    Omit<MenuItemConstructorOptions, "id"> & {id?: ContextMenuCommandID, cond?: (args: unknown[]) => boolean};
 
 export default class Menus {
 
@@ -136,9 +142,12 @@ export default class Menus {
             {label: "Align vertices", id: "align-vertices"},
             {label: "Add vertex", id: "add-vertex"},
             {type: 'separator'},
-            {label: "Create bundle", id: "create-bundle"},
-            {label: "Delete bundle", id: "delete-bundle"},
-            {label: "Add segment to the bundle", id: "add-segment-to-bundle"},
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {label: "Create bundle", id: "create-bundle", cond: (args: any[]) => Boolean(args[3]?.canCreateBundle)},
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {label: "Delete bundle", id: "delete-bundle", cond: (args: any[]) => Boolean(args[3]?.canDeleteBundle)},
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            {label: "Add segment to the bundle", id: "add-segment-to-bundle", cond: (args: any[]) => Boolean(args[3]?.canAddSegmentToBundle)},
             {type: 'separator'},
             {label: "Delete link", id: "delete-link"},
             {type: 'separator'},
@@ -159,11 +168,16 @@ export default class Menus {
     {
         const template = [...this.contextMenus[id]];
         for (const item of template) {
+            if (item.cond && !item.cond(args)) {
+              item.enabled = item.visible = false;
+            }//if
             item.click = () => {
                 this.browserWindow.webContents.send("command", item.id, ...args);
             }
         }//for
-        Menu.buildFromTemplate(template).popup();
+        console.debug("Context menu args:", args);
+        const menu = Menu.buildFromTemplate(template);
+        menu.popup();
     }//contextMenu
 
 }//Menus

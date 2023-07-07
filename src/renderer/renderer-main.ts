@@ -181,7 +181,15 @@ kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) =>
 
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>
 {
-    window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+    const canCreateBundle = segmentNumber && segmentNumber < (link.vertices.length - 1) && 
+        !link.vertices[segmentNumber].bundleMembership && !link.vertices[segmentNumber+1].bundleMembership;
+    const canDeleteBundle = segmentNumber && segmentNumber < (link.vertices.length - 1) && 
+        link.vertices[segmentNumber].bundleMembership && link.vertices[segmentNumber+1].bundleMembership;
+    const canAddSegmentToBundle = segmentNumber && segmentNumber < (link.vertices.length - 1) && 
+        ((link.vertices[segmentNumber].bundleMembership && !link.vertices[segmentNumber+1].bundleMembership) || 
+         (!link.vertices[segmentNumber].bundleMembership && link.vertices[segmentNumber+1].bundleMembership));
+    window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY},
+        {canCreateBundle, canDeleteBundle, canAddSegmentToBundle});
 });//onLinkRightClick
 
 kresmer.on("link-double-click", (link: NetworkLink, /* segmentNumber: number,  mouseEvent: MouseEvent */) =>
