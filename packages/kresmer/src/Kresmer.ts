@@ -18,6 +18,7 @@ import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, Selectio
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
+import LinkVertex from "./NetworkLink/LinkVertex";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -30,7 +31,7 @@ import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
-import LinkBundle from "./NetworkLink/LinkBundle";
+import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 
 
 /**
@@ -938,8 +939,18 @@ export default class Kresmer extends KresmerEventHooks {
         },//deleteLinkVertex
 
         /**
-         * 
-         * @param element Update the specified network element props and name (if required)
+         * Creates a new link bundle containing the vertices specified
+         * @param vertices The vertices to include to the new bundle
+         */
+        createLinkBundle: (...vertices: LinkVertex[]) => {
+            const bundle = new LinkBundle(this, vertices);
+            const op = new CreateBundleOp(bundle);
+            this.undoStack.execAndCommit(op);
+        },//createLinkBundle
+
+        /**
+         * Update the specified network element props and name (if required)
+         * @param element The element to update
          * @param newProps The new prop values
          * @param newName The new element name
          */
