@@ -6,15 +6,16 @@
  * Network Link Bundle - data object 
  ***************************************************************************/
 
-import Kresmer from "../Kresmer";
+import Kresmer, { NetworkLink, Position } from "../Kresmer";
 import { EditorOperation } from "../UndoStack";
-import LinkVertex from "./LinkVertex";
 
 /**
  * Network Link Bundle - a virtual link aggregate consisting of two or more collinear link segments
  */
-export default class LinkBundle  {
-    public constructor(readonly kresmer: Kresmer, readonly vertices: LinkVertex[] = []) {}
+export default class LinkBundle extends NetworkLink {
+    public constructor(kresmer: Kresmer, from: Position, to: Position) {
+        super(kresmer, "bundle", {from: {pos: from}, to: {pos: to}});
+    }//ctor
 }//LinkBundle
 
 
@@ -26,10 +27,10 @@ export class CreateBundleOp extends EditorOperation {
     }//ctor
 
     override exec(): void {
-        
+        this.bundle.kresmer.addLink(this.bundle);
     }//exec
 
     override undo(): void {
-        
+        this.bundle.kresmer.deleteLink(this.bundle);
     }//undo
 }//CreateBundleOp

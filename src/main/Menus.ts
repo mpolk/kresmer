@@ -15,16 +15,10 @@ const isMac = process.platform === 'darwin'
 export interface ContextMenus {
   "drawing": (mousePos: Position) => void,
   "component": (componentID: number) => void,
-  "link": (linkID: number, segmentNumber: number, mousePos: Position, menuOptions: LinkContextMenuOptions) => void,
+  "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
   "link-vertex": (linkID: number, vertexNumber: number) => void,
   "connection-point": (componentID: number, connectionPointName: number) => void,
 }//ContextMenus
-
-export interface LinkContextMenuOptions {
-  canCreateBundle?: boolean,
-  canDeleteBundle?: boolean,
-  canAddSegmentToBundle?: boolean,
-}//LinkContextMenuOptions
 
 export type ContextMenuID = keyof ContextMenus;
 
@@ -32,6 +26,7 @@ type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
     "add-component": ContextMenuHandler<"drawing">,
     "edit-drawing-properties": ContextMenuHandler<"drawing">,
+    "create-bundle": ContextMenuHandler<"drawing">,
 
     "transform-component": ContextMenuHandler<"component">,
     "delete-component": ContextMenuHandler<"component">,
@@ -41,9 +36,6 @@ export interface ContextMenuCommands {
     "add-vertex": ContextMenuHandler<"link">,
     "delete-link": ContextMenuHandler<"link">,
     "edit-link-properties": ContextMenuHandler<"link">,
-    "create-bundle": ContextMenuHandler<"link">,
-    "delete-bundle": ContextMenuHandler<"link">,
-    "add-segment-to-bundle": ContextMenuHandler<"link">,
 
     "align-vertex": ContextMenuHandler<"link-vertex">,
     "delete-vertex": ContextMenuHandler<"link-vertex">,
@@ -129,6 +121,8 @@ export default class Menus {
       {
         "drawing": [
           {label: "Add component...", id: "add-component"},
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          {label: "Create bundle", id: "create-bundle"},
           {type: 'separator'},
           {label: "Properties...", id: "edit-drawing-properties"},
         ],
@@ -142,12 +136,6 @@ export default class Menus {
             {label: "Align vertices", id: "align-vertices"},
             {label: "Add vertex", id: "add-vertex"},
             {type: 'separator'},
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {label: "Create bundle", id: "create-bundle", cond: (args: any[]) => Boolean(args[3]?.canCreateBundle)},
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {label: "Delete bundle", id: "delete-bundle", cond: (args: any[]) => Boolean(args[3]?.canDeleteBundle)},
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            {label: "Add segment to the bundle", id: "add-segment-to-bundle", cond: (args: any[]) => Boolean(args[3]?.canAddSegmentToBundle)},
             {type: 'separator'},
             {label: "Delete link", id: "delete-link"},
             {type: 'separator'},

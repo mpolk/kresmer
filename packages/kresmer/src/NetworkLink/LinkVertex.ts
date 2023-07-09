@@ -472,7 +472,7 @@ export interface LinkVertexInitParams  {
 }//LinkVertexInitParams
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
-interface LinkVertexAnchor {
+export interface LinkVertexAnchor {
     pos?: Position;
     conn?: ConnectionPointProxy; 
 }//LinkVertexExtAnchor

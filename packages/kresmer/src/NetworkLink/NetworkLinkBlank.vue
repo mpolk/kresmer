@@ -7,12 +7,16 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType } from 'vue';
+    import { PropType, computed } from 'vue';
     import NetworkLinkBlank from './NetworkLinkBlank';
 
     const props = defineProps({
         model: {type: Object as PropType<NetworkLinkBlank>, required: true},
     });
+
+    const start = computed(() => {
+        return props.model.start.conn ? props.model.start.conn.coords : props.model.start.pos!;
+    })//start
 
     function onMouseMove(event: MouseEvent)
     {
@@ -39,11 +43,11 @@
 
 <template>
     <line class="line" 
-        :x1="model.start!.coords.x" :y1="model.start!.coords.y"
+        :x1="start.x" :y1="start.y"
         :x2="model.end.x" :y2="model.end.y"
         />
-    <circle class="origin" :cx="model.start!.coords.x" :cy="model.start!.coords.y" r="20" />
-    <circle class="origin-center" :cx="model.start!.coords.x" :cy="model.start!.coords.y" r="4" />
+    <circle class="origin" :cx="start.x" :cy="start.y" r="20" />
+    <circle class="origin-center" :cx="start.x" :cy="start.y" r="4" />
     <circle class="header"
         :cx="model.end.x" :cy="model.end.y" r="20"
         @mousemove.self="onMouseMove($event)"

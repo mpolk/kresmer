@@ -18,7 +18,6 @@ import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, Selectio
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
-import LinkVertex from "./NetworkLink/LinkVertex";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -32,6 +31,7 @@ import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
+import LinkBundleBlank from "./NetworkLink/LinkBundleBlank";
 
 
 /**
@@ -638,7 +638,7 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     /** Deselects all components (probably except the one specified) */
-    public deselectAllElements(except?: NetworkComponentController | NetworkLink | NetworkLinkBlank)
+    public deselectAllElements(except?: NetworkComponentController | NetworkLink | NetworkLinkBlank | LinkBundleBlank)
     {
         this.networkComponents.forEach(controller => {
             if (controller !== except) {
@@ -655,6 +655,9 @@ export default class Kresmer extends KresmerEventHooks {
 
         if (!(except instanceof NetworkLinkBlank)) {
             this._abortLinkCreation();
+        }//if
+        if (!(except instanceof LinkBundleBlank)) {
+            this._abortLinkBundleCreation();
         }//if
         this.selectedElement = undefined;
     }//deselectAllElements
@@ -715,13 +718,12 @@ export default class Kresmer extends KresmerEventHooks {
             {connectionPoint: toConnectionPoint} :
             {pos: {...this.newLinkBlank!.end}};
         const newLink = new NetworkLink(this, this.newLinkBlank!._class,
-            {from: {connectionPoint: this.newLinkBlank!.start}, to});
+            {from: {connectionPoint: this.newLinkBlank!.start.conn, pos: this.newLinkBlank!.start.pos}, to});
         newLink.initVertices();
         this.undoStack.execAndCommit(new AddLinkOp(newLink));
         this.newLinkBlank = undefined;
         this.vueKresmer.$forceUpdate();
     }//_completeLinkCreation
-
 
     /**
      * Aborts the new link creation (for private use only)
@@ -733,6 +735,32 @@ export default class Kresmer extends KresmerEventHooks {
             this.vueKresmer.$forceUpdate();
         }//if
     }//_abortLinkCreation
+
+
+    /** A blank for a new link creation */
+    public newLinkBundleBlank?: LinkBundleBlank;
+
+    /**
+     * Completes the new link bundle creation (for private use only)
+     */
+    public _completeLinkBundleCreation()
+    {
+        const newBundle = new LinkBundle(this, this.newLinkBundleBlank!.start.pos!, this.newLinkBundleBlank!.end);
+        this.undoStack.execAndCommit(new CreateBundleOp(newBundle));
+        this.newLinkBundleBlank = undefined;
+        this.vueKresmer.$forceUpdate();
+    }//_completeLinkBundleCreation
+
+    /**
+     * Aborts the new link bundle creation (for private use only)
+     */
+    public _abortLinkBundleCreation()
+    {
+        if (this.newLinkBundleBlank) {
+            this.newLinkBundleBlank = undefined;
+            this.vueKresmer.$forceUpdate();
+        }//if
+    }//_abortLinkBundleCreation
 
 
     /** 
@@ -834,7 +862,7 @@ export default class Kresmer extends KresmerEventHooks {
         },//changeComponentClass
 
         /**
-         * Starts link creation pulling in from the specified connection point
+         * Starts link creation pulling it from the specified connection point
          * @param linkClass A class of the new link
          * @param fromElementID A component from which the link is started
          * @param fromConnectionPointName A connection point from which the link is started
@@ -852,7 +880,7 @@ export default class Kresmer extends KresmerEventHooks {
                 console.error(`Trying to create a link from non-existing connection point (${fromElementID}:${fromConnectionPointName})!`);
                 return;
             }//if
-            this.newLinkBlank = new NetworkLinkBlank(this, linkClass, fromConnectionPoint);
+            this.newLinkBlank = new NetworkLinkBlank(this, linkClass, {conn: fromConnectionPoint});
             this.vueKresmer.$forceUpdate();
         },//startLinkCreation
 
@@ -939,14 +967,15 @@ export default class Kresmer extends KresmerEventHooks {
         },//deleteLinkVertex
 
         /**
-         * Creates a new link bundle containing the vertices specified
-         * @param vertices The vertices to include to the new bundle
+         * Starts a link bundle creation pulling it from the specified position
+         * @param fromPos Position from which the link is started
          */
-        createLinkBundle: (...vertices: LinkVertex[]) => {
-            const bundle = new LinkBundle(this, vertices);
-            const op = new CreateBundleOp(bundle);
-            this.undoStack.execAndCommit(op);
-        },//createLinkBundle
+        startLinkBundleCreation: (fromPos: Position) =>
+        {
+            this.newLinkBundleBlank = new LinkBundleBlank(this, fromPos);
+            this.vueKresmer.$forceUpdate();
+        },//startLinkBundleCreation
+
 
         /**
          * Update the specified network element props and name (if required)
