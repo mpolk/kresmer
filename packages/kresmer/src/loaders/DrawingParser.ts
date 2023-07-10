@@ -224,7 +224,7 @@ export default class DrawingParser {
         } else {
             matches = strData.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_:/]+(?:@[a-z0-9]+)?)$/);
             if (matches) {
-                return {conn: {cpHostElement: matches[1], connectionPoint: matches[2]}};
+                return {cpData: {cpHostElement: matches[1], connectionPoint: matches[2]}};
             } else {
                 this.kresmer.raiseError(new KresmerException(
                     `Invalid link vertex specification: "${strData}"`));
@@ -258,7 +258,7 @@ export default class DrawingParser {
         if (!connectionPoint) {
             throw new ParsingException(`Invalid connection point specification: "${connect}"`);
         }//if
-        return {conn: {cpHostElement: component, connectionPoint}};
+        return {cpData: {cpHostElement: component, connectionPoint}};
     }//parseLinkVertex
 
 

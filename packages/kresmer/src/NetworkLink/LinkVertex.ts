@@ -109,19 +109,19 @@ export default class LinkVertex {
     {
         if (this.initParams?.pos) {
             this.pinUp(this.initParams.pos);
-        } else if (this.initParams?.conn) {
-            const cpHostElement = this.link.kresmer.getElementByName(this.initParams.conn.cpHostElement);
+        } else if (this.initParams?.cpData) {
+            const cpHostElement = this.link.kresmer.getElementByName(this.initParams.cpData.cpHostElement);
             if (!cpHostElement) {
                 this.link.kresmer.raiseError(new KresmerException(
-                    `Attempt to connect to the non-existing component "${this.initParams.conn.cpHostElement}"`,
+                    `Attempt to connect to the non-existing component "${this.initParams.cpData.cpHostElement}"`,
                     {source: `Link "${this.link.name}"`}));
                 return this;
             }//if
-            const connectionPoint = cpHostElement.getConnectionPoint(this.initParams.conn.connectionPoint);
+            const connectionPoint = cpHostElement.getConnectionPoint(this.initParams.cpData.connectionPoint);
             if (!connectionPoint) {
                 this.link.kresmer.raiseError(new KresmerException(
                     `Attempt to connect to non-existing connection point \
-                    "${this.initParams.conn.cpHostElement}:${this.initParams.conn.connectionPoint}"`,
+                    "${this.initParams.cpData.cpHostElement}:${this.initParams.cpData.connectionPoint}"`,
                     {source: `Link "${this.link.name}"`}))
                 return this;
             }//if
@@ -464,7 +464,7 @@ export default class LinkVertex {
 // Auxiliary interfaces for initialization and position saving
 export interface LinkVertexInitParams  {
     pos?: Position, 
-    conn?: {
+    cpData?: {
         cpHostElement: string, 
         connectionPoint: string
     },
