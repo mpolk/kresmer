@@ -455,6 +455,12 @@
         </style>
     </link-class>
 
+    <link-class name="bundle" category=".abstract-links">
+        <style extends="_abstract-link">
+            .segment {stroke-width: 4px}
+        </style>
+    </link-class>
+
     <!-- Various link types -->
     <link-class name="twisted-pair" category="copper-links">
         <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>

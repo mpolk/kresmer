@@ -16,6 +16,10 @@ export default class LinkBundle extends NetworkLink {
     public constructor(kresmer: Kresmer, from: Position, to: Position) {
         super(kresmer, "bundle", {from: {pos: from}, to: {pos: to}});
     }//ctor
+
+    override getNamePrefix(): string {
+        return "Bundle";
+    }//getNamePrefix
 }//LinkBundle
 
 

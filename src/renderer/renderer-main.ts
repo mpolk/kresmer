@@ -181,15 +181,7 @@ kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) =>
 
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>
 {
-    const canCreateBundle = segmentNumber && segmentNumber < (link.vertices.length - 1) && 
-        !link.vertices[segmentNumber].bundleMembership && !link.vertices[segmentNumber+1].bundleMembership;
-    const canDeleteBundle = segmentNumber && segmentNumber < (link.vertices.length - 1) && 
-        link.vertices[segmentNumber].bundleMembership && link.vertices[segmentNumber+1].bundleMembership;
-    const canAddSegmentToBundle = segmentNumber && segmentNumber < (link.vertices.length - 1) && 
-        ((link.vertices[segmentNumber].bundleMembership && !link.vertices[segmentNumber+1].bundleMembership) || 
-         (!link.vertices[segmentNumber].bundleMembership && link.vertices[segmentNumber+1].bundleMembership));
-    window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY},
-        {canCreateBundle, canDeleteBundle, canAddSegmentToBundle});
+    window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 });//onLinkRightClick
 
 kresmer.on("link-double-click", (link: NetworkLink, /* segmentNumber: number,  mouseEvent: MouseEvent */) =>
@@ -402,6 +394,11 @@ appCommandExecutor.on("connect-connection-point", async (
     if (linkClass) {
         kresmer.edAPI.startLinkCreation(linkClass, fromComponentID, fromConnectionPointName);
     }//if
+});//startLinkCreation
+
+appCommandExecutor.on("create-bundle", (mousePos: Position) =>
+{
+    kresmer.edAPI.startLinkBundleCreation(mousePos);
 });//startLinkCreation
 
 appCommandExecutor.on("scale-drawing", direction => {

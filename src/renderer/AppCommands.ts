@@ -53,7 +53,7 @@ export class AppCommandExecutor {
         if (handler) {
             (handler as (...args: unknown[]) => void)(...args);
         } else {
-            alert(`Unknown command: ${command}(${args.join(", ")})`);
+            alert(`Unknown command: ${command}(${JSON.stringify(args)})`);
         }//if
     }//execute
 
