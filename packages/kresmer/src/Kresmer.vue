@@ -13,14 +13,13 @@
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
-    import LinkBundleVue from './NetworkLink/LinkBundle.vue';
     import NetworkLinkFilters from './NetworkLink/NetworkLinkFilters.vue';
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
 
     export default {
         name: "Kresmer",
         components: { NetworkComponentHolder, NetworkLinkFilters, TransformBoxFilters, ConnectionPointFilters, 
-                      NetworkLinkVue, LinkBundleVue, NetworkLinkBlankVue },
+                      NetworkLinkVue, NetworkLinkBlankVue },
     }
 </script>
 
