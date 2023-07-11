@@ -17,12 +17,14 @@ import type { RequireAtLeastOne } from "../Utils";
 
 export default class LinkVertex {
 
-    constructor(public link: NetworkLink, public vertexNumber: number, public initParams?: LinkVertexInitParams) {}
+    constructor(public link: NetworkLink, public vertexNumber: number, public initParams?: LinkVertexInitParams) {
+        this.ownConnectionPoint = new ConnectionPointProxy(this.link, this.vertexNumber, 0);
+        this.link.addConnectionPoint(this.vertexNumber, this.ownConnectionPoint);
+    }//ctor
 
     private pos?: Position;
     private conn?: ConnectionPointProxy;
-
-    public ownConnectionPoint?: ConnectionPointProxy;
+    public ownConnectionPoint: ConnectionPointProxy;
 
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
     // to the link's loopback mode

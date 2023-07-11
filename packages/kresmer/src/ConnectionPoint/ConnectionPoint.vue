@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject, onMounted, ref, watch, nextTick, computed } from 'vue';
+    import { inject, onMounted, ref, watch, nextTick, computed, PropType } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkElement from '../NetworkElement';
     import NetworkLink from '../NetworkLink/NetworkLink';
@@ -20,12 +20,14 @@
         y: {type: Number, default: 0}, 
         d: {type: Number, default: 10}, 
         dir: {type: [Number, String], default: 90},
+        proxy: {type: Object as PropType<ConnectionPointProxy>},
     });
 
     const hostElement = inject(NetworkElement.ikHostElement)!;
     const hostIsLink = hostElement instanceof NetworkLink;
-    const proxy = new ConnectionPointProxy(hostElement, props.name, props.dir);
-    hostElement.addConnectionPoint(props.name, proxy);
+    const proxy = props.proxy ?? new ConnectionPointProxy(hostElement, props.name, props.dir);
+    if (!props.proxy)
+        hostElement.addConnectionPoint(props.name, proxy);
 
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
