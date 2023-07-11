@@ -328,7 +328,7 @@ appCommandExecutor.on("add-component", async (position?: Position) =>
     console.debug(`component-class = ${componentClass?.name}`);
 
     if (componentClass) {
-        kresmer.edAPI.createComponent(componentClass, position);
+        kresmer.edAPI.createComponent(componentClass, position, "screen");
     }//if
 });//addComponent
 
@@ -398,7 +398,7 @@ appCommandExecutor.on("connect-connection-point", async (
 
 appCommandExecutor.on("create-bundle", (mousePos: Position) =>
 {
-    kresmer.edAPI.startLinkBundleCreation(mousePos);
+    kresmer.edAPI.startLinkBundleCreation(mousePos, "screen");
 });//startLinkCreation
 
 appCommandExecutor.on("scale-drawing", direction => {

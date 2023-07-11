@@ -827,11 +827,12 @@ export default class Kresmer extends KresmerEventHooks {
             this.undoStack.execAndCommit(new UpdateDrawingPropsOp(this, props));
         },//updateDrawingProperties
 
-        createComponent: (componentClass: NetworkComponentClass, position?: Position) =>
+        createComponent: (componentClass: NetworkComponentClass, position?: Position, coordSystem?: "screen"|"drawing") =>
         {
             const newComponent = new NetworkComponent(this, componentClass);
-            const origin = position ? this.applyScreenCTM(position) : 
-                                      {x: this.logicalBox.width/2, y: this.logicalBox.height/2};
+            const origin = !position ? {x: this.logicalBox.width/2, y: this.logicalBox.height/2} :
+                coordSystem !== "drawing" ? this.applyScreenCTM(position) : 
+                {...position};
             const controller = new NetworkComponentController(this, newComponent, {origin});
             this.undoStack.execAndCommit(new ComponentAddOp(controller));
         },//createComponent
@@ -970,9 +971,10 @@ export default class Kresmer extends KresmerEventHooks {
          * Starts a link bundle creation pulling it from the specified position
          * @param fromPos Position from which the link is started
          */
-        startLinkBundleCreation: (fromPos: Position) =>
+        startLinkBundleCreation: (fromPos: Position, coordSystem?: "screen"|"drawing") =>
         {
-            this.newLinkBundleBlank = new LinkBundleBlank(this, fromPos);
+            const from = coordSystem != "drawing" ? this.applyScreenCTM(fromPos) : {...fromPos};
+            this.newLinkBundleBlank = new LinkBundleBlank(this, from);
             this.vueKresmer.$forceUpdate();
         },//startLinkBundleCreation
 
@@ -1077,4 +1079,3 @@ export {default as KresmerException} from "./KresmerException";
 export {default as KresmerParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPointProxy";
 export type {DrawingMergeOptions} from "./loaders/DrawingLoader";
-    
