@@ -11,7 +11,6 @@ import KresmerException from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
-import LinkBundle from "./LinkBundle";
 import type { RequireAtLeastOne } from "../Utils";
 
 /** Link Vertex (either connected or free) */
@@ -50,8 +49,6 @@ export default class LinkVertex {
     
     private savedConn?: ConnectionPointProxy;
     get isConnected() {return Boolean(this.conn);}
-
-    bundleMembership?: BundleMembership;
 
     public isGoingToBeDragged = false;
     public isDragged = false;
@@ -469,20 +466,13 @@ export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
         cpHostElement: string, 
         connectionPoint: string
     },
-}>//LinkVertexInitParams
+}> | Record<string, never>;
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
 export type LinkVertexAnchor = RequireAtLeastOne<{
     pos?: Position;
     conn?: ConnectionPointProxy; 
 }>//LinkVertexExtAnchor
-
-/** Descriptor indicating this vertex membership in some link bundle */
-interface BundleMembership {
-    bundle: LinkBundle,
-    prevVertex?: LinkVertex,
-    nextVertex?: LinkVertex,
-}//BundleMembership
 
 // Editor operations
 class VertexMoveOp extends EditorOperation {
