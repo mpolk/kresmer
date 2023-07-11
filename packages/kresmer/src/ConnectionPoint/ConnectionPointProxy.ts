@@ -8,7 +8,7 @@
  * the Connection Point from outside of the Vue component hierarchy
 \****************************************************************************/
 
-import { nextTick, reactive, ref } from "vue";
+import { nextTick, reactive } from "vue";
 import NetworkElement from "../NetworkElement";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import { Position } from "../Transform/Transform";
@@ -65,7 +65,7 @@ export default class ConnectionPointProxy {
     }//_setPos
 
     /** A trigger variable that signals the vue-component that it should refresh coords */
-    readonly posUpdateTrigger = ref(0);
+    readonly posUpdateTrigger = reactive({value: 0});
     /** A method to activate the coord update trigger. We have to use lambda-function to have
      *  access to the proper "this". */
     readonly updatePos = () =>
