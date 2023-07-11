@@ -12,6 +12,7 @@ import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
 import LinkBundle from "./LinkBundle";
+import type { RequireAtLeastOne } from "../Utils";
 
 /** Link Vertex (either connected or free) */
 
@@ -126,8 +127,8 @@ export default class LinkVertex {
                 return this;
             }//if
             this.connect(connectionPoint);
-        } else if (this.initParams?.connectionPoint) {
-            this.connect(this.initParams.connectionPoint);
+        } else if (this.initParams?.conn) {
+            this.connect(this.initParams.conn);
         // } else {
         //     throw new KresmerException(`Invalid connection point initialization params: ${this.initParams}`);
         }//if
@@ -167,7 +168,7 @@ export default class LinkVertex {
         return {
             pos: this.pos,
             conn: this.conn,
-        }
+        } as LinkVertexAnchor
     }//get anchor
 
     set anchor(newPos: LinkVertexAnchor)
@@ -462,20 +463,19 @@ export default class LinkVertex {
 
 
 // Auxiliary interfaces for initialization and position saving
-export interface LinkVertexInitParams  {
-    pos?: Position, 
+
+export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
     cpData?: {
         cpHostElement: string, 
         connectionPoint: string
     },
-    connectionPoint?: ConnectionPointProxy,
-}//LinkVertexInitParams
+}>//LinkVertexInitParams
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
-export interface LinkVertexAnchor {
+export type LinkVertexAnchor = RequireAtLeastOne<{
     pos?: Position;
     conn?: ConnectionPointProxy; 
-}//LinkVertexExtAnchor
+}>//LinkVertexExtAnchor
 
 /** Descriptor indicating this vertex membership in some link bundle */
 interface BundleMembership {

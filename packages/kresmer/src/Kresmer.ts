@@ -715,10 +715,10 @@ export default class Kresmer extends KresmerEventHooks {
     public _completeLinkCreation(toConnectionPoint?: ConnectionPointProxy)
     {
         const to = toConnectionPoint ? 
-            {connectionPoint: toConnectionPoint} :
+            {conn: toConnectionPoint} :
             {pos: {...this.newLinkBlank!.end}};
         const newLink = new NetworkLink(this, this.newLinkBlank!._class,
-            {from: {connectionPoint: this.newLinkBlank!.start.conn, pos: this.newLinkBlank!.start.pos}, to});
+            {from: this.newLinkBlank!.start, to});
         newLink.initVertices();
         this.undoStack.execAndCommit(new AddLinkOp(newLink));
         this.newLinkBlank = undefined;
