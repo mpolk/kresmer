@@ -101,21 +101,19 @@ export default abstract class NetworkElement {
     static readonly ikHostElement = Symbol() as InjectionKey<NetworkElement>;
 
     /** A collection of this component connection points indexed by their names */
-    protected readonly connectionPoints: Record<string|number, ConnectionPointProxy> = {};
+    protected readonly connectionPoints = new Map<string, ConnectionPointProxy>();
     /** Returns the connection with the given name */
-    getConnectionPoint(name: string|number) {return this.connectionPoints[name]}
+    getConnectionPoint(name: string|number) {return this.connectionPoints.get(String(name))}
     /** Adds a connection point with the given name or replaces the existing one */
     addConnectionPoint(name: string|number, connectionPoint: ConnectionPointProxy)
     {
-        this.connectionPoints[name] = connectionPoint;
+        this.connectionPoints.set(String(name), connectionPoint);
     }//setConnectionPoint
 
     /** Update component's connection points position to the actual values */
     public updateConnectionPoints()
     {
-        for (const name in this.connectionPoints) {
-            this.connectionPoints[name].updatePos();
-        }//for
+        this.connectionPoints.forEach(cp => cp.updatePos());
     }//updateConnectionPoints
 
     /** A collection of links connected to this network element */

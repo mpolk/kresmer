@@ -119,7 +119,7 @@ export class ChangeComponentClassOp extends EditorOperation {
         nextTick(() => {
             this.component.updateConnectionPoints();
             this.detachedVertices.forEach((connectionPointName, vertex) => {
-                vertex.connect(this.component.getConnectionPoint(connectionPointName));
+                vertex.connect(this.component.getConnectionPoint(connectionPointName)!);
             });
         });
     }//undo

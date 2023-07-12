@@ -85,7 +85,7 @@
         <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; dominant-baseline: ideographic;">
             <textPath :href="`#${pathID}`" startOffset="98%">{{endLabel}}</textPath>
         </text>
-        <template v-for="(vertex, i) in model.vertices" :key="`segment${i}`">
+        <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
             <template v-if="i">
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
                     :x2="vertex.coords.x" :y2="vertex.coords.y" 
@@ -97,7 +97,7 @@
                     ><title>{{model.displayString}}</title></line>
             </template>
         </template>
-        <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${i}`">
+        <template v-for="vertex in props.model.vertices" :key="`vertex${vertex.key}`">
             <link-vertex-vue :model="vertex"/>
         </template>
     </g>

@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { InjectionKey, nextTick } from "vue";
-import Kresmer from "../Kresmer";
+import Kresmer, { ConnectionPointProxy } from "../Kresmer";
 import KresmerException from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
@@ -87,6 +87,7 @@ class _NetworkLink extends NetworkElement {
 
     private verticesInitialized = false;
     vertices: LinkVertex[] = [];
+    nextVertexKey = 0;
 
     readonly initVertices = () => {
         if (!this.verticesInitialized) {
@@ -230,6 +231,22 @@ class _NetworkLink extends NetworkElement {
         return vertex;
     }//deleteVertex
 
+    override getConnectionPoint(name: string | number): ConnectionPointProxy | undefined {
+        const i = Number(name);
+        if (i >= 0 && i < this.vertices.length)
+            return this.vertices[i].ownConnectionPoint;
+        else
+            return undefined;
+    }//getConnectionPoint
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    override addConnectionPoint(name: string | number, connectionPoint: ConnectionPointProxy): void {
+        console.error(`"addConnectionPoint(${connectionPoint.name})" called for the link`, this);
+    }//addConnectionPoint
+
+    public override updateConnectionPoints(): void {
+        this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos());
+    }//updateConnectionPoints()
 
     public alignVertex(vertexNumber: number)
     {
@@ -323,7 +340,7 @@ export class DeleteLinkOp extends EditorOperation {
         nextTick(() => {
             this.link.updateConnectionPoints();
             this.detachedVertices.forEach((connectionPointName, vertex) => {
-                vertex.connect(this.link.getConnectionPoint(connectionPointName));
+                vertex.connect(this.link.getConnectionPoint(connectionPointName)!);
             });
         });
     }//undo
@@ -362,6 +379,9 @@ class AddVertexOp extends EditorOperation {
         for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
             link.vertices[i].vertexNumber = i;
         }//for
+        nextTick(() => {
+            this.vertex.ownConnectionPoint.updatePos();
+        });
     }//exec
 
     undo() {

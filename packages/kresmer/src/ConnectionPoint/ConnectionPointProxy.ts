@@ -8,7 +8,7 @@
  * the Connection Point from outside of the Vue component hierarchy
 \****************************************************************************/
 
-import { nextTick, reactive } from "vue";
+import { reactive } from "vue";
 import NetworkElement from "../NetworkElement";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import { Position } from "../Transform/Transform";
@@ -20,7 +20,7 @@ export default class ConnectionPointProxy {
      * @param name The name of the connection point
      * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
      */
-    constructor(readonly hostElement: NetworkElement, readonly name: string|number, dir0: number|string)
+    constructor(readonly hostElement: NetworkElement, public name: string|number, dir0: number|string)
     {
         switch (dir0) {
             case 'right': this.dir0 = 0; break;
@@ -51,17 +51,12 @@ export default class ConnectionPointProxy {
     /** Indicates if the connection point accepts connections */
     isActive = true;
 
-    private _isPositioned = false;
-    /** Indicates if the connection point is already positioned on the canvas */
-    get isPositioned() { return this._isPositioned; }
-
     /** The setter for the coords property - 
      * the vue-component calls it when the connection point position is updated */
     _setPos(coords: Position, dir: number)
     {
         ({x: this.coords.x, y: this.coords.y} = coords);
         this.dir = dir;
-        nextTick(() => {this._isPositioned = true;});
     }//_setPos
 
     /** A trigger variable that signals the vue-component that it should refresh coords */
