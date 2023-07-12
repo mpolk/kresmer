@@ -16,11 +16,22 @@ import { EditorOperation } from "../UndoStack";
 
 export default class LinkVertex {
 
-    constructor(public link: NetworkLink, public vertexNumber: number, public initParams?: LinkVertexInitParams) {
+    constructor(public link: NetworkLink, vertexNumber: number, public initParams?: LinkVertexInitParams) {
         this.ownConnectionPoint = new ConnectionPointProxy(this.link, this.vertexNumber, 0);
-        this.link.addConnectionPoint(this.vertexNumber, this.ownConnectionPoint);
+        this._vertexNumber = vertexNumber;
+        this.ownConnectionPoint.name = String(vertexNumber);
+        this.key = link.nextVertexKey++;
     }//ctor
 
+    private _vertexNumber: number;
+    get vertexNumber() {return this._vertexNumber}
+    set vertexNumber(n: number)
+    {
+        this._vertexNumber = n;
+        this.ownConnectionPoint.name = String(n);
+    }//set vertexNumber
+
+    readonly key: number;
     private pos?: Position;
     private conn?: ConnectionPointProxy;
     public ownConnectionPoint: ConnectionPointProxy;
@@ -104,7 +115,7 @@ export default class LinkVertex {
 
 
     /** Postponned part of the initialization delayed until after all components are mounted */
-    init()
+    init(): LinkVertex
     {
         if (this.initParams?.pos) {
             this.pinUp(this.initParams.pos);
@@ -213,7 +224,7 @@ export default class LinkVertex {
             y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
         }
         this.link.kresmer.emit("link-vertex-being-moved", this);
-        this.ownConnectionPoint?.updatePos();
+        this.ownConnectionPoint.updatePos();
         return true;
     }//drag
 
