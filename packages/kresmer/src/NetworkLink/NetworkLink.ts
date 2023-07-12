@@ -323,7 +323,7 @@ export class DeleteLinkOp extends EditorOperation {
         nextTick(() => {
             this.link.updateConnectionPoints();
             this.detachedVertices.forEach((connectionPointName, vertex) => {
-                vertex.connect(this.link.getConnectionPoint(connectionPointName));
+                vertex.connect(this.link.getConnectionPoint(connectionPointName)!);
             });
         });
     }//undo
