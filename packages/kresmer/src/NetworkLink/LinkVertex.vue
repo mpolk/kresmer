@@ -20,7 +20,6 @@
 
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
-        isEndpoint: {type: Boolean, default: false},
     })
 
     const isEditable = inject(Kresmer.ikIsEditable);

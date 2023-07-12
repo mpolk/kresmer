@@ -44,7 +44,7 @@ export default class LinkVertex {
             } else if (oldConn) {
                 oldConn.hostElement.unregisterConnectedLink(this.link);
             }//if
-            if (this.ownConnectionPoint) this.ownConnectionPoint.isActive = !this.conn;
+            this.ownConnectionPoint.isActive = !this.conn;
         }//if
     }//setConn
     
