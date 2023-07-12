@@ -55,7 +55,7 @@ export default class LibraryLoader
      */
     public scopeStyles(ast: PostCSSRoot, classScope?: NetworkElementClass)
     {
-        const ast1 = ast.clone();
+        const ast1 = ast.clone() as PostCSSRoot;
 
         ast1.walkRules((rule: PostCSSRule) => {
             const additionalScopes: string[] = [];
