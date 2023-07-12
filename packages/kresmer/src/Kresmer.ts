@@ -905,7 +905,7 @@ export default class Kresmer extends KresmerEventHooks {
         {
             const link = this.getLinkById(linkID);
             if (!link) {
-                throw new KresmerException(`Attempt to aling a vertex of the non-existent link (id=${linkID})`);
+                throw new KresmerException(`Attempt to align a vertex of the non-existent link (id=${linkID})`);
             }//if
             const vertex = link.alignVertex(vertexNumber);
             if (vertex) {
