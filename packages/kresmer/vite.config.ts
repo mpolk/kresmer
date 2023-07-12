@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
-import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+// import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import path from 'path';
 
 export default defineConfig({
@@ -9,7 +9,7 @@ export default defineConfig({
     plugins: [
       vue(), 
       dts(), 
-      cssInjectedByJsPlugin({topExecutionPriority: false}),
+      // cssInjectedByJsPlugin({topExecutionPriority: false}),
     ],
     base: './',
 

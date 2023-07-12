@@ -7,6 +7,7 @@
   "module": "dist/Kresmer.es.js",
   "main": "dist/Kresmer.umd.js",
   "types": "dist/Kresmer.d.ts",
+  "style": "dist/styles.css",
   "exports": {
     ".": {
       "import": "./dist/kresmer.es.js",
