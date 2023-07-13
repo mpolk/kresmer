@@ -169,7 +169,7 @@ export default abstract class NetworkElement {
     /** Returns the XML representation of the element */
     public *propsToXML(indentLevel: number)
     {
-        if (Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length) {
+        if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
             yield `${indent(indentLevel+1)}<props>`;
             for (const propName in this.props) {
                 if (!this.kresmer.saveDynamicPropValuesWithDrawing && this.dynamicPropValues.has(propName))
