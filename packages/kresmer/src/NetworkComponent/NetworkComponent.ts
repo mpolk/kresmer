@@ -12,6 +12,7 @@ import NetworkElement, {NetworkElementData} from '../NetworkElement';
 import Kresmer from "../Kresmer";
 import { EditorOperation } from "../UndoStack";
 import LinkVertex from "../NetworkLink/LinkVertex";
+import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
 
 /**
  * Network Component - a generic network element instance 
@@ -82,9 +83,20 @@ export default class NetworkComponent extends NetworkElement {
         this.updateConnectionPoints();
     }//setData
 
-    override updateConnectionPoints()
+    /** A collection of this component connection points indexed by their names */
+    private readonly connectionPoints = new Map<string, ConnectionPointProxy>();
+    /** Returns the connection with the given name */
+    getConnectionPoint(name: string|number) {return this.connectionPoints.get(String(name))}
+    /** Adds a connection point with the given name or replaces the existing one */
+    addConnectionPoint(name: string|number, connectionPoint: ConnectionPointProxy)
     {
-        super.updateConnectionPoints();
+        this.connectionPoints.set(String(name), connectionPoint);
+    }//setConnectionPoint
+
+    /** Update component's connection points position to the actual values */
+    updateConnectionPoints()
+    {
+        this.connectionPoints.forEach(cp => cp.updatePos());
         nextTick(() => this.connectedLinks.forEach(link => link.updateConnectionPoints()));
     }//updateConnectionPoints
 }//NetworkComponent
