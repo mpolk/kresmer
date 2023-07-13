@@ -102,6 +102,8 @@ export default class LinkVertex {
             const elementName =  this.conn.hostElement instanceof NetworkLink ? 
                 `-${this.conn.hostElement.name}`: this.conn.hostElement.name;
             return `<vertex connect="${elementName}:${this.conn.name}"/>`;
+        } else if (this.bundle) {
+            return `<vertex bundle="${this.bundle.afterVertex.link.name}" after="${this.bundle.afterVertex.vertexNumber}" distance="${this.bundle.distance}"/>`;
         } else if (this.pos) {
             return `<vertex x="${this.pos.x}" y="${this.pos.y}"/>`;
         } else {
@@ -138,6 +140,23 @@ export default class LinkVertex {
                 return this;
             }//if
             this.connect(connectionPoint);
+        } else if (this.initParams?.bundleData) {
+            const bundle = this.link.kresmer.getLinkByName(this.initParams.bundleData.bundleName);
+            if (!bundle) {
+                this.link.kresmer.raiseError(new UndefinedBundleException({
+                    message:`Attempt to connect to the non-existing bundle "${this.initParams.bundleData.bundleName}"`,
+                    source: `Link "${this.link.name}"`}));
+                return this;
+            }//if
+            const afterVertex = bundle.vertices[this.initParams.bundleData.afterVertex];
+            if (!afterVertex) {
+                this.link.kresmer.raiseError(new UndefinedVertexException(
+                    {message: `Attempt to connect to non-existing connection point \
+                    "${this.initParams.bundleData.bundleName}:${this.initParams.bundleData.afterVertex}"`,
+                    source: `Link "${this.link.name}"`}))
+                return this;
+            }//if
+            this.connectToBundle({afterVertex, distance: this.initParams.bundleData.distance});
         } else if (this.initParams?.conn) {
             this.connect(this.initParams.conn);
         // } else {
@@ -365,18 +384,6 @@ export default class LinkVertex {
     }//tryToConnectToBundle
 
 
-    private isBetween(prev: LinkVertex, next: LinkVertex): boolean
-    {
-        if (prev.coords.x == next.coords.x)
-            return this.coords.x == prev.coords.x;
-        if (this.coords.x == prev.coords.x)
-            return false;
-        const fi1 = (next.coords.y - prev.coords.y) / (next.coords.x - prev.coords.x);
-        const fi2 = (this.coords.y - prev.coords.y) / (this.coords.x - prev.coords.x);
-        return fi1 == fi2;
-    }//isBetween
-
-
     public onRightClick(event: MouseEvent)
     {
         this.link.kresmer.emit("link-vertex-right-click", this, event);
@@ -536,6 +543,11 @@ export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
     cpData?: {
         cpHostElement: string, 
         connectionPoint: string
+    },
+    bundleData?: {
+        bundleName: string,
+        afterVertex: number,
+        distance: number
     },
 }> | Record<string, never>;
 

@@ -242,6 +242,9 @@ export default class DrawingParser {
         const x = node.getAttribute("x");
         const y = node.getAttribute("y");
         const connect = node.getAttribute("connect");
+        const bundleName = node.getAttribute("bundle");
+        const afterVertex = node.getAttribute("after");
+        const distance = node.getAttribute("distance");
         if ((x === null && y) || (y === null && x)) {
             throw new ParsingException(`"x" and "y" attributes should present together \
                                         in Vertex: ${node.parentElement?.toString()}`);
@@ -250,10 +253,16 @@ export default class DrawingParser {
             throw new ParsingException(`Position and connection attributes cannot present together \
                                         in Vertex: ${node.parentElement?.toString()}`);
         }//if
-        if (x === null && !connect) {
-            throw new ParsingException(`Either position or connection attributes should present \
+        if (bundleName && (!afterVertex || !distance)) {
+            throw new ParsingException(`Bundle, after and distance attributes should present together \
                                         in Vertex: ${node.parentElement?.toString()}`);
         }//if
+        if (x === null && !connect && !bundleName) {
+            throw new ParsingException(`Either position, bundle or connection attributes should present \
+                                        in Vertex: ${node.parentElement?.toString()}`);
+        }//if
+        if (bundleName)
+            return {bundleData: {bundleName, afterVertex: Number(afterVertex), distance: Number(distance)}}
         if (x !== null) {
             return {pos: {x: parseFloat(x), y: parseFloat(y!)}};
         }//if
