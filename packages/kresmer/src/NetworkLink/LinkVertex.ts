@@ -35,7 +35,7 @@ export default class LinkVertex {
     readonly key: number;
     private pos?: Position;
     private conn?: ConnectionPointProxy;
-    private bundle?: LinkVertex;
+    private bundle?: BundleJoinDescriptor;
     public ownConnectionPoint: ConnectionPointProxy;
 
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
@@ -161,9 +161,9 @@ export default class LinkVertex {
         this.bundle = undefined;
     }//connect
 
-    connectToBundle(after: LinkVertex)
+    connectToBundle(bundle: BundleJoinDescriptor)
     {
-        this.bundle = after;
+        this.bundle = {...bundle};
         this.setConn(undefined);
         this.pos = undefined;
     }//connectToBundle
@@ -173,8 +173,18 @@ export default class LinkVertex {
         if (this.conn) {
             return this.conn.coords;
         } else if (this.bundle) {
-            return this.findBundleJoinPoint();
-        } else if (this.pos && this.link.isLoopback) {
+            const afterVertex = this.bundle.afterVertex;
+            let d = this.bundle.distance;
+            const p1 = afterVertex.coords;
+            const n = afterVertex.vertexNumber;
+            const p2 = afterVertex.link.vertices[n+1].coords;
+            const h = Math.sqrt((p2.y-p1.y)*(p2.y-p1.y) + (p2.x-p1.x)*(p2.x-p1.x));
+            if (d > h)
+                d = h;
+            const x = p1.x + d * (p2.x-p1.x) / h;
+            const y = p1.y + d * (p2.y-p1.y) / h;
+            return {x, y};
+            } else if (this.pos && this.link.isLoopback) {
             const headCoords = this.link.head.coords;
             return {x: headCoords.x + this.pos.x, y: headCoords.y + this.pos.y};
         } else if (this.pos) {
@@ -183,28 +193,6 @@ export default class LinkVertex {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
         }//if
     }//coords
-
-    private findBundleJoinPoint(): Position
-    {
-        const n = this.bundle!.vertexNumber;
-        const p1 = this.bundle!.coords;
-        const p2 = this.bundle!.link.vertices[n+1].coords;
-        const o = this._vertexNumber && !this.link.vertices[this._vertexNumber-1].bundle ?
-            this.link.vertices[this._vertexNumber-1].coords :
-            this.link.vertices[this._vertexNumber+1].coords;
-        // if (p1.x == p2.x){
-        //     if (o.y > p1.y && o.y > p2.y)
-        //         return {x: p1.x, y: Math.max(p1.y, p2.y)};
-        //     if (o.y < p1.y && o.y < p2.y)
-        //         return {x: p1.x, y: Math.min(p1.y, p2.y)};
-        //     return {x: p1.x, y: o.y};
-        // }//if
-
-        const k = ((p2.y-p1.y) * (o.x-p1.x) - (p2.x-p1.x) * (o.y-p1.y)) / ((p2.y-p1.y)^2 + (p2.x-p1.x)^2);
-        const x = o.x - k * (p2.y-p1.y);
-        const y = o.y + k * (p2.x-p1.x);
-        return {x, y};
-    }//findBundleJoinPoint
 
     get anchor(): LinkVertexAnchor
     {
@@ -272,25 +260,28 @@ export default class LinkVertex {
         this.isDragged = false;
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
         const stickToConnectionPoints = !this.link.isBundle && ((this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey));
+        const stickToBundles = !this.link.isBundle && ((!this.isEndpoint && !event.ctrlKey) || (this.isEndpoint && event.ctrlKey));
 
-        if (stickToConnectionPoints) {
             for (const element of elementsUnderCursor) {
-                const connectionPointData = element.getAttribute("data-connection-point");
-                if (connectionPointData) {
-                    if (this.tryToConnectToConnectionPoint(connectionPointData))
-                        return true;
-                    else
-                        continue;
+                if (stickToConnectionPoints) {
+                    const connectionPointData = element.getAttribute("data-connection-point");
+                    if (connectionPointData) {
+                        if (this.tryToConnectToConnectionPoint(connectionPointData))
+                            return true;
+                        else
+                            continue;
+                    }//if
                 }//if
-                const bundleData = element.getAttribute("data-link-bundle");
-                if (bundleData) {
-                    if (this.tryToConnectToBundle(bundleData))
-                        return true;
-                    else
-                        continue;
+                if (stickToBundles) {
+                    const bundleData = element.getAttribute("data-link-bundle");
+                    if (bundleData) {
+                        if (this.tryToConnectToBundle(bundleData, event))
+                            return true;
+                        else
+                            continue;
+                    }//if
                 }//if
             }//for
-        }//if
 
         if (this.link.kresmer.snapToGrid) {
             this.pos = {
@@ -345,7 +336,7 @@ export default class LinkVertex {
     }//tryToConnectToConnectionPoint
 
 
-    private tryToConnectToBundle(bundleData: string): boolean
+    private tryToConnectToBundle(bundleData: string, event: MouseEvent): boolean
     {
         const [bundleName, vertexNumber] = bundleData.split(":", 2);
         const bundle = this.link.kresmer.getLinkByName(bundleName);
@@ -363,7 +354,10 @@ export default class LinkVertex {
             return true;
         }//if
 
-        this.connectToBundle(vertex);
+        const v = vertex.coords;
+        const p = this.link.kresmer.applyScreenCTM(event);
+        const d = Math.sqrt((p.x-v.x)*(p.x-v.x) + (p.y-v.y)*(p.y-v.y));
+        this.connectToBundle({afterVertex: vertex, distance: d});
         this.link.kresmer.undoStack.commitOperation();
         this.link.kresmer.emit("link-vertex-connected", this);
         this.ownConnectionPoint?.updatePos();
@@ -547,10 +541,15 @@ export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
 export type LinkVertexAnchor = RequireAtLeastOne<{
-    pos?: Position;
-    conn?: ConnectionPointProxy;
-    bundle?: LinkVertex;
+    pos?: Position,
+    conn?: ConnectionPointProxy,
+    bundle?: BundleJoinDescriptor,
 }>//LinkVertexExtAnchor
+
+export type BundleJoinDescriptor = {
+    afterVertex: LinkVertex,
+    distance: number,
+}//BundleJoinDescriptor
 
 // Editor operations
 class VertexMoveOp extends EditorOperation {
