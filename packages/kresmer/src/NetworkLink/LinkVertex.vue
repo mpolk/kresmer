@@ -74,7 +74,7 @@
 </script>
 
 <template>
-    <ConnectionPoint :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
+    <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
         />
     <template v-if="model.link.isSelected">

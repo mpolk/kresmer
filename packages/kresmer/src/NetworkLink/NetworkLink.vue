@@ -70,7 +70,12 @@
         return props.model.vertices.map((vertex, i) => `${i ? 'L' : 'M'}${vertex.coords.x},${vertex.coords.y}`).join(" ");
     })//path
 
-    const pathID = computed(() => `kre:link${props.model.id}path`)
+    const pathID = computed(() => `kre:link${props.model.id}path`);
+
+    function segmentDataAttr(i: number)
+    {
+        return props.model.isBundle ? `${props.model.name}:${i}` : "";
+    }//segmentDataAttr
 </script>
 
 <template>
@@ -79,10 +84,10 @@
         @mouseleave="model.onMouseLeave"
         >
         <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
-        <text v-if="startLabel" class="label" style="cursor: default; text-anchor: start; dominant-baseline: ideographic;">
+        <text v-if="startLabel" class="label start">
             <textPath :href="`#${pathID}`">{{startLabel}}</textPath>
         </text>
-        <text v-if="endLabel" class="label" style="cursor: default; text-anchor: end; dominant-baseline: ideographic;">
+        <text v-if="endLabel" class="label end">
             <textPath :href="`#${pathID}`" startOffset="98%">{{endLabel}}</textPath>
         </text>
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
@@ -94,6 +99,7 @@
                     @contextmenu.self="model.onRightClick(i - 1, $event)"
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
                     :style="cursorStyle"
+                    :data-link-bundle="segmentDataAttr(i)"
                     ><title>{{model.displayString}}</title></line>
             </template>
         </template>
@@ -102,3 +108,13 @@
         </template>
     </g>
 </template>
+
+<style lang="scss">
+    .link {
+        .label {
+            cursor: default; dominant-baseline: ideographic;
+            &.start {text-anchor: start;}
+            &.end {text-anchor: end;}
+        }
+    }
+</style>

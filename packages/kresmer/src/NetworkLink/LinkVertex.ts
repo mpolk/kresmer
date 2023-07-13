@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { Position } from "../Transform/Transform";
-import KresmerException from "../KresmerException";
+import KresmerException, { UndefinedBundleException, UndefinedVertexException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
@@ -35,6 +35,7 @@ export default class LinkVertex {
     readonly key: number;
     private pos?: Position;
     private conn?: ConnectionPointProxy;
+    private bundle?: LinkVertex;
     public ownConnectionPoint: ConnectionPointProxy;
 
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
@@ -150,14 +151,22 @@ export default class LinkVertex {
     {
         this.pos = {...pos};
         this.setConn(undefined);
+        this.bundle = undefined;
     }//pinUp
-
 
     connect(connectionPoint: ConnectionPointProxy)
     {
         this.setConn(connectionPoint);
         this.pos = undefined;
+        this.bundle = undefined;
     }//connect
+
+    connectToBundle(after: LinkVertex)
+    {
+        this.bundle = after;
+        this.setConn(undefined);
+        this.pos = undefined;
+    }//connectToBundle
 
     get coords(): Position
     {
@@ -244,37 +253,17 @@ export default class LinkVertex {
             for (const element of elementsUnderCursor) {
                 const connectionPointData = element.getAttribute("data-connection-point");
                 if (connectionPointData) {
-                    const {elementName, elementType, connectionPointName} = parseConnectionPointData(connectionPointData);
-                    let connectionPoint: ConnectionPointProxy | undefined;
-                    switch (elementType) {
-                        case "component": {
-                            const component = this.link.kresmer.getComponentByName(elementName);
-                            connectionPoint = component?.getConnectionPoint(connectionPointName);
-                        } break;
-                        case "link": {
-                            const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
-                            if (linkToConnectTo?.isBundle)
-                                continue;
-                            const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
-                            if (vertexToConnectTo === this)
-                                continue;
-                            if (vertexToConnectTo?.isConnected && vertexToConnectTo?.conn === this.ownConnectionPoint)
-                                continue;
-                            connectionPoint = vertexToConnectTo?.ownConnectionPoint;
-                        } break;
-                    }//switch
-                    if (connectionPoint) {
-                        if (!connectionPoint.isActive)
-                            continue;
-                        this.connect(connectionPoint);
-                    } else {
-                        this.link.kresmer.raiseError(new KresmerException(
-                            `Reference to undefined connection point "${connectionPointData}"`));
-                    }//if
-                    this.link.kresmer.undoStack.commitOperation();
-                    this.link.kresmer.emit("link-vertex-connected", this);
-                    this.ownConnectionPoint?.updatePos();
-                    return true;
+                    if (this.tryToConnectToConnectionPoint(connectionPointData))
+                        return true;
+                    else
+                        continue;
+                }//if
+                const bundleData = element.getAttribute("data-link-bundle");
+                if (bundleData) {
+                    if (this.tryToConnectToBundle(bundleData))
+                        return true;
+                    else
+                        continue;
                 }//if
             }//for
         }//if
@@ -297,17 +286,64 @@ export default class LinkVertex {
         return true;
     }//endDrag
 
+    private tryToConnectToConnectionPoint(connectionPointData: string): boolean
+    {
+        const {elementName, elementType, connectionPointName} = parseConnectionPointData(connectionPointData);
+        let connectionPoint: ConnectionPointProxy | undefined;
+        switch (elementType) {
+            case "component": {
+                const component = this.link.kresmer.getComponentByName(elementName);
+                connectionPoint = component?.getConnectionPoint(connectionPointName);
+            } break;
+            case "link": {
+                const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
+                const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
+                if (vertexToConnectTo === this)
+                    return false;
+                if (vertexToConnectTo?.isConnected && vertexToConnectTo?.conn === this.ownConnectionPoint)
+                    return false;
+                connectionPoint = vertexToConnectTo?.ownConnectionPoint;
+            } break;
+        }//switch
+        if (connectionPoint) {
+            if (!connectionPoint.isActive)
+                return false;
+            this.connect(connectionPoint);
+        } else {
+            this.link.kresmer.raiseError(new KresmerException(
+                `Reference to undefined connection point "${connectionPointData}"`));
+        }//if
+        this.link.kresmer.undoStack.commitOperation();
+        this.link.kresmer.emit("link-vertex-connected", this);
+        this.ownConnectionPoint?.updatePos();
+        return true;
+    }//tryToConnectToConnectionPoint
 
-    // private tryToJoinBundle()
-    // {
-    //     for (const [_, link] of this.link.kresmer.links) {
-    //         if (link !== this.link) {
-    //             for (let i = 0; i < link.vertices.length - 1; i++) {
-                    
-    //             }//for
-    //         }//if
-    //     }//for
-    // }//tryToJoinBundle
+    private tryToConnectToBundle(bundleData: string): boolean
+    {
+        const [bundleName, vertexNumber] = bundleData.split(":", 2);
+        const bundle = this.link.kresmer.getLinkByName(bundleName);
+        if (!bundle) {
+            this.link.kresmer.raiseError(new UndefinedBundleException({message: `Attempt to connect to the undefined bundle "${bundleName}"`}));
+            return true;
+        }//if
+        if (!bundle.isBundle) {
+            this.link.kresmer.raiseError(new UndefinedBundleException({message: `Attempt to connect to the non-bundle link "${bundleName}"`}));
+            return true;
+        }//if
+        const vertex = bundle.vertices[Number(vertexNumber)];
+        if (!vertex) {
+            this.link.kresmer.raiseError(new UndefinedVertexException({message: `Attempt to connect to the undefined vertex "${bundleData}"`}));
+            return true;
+        }//if
+
+        this.connectToBundle(vertex);
+        this.link.kresmer.undoStack.commitOperation();
+        this.link.kresmer.emit("link-vertex-connected", this);
+        this.ownConnectionPoint?.updatePos();
+        return true;
+    }//tryToConnectToBundle
+
 
     private isBetween(prev: LinkVertex, next: LinkVertex): boolean
     {
@@ -486,7 +522,8 @@ export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
 /** Extended Link Vertex position (includes its connection if it is connected) */
 export type LinkVertexAnchor = RequireAtLeastOne<{
     pos?: Position;
-    conn?: ConnectionPointProxy; 
+    conn?: ConnectionPointProxy;
+    bundle?: LinkVertex;
 }>//LinkVertexExtAnchor
 
 // Editor operations

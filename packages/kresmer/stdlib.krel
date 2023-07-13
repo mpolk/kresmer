@@ -1,7 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-library.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                        The standard library
+<*************************************************************************** -->
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
-    <!-- Crossing arrows traditionally used to be drawn on the top of routers and switches -->
+
+                    <!-- General graphical elements -->
+    <!-- Crossing arrows traditionally used to be drawn on the top of routers and switches 
+                                    /\
+                                   /  \
+                                  /_  _\
+                                 /|_||_|\
+                                /        \
+                                \  _  _  /
+                                 \|_||_|/
+                                  \    /
+                                   \  /
+                                    \/
+    -->
     <component-class name="cross-arrows" category=".non-istantiable"> 
         <defs>
             {{$global("crossArrows", [ [0.1,0.5], [0.2,0.7], [0.2,0.6], [0.4,0.6], [0.4,0.8],
