@@ -238,7 +238,7 @@ export default class LinkVertex {
 
         this.isDragged = false;
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
-        const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
+        const stickToConnectionPoints = !this.link.isBundle && ((this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey));
 
         if (stickToConnectionPoints) {
             for (const element of elementsUnderCursor) {
@@ -253,6 +253,8 @@ export default class LinkVertex {
                         } break;
                         case "link": {
                             const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
+                            if (linkToConnectTo?.isBundle)
+                                continue;
                             const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
                             if (vertexToConnectTo === this)
                                 continue;
