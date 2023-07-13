@@ -172,7 +172,7 @@ class _NetworkLink extends NetworkElement {
                 xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
             }//for
 
-            xml.push(`${indent(indentLevel)}</link>`);
+            xml.push(`${indent(indentLevel)}</link${mainTagSuffix}>`);
             return xml.join("\n");
         }//if
     }//toXML
