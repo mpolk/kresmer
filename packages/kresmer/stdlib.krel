@@ -455,7 +455,7 @@
         </style>
     </link-class>
 
-    <link-class name="bundle" category=".abstract-links">
+    <link-class name="link-bundle" category=".abstract-links">
         <style extends="_abstract-link">
             .segment {stroke-width: 4px}
         </style>

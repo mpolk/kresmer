@@ -25,7 +25,7 @@ export default class LinkBundle extends NetworkLink {
         super(kresmer, LinkBundle.className, args);
     }//ctor
 
-    static className = "bundle";
+    static className = "link-bundle";
 
     override readonly isBundle = true;
 
