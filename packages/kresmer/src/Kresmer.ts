@@ -22,7 +22,7 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp } from "./NetworkLink/NetworkLink";
+import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, NetworkLinkMap } from "./NetworkLink/NetworkLink";
 import KresmerException from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
@@ -432,7 +432,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-    readonly links = reactive(new MapWithZOrder<number, NetworkLink>());
+    readonly links = reactive(new NetworkLinkMap());
     readonly linksByName = new Map<string, number>();
 
     /** Links bundles (visual aggregates) currently on the drawing */

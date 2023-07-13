@@ -15,7 +15,7 @@ import NetworkElement from '../NetworkElement';
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
-import { withZOrder } from "../ZOrdering";
+import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
 
 /**
  * Network Link 
@@ -52,6 +52,8 @@ class _NetworkLink extends NetworkElement {
     override getClass(): NetworkLinkClass {
         return this._class;
     }//getClass
+
+    readonly isBundle: boolean = false;
 
     private _isHighlighted = false
     private _highlightDownlinks = false;
@@ -147,7 +149,8 @@ class _NetworkLink extends NetworkElement {
     public toXML(indentLevel: number): string 
     {
         const attrs = new Map<string, string>();
-        attrs.set("class", this.getClass().name);
+        if (!this.isBundle)
+            attrs.set("class", this.getClass().name);
         attrs.set("name", this.name);
         this.dbID && attrs.set("db-id", this.dbID.toString());
         (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
@@ -155,12 +158,13 @@ class _NetworkLink extends NetworkElement {
         const n = this.vertices.length - 1;
         (this.vertices[n].isConnected || this.vertices[n].anchor.pos) && 
             attrs.set("to", this.vertices[n].toString());
+        const mainTagSuffix = this.isBundle ? "-bundle" : "";
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
         if (this.vertices.length <= 2 && this.propCount == 0) {
-            return `${indent(indentLevel)}<link ${attrStr}/>`;
+            return `${indent(indentLevel)}<link${mainTagSuffix} ${attrStr}/>`;
         } else {
-            const xml = [`${indent(indentLevel)}<link ${attrStr}>`];
+            const xml = [`${indent(indentLevel)}<link${mainTagSuffix} ${attrStr}>`];
 
             xml.push(...this.propsToXML(indentLevel));
     
@@ -293,6 +297,20 @@ class _NetworkLink extends NetworkElement {
 }//_NetworkLink
 
 export default class NetworkLink extends withZOrder(_NetworkLink) {}
+
+export class NetworkLinkMap extends MapWithZOrder<number, NetworkLink>
+{
+    override get sorted()
+    {
+        return Array.from(this.values()).sort((item1, item2) => {
+            if (item1.zIndex === Z_INDEX_INF && item2.zIndex < Z_INDEX_INF) return 1;
+            if (item1.zIndex < Z_INDEX_INF && item2.zIndex === Z_INDEX_INF) return -1;
+            if (item1.isBundle && !item2.isBundle) return 1;
+            if (!item1.isBundle && item2.isBundle) return -1;
+            return item1.zIndex - item2.zIndex;
+        });
+    }//sorted
+}//NetworkLinkMap
 
 
 // Editor operations

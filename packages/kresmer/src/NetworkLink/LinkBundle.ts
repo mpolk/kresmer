@@ -17,6 +17,8 @@ export default class LinkBundle extends NetworkLink {
         super(kresmer, "bundle", {from: {pos: from}, to: {pos: to}});
     }//ctor
 
+    override readonly isBundle = true;
+
     override getNamePrefix(): string {
         return "Bundle";
     }//getNamePrefix
