@@ -74,7 +74,7 @@
 
     function segmentDataAttr(i: number)
     {
-        return props.model.isBundle ? `${props.model.name}:${i}` : "";
+        return props.model.isBundle ? `${props.model.name}:${i-1}` : "";
     }//segmentDataAttr
 </script>
 

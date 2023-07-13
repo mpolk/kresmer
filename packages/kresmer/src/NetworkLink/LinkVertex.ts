@@ -172,6 +172,8 @@ export default class LinkVertex {
     {
         if (this.conn) {
             return this.conn.coords;
+        } else if (this.bundle) {
+            return this.findBundleJoinPoint();
         } else if (this.pos && this.link.isLoopback) {
             const headCoords = this.link.head.coords;
             return {x: headCoords.x + this.pos.x, y: headCoords.y + this.pos.y};
@@ -181,6 +183,28 @@ export default class LinkVertex {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
         }//if
     }//coords
+
+    private findBundleJoinPoint(): Position
+    {
+        const n = this.bundle!.vertexNumber;
+        const p1 = this.bundle!.coords;
+        const p2 = this.bundle!.link.vertices[n+1].coords;
+        const o = this._vertexNumber && !this.link.vertices[this._vertexNumber-1].bundle ?
+            this.link.vertices[this._vertexNumber-1].coords :
+            this.link.vertices[this._vertexNumber+1].coords;
+        // if (p1.x == p2.x){
+        //     if (o.y > p1.y && o.y > p2.y)
+        //         return {x: p1.x, y: Math.max(p1.y, p2.y)};
+        //     if (o.y < p1.y && o.y < p2.y)
+        //         return {x: p1.x, y: Math.min(p1.y, p2.y)};
+        //     return {x: p1.x, y: o.y};
+        // }//if
+
+        const k = ((p2.y-p1.y) * (o.x-p1.x) - (p2.x-p1.x) * (o.y-p1.y)) / ((p2.y-p1.y)^2 + (p2.x-p1.x)^2);
+        const x = o.x - k * (p2.y-p1.y);
+        const y = o.y + k * (p2.x-p1.x);
+        return {x, y};
+    }//findBundleJoinPoint
 
     get anchor(): LinkVertexAnchor
     {
@@ -286,6 +310,7 @@ export default class LinkVertex {
         return true;
     }//endDrag
 
+
     private tryToConnectToConnectionPoint(connectionPointData: string): boolean
     {
         const {elementName, elementType, connectionPointName} = parseConnectionPointData(connectionPointData);
@@ -318,6 +343,7 @@ export default class LinkVertex {
         this.ownConnectionPoint?.updatePos();
         return true;
     }//tryToConnectToConnectionPoint
+
 
     private tryToConnectToBundle(bundleData: string): boolean
     {
