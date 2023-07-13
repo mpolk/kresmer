@@ -57,7 +57,7 @@ export default class LinkVertex {
             } else if (oldConn) {
                 oldConn.hostElement.unregisterConnectedLink(this.link);
             }//if
-            this.ownConnectionPoint.isActive = !this.conn;
+            this.ownConnectionPoint.isActive = !this.conn && !this.bundle;
         }//if
     }//setConn
     
@@ -73,6 +73,7 @@ export default class LinkVertex {
 
     public get isHead() {return this.vertexNumber === 0;}
     public get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
+    get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
 
     toString()
     {
@@ -110,12 +111,6 @@ export default class LinkVertex {
             return `<vertex/>`;
         }//if
     }//toXML
-
-
-    get isEndpoint()
-    {
-        return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;
-    }//isEndpoint
 
 
     /** Postponned part of the initialization delayed until after all components are mounted */
@@ -218,6 +213,7 @@ export default class LinkVertex {
         return {
             pos: this.pos,
             conn: this.conn,
+            bundle: this.bundle,
         } as LinkVertexAnchor
     }//get anchor
 
@@ -225,6 +221,7 @@ export default class LinkVertex {
     {
         this.pos = newPos.pos;
         this.setConn(newPos.conn);
+        this.bundle = newPos.bundle;
     }//set anchor
 
 
