@@ -279,7 +279,7 @@ export default class LinkVertex {
         this.isDragged = false;
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
         const stickToConnectionPoints = !this.link.isBundle && ((this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey));
-        const stickToBundles = !this.link.isBundle && ((!this.isEndpoint && !event.ctrlKey) || (this.isEndpoint && event.ctrlKey));
+        const stickToBundles = !this.link.isBundle && !this.isEndpoint;
 
             for (const element of elementsUnderCursor) {
                 if (stickToConnectionPoints) {
