@@ -34,13 +34,11 @@ export default class NetworkComponent extends NetworkElement {
             dbID?: number|string|null,
             props?: Record<string, unknown>,
             content?: unknown, 
-            isAutoInstantiated?: boolean,
         }
     ) {
         const componentClass = _class instanceof NetworkComponentClass ? _class : NetworkComponentClass.getClass(_class);
         super(kresmer, componentClass, args);
         this.content = args?.content ?? componentClass.defaultContent;
-        this.isAutoInstantiated = Boolean(args?.isAutoInstantiated);
     }//ctor
 
     declare protected _class: NetworkComponentClass;
@@ -53,9 +51,6 @@ export default class NetworkComponent extends NetworkElement {
 
     /** Data passed to the vue-component content (unnamed slot) */
     readonly content: unknown;
-
-    /** Indicates where the component was auto instanctiated when its class was registered */
-    readonly isAutoInstantiated: boolean;
 
     /** Underlying SVG element */
     svg?: SVGSVGElement;

@@ -137,9 +137,7 @@ export default class DrawingLoader {
 `;
 
         for (const controller of this.kresmer.networkComponents.values()) {
-            if (!controller.component.isAutoInstantiated) {
-                xml += controller.toXML(1) + "\n\n";
-            }//for
+            xml += controller.toXML(1) + "\n\n";
         }//for
 
         for (const link of this.kresmer.links.values()) {

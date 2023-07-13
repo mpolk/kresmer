@@ -232,10 +232,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Shows whether the drawing has no content  */
     public get isEmpty()
     {
-        return !this.links.size && 
-               !Array.from(this.networkComponents)
-                     .filter(([, controller]) => !controller.component.isAutoInstantiated)
-                     .length;
+        return !this.links.size && this.networkComponents.size;
     }//get isEmpty
 
     /** Forces update on the underlying Vue-component */
@@ -496,9 +493,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.linksByName.clear();
         this.links.clear();
         this.networkComponents.forEach((controller, id) => {
-            if (!controller.component.isAutoInstantiated) {
-                this.networkComponents.delete(id);
-            }//if
+            this.networkComponents.delete(id);
         });
         this.componentsByName.forEach((id, name) => {
             if (!this.networkComponents.has(id)) {
