@@ -18,6 +18,7 @@ import { Transform } from "../Transform/Transform";
 import ParsingException from "./ParsingException";
 import KresmerException, { KresmerExceptionSeverity } from "../KresmerException";
 import {toCamelCase} from "../Utils";
+import LinkBundle from "../NetworkLink/LinkBundle";
 
 /**
  * Drawing file parser
@@ -67,7 +68,7 @@ export default class DrawingParser {
                             throw exc;
                     }//catch
                     break;
-                case "link":
+                case "link": case "link-bundle":
                     try {
                         yield this.parseLinkNode(node);
                     } catch (exc) {
@@ -167,7 +168,8 @@ export default class DrawingParser {
 
     private parseLinkNode(node: Element): NetworkLink
     {
-        const className = node.getAttribute("class");
+        const isBundle = node.nodeName === "link-bundle";
+        const className = isBundle ? LinkBundle.className : node.getAttribute("class");
         const dbID = node.getAttribute("db-id");
         if (!className) 
             throw new DrawingParsingException("Link without the class");
@@ -208,7 +210,8 @@ export default class DrawingParser {
         }//if
         const from = this.parseLinkEndpoint(node.getAttribute("from"));
         const to = this.parseLinkEndpoint(node.getAttribute("to"));
-        const link = new NetworkLink(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices});
+        const link = isBundle ? new LinkBundle(this.kresmer, {name: linkName, dbID, props, from, to, vertices}) :
+                                new NetworkLink(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices});
         return link;
     }//parseLinkNode
 

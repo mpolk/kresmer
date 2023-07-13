@@ -740,7 +740,8 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public _completeLinkBundleCreation()
     {
-        const newBundle = new LinkBundle(this, this.newLinkBundleBlank!.start.pos!, this.newLinkBundleBlank!.end);
+        const newBundle = new LinkBundle(this, {from: this.newLinkBundleBlank!.start, to: {pos: {...this.newLinkBlank!.end}}});
+        newBundle.initVertices();
         this.undoStack.execAndCommit(new CreateBundleOp(newBundle));
         this.newLinkBundleBlank = undefined;
         this.vueKresmer.$forceUpdate();
