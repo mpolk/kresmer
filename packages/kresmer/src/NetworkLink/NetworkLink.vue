@@ -74,7 +74,7 @@
 
     function segmentDataAttr(i: number)
     {
-        return props.model.isBundle ? `${props.model.name}:${i-1}` : "";
+        return props.model.isBundle ? `${props.model.name}:${i}` : undefined;
     }//segmentDataAttr
 </script>
 
@@ -99,12 +99,12 @@
                     @contextmenu.self="model.onRightClick(i - 1, $event)"
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
                     :style="cursorStyle"
-                    :data-link-bundle="segmentDataAttr(i)"
+                    :data-link-bundle="segmentDataAttr(i-1)"
                     ><title>{{model.displayString}}</title></line>
             </template>
         </template>
-        <template v-for="vertex in props.model.vertices" :key="`vertex${vertex.key}`">
-            <link-vertex-vue :model="vertex"/>
+        <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${vertex.key}`">
+            <link-vertex-vue :model="vertex" :data-link-bundle-vertex="segmentDataAttr(i)"/>
         </template>
     </g>
 </template>

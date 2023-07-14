@@ -33,9 +33,12 @@
     const isEditable = inject(Kresmer.ikIsEditable);
     const drawingOrigin = inject(Kresmer.ikDrawingOrigin)!;
     const cpMarker = ref<SVGCircleElement>();
+
     const dataAttr = computed(() => {
+        if (!proxy.isActive)
+            return undefined;
         const hostName = hostIsLink ? `-${hostElement.name}` : hostElement.name;
-        return proxy.isActive ? `${hostName}:${props.name}` : undefined
+        return `${hostName}:${props.name}`;
     });
 
     onMounted(updatePos);

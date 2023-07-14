@@ -289,6 +289,13 @@ export default class LinkVertex {
                         else
                             continue;
                     }//if
+                    const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
+                    if (bundleVertexData) {
+                        if (this.tryToConnectToBundle(bundleVertexData))
+                            return true;
+                        else
+                            continue;
+                    }//if
                 }//if
             }//for
 
@@ -345,7 +352,7 @@ export default class LinkVertex {
     }//tryToConnectToConnectionPoint
 
 
-    private tryToConnectToBundle(bundleData: string, event: MouseEvent): boolean
+    private tryToConnectToBundle(bundleData: string, event?: MouseEvent): boolean
     {
         const [bundleName, vertexNumber] = bundleData.split(":", 2);
         const bundle = this.link.kresmer.getLinkByName(bundleName);
@@ -364,8 +371,13 @@ export default class LinkVertex {
         }//if
 
         const v = vertex.coords;
-        const p = this.link.kresmer.applyScreenCTM(event);
-        const d = Math.sqrt((p.x-v.x)*(p.x-v.x) + (p.y-v.y)*(p.y-v.y));
+        let d: number;
+        if (!event) {
+            d = 0;
+        } else {
+            const p = this.link.kresmer.applyScreenCTM(event);
+            d = Math.sqrt((p.x-v.x)*(p.x-v.x) + (p.y-v.y)*(p.y-v.y));
+        }//if
         this.connectToBundle({afterVertex: vertex, distance: d});
         this.link.kresmer.undoStack.commitOperation();
         this.link.kresmer.emit("link-vertex-connected", this);

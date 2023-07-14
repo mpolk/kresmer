@@ -20,6 +20,7 @@
 
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
+        dataLinkBundleVertex: {type: String},
     })
 
     const isEditable = inject(Kresmer.ikIsEditable);
@@ -74,6 +75,12 @@
 </script>
 
 <template>
+    <circle  v-if="!model.link.isSelected"
+        :cx="model.coords.x" :cy="model.coords.y" 
+        class="vertex" :class="{connected: model.isConnected}"
+        style="fill: transparent; stroke: transparent;"
+        :data-link-bundle-vertex="dataLinkBundleVertex"
+        />
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
         />
@@ -96,6 +103,7 @@
             class="vertex" :class="{connected: model.isConnected}"
             style="cursor: move;"
             :is-editable="isEditable"
+            :data-link-bundle-vertex="dataLinkBundleVertex"
             @mousedown.stop="onMouseDown($event)"
             @mouseup.stop="onMouseUp($event)"
             @mousemove.stop="onMouseMove($event)"
