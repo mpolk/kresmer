@@ -124,9 +124,9 @@
             <prop name="start-label">metro</prop>
         </props>
         <vertex x="179" y="451.240577573632"/>
-        <vertex x="7.425340119907958" y="451.240577573632"/>
-        <vertex x="6" y="762"/>
-        <vertex x="327.5" y="762"/>
+        <vertex x="6" y="450"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex x="328" y="760"/>
     </link>
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
@@ -206,8 +206,8 @@
     <link class="twisted-pair" name="metro-kamakura-0" from="Kamakura:eth0@d" to="metro-switch:1:26@d">
         <vertex x="62" y="574.5551356054989"/>
         <vertex x="20.642069118093808" y="574.5551356054989"/>
-        <vertex x="20.642069118093808" y="762"/>
-        <vertex x="590" y="762"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="15.009626381443644"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="584.2609140783275"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-1" from="Kamakura:eth1@d" to="metro-switch:1:27@u">
@@ -220,17 +220,21 @@
     <link class="twisted-pair" name="metro-kamakura-2" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
         <vertex x="122" y="608.155150398954"/>
         <vertex x="60.202233614524566" y="608.155150398954"/>
-        <vertex x="60.202233614524566" y="850.4203584067875"/>
-        <vertex x="590" y="850.4203584067875"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="530.3099118327516"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-3" from="Kamakura:eth3@d" to="metro-switch:2:27@u">
         <vertex x="152" y="630.7471521023076"/>
         <vertex x="79.80226454200262" y="630.7471521023076"/>
-        <vertex x="79.80226454200262" y="762"/>
-        <vertex x="627.5" y="762"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="74.34486821489759"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="621.3469775964084"/>
     </link>
 
     <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 682)" to="(956, 682)"/>
+
+    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(6, 760)" to="(962, 760)"/>
+
+    <link-bundle class="link-bundle" name="metro-lower-bundle" from="(60, 862)" to="(930, 862)"/>
 
 </kresmer-drawing>
