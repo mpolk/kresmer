@@ -11,8 +11,6 @@
     import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
-    import { Position } from '../Transform/Transform';
-import LinkVertex from './LinkVertex';
     
     export default {
         components: {LinkVertexVue}
