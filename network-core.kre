@@ -213,8 +213,8 @@
     <link class="twisted-pair" name="metro-kamakura-1" from="Kamakura:eth1@d" to="metro-switch:1:27@u">
         <vertex x="92" y="588.1262456085103"/>
         <vertex x="40.12140273675835" y="588.1262456085103"/>
-        <vertex x="40.12140273675835" y="682"/>
-        <vertex x="627.5" y="682"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="587.1201653648224"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-2" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
@@ -230,5 +230,7 @@
         <vertex x="79.80226454200262" y="762"/>
         <vertex x="627.5" y="762"/>
     </link>
+
+    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 682)" to="(956, 682)"/>
 
 </kresmer-drawing>
