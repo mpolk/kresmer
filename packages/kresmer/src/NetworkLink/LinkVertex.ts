@@ -125,10 +125,15 @@ export default class LinkVertex {
     private savedMousePos?: Position;
 
     get isConnected() {return Boolean(this._anchor.conn);}
+    get isConnectedToBundle() {return Boolean(this._anchor.bundle);}
     get isHead() {return this.vertexNumber === 0;}
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
     get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
     get isInitialized() {return !this.initParams;}
+    get prevNeighbor(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
+    get nextNeighbor(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
+    get isEnteringBundle() {return this.isConnectedToBundle && !this.prevNeighbor?.isConnectedToBundle;}
+    get isLeavingBundle() {return this.isConnectedToBundle && !this.nextNeighbor?.isConnectedToBundle;}
 
     toString()
     {

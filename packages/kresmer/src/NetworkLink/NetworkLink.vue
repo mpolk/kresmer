@@ -11,6 +11,8 @@
     import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
+    import { Position } from '../Transform/Transform';
+import LinkVertex from './LinkVertex';
     
     export default {
         components: {LinkVertexVue}
@@ -67,7 +69,20 @@
     })//segmentStyle
 
     const path = computed(() => {
-        return props.model.vertices.map((vertex, i) => `${i ? 'L' : 'M'}${vertex.coords.x},${vertex.coords.y}`).join(" ");
+        const vertices: LinkVertex[] = [];
+        props.model.vertices.forEach(v => {
+            vertices.push(v);
+            const b1 = v.anchor.bundle;
+            const b2 = v.nextNeighbor?.anchor.bundle;
+            if (b1 && b2 && b1.afterVertex.link === b2.afterVertex.link) {
+                const bundle = b1.afterVertex.link;
+                for (let i = b1.afterVertex.vertexNumber + 1; i <= b2.afterVertex.vertexNumber; i++) {
+                    const v1 = bundle.vertices[i];
+                    vertices.push(v1);
+                }//for
+            }//if
+        });
+        return vertices.map((vertex, i) => `${i ? 'L' : 'M'}${vertex.coords.x},${vertex.coords.y}`).join(" ");
     })//path
 
     const pathID = computed(() => `kre:link${props.model.id}path`);
@@ -103,7 +118,7 @@
                     ><title>{{model.displayString}}</title></line>
             </template>
         </template>
-        <template v-for="(vertex, i) in props.model.vertices" :key="`vertex${vertex.key}`">
+        <template v-for="(vertex, i) in model.vertices" :key="`vertex${vertex.key}`">
             <link-vertex-vue :model="vertex" :data-link-bundle-vertex="segmentDataAttr(i)"/>
         </template>
     </g>
