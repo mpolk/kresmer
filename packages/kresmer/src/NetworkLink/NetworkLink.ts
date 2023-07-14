@@ -146,11 +146,12 @@ class _NetworkLink extends NetworkElement {
         return str;
     }//displayString
 
+    protected readonly outerXMLTag: string = "link";
+
     public toXML(indentLevel: number): string 
     {
         const attrs = new Map<string, string>();
-        if (!this.isBundle)
-            attrs.set("class", this.getClass().name);
+        attrs.set("class", this.getClass().name);
         attrs.set("name", this.name);
         this.dbID && attrs.set("db-id", this.dbID.toString());
         (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
@@ -158,13 +159,12 @@ class _NetworkLink extends NetworkElement {
         const n = this.vertices.length - 1;
         (this.vertices[n].isConnected || this.vertices[n].anchor.pos) && 
             attrs.set("to", this.vertices[n].toString());
-        const mainTagSuffix = this.isBundle ? "-bundle" : "";
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
         if (this.vertices.length <= 2 && this.propCount == 0) {
-            return `${indent(indentLevel)}<link${mainTagSuffix} ${attrStr}/>`;
+            return `${indent(indentLevel)}<${this.outerXMLTag} ${attrStr}/>`;
         } else {
-            const xml = [`${indent(indentLevel)}<link${mainTagSuffix} ${attrStr}>`];
+            const xml = [`${indent(indentLevel)}<${this.outerXMLTag} ${attrStr}>`];
 
             xml.push(...this.propsToXML(indentLevel));
     
@@ -172,7 +172,7 @@ class _NetworkLink extends NetworkElement {
                 xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
             }//for
 
-            xml.push(`${indent(indentLevel)}</link${mainTagSuffix}>`);
+            xml.push(`${indent(indentLevel)}</${this.outerXMLTag}>`);
             return xml.join("\n");
         }//if
     }//toXML

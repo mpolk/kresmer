@@ -28,6 +28,7 @@ export default class LinkBundle extends NetworkLink {
     static className = "link-bundle";
 
     override readonly isBundle = true;
+    protected readonly outerXMLTag = "link-bundle";
 
     override getNamePrefix(): string {
         return "Bundle";
