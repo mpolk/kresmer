@@ -26,7 +26,8 @@ type ContextMenuHandler<MenuID extends ContextMenuID> = ContextMenus[MenuID]
 export interface ContextMenuCommands {
     "add-component": ContextMenuHandler<"drawing">,
     "edit-drawing-properties": ContextMenuHandler<"drawing">,
-    "create-bundle": ContextMenuHandler<"drawing">,
+    "create-link": ContextMenuHandler<"drawing">,
+    "create-link-bundle": ContextMenuHandler<"drawing">,
 
     "transform-component": ContextMenuHandler<"component">,
     "delete-component": ContextMenuHandler<"component">,
@@ -122,7 +123,8 @@ export default class Menus {
         "drawing": [
           {label: "Add component...", id: "add-component"},
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          {label: "Create bundle", id: "create-bundle"},
+          {label: "Create link", id: "create-link"},
+          {label: "Create link bundle", id: "create-link-bundle"},
           {type: 'separator'},
           {label: "Properties...", id: "edit-drawing-properties"},
         ],

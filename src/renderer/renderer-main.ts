@@ -396,7 +396,7 @@ appCommandExecutor.on("connect-connection-point", async (
     }//if
 });//startLinkCreation
 
-appCommandExecutor.on("create-bundle", (mousePos: Position) =>
+appCommandExecutor.on("create-link-bundle", (mousePos: Position) =>
 {
     kresmer.edAPI.startLinkBundleCreation(mousePos, "screen");
 });//startLinkCreation

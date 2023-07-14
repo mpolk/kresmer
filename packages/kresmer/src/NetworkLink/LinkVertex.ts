@@ -71,9 +71,10 @@ export default class LinkVertex {
 
     isBlinking = false;
 
-    public get isHead() {return this.vertexNumber === 0;}
-    public get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
+    get isHead() {return this.vertexNumber === 0;}
+    get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
     get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
+    get isInitialized() {return !this.initParams;}
 
     toString()
     {
@@ -188,17 +189,20 @@ export default class LinkVertex {
             return this.conn.coords;
         } else if (this.bundle) {
             const afterVertex = this.bundle.afterVertex;
-            let d = this.bundle.distance;
-            const p1 = afterVertex.coords;
             const n = afterVertex.vertexNumber;
-            const p2 = afterVertex.link.vertices[n+1].coords;
+            const beforeVertex = afterVertex.link.vertices[n+1];
+            if (!afterVertex.isInitialized || !beforeVertex.isInitialized)
+                return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
+            const p1 = afterVertex.coords;
+            const p2 = beforeVertex.coords;
+            let d = this.bundle.distance;
             const h = Math.sqrt((p2.y-p1.y)*(p2.y-p1.y) + (p2.x-p1.x)*(p2.x-p1.x));
             if (d > h)
                 d = h;
             const x = p1.x + d * (p2.x-p1.x) / h;
             const y = p1.y + d * (p2.y-p1.y) / h;
             return {x, y};
-            } else if (this.pos && this.link.isLoopback) {
+        } else if (this.pos && this.link.isLoopback) {
             const headCoords = this.link.head.coords;
             return {x: headCoords.x + this.pos.x, y: headCoords.y + this.pos.y};
         } else if (this.pos) {

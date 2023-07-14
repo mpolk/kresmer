@@ -67,6 +67,9 @@
                     <xs:attribute name="x" type="xs:float"/>
                     <xs:attribute name="y" type="xs:float"/>
                     <xs:attribute name="connect" type="xs:string"/>
+                    <xs:attribute name="bundle" type="xs:string"/>
+                    <xs:attribute name="after" type="xs:string"/>
+                    <xs:attribute name="distance" type="xs:string"/>
                 </xs:complexType>
             </xs:element>
         </xs:sequence>
