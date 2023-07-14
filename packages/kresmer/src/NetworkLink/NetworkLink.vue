@@ -69,20 +69,22 @@ import LinkVertex from './LinkVertex';
     })//segmentStyle
 
     const path = computed(() => {
-        const vertices: LinkVertex[] = [];
+        const chunks: string[] = [];
+        let prefix = "M";
         props.model.vertices.forEach(v => {
-            vertices.push(v);
+            chunks.push(`${prefix}${v.coords.x},${v.coords.y}`)
+            prefix = "L";
             const b1 = v.anchor.bundle;
             const b2 = v.nextNeighbor?.anchor.bundle;
             if (b1 && b2 && b1.afterVertex.link === b2.afterVertex.link) {
                 const bundle = b1.afterVertex.link;
                 for (let i = b1.afterVertex.vertexNumber + 1; i <= b2.afterVertex.vertexNumber; i++) {
                     const v1 = bundle.vertices[i];
-                    vertices.push(v1);
+                    chunks.push(`${prefix}${v1.coords.x},${v1.coords.y}`)
                 }//for
             }//if
         });
-        return vertices.map((vertex, i) => `${i ? 'L' : 'M'}${vertex.coords.x},${vertex.coords.y}`).join(" ");
+        return chunks.join(" ");
     })//path
 
     const pathID = computed(() => `kre:link${props.model.id}path`);
