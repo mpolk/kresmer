@@ -6,6 +6,9 @@
  *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
  * ___________________________________________________________________________
  *                        The standard library
+ * This library contains general graphics and network elements, like ports
+ * switches and routers. More specific network units (servers, 
+ * vendor-specific equipment etc.) contain other libraries.
 <*************************************************************************** -->
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
