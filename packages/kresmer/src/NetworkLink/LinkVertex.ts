@@ -32,45 +32,99 @@ export default class LinkVertex {
         this.ownConnectionPoint.name = String(n);
     }//set vertexNumber
 
-    readonly key: number;
-    private pos?: Position;
-    private conn?: ConnectionPointProxy;
-    private bundle?: BundleJoinDescriptor;
-    public ownConnectionPoint: ConnectionPointProxy;
+    private _anchor: LinkVertexAnchor = {pos: {x: 0, y: 0}};
+    get anchor() {return {...this._anchor};}
+    set anchor(newPos: LinkVertexAnchor)
+    {
+        this._anchor.pos = newPos.pos;
+        this.setConn(newPos.conn);
+        this._anchor.bundle = newPos.bundle;
+    }//set anchor
+
+    pinUp(pos: Position)
+    {
+        this._anchor.pos = {...pos};
+        this.setConn(undefined);
+        this._anchor.bundle = undefined;
+    }//pinUp
+
+    connect(connectionPoint: ConnectionPointProxy)
+    {
+        this.setConn(connectionPoint);
+        this._anchor.pos = undefined;
+        this._anchor.bundle = undefined;
+    }//connect
+
+    connectToBundle(bundle: BundleJoinDescriptor)
+    {
+        this._anchor.bundle = {...bundle};
+        this.setConn(undefined);
+        this._anchor.pos = undefined;
+    }//connectToBundle
 
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
     // to the link's loopback mode
     private setConn(newValue: ConnectionPointProxy|undefined) {
-        if (this.conn !== newValue) {
-            const oldConn = this.conn;
+        if (this._anchor.conn !== newValue) {
+            const oldConn = this._anchor.conn;
             if (!this.isHead && !this.isTail || this.initParams) {
-                this.conn = newValue;
+                this._anchor.conn = newValue;
             } else {
                 const wasLoopback = this.link.isLoopback;
-                this.conn = newValue;
+                this._anchor.conn = newValue;
                 if (wasLoopback !== this.link.isLoopback) {
                     this.link.toggleVertexPositioningMode(this);
                 }//if
             }//if
-            if (this.conn) {
-                this.conn.hostElement.registerConnectedLink(this.link);
+            if (this._anchor.conn) {
+                this._anchor.conn.hostElement.registerConnectedLink(this.link);
             } else if (oldConn) {
                 oldConn.hostElement.unregisterConnectedLink(this.link);
             }//if
-            this.ownConnectionPoint.isActive = !this.conn && !this.bundle;
+            this.ownConnectionPoint.isActive = !this._anchor.conn && !this._anchor.bundle;
         }//if
     }//setConn
-    
-    private savedConn?: ConnectionPointProxy;
-    get isConnected() {return Boolean(this.conn);}
 
-    public isGoingToBeDragged = false;
-    public isDragged = false;
+    get coords(): Position
+    {
+        if (this._anchor.conn) {
+            return this._anchor.conn.coords;
+        } else if (this._anchor.bundle) {
+            const afterVertex = this._anchor.bundle.afterVertex;
+            const n = afterVertex.vertexNumber;
+            const beforeVertex = afterVertex.link.vertices[n+1];
+            if (!afterVertex.isInitialized || !beforeVertex.isInitialized)
+                return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
+            const p1 = afterVertex.coords;
+            const p2 = beforeVertex.coords;
+            let d = this._anchor.bundle.distance;
+            const h = Math.sqrt((p2.y-p1.y)*(p2.y-p1.y) + (p2.x-p1.x)*(p2.x-p1.x));
+            if (d > h)
+                d = h;
+            const x = p1.x + d * (p2.x-p1.x) / h;
+            const y = p1.y + d * (p2.y-p1.y) / h;
+            return {x, y};
+        } else if (this._anchor.pos && this.link.isLoopback) {
+            const headCoords = this.link.head.coords;
+            return {x: headCoords.x + this._anchor.pos.x, y: headCoords.y + this._anchor.pos.y};
+        } else if (this._anchor.pos) {
+            return this._anchor.pos;
+        } else {
+            return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
+        }//if
+    }//coords
+    
+    readonly key: number;
+    public ownConnectionPoint: ConnectionPointProxy;
+
+    isGoingToBeDragged = false;
+    isDragged = false;
+    isBlinking = false;
+    private savedConn?: ConnectionPointProxy;
     private dragStartPos?: Position;
     private savedMousePos?: Position;
 
-    isBlinking = false;
-
+    get isConnected() {return Boolean(this._anchor.conn);}
     get isHead() {return this.vertexNumber === 0;}
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
     get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
@@ -78,10 +132,10 @@ export default class LinkVertex {
 
     toString()
     {
-        if (this.conn) {
-            return this.conn.toString();
-        } else if (this.pos) {
-            return `(${this.pos.x.toFixed()}, ${this.pos.y.toFixed()})`
+        if (this._anchor.conn) {
+            return this._anchor.conn.toString();
+        } else if (this._anchor.pos) {
+            return `(${this._anchor.pos.x.toFixed()}, ${this._anchor.pos.y.toFixed()})`
         } else {
             return "()";
         }//if
@@ -89,10 +143,10 @@ export default class LinkVertex {
 
     get displayString()
     {
-        if (this.conn) {
-            return this.conn.displayString;
-        } else if (this.pos) {
-            return `(${this.pos.x.toFixed()}, ${this.pos.y.toFixed()})`
+        if (this._anchor.conn) {
+            return this._anchor.conn.displayString;
+        } else if (this._anchor.pos) {
+            return `(${this._anchor.pos.x.toFixed()}, ${this._anchor.pos.y.toFixed()})`
         } else {
             return "()";
         }//if
@@ -100,21 +154,23 @@ export default class LinkVertex {
 
     public toXML()
     {
-        if (this.conn) {
-            const elementName =  this.conn.hostElement instanceof NetworkLink ? 
-                `-${this.conn.hostElement.name}`: this.conn.hostElement.name;
-            return `<vertex connect="${elementName}:${this.conn.name}"/>`;
-        } else if (this.bundle) {
-            return `<vertex bundle="${this.bundle.afterVertex.link.name}" after="${this.bundle.afterVertex.vertexNumber}" distance="${this.bundle.distance}"/>`;
-        } else if (this.pos) {
-            return `<vertex x="${this.pos.x}" y="${this.pos.y}"/>`;
+        if (this._anchor.conn) {
+            const elementName =  this._anchor.conn.hostElement instanceof NetworkLink ? 
+                `-${this._anchor.conn.hostElement.name}`: this._anchor.conn.hostElement.name;
+            return `<vertex connect="${elementName}:${this._anchor.conn.name}"/>`;
+        } else if (this._anchor.bundle) {
+            return `<vertex bundle="${this._anchor.bundle.afterVertex.link.name}" after="${this._anchor.bundle.afterVertex.vertexNumber}" distance="${this._anchor.bundle.distance}"/>`;
+        } else if (this._anchor.pos) {
+            return `<vertex x="${this._anchor.pos.x}" y="${this._anchor.pos.y}"/>`;
         } else {
             return `<vertex/>`;
         }//if
     }//toXML
 
 
-    /** Postponned part of the initialization delayed until after all components are mounted */
+    /** Postponned part of the initialization delayed until after all components are mounted.
+     *  It takes internally saved initParams and converts it to the "real" anchor data.
+    */
     init(): LinkVertex
     {
         if (this.initParams?.pos) {
@@ -162,73 +218,6 @@ export default class LinkVertex {
         return this;
     }//init
 
-    pinUp(pos: Position)
-    {
-        this.pos = {...pos};
-        this.setConn(undefined);
-        this.bundle = undefined;
-    }//pinUp
-
-    connect(connectionPoint: ConnectionPointProxy)
-    {
-        this.setConn(connectionPoint);
-        this.pos = undefined;
-        this.bundle = undefined;
-    }//connect
-
-    connectToBundle(bundle: BundleJoinDescriptor)
-    {
-        this.bundle = {...bundle};
-        this.setConn(undefined);
-        this.pos = undefined;
-    }//connectToBundle
-
-    get coords(): Position
-    {
-        if (this.conn) {
-            return this.conn.coords;
-        } else if (this.bundle) {
-            const afterVertex = this.bundle.afterVertex;
-            const n = afterVertex.vertexNumber;
-            const beforeVertex = afterVertex.link.vertices[n+1];
-            if (!afterVertex.isInitialized || !beforeVertex.isInitialized)
-                return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
-            const p1 = afterVertex.coords;
-            const p2 = beforeVertex.coords;
-            let d = this.bundle.distance;
-            const h = Math.sqrt((p2.y-p1.y)*(p2.y-p1.y) + (p2.x-p1.x)*(p2.x-p1.x));
-            if (d > h)
-                d = h;
-            const x = p1.x + d * (p2.x-p1.x) / h;
-            const y = p1.y + d * (p2.y-p1.y) / h;
-            return {x, y};
-        } else if (this.pos && this.link.isLoopback) {
-            const headCoords = this.link.head.coords;
-            return {x: headCoords.x + this.pos.x, y: headCoords.y + this.pos.y};
-        } else if (this.pos) {
-            return this.pos;
-        } else {
-            return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
-        }//if
-    }//coords
-
-    get anchor(): LinkVertexAnchor
-    {
-        return {
-            pos: this.pos,
-            conn: this.conn,
-            bundle: this.bundle,
-        } as LinkVertexAnchor
-    }//get anchor
-
-    set anchor(newPos: LinkVertexAnchor)
-    {
-        this.pos = newPos.pos;
-        this.setConn(newPos.conn);
-        this.bundle = newPos.bundle;
-    }//set anchor
-
-
     private getMousePosition(event: MouseEvent) {
         return this.link.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
@@ -254,14 +243,14 @@ export default class LinkVertex {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
-            this.savedConn = this.conn;
+            this.savedConn = this._anchor.conn;
             this.pinUp(this.coords);
         } else if (!this.isDragged) {
             return false;
         }//if
             
         const mousePos = this.getMousePosition(event);
-        this.pos = {
+        this._anchor.pos = {
             x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
             y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
         }
@@ -304,15 +293,15 @@ export default class LinkVertex {
             }//for
 
         if (this.link.kresmer.snapToGrid) {
-            this.pos = {
-                x: Math.round(this.pos!.x / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep,
-                y: Math.round(this.pos!.y / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep
+            this._anchor.pos = {
+                x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep,
+                y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep
             };
         }//if
         this.link.kresmer.undoStack.commitOperation();
         if (this.savedConn) {
-            if (this.conn !== this. savedConn) {
-                this.link.kresmer.emit("link-vertex-disconnected", this, this.conn!);
+            if (this._anchor.conn !== this.savedConn) {
+                this.link.kresmer.emit("link-vertex-disconnected", this, this._anchor.conn!);
             }//if
             this.savedConn = undefined;
         }//if
@@ -336,7 +325,7 @@ export default class LinkVertex {
                 const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
                 if (vertexToConnectTo === this)
                     return false;
-                if (vertexToConnectTo?.isConnected && vertexToConnectTo?.conn === this.ownConnectionPoint)
+                if (vertexToConnectTo?.isConnected && vertexToConnectTo?._anchor.conn === this.ownConnectionPoint)
                     return false;
                 connectionPoint = vertexToConnectTo?.ownConnectionPoint;
             } break;
@@ -464,7 +453,7 @@ export default class LinkVertex {
     {
         const c = connected.coords;
         const p = positioned.coords;
-        const dir = connected.conn!.dir % 360;
+        const dir = connected._anchor.conn!.dir % 360;
         let newPos: Position | null;
         switch (dir) {
             case 0:
