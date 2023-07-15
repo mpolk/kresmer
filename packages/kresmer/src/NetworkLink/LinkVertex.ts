@@ -91,13 +91,15 @@ export default class LinkVertex {
             return this._anchor.conn.coords;
         } else if (this._anchor.bundle) {
             const afterVertex = this._anchor.bundle.afterVertex;
+            let d = this._anchor.bundle.distance;
+            if (d == 0)
+                return afterVertex.coords;
             const n = afterVertex.vertexNumber;
             const beforeVertex = afterVertex.link.vertices[n+1];
             if (!afterVertex.isInitialized || !beforeVertex.isInitialized)
                 return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
             const p1 = afterVertex.coords;
             const p2 = beforeVertex.coords;
-            let d = this._anchor.bundle.distance;
             const h = Math.sqrt((p2.y-p1.y)*(p2.y-p1.y) + (p2.x-p1.x)*(p2.x-p1.x));
             if (d > h)
                 d = h;

@@ -221,7 +221,7 @@ export default class DrawingParser {
         if (!strData)
             return {};
 
-        let matches = strData.match(/^\s*\(\s*(\d+),\s*(\d+)\s*\)\s*$/);
+        let matches = strData.match(/^\s*\(\s*(-?\d+),\s*(-?\d+)\s*\)\s*$/);
         if (matches) {
             return {pos: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}};
         } else {
