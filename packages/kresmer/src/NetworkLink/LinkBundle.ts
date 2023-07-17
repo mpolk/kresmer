@@ -59,7 +59,7 @@ export default class LinkBundle extends NetworkLink {
         return entry?.isAttached ? entry.number : undefined;
     }//getLinkNumber
 
-    public updateBundledLinkVues()
+    public updateAttachedLinkVues()
     {
         for (const [link, {isAttached}] of this.attachedLinks) {
             if (isAttached) {
@@ -69,7 +69,7 @@ export default class LinkBundle extends NetworkLink {
             }//if
         }//for
     }//updateBundledLinkVues
-}//LinkBundle
+}//updateAttachedLinkVues
 
 
 export class CreateBundleOp extends EditorOperation {

@@ -34,7 +34,7 @@ import LinkBundle from './LinkBundle';
     onMounted(() => {
         props.model.updateConnectionPoints();
         if (props.model instanceof LinkBundle)
-            props.model.updateBundledLinkVues();
+            props.model.updateAttachedLinkVues();
     })
 
     const linkClass = computed(() => {
