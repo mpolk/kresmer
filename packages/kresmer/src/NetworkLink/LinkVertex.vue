@@ -10,7 +10,8 @@
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
     import ConnectionPoint from '../ConnectionPoint/ConnectionPoint.vue';
-import LinkBundle from './LinkBundle';
+    import LinkBundle from './LinkBundle';
+    import {Position} from '../Transform/Transform';
 
     export default {
         components: {ConnectionPoint},
@@ -28,17 +29,57 @@ import LinkBundle from './LinkBundle';
     const circle = ref<HTMLElement>()!;
     const padding = ref<HTMLElement>()!;
 
-    const showLinkNumber = computed(() => {
-        return props.model.isAttachedToBundle && (Boolean(props.model.prevNeighbor?.isAttachedToBundle) != Boolean(props.model.nextNeighbor?.isAttachedToBundle));
-    })//showLinkNumber
+    type LinkNumber = {
+        number: number,
+        pos: Position,
+        clazz: Partial<Record<"top-aligned"|"right-aligned", boolean>>,
+    }//LinkNumber
 
-    const linkNumber = computed(() => {
-        return showLinkNumber.value ? (props.model.anchor.bundle?.afterVertex.link as LinkBundle).getLinkNumber(props.model.link) : undefined;
+    const linkNumber = computed((): LinkNumber|undefined => {
+        const prevNeighbor = props.model.prevNeighbor;
+        const nextNeighbor = props.model.nextNeighbor;
+        const thisVertex = props.model;
+        const show = thisVertex.isAttachedToBundle && prevNeighbor && nextNeighbor && 
+            (prevNeighbor.isAttachedToBundle != nextNeighbor.isAttachedToBundle);
+        if (!show)
+            return undefined;
+        const number = (props.model.anchor.bundle?.afterVertex.link as LinkBundle).getLinkNumber(props.model.link);
+        if (!number)
+            return undefined;
+        const {x: x1, y: y1} = thisVertex.coords;
+        const r1 = {x: x1 - prevNeighbor.coords.x, y: y1 - prevNeighbor.coords.y};
+        if (r1.x === 0 && r1.y === 0)
+            return undefined;
+        const r2 = {x: -x1 + nextNeighbor.coords.x, y: -y1 + nextNeighbor.coords.y};
+        if (r2.x === 0 && r2.y === 0)
+            return undefined;
+        const fi1 = Math.atan2(r1.y, r1.x);
+        const fi2 = Math.atan2(r2.y, r2.x);
+        const deltaFi = fi2 - fi1;
+        let theta: number;
+        if (deltaFi >= 0 && deltaFi < Math.PI/2) {
+            theta = fi1 + deltaFi/2;
+        } else if (deltaFi >= Math.PI/2) {
+            theta = fi1 - deltaFi/2;
+        } else if (deltaFi < 0 && deltaFi >= -Math.PI/2) {
+            theta = fi1 + deltaFi/2;
+        } else {
+            theta = fi1 - deltaFi/2;
+        }//if
+        theta = theta % (Math.PI*2);
+        let clazz: Partial<Record<"top-aligned"|"right-aligned", boolean>>;
+        if (theta >= Math.PI/2)
+            clazz = {"right-aligned": true};
+        else if (theta < 0 && theta >= -Math.PI/2)
+            clazz = {"top-aligned": true};
+        else if (theta < -Math.PI/2)
+            clazz = {"top-aligned": true, "right-aligned": true};
+        else
+            clazz = {};
+        const d = 5;
+        const pos = {x: x1 + d*Math.cos(theta), y: y1 + d*Math.sin(theta)};
+        return {number, pos, clazz};
     })//linkNumber
-
-    const linkNumberPos = computed(() => {
-        return {...props.model.coords};
-    })//linkNumberPos
 
     function onMouseDown(event: MouseEvent)
     {
@@ -96,7 +137,7 @@ import LinkBundle from './LinkBundle';
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
         />
-    <text v-if="showLinkNumber" class="link-number" :x="linkNumberPos.x" :y="linkNumberPos.y">{{ linkNumber }}</text>
+    <text v-if="linkNumber?.number" class="link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">{{ linkNumber.number }}</text>
     <template v-if="model.link.isSelected">
         <template v-if="model.isDragged">
             <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />
@@ -139,6 +180,11 @@ import LinkBundle from './LinkBundle';
         &:hover {
             opacity: 1;
         }
+    }
+
+    .link-number {
+        &.top-aligned { dominant-baseline: text-before-edge;}
+        &.right-aligned { text-anchor: end;}
     }
 
     .v-enter-active {
