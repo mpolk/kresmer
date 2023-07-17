@@ -33,6 +33,42 @@ export default class LinkBundle extends NetworkLink {
     override getNamePrefix(): string {
         return "Bundle";
     }//getNamePrefix
+
+    private attachedLinks = new Map<NetworkLink, {number: number, isAttached: boolean}>();
+    private nextAttachedLinkNumber = 1;
+
+    public registerAttachedLink(link: NetworkLink)
+    {
+        const entry = this.attachedLinks.get(link);
+        if (entry)
+            entry.isAttached = true;
+        else
+            this.attachedLinks.set(link, {number: this.nextAttachedLinkNumber++, isAttached: true});
+    }//registerAttachedLink
+
+    public unregisterAttachedLink(link: NetworkLink)
+    {
+        const entry = this.attachedLinks.get(link);
+        if (entry)
+            entry.isAttached = false;
+    }//unregisterAttachedLink
+
+    public getLinkNumber(link: NetworkLink)
+    {
+        const entry = this.attachedLinks.get(link);
+        return entry?.isAttached ? entry.number : undefined;
+    }//getLinkNumber
+
+    public updateBundledLinkVues()
+    {
+        for (const [link, {isAttached}] of this.attachedLinks) {
+            if (isAttached) {
+                for (const vertex of link.vertices) {
+                    vertex.updateVue();
+                }//for
+            }//if
+        }//for
+    }//updateBundledLinkVues
 }//LinkBundle
 
 

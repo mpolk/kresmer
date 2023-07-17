@@ -6,10 +6,11 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, inject } from 'vue';
+    import { PropType, ref, inject, computed } from 'vue';
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
     import ConnectionPoint from '../ConnectionPoint/ConnectionPoint.vue';
+import LinkBundle from './LinkBundle';
 
     export default {
         components: {ConnectionPoint},
@@ -26,6 +27,18 @@
     const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<HTMLElement>()!;
     const padding = ref<HTMLElement>()!;
+
+    const showLinkNumber = computed(() => {
+        return props.model.isAttachedToBundle && (Boolean(props.model.prevNeighbor?.isAttachedToBundle) != Boolean(props.model.nextNeighbor?.isAttachedToBundle));
+    })//showLinkNumber
+
+    const linkNumber = computed(() => {
+        return showLinkNumber.value ? (props.model.anchor.bundle?.afterVertex.link as LinkBundle).getLinkNumber(props.model.link) : undefined;
+    })//linkNumber
+
+    const linkNumberPos = computed(() => {
+        return {...props.model.coords};
+    })//linkNumberPos
 
     function onMouseDown(event: MouseEvent)
     {
@@ -70,12 +83,11 @@
     {
         props.model.align();
     }//onDoubleClick
-
     
 </script>
 
 <template>
-    <circle  v-if="!model.link.isSelected"
+    <circle v-if="!model.link.isSelected"
         :cx="model.coords.x" :cy="model.coords.y" 
         class="vertex" :class="{connected: model.isConnected}"
         style="fill: transparent; stroke: transparent;"
@@ -84,6 +96,7 @@
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
         />
+    <text v-if="showLinkNumber" class="link-number" :x="linkNumberPos.x" :y="linkNumberPos.y">{{ linkNumber }}</text>
     <template v-if="model.link.isSelected">
         <template v-if="model.isDragged">
             <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />

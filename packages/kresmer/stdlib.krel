@@ -475,6 +475,7 @@
                 fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
             }
             .label {font-family: sans-serif; font-size: 1rem; fill: black;}
+            .link-number {font-family: sans-serif; font-size: 1rem; fill: #3b3b3b}
         </style>
     </link-class>
 

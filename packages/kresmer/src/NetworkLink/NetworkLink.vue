@@ -11,6 +11,7 @@
     import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
+import LinkBundle from './LinkBundle';
     
     export default {
         components: {LinkVertexVue}
@@ -32,6 +33,8 @@
     onBeforeMount(props.model.initVertices);
     onMounted(() => {
         props.model.updateConnectionPoints();
+        if (props.model instanceof LinkBundle)
+            props.model.updateBundledLinkVues();
     })
 
     const linkClass = computed(() => {

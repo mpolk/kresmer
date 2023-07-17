@@ -44,12 +44,14 @@
     onMounted(updatePos);
     function updatePos()
     {
+        if (!cpMarker.value)
+            return;
         const drawingRect = kresmer.drawingRect;
         const mountingRect = kresmer.mountPoint.getBoundingClientRect();
         let coords = {x: props.x, y: props.y};
         let rot = 0;
-        if (cpMarker.value?.ownerSVGElement != kresmer.rootSVG) {
-            const matrix = cpMarker.value!.getCTM()!;
+        if (cpMarker.value.ownerSVGElement != kresmer.rootSVG) {
+            const matrix = cpMarker.value.getCTM()!;
             coords = {
                 x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
                     drawingRect.left + mountingRect.left + drawingOrigin.x,

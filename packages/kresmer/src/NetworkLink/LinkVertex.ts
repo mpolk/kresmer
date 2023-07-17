@@ -12,6 +12,8 @@ import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
 import type { RequireAtLeastOne } from "../Utils";
+import LinkBundle from "./LinkBundle";
+import { nextTick } from "vue";
 
 /** Link Vertex (either connected or free) */
 
@@ -21,7 +23,7 @@ export default class LinkVertex {
         this.ownConnectionPoint = new ConnectionPointProxy(this.link, this.vertexNumber, 0);
         this._vertexNumber = vertexNumber;
         this.ownConnectionPoint.name = String(vertexNumber);
-        this.key = link.nextVertexKey++;
+        this._key = link.nextVertexKey++;
     }//ctor
 
     private _vertexNumber: number;
@@ -38,29 +40,29 @@ export default class LinkVertex {
     {
         this._anchor.pos = newPos.pos;
         this.setConn(newPos.conn);
-        this._anchor.bundle = newPos.bundle;
+        this.setBundle(newPos.bundle);
     }//set anchor
 
     pinUp(pos: Position)
     {
         this._anchor.pos = {...pos};
         this.setConn(undefined);
-        this._anchor.bundle = undefined;
+        this.setBundle(undefined);
     }//pinUp
 
     connect(connectionPoint: ConnectionPointProxy)
     {
         this.setConn(connectionPoint);
         this._anchor.pos = undefined;
-        this._anchor.bundle = undefined;
+        this.setBundle(undefined);
     }//connect
 
-    connectToBundle(bundle: BundleJoinDescriptor)
+    attachToBundle(bundle: BundleAttachmentDescriptor)
     {
-        this._anchor.bundle = {...bundle};
+        this.setBundle({...bundle});
         this.setConn(undefined);
         this._anchor.pos = undefined;
-    }//connectToBundle
+    }//attachToBundle
 
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
     // to the link's loopback mode
@@ -85,8 +87,27 @@ export default class LinkVertex {
         }//if
     }//setConn
 
+    // A similar setter for the bundle attachments
+    private setBundle(newValue: BundleAttachmentDescriptor|undefined) {
+        if (this._anchor.bundle !== newValue) {
+            const oldBundle = this._anchor.bundle;
+            this._anchor.bundle = newValue;
+            if (this._anchor.bundle) {
+                (this._anchor.bundle.afterVertex.link as LinkBundle).registerAttachedLink(this.link);
+            } else if (oldBundle) {
+                (oldBundle.afterVertex.link as LinkBundle).unregisterAttachedLink(this.link);
+            }//if
+            this.ownConnectionPoint.isActive = !this._anchor.conn && !this._anchor.bundle;
+            nextTick(() => this.revision++);
+        }//if
+    }//setBundle
+
+
+    /** Calculates "physical" coordinates of the vertex, based on its connection to the connection point, 
+     *  attachment to the bundle or a plain {x,y} position */
     get coords(): Position
     {
+        this.revision;
         if (this._anchor.conn) {
             return this._anchor.conn.coords;
         } else if (this._anchor.bundle) {
@@ -116,7 +137,14 @@ export default class LinkVertex {
         }//if
     }//coords
     
-    readonly key: number;
+    private readonly _key: number;
+    private revision = 0;
+    get key() {return `${this._key}.${this.revision}`}
+    public updateVue()
+    {
+        this.revision++;
+    }//updateVue
+
     public ownConnectionPoint: ConnectionPointProxy;
 
     isGoingToBeDragged = false;
@@ -127,15 +155,15 @@ export default class LinkVertex {
     private savedMousePos?: Position;
 
     get isConnected() {return Boolean(this._anchor.conn);}
-    get isConnectedToBundle() {return Boolean(this._anchor.bundle);}
+    get isAttachedToBundle() {return this._anchor.bundle || Boolean(this.initParams?.bundle);}
     get isHead() {return this.vertexNumber === 0;}
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
     get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
     get isInitialized() {return !this.initParams;}
     get prevNeighbor(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
     get nextNeighbor(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
-    get isEnteringBundle() {return this.isConnectedToBundle && !this.prevNeighbor?.isConnectedToBundle;}
-    get isLeavingBundle() {return this.isConnectedToBundle && !this.nextNeighbor?.isConnectedToBundle;}
+    get isEnteringBundle() {return Boolean(this.isAttachedToBundle && !this.prevNeighbor?.isAttachedToBundle);}
+    get isLeavingBundle() {return Boolean(this.isAttachedToBundle && !this.nextNeighbor?.isAttachedToBundle);}
 
     toString()
     {
@@ -215,7 +243,7 @@ export default class LinkVertex {
                     source: `Link "${this.link.name}"`}))
                 return this;
             }//if
-            this.connectToBundle({afterVertex, distance: this.initParams.bundleData.distance});
+            this.attachToBundle({afterVertex, distance: this.initParams.bundleData.distance});
         } else if (this.initParams?.conn) {
             this.connect(this.initParams.conn);
         // } else {
@@ -291,14 +319,14 @@ export default class LinkVertex {
                 if (stickToBundles) {
                     const bundleData = element.getAttribute("data-link-bundle");
                     if (bundleData) {
-                        if (this.tryToConnectToBundle(bundleData, event))
+                        if (this.tryToAttachToBundle(bundleData, event))
                             return true;
                         else
                             continue;
                     }//if
                     const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
                     if (bundleVertexData) {
-                        if (this.tryToConnectToBundle(bundleVertexData))
+                        if (this.tryToAttachToBundle(bundleVertexData))
                             return true;
                         else
                             continue;
@@ -359,7 +387,7 @@ export default class LinkVertex {
     }//tryToConnectToConnectionPoint
 
 
-    private tryToConnectToBundle(bundleData: string, event?: MouseEvent): boolean
+    private tryToAttachToBundle(bundleData: string, event?: MouseEvent): boolean
     {
         const [bundleName, vertexNumber] = bundleData.split(":", 2);
         const bundle = this.link.kresmer.getLinkByName(bundleName);
@@ -385,12 +413,12 @@ export default class LinkVertex {
             const p = this.link.kresmer.applyScreenCTM(event);
             d = Math.sqrt((p.x-v.x)*(p.x-v.x) + (p.y-v.y)*(p.y-v.y));
         }//if
-        this.connectToBundle({afterVertex: vertex, distance: d});
+        this.attachToBundle({afterVertex: vertex, distance: d});
         this.link.kresmer.undoStack.commitOperation();
         this.link.kresmer.emit("link-vertex-connected", this);
         this.ownConnectionPoint?.updatePos();
         return true;
-    }//tryToConnectToBundle
+    }//tryToAttachToBundle
 
 
     public onRightClick(event: MouseEvent)
@@ -564,13 +592,13 @@ export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
 export type LinkVertexAnchor = RequireAtLeastOne<{
     pos?: Position,
     conn?: ConnectionPointProxy,
-    bundle?: BundleJoinDescriptor,
+    bundle?: BundleAttachmentDescriptor,
 }>//LinkVertexExtAnchor
 
-export type BundleJoinDescriptor = {
+export type BundleAttachmentDescriptor = {
     afterVertex: LinkVertex,
     distance: number,
-}//BundleJoinDescriptor
+}//BundleAttachmentDescriptor
 
 // Editor operations
 class VertexMoveOp extends EditorOperation {

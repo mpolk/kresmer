@@ -254,7 +254,7 @@ export default class DrawingParser {
                                         in Vertex: ${node.parentElement?.toString()}`);
         }//if
         if (bundleName && (!afterVertex || !distance)) {
-            throw new ParsingException(`Bundle, after and distance attributes should present together \
+            throw new ParsingException(`"Bundle", "after" and "distance" attributes should present together \
                                         in Vertex: ${node.parentElement?.toString()}`);
         }//if
         if (x === null && !connect && !bundleName) {

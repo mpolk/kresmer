@@ -15,7 +15,7 @@
         <origin x="90" y="686"/>
         <props>
             <prop name="unit-height">75</prop>
-            <prop name="perspective">center</prop>
+            <prop name="perspective">none</prop>
             <prop name="n-stack-units">2</prop>
             <prop name="management-protocol">ssh:</prop>
         </props>
@@ -229,7 +229,7 @@
         <vertex bundle="metro-middle-bundle" after="1" distance="630.8466249413281"/>
     </link>
 
-    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 682)" to="(928, 682)"/>
+    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 668)" to="(928, 668)"/>
 
     <link-bundle class="link-bundle" name="metro-middle-bundle" from="(-4, 450)" to="(962, 760)">
         <vertex x="-4" y="760"/>
