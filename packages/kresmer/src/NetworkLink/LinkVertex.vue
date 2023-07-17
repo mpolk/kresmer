@@ -32,8 +32,11 @@
     type LinkNumber = {
         number: number,
         pos: Position,
-        clazz: Partial<Record<"top-aligned"|"right-aligned", boolean>>,
+        clazz: LinkNumberCSSClass,
+        debugInfo?: string,
     }//LinkNumber
+
+    type LinkNumberCSSClass = Partial<Record<"top-aligned"|"bottom-aligned"|"right-aligned", boolean>>;
 
     const linkNumber = computed((): LinkNumber|undefined => {
         const prevNeighbor = props.model.prevNeighbor;
@@ -58,27 +61,31 @@
         const deltaFi = fi2 - fi1;
         let theta: number;
         if (deltaFi >= 0 && deltaFi < Math.PI/2) {
-            theta = fi1 + deltaFi/2;
+            theta = fi2 + (Math.PI-deltaFi)/2;
         } else if (deltaFi >= Math.PI/2) {
-            theta = fi1 - deltaFi/2;
+            theta = fi2 - deltaFi/2;
         } else if (deltaFi < 0 && deltaFi >= -Math.PI/2) {
-            theta = fi1 + deltaFi/2;
+            theta = fi2 + (Math.PI-deltaFi)/2;
         } else {
-            theta = fi1 - deltaFi/2;
+            theta = fi2 - deltaFi/2;
         }//if
-        theta = theta % (Math.PI*2);
-        let clazz: Partial<Record<"top-aligned"|"right-aligned", boolean>>;
+        if (theta < -Math.PI)
+            theta += Math.PI*2;
+        else if (theta > Math.PI)
+            theta -= Math.PI*2;
+        let clazz: LinkNumberCSSClass;
         if (theta >= Math.PI/2)
-            clazz = {"right-aligned": true};
+            clazz = {"right-aligned": true, "bottom-aligned": true};
         else if (theta < 0 && theta >= -Math.PI/2)
             clazz = {"top-aligned": true};
         else if (theta < -Math.PI/2)
             clazz = {"top-aligned": true, "right-aligned": true};
         else
-            clazz = {};
-        const d = 5;
+            clazz = {"bottom-aligned": true};
+        const d = 8;
         const pos = {x: x1 + d*Math.cos(theta), y: y1 + d*Math.sin(theta)};
-        return {number, pos, clazz};
+        const debugInfo = `θ=${theta/Math.PI*180}\nclass=${JSON.stringify(clazz)}`;
+        return {number, pos, clazz, debugInfo};
     })//linkNumber
 
     function onMouseDown(event: MouseEvent)
@@ -137,7 +144,7 @@
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
         />
-    <text v-if="linkNumber?.number" class="link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">{{ linkNumber.number }}</text>
+    <text v-if="linkNumber?.number" class="link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">{{ linkNumber.number }}<title>{{ linkNumber.debugInfo }}</title></text>
     <template v-if="model.link.isSelected">
         <template v-if="model.isDragged">
             <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />
@@ -184,6 +191,7 @@
 
     .link-number {
         &.top-aligned { dominant-baseline: text-before-edge;}
+        &.bottom-aligned { dominant-baseline: ideographic;}
         &.right-aligned { text-anchor: end;}
     }
 
