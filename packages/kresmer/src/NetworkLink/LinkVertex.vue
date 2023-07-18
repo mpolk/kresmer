@@ -53,9 +53,13 @@
 
         const {x: x1, y: y1} = thisVertex.coords;
         const {x: x0, y: y0} = prevNeighbor.isAttachedToBundle ? nextNeighbor.coords : prevNeighbor.coords;
-        const {x: x2, y: y2} = thisVertex.anchor.bundle!.distance ? thisVertex.anchor.bundle!.afterVertex.coords :
-            thisVertex.anchor.bundle!.afterVertex.prevNeighbor?.coords ?? thisVertex.anchor.bundle!.afterVertex.nextNeighbor!.coords;
-        const r1 = {x: x1 - x0, y: y1 - y0};
+        const bundledNeighbor = prevNeighbor.isAttachedToBundle ? prevNeighbor : nextNeighbor;
+        const {x: x2, y: y2} = bundledNeighbor.anchor.bundle!.afterVertex.vertexNumber >= thisVertex.anchor.bundle!.afterVertex.vertexNumber ? 
+                thisVertex.anchor.bundle!.afterVertex.nextNeighbor!.coords :
+            thisVertex.anchor.bundle!.distance ? 
+                thisVertex.anchor.bundle!.afterVertex.coords :
+                thisVertex.anchor.bundle!.afterVertex.prevNeighbor!.coords;
+        const r1 = {x: x0 - x1, y: y0 - y1};
         if (r1.x === 0 && r1.y === 0)
             return undefined;
         const r2 = {x: x2 - x1, y: y2 - y1};
