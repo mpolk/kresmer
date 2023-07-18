@@ -69,15 +69,10 @@
         const fi2 = Math.atan2(r2.y, r2.x);
         const deltaFi = fi2 - fi1;
         let theta: number;
-        if (deltaFi >= 0 && deltaFi < Math.PI/2) {
+        if (Math.abs(deltaFi) < Math.PI/2.05) 
             theta = fi2 + (Math.PI-deltaFi)/2;
-        } else if (deltaFi >= Math.PI/2) {
-            theta = fi2 - deltaFi/2;
-        } else if (deltaFi < 0 && deltaFi >= -Math.PI/2) {
-            theta = fi2 + (Math.PI-deltaFi)/2;
-        } else {
-            theta = fi2 - deltaFi/2;
-        }//if
+        else
+            theta = fi1 + deltaFi/2;
         if (theta < -Math.PI)
             theta += Math.PI*2;
         else if (theta > Math.PI)
