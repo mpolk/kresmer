@@ -38,6 +38,7 @@
 
     type LinkNumberCSSClass = Partial<Record<"top-aligned"|"bottom-aligned"|"right-aligned", boolean>>;
 
+
     const linkNumber = computed((): LinkNumber|undefined => {
         const prevNeighbor = props.model.prevNeighbor;
         const nextNeighbor = props.model.nextNeighbor;
@@ -49,11 +50,15 @@
         const number = (props.model.anchor.bundle?.afterVertex.link as LinkBundle).getLinkNumber(props.model.link);
         if (!number)
             return undefined;
+
         const {x: x1, y: y1} = thisVertex.coords;
-        const r1 = {x: x1 - prevNeighbor.coords.x, y: y1 - prevNeighbor.coords.y};
+        const {x: x0, y: y0} = prevNeighbor.isAttachedToBundle ? nextNeighbor.coords : prevNeighbor.coords;
+        const {x: x2, y: y2} = thisVertex.anchor.bundle!.distance ? thisVertex.anchor.bundle!.afterVertex.coords :
+            thisVertex.anchor.bundle!.afterVertex.prevNeighbor?.coords ?? thisVertex.anchor.bundle!.afterVertex.nextNeighbor!.coords;
+        const r1 = {x: x1 - x0, y: y1 - y0};
         if (r1.x === 0 && r1.y === 0)
             return undefined;
-        const r2 = {x: -x1 + nextNeighbor.coords.x, y: -y1 + nextNeighbor.coords.y};
+        const r2 = {x: x2 - x1, y: y2 - y1};
         if (r2.x === 0 && r2.y === 0)
             return undefined;
         const fi1 = Math.atan2(r1.y, r1.x);
@@ -84,7 +89,11 @@
             clazz = {"bottom-aligned": true};
         const d = 8;
         const pos = {x: x1 + d*Math.cos(theta), y: y1 + d*Math.sin(theta)};
-        const debugInfo = `θ=${theta/Math.PI*180}\nclass=${JSON.stringify(clazz)}`;
+        const debugInfo = `\
+φ1=${fi1/Math.PI*180}
+φ2=${fi2/Math.PI*180}
+θ=${theta/Math.PI*180}
+class=${JSON.stringify(clazz)}`;
         return {number, pos, clazz, debugInfo};
     })//linkNumber
 
@@ -190,6 +199,7 @@
     }
 
     .link-number {
+        cursor: default;
         &.top-aligned { dominant-baseline: text-before-edge;}
         &.bottom-aligned { dominant-baseline: ideographic;}
         &.right-aligned { text-anchor: end;}
