@@ -70,7 +70,7 @@
             <template v-for="unit in nStackUnits">
                 <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)"
                     v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
-                <text v-bind:x="unitHeight*7" v-bind:y="unitHeight*(unit-0.67)" v-bind:font-size="unitHeight*0.25" 
+                <text v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.67)" v-bind:font-size="unitHeight*0.25" 
                     class="model-name">X590</text>
                   <template v-for="i in 12">
                     <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)" v-bind:d="unitHeight/3" 
@@ -80,11 +80,11 @@
                         v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" 
                         v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" key-position="bottom"/>
                 </template>
-                <Kre:XfpPort v-bind:x="unitHeight*7" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3" 
+                <Kre:QsfpPort v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3" 
                               v-bind:name="$portName(25, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(25, unit, nStackUnits)]"/>
-                <Kre:XfpPort v-bind:x="unitHeight*8" v-bind:y="unitHeight*(unit-0.85)" v-bind:h="unitHeight/3"
+                <Kre:QsfpPort v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)" v-bind:h="unitHeight/3"
                               v-bind:name="$portName(26, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(26, unit, nStackUnits)]"/>
-                <Kre:XfpPort v-bind:x="unitHeight*8" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3"
+                <Kre:QsfpPort v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3"
                               v-bind:name="$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]"/>
             </template>
         </template>
@@ -93,7 +93,7 @@
             <prop name="width" type="Number" category="Geometry"/>
         </props>
         <computed-props>
-            <computed-prop name="width">props.width ?? props.unitHeight * 9.1</computed-prop>
+            <computed-prop name="width">props.width ?? props.unitHeight * 8.6</computed-prop>
         </computed-props>
     </component-class>
 

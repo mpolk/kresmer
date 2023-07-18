@@ -44,7 +44,7 @@
             <rect v-bind:x="height*0.3" v-bind:y="height*0.45" 
                   v-bind:height="height*0.5" v-bind:width="height*4.1" 
                   class="facet"/>
-            <Kre:XfpPort v-for="i in 4" v-bind:x="height*(i-0.58)" v-bind:y="height*0.53" v-bind:h="height/3" 
+            <Kre:QsfpPort v-for="i in 4" v-bind:x="height*(i-0.5)" v-bind:y="height*0.53" v-bind:h="height/3" 
                          v-bind:name="`et0/0/${i-1}`" prefix="et0/"
                          v-bind:port-info="portsInfo[`et0/0/${i-1}`]"/>
             <rect v-bind:x="height*4.85" v-bind:y="height*0.07" 

@@ -73,6 +73,7 @@
         </computed-props>
     </component-class>
 
+    <!-- A ferrule inside the optical plugin-module (currently not used) -->
     <component-class name="Ferrule" category=".ports">
         <template>
             <circle class="ferrule" v-bind:cx="cx" v-bind:cy="cy" v-bind:r="d/2" />
@@ -87,6 +88,7 @@
         </style>
     </component-class>
 
+    <!-- A port plugin-module: SFP, XFP etc. -->
     <component-class name="PluginModule" category=".ports">
         <template>
             <polyline v-bind:points="
@@ -113,6 +115,7 @@
         </style>
     </component-class>
 
+    <!-- An RJ45 connector (for placing inside the port) -->
     <component-class name="RJ45" category=".ports">
         <defs>
             <pattern id="kre:std:rj45-contacts" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" 
@@ -147,6 +150,7 @@
         </style>
     </component-class>
 
+    <!-- RJ45 Port -->
     <component-class name="RJ45Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
@@ -160,6 +164,7 @@
         </props>
     </component-class>
 
+    <!-- SFP Port -->
     <component-class name="SfpPort" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
@@ -173,11 +178,29 @@
         </props>
     </component-class>
 
+    <!-- XFP Port -->
     <component-class name="XfpPort" category=".ports">
         <template>
             <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
                     v-bind:port-info="portInfo">
                 <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
+            </Kre:Port>
+        </template>
+        <props>
+            <prop name="h" type="Number" required="true" default="25" category="Geometry" />
+            <prop name="prefix" type="String" default="" />
+            <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" />
+            <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
+        </props>
+    </component-class>
+
+    <!-- QSFP Port -->
+    <component-class name="QsfpPort" category=".ports">
+        <template>
+            <Kre:Port v-bind:w="h*2" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
+                    v-bind:port-info="portInfo">
+                <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
         <props>
