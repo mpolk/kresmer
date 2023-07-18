@@ -19,6 +19,7 @@
 </script>
 
 <script setup lang="ts">
+    const linkNumberOffset = 8; //Tunable parameters
 
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
@@ -36,7 +37,7 @@
         debugInfo?: string,
     }//LinkNumber
 
-    type LinkNumberCSSClass = Partial<Record<"top-aligned"|"bottom-aligned"|"right-aligned", boolean>>;
+    type LinkNumberCSSClass = Partial<Record<"top-aligned"|"bottom-aligned"|"left-aligned"|"right-aligned", boolean>>;
 
 
     const linkNumber = computed((): LinkNumber|undefined => {
@@ -81,13 +82,12 @@
         if (theta >= Math.PI/2) 
             clazz = {"top-aligned": true, "right-aligned": true};
         else if (theta < 0 && theta >= -Math.PI/2)
-            clazz = {"bottom-aligned": true};
+            clazz = {"left-aligned": true, "bottom-aligned": true};
         else if (theta < -Math.PI/2)
             clazz = {"right-aligned": true, "bottom-aligned": true};
         else
-            clazz = {"top-aligned": true};
-        const d = 8;
-        const pos = {x: x1 + d*Math.cos(theta), y: y1 + d*Math.sin(theta)};
+            clazz = {"left-aligned": true, "top-aligned": true};
+        const pos = {x: x1 + linkNumberOffset*Math.cos(theta), y: y1 + linkNumberOffset*Math.sin(theta)};
         const debugInfo = `\
 φ1=${fi1/Math.PI*180}
 φ2=${fi2/Math.PI*180}
@@ -202,6 +202,7 @@ class=${JSON.stringify(clazz)}`;
         &.top-aligned { dominant-baseline: text-before-edge;}
         // &.bottom-aligned { dominant-baseline: ideographic;}
         &.right-aligned { text-anchor: end;}
+        &.left-aligned { text-anchor: start;}
     }
 
     .v-enter-active {
