@@ -109,7 +109,7 @@ import LinkBundle from './LinkBundle';
             <textPath :href="`#${pathID}`" startOffset="98%">{{endLabel}}</textPath>
         </text>
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
-            <template v-if="i">
+            <template v-if="i && (!model.vertices[i-1].isAttachedToBundle || !model.vertices[i].isAttachedToBundle)">
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
                     :x2="vertex.coords.x" :y2="vertex.coords.y" 
                     class="padding" style="stroke: transparent; fill: none;" 
