@@ -65,18 +65,18 @@
         const r2 = {x: x2 - x1, y: y2 - y1};
         if (r2.x === 0 && r2.y === 0)
             return undefined;
-        const fi1 = Math.atan2(r1.y, r1.x);
-        const fi2 = Math.atan2(r2.y, r2.x);
+        let fi1 = Math.atan2(r1.y, r1.x);
+        let fi2 = Math.atan2(r2.y, r2.x);
+        if (Math.abs(fi1) == Math.PI && Math.sign(fi2) !== Math.sign(fi1))
+            fi1 = -fi1;
+        else if (Math.abs(fi2) == Math.PI && Math.sign(fi2) !== Math.sign(fi1))
+            fi2 = -fi2;
         const deltaFi = fi2 - fi1;
         let theta: number;
         if (Math.abs(deltaFi) < Math.PI/2.05) 
             theta = fi2 + (Math.PI-deltaFi)/2;
         else
             theta = fi1 + deltaFi/2;
-        if (theta < -Math.PI)
-            theta += Math.PI*2;
-        else if (theta > Math.PI)
-            theta -= Math.PI*2;
         let clazz: LinkNumberCSSClass;
         if (theta >= Math.PI/2) 
             clazz = {"top-aligned": true, "right-aligned": true};
