@@ -200,7 +200,7 @@ class=${JSON.stringify(clazz)}`;
     .link-number {
         cursor: default;
         &.top-aligned { dominant-baseline: text-before-edge;}
-        &.bottom-aligned { dominant-baseline: ideographic;}
+        // &.bottom-aligned { dominant-baseline: ideographic;}
         &.right-aligned { text-anchor: end;}
     }
 
