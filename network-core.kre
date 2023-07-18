@@ -132,12 +132,12 @@
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
         <vertex x="50" y="0"/>
-        <vertex x="50" y="103.5"/>
+        <vertex x="50" y="123.5"/>
     </link>
 
     <link class="DAC" name="core-stacking-2" from="core:1:27@r" to="core:2:26@r">
         <vertex x="32" y="0"/>
-        <vertex x="32" y="46.5"/>
+        <vertex x="32" y="66.5"/>
     </link>
 
     <link class="DAC" name="metro-stacking-1" from="metro-switch:1:47@r" to="metro-switch:2:48@r">
