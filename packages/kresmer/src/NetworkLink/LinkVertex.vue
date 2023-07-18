@@ -83,14 +83,14 @@
         else if (theta > Math.PI)
             theta -= Math.PI*2;
         let clazz: LinkNumberCSSClass;
-        if (theta >= Math.PI/2)
-            clazz = {"right-aligned": true, "bottom-aligned": true};
-        else if (theta < 0 && theta >= -Math.PI/2)
-            clazz = {"top-aligned": true};
-        else if (theta < -Math.PI/2)
+        if (theta >= Math.PI/2) 
             clazz = {"top-aligned": true, "right-aligned": true};
-        else
+        else if (theta < 0 && theta >= -Math.PI/2)
             clazz = {"bottom-aligned": true};
+        else if (theta < -Math.PI/2)
+            clazz = {"right-aligned": true, "bottom-aligned": true};
+        else
+            clazz = {"top-aligned": true};
         const d = 8;
         const pos = {x: x1 + d*Math.cos(theta), y: y1 + d*Math.sin(theta)};
         const debugInfo = `\
