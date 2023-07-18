@@ -153,7 +153,7 @@
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">
         <vertex x="342.5" y="196.66150565278107"/>
         <vertex x="616" y="196.66150565278107"/>
-        <vertex x="616" y="410.25"/>
+        <vertex x="616" y="430.25"/>
     </link>
 
     <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@l">

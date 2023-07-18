@@ -28,6 +28,7 @@
             .facet {fill: #cf34fe;}
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
+            .inter-unit-gap { fill: #f1e2fd; }
         </style>
         <props extend="SwitchBody">
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
@@ -88,7 +89,7 @@
                               v-bind:name="$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]"/>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, StackUnitBadge, ExtremeSwitchStack"/>
+        <style extends="StackUnitBadge, ExtremeSwitchBody, ExtremeSwitchStack"/>
         <props extend="ExtremeSwitchBody">
             <prop name="width" type="Number" category="Geometry"/>
         </props>
@@ -134,7 +135,7 @@
                     </template>
             </template>
         </template>
-        <style extends="ExtremeSwitchBody, StackUnitBadge, ExtremeSwitchStack"/>
+        <style extends="StackUnitBadge, ExtremeSwitchStack, ExtremeSwitchBody"/>
         <props extend="ExtremeSwitchBody">
             <prop name="width" type="Number" category="Geometry"/>
         </props>

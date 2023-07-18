@@ -231,8 +231,10 @@
             <title v-if="comment">{{comment}}</title>
             <template v-for="i in nUnits">
                 <rect x="0" v-bind:y="(i-1)*(unitHeight+interUnitGap)" v-bind:width="width" v-bind:height="unitHeight" class="facet front"/>
-                <line v-if="i &amp;&amp; i &lt; nUnits &amp;&amp; !interUnitGap" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
-                <rect v-if="i &amp;&amp; i &lt; nUnits &amp;&amp; interUnitGap" x="0" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width" v-bind:height="interUnitGap" class="inter-unit-gap"/>
+                <template v-if="i &amp;&amp; i &lt; nUnits">
+                    <line v-if="!interUnitGap" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
+                    <rect v-else="" x="0" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width" v-bind:height="interUnitGap" class="inter-unit-gap"/>
+                </template>
             </template>
             <slot name="frontFacet"/>
             <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
