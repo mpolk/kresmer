@@ -8,6 +8,7 @@
             <prop name="unit-height">75</prop>
             <prop name="perspective">center</prop>
             <prop name="management-protocol">ssh:</prop>
+            <prop name="inter-unit-gap">20</prop>
         </props>
     </component>
 
@@ -18,6 +19,7 @@
             <prop name="perspective">none</prop>
             <prop name="n-stack-units">2</prop>
             <prop name="management-protocol">ssh:</prop>
+            <prop name="inter-unit-gap">20</prop>
         </props>
     </component>
 
@@ -140,12 +142,12 @@
 
     <link class="DAC" name="metro-stacking-1" from="metro-switch:1:47@r" to="metro-switch:2:48@r">
         <vertex x="44" y="0"/>
-        <vertex x="44" y="103.5"/>
+        <vertex x="44" y="123.5"/>
     </link>
 
     <link class="DAC" name="metro-stacking-2" from="metro-switch:1:48@r" to="metro-switch:2:47@r">
         <vertex x="28" y="0"/>
-        <vertex x="28" y="46.5"/>
+        <vertex x="28" y="66.5"/>
     </link>
 
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">
@@ -231,11 +233,11 @@
 
     <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 668)" to="(928, 668)"/>
 
-    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(-4, 450)" to="(962, 760)">
-        <vertex x="-4" y="760"/>
+    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(-4, 450)" to="(964, 770)">
+        <vertex x="-4" y="770"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="metro-lower-bundle" from="(60, 862)" to="(926, 862)"/>
+    <link-bundle class="link-bundle" name="metro-lower-bundle" from="(60, 868)" to="(926, 868)"/>
 
     <link class="twisted-pair" name="metro-kamakura-4" from="Kamakura:eth4@d" to="metro-switch:1:43@u">
         <vertex bundle="metro-upper-bundle" after="0" distance="141.42560465153372"/>

@@ -229,7 +229,11 @@
     <component-class name="RackMountDevice" category=".general">
         <template>
             <title v-if="comment">{{comment}}</title>
-            <rect x="0" y="0" v-bind:width="width" v-bind:height="unitHeight*nUnits" class="facet front"/>
+            <template v-for="i in nUnits">
+                <rect x="0" v-bind:y="(i-1)*(unitHeight+interUnitGap)" v-bind:width="width" v-bind:height="unitHeight" class="facet front"/>
+                <line v-if="i &amp;&amp; i &lt; nUnits &amp;&amp; !interUnitGap" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
+                <rect v-if="i &amp;&amp; i &lt; nUnits &amp;&amp; interUnitGap" x="0" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width" v-bind:height="interUnitGap" class="inter-unit-gap"/>
+            </template>
             <slot name="frontFacet"/>
             <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
                 <polyline
@@ -297,10 +301,12 @@
             .top.facet { filter: brightness(0.7); }
             .side.facet { filter: brightness(0.5); }
             .unit-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
+            .inter-unit-gap { fill: lightgray; }
         </style>
         <props extend="ManagedDevice">
             <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
-            <prop name="unit-height" type="Number" required="true" default="75" category="Geometry" />
+            <prop name="unit-height" type="Number" required="true" default="75" category="Geometry" description="The height of a single unit"/>
+            <prop name="inter-unit-gap" type="Number" default="0" category="Geometry" description="The visual gap between the units"/>
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" 
                   description="Visual perspective of the device image"/>
@@ -345,14 +351,13 @@
     <component-class name="SwitchBody" category=".switch-parts">
         <template>
             <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-units="nStackUnits" v-bind:perspective="perspective" 
+                v-bind:n-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 >
                 <template v-slot:frontFacet="{}">
-                    <line v-for="i in nStackUnits-1" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
                     <slot name="frontFacet" />
                 </template>
                 <template v-slot:topFacetC="{}">
@@ -427,14 +432,13 @@
     <component-class name="RouterBody" category=".router-parts">
         <template>
             <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-units="nUnits" v-bind:perspective="perspective" 
+                v-bind:n-units="nUnits" v-bind:inter-unit-gap="interUnitGap" v-bind:perspective="perspective" 
                 v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 >
                 <template v-slot:frontFacet="{}">
-                    <line v-for="i in nUnits-1" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
                     <slot name="frontFacet" />
                 </template>
                 <template v-slot:topFacetC="{}">

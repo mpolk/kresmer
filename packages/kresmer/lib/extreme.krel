@@ -14,8 +14,8 @@
         <template>
             <Kre:SwitchBody 
                 v-bind:name="name" v-bind:width="width" v-bind:unit-height="unitHeight"
-                v-bind:n-stack-units="nStackUnits" v-bind:top-facet-size="topFacetSize" 
-                v-bind:perspective="perspective" 
+                v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap" 
+                v-bind:top-facet-size="topFacetSize" v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
@@ -61,30 +61,30 @@
         <template>
             <Kre:ExtremeSwitchBody 
                 v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-stack-units="nStackUnits" v-bind:top-facet-size="1" 
-                v-bind:perspective="perspective" 
+                v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap"
+                v-bind:top-facet-size="1" v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <template v-for="unit in nStackUnits">
-                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)"
+                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)"
                     v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
-                <text v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.67)" v-bind:font-size="unitHeight*0.25" 
+                <text v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.67)+interUnitGap*(unit-1)" v-bind:font-size="unitHeight*0.25" 
                     class="model-name">X590</text>
                   <template v-for="i in 12">
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)" v-bind:d="unitHeight/3" 
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" 
                         v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]"/>
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)" v-bind:d="unitHeight/3" 
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" 
                         v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" key-position="bottom"/>
                 </template>
-                <Kre:QsfpPort v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3" 
+                <Kre:QsfpPort v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" 
                               v-bind:name="$portName(25, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(25, unit, nStackUnits)]"/>
-                <Kre:QsfpPort v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)" v-bind:h="unitHeight/3"
+                <Kre:QsfpPort v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3"
                               v-bind:name="$portName(26, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(26, unit, nStackUnits)]"/>
-                <Kre:QsfpPort v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)" v-bind:h="unitHeight/3"
+                <Kre:QsfpPort v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3"
                               v-bind:name="$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]"/>
             </template>
         </template>
@@ -115,20 +115,20 @@
         <template>
             <Kre:ExtremeSwitchBody 
                 v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:top-facet-size="1" v-bind:n-stack-units="nStackUnits" 
+                v-bind:top-facet-size="1" v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap"
                 v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
             <template v-for="unit in nStackUnits">
-                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)"
+                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)"
                     v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
                 <template v-for="i in 24">
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)" v-bind:d="unitHeight/3" 
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`"
                         v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]" />
-                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)" v-bind:d="unitHeight/3" 
+                    <Kre:SfpPort v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" key-position="bottom"
                         v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" />
                     </template>
