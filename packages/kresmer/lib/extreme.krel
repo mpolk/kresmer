@@ -25,10 +25,9 @@
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
             .model-name { fill: white; font-family: sans-serif; }
-            .facet {fill: #cf34fe;}
+            .facet { --facet-color: #cf34fe;  }
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
-            .inter-unit-gap { fill: #f1e2fd; }
         </style>
         <props extend="SwitchBody">
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />

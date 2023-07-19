@@ -233,7 +233,10 @@
                 <rect x="0" v-bind:y="(i-1)*(unitHeight+interUnitGap)" v-bind:width="width" v-bind:height="unitHeight" class="facet front"/>
                 <template v-if="i &amp;&amp; i &lt; nUnits">
                     <line v-if="!interUnitGap" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
-                    <rect v-else="" x="0" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width" v-bind:height="interUnitGap" class="inter-unit-gap"/>
+                    <template v-else="">
+                        <rect x="1" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width-2" v-bind:height="interUnitGap" class="facet top inter-unit-gap"/>
+                        <!-- <line x1="1" v-bind:y1="i*unitHeight+(i-1)*interUnitGap" x2="1" v-bind:y2="i*(unitHeight+interUnitGap)" class="facet top" style="stroke-width: 1px"/> -->
+                    </template>
                 </template>
             </template>
             <slot name="frontFacet"/>
@@ -303,7 +306,7 @@
             .top.facet { filter: brightness(0.7); }
             .side.facet { filter: brightness(0.5); }
             .unit-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
-            .inter-unit-gap { fill: lightgray; }
+            .inter-unit-gap { fill-opacity: 0.15; stroke-opacity: 0.5; stroke-width: 1px }
         </style>
         <props extend="ManagedDevice">
             <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
