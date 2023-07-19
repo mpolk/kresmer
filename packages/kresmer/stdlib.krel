@@ -233,10 +233,7 @@
                 <rect x="0" v-bind:y="(i-1)*(unitHeight+interUnitGap)" v-bind:width="width" v-bind:height="unitHeight" class="facet front"/>
                 <template v-if="i &amp;&amp; i &lt; nUnits">
                     <line v-if="!interUnitGap" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary" />
-                    <template v-else="">
-                        <rect x="1" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width-2" v-bind:height="interUnitGap" class="facet top inter-unit-gap"/>
-                        <!-- <line x1="1" v-bind:y1="i*unitHeight+(i-1)*interUnitGap" x2="1" v-bind:y2="i*(unitHeight+interUnitGap)" class="facet top" style="stroke-width: 1px"/> -->
-                    </template>
+                    <rect v-else="" x="1" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width-2" v-bind:height="interUnitGap" class="facet top inter-unit-gap"/>
                 </template>
             </template>
             <slot name="frontFacet"/>
@@ -247,29 +244,35 @@
                     class="top facet" />
                 <slot name="topFacetC"/>
             </g>
-            <g v-if="perspective === 'right'"
-                v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
-                <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
-                <slot name="topFacetLR"/>
-            </g>
-            <polygon
-                v-if="perspective === 'right'"
-                v-bind:points="`${width},0 ${width},${unitHeight*nUnits} 
-                                ${width+topFacetSkewShift},${unitHeight*(nUnits - topFacetSize*1.2)} 
-                                ${width+topFacetSkewShift},${-unitHeight*topFacetSize}`"
-                class="side facet" />
-            <g
-                v-if="perspective === 'left'"
-                v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
-                <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
-                <slot name="topFacetLR"/>
-            </g>
-            <polygon
-                v-if="perspective === 'left'"
-                v-bind:points="`0,0 0,${unitHeight*nUnits} 
-                                ${-topFacetSkewShift},${unitHeight*(nUnits - topFacetSize*1.2)} 
-                                ${-topFacetSkewShift},${-unitHeight*topFacetSize}`"
-                class="side facet" />
+            <template v-if="perspective === 'right'">
+                <g v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
+                    <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
+                    <slot name="topFacetLR"/>
+                </g>
+                <template v-for="i in nUnits">
+                    <polygon class="side facet"
+                        v-bind:points="`${width},${(i-1)*(unitHeight+interUnitGap)} ${width},${i*unitHeight+(i-1)*interUnitGap} 
+                                        ${width+topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap} 
+                                        ${width+topFacetSkewShift},${((i-1)*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}`"
+                        />
+                    <polygon class="side facet inter-unit-gap" v-if="i &lt; nUnits"
+                        v-bind:points="`${width},${i*unitHeight+(i-1)*interUnitGap} ${width},${i*(unitHeight+interUnitGap)}
+                                        ${width+topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+i*perspCorrection*interUnitGap} 
+                                        ${width+topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}`"
+                        />
+                </template>
+            </template>
+            <template v-if="perspective === 'left'">
+                <g v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
+                    <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
+                    <slot name="topFacetLR"/>
+                </g>
+                <polygon
+                    v-bind:points="`0,0 0,${unitHeight*nUnits} 
+                                    ${-topFacetSkewShift},${unitHeight*(nUnits - topFacetSize*1.2)} 
+                                    ${-topFacetSkewShift},${-unitHeight*topFacetSize}`"
+                    class="side facet" />
+            </template>
             <text v-if="showDeviceName"
                 v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
                 text-anchor="middle" class="device-name"
@@ -321,6 +324,7 @@
             <prop name="show-ip-address" type="boolean" default="true" />
         </props>
         <computed-props>
+            <computed-prop name="perspCorrection">0.85</computed-prop>
             <computed-prop name="topFacetSkewShift">
                 props.unitHeight * props.topFacetSize * Math.tan(props.topFacetSkew * Math.PI/180)
             </computed-prop>
