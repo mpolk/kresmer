@@ -246,8 +246,10 @@
             </g>
             <template v-if="perspective === 'right'">
                 <g v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
-                    <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
-                    <slot name="topFacetLR"/>
+                    <polyline v-bind:points="`0,0 ${(1-perspCorrection)*0.4},1 1,1 1,0`" class="top facet" />
+                    <g v-bind:transform="`translate(${perspCorrection*0.025}, 0)`">
+                        <slot name="topFacetLR"/>
+                    </g>
                 </g>
                 <template v-for="i in nUnits">
                     <polygon class="side facet"
@@ -264,8 +266,10 @@
             </template>
             <template v-if="perspective === 'left'">
                 <g v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
-                    <polyline points="0,0 0,1 1,1 1,0" class="top facet" />
-                    <slot name="topFacetLR"/>
+                    <polyline v-bind:points="`0,0 0,1 ${1-(1-perspCorrection)*0.4},1 1,0`" class="top facet" />
+                    <g v-bind:transform="`translate(${-perspCorrection*0.025}, 0)`">
+                        <slot name="topFacetLR"/>
+                    </g>
                 </g>
                 <template v-for="i in nUnits">
                     <polygon class="side facet"
