@@ -10,6 +10,10 @@
  * switches and routers. More specific network units (servers, 
  * vendor-specific equipment etc.) contain other libraries.
 <*************************************************************************** -->
+
+<!-- Define some little things to make the life less hard -->
+<!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
+
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
                     <!-- General graphical elements -->
@@ -287,34 +291,48 @@
                         />
                 </template>
             </template>
-            <text v-if="showDeviceName"
-                v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
-                text-anchor="middle" class="device-name"
-                v-bind:class='{"no-persp": perspective === "none"}'>{{name}}</text>
-            <template v-if="ipAddress &amp;&amp; showIpAddress">
+            <template v-if="showDeviceName">
+                <text v-if="perspective !== 'none'"
+                    v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
+                    text-anchor="middle" class="device-name"
+                    >{{name}}</text>
+                <a v-else-if="ipAddress &amp;&amp; managementProtocol" v-bind:href="managementProtocol + ipAddress" 
+                    v-bind:target="managementRefTarget" class="no-persp">
+                    <text v-bind:x="nameX" v-bind:y="nameY" text-anchor="middle">
+                        <tspan v-bind:font-size="unitHeight*0.4" class="device-name no-persp">{{name}}</tspan>
+                        <tspan v-bind:font-size="unitHeight*0.25" class="ip-address no-persp" style="margin-left: 1rem">&nbsp;{{ipAddress}}</tspan>
+                    </text>
+                </a>
+                <text v-else="" v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
+                    text-anchor="middle" class="device-name no-persp"
+                    >{{name}}</text>
+                </template>
+            <template v-if="ipAddress &amp;&amp; showIpAddress &amp;&amp; perspective !== 'none'">
                 <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" 
                    v-bind:target="managementRefTarget">
                     <text
                         v-bind:x="nameX" v-bind:y="nameY + unitHeight*0.25" v-bind:font-size="unitHeight*0.25"
                         text-anchor="middle" class="ip-address href"
-                        v-bind:class='{"no-persp": perspective === "none"}'>
+                        >
                         {{ipAddress}}
                     </text>
                 </a>
                 <text v-else=""
                     v-bind:x="nameX" v-bind:y="nameY + unitHeight*0.25" v-bind:font-size="unitHeight*0.25"
                     text-anchor="middle" class="ip-address"
-                    v-bind:class='{"no-persp": perspective === "none"}'>
+                    >
                     {{ipAddress}}
                 </text>
             </template>
         </template>
         <style>
             .device-name { font-family: sans-serif; fill: black; text-shadow: none}
-            .device-name.no-persp { font-family: sans-serif!important; fill: black!important; text-shadow: none!important}
+            .device-name.no-persp { font-family: sans-serif!important; fill: #474747!important; text-shadow: none!important; text-decoration: none!important;}
             .ip-address { font-family: sans-serif; }
+            .ip-address.no-persp { fill: gray; text-shadow: none!important; }
             a { text-decoration: none; }
             a:hover { text-decoration: underline; }
+            a.no-persp:hover { text-decoration: none; filter: brightness(0.3); }
             .port-icon { fill: #404040; }
             .facet {
                 --facet-color: #e6e6e6;
