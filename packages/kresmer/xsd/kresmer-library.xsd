@@ -133,10 +133,11 @@
 
                 <xs:element name="text" minOccurs="0">
                     <xs:complexType mixed="true">
-                        <xs:all>
+                        <xs:choice maxOccurs="unbounded">
                             <xs:element ref="slot" minOccurs="0"/>
                             <xs:element name="title" minOccurs="0"/>
-                        </xs:all>
+                            <xs:element name="tspan" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:choice>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
@@ -458,6 +459,7 @@
         <xs:attribute name="v-for"/>
         <xs:attribute name="v-if"/>
         <xs:attribute name="v-else"/>
+        <xs:attribute name="v-else-if"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="href-attrs">
