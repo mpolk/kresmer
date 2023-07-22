@@ -235,7 +235,7 @@
 
     <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 672)" to="(928, 670)"/>
 
-    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(-4, 770)" to="(964, 770)"/>
+    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(-4, 770)" to="(928, 770)"/>
 
     <link-bundle class="link-bundle" name="metro-lower-bundle" from="(40, 868)" to="(926, 868)"/>
 
