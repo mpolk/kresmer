@@ -125,9 +125,10 @@
         <props>
             <prop name="start-label"></prop>
         </props>
-        <vertex x="179" y="450"/>
+        <vertex x="180" y="456"/>
+        <vertex x="-4" y="456"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="331.2938044451007"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="331.2938044451007"/>
     </link>
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
@@ -205,43 +206,48 @@
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-0" from="Kamakura:eth0@d" to="metro-switch:1:26@d">
-        <vertex x="62" y="575.1593813263976"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="125.15938132639764"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="594.3917743977245"/>
+        <vertex bundle="kamakura-metro-bundle" after="1" distance="40.38226571497836"/>
+        <vertex bundle="kamakura-metro-bundle" after="0" distance="111.4789558795351"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="49.49042287240015"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="594.3917743977245"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-1" from="Kamakura:eth1@d" to="metro-switch:1:27@u">
-        <vertex x="92" y="588.1262456085103"/>
-        <vertex x="40.12140273675835" y="588.1262456085103"/>
+        <vertex bundle="kamakura-metro-bundle" after="1" distance="69.08728065305174"/>
+        <vertex bundle="kamakura-metro-bundle" after="0" distance="199.57771122542096"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="587.1201653648224"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-2" from="Kamakura:eth2@d" to="metro-switch:2:26@d">
-        <vertex x="122" y="608.155150398954"/>
-        <vertex x="60.202233614524566" y="608.155150398954"/>
+        <vertex bundle="kamakura-metro-bundle" after="1" distance="97.8614676398472"/>
+        <vertex bundle="kamakura-metro-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="530.3099118327516"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="549.852410511787"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-3" from="Kamakura:eth3@d" to="metro-switch:2:27@u">
-        <vertex x="152" y="630.7471521023076"/>
-        <vertex x="79.80226454200262" y="630.7471521023076"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="84.02326114688682"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="630.8466249413281"/>
+        <vertex bundle="kamakura-metro-bundle" after="1" distance="128.5803439581568"/>
+        <vertex bundle="kamakura-metro-bundle" after="0" distance="133.29194501406025"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="67.31963816161563"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="630.8466249413281"/>
     </link>
 
-    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 668)" to="(928, 668)"/>
+    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 672)" to="(928, 670)"/>
 
-    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(-4, 450)" to="(964, 770)">
-        <vertex x="-4" y="770"/>
-    </link-bundle>
+    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(-4, 770)" to="(964, 770)"/>
 
-    <link-bundle class="link-bundle" name="metro-lower-bundle" from="(60, 868)" to="(926, 868)"/>
+    <link-bundle class="link-bundle" name="metro-lower-bundle" from="(40, 868)" to="(926, 868)"/>
 
     <link class="twisted-pair" name="metro-kamakura-4" from="Kamakura:eth4@d" to="metro-switch:1:43@u">
-        <vertex bundle="metro-upper-bundle" after="0" distance="141.42560465153372"/>
+        <vertex bundle="kamakura-metro-bundle" after="1" distance="160.31898638772773"/>
+        <vertex bundle="kamakura-metro-bundle" after="0" distance="219.38597506691232"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="25.565244148150803"/>
         <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
     </link>
+
+    <link-bundle class="link-bundle" name="kamakura-metro-bundle" from="(24, 854)" to="(291, 572)">
+        <vertex x="22" y="572"/>
+    </link-bundle>
 
 </kresmer-drawing>

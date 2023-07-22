@@ -79,10 +79,15 @@ import LinkBundle from './LinkBundle';
             const b2 = v.nextNeighbor?.anchor.bundle;
             if (b1 && b2 && b1.afterVertex.link === b2.afterVertex.link) {
                 const bundle = b1.afterVertex.link;
-                for (let i = b1.afterVertex.vertexNumber + 1; i <= b2.afterVertex.vertexNumber; i++) {
-                    const v1 = bundle.vertices[i];
-                    chunks.push(`${prefix}${v1.coords.x},${v1.coords.y}`)
-                }//for
+                const n1 = b1.afterVertex.vertexNumber;
+                const n2 = b2.afterVertex.vertexNumber;
+                if (n1 !== n2) {
+                    const incr = n2 > n1 ? 1 : -1;
+                    for (let i = n1 + 1; Math.abs(i - n1) <= Math.abs(n1 - n2); i += incr) {
+                        const v1 = bundle.vertices[i];
+                        chunks.push(`${prefix}${v1.coords.x},${v1.coords.y}`)
+                    }//for
+                }//if
             }//if
         });
         return chunks.join(" ");
@@ -94,6 +99,13 @@ import LinkBundle from './LinkBundle';
     {
         return props.model.isBundle ? `${props.model.name}:${i}` : undefined;
     }//segmentDataAttr
+
+    function segmentHasPadding(i: number)
+    {
+        return !props.model.vertices[i-1].isAttachedToBundle || 
+               !props.model.vertices[i-1].isAttachedToBundle || 
+               props.model.vertices[i-1].anchor.bundle?.afterVertex.link !== props.model.vertices[i].anchor.bundle?.afterVertex.link;
+    }//segmentHasPadding
 </script>
 
 <template>
@@ -109,7 +121,7 @@ import LinkBundle from './LinkBundle';
             <textPath :href="`#${pathID}`" startOffset="98%">{{endLabel}}</textPath>
         </text>
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
-            <template v-if="i && (!model.vertices[i-1].isAttachedToBundle || !model.vertices[i].isAttachedToBundle)">
+            <template v-if="i && segmentHasPadding(i)">
                 <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
                     :x2="vertex.coords.x" :y2="vertex.coords.y" 
                     class="padding" style="stroke: transparent; fill: none;" 

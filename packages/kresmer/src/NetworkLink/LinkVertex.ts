@@ -155,15 +155,17 @@ export default class LinkVertex {
     private savedMousePos?: Position;
 
     get isConnected() {return Boolean(this._anchor.conn);}
-    get isAttachedToBundle() {return this._anchor.bundle || Boolean(this.initParams?.bundle);}
+    get isAttachedToBundle() {return this._anchor.bundle;}
     get isHead() {return this.vertexNumber === 0;}
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
     get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
     get isInitialized() {return !this.initParams;}
     get prevNeighbor(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
     get nextNeighbor(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
-    get isEnteringBundle() {return Boolean(this.isAttachedToBundle && !this.prevNeighbor?.isAttachedToBundle);}
-    get isLeavingBundle() {return Boolean(this.isAttachedToBundle && !this.nextNeighbor?.isAttachedToBundle);}
+    get isEnteringBundle() {return Boolean(this.isAttachedToBundle && (!this.prevNeighbor?.isAttachedToBundle || 
+                                           this.prevNeighbor.anchor.bundle!.afterVertex.link !== this.anchor.bundle?.afterVertex.link));}
+    get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbor?.isAttachedToBundle ||
+                                          this.nextNeighbor.anchor.bundle!.afterVertex.link !== this.anchor.bundle?.afterVertex.link));}
 
     toString()
     {
