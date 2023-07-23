@@ -300,10 +300,10 @@
                     v-bind:target="managementRefTarget" class="no-persp">
                     <text v-bind:x="nameX" v-bind:y="nameY" text-anchor="middle">
                         <tspan v-bind:font-size="unitHeight*0.4" class="device-name no-persp">{{name}}</tspan>
-                        <tspan v-bind:font-size="unitHeight*0.25" class="ip-address no-persp" style="margin-left: 1rem">&nbsp;{{ipAddress}}</tspan>
+                        <tspan v-bind:font-size="unitHeight*0.25" class="ip-address no-persp" dx="0.5rem">&nbsp;{{ipAddress}}</tspan>
                     </text>
                 </a>
-                <text v-else="" v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
+                <text v-else="" v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.4"
                     text-anchor="middle" class="device-name no-persp"
                     >{{name}}</text>
                 </template>
@@ -327,12 +327,12 @@
         </template>
         <style>
             .device-name { font-family: sans-serif; fill: black; text-shadow: none}
-            .device-name.no-persp { font-family: sans-serif!important; fill: #474747!important; text-shadow: none!important; text-decoration: none!important;}
+            .device-name.no-persp { font-family: sans-serif!important; fill: #474747!important; text-shadow: none!important; }
             .ip-address { font-family: sans-serif; }
             .ip-address.no-persp { fill: gray; text-shadow: none!important; }
             a { text-decoration: none; }
             a:hover { text-decoration: underline; }
-            a.no-persp:hover { text-decoration: none; filter: brightness(0.3); }
+            a.no-persp:hover { text-decoration: underline solid 1px!important; text-decoration-thickness: 1px!important; }
             .port-icon { fill: #404040; }
             .facet {
                 --facet-color: #e6e6e6;
@@ -561,7 +561,7 @@
         <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
         <style>
             .segment {stroke-width: 1px; stroke: #5e5e5e}
-            .segment.highlighted, .segment.selected {stroke: #a80000; stroke-width: 2px}
+            .segment.highlighted, .segment.selected {stroke: #c22a00; stroke-width: 2px}
         </style>
     </link-class>
 
