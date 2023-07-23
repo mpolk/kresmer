@@ -11,7 +11,7 @@
     import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
-import LinkBundle from './LinkBundle';
+    import LinkBundle from './LinkBundle';
     
     export default {
         components: {LinkVertexVue}
