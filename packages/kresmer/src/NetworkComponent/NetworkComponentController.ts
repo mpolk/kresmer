@@ -268,7 +268,7 @@ class _NetworkComponentController {
         if (this.transform.nonEmpty)
             xml.push(this.transform.toXML(indentLevel+1));
 
-        if (this.component.props.length)
+        if (this.component.propCount)
             xml.push(...this.component.propsToXML(indentLevel));
 
         xml.push(`${indent(indentLevel)}</component>`);
