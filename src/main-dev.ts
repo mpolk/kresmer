@@ -11,7 +11,7 @@ import Kresmer, {NetworkComponent, NetworkComponentClass} from 'kresmer';
 const kresmer = new Kresmer('#kresmer');
 
 async function init() {
-    for (const libPath of ["stdlib.krel", "lib/kresmer-art.krel", "lib/extreme.krel", "lib/catalyst.krel", "lib/juniper.krel", "lib/servers.krel"]) {
+    for (const libPath of ["stdlib.krel", "lib/kresmer-art.krel", "lib/extreme.krel", "lib/cisco.krel", "lib/juniper.krel", "lib/servers.krel"]) {
         const lib = await (await fetch(libPath)).text();
         kresmer.loadLibrary(lib!);
     }//for
