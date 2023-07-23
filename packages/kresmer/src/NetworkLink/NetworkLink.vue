@@ -81,9 +81,13 @@ import LinkBundle from './LinkBundle';
                 const bundle = b1.afterVertex.link;
                 const n1 = b1.afterVertex.vertexNumber;
                 const n2 = b2.afterVertex.vertexNumber;
-                if (n1 !== n2) {
-                    const incr = n2 > n1 ? 1 : -1;
-                    for (let i = n1 + 1; Math.abs(i - n1) <= Math.abs(n1 - n2); i += incr) {
+                if (n1 < n2) {
+                    for (let i = n1 + 1; i <= n2; i++) {
+                        const v1 = bundle.vertices[i];
+                        chunks.push(`${prefix}${v1.coords.x},${v1.coords.y}`)
+                    }//for
+                } else if (n1 > n2) {
+                    for (let i = n1; i > n2; i--) {
                         const v1 = bundle.vertices[i];
                         chunks.push(`${prefix}${v1.coords.x},${v1.coords.y}`)
                     }//for
