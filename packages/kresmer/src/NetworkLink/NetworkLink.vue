@@ -119,10 +119,10 @@
         >
         <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
         <text v-if="startLabel" class="label start">
-            <textPath :href="`#${pathID}`">{{startLabel}}</textPath>
+            <textPath :href="`#${pathID}`"><template v-if="startMarker">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}</textPath>
         </text>
         <text v-if="endLabel" class="label end">
-            <textPath :href="`#${pathID}`" startOffset="98%">{{endLabel}}</textPath>
+            <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}<template v-if="endMarker">&nbsp;&nbsp;&nbsp;</template></textPath>
         </text>
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
             <template v-if="i && segmentHasPadding(i)">

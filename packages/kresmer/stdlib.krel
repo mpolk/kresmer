@@ -544,13 +544,14 @@
                 r: 8px;
                 fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
             }
-            .label {font-family: sans-serif; font-size: 1rem; fill: black;}
+            .label {font-family: sans-serif; font-size: 0.75rem; fill: black;}
             .link-number {font-family: sans-serif; font-size: 0.75rem; fill: #3b3b3b}
         </style>
     </link-class>
 
     <link-class name="link-bundle" category="#link-bundles">
-        <style extends="_abstract-link">
+        <extends base="_abstract-link" accept-media-types="none"/>
+        <style>
             .segment {stroke-width: 4px}
             .segment.highlighted, .segment.selected {stroke-width: 4px}
         </style>
