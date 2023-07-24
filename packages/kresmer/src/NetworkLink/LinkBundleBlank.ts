@@ -17,9 +17,10 @@ import NetworkLinkBlank from "./NetworkLinkBlank";
 export default class LinkBundleBlank extends NetworkLinkBlank {
     public constructor(
         kresmer: Kresmer,
+        linkClass: NetworkLinkClass,
         start: Position,
     ) {
-        super(kresmer, NetworkLinkClass.getClass("bundle"), {pos: {...start}});
+        super(kresmer, linkClass, {pos: {...start}});
     }//ctor
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

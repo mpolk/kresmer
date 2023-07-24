@@ -51,6 +51,9 @@ export default class NetworkLinkClass extends NetworkElementClass {
      */
     public static getClass(name: string) {return this.allClasses[name]}
 
+    /** Indicates that the class is intended for use with link bundles */
+    public get forBundles() {return this.category?.startsWith("#")}
+
     /**
      * Returns the name of the vue-component for this class
      * @returns The vue-component name

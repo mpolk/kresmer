@@ -388,17 +388,18 @@ appCommandExecutor.on("align-vertex", (linkID: number, vertexNumber: number) =>
 appCommandExecutor.on("connect-connection-point", async (
     fromComponentID: number, fromConnectionPointName: string|number) =>
 {
-    const linkClass = await vueLinkClassSelectionDialog.show();
+    const linkClass = await vueLinkClassSelectionDialog.show(false);
     console.debug(`link-class = ${linkClass?.name}`);
 
-    if (linkClass) {
+    if (linkClass)
         kresmer.edAPI.startLinkCreation(linkClass, fromComponentID, fromConnectionPointName);
-    }//if
 });//startLinkCreation
 
-appCommandExecutor.on("create-link-bundle", (mousePos: Position) =>
+appCommandExecutor.on("create-link-bundle", async (mousePos: Position) =>
 {
-    kresmer.edAPI.startLinkBundleCreation(mousePos, "screen");
+    const linkClass = await vueLinkClassSelectionDialog.show(true);
+    if (linkClass)
+        kresmer.edAPI.startLinkBundleCreation(linkClass, mousePos, "screen");
 });//startLinkCreation
 
 appCommandExecutor.on("scale-drawing", direction => {

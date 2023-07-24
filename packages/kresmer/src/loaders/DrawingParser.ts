@@ -169,7 +169,7 @@ export default class DrawingParser {
     private parseLinkNode(node: Element): NetworkLink
     {
         const isBundle = node.nodeName === "link-bundle";
-        const className = isBundle ? LinkBundle.className : node.getAttribute("class");
+        const className = node.getAttribute("class");
         const dbID = node.getAttribute("db-id");
         if (!className) 
             throw new DrawingParsingException("Link without the class");
@@ -210,7 +210,7 @@ export default class DrawingParser {
         }//if
         const from = this.parseLinkEndpoint(node.getAttribute("from"));
         const to = this.parseLinkEndpoint(node.getAttribute("to"));
-        const link = isBundle ? new LinkBundle(this.kresmer, {name: linkName, dbID, props, from, to, vertices}) :
+        const link = isBundle ? new LinkBundle(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices}) :
                                 new NetworkLink(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices});
         return link;
     }//parseLinkNode

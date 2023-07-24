@@ -752,9 +752,13 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Completes the new link bundle creation (for private use only)
      */
-    public _completeLinkBundleCreation()
+    public _completeLinkBundleCreation(toConnectionPoint?: ConnectionPointProxy)
     {
-        const newBundle = new LinkBundle(this, {from: this.newLinkBundleBlank!.start, to: {pos: {...this.newLinkBundleBlank!.end}}});
+        const to = toConnectionPoint ? 
+            {conn: toConnectionPoint} :
+            {pos: {...this.newLinkBundleBlank!.end}};
+        const newBundle = new LinkBundle(this, this.newLinkBundleBlank!._class, 
+            {from: this.newLinkBundleBlank!.start, to: {pos: {...this.newLinkBundleBlank!.end}}});
         newBundle.initVertices();
         this.undoStack.execAndCommit(new CreateBundleOp(newBundle));
         this.newLinkBundleBlank = undefined;
@@ -981,10 +985,10 @@ export default class Kresmer extends KresmerEventHooks {
          * Starts a link bundle creation pulling it from the specified position
          * @param fromPos Position from which the link is started
          */
-        startLinkBundleCreation: (fromPos: Position, coordSystem?: "screen"|"drawing") =>
+        startLinkBundleCreation: (linkClass: NetworkLinkClass, fromPos: Position, coordSystem?: "screen"|"drawing") =>
         {
             const from = coordSystem != "drawing" ? this.applyScreenCTM(fromPos) : {...fromPos};
-            this.newLinkBundleBlank = new LinkBundleBlank(this, from);
+            this.newLinkBundleBlank = new LinkBundleBlank(this, linkClass, from);
             this.vueKresmer.$forceUpdate();
         },//startLinkBundleCreation
 
