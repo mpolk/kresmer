@@ -26,7 +26,7 @@ export default class LinkBundleBlank extends NetworkLinkBlank {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onMouseUp(_event: MouseEvent)
     {
-        this.kresmer._completeLinkBundleCreation();
+        this.kresmer._completeLinkCreation();
     }//onMouseUp
 
 }//LinkBundleBlank

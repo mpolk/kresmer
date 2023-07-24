@@ -651,9 +651,6 @@ export default class Kresmer extends KresmerEventHooks {
         if (!(except instanceof NetworkLinkBlank)) {
             this._abortLinkCreation();
         }//if
-        if (!(except instanceof LinkBundleBlank)) {
-            this._abortLinkBundleCreation();
-        }//if
         this.selectedElement = undefined;
     }//deselectAllElements
 
@@ -726,10 +723,13 @@ export default class Kresmer extends KresmerEventHooks {
         const to = toConnectionPoint ? 
             {conn: toConnectionPoint} :
             {pos: {...this.newLinkBlank!.end}};
-        const newLink = new NetworkLink(this, this.newLinkBlank!._class,
-            {from: this.newLinkBlank!.start, to});
+        const _class = this.newLinkBlank!._class;
+        const newLink = _class.forBundles ?  
+            new LinkBundle(this, _class, {from: this.newLinkBlank!.start, to}) : 
+            new NetworkLink(this, _class, {from: this.newLinkBlank!.start, to});
         newLink.initVertices();
-        this.undoStack.execAndCommit(new AddLinkOp(newLink));
+        const op = newLink instanceof LinkBundle ? new CreateBundleOp(newLink) : new AddLinkOp(newLink);
+        this.undoStack.execAndCommit(op);
         this.newLinkBlank = undefined;
         this.vueKresmer.$forceUpdate();
     }//_completeLinkCreation
@@ -744,37 +744,6 @@ export default class Kresmer extends KresmerEventHooks {
             this.vueKresmer.$forceUpdate();
         }//if
     }//_abortLinkCreation
-
-
-    /** A blank for a new link creation */
-    public newLinkBundleBlank?: LinkBundleBlank;
-
-    /**
-     * Completes the new link bundle creation (for private use only)
-     */
-    public _completeLinkBundleCreation(toConnectionPoint?: ConnectionPointProxy)
-    {
-        const to = toConnectionPoint ? 
-            {conn: toConnectionPoint} :
-            {pos: {...this.newLinkBundleBlank!.end}};
-        const newBundle = new LinkBundle(this, this.newLinkBundleBlank!._class, 
-            {from: this.newLinkBundleBlank!.start, to: {pos: {...this.newLinkBundleBlank!.end}}});
-        newBundle.initVertices();
-        this.undoStack.execAndCommit(new CreateBundleOp(newBundle));
-        this.newLinkBundleBlank = undefined;
-        this.vueKresmer.$forceUpdate();
-    }//_completeLinkBundleCreation
-
-    /**
-     * Aborts the new link bundle creation (for private use only)
-     */
-    public _abortLinkBundleCreation()
-    {
-        if (this.newLinkBundleBlank) {
-            this.newLinkBundleBlank = undefined;
-            this.vueKresmer.$forceUpdate();
-        }//if
-    }//_abortLinkBundleCreation
 
 
     /** 
@@ -988,7 +957,7 @@ export default class Kresmer extends KresmerEventHooks {
         startLinkBundleCreation: (linkClass: NetworkLinkClass, fromPos: Position, coordSystem?: "screen"|"drawing") =>
         {
             const from = coordSystem != "drawing" ? this.applyScreenCTM(fromPos) : {...fromPos};
-            this.newLinkBundleBlank = new LinkBundleBlank(this, linkClass, from);
+            this.newLinkBlank = new LinkBundleBlank(this, linkClass, from);
             this.vueKresmer.$forceUpdate();
         },//startLinkBundleCreation
 

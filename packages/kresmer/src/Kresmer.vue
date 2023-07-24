@@ -242,7 +242,6 @@
 
         <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.props" :key="`link${link.id}`" :model="link" />
         <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
-        <NetworkLinkBlankVue v-else-if="controller.newLinkBundleBlank" :model="controller.newLinkBundleBlank" />
     </svg>
 </template>
 
