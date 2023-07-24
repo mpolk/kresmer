@@ -196,9 +196,8 @@ kresmer.on("link-vertex-right-click", (vertex: LinkVertex, /* _mouseEvent: Mouse
 
 kresmer.on("link-vertex-being-moved", (vertex: LinkVertex) =>
 {
-    const coords = vertex.coords;
-    const hint = `x:${coords.x.toFixed(0)} \
-                  y:${coords.y.toFixed(0)}`;
+    const {x, y} = vertex.coords;
+    const hint = `x:${x.toFixed(0)} y:${y.toFixed(0)}`;
     hints.setHint(hint);
 });//indicateLinkVertexMove
 

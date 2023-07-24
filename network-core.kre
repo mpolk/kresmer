@@ -277,7 +277,7 @@
         <vertex x="624" y="200"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="core-upper-bundle" from="(108, 240)" to="(368, 240)"/>
+    <link-bundle class="link-bundle" name="core-upper-bundle" from="(108, 242)" to="(368, 242)"/>
 
     <link-bundle class="link-bundle" name="core-lower-bundle" from="(116, 441)" to="(332, 441)"/>
 
