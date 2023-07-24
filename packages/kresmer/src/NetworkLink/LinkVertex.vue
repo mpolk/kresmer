@@ -52,17 +52,22 @@
             return undefined;
 
         const bundle = props.model.anchor.bundle!.afterVertex.link as LinkBundle;
-        // if (!thisVertex.link.isHighlighted) {
-        //     for (const anotherLink of bundle.getAttachedLinks()) {
-        //         if (anotherLink !== thisVertex.link) {
-        //             for (const v of anotherLink.vertices) {
-        //                 if (v.anchor.bundle?.afterVertex === thisVertex.anchor.bundle!.afterVertex && 
-        //                     Math.abs(v.anchor.bundle.distance - thisVertex.anchor.bundle!.distance) < 4)
-        //                     return undefined;
-        //             }//for
-        //         }//if
-        //     }//for
-        // }//if
+        if (!thisVertex.link.isHighlighted) {
+            for (const anotherLink of bundle.getAttachedLinks()) {
+                if (anotherLink !== thisVertex.link) {
+                    for (const v of anotherLink.vertices) {
+                        if (areAttachedNear(v, thisVertex) && 
+                            (prevNeighbor.anchor.bundle?.afterVertex.link !== bundle &&
+                             (areAttachedNear(v.prevNeighbor, prevNeighbor) || 
+                              areAttachedNear(v.nextNeighbor, prevNeighbor)))|| 
+                            (nextNeighbor.anchor.bundle?.afterVertex.link !== bundle &&
+                             (areAttachedNear(v.nextNeighbor, nextNeighbor) || 
+                              areAttachedNear(v.prevNeighbor, nextNeighbor) )))
+                            return undefined;
+                    }//for
+                }//if
+            }//for
+        }//if
         
         const number = bundle.getLinkNumber(props.model.link);
         if (!number)
@@ -103,7 +108,9 @@
             clazz = {"right-aligned": true, "bottom-aligned": true};
         else
             clazz = {"left-aligned": true, "top-aligned": true};
+
         const pos = {x: x1 + linkNumberOffset*Math.cos(theta), y: y1 + linkNumberOffset*Math.sin(theta)};
+
         const debugInfo = `\
 φ1=${fi1/Math.PI*180}
 φ2=${fi2/Math.PI*180}
@@ -111,6 +118,15 @@
 class=${JSON.stringify(clazz)}`;
         return {number, pos, clazz, debugInfo};
     })//linkNumber
+
+
+    function areAttachedNear(v1: LinkVertex|undefined, v2: LinkVertex|undefined)
+    {
+        const b1 = v1?.anchor.bundle;
+        const b2 = v2?.anchor.bundle;
+        return b1 && b2 && b1.afterVertex === b2.afterVertex && Math.abs(b1.distance - b2.distance) <= 4;
+    }//areAttachedNear
+
 
     function onMouseDown(event: MouseEvent)
     {
@@ -168,7 +184,10 @@ class=${JSON.stringify(clazz)}`;
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
         />
-    <text v-if="linkNumber?.number" class="link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">{{ linkNumber.number }}<title>{{ linkNumber.debugInfo }}</title></text>
+    <text v-if="linkNumber?.number" class="link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
+        {{ linkNumber.number }}
+        <title>{{ linkNumber.debugInfo }}</title>
+    </text>
     <template v-if="model.link.isSelected">
         <template v-if="model.isDragged">
             <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />

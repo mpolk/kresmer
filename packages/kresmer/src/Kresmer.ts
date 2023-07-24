@@ -674,9 +674,9 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     /**
-     * Applies Client-to-Viewport transfotm matrix to the specified position
-     * @param pos The position (x, y) to transform
-     * @returns The transformed position
+     * Converts screen coordiates to the user-space coordinates
+     * @param pos The position (x, y) to convert
+     * @returns The converted position
      */
     public applyScreenCTM(pos: Position) {
         const CTM = this.rootSVG.getScreenCTM()!;
@@ -685,6 +685,20 @@ export default class Kresmer extends KresmerEventHooks {
           y: (pos.y - CTM.f) / CTM.d
         };
     }//applyScreenCTM
+
+
+    /**
+     * Converts user-space coordiates to the screen coordinates
+     * @param pos The position (x, y) to convert
+     * @returns The converted position
+     */
+    public unapplyScreenCTM(pos: Position) {
+        const CTM = this.rootSVG.getScreenCTM()!;
+        return {
+          x: pos.x * CTM.a + CTM.e,
+          y: pos.y * CTM.d + CTM.f
+        };
+    }//unapplyScreenCTM
 
     // For internal use: reacts on some network element rename refreshing corresponding map
     public _onElementRename(element: NetworkElement, oldName: string)
