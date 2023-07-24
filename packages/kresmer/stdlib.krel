@@ -549,14 +549,6 @@
         </style>
     </link-class>
 
-    <link-class name="link-bundle" category="#link-bundles">
-        <extends base="_abstract-link" accept-media-types="none"/>
-        <style>
-            .segment {stroke-width: 4px}
-            .segment.highlighted, .segment.selected {stroke-width: 4px}
-        </style>
-    </link-class>
-
     <!-- Various link types -->
     <link-class name="twisted-pair" category="copper-links">
         <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
@@ -584,11 +576,12 @@
         <style>
             .link {stroke: #0098c7;}
             .padding {stroke-width: 10px;}
-            .segment {stroke-width: 3px; stroke-linejoin: round;}
-            .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
-            .segment.selected {stroke: #00b8f0; stroke-width: 6px}
+            .segment {stroke-width: 2px; stroke-linejoin: round;}
+            .segment.highlighted {stroke: #00b8f0; stroke-width: 3px}
+            .segment.selected {stroke: #00b8f0; stroke-width: 3px}
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
             .label {fill: #0098c7;}
+            .link-number {fill: #027497; }
         </style>
     </link-class>
 
@@ -598,4 +591,25 @@
             .segment {stroke-width: 4px; }
         </style>
     </link-class>
+
+    <!-- Link bundles -->
+    <link-class name="link-bundle" category="#link-bundles">
+        <extends base="_abstract-link" accept-media-types="none"/>
+        <style>
+            .segment {stroke-width: 4px}
+            .segment.highlighted, .segment.selected {stroke-width: 4px}
+        </style>
+    </link-class>
+
+    <link-class name="AOC-bundle" category="#link-bundles">
+        <extends base="link-bundle"/>
+        <style>
+            .link {stroke: #0098c7;}
+            .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
+            .segment.selected {stroke: #00b8f0; stroke-width: 6px}
+            .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
+            .label {fill: #0098c7;}
+        </style>
+    </link-class>
+
 </kresmer-library>

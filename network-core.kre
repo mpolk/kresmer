@@ -125,8 +125,9 @@
         <props>
             <prop name="start-label"></prop>
         </props>
-        <vertex x="180" y="456"/>
-        <vertex x="-4" y="456"/>
+        <vertex bundle="core-lower-bundle" after="0" distance="64.88206071663242"/>
+        <vertex bundle="core-lower-bundle" after="0" distance="0"/>
+        <vertex x="-4" y="440"/>
         <vertex x="-4" y="704"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="11.995403521063876"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="287.59160301387755"/>
@@ -153,15 +154,13 @@
     </link>
 
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">
-        <vertex x="342.5" y="196.66150565278107"/>
-        <vertex x="616" y="196.66150565278107"/>
-        <vertex x="616" y="403.25"/>
+        <vertex bundle="core-border-bundle" after="0" distance="75.14276040682249"/>
+        <vertex bundle="core-border-bundle" after="2" distance="0"/>
     </link>
 
     <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@l">
-        <vertex x="267.5" y="181.27928983352027"/>
-        <vertex x="626" y="181.27928983352027"/>
-        <vertex x="626" y="308.25"/>
+        <vertex bundle="core-border-bundle" after="0" distance="0"/>
+        <vertex bundle="core-border-bundle" after="1" distance="107.75322112365343"/>
     </link>
 
     <link class="AOC-fan" name="uplink-dipt" from="border:et0/0/0@d" to="(860, 98)">
@@ -200,10 +199,12 @@
         <vertex x="911.138135661153" y="108.82612929696178"/>
     </link>
 
-    <link class="DAC" name="core-kamakura" from="core:1:9@l" to="Kamakura:xge0@u">
-        <vertex x="309.85062592859987" y="279.75"/>
-        <vertex x="309.85062592859987" y="470.37000642175195"/>
-        <vertex x="166.14321899414062" y="470.37000642175195"/>
+    <link class="DAC" name="core-kamakura" from="core:1:9@u" to="Kamakura:xge0@u">
+        <vertex bundle="core-upper-bundle" after="0" distance="221.4957574466174"/>
+        <vertex bundle="core-upper-bundle" after="0" distance="0"/>
+        <vertex x="94" y="258"/>
+        <vertex x="94" y="470.37000642175195"/>
+        <vertex x="167" y="470.37000642175195"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-0" from="Kamakura:eth0@d" to="metro-switch:1:26@d">
@@ -271,5 +272,13 @@
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
     </link>
+
+    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(268, 200)" to="(624, 402)">
+        <vertex x="624" y="200"/>
+    </link-bundle>
+
+    <link-bundle class="link-bundle" name="core-upper-bundle" from="(108, 240)" to="(368, 240)"/>
+
+    <link-bundle class="link-bundle" name="core-lower-bundle" from="(116, 441)" to="(332, 441)"/>
 
 </kresmer-drawing>
