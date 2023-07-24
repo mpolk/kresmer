@@ -48,7 +48,21 @@
             (prevNeighbor.isAttachedToBundle != nextNeighbor.isAttachedToBundle);
         if (!show)
             return undefined;
-        const number = (props.model.anchor.bundle?.afterVertex.link as LinkBundle).getLinkNumber(props.model.link);
+
+        const bundle = props.model.anchor.bundle!.afterVertex.link as LinkBundle;
+        if (!thisVertex.link.isHighlighted) {
+            for (const anotherLink of bundle.getAttachedLinks()) {
+                if (anotherLink !== thisVertex.link) {
+                    for (const v of anotherLink.vertices) {
+                        if (v.anchor.bundle?.afterVertex === thisVertex.anchor.bundle!.afterVertex && 
+                            Math.abs(v.anchor.bundle.distance - thisVertex.anchor.bundle!.distance) < 4)
+                            return undefined;
+                    }//for
+                }//if
+            }//for
+        }//if
+        
+        const number = bundle.getLinkNumber(props.model.link);
         if (!number)
             return undefined;
 

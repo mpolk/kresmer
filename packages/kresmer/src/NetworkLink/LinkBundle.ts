@@ -37,6 +37,11 @@ export default class LinkBundle extends NetworkLink {
     private attachedLinks = new Map<NetworkLink, {number: number, isAttached: boolean}>();
     private nextAttachedLinkNumber = 1;
 
+    public getAttachedLinks()
+    {
+        return Array.from(this.attachedLinks.entries()).filter(([_, {isAttached}]) => isAttached).map((([link]) => link));
+    }//getAttachedLinks
+
     public registerAttachedLink(link: NetworkLink)
     {
         const entry = this.attachedLinks.get(link);

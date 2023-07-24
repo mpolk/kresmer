@@ -267,8 +267,8 @@
 
     <link class="twisted-pair" name="metro-kamakura-7" from="Kamakura:eth7@d" to="metro-switch:2:44@d">
         <vertex bundle="kamakura-metro-bundle" after="2" distance="0"/>
-        <vertex bundle="kamakura-metro-bundle" after="0" distance="20.116670749533075"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="22.334982688242818"/>
+        <vertex bundle="kamakura-metro-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
     </link>
 
