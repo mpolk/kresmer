@@ -41,34 +41,36 @@
 
 
     const linkNumber = computed((): LinkNumber|undefined => {
+        const thisVertex = props.model;
         const prevNeighbor = props.model.prevNeighbor;
         const nextNeighbor = props.model.nextNeighbor;
-        const thisVertex = props.model;
-        const show = thisVertex.isAttachedToBundle && prevNeighbor && nextNeighbor && 
-            (prevNeighbor.isAttachedToBundle != nextNeighbor.isAttachedToBundle);
-        if (!show)
+        if (!thisVertex.isAttachedToBundle || !prevNeighbor || !nextNeighbor)
+            return undefined;
+        const prevNeighborIsBundled = prevNeighbor.anchor.bundle?.afterVertex.link === thisVertex.anchor.bundle!.afterVertex.link;
+        const nextNeighborIsBundled = nextNeighbor.anchor.bundle?.afterVertex.link === thisVertex.anchor.bundle!.afterVertex.link;
+        if (prevNeighborIsBundled === nextNeighborIsBundled)
             return undefined;
 
         const bundle = props.model.anchor.bundle!.afterVertex.link as LinkBundle;
-        if (!thisVertex.link.isHighlighted) {
-            for (const anotherLink of bundle.getAttachedLinks()) {
-                if (anotherLink !== thisVertex.link) {
-                    for (const v of anotherLink.vertices) {
-                        if (v.anchor.bundle?.afterVertex === thisVertex.anchor.bundle!.afterVertex && 
-                            Math.abs(v.anchor.bundle.distance - thisVertex.anchor.bundle!.distance) < 4)
-                            return undefined;
-                    }//for
-                }//if
-            }//for
-        }//if
+        // if (!thisVertex.link.isHighlighted) {
+        //     for (const anotherLink of bundle.getAttachedLinks()) {
+        //         if (anotherLink !== thisVertex.link) {
+        //             for (const v of anotherLink.vertices) {
+        //                 if (v.anchor.bundle?.afterVertex === thisVertex.anchor.bundle!.afterVertex && 
+        //                     Math.abs(v.anchor.bundle.distance - thisVertex.anchor.bundle!.distance) < 4)
+        //                     return undefined;
+        //             }//for
+        //         }//if
+        //     }//for
+        // }//if
         
         const number = bundle.getLinkNumber(props.model.link);
         if (!number)
             return undefined;
 
         const {x: x1, y: y1} = thisVertex.coords;
-        const {x: x0, y: y0} = prevNeighbor.isAttachedToBundle ? nextNeighbor.coords : prevNeighbor.coords;
-        const bundledNeighbor = prevNeighbor.isAttachedToBundle ? prevNeighbor : nextNeighbor;
+        const {x: x0, y: y0} = prevNeighborIsBundled ? nextNeighbor.coords : prevNeighbor.coords;
+        const bundledNeighbor = prevNeighborIsBundled ? prevNeighbor : nextNeighbor;
         const {x: x2, y: y2} = bundledNeighbor.anchor.bundle!.afterVertex.vertexNumber >= thisVertex.anchor.bundle!.afterVertex.vertexNumber ? 
                 thisVertex.anchor.bundle!.afterVertex.nextNeighbor!.coords :
             thisVertex.anchor.bundle!.distance ? 
