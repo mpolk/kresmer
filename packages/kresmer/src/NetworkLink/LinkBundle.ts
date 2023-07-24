@@ -39,7 +39,7 @@ export default class LinkBundle extends NetworkLink {
 
     public getAttachedLinks()
     {
-        return Array.from(this.attachedLinks.entries()).filter(([_, {isAttached}]) => isAttached).map((([link]) => link));
+        return Array.from(this.attachedLinks.entries()).filter(([, {isAttached}]) => isAttached).map((([link]) => link));
     }//getAttachedLinks
 
     public registerAttachedLink(link: NetworkLink)
