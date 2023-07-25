@@ -7,9 +7,10 @@
  * Data object 
  ***************************************************************************/
 
-import Kresmer, { NetworkLinkClass } from "../Kresmer";
+import Kresmer from "../Kresmer";
 import { Position } from "../Transform/Transform";
 import NetworkLinkBlank from "./NetworkLinkBlank";
+import { LinkBundleClass } from "./NetworkLinkClass";
 
 /**
  * Network Link Blank (temporary object for a link creation)
@@ -17,7 +18,7 @@ import NetworkLinkBlank from "./NetworkLinkBlank";
 export default class LinkBundleBlank extends NetworkLinkBlank {
     public constructor(
         kresmer: Kresmer,
-        linkClass: NetworkLinkClass,
+        linkClass: LinkBundleClass,
         start: Position,
     ) {
         super(kresmer, linkClass, {pos: {...start}});

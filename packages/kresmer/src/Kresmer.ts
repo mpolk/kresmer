@@ -17,7 +17,7 @@ import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, Selectio
     from "./NetworkComponent/NetworkComponentController";
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
-import NetworkLinkClass from "./NetworkLink/NetworkLinkClass";
+import NetworkLinkClass, { LinkBundleClass } from "./NetworkLink/NetworkLinkClass";
 import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
@@ -724,7 +724,7 @@ export default class Kresmer extends KresmerEventHooks {
             {conn: toConnectionPoint} :
             {pos: {...this.newLinkBlank!.end}};
         const _class = this.newLinkBlank!._class;
-        const newLink = _class.forBundles ?  
+        const newLink = _class instanceof LinkBundleClass ?  
             new LinkBundle(this, _class, {from: this.newLinkBlank!.start, to}) : 
             new NetworkLink(this, _class, {from: this.newLinkBlank!.start, to});
         newLink.initVertices();
@@ -1057,6 +1057,7 @@ export {default as NetworkComponentController, type TransformMode} from "./Netwo
 export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
+export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
 export {default as KresmerException} from "./KresmerException";
 export {default as KresmerParsingException} from "./loaders/ParsingException";

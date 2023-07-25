@@ -15,7 +15,7 @@
 <script setup lang="ts">
     import { computed, onMounted, ref } from 'vue';
     import { Modal } from 'bootstrap';
-    import { NetworkLinkClass } from 'kresmer';
+    import { NetworkLinkClass, LinkBundleClass } from 'kresmer';
     import { kresmer } from './renderer-main';
 
     let modal!: Modal;
@@ -44,7 +44,7 @@
     async function show(forBundle: boolean)
     {
         linkClasses.value = [...kresmer.getRegisteredLinkClasses()]
-            .filter(([name, _class]) => !_class.isAbstract && (_class.forBundles == forBundle))
+            .filter(([name, _class]) => !_class.isAbstract && (_class instanceof LinkBundleClass == forBundle))
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
         result = linkClasses.value[0]._class;

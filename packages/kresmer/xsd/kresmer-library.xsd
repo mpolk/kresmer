@@ -28,29 +28,30 @@
                         </xs:complexType>
                     </xs:element>
 
-                    <xs:element name="link-class">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element name="extends" minOccurs="0">
-                                    <xs:complexType mixed="true">
-                                        <xs:anyAttribute processContents="lax"/>
-                                    </xs:complexType>
-                                </xs:element>
-                                <xs:element ref="props" minOccurs="0"/>
-                                <xs:element ref="computed-props" minOccurs="0"/>
-                                <xs:element ref="defs" minOccurs="0"/>
-                                <xs:element ref="style" minOccurs="0"/>
-                            </xs:all>
-
-                            <xs:attribute name="name" use="required" />
-                            <xs:attribute name="category" />
-                        </xs:complexType>
-                    </xs:element>
+                    <xs:element name="link-class" type="link-class"/>
+                    <xs:element name="link-bundle-class" type="link-class"/>
                     
                 </xs:choice>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="link-class">
+        <xs:all>
+            <xs:element name="extends" minOccurs="0">
+                <xs:complexType mixed="true">
+                    <xs:anyAttribute processContents="lax"/>
+                </xs:complexType>
+            </xs:element>
+            <xs:element ref="props" minOccurs="0"/>
+            <xs:element ref="computed-props" minOccurs="0"/>
+            <xs:element ref="defs" minOccurs="0"/>
+            <xs:element ref="style" minOccurs="0"/>
+        </xs:all>
+
+        <xs:attribute name="name" use="required" />
+        <xs:attribute name="category" />
+    </xs:complexType>
 
     <!-- SVG content (used mostly in templates) -->
     <xs:group name="svg-elements">

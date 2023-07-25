@@ -9,10 +9,10 @@
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
 import NetworkElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps } from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
-import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
+import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
 import ParsingException from "./ParsingException";
-import { KresmerExceptionSeverity } from "../KresmerException";
+import { KresmerExceptionSeverity, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";
 import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
 import { toCamelCase } from "../Utils";
@@ -53,7 +53,7 @@ export default class LibraryParser {
                             throw exc;
                     }//catch
                     break;
-                case "link-class":
+                case "link-class": case "link-bundle-class":
                     try {
                         yield this.parseLinkClassNode(node);
                     } catch (exc) {
@@ -162,7 +162,12 @@ export default class LibraryParser {
                     break
                 case "props":
                     propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
-                        .map(className => NetworkLinkClass.getClass(className));
+                        .map(className => {
+                            const clazz = NetworkLinkClass.getClass(className);
+                            if (!clazz)
+                                this.kresmer.raiseError(new UndefinedLinkClassException({className}));
+                            return clazz;
+                        }).filter(clazz => Boolean(clazz)) as NetworkLinkClass[];
                     props = this.parseProps(child, propsBaseClasses, child.getAttribute("except")?.split(/ *, */));
                     break;
                 case "computed-props":
@@ -173,7 +178,12 @@ export default class LibraryParser {
                     break;
                 case "style":
                     styleBaseClasses = child.getAttribute("extends")?.split(/ *, */)
-                        .map(className => NetworkLinkClass.getClass(className));
+                        .map(className => {
+                            const clazz = NetworkLinkClass.getClass(className);
+                            if (!clazz)
+                                this.kresmer.raiseError(new UndefinedLinkClassException({className}));
+                            return clazz;
+                        }).filter(clazz => Boolean(clazz)) as NetworkLinkClass[];
                     if (baseClass && !styleBaseClasses?.includes(baseClass)) {
                         styleBaseClasses = styleBaseClasses ? [baseClass, ...styleBaseClasses] : [baseClass];
                     }//if
@@ -186,8 +196,12 @@ export default class LibraryParser {
             style = this.parseCSS("", [baseClass]);
         }//if
 
-        return new NetworkLinkClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
-                                                baseClassPropBindings, computedProps, defs, style, category})
+        const linkClass = node.nodeName === "link-bundle-class" ?
+            new LinkBundleClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
+                baseClassPropBindings, computedProps, defs, style, category}) :
+            new NetworkLinkClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
+                                                baseClassPropBindings, computedProps, defs, style, category});
+        return linkClass;
     }//parseLinkClassNode
 
 

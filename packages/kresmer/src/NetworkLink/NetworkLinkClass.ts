@@ -44,15 +44,12 @@ export default class NetworkLinkClass extends NetworkElementClass {
 
     override readonly usesEmbedding = false;
 
-    private static allClasses: Record<string, NetworkLinkClass> = {};
+    protected static allClasses: Record<string, NetworkLinkClass> = {};
     /**
      *  Returns the class with the given name (if exists)
      *  @param name The name of the class to find
      */
-    public static getClass(name: string) {return this.allClasses[name]}
-
-    /** Indicates that the class is intended for use with link bundles */
-    public get forBundles() {return this.category?.startsWith("#")}
+    public static getClass(name: string): NetworkLinkClass|undefined {return this.allClasses[name]}
 
     /**
      * Returns the name of the vue-component for this class
@@ -66,3 +63,12 @@ export default class NetworkLinkClass extends NetworkElementClass {
      */
      get defsVueName() {return "_Kre:link:" + this.name + ".defs"}
 }//LinkClass
+
+/** Class specialized for the link bundles */
+export class LinkBundleClass extends NetworkLinkClass {
+    public static getClass(name: string): LinkBundleClass|undefined 
+    {
+        const clazz = this.allClasses[name];
+        return clazz instanceof LinkBundleClass ? clazz : undefined;
+    }
+}//LinkBundleClass

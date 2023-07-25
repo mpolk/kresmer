@@ -8,7 +8,7 @@
 
 import { InjectionKey, nextTick } from "vue";
 import Kresmer, { ConnectionPointProxy } from "../Kresmer";
-import KresmerException from "../KresmerException";
+import KresmerException, { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
@@ -40,7 +40,11 @@ class _NetworkLink extends NetworkElement {
             vertices?: LinkVertexInitParams[],
         }
     ) {
-        super(kresmer, _class instanceof NetworkLinkClass ? _class : NetworkLinkClass.getClass(_class), args);
+        const clazz = _class instanceof NetworkLinkClass ? _class : NetworkLinkClass.getClass(_class);
+        if (!clazz) {
+            throw new UndefinedLinkClassException({className: _class as string});
+        }//if
+        super(kresmer, clazz, args);
         const _this = this as unknown as NetworkLink;
         let i = 0;
         this.vertices.push(new LinkVertex(_this, i++, args?.from));

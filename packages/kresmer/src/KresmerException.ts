@@ -37,12 +37,27 @@ export type KresmerExceptionOptions = {
 }//KresmerExceptionOptions
 
 // Specific exceptions
+
+export class UndefinedLinkClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Undefined link class "${options.className}"`, options);
+    }//ctor
+}//UndefinedLinkClassException
+
 export class UndefinedBundleException extends KresmerException {
     constructor(options: KresmerExceptionOptions & RequireOnlyOne<{bundleName?: string, message?: string}>)
     {
         super(options.message ?? `Undefined link bundle "${options.bundleName}"`, options);
     }//ctor
 }//UndefinedBundleException
+
+export class UndefinedBundleClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Undefined bundle class "${options.className}"`, options);
+    }//ctor
+}//UndefinedBundleClassException
 
 export class UndefinedVertexException extends KresmerException {
     constructor(options: KresmerExceptionOptions & {linkName?: string, vertexNumber?: number, message?: string})

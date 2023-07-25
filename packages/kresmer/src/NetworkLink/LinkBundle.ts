@@ -6,13 +6,36 @@
  * Network Link Bundle - data object 
  ***************************************************************************/
 
+import Kresmer from "../Kresmer";
 import NetworkLink from "./NetworkLink";
 import { EditorOperation } from "../UndoStack";
+import { LinkBundleClass } from "./NetworkLinkClass";
+import { LinkVertexInitParams } from "./LinkVertex";
+import { UndefinedBundleClassException } from "../KresmerException";
 
 /**
  * Network Link Bundle - a virtual link aggregate consisting of two or more collinear link segments
  */
 export default class LinkBundle extends NetworkLink {
+    public constructor(
+        kresmer: Kresmer,
+        _class: LinkBundleClass | string,
+        args?: {
+            name?: string,
+            dbID?: number|string|null,
+            props?: Record<string, unknown>,
+            from?: LinkVertexInitParams,
+            to?: LinkVertexInitParams,
+            vertices?: LinkVertexInitParams[],
+        }
+    ) {
+        const clazz = _class instanceof LinkBundleClass ? _class : LinkBundleClass.getClass(_class);
+        if (!clazz) {
+            throw new UndefinedBundleClassException({className: _class as string});
+        }//if
+        super(kresmer, clazz, args);
+    }//ctor
+
     override readonly isBundle = true;
     protected readonly outerXMLTag = "link-bundle";
 
