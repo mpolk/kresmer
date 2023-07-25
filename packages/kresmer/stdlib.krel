@@ -596,16 +596,14 @@
     <link-bundle-class name="link-bundle" category="link-bundles">
         <extends base="_abstract-link" accept-media-types="none"/>
         <style>
-            .segment {stroke-width: 4px}
-            .segment.highlighted, .segment.selected {stroke-width: 4px}
+            .segment, .segment.highlighted, .segment.selected {stroke-width: 4px}
         </style>
     </link-bundle-class>
 
     <link-bundle-class name="AOC-bundle" category="optical-links">
         <extends base="link-bundle"/>
         <style extends="AOC">
-            .segment {stroke-width: 4px}
-            .segment.highlighted, .segment.selected {stroke-width: 4px}
+            .segment, .segment.highlighted, .segment.selected {stroke-width: 4px}
         </style>
     </link-bundle-class>
 
