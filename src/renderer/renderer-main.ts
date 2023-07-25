@@ -391,7 +391,7 @@ appCommandExecutor.on("connect-connection-point", async (
     console.debug(`link-class = ${linkClass?.name}`);
 
     if (linkClass)
-        kresmer.edAPI.startLinkCreation(linkClass, fromComponentID, fromConnectionPointName);
+        kresmer.edAPI.startLinkCreation(linkClass, {elementID: fromComponentID, connectionPointName: fromConnectionPointName});
 });//startLinkCreation
 
 appCommandExecutor.on("create-link-bundle", async (mousePos: Position) =>
