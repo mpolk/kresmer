@@ -603,12 +603,9 @@
 
     <link-bundle-class name="AOC-bundle" category="optical-links">
         <extends base="link-bundle"/>
-        <style>
-            .link {stroke: #0098c7;}
-            .segment.highlighted {stroke: #00b8f0; stroke-width: 5px}
-            .segment.selected {stroke: #00b8f0; stroke-width: 6px}
-            .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
-            .label {fill: #0098c7;}
+        <style extends="AOC">
+            .segment {stroke-width: 4px}
+            .segment.highlighted, .segment.selected {stroke-width: 4px}
         </style>
     </link-bundle-class>
 
