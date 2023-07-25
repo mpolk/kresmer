@@ -161,13 +161,7 @@ export default class LibraryParser {
                     ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, NetworkLinkClass) ?? {});
                     break
                 case "props":
-                    propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
-                        .map(className => {
-                            const clazz = NetworkLinkClass.getClass(className);
-                            if (!clazz)
-                                this.kresmer.raiseError(new UndefinedLinkClassException({className}));
-                            return clazz;
-                        }).filter(clazz => Boolean(clazz)) as NetworkLinkClass[];
+                    propsBaseClasses = this.parseClassList(child.getAttribute("extend"));
                     props = this.parseProps(child, propsBaseClasses, child.getAttribute("except")?.split(/ *, */));
                     break;
                 case "computed-props":
@@ -177,13 +171,7 @@ export default class LibraryParser {
                     defs = child;
                     break;
                 case "style":
-                    styleBaseClasses = child.getAttribute("extends")?.split(/ *, */)
-                        .map(className => {
-                            const clazz = NetworkLinkClass.getClass(className);
-                            if (!clazz)
-                                this.kresmer.raiseError(new UndefinedLinkClassException({className}));
-                            return clazz;
-                        }).filter(clazz => Boolean(clazz)) as NetworkLinkClass[];
+                    styleBaseClasses = this.parseClassList(child.getAttribute("extends"));
                     if (baseClass && !styleBaseClasses?.includes(baseClass)) {
                         styleBaseClasses = styleBaseClasses ? [baseClass, ...styleBaseClasses] : [baseClass];
                     }//if
@@ -203,6 +191,18 @@ export default class LibraryParser {
                                                 baseClassPropBindings, computedProps, defs, style, category});
         return linkClass;
     }//parseLinkClassNode
+
+
+    private parseClassList(rawList: string|null)
+    {
+        return rawList?.split(/ *, */)
+            .map(className => {
+                const clazz = NetworkLinkClass.getClass(className);
+                if (!clazz)
+                    this.kresmer.raiseError(new UndefinedLinkClassException({className}));
+                return clazz;
+            }).filter(clazz => Boolean(clazz)) as NetworkLinkClass[];
+    }//parseClassList
 
 
     private parseClassInheritance<T extends typeof NetworkComponentClass|typeof NetworkLinkClass>(node: Element, baseClassCtor: T)

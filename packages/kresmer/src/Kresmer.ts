@@ -851,17 +851,17 @@ export default class Kresmer extends KresmerEventHooks {
          * @param fromElementID A component from which the link is started
          * @param fromConnectionPointName A connection point from which the link is started
          */
-        startLinkCreation: (linkClass: NetworkLinkClass, fromElementID: number, 
-                            fromConnectionPointName: string|number) =>
+        startLinkCreation: (linkClass: NetworkLinkClass, from: {elementID: number, 
+                            connectionPointName: string|number}) =>
         {
-            const fromComponent = this.getComponentById(fromElementID) ?? this.getLinkById(fromElementID);
+            const fromComponent = this.getComponentById(from.elementID) ?? this.getLinkById(from.elementID);
             if (!fromComponent) {
-                console.error(`Trying to create a link from non-existing component (id=${fromElementID})!`);
+                console.error(`Trying to create a link from non-existing component (id=${from.elementID})!`);
                 return;
             }//if
-            const fromConnectionPoint = fromComponent.getConnectionPoint(fromConnectionPointName);
+            const fromConnectionPoint = fromComponent.getConnectionPoint(from.connectionPointName);
             if (!fromConnectionPoint) {
-                console.error(`Trying to create a link from non-existing connection point (${fromElementID}:${fromConnectionPointName})!`);
+                console.error(`Trying to create a link from non-existing connection point (${from.elementID}:${from.connectionPointName})!`);
                 return;
             }//if
             this.newLinkBlank = new NetworkLinkBlank(this, linkClass, {conn: fromConnectionPoint});
@@ -954,7 +954,7 @@ export default class Kresmer extends KresmerEventHooks {
          * Starts a link bundle creation pulling it from the specified position
          * @param fromPos Position from which the link is started
          */
-        startLinkBundleCreation: (linkClass: NetworkLinkClass, fromPos: Position, coordSystem?: "screen"|"drawing") =>
+        startLinkBundleCreation: (linkClass: LinkBundleClass, fromPos: Position, coordSystem?: "screen"|"drawing") =>
         {
             const from = coordSystem != "drawing" ? this.applyScreenCTM(fromPos) : {...fromPos};
             this.newLinkBlank = new LinkBundleBlank(this, linkClass, from);
