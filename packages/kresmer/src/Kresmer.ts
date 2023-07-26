@@ -328,7 +328,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (componentClass.style) {
-            this.styles.push(this.libraryLoader.scopeStyles(componentClass.style, componentClass));
+            this.styles.push(this.libraryLoader.scopeStyles(componentClass.style, componentClass, true));
         }//if
 
         this.registeredComponentClasses.set(componentClass.name, componentClass);
@@ -353,7 +353,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (linkClass.style) {
-            this.styles.push(this.libraryLoader.scopeStyles(linkClass.style, linkClass));
+            this.styles.push(this.libraryLoader.scopeStyles(linkClass.style, linkClass, false));
         }//if
 
         this.registeredLinkClasses.set(linkClass.name, linkClass);

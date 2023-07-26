@@ -38,7 +38,7 @@ export default class LibraryLoader
                 this.kresmer.appKresmer
                     .component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
             } else if (element instanceof StyleLibNode) {
-                this.kresmer.styles.push(this.scopeStyles(element.data));
+                this.kresmer.styles.push(this.scopeStyles(element.data, undefined, false));
             } else {
                 this.kresmer.raiseError(element);
                 wereErrors = true;
@@ -53,7 +53,7 @@ export default class LibraryLoader
      * @param classScope An element class to apply as a scope
      * @returns Modified AST
      */
-    public scopeStyles(ast: PostCSSRoot, classScope?: NetworkElementClass)
+    public scopeStyles(ast: PostCSSRoot, classScope: NetworkElementClass|undefined, recurse: boolean)
     {
         const ast1 = ast.clone() as PostCSSRoot;
 
@@ -70,7 +70,7 @@ export default class LibraryLoader
                     baseClasses.push(...classScope.styleBaseClasses);
                 }//if
                 if (baseClasses.length) {
-                    this.makeBaseClassScopes(additionalScopes, firstScope, baseClasses);
+                    this.makeBaseClassScopes(additionalScopes, firstScope, baseClasses, recurse);
                 }//if
             }//if
 
@@ -95,20 +95,22 @@ export default class LibraryLoader
         return ast1;
     }//scopeStyles
 
-    private makeBaseClassScopes(scopes: string[], prefix: string, baseClasses: NetworkElementClass[])
+    private makeBaseClassScopes(scopes: string[], prefix: string, baseClasses: NetworkElementClass[], recurse: boolean)
     {
         baseClasses.forEach(baseClass => {
             const baseScope = baseClass.usesEmbedding ? `${prefix} .${baseClass.name}` : prefix;
             scopes.push(baseScope);
-            const grandBaseClasses: NetworkElementClass[] = [];
-            if (baseClass.baseClass) {
-                grandBaseClasses.push(baseClass.baseClass);
-            }//if
-            if (baseClass.styleBaseClasses) {
-                grandBaseClasses.push(...baseClass.styleBaseClasses);
-            }//if
-            if (grandBaseClasses.length) {
-                this.makeBaseClassScopes(scopes, baseScope, grandBaseClasses);
+            if (recurse) {
+                const grandBaseClasses: NetworkElementClass[] = [];
+                if (baseClass.baseClass) {
+                    grandBaseClasses.push(baseClass.baseClass);
+                }//if
+                if (baseClass.styleBaseClasses) {
+                    grandBaseClasses.push(...baseClass.styleBaseClasses);
+                }//if
+                if (grandBaseClasses.length) {
+                    this.makeBaseClassScopes(scopes, baseScope, grandBaseClasses, true);
+                }//if
             }//if
         });
     }//makeBaseClassScopes

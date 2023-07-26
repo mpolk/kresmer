@@ -609,9 +609,7 @@
 
     <link-bundle-class name="AOC-bundle" category="optical-links">
         <extends base="link-bundle"/>
-        <style extends="AOC">
-            .segment, .segment.highlighted, .segment.selected {stroke-width: 4px}
-        </style>
+        <style extends="AOC"/>
     </link-bundle-class>
 
 </kresmer-library>
