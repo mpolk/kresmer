@@ -9,7 +9,7 @@
 import { reactive } from "vue";
 import Kresmer, { KresmerException } from "../Kresmer";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
-import NetworkLinkClass from "./NetworkLinkClass";
+import NetworkLinkClass, { LinkBundleClass } from "./NetworkLinkClass";
 import { Position } from "../Transform/Transform";
 import { LinkVertexAnchor } from "./LinkVertex";
 
@@ -45,6 +45,11 @@ export default class NetworkLinkBlank {
 
     public onMouseUp(event: MouseEvent)
     {
+        if (this._class instanceof LinkBundleClass) {
+            this.kresmer._completeLinkCreation();
+            return;
+        }//if
+
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
         for (const element of elementsUnderCursor) {
             const connectionPointData = element.getAttribute("data-connection-point");

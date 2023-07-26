@@ -31,7 +31,6 @@ import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
-import LinkBundleBlank from "./NetworkLink/LinkBundleBlank";
 import { LinkVertexAnchor } from "./NetworkLink/LinkVertex";
 
 
@@ -645,7 +644,7 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     /** Deselects all components (probably except the one specified) */
-    public deselectAllElements(except?: NetworkComponentController | NetworkLink | NetworkLinkBlank | LinkBundleBlank)
+    public deselectAllElements(except?: NetworkComponentController | NetworkLink | NetworkLinkBlank)
     {
         this.networkComponents.forEach(controller => {
             if (controller !== except) {
@@ -949,18 +948,6 @@ export default class Kresmer extends KresmerEventHooks {
             }//if
             return vertex;
         },//deleteLinkVertex
-
-        /**
-         * Starts a link bundle creation pulling it from the specified position
-         * @param fromPos Position from which the link is started
-         */
-        startLinkBundleCreation: (linkClass: LinkBundleClass, fromPos: Position, coordSystem?: "screen"|"drawing") =>
-        {
-            const from = coordSystem != "drawing" ? this.applyScreenCTM(fromPos) : {...fromPos};
-            this.newLinkBlank = new LinkBundleBlank(this, linkClass, from);
-            this.vueKresmer.$forceUpdate();
-        },//startLinkBundleCreation
-
 
         /**
          * Update the specified network element props and name (if required)

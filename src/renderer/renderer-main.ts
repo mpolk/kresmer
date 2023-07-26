@@ -407,7 +407,7 @@ appCommandExecutor.on("create-link-bundle", async (mousePos: Position) =>
 {
     const linkClass = await vueLinkClassSelectionDialog.show(true);
     if (linkClass)
-        kresmer.edAPI.startLinkBundleCreation(linkClass, mousePos, "screen");
+        kresmer.edAPI.startLinkCreation(linkClass, {pos: kresmer.applyScreenCTM(mousePos)});
 });//startLinkCreation
 
 appCommandExecutor.on("scale-drawing", direction => {
