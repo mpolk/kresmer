@@ -49,7 +49,7 @@ export default class Kresmer extends KresmerEventHooks {
         showRulers?: boolean,
         showGrid?: boolean,
         snapToGrid?: boolean,
-        snappingToGridStep?: number,
+        snappingGranularity?: number,
         saveDynamicPropValuesWithDrawing?: boolean,
     }) {
         super();
@@ -62,7 +62,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.showRulers = Boolean(options?.showRulers);
         this.showGrid = Boolean(options?.showGrid);
         this.snapToGrid = options?.snapToGrid ?? true;
-        options?.snappingToGridStep && (this.snappingToGridStep = options.snappingToGridStep);
+        options?.snappingGranularity && (this.snappingGranularity = options.snappingGranularity);
         this.saveDynamicPropValuesWithDrawing = Boolean(options?.saveDynamicPropValuesWithDrawing);
             
         this.appKresmer = createApp(KresmerVue, {
@@ -177,9 +177,9 @@ export default class Kresmer extends KresmerEventHooks {
     /** A symbolic key for the snap-to-grid flag injection */
     static readonly ikSnapToGrid = Symbol() as InjectionKey<boolean>;
     /** A step (granularity) of snapping to the grid */
-    snappingToGridStep = 1;
+    snappingGranularity = 1;
     /** A symbolic key for the snap-to-grid step injection */
-    static readonly ikSnappingToGridStep = Symbol() as InjectionKey<number>;
+    static readonly ikSnappingGranularity = Symbol() as InjectionKey<number>;
 
     /** Kresmer-backend server connection (if any) */
     public backendConnection?: BackendConnection;

@@ -123,8 +123,8 @@ class _NetworkComponentController {
             this.isDragged = false;
             if (this.kresmer.snapToGrid) {
                 this.origin = {
-                    x: Math.round(this.origin.x / this.kresmer.snappingToGridStep) * this.kresmer.snappingToGridStep,
-                    y: Math.round(this.origin.y / this.kresmer.snappingToGridStep) * this.kresmer.snappingToGridStep,
+                    x: Math.round(this.origin.x / this.kresmer.snappingGranularity) * this.kresmer.snappingGranularity,
+                    y: Math.round(this.origin.y / this.kresmer.snappingGranularity) * this.kresmer.snappingGranularity,
                 };
             }//if
             this.updateConnectionPoints();

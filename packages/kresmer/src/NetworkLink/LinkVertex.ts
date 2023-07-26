@@ -334,8 +334,8 @@ export default class LinkVertex {
 
         if (this.link.kresmer.snapToGrid) {
             this._anchor.pos = {
-                x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep,
-                y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingToGridStep) * this.link.kresmer.snappingToGridStep
+                x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity,
+                y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity
             };
         }//if
         this.link.kresmer.undoStack.commitOperation();
