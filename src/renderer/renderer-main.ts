@@ -396,18 +396,22 @@ appCommandExecutor.on("connect-connection-point", async (fromElementID: number, 
     }//if
 });//startLinkCreation
 
-appCommandExecutor.on("create-link", async (mousePos: Position) =>
+appCommandExecutor.on("create-link", async (mousePos?: Position) =>
 {
     const linkClass = await vueLinkClassSelectionDialog.show(false);
-    if (linkClass)
-        kresmer.edAPI.startLinkCreation(linkClass, {pos: kresmer.applyScreenCTM(mousePos)});
+    if (linkClass) {
+        const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
+        kresmer.edAPI.startLinkCreation(linkClass, {pos});
+    }//if
 });//startLinkCreation
 
-appCommandExecutor.on("create-link-bundle", async (mousePos: Position) =>
+appCommandExecutor.on("create-link-bundle", async (mousePos?: Position) =>
 {
     const linkClass = await vueLinkClassSelectionDialog.show(true);
-    if (linkClass)
-        kresmer.edAPI.startLinkCreation(linkClass, {pos: kresmer.applyScreenCTM(mousePos)});
+    if (linkClass) {
+        const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
+        kresmer.edAPI.startLinkCreation(linkClass, {pos});
+    }//if
 });//startLinkCreation
 
 appCommandExecutor.on("scale-drawing", direction => {

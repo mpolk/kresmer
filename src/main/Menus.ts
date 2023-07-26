@@ -13,7 +13,7 @@ import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing,
 const isMac = process.platform === 'darwin'
 
 export interface ContextMenus {
-  "drawing": (mousePos: Position) => void,
+  "drawing": (mousePos?: Position) => void,
   "component": (componentID: number) => void,
   "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
   "link-vertex": (linkID: number, vertexNumber: number) => void,
@@ -84,6 +84,8 @@ export default class Menus {
           { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
           { label: 'Add component...', accelerator: "insert", click: () => sendAppCommand("add-component") },
+          { label: 'Add link...', accelerator: "l", click: () => sendAppCommand("create-link") },
+          { label: 'Add link bundle...', accelerator: "b", click: () => sendAppCommand("create-link-bundle") },
           { label: 'Delete network element', accelerator: "delete", enabled: false,
             id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")},
           { type: 'separator' },
@@ -104,8 +106,8 @@ export default class Menus {
           { label: 'Zoom Out', accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-")},
           { label: 'Actual size', accelerator: "Control+1", click: () => sendAppCommand("scale-drawing", "1")},
           { type: 'separator' },
-          { label: 'Grid', type: "checkbox", checked: false, accelerator: "Control+G", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
-          { label: 'Rulers', type: "checkbox", checked: false, accelerator: "Control+U", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
+          { label: 'Grid', type: "checkbox", checked: false, accelerator: "g", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
+          { label: 'Rulers', type: "checkbox", checked: false, accelerator: "r", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
           { type: 'separator' },
           { role: 'togglefullscreen' }
         ]
