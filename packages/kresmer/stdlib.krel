@@ -546,6 +546,11 @@
             }
             .label {font-family: sans-serif; font-size: 0.75rem; fill: black;}
             .link-number {font-family: sans-serif; font-size: 0.75rem; fill: #3b3b3b}
+            .blank.line {stroke: red; stroke-width: 2px;}
+            .blank.origin {stroke: orange; stroke-width: 2px; fill: orange; fill-opacity: 0.5;}
+            .blank.origin-center {fill: red;}
+            .blank.header {stroke: rgb(255, 88, 88); stroke-width: 2px; fill: pink; fill-opacity: 0.5;}
+            .blank.header-center {fill: red;}
         </style>
     </link-class>
 
@@ -555,6 +560,8 @@
         <style>
             .segment {stroke-width: 1px; stroke: #5e5e5e}
             .segment.highlighted, .segment.selected {stroke: #c22a00; stroke-width: 2px}
+            .blank.header {stroke: #5e5e5e; fill: #5e5e5e; fill-opacity: 0.5;}
+            .blank.header-center {fill: black;}
         </style>
     </link-class>
 

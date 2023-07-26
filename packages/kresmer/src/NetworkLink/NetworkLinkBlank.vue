@@ -42,56 +42,26 @@
 </script>
 
 <template>
-    <line class="line" 
-        :x1="start.x" :y1="start.y"
-        :x2="model.end.x" :y2="model.end.y"
-        />
-    <circle class="origin" :cx="start.x" :cy="start.y" r="20" />
-    <circle class="origin-center" :cx="start.x" :cy="start.y" r="4" />
-    <circle class="header"
-        :cx="model.end.x" :cy="model.end.y" r="20"
-        @mousemove.self="onMouseMove($event)"
-        @mousedown="onMouseDown($event)"
-        @mouseup="onMouseUp($event)"
-        @dblclick="onDoubleClick($event)"
-        />
-    <circle class="header-center"
-        :cx="model.end.x" :cy="model.end.y" r="4"
-        @mousemove.self="onMouseMove($event)"
-        @mousedown="onMouseDown($event)"
-        @mouseup="onMouseUp($event)"
-        @dblclick="onDoubleClick($event)"
-        />
+    <g :class="{[model._class.name]: true}">
+        <line class="blank line" 
+            :x1="start.x" :y1="start.y"
+            :x2="model.end.x" :y2="model.end.y"
+            />
+        <circle class="blank origin" :cx="start.x" :cy="start.y" r="20" />
+        <circle class="blank origin-center" :cx="start.x" :cy="start.y" r="4" />
+        <circle class="blank header" style="cursor: move;"
+            :cx="model.end.x" :cy="model.end.y" r="20"
+            @mousemove.self="onMouseMove($event)"
+            @mousedown="onMouseDown($event)"
+            @mouseup="onMouseUp($event)"
+            @dblclick="onDoubleClick($event)"
+            />
+        <circle class="blank header-center" style="cursor: move;"
+            :cx="model.end.x" :cy="model.end.y" r="4"
+            @mousemove.self="onMouseMove($event)"
+            @mousedown="onMouseDown($event)"
+            @mouseup="onMouseUp($event)"
+            @dblclick="onDoubleClick($event)"
+            />
+    </g>
 </template>
-
-
-<style lang="scss" scoped>
-    .line {
-        stroke: red;
-        stroke-width: 2px;
-    }
-
-    .origin {
-        stroke: orange;
-        stroke-width: 2px;
-        fill: orange;
-        fill-opacity: 0.5;
-    }
-
-    .origin-center {
-        fill: red;
-    }
-
-    .header {
-        stroke: rgb(255, 88, 88);
-        stroke-width: 2px;
-        fill: pink;
-        fill-opacity: 0.5;
-        cursor: move;
-    }
-
-    .header-center {
-        fill: red;
-        cursor: move;
-    }
-</style>
