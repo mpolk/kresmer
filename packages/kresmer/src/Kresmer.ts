@@ -1044,6 +1044,7 @@ export {default as NetworkComponentController, type TransformMode} from "./Netwo
 export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
+export {default as LinkBundle} from "./NetworkLink/LinkBundle";
 export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
 export type {LinkVertexAnchor} from "./NetworkLink/LinkVertex";

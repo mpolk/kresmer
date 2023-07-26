@@ -11,7 +11,7 @@
     import { Modal, Offcanvas } from 'bootstrap';
     import { NetworkElement, NetworkElementClass, NetworkElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
-             NetworkLink, NetworkLinkClass } from 'kresmer';
+             NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
 
@@ -70,9 +70,12 @@
             dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
         }//if
 
-        const classes = element instanceof NetworkLink ? 
-            [...kresmer.getRegisteredLinkClasses()].filter(([name, _class]) => !_class.isAbstract) : 
-            [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.isAbstract);
+        const classes = 
+            element instanceof LinkBundle ? 
+                [...kresmer.getRegisteredLinkClasses()].filter(([, _class]) => !_class.isAbstract && _class instanceof LinkBundleClass) : 
+            element instanceof NetworkLink ? 
+                [...kresmer.getRegisteredLinkClasses()].filter(([, _class]) => !_class.isAbstract && !(_class instanceof LinkBundleClass)) : 
+                [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.isAbstract);
         allClasses.value = classes
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
             .map(([name, _class]) => {return {name, _class}});
