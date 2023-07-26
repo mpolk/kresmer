@@ -184,7 +184,7 @@ class=${JSON.stringify(clazz)}`;
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
         />
-    <text v-if="linkNumber?.number" class="link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
+    <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
         {{ linkNumber.number }}
         <title>{{ linkNumber.debugInfo }}</title>
     </text>
@@ -204,7 +204,7 @@ class=${JSON.stringify(clazz)}`;
             />
         <circle ref="circle"
             :cx="model.coords.x" :cy="model.coords.y" 
-            class="vertex" :class="{connected: model.isConnected}"
+            class="link vertex" :class="{connected: model.isConnected}"
             style="cursor: move;"
             :is-editable="isEditable"
             :data-link-bundle-vertex="dataLinkBundleVertex"

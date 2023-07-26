@@ -43,25 +43,27 @@
 
 <template>
     <g :class="{[model._class.name]: true}">
-        <line class="blank line" 
-            :x1="start.x" :y1="start.y"
-            :x2="model.end.x" :y2="model.end.y"
-            />
-        <circle class="blank origin" :cx="start.x" :cy="start.y" r="20" />
-        <circle class="blank origin-center" :cx="start.x" :cy="start.y" r="4" />
-        <circle class="blank header" style="cursor: move;"
-            :cx="model.end.x" :cy="model.end.y" r="20"
-            @mousemove.self="onMouseMove($event)"
-            @mousedown="onMouseDown($event)"
-            @mouseup="onMouseUp($event)"
-            @dblclick="onDoubleClick($event)"
-            />
-        <circle class="blank header-center" style="cursor: move;"
-            :cx="model.end.x" :cy="model.end.y" r="4"
-            @mousemove.self="onMouseMove($event)"
-            @mousedown="onMouseDown($event)"
-            @mouseup="onMouseUp($event)"
-            @dblclick="onDoubleClick($event)"
-            />
+        <g class="link">
+            <line class="blank line" 
+                :x1="start.x" :y1="start.y"
+                :x2="model.end.x" :y2="model.end.y"
+                />
+            <circle class="blank origin" :cx="start.x" :cy="start.y" r="20" />
+            <circle class="blank origin-center" :cx="start.x" :cy="start.y" r="4" />
+            <circle class="blank header" style="cursor: move;"
+                :cx="model.end.x" :cy="model.end.y" r="20"
+                @mousemove.self="onMouseMove($event)"
+                @mousedown="onMouseDown($event)"
+                @mouseup="onMouseUp($event)"
+                @dblclick="onDoubleClick($event)"
+                />
+            <circle class="blank header-center" style="cursor: move;"
+                :cx="model.end.x" :cy="model.end.y" r="4"
+                @mousemove.self="onMouseMove($event)"
+                @mousedown="onMouseDown($event)"
+                @mouseup="onMouseUp($event)"
+                @dblclick="onDoubleClick($event)"
+                />
+        </g>
     </g>
 </template>

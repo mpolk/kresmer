@@ -533,24 +533,20 @@
         </props>
         <style>
             .padding {stroke-width: 8px;}
-            .link {stroke: #3b3b3b}
-            .segment {stroke-width: 2px; stroke-linecap: round; xx-filter: url(#kre:fltLinkFilter)}
-            .segment.highlighted {stroke: black; stroke-width: 3px}
-            .segment.selected {stroke: black; stroke-width: 3px}
-            .vertex {stroke: black; stroke-width: 4px; fill: white; r: 6px}
+            .link {--link-color: #3b3b3b; --highlighted-link-color: black;}
+            .segment {stroke: var(--link-color); stroke-width: 2px; stroke-linecap: round; xx-filter: url(#kre:fltLinkFilter)}
+            .segment.highlighted, .segment.selected {stroke: var(--highlighted-link-color); stroke-width: 3px}
+            .vertex {stroke: var(--highlighted-link-color); stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
-            .connection-point-marker {
-                r: 8px;
-                fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;
-            }
-            .label {font-family: sans-serif; font-size: 0.75rem; fill: black;}
-            .link-number {font-family: sans-serif; font-size: 0.75rem; fill: #3b3b3b}
+            .connection-point-marker {r: 8px; fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;}
+            .label {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color);}
+            .link-number {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
             .blank.line {stroke: red; stroke-width: 2px;}
             .blank.origin {stroke: orange; stroke-width: 2px; fill: orange; fill-opacity: 0.5;}
             .blank.origin-center {fill: red;}
-            .blank.header {stroke: rgb(255, 88, 88); stroke-width: 2px; fill: pink; fill-opacity: 0.5;}
-            .blank.header-center {fill: red;}
+            .blank.header {stroke: var(--link-color); stroke-width: 2px; fill: var(--link-color); fill-opacity: 0.5;}
+            .blank.header-center {fill: var(--link-color); filter: brightness(0.2);}
         </style>
     </link-class>
 
@@ -558,42 +554,34 @@
     <link-class name="twisted-pair" category="copper-links">
         <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
         <style>
-            .segment {stroke-width: 1px; stroke: #5e5e5e}
-            .segment.highlighted, .segment.selected {stroke: #c22a00; stroke-width: 2px}
-            .blank.header {stroke: #5e5e5e; fill: #5e5e5e; fill-opacity: 0.3;}
-            .blank.header-center {fill: black;}
+            .link {--link-color: #5e5e5e; --highlighted-link-color: #c22a00; }
+            .segment {stroke-width: 1px;}
+            .segment.highlighted, .segment.selected {stroke-width: 2px}
+            .blank.header {fill-opacity: 0.3;}
         </style>
     </link-class>
 
     <link-class name="DAC" category="copper-links">
         <extends base="_abstract-link" media-type="DAC" accept-media-types="none"/>
         <style>
-            .link {stroke: #236e85;}
+            .link {--link-color: #236e85; --highlighted-link-color: #2f97b6; }
             .padding {stroke-width: 10px;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
-            .segment.highlighted {stroke: #2f97b6; stroke-width: 3px}
-            .segment.selected {stroke: #2f97b6; stroke-width: 3px}
-            .vertex {stroke: #2f97b6; stroke-width: 4px; fill: white; r: 6px}
-            .label {fill: #2f97b6;}
-            .link-number {fill: #1f5565; }
-            .blank.header {stroke: #236e85; fill: #236e85; fill-opacity: 0.3;}
-            .blank.header-center {fill: black;}
+            .segment.highlighted, .segment.selected {stroke-width: 3px; stroke-linejoin: round;}
+            .vertex {stroke-width: 4px; r: 6px}
+            .blank.header {fill-opacity: 0.3;}
         </style>
     </link-class>
 
     <link-class name="AOC" category="optical-links">
         <extends base="_abstract-link" media-type="AOC" accept-media-types="none"/>
         <style>
-            .link {stroke: #0098c7;}
+            .link {--link-color: #0098c7; --highlighted-link-color: #00b8f0; }
             .padding {stroke-width: 10px;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
-            .segment.highlighted {stroke: #00b8f0; stroke-width: 3px}
-            .segment.selected {stroke: #00b8f0; stroke-width: 3px}
-            .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
-            .label {fill: #0098c7;}
-            .link-number {fill: #027497; }
-            .blank.header {stroke: #0098c7; fill: #0098c7; fill-opacity: 0.3;}
-            .blank.header-center {fill: black;}
+            .segment.highlighted, .segment.selected {stroke-width: 3px}
+            .vertex {stroke-width: 4px; r: 6px}
+            .blank.header {fill-opacity: 0.3;}
         </style>
     </link-class>
 
