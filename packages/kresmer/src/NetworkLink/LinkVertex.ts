@@ -171,6 +171,8 @@ export default class LinkVertex {
     {
         if (this._anchor.conn) {
             return this._anchor.conn.toString();
+        } else if (this._anchor.bundle) {
+            return `${this._anchor.bundle.afterVertex.link.name}:${this._anchor.bundle.afterVertex.vertexNumber}:${this._anchor.bundle.distance.toFixed()}`
         } else if (this._anchor.pos) {
             return `(${this._anchor.pos.x.toFixed()}, ${this._anchor.pos.y.toFixed()})`
         } else {
@@ -180,13 +182,7 @@ export default class LinkVertex {
 
     get displayString()
     {
-        if (this._anchor.conn) {
-            return this._anchor.conn.displayString;
-        } else if (this._anchor.pos) {
-            return `(${this._anchor.pos.x.toFixed()}, ${this._anchor.pos.y.toFixed()})`
-        } else {
-            return "()";
-        }//if
+        return this._anchor.conn?.displayString ?? this.toString();
     }//displayString
 
     public toXML()
