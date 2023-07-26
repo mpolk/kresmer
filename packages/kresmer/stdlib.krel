@@ -560,7 +560,7 @@
         <style>
             .segment {stroke-width: 1px; stroke: #5e5e5e}
             .segment.highlighted, .segment.selected {stroke: #c22a00; stroke-width: 2px}
-            .blank.header {stroke: #5e5e5e; fill: #5e5e5e; fill-opacity: 0.5;}
+            .blank.header {stroke: #5e5e5e; fill: #5e5e5e; fill-opacity: 0.3;}
             .blank.header-center {fill: black;}
         </style>
     </link-class>
@@ -570,11 +570,14 @@
         <style>
             .link {stroke: #236e85;}
             .padding {stroke-width: 10px;}
-            .segment {stroke-width: 3px; stroke-linejoin: round;}
-            .segment.highlighted {stroke: #2f97b6; stroke-width: 5px}
-            .segment.selected {stroke: #2f97b6; stroke-width: 6px}
+            .segment {stroke-width: 2px; stroke-linejoin: round;}
+            .segment.highlighted {stroke: #2f97b6; stroke-width: 3px}
+            .segment.selected {stroke: #2f97b6; stroke-width: 3px}
             .vertex {stroke: #2f97b6; stroke-width: 4px; fill: white; r: 6px}
             .label {fill: #2f97b6;}
+            .link-number {fill: #1f5565; }
+            .blank.header {stroke: #236e85; fill: #236e85; fill-opacity: 0.3;}
+            .blank.header-center {fill: black;}
         </style>
     </link-class>
 
@@ -589,13 +592,15 @@
             .vertex {stroke: #009ccc; stroke-width: 4px; fill: white; r: 6px}
             .label {fill: #0098c7;}
             .link-number {fill: #027497; }
+            .blank.header {stroke: #0098c7; fill: #0098c7; fill-opacity: 0.3;}
+            .blank.header-center {fill: black;}
         </style>
     </link-class>
 
     <link-class name="AOC-fan" category="optical-links">
         <extends base="AOC" media-type="AOC-fan" accept-media-types="AOC"/>
         <style>
-            .segment {stroke-width: 4px; }
+            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 4px; }
         </style>
     </link-class>
 
@@ -603,8 +608,13 @@
     <link-bundle-class name="link-bundle" category="link-bundles">
         <extends base="_abstract-link" accept-media-types="none"/>
         <style>
-            .segment, .segment.highlighted, .segment.selected {stroke-width: 4px}
+            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 4px; }
         </style>
+    </link-bundle-class>
+
+    <link-bundle-class name="DAC-bundle" category="copper-links">
+        <extends base="link-bundle"/>
+        <style extends="DAC"/>
     </link-bundle-class>
 
     <link-bundle-class name="AOC-bundle" category="optical-links">
