@@ -38,6 +38,30 @@ export type KresmerExceptionOptions = {
 
 // Specific exceptions
 
+export class UndefinedElementException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{element?: string|number, message?: string}>)
+    {
+        const element = typeof options.element === "string" ? `"${options.element}"` : `(id=${options.element})`;
+        super(options.message ?? `Undefined component "${element}`, options);
+    }//ctor
+}//UndefinedElementException
+
+export class UndefinedComponentException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{component?: string|number, message?: string}>)
+    {
+        const component = typeof options.component === "string" ? `"${options.component}"` : `(id=${options.component})`;
+        super(options.message ?? `Undefined component "${component}`, options);
+    }//ctor
+}//UndefinedComponentException
+
+export class UndefinedLinkException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{link?: string|number, message?: string}>)
+    {
+        const link = typeof options.link === "string" ? `"${options.link}"` : `(id=${options.link})`;
+        super(options.message ?? `Undefined component "${link}`, options);
+    }//ctor
+}//UndefinedLinkException
+
 export class UndefinedLinkClassException extends KresmerException {
     constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
     {
@@ -65,3 +89,10 @@ export class UndefinedVertexException extends KresmerException {
         super(options.message ?? `Undefined link vertex "${options.linkName}:${options.vertexNumber}"`, options);
     }//ctor
 }//UndefinedVertexException
+
+export class UndefinedConnectionPointException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & {elementName?: string, connectionPointName?: string|number, message?: string})
+    {
+        super(options.message ?? `Undefined connection point "${options.elementName}:${options.connectionPointName}"`, options);
+    }//ctor
+}//UndefinedConnectionPointException

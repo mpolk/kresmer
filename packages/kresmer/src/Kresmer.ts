@@ -32,6 +32,7 @@ import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkBundleBlank from "./NetworkLink/LinkBundleBlank";
+import { LinkVertexAnchor } from "./NetworkLink/LinkVertex";
 
 
 /**
@@ -504,6 +505,17 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     /**
+     * Searches for the NetworkElement with the specified ID
+     * @param id An ID of the element to search for
+     * @returns The element if found or "undefined" otherwise
+     */
+    public getElementById(id: number)
+    {
+        return this.networkComponents.get(id)?.component ?? this.links.get(id);
+    }//getElementById
+
+
+    /**
      * Searches for the NetworkComponent with the specified ID
      * @param id An ID of the component to search for
      * @returns The component if found or "undefined" otherwise
@@ -848,23 +860,11 @@ export default class Kresmer extends KresmerEventHooks {
         /**
          * Starts link creation pulling it from the specified connection point
          * @param linkClass A class of the new link
-         * @param fromElementID A component from which the link is started
-         * @param fromConnectionPointName A connection point from which the link is started
+         * @param from An anchor from which the link is started
          */
-        startLinkCreation: (linkClass: NetworkLinkClass, from: {elementID: number, 
-                            connectionPointName: string|number}) =>
+        startLinkCreation: (linkClass: NetworkLinkClass, from: LinkVertexAnchor) =>
         {
-            const fromComponent = this.getComponentById(from.elementID) ?? this.getLinkById(from.elementID);
-            if (!fromComponent) {
-                console.error(`Trying to create a link from non-existing component (id=${from.elementID})!`);
-                return;
-            }//if
-            const fromConnectionPoint = fromComponent.getConnectionPoint(from.connectionPointName);
-            if (!fromConnectionPoint) {
-                console.error(`Trying to create a link from non-existing connection point (${from.elementID}:${from.connectionPointName})!`);
-                return;
-            }//if
-            this.newLinkBlank = new NetworkLinkBlank(this, linkClass, {conn: fromConnectionPoint});
+            this.newLinkBlank = new NetworkLinkBlank(this, linkClass, from);
             this.vueKresmer.$forceUpdate();
         },//startLinkCreation
 
@@ -1059,6 +1059,7 @@ export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
 export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
+export type {LinkVertexAnchor} from "./NetworkLink/LinkVertex";
 export {default as KresmerException} from "./KresmerException";
 export {default as KresmerParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPointProxy";
