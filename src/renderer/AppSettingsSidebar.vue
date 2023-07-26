@@ -132,9 +132,9 @@
                             <label class="form-check-label" for="cbSnapToGrid">Snap to grid,</label>
                             <input type="checkbox" id="cbSnapToGrid" class="form-check-input" v-model="appSettings!.snapToGrid" />
                         </div>
-                        &nbsp;<label class="form-label me-1" for="cbSnappingToGridStep">step</label>
-                        <input type="number" id="cbSnappingToGridStep" class="form-control form-control-sm text-end d-inline-block"
-                            style="width: 4rem" v-model="appSettings!.snappingToGridStep" />
+                        &nbsp;<label class="form-label me-1" for="cbSnappingGranularity">step</label>
+                        <input type="number" id="cbSnappingGranularity" class="form-control form-control-sm text-end d-inline-block"
+                            style="width: 4rem" v-model="appSettings!.snappingGranularity" />
                     </div>
                 </div>
                 <div class="row">
