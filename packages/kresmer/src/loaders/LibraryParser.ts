@@ -184,11 +184,9 @@ export default class LibraryParser {
             style = this.parseCSS("", [baseClass]);
         }//if
 
-        const linkClass = node.nodeName === "link-bundle-class" ?
-            new LinkBundleClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
-                baseClassPropBindings, computedProps, defs, style, category}) :
-            new NetworkLinkClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
-                                                baseClassPropBindings, computedProps, defs, style, category});
+        const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
+        const linkClass = new ctor(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
+                                               baseClassPropBindings, computedProps, defs, style, category});
         return linkClass;
     }//parseLinkClassNode
 

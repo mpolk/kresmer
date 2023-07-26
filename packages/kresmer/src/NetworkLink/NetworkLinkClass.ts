@@ -70,5 +70,5 @@ export class LinkBundleClass extends NetworkLinkClass {
     {
         const clazz = this.allClasses[name];
         return clazz instanceof LinkBundleClass ? clazz : undefined;
-    }
+    }//getClass
 }//LinkBundleClass
