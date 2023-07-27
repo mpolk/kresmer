@@ -163,40 +163,40 @@
         <vertex bundle="core-border-bundle" after="2" distance="0"/>
     </link>
 
-    <link class="AOC-fan" name="uplink-dipt" from="border:et0/0/0@d" to="(860, 98)">
+    <link class="AOC-fan" name="uplink-dipt" from="border:et0/0/0@d" to="(930, 90)">
         <vertex x="192.5" y="167"/>
-        <vertex x="860" y="167"/>
+        <vertex x="930" y="167"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1104, 65)">
+    <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1106, 68)">
         <props>
             <prop name="end-label">к свичу ДИПТ (порт 9)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex x="911.6561766127802" y="65.52857944141451"/>
+        <vertex x="950" y="68"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1105, 86)">
+    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1106, 82)">
         <props>
             <prop name="end-label">к свичу ДИПТ (порт 10)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex x="909.5998857620592" y="86.33535735196507"/>
+        <vertex x="950" y="82"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-3" from="-uplink-dipt:3" to="(1049, 131)">
+    <link class="AOC" name="uplink-dipt-3" from="-uplink-dipt:3" to="(1050, 112)">
         <props>
             <prop name="end-marker">circle</prop>
         </props>
-        <vertex x="913.3401706472266" y="131.17115710660616"/>
+        <vertex x="950" y="112"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1103, 109)">
+    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1106, 98)">
         <props>
             <prop name="end-label">к свичу ДИПТ (порт 11)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex x="911.138135661153" y="108.82612929696178"/>
+        <vertex x="950" y="98"/>
     </link>
 
     <link class="DAC" name="core-kamakura" from="core:1:9@u" to="Kamakura:xge0@u">
@@ -273,8 +273,8 @@
         <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
     </link>
 
-    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(268, 200)" to="(624, 402)">
-        <vertex x="624" y="200"/>
+    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(268, 184)" to="(624, 402)">
+        <vertex x="624" y="184"/>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="core-upper-bundle" from="(108, 242)" to="(368, 242)"/>

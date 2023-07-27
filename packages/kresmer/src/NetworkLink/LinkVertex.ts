@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { Position } from "../Transform/Transform";
-import KresmerException, { UndefinedBundleException, UndefinedVertexException } from "../KresmerException";
+import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
@@ -428,50 +428,61 @@ export default class LinkVertex {
     public align()
     {
         if (this.isConnected) {
-            console.warn(`Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`);
+            this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+                {message: `Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`, severity: "warning"}));
             return null;
         }//if
-        if (this.isEndpoint) {
-            console.warn(`Cannot align an endpoint (${this.link.name}:${this.vertexNumber})`);
-            return null;
-        }//if
-        const predecessor = this.link.vertices[this.vertexNumber - 1];
-        const prePos = predecessor.coords;
-        const successor = this.link.vertices[this.vertexNumber + 1];
-        const sucPos = successor.coords;
+        const predecessor = this.prevNeighbor;
+        const prePos = predecessor?.coords;
+        const successor = this.nextNeighbor;
+        const sucPos = successor?.coords;
 
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
-        let newPos = 
+        let newAnchor: LinkVertexAnchor|null = 
+            (!predecessor && !successor) ?
+                null :
+            (!predecessor) ?
+                this.alignEndpoint(successor!) :
+            (!successor) ?
+                this.alignEndpoint(predecessor) :
+            (this.isAttachedToBundle && !predecessor.isAttachedToBundle && successor.isAttachedToBundle) ?
+                this.alignOnBundle(predecessor) :
+            (this.isAttachedToBundle && predecessor.isAttachedToBundle && !successor.isAttachedToBundle) ?
+                this.alignOnBundle(successor) :
+            (this.isAttachedToBundle) ?
+                null :
             (predecessor.isConnected && predecessor.isEndpoint && (!successor.isConnected || !successor.isEndpoint)) ?
-            this.alignBetweenConnectionAndPosition(predecessor, successor) :
+                this.alignBetweenConnectionAndPosition(predecessor, successor) :
             (successor.isConnected && successor.isEndpoint && (!predecessor.isConnected || !predecessor.isEndpoint)) ?
                 this.alignBetweenConnectionAndPosition(successor, predecessor) :
                 this.alignBetweenTwoPositions(predecessor, successor);
 
-        let shouldMove = Boolean(newPos);
-        const outOfLimits = newPos && (
-            newPos.x <= 0 || newPos.x >= this.link.kresmer.logicalWidth ||
-            newPos.y <= 0 || newPos.y >= this.link.kresmer.logicalHeight);
+        let shouldMove = Boolean(newAnchor);
+        const outOfLimits = newAnchor?.pos && (
+            newAnchor.pos.x <= 0 || newAnchor.pos.x >= this.link.kresmer.logicalWidth ||
+            newAnchor.pos.y <= 0 || newAnchor.pos.y >= this.link.kresmer.logicalHeight);
         if (outOfLimits) {
+            this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+                {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
             shouldMove = false;
             this.blink();
         }//if
-        const hitToPre = newPos && newPos.x == prePos.x && newPos.y == prePos.y;
+        const hitToPre = newAnchor?.pos && newAnchor.pos.x == prePos?.x && newAnchor.pos.y == prePos.y;
         if (hitToPre) {
             shouldMove = false;
-            predecessor.blink();
+            predecessor?.blink();
         }//if
-        const hitToSuc = newPos && newPos.x == sucPos.x && newPos.y == sucPos.y;
+        const hitToSuc = newAnchor?.pos && newAnchor.pos.x == sucPos?.x && newAnchor.pos.y == sucPos.y;
         if (hitToSuc) {
             shouldMove = false;
-            successor.blink();
+            successor?.blink();
         }//if
 
         if (shouldMove) {
-            if (this.link.isLoopback) {
-                newPos = this.link.absPosToRel(newPos!);
+            if (this.link.isLoopback && newAnchor?.pos) {
+                newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
             }//if
-            this.pinUp(newPos!);
+            this.anchor = newAnchor!;
             this.link.kresmer.undoStack.commitOperation();
             this.link.kresmer.emit("link-vertex-moved", this);
             return this;
@@ -481,7 +492,25 @@ export default class LinkVertex {
         }//if
     }//align
 
-    private alignBetweenTwoPositions(predecessor: LinkVertex, successor: LinkVertex)
+    private alignEndpoint(neighbor: LinkVertex): LinkVertexAnchor|null
+    {
+        const threshold = 0.2;
+        const {x: x0, y: y0} = this.coords;
+        const {x: x1, y: y1} = neighbor.coords;
+        if (Math.abs(x1 - x0) < Math.abs(y1 - y0)*threshold)
+            return {pos: {x: x1, y: y0}};
+        else if (Math.abs(y1 - y0) < Math.abs(x1 - x0)*threshold)
+            return {pos: {x: x0, y: y1}};
+        else
+            return null;
+    }//alignEndpoint
+
+    private alignOnBundle(neighbor: LinkVertex): LinkVertexAnchor|null
+    {
+        return null;
+    }//alignOnBundle
+
+    private alignBetweenTwoPositions(predecessor: LinkVertex, successor: LinkVertex): LinkVertexAnchor|null
     {
         const l1 = Math.hypot(this.coords.x - predecessor.coords.x, this.coords.y - successor.coords.y);
         const l2 = Math.hypot(this.coords.y - predecessor.coords.y, this.coords.x - successor.coords.x);
@@ -491,10 +520,10 @@ export default class LinkVertex {
         } else {
             x = successor.coords.x; y = predecessor.coords.y;
         }//if
-        return {x, y};
+        return {pos: {x, y}};
     }//alignBetweenTwoPositions
 
-    private alignBetweenConnectionAndPosition(connected: LinkVertex, positioned: LinkVertex)
+    private alignBetweenConnectionAndPosition(connected: LinkVertex, positioned: LinkVertex): LinkVertexAnchor|null
     {
         const c = connected.coords;
         const p = positioned.coords;
@@ -551,7 +580,7 @@ export default class LinkVertex {
             connected.blink();
             positioned.blink();
         }//if
-        return newPos;
+        return newPos ? {pos: newPos} : null;
     }//alignBetweenConnectionAndPosition
 
 
