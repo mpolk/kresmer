@@ -93,9 +93,9 @@ export default class LinkVertex {
             const oldBundle = this._anchor.bundle;
             this._anchor.bundle = newValue;
             if (this._anchor.bundle) {
-                (this._anchor.bundle.afterVertex.link as LinkBundle).registerAttachedLink(this.link);
+                (this._anchor.bundle.baseVertex.link as LinkBundle).registerAttachedLink(this.link);
             } else if (oldBundle) {
-                (oldBundle.afterVertex.link as LinkBundle).unregisterAttachedLink(this.link);
+                (oldBundle.baseVertex.link as LinkBundle).unregisterAttachedLink(this.link);
             }//if
             this.ownConnectionPoint.isActive = !this._anchor.conn && !this._anchor.bundle;
             nextTick(() => this.revision++);
@@ -111,7 +111,7 @@ export default class LinkVertex {
         if (this._anchor.conn) {
             return this._anchor.conn.coords;
         } else if (this._anchor.bundle) {
-            const afterVertex = this._anchor.bundle.afterVertex;
+            const afterVertex = this._anchor.bundle.baseVertex;
             let d = this._anchor.bundle.distance;
             if (d == 0)
                 return afterVertex.coords;
@@ -163,16 +163,16 @@ export default class LinkVertex {
     get prevNeighbor(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
     get nextNeighbor(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
     get isEnteringBundle() {return Boolean(this.isAttachedToBundle && (!this.prevNeighbor?.isAttachedToBundle || 
-                                           this.prevNeighbor.anchor.bundle!.afterVertex.link !== this.anchor.bundle?.afterVertex.link));}
+                                           this.prevNeighbor.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
     get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbor?.isAttachedToBundle ||
-                                          this.nextNeighbor.anchor.bundle!.afterVertex.link !== this.anchor.bundle?.afterVertex.link));}
+                                          this.nextNeighbor.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
 
     toString()
     {
         if (this._anchor.conn) {
             return this._anchor.conn.toString();
         } else if (this._anchor.bundle) {
-            return `${this._anchor.bundle.afterVertex.link.name}:${this._anchor.bundle.afterVertex.vertexNumber}:${this._anchor.bundle.distance.toFixed()}`
+            return `${this._anchor.bundle.baseVertex.link.name}:${this._anchor.bundle.baseVertex.vertexNumber}:${this._anchor.bundle.distance.toFixed()}`
         } else if (this._anchor.pos) {
             return `(${this._anchor.pos.x.toFixed()}, ${this._anchor.pos.y.toFixed()})`
         } else {
@@ -192,7 +192,7 @@ export default class LinkVertex {
                 `-${this._anchor.conn.hostElement.name}`: this._anchor.conn.hostElement.name;
             return `<vertex connect="${elementName}:${this._anchor.conn.name}"/>`;
         } else if (this._anchor.bundle) {
-            return `<vertex bundle="${this._anchor.bundle.afterVertex.link.name}" after="${this._anchor.bundle.afterVertex.vertexNumber}" distance="${this._anchor.bundle.distance}"/>`;
+            return `<vertex bundle="${this._anchor.bundle.baseVertex.link.name}" after="${this._anchor.bundle.baseVertex.vertexNumber}" distance="${this._anchor.bundle.distance}"/>`;
         } else if (this._anchor.pos) {
             return `<vertex x="${this._anchor.pos.x}" y="${this._anchor.pos.y}"/>`;
         } else {
@@ -233,15 +233,15 @@ export default class LinkVertex {
                     source: `Link "${this.link.name}"`}));
                 return this;
             }//if
-            const afterVertex = bundle.vertices[this.initParams.bundleData.afterVertex];
+            const afterVertex = bundle.vertices[this.initParams.bundleData.baseVertex];
             if (!afterVertex) {
                 this.link.kresmer.raiseError(new UndefinedVertexException(
                     {message: `Attempt to connect to non-existing connection point \
-                    "${this.initParams.bundleData.bundleName}:${this.initParams.bundleData.afterVertex}"`,
+                    "${this.initParams.bundleData.bundleName}:${this.initParams.bundleData.baseVertex}"`,
                     source: `Link "${this.link.name}"`}))
                 return this;
             }//if
-            this.attachToBundle({afterVertex, distance: this.initParams.bundleData.distance});
+            this.attachToBundle({baseVertex: afterVertex, distance: this.initParams.bundleData.distance});
         } else if (this.initParams?.conn) {
             this.connect(this.initParams.conn);
         // } else {
@@ -411,7 +411,7 @@ export default class LinkVertex {
             const p = this.link.kresmer.applyScreenCTM(event);
             d = Math.sqrt((p.x-v.x)*(p.x-v.x) + (p.y-v.y)*(p.y-v.y));
         }//if
-        this.attachToBundle({afterVertex: vertex, distance: d});
+        this.attachToBundle({baseVertex: vertex, distance: d});
         this.link.kresmer.undoStack.commitOperation();
         this.link.kresmer.emit("link-vertex-connected", this);
         this.ownConnectionPoint?.updatePos();
@@ -427,35 +427,36 @@ export default class LinkVertex {
 
     public align()
     {
-        if (this.isConnected) {
-            this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
-                {message: `Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`, severity: "warning"}));
-            return null;
-        }//if
         const predecessor = this.prevNeighbor;
         const prePos = predecessor?.coords;
         const successor = this.nextNeighbor;
         const sucPos = successor?.coords;
 
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
-        let newAnchor: LinkVertexAnchor|null = 
-            (!predecessor && !successor) ?
-                null :
-            (!predecessor) ?
-                this.alignEndpoint(successor!) :
-            (!successor) ?
-                this.alignEndpoint(predecessor) :
-            (this.isAttachedToBundle && !predecessor.isAttachedToBundle && successor.isAttachedToBundle) ?
-                this.alignOnBundle(predecessor) :
-            (this.isAttachedToBundle && predecessor.isAttachedToBundle && !successor.isAttachedToBundle) ?
-                this.alignOnBundle(successor) :
-            (this.isAttachedToBundle) ?
-                null :
-            (predecessor.isConnected && predecessor.isEndpoint && (!successor.isConnected || !successor.isEndpoint)) ?
-                this.alignBetweenConnectionAndPosition(predecessor, successor) :
-            (successor.isConnected && successor.isEndpoint && (!predecessor.isConnected || !predecessor.isEndpoint)) ?
-                this.alignBetweenConnectionAndPosition(successor, predecessor) :
-                this.alignBetweenTwoPositions(predecessor, successor);
+        let newAnchor: LinkVertexAnchor|null = null;
+        if (this.isConnected) {
+            this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+                {message: `Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`, severity: "warning"}));
+            newAnchor = null;
+        } else if (!predecessor && !successor) {
+            newAnchor = null;
+        } else if (!predecessor) {
+            newAnchor = this.alignEndpoint(successor!);
+        } else if (!successor) {
+            newAnchor = this.alignEndpoint(predecessor);
+        } else if (this.isAttachedToBundle && !predecessor.isAttachedToBundle && successor.isAttachedToBundle) {
+            newAnchor = this.alignOnBundle(predecessor);
+        } else if (this.isAttachedToBundle && predecessor.isAttachedToBundle && !successor.isAttachedToBundle) {
+            newAnchor = this.alignOnBundle(successor);
+        } else if (this.isAttachedToBundle) {
+            newAnchor = null;
+        } else if (predecessor.isConnected && predecessor.isEndpoint && (!successor.isConnected || !successor.isEndpoint)) {
+            newAnchor = this.alignBetweenConnectionAndPosition(predecessor, successor);
+        } else if (successor.isConnected && successor.isEndpoint && (!predecessor.isConnected || !predecessor.isEndpoint)) {
+            newAnchor = this.alignBetweenConnectionAndPosition(successor, predecessor);
+        } else {
+            newAnchor = this.alignBetweenTwoPositions(predecessor, successor);
+        }//if
 
         let shouldMove = Boolean(newAnchor);
         const outOfLimits = newAnchor?.pos && (
@@ -478,10 +479,11 @@ export default class LinkVertex {
             successor?.blink();
         }//if
 
+        if (shouldMove && this.link.isLoopback && newAnchor?.pos) {
+            newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
+        }//if
+
         if (shouldMove) {
-            if (this.link.isLoopback && newAnchor?.pos) {
-                newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
-            }//if
             this.anchor = newAnchor!;
             this.link.kresmer.undoStack.commitOperation();
             this.link.kresmer.emit("link-vertex-moved", this);
@@ -505,8 +507,14 @@ export default class LinkVertex {
             return null;
     }//alignEndpoint
 
-    private alignOnBundle(neighbor: LinkVertex): LinkVertexAnchor|null
+    private alignOnBundle(outOfBundleNeighbor: LinkVertex): LinkVertexAnchor|null
     {
+        const {baseVertex, distance} = this._anchor.bundle!;
+        if (baseVertex.isTail) {
+            if ((baseVertex.link as LinkBundle).getAttachedLinks().length == 1)
+                nextTick(() => baseVertex.align());
+            return null;
+        }//if
         return null;
     }//alignOnBundle
 
@@ -610,7 +618,7 @@ export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
     },
     bundleData?: {
         bundleName: string,
-        afterVertex: number,
+        baseVertex: number,
         distance: number
     },
 }> | Record<string, never>;
@@ -623,7 +631,7 @@ export type LinkVertexAnchor = RequireAtLeastOne<{
 }>//LinkVertexExtAnchor
 
 export type BundleAttachmentDescriptor = {
-    afterVertex: LinkVertex,
+    baseVertex: LinkVertex,
     distance: number,
 }//BundleAttachmentDescriptor
 

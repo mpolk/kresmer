@@ -262,7 +262,7 @@ export default class DrawingParser {
                                         in Vertex: ${node.parentElement?.toString()}`);
         }//if
         if (bundleName)
-            return {bundleData: {bundleName, afterVertex: Number(afterVertex), distance: Number(distance)}}
+            return {bundleData: {bundleName, baseVertex: Number(afterVertex), distance: Number(distance)}}
         if (x !== null) {
             return {pos: {x: parseFloat(x), y: parseFloat(y!)}};
         }//if

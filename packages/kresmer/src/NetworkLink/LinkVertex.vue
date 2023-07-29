@@ -46,21 +46,21 @@
         const nextNeighbor = props.model.nextNeighbor;
         if (!thisVertex.isAttachedToBundle || !prevNeighbor || !nextNeighbor)
             return undefined;
-        const prevNeighborIsBundled = prevNeighbor.anchor.bundle?.afterVertex.link === thisVertex.anchor.bundle!.afterVertex.link;
-        const nextNeighborIsBundled = nextNeighbor.anchor.bundle?.afterVertex.link === thisVertex.anchor.bundle!.afterVertex.link;
+        const prevNeighborIsBundled = prevNeighbor.anchor.bundle?.baseVertex.link === thisVertex.anchor.bundle!.baseVertex.link;
+        const nextNeighborIsBundled = nextNeighbor.anchor.bundle?.baseVertex.link === thisVertex.anchor.bundle!.baseVertex.link;
         if (prevNeighborIsBundled === nextNeighborIsBundled)
             return undefined;
 
-        const bundle = props.model.anchor.bundle!.afterVertex.link as LinkBundle;
+        const bundle = props.model.anchor.bundle!.baseVertex.link as LinkBundle;
         if (!thisVertex.link.isHighlighted) {
             for (const anotherLink of bundle.getAttachedLinks()) {
                 if (anotherLink !== thisVertex.link) {
                     for (const v of anotherLink.vertices) {
                         if (areAttachedNear(v, thisVertex) && 
-                            (prevNeighbor.anchor.bundle?.afterVertex.link !== bundle &&
+                            (prevNeighbor.anchor.bundle?.baseVertex.link !== bundle &&
                              (areAttachedNear(v.prevNeighbor, prevNeighbor) || 
                               areAttachedNear(v.nextNeighbor, prevNeighbor)))|| 
-                            (nextNeighbor.anchor.bundle?.afterVertex.link !== bundle &&
+                            (nextNeighbor.anchor.bundle?.baseVertex.link !== bundle &&
                              (areAttachedNear(v.nextNeighbor, nextNeighbor) || 
                               areAttachedNear(v.prevNeighbor, nextNeighbor) )))
                             return undefined;
@@ -76,11 +76,11 @@
         const {x: x1, y: y1} = thisVertex.coords;
         const {x: x0, y: y0} = prevNeighborIsBundled ? nextNeighbor.coords : prevNeighbor.coords;
         const bundledNeighbor = prevNeighborIsBundled ? prevNeighbor : nextNeighbor;
-        const {x: x2, y: y2} = bundledNeighbor.anchor.bundle!.afterVertex.vertexNumber >= thisVertex.anchor.bundle!.afterVertex.vertexNumber ? 
-                thisVertex.anchor.bundle!.afterVertex.nextNeighbor!.coords :
+        const {x: x2, y: y2} = bundledNeighbor.anchor.bundle!.baseVertex.vertexNumber >= thisVertex.anchor.bundle!.baseVertex.vertexNumber ? 
+                thisVertex.anchor.bundle!.baseVertex.nextNeighbor!.coords :
             thisVertex.anchor.bundle!.distance ? 
-                thisVertex.anchor.bundle!.afterVertex.coords :
-                thisVertex.anchor.bundle!.afterVertex.prevNeighbor!.coords;
+                thisVertex.anchor.bundle!.baseVertex.coords :
+                thisVertex.anchor.bundle!.baseVertex.prevNeighbor!.coords;
         const r1 = {x: x0 - x1, y: y0 - y1};
         if (r1.x === 0 && r1.y === 0)
             return undefined;
@@ -124,7 +124,7 @@ class=${JSON.stringify(clazz)}`;
     {
         const b1 = v1?.anchor.bundle;
         const b2 = v2?.anchor.bundle;
-        return b1 && b2 && b1.afterVertex === b2.afterVertex && Math.abs(b1.distance - b2.distance) <= 4;
+        return b1 && b2 && b1.baseVertex === b2.baseVertex && Math.abs(b1.distance - b2.distance) <= 4;
     }//areAttachedNear
 
 

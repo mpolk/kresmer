@@ -77,10 +77,10 @@
             prefix = "L";
             const b1 = v.anchor.bundle;
             const b2 = v.nextNeighbor?.anchor.bundle;
-            if (b1 && b2 && b1.afterVertex.link === b2.afterVertex.link) {
-                const bundle = b1.afterVertex.link;
-                const n1 = b1.afterVertex.vertexNumber;
-                const n2 = b2.afterVertex.vertexNumber;
+            if (b1 && b2 && b1.baseVertex.link === b2.baseVertex.link) {
+                const bundle = b1.baseVertex.link;
+                const n1 = b1.baseVertex.vertexNumber;
+                const n2 = b2.baseVertex.vertexNumber;
                 if (n1 < n2) {
                     for (let i = n1 + 1; i <= n2; i++) {
                         const v1 = bundle.vertices[i];
@@ -108,7 +108,7 @@
     {
         return !props.model.vertices[i-1].isAttachedToBundle || 
                !props.model.vertices[i-1].isAttachedToBundle || 
-               props.model.vertices[i-1].anchor.bundle?.afterVertex.link !== props.model.vertices[i].anchor.bundle?.afterVertex.link;
+               props.model.vertices[i-1].anchor.bundle?.baseVertex.link !== props.model.vertices[i].anchor.bundle?.baseVertex.link;
     }//segmentHasPadding
 </script>
 
