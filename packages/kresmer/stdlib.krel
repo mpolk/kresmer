@@ -504,7 +504,8 @@
     </component-class>
 
 
-    <!-- ********************************** Links ****************************** -->
+    <!-- *********************************************** Links ********************************************************* -->
+
     <link-class name="_abstract-link" category=".abstract-links">
         <defs>
             <marker id="kre:link-marker-circle" markerWidth="3" markerHeight="3" refX="5" refY="5" viewBox="0 0 10 10">
@@ -567,7 +568,7 @@
             .link {--link-color: #236e85; --highlighted-link-color: #2f97b6; }
             .padding {stroke-width: 10px;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
-            .segment.highlighted, .segment.selected {stroke-width: 3px; stroke-linejoin: round;}
+            .segment.highlighted, .segment.selected {stroke-width: 3px;}
             .vertex {stroke-width: 4px; r: 6px}
             .blank.header {fill-opacity: 0.3;}
         </style>
@@ -596,7 +597,7 @@
     <link-bundle-class name="link-bundle" category="link-bundles">
         <extends base="_abstract-link" accept-media-types="none"/>
         <style>
-            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 4px; }
+            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 4px; stroke-linejoin: round; }
         </style>
     </link-bundle-class>
 
