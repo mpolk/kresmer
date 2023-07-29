@@ -433,6 +433,7 @@ export default class LinkVertex {
 
     public align()
     {
+        const {x: x0, y: y0} = this.coords;
         const predecessor = this.prevNeighbor;
         const prePos = predecessor?.coords;
         const successor = this.nextNeighbor;
@@ -473,15 +474,13 @@ export default class LinkVertex {
             shouldMove = false;
             this.blink();
         }//if
-        const hitToPre = newAnchor?.pos && newAnchor.pos.x == prePos?.x && newAnchor.pos.y == prePos.y;
-        if (hitToPre) {
-            shouldMove = false;
-            predecessor?.blink();
-        }//if
-        const hitToSuc = newAnchor?.pos && newAnchor.pos.x == sucPos?.x && newAnchor.pos.y == sucPos.y;
-        if (hitToSuc) {
-            shouldMove = false;
-            successor?.blink();
+        const hitToNeighbour = newAnchor?.pos && ((newAnchor.pos.x == prePos?.x && newAnchor.pos.y == prePos.y) || 
+                                                  (newAnchor.pos.x == sucPos?.x && newAnchor.pos.y == sucPos.y));
+        if (hitToNeighbour) {
+            if (Math.abs(newAnchor!.pos!.x - x0) <= Math.abs(newAnchor!.pos!.y - y0))
+                newAnchor!.pos!.y = y0;
+            else
+                newAnchor!.pos!.x = x0;
         }//if
 
         if (shouldMove) {
