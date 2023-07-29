@@ -6,14 +6,14 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
+import { nextTick } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
 import type { RequireAtLeastOne } from "../Utils";
-import LinkBundle from "./LinkBundle";
-import { nextTick } from "vue";
+import type LinkBundle from "./LinkBundle";
 
 /** Link Vertex (either connected or free) */
 
@@ -494,6 +494,12 @@ export default class LinkVertex {
 
     private alignEndpoint(neighbor: LinkVertex): LinkVertexAnchor|null
     {
+        if (this.link.isBundle) {
+            const newAnchor = this.alignBundleEndpoint();
+            if (newAnchor)
+                return newAnchor;
+        }//if
+
         const threshold = 0.2;
         const {x: x0, y: y0} = this.coords;
         const {x: x1, y: y1} = neighbor.coords;
@@ -504,6 +510,43 @@ export default class LinkVertex {
         else
             return null;
     }//alignEndpoint
+
+    private alignBundleEndpoint(): LinkVertexAnchor|null
+    {
+        const bundle = this.link as LinkBundle;
+        let haveAttachedLinks = false;
+        const verticesAttachedHere: LinkVertex[] = [];
+        for (const attachedLink of bundle.getAttachedLinks()) {
+            for (const vertex of attachedLink.vertices) {
+                haveAttachedLinks = true;
+                if (vertex._anchor.bundle?.baseVertex === this && vertex._anchor.bundle?.distance === 0) {
+                    verticesAttachedHere.push(vertex);
+                }//if
+            }//for
+        }//for
+
+        if (!haveAttachedLinks || verticesAttachedHere.length > 1) 
+            return null;
+
+        if (verticesAttachedHere.length === 0 && this.isTail) {
+            let nearest: LinkVertex|undefined;
+            for (const attachedLink of bundle.getAttachedLinks()) {
+                for (const vertex of attachedLink.vertices) {
+                    const isCloser = 
+                        !this.isHead && vertex._anchor.bundle?.baseVertex === this.prevNeighbor && 
+                                        vertex._anchor.bundle?.distance && 
+                                        (!nearest || vertex._anchor.bundle.distance > nearest._anchor.bundle!.distance);
+                    if (isCloser)
+                        nearest = vertex;
+                 }//for
+            }//for
+            if (nearest) {
+                return {pos: nearest.coords};
+            }//if
+        }//if
+
+        return null;
+    }//alignBundleEndpoint
 
     private alignOnBundle(outOfBundleNeighbor: LinkVertex): LinkVertexAnchor|null
     {
