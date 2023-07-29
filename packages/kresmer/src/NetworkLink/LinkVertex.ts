@@ -508,13 +508,34 @@ export default class LinkVertex {
 
     private alignOnBundle(outOfBundleNeighbor: LinkVertex): LinkVertexAnchor|null
     {
-        const {baseVertex, distance} = this._anchor.bundle!;
+        const {baseVertex, distance: d0} = this._anchor.bundle!;
         if (baseVertex.isTail) {
             if ((baseVertex.link as LinkBundle).getAttachedLinks().length == 1)
                 nextTick(() => this.link.kresmer.edAPI.alignLinkVertex({vertex: baseVertex}));
             return null;
         }//if
-        return null;
+
+        const nextAfterBase = baseVertex.nextNeighbor!;
+        const {x: x0, y: y0} = this.coords;
+        const {x: x1, y: y1} = outOfBundleNeighbor.coords;
+        const {x: bx1, y: by1} = baseVertex.coords;
+        const {x: bx2, y: by2} = nextAfterBase.coords;
+        let deltaX, deltaY, d1: number|undefined;
+        if ((x1 >= bx1 && x1 <= bx2) || (x1 <= bx1 && x1 >= bx2))
+            deltaX = x1 - x0;
+        if ((y1 >= by1 && y1 <= by2) || (y1 <= by1 && y1 >= by2))
+            deltaY = y1 - y0;
+        if (deltaX == 0 || deltaY == 0)
+            return null;
+        if (deltaX && (deltaY == undefined || Math.abs(deltaX ?? Number.POSITIVE_INFINITY) <= deltaY))
+            d1 = d0 * (1 + deltaX / (x0 - bx1));
+        else if (deltaY && (deltaX == undefined || Math.abs(deltaY ?? Number.POSITIVE_INFINITY) <= deltaX))
+            d1 = d0 * (1 + deltaY / (y0 - by1));
+
+        if (d1 !== undefined)
+            return {bundle: {baseVertex, distance: d0}};
+        else
+            return null;
     }//alignOnBundle
 
     private alignBetweenTwoPositions(predecessor: LinkVertex, successor: LinkVertex): LinkVertexAnchor|null
