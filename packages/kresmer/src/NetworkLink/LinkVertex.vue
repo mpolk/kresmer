@@ -169,7 +169,7 @@ class=${JSON.stringify(clazz)}`;
 
     function onDoubleClick()
     {
-        props.model.align();
+        props.model.onDoubleClick();
     }//onDoubleClick
     
 </script>

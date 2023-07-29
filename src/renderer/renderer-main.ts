@@ -376,12 +376,12 @@ appCommandExecutor.on("add-vertex", (linkID: number, segmentNumber: number, mous
 
 appCommandExecutor.on("delete-vertex", (linkID: number, vertexNumber: number) =>
 {
-    kresmer.edAPI.deleteLinkVertex(linkID, vertexNumber);
+    kresmer.edAPI.deleteLinkVertex({linkID, vertexNumber});
 });//deleteLinkVertex
 
 appCommandExecutor.on("align-vertex", (linkID: number, vertexNumber: number) =>
 {
-    kresmer.edAPI.alignLinkVertex(linkID, vertexNumber);
+    kresmer.edAPI.alignLinkVertex({linkID, vertexNumber});
 });//alignLinkVertex
 
 appCommandExecutor.on("connect-connection-point", async (fromElementID: number, fromConnectionPointName: string|number) =>

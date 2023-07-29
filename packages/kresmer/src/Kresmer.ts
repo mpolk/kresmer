@@ -22,8 +22,8 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, NetworkLinkMap } from "./NetworkLink/NetworkLink";
-import KresmerException from "./KresmerException";
+import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, NetworkLinkMap } from "./NetworkLink/NetworkLink";
+import KresmerException, { UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
@@ -31,7 +31,7 @@ import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
-import { LinkVertexAnchor } from "./NetworkLink/LinkVertex";
+import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexMoveOp } from "./NetworkLink/LinkVertex";
 
 
 /**
@@ -913,40 +913,49 @@ export default class Kresmer extends KresmerEventHooks {
 
         /**
          * Aligns (or at least tries to) a link vertex to its neighbours
-         * @param linkID The link this vertexs belongs
-         * @param vertexNumber The seq number of the vertex to align
-         * @returns True if the vertex was aligned or false otherwise
+         * @param vertexSpec The specifier of the vertex to align (either direct ref or (linkID, vertexNumber) pair)
          */
-        alignLinkVertex: (linkID: number, vertexNumber: number) =>
+        alignLinkVertex: (vertexSpec: LinkVertexSpec) =>
         {
-            const link = this.getLinkById(linkID);
-            if (!link) {
-                throw new KresmerException(`Attempt to align a vertex of the non-existent link (id=${linkID})`);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let vertex: LinkVertex = (vertexSpec as any).vertex;
+            if (!vertex) {
+                const {linkID, vertexNumber} = vertexSpec as {linkID: number, vertexNumber: number};
+                const link = this.getLinkById(linkID);
+                if (!link) 
+                    throw new UndefinedLinkException({message: `Attempt to align a vertex of the non-existent link (id=${linkID})`});
+                vertex = link.vertices[vertexNumber];
+                if (!vertex) 
+                    throw new UndefinedVertexException({message: `Attempt to align a non-existent vertex (id=${linkID})`});
             }//if
-            const vertex = link.alignVertex(vertexNumber);
-            if (vertex) {
+            this.undoStack.startOperation(new VertexMoveOp(vertex));
+            if (vertex.align()) {
+                this.undoStack.commitOperation();
                 this.emit("link-vertex-moved", vertex);
+            } else {
+                this.undoStack.cancelOperation();
             }//if
-            return vertex;
         },//alignLinkVertex
 
         /**
          * Deletes a link vertex
-         * @param linkID The link this vertexs belongs
-         * @param vertexNumber The seq number of the vertex to delete
-         * @returns True if the vertex was deleted or false otherwise
+         * @param vertexSpec The specifier of the vertex to delete (either direct ref or (linkID, vertexNumber) pair)
          */
-        deleteLinkVertex: (linkID: number, vertexNumber: number) =>
+        deleteLinkVertex: (vertexSpec: LinkVertexSpec) =>
         {
-            const link = this.getLinkById(linkID);
-            if (!link) {
-                throw new KresmerException(`Attempt to delete a vertex from the non-existent link (id=${linkID})`);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let vertex: LinkVertex = (vertexSpec as any).vertex;
+            if (!vertex) {
+                const {linkID, vertexNumber} = vertexSpec as {linkID: number, vertexNumber: number};
+                const link = this.getLinkById(linkID);
+                if (!link) 
+                    throw new UndefinedLinkException({message: `Attempt to delete a vertex of the non-existent link (id=${linkID})`});
+                vertex = link.vertices[vertexNumber];
+                if (!vertex) 
+                    throw new UndefinedVertexException({message: `Attempt to delete a non-existent vertex (id=${linkID})`});
             }//if
-            const vertex = link.deleteVertex(vertexNumber);
-            if (vertex) {
-                this.emit("link-vertex-deleted", vertex);
-            }//if
-            return vertex;
+            this.undoStack.execAndCommit(new DeleteVertexOp(vertex));
+            this.emit("link-vertex-deleted", vertex);
         },//deleteLinkVertex
 
         /**

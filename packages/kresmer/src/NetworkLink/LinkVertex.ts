@@ -425,6 +425,12 @@ export default class LinkVertex {
     }//onRightClick
 
 
+    public onDoubleClick()
+    {
+        this.link.kresmer.edAPI.alignLinkVertex({vertex: this});
+    }//onDoubleClick
+
+
     public align()
     {
         const predecessor = this.prevNeighbor;
@@ -432,7 +438,6 @@ export default class LinkVertex {
         const successor = this.nextNeighbor;
         const sucPos = successor?.coords;
 
-        this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
         let newAnchor: LinkVertexAnchor|null = null;
         if (this.isConnected) {
             this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
@@ -479,19 +484,13 @@ export default class LinkVertex {
             successor?.blink();
         }//if
 
-        if (shouldMove && this.link.isLoopback && newAnchor?.pos) {
-            newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
+        if (shouldMove) {
+            if (this.link.isLoopback && newAnchor?.pos)
+                newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
+            this.anchor = newAnchor!;
         }//if
 
-        if (shouldMove) {
-            this.anchor = newAnchor!;
-            this.link.kresmer.undoStack.commitOperation();
-            this.link.kresmer.emit("link-vertex-moved", this);
-            return this;
-        } else {
-            this.link.kresmer.undoStack.cancelOperation();
-            return null;
-        }//if
+        return shouldMove;
     }//align
 
     private alignEndpoint(neighbor: LinkVertex): LinkVertexAnchor|null
@@ -512,7 +511,7 @@ export default class LinkVertex {
         const {baseVertex, distance} = this._anchor.bundle!;
         if (baseVertex.isTail) {
             if ((baseVertex.link as LinkBundle).getAttachedLinks().length == 1)
-                nextTick(() => baseVertex.align());
+                nextTick(() => this.link.kresmer.edAPI.alignLinkVertex({vertex: baseVertex}));
             return null;
         }//if
         return null;
@@ -635,8 +634,10 @@ export type BundleAttachmentDescriptor = {
     distance: number,
 }//BundleAttachmentDescriptor
 
+export type LinkVertexSpec = {vertex: LinkVertex}|{linkID: number, vertexNumber: number};
+
 // Editor operations
-class VertexMoveOp extends EditorOperation {
+export class VertexMoveOp extends EditorOperation {
     constructor(private vertex: LinkVertex)
     {
         super();

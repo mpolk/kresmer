@@ -8,7 +8,7 @@
 
 import { InjectionKey, nextTick } from "vue";
 import Kresmer, { ConnectionPointProxy } from "../Kresmer";
-import KresmerException, { UndefinedLinkClassException } from "../KresmerException";
+import { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
@@ -225,20 +225,6 @@ class _NetworkLink extends NetworkElement {
         return vertex;
     }//addVertex
 
-
-    public deleteVertex(vertexNumber: number) {
-        if (this.vertices.length <= vertexNumber) {
-            throw new KresmerException(`Attempt to delete a non-existent vertex (${this.id}, ${vertexNumber})`);
-        }//if
-        if (this.vertices.length <= 2) {
-            console.info(`Attempt to delete the next-to-last vertex (${this.id}, ${vertexNumber})`);
-            return null;
-        }//if
-        const vertex = this.vertices[vertexNumber];
-        this.kresmer.undoStack.execAndCommit(new DeleteVertexOp(vertex));
-        return vertex;
-    }//deleteVertex
-
     override getConnectionPoint(name: string | number): ConnectionPointProxy | undefined {
         const i = Number(name);
         if (i >= 0 && i < this.vertices.length)
@@ -255,11 +241,6 @@ class _NetworkLink extends NetworkElement {
     public override updateConnectionPoints(): void {
         this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos());
     }//updateConnectionPoints()
-
-    public alignVertex(vertexNumber: number)
-    {
-        return this.vertices[vertexNumber].align();
-    }//alignVertex
 
     public onMouseEnter()
     {
@@ -387,7 +368,7 @@ export class ChangeLinkClassOp extends EditorOperation {
     }//undo
 }//ChangeLinkClassOp
 
-class AddVertexOp extends EditorOperation {
+export class AddVertexOp extends EditorOperation {
 
     constructor(protected vertex: LinkVertex)
     {
@@ -416,7 +397,7 @@ class AddVertexOp extends EditorOperation {
     }//undo
 }//AddVertexOp
 
-class DeleteVertexOp extends AddVertexOp {
+export class DeleteVertexOp extends AddVertexOp {
     exec() {
         super.undo();
     }//exec
