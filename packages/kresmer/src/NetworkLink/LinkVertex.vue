@@ -175,11 +175,17 @@ class=${JSON.stringify(clazz)}`;
 </script>
 
 <template>
-    <circle v-if="!model.link.isSelected"
+    <circle v-if="!model.link.isSelected && dataLinkBundleVertex"
         :cx="model.coords.x" :cy="model.coords.y" 
         class="vertex" :class="{connected: model.isConnected}"
         style="fill: transparent; stroke: transparent;"
         :data-link-bundle-vertex="dataLinkBundleVertex"
+        @mousedown.stop="onMouseDown($event)"
+        @mouseup.stop="onMouseUp($event)"
+        @mousemove.stop="onMouseMove($event)"
+        @mouseleave.stop="onMouseLeave($event)"
+        @contextmenu="onRightClick($event)"
+        @dblclick="onDoubleClick()"
         />
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick"
