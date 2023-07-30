@@ -45,11 +45,6 @@ export default class NetworkLinkBlank {
 
     public onMouseUp(event: MouseEvent)
     {
-        if (this._class instanceof LinkBundleClass) {
-            this.kresmer._completeLinkCreation();
-            return;
-        }//if
-
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
         for (const element of elementsUnderCursor) {
             const connectionPointData = element.getAttribute("data-connection-point");
@@ -78,6 +73,9 @@ export default class NetworkLinkBlank {
                 return;
             }//if
         }//for
+
+        if (this._class instanceof LinkBundleClass)
+            this.kresmer._completeLinkCreation();
     }//onMouseUp
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
