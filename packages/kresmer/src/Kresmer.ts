@@ -51,6 +51,7 @@ export default class Kresmer extends KresmerEventHooks {
         snapToGrid?: boolean,
         snappingGranularity?: number,
         saveDynamicPropValuesWithDrawing?: boolean,
+        autoAlignVertices?: boolean,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -64,6 +65,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.snapToGrid = options?.snapToGrid ?? true;
         options?.snappingGranularity && (this.snappingGranularity = options.snappingGranularity);
         this.saveDynamicPropValuesWithDrawing = Boolean(options?.saveDynamicPropValuesWithDrawing);
+        this.autoAlignVertices = options?.autoAlignVertices ?? true;
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -108,6 +110,10 @@ export default class Kresmer extends KresmerEventHooks {
     get showGrid() {return this._showGrid.value}
     set showGrid(show: boolean) {this._showGrid.value = show}
     protected _showGrid = ref(false);
+    /** Should vertex alignment be performed automatically after vertex moving */
+    get autoAlignVertices() {return this._autoAlignVertices.value}
+    set autoAlignVertices(autoAlign: boolean) {this._autoAlignVertices.value = autoAlign}
+    protected _autoAlignVertices = ref(true);
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
