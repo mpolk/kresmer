@@ -172,7 +172,7 @@ export default class LinkVertex {
         if (this._anchor.conn) {
             return this._anchor.conn.toString();
         } else if (this._anchor.bundle) {
-            return `${this._anchor.bundle.baseVertex.link.name}:${this._anchor.bundle.baseVertex.vertexNumber}:${this._anchor.bundle.distance.toFixed()}`
+            return `@${this._anchor.bundle.baseVertex.link.name}:${this._anchor.bundle.baseVertex.vertexNumber}:${this._anchor.bundle.distance.toFixed()}`
         } else if (this._anchor.pos) {
             return `(${this._anchor.pos.x.toFixed()}, ${this._anchor.pos.y.toFixed()})`
         } else {
@@ -302,35 +302,35 @@ export default class LinkVertex {
         this.isDragged = false;
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
         const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
-        const stickToBundles = !this.link.isBundle && !this.isEndpoint;
+        const stickToBundles = !this.link.isBundle;
 
-            for (const element of elementsUnderCursor) {
-                if (stickToConnectionPoints) {
-                    const connectionPointData = element.getAttribute("data-connection-point");
-                    if (connectionPointData) {
-                        if (this.tryToConnectToConnectionPoint(connectionPointData))
-                            return true;
-                        else
-                            continue;
-                    }//if
+        for (const element of elementsUnderCursor) {
+            if (stickToConnectionPoints) {
+                const connectionPointData = element.getAttribute("data-connection-point");
+                if (connectionPointData) {
+                    if (this.tryToConnectToConnectionPoint(connectionPointData))
+                        return true;
+                    else
+                        continue;
                 }//if
-                if (stickToBundles) {
-                    const bundleData = element.getAttribute("data-link-bundle");
-                    if (bundleData) {
-                        if (this.tryToAttachToBundle(bundleData, event))
-                            return true;
-                        else
-                            continue;
-                    }//if
-                    const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
-                    if (bundleVertexData) {
-                        if (this.tryToAttachToBundle(bundleVertexData))
-                            return true;
-                        else
-                            continue;
-                    }//if
+            }//if
+            if (stickToBundles) {
+                const bundleData = element.getAttribute("data-link-bundle");
+                if (bundleData) {
+                    if (this.tryToAttachToBundle(bundleData, event))
+                        return true;
+                    else
+                        continue;
                 }//if
-            }//for
+                const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
+                if (bundleVertexData) {
+                    if (this.tryToAttachToBundle(bundleVertexData))
+                        return true;
+                    else
+                        continue;
+                }//if
+            }//if
+        }//for
 
         if (this.link.kresmer.snapToGrid) {
             this._anchor.pos = {
@@ -397,6 +397,10 @@ export default class LinkVertex {
             this.link.kresmer.raiseError(new UndefinedBundleException({message: `Attempt to connect to the non-bundle link "${bundleName}"`}));
             return true;
         }//if
+
+        if (this.isEndpoint && !bundle.head.isConnected && !bundle.tail.isConnected)
+            return false;
+
         const vertex = bundle.vertices[Number(vertexNumber)];
         if (!vertex) {
             this.link.kresmer.raiseError(new UndefinedVertexException({message: `Attempt to connect to the undefined vertex "${bundleData}"`}));

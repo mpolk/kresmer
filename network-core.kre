@@ -163,39 +163,38 @@
         <vertex bundle="core-border-bundle" after="1" distance="219.24999999999997"/>
     </link>
 
-    <link class="AOC-fan" name="uplink-dipt" from="border:et0/0/0@d" to="(930, 90)">
-        <vertex x="192.5" y="167"/>
-        <vertex x="930" y="167"/>
-    </link>
-
-    <link class="AOC" name="uplink-dipt-0" from="-uplink-dipt:3" to="(1106, 68)">
+    <link class="AOC" name="uplink-dipt-0" from="@dipt-uplink-fan:0:0" to="(1106, 68)">
         <props>
             <prop name="end-label">к свичу ДИПТ (порт 9)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
+        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
         <vertex x="950" y="68"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-1" from="-uplink-dipt:3" to="(1106, 82)">
+    <link class="AOC" name="uplink-dipt-1" from="@dipt-uplink-fan:0:0" to="(1106, 82)">
         <props>
             <prop name="end-label">к свичу ДИПТ (порт 10)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
+        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
         <vertex x="950" y="82"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-3" from="-uplink-dipt:3" to="(1050, 112)">
+    <link class="AOC" name="uplink-dipt-3" from="@dipt-uplink-fan:0:0" to="(1050, 112)">
         <props>
             <prop name="end-marker">circle</prop>
         </props>
+        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
         <vertex x="950" y="112"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-2" from="-uplink-dipt:3" to="(1106, 98)">
+    <link class="AOC" name="uplink-dipt-2" from="@dipt-uplink-fan:0:0" to="(1106, 98)">
         <props>
             <prop name="end-label">к свичу ДИПТ (порт 11)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
+        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
         <vertex x="950" y="98"/>
     </link>
 
@@ -282,5 +281,11 @@
     <link-bundle class="link-bundle" name="core-upper-bundle" from="(108, 242)" to="(368, 242)"/>
 
     <link-bundle class="link-bundle" name="core-lower-bundle" from="(116, 441)" to="(180, 441)"/>
+
+    <link-bundle class="AOC-bundle" name="dipt-uplink-fan" from="border:et0/0/0@d" to="(930, 90)">
+        <vertex x="192.5" y="166"/>
+        <vertex x="878" y="166"/>
+        <vertex x="878" y="90"/>
+    </link-bundle>
 
 </kresmer-drawing>

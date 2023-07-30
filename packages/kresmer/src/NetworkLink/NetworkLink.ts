@@ -102,13 +102,8 @@ class _NetworkLink extends NetworkElement {
         }//if
     }//initVertices
 
-    get head() {
-        return this.vertices[0];
-    }//head
-
-    get tail() {
-        return this.vertices[this.vertices.length-1];
-    }//tail
+    get head() {return this.vertices[0];}
+    get tail() {return this.vertices[this.vertices.length-1];}
 
     public toggleVertexPositioningMode(except: LinkVertex)
     {
@@ -158,10 +153,10 @@ class _NetworkLink extends NetworkElement {
         attrs.set("class", this.getClass().name);
         attrs.set("name", this.name);
         this.dbID && attrs.set("db-id", this.dbID.toString());
-        (this.vertices[0].isConnected || this.vertices[0].anchor.pos) && 
+        (this.head.isConnected || this.head.isAttachedToBundle || this.head.anchor.pos) && 
             attrs.set("from", this.vertices[0].toString());
         const n = this.vertices.length - 1;
-        (this.vertices[n].isConnected || this.vertices[n].anchor.pos) && 
+        (this.tail.isConnected || this.tail.isAttachedToBundle || this.tail.anchor.pos) && 
             attrs.set("to", this.vertices[n].toString());
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');

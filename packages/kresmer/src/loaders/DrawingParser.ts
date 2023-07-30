@@ -210,8 +210,7 @@ export default class DrawingParser {
         }//if
         const from = this.parseLinkEndpoint(node.getAttribute("from"));
         const to = this.parseLinkEndpoint(node.getAttribute("to"));
-        const link = isBundle ? new LinkBundle(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices}) :
-                                new NetworkLink(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices});
+        const link = new (isBundle ? LinkBundle : NetworkLink)(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices});
         return link;
     }//parseLinkNode
 
@@ -221,19 +220,35 @@ export default class DrawingParser {
         if (!strData)
             return {};
 
-        let matches = strData.match(/^\s*\(\s*(-?\d+),\s*(-?\d+)\s*\)\s*$/);
-        if (matches) {
-            return {pos: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}};
-        } else {
-            matches = strData.match(/^([-A-Za-z0-9_]+):([-A-Za-z0-9_:/]+(?:@[a-z0-9]+)?)$/);
-            if (matches) {
-                return {cpData: {cpHostElement: matches[1], connectionPoint: matches[2]}};
-            } else {
+        const patterns = [
+            {
+                pattern: /^\s*\(\s*(-?\d+),\s*(-?\d+)\s*\)\s*$/, 
+                handler: (matches: string[]) => {return {
+                    pos: {x: parseFloat(matches[1]), y: parseFloat(matches[2])}
+                }}
+            },
+            {
+                pattern: /^([-A-Za-z0-9_]+):([-A-Za-z0-9_:/]+(?:@[a-z0-9]+)?)$/, 
+                handler: (matches: string[]) => {
+                    return {cpData: {cpHostElement: matches[1], connectionPoint: matches[2]}}
+                }
+            },
+            {
+                pattern: /^@([-A-Za-z0-9_]+):([0-9]+):([0-9]+(?:\.[0-9]*)?)$/, 
+                handler: (matches: string[]) => {
+                    return {bundleData: {bundleName: matches[1], baseVertex: parseInt(matches[2]), distance: parseFloat(matches[3])}}
+                }
+            },
+        ];
+
+        for (const p of patterns) {
+            const matches = strData.match(p.pattern);
+            if (matches)
+                return p.handler(matches);
+        }//for
                 this.kresmer.raiseError(new KresmerException(
                     `Invalid link vertex specification: "${strData}"`));
                 return {};
-            }//if
-        }//if
     }//parseLinkEndpoint
 
 
