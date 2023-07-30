@@ -76,7 +76,7 @@
             chunks.push(`${prefix}${v.coords.x},${v.coords.y}`)
             prefix = "L";
             const b1 = v.anchor.bundle;
-            const b2 = v.nextNeighbor?.anchor.bundle;
+            const b2 = v.nextNeighbour?.anchor.bundle;
             if (b1 && b2 && b1.baseVertex.link === b2.baseVertex.link) {
                 const bundle = b1.baseVertex.link;
                 const n1 = b1.baseVertex.vertexNumber;

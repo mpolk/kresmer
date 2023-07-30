@@ -160,12 +160,12 @@ export default class LinkVertex {
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
     get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
     get isInitialized() {return !this.initParams;}
-    get prevNeighbor(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
-    get nextNeighbor(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
-    get isEnteringBundle() {return Boolean(this.isAttachedToBundle && (!this.prevNeighbor?.isAttachedToBundle || 
-                                           this.prevNeighbor.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
-    get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbor?.isAttachedToBundle ||
-                                          this.nextNeighbor.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
+    get prevNeighbour(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
+    get nextNeighbour(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
+    get isEnteringBundle() {return Boolean(this.isAttachedToBundle && (!this.prevNeighbour?.isAttachedToBundle || 
+                                           this.prevNeighbour.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
+    get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbour?.isAttachedToBundle ||
+                                          this.nextNeighbour.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
 
     toString()
     {
@@ -434,9 +434,9 @@ export default class LinkVertex {
     public align()
     {
         const {x: x0, y: y0} = this.coords;
-        const predecessor = this.prevNeighbor;
+        const predecessor = this.prevNeighbour;
         const prePos = predecessor?.coords;
-        const successor = this.nextNeighbor;
+        const successor = this.nextNeighbour;
         const sucPos = successor?.coords;
 
         let newAnchor: LinkVertexAnchor|null = null;
@@ -533,7 +533,7 @@ export default class LinkVertex {
             for (const attachedLink of bundle.getAttachedLinks()) {
                 for (const vertex of attachedLink.vertices) {
                     const isCloser = 
-                        !this.isHead && vertex._anchor.bundle?.baseVertex === this.prevNeighbor && 
+                        !this.isHead && vertex._anchor.bundle?.baseVertex === this.prevNeighbour && 
                                         vertex._anchor.bundle?.distance && 
                                         (!nearest || vertex._anchor.bundle.distance > nearest._anchor.bundle!.distance);
                     if (isCloser)
@@ -548,14 +548,14 @@ export default class LinkVertex {
         if (verticesAttachedHere.length === 1) {
             const attachedVertex = verticesAttachedHere[0];
             if (attachedVertex._anchor.bundle!.distance === 0) {
-                const lastBeforeAttached = attachedVertex.prevNeighbor;
-                const nextAfterAttached = attachedVertex.nextNeighbor;
+                const lastBeforeAttached = attachedVertex.prevNeighbour;
+                const nextAfterAttached = attachedVertex.nextNeighbour;
                 const vertexToAlignTo = 
                     (lastBeforeAttached && !lastBeforeAttached.isAttachedToBundle && nextAfterAttached?.isAttachedToBundle) ? lastBeforeAttached :
                     (nextAfterAttached && !nextAfterAttached.isAttachedToBundle && lastBeforeAttached?.isAttachedToBundle) ? nextAfterAttached : 
                     undefined;
                 if (vertexToAlignTo) {
-                    const nearestNeighbour = this.isHead ? this.nextNeighbor! : this.prevNeighbor!;
+                    const nearestNeighbour = this.isHead ? this.nextNeighbour! : this.prevNeighbour!;
                     if (vertexToAlignTo.isConnected)
                         return this.alignBetweenConnectionAndPosition(vertexToAlignTo, nearestNeighbour);
                     else
@@ -567,7 +567,7 @@ export default class LinkVertex {
         return null;
     }//alignBundleEndpoint
 
-    private alignOnBundle(outOfBundleNeighbor: LinkVertex): LinkVertexAnchor|null
+    private alignOnBundle(outOfBundleNeighbour: LinkVertex): LinkVertexAnchor|null
     {
         const {baseVertex, distance: d0} = this._anchor.bundle!;
         if (baseVertex.isTail) {
@@ -576,9 +576,9 @@ export default class LinkVertex {
             return null;
         }//if
 
-        const nextAfterBase = baseVertex.nextNeighbor!;
+        const nextAfterBase = baseVertex.nextNeighbour!;
         const {x: x0, y: y0} = this.coords;
-        const {x: x1, y: y1} = outOfBundleNeighbor.coords;
+        const {x: x1, y: y1} = outOfBundleNeighbour.coords;
         const {x: bx1, y: by1} = baseVertex.coords;
         const {x: bx2, y: by2} = nextAfterBase.coords;
         let deltaX, deltaY, d1: number|undefined;
