@@ -140,6 +140,14 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
+                            <label class="form-check-label" for="cbAutoAlignVertices">Automatically align vertices</label>
+                            <input type="checkbox" id="cbAutoAlignVertices" class="form-check-input" v-model="appSettings!.autoAlignVertices" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-check">
                             <label class="form-check-label" for="cbSaveDynamicPropsWithDrawing">Save dynamic props with the drawing</label>
                             <input type="checkbox" id="cbSaveDynamicPropsWithDrawing" class="form-check-input" v-model="appSettings!.saveDynamicPropValuesWithDrawing" />
                         </div>

@@ -42,6 +42,7 @@ export type StatusBarDisplayData = {
     serverURL: string,
     drawingScale: number,
     notificationsCount: number,
+    autoAlignVertices: boolean,
 };
 
 export const statusBarData: StatusBarDisplayData = reactive({
@@ -50,6 +51,7 @@ export const statusBarData: StatusBarDisplayData = reactive({
     serverURL: "",
     drawingScale: 1,
     notificationsCount: 0,
+    autoAlignVertices: true,
 })//statusBarData
 
 export const vueStatusBar = createApp(StatusBar, {
@@ -309,6 +311,7 @@ export function updateAppSettings(newAppSettings: AppSettings)
     kresmer.snapToGrid = newAppSettings.snapToGrid;
     kresmer.snappingGranularity = newAppSettings.snappingGranularity;
     kresmer.saveDynamicPropValuesWithDrawing = newAppSettings.saveDynamicPropValuesWithDrawing;
+    kresmer.autoAlignVertices = statusBarData.autoAlignVertices = newAppSettings.autoAlignVertices;
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
 
