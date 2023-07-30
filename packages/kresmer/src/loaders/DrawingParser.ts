@@ -246,9 +246,9 @@ export default class DrawingParser {
             if (matches)
                 return p.handler(matches);
         }//for
-                this.kresmer.raiseError(new KresmerException(
-                    `Invalid link vertex specification: "${strData}"`));
-                return {};
+
+        this.kresmer.raiseError(new KresmerException(`Invalid link vertex specification: "${strData}"`));
+        return {};
     }//parseLinkEndpoint
 
 
