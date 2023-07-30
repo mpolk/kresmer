@@ -598,7 +598,7 @@ export default class LinkVertex {
             d1 = d0 * (1 + deltaY / (y0 - by1));
 
         if (d1 !== undefined)
-            return {bundle: {baseVertex, distance: d0}};
+            return {bundle: {baseVertex, distance: d1}};
         else
             return null;
     }//alignOnBundle
