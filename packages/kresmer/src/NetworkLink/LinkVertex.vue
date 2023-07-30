@@ -50,6 +50,9 @@
         const nextNeighbourIsBundled = nextNeighbour.anchor.bundle?.baseVertex.link === thisVertex.anchor.bundle!.baseVertex.link;
         if (prevNeighbourIsBundled === nextNeighbourIsBundled)
             return undefined;
+        if (thisVertex.link.head.anchor.bundle?.baseVertex.link == thisVertex.anchor.bundle!.baseVertex.link ||
+            thisVertex.link.tail.anchor.bundle?.baseVertex.link == thisVertex.anchor.bundle!.baseVertex.link)
+            return undefined;
 
         const bundle = props.model.anchor.bundle!.baseVertex.link as LinkBundle;
         if (!thisVertex.link.isHighlighted) {

@@ -274,8 +274,8 @@
         <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
     </link>
 
-    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(268, 184)" to="(624, 404)">
-        <vertex x="624" y="184"/>
+    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(268, 172)" to="(624, 404)">
+        <vertex x="624" y="172"/>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="core-upper-bundle" from="(108, 242)" to="(368, 242)"/>
@@ -283,8 +283,8 @@
     <link-bundle class="link-bundle" name="core-lower-bundle" from="(116, 441)" to="(180, 441)"/>
 
     <link-bundle class="AOC-bundle" name="dipt-uplink-fan" from="border:et0/0/0@d" to="(930, 90)">
-        <vertex x="192.5" y="166"/>
-        <vertex x="878" y="166"/>
+        <vertex x="192.5" y="188"/>
+        <vertex x="878" y="188"/>
         <vertex x="878" y="90"/>
     </link-bundle>
 
