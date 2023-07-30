@@ -545,6 +545,25 @@ export default class LinkVertex {
             }//if
         }//if
 
+        if (verticesAttachedHere.length === 1) {
+            const attachedVertex = verticesAttachedHere[0];
+            if (attachedVertex._anchor.bundle!.distance === 0) {
+                const lastBeforeAttached = attachedVertex.prevNeighbor;
+                const nextAfterAttached = attachedVertex.nextNeighbor;
+                const vertexToAlignTo = 
+                    (lastBeforeAttached && !lastBeforeAttached.isAttachedToBundle && nextAfterAttached?.isAttachedToBundle) ? lastBeforeAttached :
+                    (nextAfterAttached && !nextAfterAttached.isAttachedToBundle && lastBeforeAttached?.isAttachedToBundle) ? nextAfterAttached : 
+                    undefined;
+                if (vertexToAlignTo) {
+                    const nearestNeighbour = this.isHead ? this.nextNeighbor! : this.prevNeighbor!;
+                    if (vertexToAlignTo.isConnected)
+                        return this.alignBetweenConnectionAndPosition(vertexToAlignTo, nearestNeighbour);
+                    else
+                        return this.alignBetweenTwoPositions(vertexToAlignTo, nearestNeighbour);
+                }//if
+            }//if
+        }//if
+
         return null;
     }//alignBundleEndpoint
 

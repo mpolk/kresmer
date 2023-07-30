@@ -125,7 +125,7 @@
         <props>
             <prop name="start-label"></prop>
         </props>
-        <vertex bundle="core-lower-bundle" after="0" distance="64.88206071663242"/>
+        <vertex bundle="core-lower-bundle" after="1" distance="0"/>
         <vertex bundle="core-lower-bundle" after="0" distance="0"/>
         <vertex x="10" y="441"/>
         <vertex x="10" y="726"/>
@@ -235,7 +235,7 @@
         <vertex bundle="metro-middle-bundle" after="0" distance="587.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 672)" to="(928, 670)"/>
+    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 672)" to="(928, 672)"/>
 
     <link-bundle class="link-bundle" name="metro-middle-bundle" from="(40, 770)" to="(928, 770)"/>
 
@@ -281,6 +281,6 @@
 
     <link-bundle class="link-bundle" name="core-upper-bundle" from="(108, 242)" to="(368, 242)"/>
 
-    <link-bundle class="link-bundle" name="core-lower-bundle" from="(116, 441)" to="(181, 441)"/>
+    <link-bundle class="link-bundle" name="core-lower-bundle" from="(116, 441)" to="(180, 441)"/>
 
 </kresmer-drawing>
