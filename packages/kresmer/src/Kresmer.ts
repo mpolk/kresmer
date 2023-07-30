@@ -111,9 +111,7 @@ export default class Kresmer extends KresmerEventHooks {
     set showGrid(show: boolean) {this._showGrid.value = show}
     protected _showGrid = ref(false);
     /** Should vertex alignment be performed automatically after vertex moving */
-    get autoAlignVertices() {return this._autoAlignVertices.value}
-    set autoAlignVertices(autoAlign: boolean) {this._autoAlignVertices.value = autoAlign}
-    protected _autoAlignVertices = ref(true);
+    autoAlignVertices = true;
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
@@ -921,7 +919,7 @@ export default class Kresmer extends KresmerEventHooks {
          * Aligns (or at least tries to) a link vertex to its neighbours
          * @param vertexSpec The specifier of the vertex to align (either direct ref or (linkID, vertexNumber) pair)
          */
-        alignLinkVertex: (vertexSpec: LinkVertexSpec) =>
+        alignLinkVertex: (vertexSpec: LinkVertexSpec, suspendPostActions = false) =>
         {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let vertex: LinkVertex = (vertexSpec as any).vertex;
@@ -935,11 +933,13 @@ export default class Kresmer extends KresmerEventHooks {
                     throw new UndefinedVertexException({message: `Attempt to align a non-existent vertex (id=${linkID})`});
             }//if
             this.undoStack.startOperation(new VertexMoveOp(vertex));
-            if (vertex.align()) {
+            if (vertex.align(suspendPostActions)) {
                 this.undoStack.commitOperation();
                 this.emit("link-vertex-moved", vertex);
+                return true;
             } else {
                 this.undoStack.cancelOperation();
+                return false;
             }//if
         },//alignLinkVertex
 

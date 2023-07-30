@@ -308,25 +308,31 @@ export default class LinkVertex {
             if (stickToConnectionPoints) {
                 const connectionPointData = element.getAttribute("data-connection-point");
                 if (connectionPointData) {
-                    if (this.tryToConnectToConnectionPoint(connectionPointData))
+                    if (this.tryToConnectToConnectionPoint(connectionPointData)) {
+                        if (this.link.kresmer.autoAlignVertices)
+                            this.performPostMoveActions();
                         return true;
-                    else
+                    } else
                         continue;
                 }//if
             }//if
             if (stickToBundles) {
                 const bundleData = element.getAttribute("data-link-bundle");
                 if (bundleData) {
-                    if (this.tryToAttachToBundle(bundleData, event))
+                    if (this.tryToAttachToBundle(bundleData, event)) {
+                        if (this.link.kresmer.autoAlignVertices)
+                            this.performPostMoveActions();
                         return true;
-                    else
+                    } else
                         continue;
                 }//if
                 const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
                 if (bundleVertexData) {
-                    if (this.tryToAttachToBundle(bundleVertexData))
+                    if (this.tryToAttachToBundle(bundleVertexData)) {
+                        if (this.link.kresmer.autoAlignVertices)
+                            this.performPostMoveActions();
                         return true;
-                    else
+                    } else
                         continue;
                 }//if
             }//if
@@ -347,6 +353,11 @@ export default class LinkVertex {
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
         this.ownConnectionPoint?.updatePos();
+        console.debug("this.link.kresmer.autoAlignVertices=", this.link.kresmer.autoAlignVertices);
+        if (this.link.kresmer.autoAlignVertices) {
+            console.debug("this.link.kresmer.autoAlignVertices=", this.link.kresmer.autoAlignVertices);
+            this.performPostMoveActions();
+        }//if
         return true;
     }//endDrag
 
@@ -435,7 +446,7 @@ export default class LinkVertex {
     }//onDoubleClick
 
 
-    public align()
+    public align(suspendPostActions = false)
     {
         const {x: x0, y: y0} = this.coords;
         const predecessor = this.prevNeighbour;
@@ -491,10 +502,31 @@ export default class LinkVertex {
             if (this.link.isLoopback && newAnchor?.pos)
                 newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
             this.anchor = newAnchor!;
+            if (this.link.kresmer.autoAlignVertices && !suspendPostActions)
+                this.performPostMoveActions();
         }//if
 
         return shouldMove;
     }//align
+
+    private performPostMoveActions()
+    {
+        nextTick(() => {
+            let propagate = true;
+            if (this.prevNeighbour)
+                propagate = this.link.kresmer.edAPI.alignLinkVertex({vertex: this.prevNeighbour}, true);
+            if (propagate) {
+                nextTick(() => {
+                    propagate = true;
+                    if (this.nextNeighbour)
+                        propagate = this.link.kresmer.edAPI.alignLinkVertex({vertex: this.nextNeighbour}, true);
+                    if (propagate) {
+                        nextTick(() => this.link.kresmer.edAPI.alignLinkVertex({vertex: this}, true));
+                    }//if
+                });
+            }//if
+        });
+    }//performPostMoveActions
 
     private alignEndpoint(neighbor: LinkVertex): LinkVertexAnchor|null
     {
