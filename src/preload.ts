@@ -79,6 +79,10 @@ exposeToRenderer({
         sendToMain("grid-shown-or-hidden", shown);
     },
 
- });
+    autoAlignmentToggled: (autoAlignVertices: boolean) => {
+        sendToMain("vertex-auto-alignment-toggled", autoAlignVertices)
+    },
+
+});
  console.debug("Finished setting up electron API for the renderer");
  

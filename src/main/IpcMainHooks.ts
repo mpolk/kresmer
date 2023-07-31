@@ -22,6 +22,7 @@ export interface IpcMainChannels {
     "open-url": (url: string) => void;
     "grid-shown-or-hidden": (shown: boolean) => void;
     "rulers-shown-or-hidden": (shown: boolean) => void;
+    "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;

@@ -30,7 +30,7 @@ export const localSettings = new Settings("local-settings.json", {
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
     snapToGrid: true as boolean,
     snappingGranularity: 1,
-    autoAlignVertices: true,
+    autoAlignVertices: true as boolean,
     saveDynamicPropValuesWithDrawing: false as boolean,
     customManagementProtocols: [] as CustomManagementProtocol[],
 });
@@ -222,6 +222,11 @@ function initIpcMainHooks()
 
     IpcMainHooks.on("rulers-shown-or-hidden", shown => {
         Menu.getApplicationMenu()!.getMenuItemById("toggleRulers")!.checked = shown;
+    });
+
+    IpcMainHooks.on("vertex-auto-alignment-toggled", autoAlignVertices => {
+        Menu.getApplicationMenu()!.getMenuItemById("toggleVertexAutoAlignment")!.checked = autoAlignVertices;
+        localSettings.set("autoAlignVertices", autoAlignVertices);
     });
 }//initIpcMainHooks
 

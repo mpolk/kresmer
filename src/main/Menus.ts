@@ -89,6 +89,8 @@ export default class Menus {
           { label: 'Delete network element', accelerator: "delete", enabled: false,
             id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")},
           { type: 'separator' },
+          { label: 'Auto-align link vertices', type: "checkbox", checked: true, accelerator: "Alt+A", id: "toggleVertexAutoAlignment", 
+            click: () => sendAppCommand("toggle-vertex-auto-alignment") },
           { label: "Drawing properties...", click: () => sendAppCommand("edit-drawing-properties", {x: 0, y: 0})},
           { label: "Application settings...", click: () => sendAppCommand("edit-app-settings", localSettings.data)},
           ]

@@ -58,6 +58,11 @@
             {{displayData.hint}}
         </div>
         <div>
+            <div class="pane" :title="`Vertex auto-alignment is ${displayData.autoAlignVertices ? 'on' : 'off'}`">
+                <span class="material-symbols-outlined align-bottom" 
+                    :style="`visibility: ${displayData.autoAlignVertices ? 'visible' : 'hidden'}`"
+                    >hdr_auto</span>
+            </div>
             <div class="pane" title="Backend server URL currently connected">
                 {{displayData.serverURL}}
             </div>

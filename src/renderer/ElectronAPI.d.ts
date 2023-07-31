@@ -24,6 +24,7 @@ export interface ElectronAPI {
     openURL: (url: string) => void,
     rulersShownOrHidden: (shown: boolean) => void,
     gridShownOrHidden: (shown: boolean) => void,
+    autoAlignmentToggled: (autoAlignVertices: boolean) => void,
 }//IElectronAPI
 
 

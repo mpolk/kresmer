@@ -34,6 +34,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "undo": () => void,
     "redo": () => void,
     "scale-drawing": (direction: ScaleDirection) => void,
+    "toggle-vertex-auto-alignment": () => void,
     "toggle-grid": () => void,
     "toggle-rulers": () => void,
     "delete-selected-element": () => void,
