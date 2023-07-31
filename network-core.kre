@@ -423,4 +423,46 @@
         <vertex bundle="metro-middle-bundle" after="0" distance="662.5"/>
     </link>
 
+    <link class="twisted-pair" name="metro-kusay-3" from="kusay:eth2@d" to="metro-switch:2:31@u">
+        <vertex bundle="brases-metro-bundle" after="3" distance="409.00000000000006"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="662.5"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-kusay-4" from="kusay:eth3@d" to="metro-switch:2:32@d">
+        <vertex bundle="brases-metro-bundle" after="3" distance="439"/>
+        <vertex bundle="brases-metro-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="662.5"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-kusay-5" from="kusay:eth4@d" to="metro-switch:1:29@u">
+        <vertex bundle="brases-metro-bundle" after="3" distance="469"/>
+        <vertex bundle="brases-metro-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="625"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-kusay-6" from="kusay:eth5@d" to="metro-switch:2:29@u">
+        <vertex bundle="brases-metro-bundle" after="3" distance="499"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="625"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-kusay-7" from="kusay:eth6@d" to="metro-switch:1:35@u">
+        <vertex bundle="brases-metro-bundle" after="3" distance="529"/>
+        <vertex bundle="brases-metro-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="737.5"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-kusay-8" from="kusay:eth7@d" to="metro-switch:2:35@u">
+        <vertex bundle="brases-metro-bundle" after="3" distance="559"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="737.5"/>
+    </link>
+
 </kresmer-drawing>
