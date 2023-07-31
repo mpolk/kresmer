@@ -176,6 +176,62 @@
         </props>
     </component>
 
+    <component class="Server" name="rugay" db-id="23">
+        <origin x="636" y="478"/>
+        <props>
+            <prop name="unit-height">75</prop>
+            <prop name="management-protocol">ssh:</prop>
+            <prop name="interfaces">{
+                  "xge0": {
+                    "direction": "uplink",
+                    "speed": "10G",
+                    "media": "sm-optics"
+                  },
+                  "eth0": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth1": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth2": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth3": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth4": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth5": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth6": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  },
+                  "eth7": {
+                    "direction": "downlink",
+                    "speed": "1G",
+                    "media": "copper"
+                  }
+                }</prop>
+            <prop name="width">300</prop>
+        </props>
+    </component>
+
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">
         <props>
             <prop name="start-label"></prop>
@@ -301,7 +357,7 @@
         <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
     </link>
 
-    <link-bundle class="link-bundle" name="brases-metro-bundle" from="(22, 854)" to="(582, 572)">
+    <link-bundle class="link-bundle" name="brases-metro-bundle" from="(22, 854)" to="(892, 572)">
         <vertex x="22" y="750"/>
         <vertex x="22" y="658"/>
         <vertex x="22" y="572"/>
@@ -342,7 +398,7 @@
         <vertex x="878" y="90"/>
     </link-bundle>
 
-    <link class="twisted-pair" name="metro-kusay" from="kusay:eth0@d" to="metro-switch:1:31@u">
+    <link class="twisted-pair" name="metro-kusay-1" from="kusay:eth0@d" to="metro-switch:1:31@u">
         <vertex bundle="brases-metro-bundle" after="3" distance="349"/>
         <vertex bundle="brases-metro-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
@@ -358,6 +414,13 @@
         <vertex bundle="core-upper-bundle" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle" after="2" distance="0"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-kusay-2" from="kusay:eth1@d" to="metro-switch:1:32@d">
+        <vertex bundle="brases-metro-bundle" after="3" distance="379"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="662.5"/>
     </link>
 
 </kresmer-drawing>

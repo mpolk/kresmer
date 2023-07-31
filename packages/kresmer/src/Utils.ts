@@ -48,3 +48,18 @@ export type RequireAtLeastOne<T, Keys extends keyof T = keyof T> =
     & {
         [K in Keys]-?: Required<Pick<T, K>> & Partial<Pick<T, Exclude<Keys, K>>>
     }[Keys]
+
+
+export function clone<T>(x: T): T
+{
+    if (Array.isArray(x))
+        return x.map(el => clone(el)) as T;
+    else if (typeof x === "object") {
+        const y: Record<string, unknown> = {};
+        for (const k in x) {
+            y[k] = clone(x[k as keyof typeof x]);
+        }//for
+        return y as T;
+    } else
+        return x;
+}//clone

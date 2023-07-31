@@ -169,6 +169,7 @@ kresmer.on("component-selected", (component: NetworkComponent, isSelected: boole
         statusBarData.selectedElement = null;
     }//if
     window.electronAPI.enableDeleteMenuItem(isSelected);
+    window.electronAPI.enableDuplicateMenuItem(isSelected);
 });//onComponentSelected
 
 kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) => 
@@ -315,15 +316,6 @@ export function updateAppSettings(newAppSettings: AppSettings)
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
 
-appCommandExecutor.on("delete-selected-element", () =>
-{
-    if (kresmer.selectedElement instanceof NetworkComponent) {
-        kresmer.edAPI.deleteComponent(kresmer.selectedElement.id);
-    } else if (kresmer.selectedElement instanceof NetworkLink) {
-        kresmer.edAPI.deleteLink(kresmer.selectedElement.id);
-    }//if
-});//deleteSelectedElement
-
 appCommandExecutor.on("add-component", async (position?: Position) =>
 {
     const componentClass = await vueComponentClassSelectionDialog.show();
@@ -334,10 +326,29 @@ appCommandExecutor.on("add-component", async (position?: Position) =>
     }//if
 });//addComponent
 
+appCommandExecutor.on("delete-selected-element", () =>
+{
+    if (kresmer.selectedElement instanceof NetworkComponent) {
+        kresmer.edAPI.deleteComponent(kresmer.selectedElement.id);
+    } else if (kresmer.selectedElement instanceof NetworkLink) {
+        kresmer.edAPI.deleteLink(kresmer.selectedElement.id);
+    }//if
+});//deleteSelectedElement
+
 appCommandExecutor.on("delete-component", (componentID: number) =>
 {
     kresmer.edAPI.deleteComponent(componentID);
 });//deleteComponent
+
+appCommandExecutor.on("duplicate-selected-component", () =>
+{
+    kresmer.edAPI.duplicateComponent(kresmer.getComponentControllerById(kresmer.selectedElement!.id)!);
+});//duplicateSelectedElement
+
+appCommandExecutor.on("duplicate-component", (componentID: number) =>
+{
+    kresmer.edAPI.duplicateComponent(kresmer.getComponentControllerById(componentID)!);
+});//duplicateComponent
 
 appCommandExecutor.on("edit-component-properties", (componentID: number) =>
 {

@@ -19,6 +19,7 @@ export interface ElectronAPI {
     setDefaultDrawingFileName: (fileName: string) => void,
     completeDrawingSaving: (dwgData: string) => void,
     enableDeleteMenuItem: (enable: boolean) => void,
+    enableDuplicateMenuItem: (enable: boolean) => void,
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => void,
     backendServerDisconnected: () => void,
     openURL: (url: string) => void,

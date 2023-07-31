@@ -32,6 +32,7 @@ import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexMoveOp } from "./NetworkLink/LinkVertex";
+import { clone } from "./Utils";
 
 
 /**
@@ -834,6 +835,17 @@ export default class Kresmer extends KresmerEventHooks {
             const controller = new NetworkComponentController(this, newComponent, {origin});
             this.undoStack.execAndCommit(new ComponentAddOp(controller));
         },//createComponent
+
+        duplicateComponent: (original: NetworkComponentController) =>
+        {
+            let name: string;
+            for (let n = 1; (name = `${original.component.name}.${n}`) && this.componentsByName.has(name); n++) {/**/}
+            const props = clone(original.component.props);
+            const newComponent = new NetworkComponent(this, original.component.getClass(), {name, props});
+            const origin = {x: original.origin.x + 10, y: original.origin.y + 10};
+            const controller = new NetworkComponentController(this, newComponent, {origin});
+            this.undoStack.execAndCommit(new ComponentAddOp(controller));
+        },//duplicateComponent
 
         /**
          * Deletes the specified component from the drawing using an undoable editor operation

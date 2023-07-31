@@ -186,6 +186,10 @@ function initIpcMainHooks()
         Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
     });
 
+    IpcMainHooks.on('enable-duplicate-menu-item', (enable: boolean) => {
+        Menu.getApplicationMenu()!.getMenuItemById("duplicate-selected-component")!.enabled = enable;
+    });
+
     IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
         localSettings.set("server", {url, password, autoConnect});
         const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;

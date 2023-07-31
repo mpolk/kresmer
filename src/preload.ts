@@ -59,6 +59,10 @@ exposeToRenderer({
         sendToMain("enable-delete-menu-item", enable);
     },
 
+    enableDuplicateMenuItem: (enable: boolean) => {
+        sendToMain("enable-duplicate-menu-item", enable);
+    },
+
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => {
         sendToMain("backend-server-connected", url, password, autoConnect);
     },

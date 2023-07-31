@@ -31,6 +31,7 @@ export interface ContextMenuCommands {
 
     "transform-component": ContextMenuHandler<"component">,
     "delete-component": ContextMenuHandler<"component">,
+    "duplicate-component": ContextMenuHandler<"component">,
     "edit-component-properties": ContextMenuHandler<"component">,
 
     "align-vertices": ContextMenuHandler<"link">,
@@ -69,7 +70,7 @@ export default class Menus {
           {type: 'separator'},
           {label: "Connect to the backend server...", accelerator: "Control+B", id: "connectToServer", 
                   click: () => requestConnectToServer(true)},
-          {label: "Disconnect from the backend server", accelerator: "Control+D", id: "disconnectFromServer", 
+          {label: "Disconnect from the backend server", accelerator: "Control+B", id: "disconnectFromServer", 
                   click: () => requestDisconnectFromServer(), visible: false, enabled: false},
           {type: 'separator'},
           isMac ? { role: 'close' } : { role: 'quit' }
@@ -84,6 +85,8 @@ export default class Menus {
           { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
           { type: 'separator' },
           { label: 'Add component...', accelerator: "insert", click: () => sendAppCommand("add-component") },
+          { label: 'Duplicate component...', accelerator: "Control+D", enabled: false, id: "duplicate-selected-component", 
+            click: () => sendAppCommand("duplicate-selected-component") },
           { label: 'Add link...', accelerator: "Alt+l", click: () => sendAppCommand("create-link") },
           { label: 'Add link bundle...', accelerator: "Alt+b", click: () => sendAppCommand("create-link-bundle") },
           { label: 'Delete network element', accelerator: "delete", enabled: false,
@@ -134,6 +137,7 @@ export default class Menus {
         ],
         "component" : [
           {label: "Transform", id: "transform-component"},
+          {label: "Duplicate component", id: "duplicate-component"},
           {label: "Delete component", id: "delete-component"},
           {type: 'separator'},
           {label: "Properties...", id: "edit-component-properties"},
