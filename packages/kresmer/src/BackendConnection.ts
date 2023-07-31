@@ -59,7 +59,7 @@ export default class BackendConnection {
         const headers = BackendConnection.makeHeaders(this.password);
         const data = JSON.stringify(element.getData());
         try {
-            const response = await fetch(this.makeURL(type, "loaded", element.dbID!), {
+            const response = await fetch(this.makeURL(type, "loaded", element.dbID!, element.getClass().name), {
                 method: "POST",
                 headers,
                 body: data,

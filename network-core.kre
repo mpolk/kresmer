@@ -64,11 +64,10 @@
         </props>
     </component>
 
-    <component class="Server" name="Kamakura">
+    <component class="Server" name="Kamakura" db-id="4">
         <origin x="17" y="478"/>
         <props>
             <prop name="unit-height">75</prop>
-            <prop name="ip-address">193.110.112.20</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
                   "xge0": {
