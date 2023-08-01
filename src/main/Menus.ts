@@ -7,7 +7,7 @@
  ***************************************************************************/
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 import { Position } from "kresmer";
-import { openDrawing, loadLibrary, saveDrawingAs, sendAppCommand, saveDrawing, 
+import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, sendAppCommand, saveDrawing, 
          requestConnectToServer, requestDisconnectFromServer, localSettings } from "./main";
 
 const isMac = process.platform === 'darwin'
@@ -67,6 +67,7 @@ export default class Menus {
           {type: 'separator'},
           {label: "Save drawing", accelerator: "Control+S", click: () => saveDrawing()},
           {label: "Save drawing as...", click: () => saveDrawingAs()},
+          {label: "Export drawing to SVG...", click: () => exportDrawingToSVG()},
           {type: 'separator'},
           {label: "Connect to the backend server...", accelerator: "Control+B", id: "connectToServer", 
                   click: () => requestConnectToServer(true)},

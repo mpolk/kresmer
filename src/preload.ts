@@ -55,6 +55,10 @@ exposeToRenderer({
         sendToMain("complete-drawing-saving", dwgData);
     },
 
+    completeDrawingExportToSVG: (svgData: string) => {
+        sendToMain("complete-drawing-export-to-SVG", svgData);
+    },
+
     enableDeleteMenuItem: (enable: boolean) => {
         sendToMain("enable-delete-menu-item", enable);
     },

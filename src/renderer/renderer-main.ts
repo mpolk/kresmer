@@ -299,6 +299,12 @@ appCommandExecutor.on("save-drawing", () =>
     window.electronAPI.completeDrawingSaving(dwgData);
 });//saveDrawing
 
+appCommandExecutor.on("export-drawing-to-SVG", () =>
+{
+    const svgData = kresmer.exportDrawingToSVG();
+    window.electronAPI.completeDrawingExportToSVG(svgData);
+});//saveDrawing
+
 appCommandExecutor.on("edit-drawing-properties", () => {
     vueDrawingPropsSidebar.show();
 });

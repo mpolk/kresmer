@@ -491,6 +491,16 @@ export default class Kresmer extends KresmerEventHooks {
     saveDynamicPropValuesWithDrawing = false;
 
 
+    public exportDrawingToSVG()
+    {
+        return `\
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
+${this.rootSVG.outerHTML}
+`;
+    }//exportDrawingToSVG
+
+
     /** Erases everything that is in the drawing now */
     public eraseContent()
     {

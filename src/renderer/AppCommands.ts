@@ -27,6 +27,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "load-library": (libData: string, options?: LoadLibraryOptions) => void,
     "load-drawing": (drawingData: string, options?: LoadDrawingOptions) => void,
     "save-drawing": () => void,
+    "export-drawing-to-SVG": () => void,
     "connect-to-server": (url: string, password: string, forceUI: boolean, 
                           completionSignal?: AppInitStage) => void,
     "disconnect-from-server": () => void,

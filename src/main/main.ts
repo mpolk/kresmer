@@ -402,6 +402,40 @@ export function saveDrawingAs()
 }//saveDrawingAs
 
 
+export function exportDrawingToSVG()
+{
+    let filePath = dialog.showSaveDialogSync(mainWindow, {
+        title: "Export drawing to SVG",
+        filters: [
+            {name: "Scalable Vector Graphics files (*.svg)", extensions: ["svg"]},
+            {name: "All files (*.*)", extensions: ["*"]},
+        ],
+        defaultPath: defaultDrawingFileName.replace(/.kre$/, ".svg"),
+    });
+
+    if (filePath) {
+        if (!path.extname(filePath)) {
+            filePath += ".svg";
+        }//if
+
+        if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
+            message: `File "${path.basename(filePath)}" exists! Overwrite?`,
+            buttons: ["Ok", "Cancel"],
+            defaultId: 1,
+            })) 
+        {
+            return;
+        }//if
+        
+        IpcMainHooks.once("complete-drawing-export-to-SVG", (svgData: string) => {
+            console.debug(`About to export the drawing to the file "${filePath}"`);
+            fs.writeFileSync(filePath!, svgData);
+        });
+        sendAppCommand("export-drawing-to-SVG");
+    }//if
+}//exportDrawingToSVG
+
+
 export function loadLibrary()
 {
     // console.debug("About to show 'Open drawing dialog...'")
