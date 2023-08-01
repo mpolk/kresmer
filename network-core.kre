@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="network-core" width="1200" height="1000">
+<kresmer-drawing name="network-core" width="1500" height="1000">
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
         <origin x="130" y="256"/>
         <props>
@@ -232,6 +232,48 @@
         </props>
     </component>
 
+    <component class="Server" name="vasilisk" db-id="25">
+        <origin x="892" y="478"/>
+        <props>
+            <prop name="unit-height">75</prop>
+            <prop name="management-protocol">ssh:</prop>
+            <prop name="interfaces">{
+                  "xge0": {
+                    "direction": "uplink",
+                    "speed": "10G",
+                    "media": "sm-optics"
+                  },
+                  "xge1": {
+                    "direction": "downlink",
+                    "media": "sm-optics",
+                    "speed": "10G"
+                  }
+                }</prop>
+            <prop name="width">280</prop>
+        </props>
+    </component>
+
+    <component class="Server" name="manticor" db-id="26">
+        <origin x="1186" y="478"/>
+        <props>
+            <prop name="unit-height">75</prop>
+            <prop name="management-protocol">ssh:</prop>
+            <prop name="interfaces">{
+                  "xge0": {
+                    "direction": "uplink",
+                    "speed": "10G",
+                    "media": "sm-optics"
+                  },
+                  "xge1": {
+                    "direction": "downlink",
+                    "media": "sm-optics",
+                    "speed": "10G"
+                  }
+                }</prop>
+            <prop name="width">280</prop>
+        </props>
+    </component>
+
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">
         <props>
             <prop name="start-label"></prop>
@@ -357,7 +399,7 @@
         <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
     </link>
 
-    <link-bundle class="link-bundle" name="brases-metro-bundle" from="(22, 854)" to="(892, 572)">
+    <link-bundle class="link-bundle" name="brases-metro-bundle" from="(22, 854)" to="(1326, 572)">
         <vertex x="22" y="750"/>
         <vertex x="22" y="658"/>
         <vertex x="22" y="572"/>
@@ -405,7 +447,7 @@
         <vertex bundle="metro-upper-bundle" after="0" distance="662.5"/>
     </link>
 
-    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(92, 258)" to="(830, 458)">
+    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(92, 258)" to="(1326, 458)">
         <vertex x="92" y="354.17938743218895"/>
         <vertex x="92" y="458"/>
     </link-bundle>
@@ -515,6 +557,48 @@
         <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="587.5"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-rugay-7" from="rugay:eth6@d" to="metro-switch:2:30@d">
+        <vertex bundle="brases-metro-bundle" after="3" distance="793"/>
+        <vertex bundle="brases-metro-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="625"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-rugay-8" from="rugay:eth7@d" to="metro-switch:2:28@d">
+        <vertex bundle="brases-metro-bundle" after="3" distance="823.0000000000001"/>
+        <vertex bundle="brases-metro-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="587.5"/>
+    </link>
+
+    <link class="DAC" name="metro-vasilisk" from="vasilisk:xge1@d" to="metro-switch:1:25@u">
+        <vertex bundle="brases-metro-bundle" after="3" distance="1010.0000000000001"/>
+        <vertex bundle="brases-metro-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="550"/>
+    </link>
+
+    <link class="DAC" name="core-vasilisk" from="core:2:3@u" to="vasilisk:xge0@u">
+        <vertex bundle="core-middle-bundle" after="0" distance="107.50000000000001"/>
+        <vertex bundle="core-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="brases-core-bundle" after="1" distance="0"/>
+        <vertex bundle="brases-core-bundle" after="2" distance="940.0000000000001"/>
+    </link>
+
+    <link class="DAC" name="core-manticor" from="core:1:3@u" to="manticor:xge0@u">
+        <vertex bundle="core-upper-bundle" after="0" distance="109.5"/>
+        <vertex bundle="core-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="brases-core-bundle" after="0" distance="0"/>
+        <vertex bundle="brases-core-bundle" after="3" distance="0"/>
+    </link>
+
+    <link class="DAC" name="metro-manticor" from="manticor:xge1@d" to="metro-switch:2:25@u">
+        <vertex bundle="brases-metro-bundle" after="4" distance="0"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="550"/>
     </link>
 
 </kresmer-drawing>
