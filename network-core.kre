@@ -489,4 +489,32 @@
         <vertex bundle="metro-middle-bundle" after="0" distance="700"/>
     </link>
 
+    <link class="twisted-pair" name="metro-rugay-3" from="rugay:eth2@d" to="metro-switch:2:33@u">
+        <vertex bundle="brases-metro-bundle" after="3" distance="673"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="700"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-rugay-4" from="rugay:eth3@d" to="metro-switch:2:34@d">
+        <vertex bundle="brases-metro-bundle" after="3" distance="703"/>
+        <vertex bundle="brases-metro-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-lower-bundle" after="0" distance="700"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-rugay-5" from="rugay:eth4@d" to="metro-switch:1:30@d">
+        <vertex bundle="brases-metro-bundle" after="3" distance="733"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="625"/>
+    </link>
+
+    <link class="twisted-pair" name="metro-rugay-6" from="rugay:eth5@d" to="metro-switch:1:28@d">
+        <vertex bundle="brases-metro-bundle" after="3" distance="763"/>
+        <vertex bundle="brases-metro-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="587.5"/>
+    </link>
+
 </kresmer-drawing>
