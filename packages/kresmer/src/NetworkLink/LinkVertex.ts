@@ -310,7 +310,7 @@ export default class LinkVertex {
                 if (connectionPointData) {
                     if (this.tryToConnectToConnectionPoint(connectionPointData)) {
                         if (this.link.kresmer.autoAlignVertices)
-                            this.performPostMoveActions();
+                            this.performPostMoveActions("postMove");
                         return true;
                     } else
                         continue;
@@ -321,7 +321,7 @@ export default class LinkVertex {
                 if (bundleData) {
                     if (this.tryToAttachToBundle(bundleData, event)) {
                         if (this.link.kresmer.autoAlignVertices)
-                            this.performPostMoveActions();
+                            this.performPostMoveActions("postMove");
                         return true;
                     } else
                         continue;
@@ -330,7 +330,7 @@ export default class LinkVertex {
                 if (bundleVertexData) {
                     if (this.tryToAttachToBundle(bundleVertexData)) {
                         if (this.link.kresmer.autoAlignVertices)
-                            this.performPostMoveActions();
+                            this.performPostMoveActions("postMove");
                         return true;
                     } else
                         continue;
@@ -356,7 +356,7 @@ export default class LinkVertex {
         console.debug("this.link.kresmer.autoAlignVertices=", this.link.kresmer.autoAlignVertices);
         if (this.link.kresmer.autoAlignVertices) {
             console.debug("this.link.kresmer.autoAlignVertices=", this.link.kresmer.autoAlignVertices);
-            this.performPostMoveActions();
+            this.performPostMoveActions("postMove");
         }//if
         return true;
     }//endDrag
@@ -446,7 +446,7 @@ export default class LinkVertex {
     }//onDoubleClick
 
 
-    public align(suspendPostActions = false)
+    public align(mode: VertexAlignmentMode = "normal")
     {
         const {x: x0, y: y0} = this.coords;
         const predecessor = this.prevNeighbour;
@@ -456,15 +456,16 @@ export default class LinkVertex {
 
         let newAnchor: LinkVertexAnchor|null = null;
         if (this.isConnected) {
-            this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
-                {message: `Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`, severity: "warning"}));
+            if (mode === "normal")
+                this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+                    {message: `Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`, severity: "warning"}));
             newAnchor = null;
         } else if (!predecessor && !successor) {
             newAnchor = null;
         } else if (!predecessor) {
-            newAnchor = this.alignEndpoint(successor!);
+            newAnchor = this.alignEndpoint(successor!, mode);
         } else if (!successor) {
-            newAnchor = this.alignEndpoint(predecessor);
+            newAnchor = this.alignEndpoint(predecessor, mode);
         } else if (this.isAttachedToBundle && !predecessor.isAttachedToBundle && successor.isAttachedToBundle) {
             newAnchor = this.alignOnBundle(predecessor);
         } else if (this.isAttachedToBundle && predecessor.isAttachedToBundle && !successor.isAttachedToBundle) {
@@ -484,8 +485,9 @@ export default class LinkVertex {
             newAnchor.pos.x <= 0 || newAnchor.pos.x >= this.link.kresmer.logicalWidth ||
             newAnchor.pos.y <= 0 || newAnchor.pos.y >= this.link.kresmer.logicalHeight);
         if (outOfLimits) {
-            this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
-                {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
+            if (mode === "normal") 
+                this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+                    {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
             shouldMove = false;
             this.blink();
         }//if
@@ -502,36 +504,32 @@ export default class LinkVertex {
             if (this.link.isLoopback && newAnchor?.pos)
                 newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
             this.anchor = newAnchor!;
-            if (this.link.kresmer.autoAlignVertices && !suspendPostActions)
-                this.performPostMoveActions();
+            if (this.link.kresmer.autoAlignVertices && mode == "normal")
+                this.performPostMoveActions("postAlign");
         }//if
 
         return shouldMove;
     }//align
 
-    private performPostMoveActions()
+    private performPostMoveActions(mode: VertexAlignmentMode)
     {
         nextTick(() => {
-            let propagate = true;
             if (this.prevNeighbour)
-                propagate = this.link.kresmer.edAPI.alignLinkVertex({vertex: this.prevNeighbour}, true);
-            if (propagate) {
-                nextTick(() => {
-                    propagate = true;
-                    if (this.nextNeighbour)
-                        propagate = this.link.kresmer.edAPI.alignLinkVertex({vertex: this.nextNeighbour}, true);
-                    if (propagate) {
-                        nextTick(() => this.link.kresmer.edAPI.alignLinkVertex({vertex: this}, true));
-                    }//if
-                });
-            }//if
+                this.link.kresmer.edAPI.alignLinkVertex({vertex: this.prevNeighbour}, mode);
+            nextTick(() => {
+                if (this.nextNeighbour)
+                    this.link.kresmer.edAPI.alignLinkVertex({vertex: this.nextNeighbour}, mode);
+                if (mode !== "postAlign") {
+                    nextTick(() => this.link.kresmer.edAPI.alignLinkVertex({vertex: this}, mode));
+                }//if
+            });
         });
     }//performPostMoveActions
 
-    private alignEndpoint(neighbor: LinkVertex): LinkVertexAnchor|null
+    private alignEndpoint(neighbor: LinkVertex, mode: VertexAlignmentMode): LinkVertexAnchor|null
     {
         if (this.link.isBundle) {
-            const newAnchor = this.alignBundleEndpoint();
+            const newAnchor = this.alignBundleEndpoint(mode);
             if (newAnchor)
                 return newAnchor;
         }//if
@@ -547,7 +545,7 @@ export default class LinkVertex {
             return null;
     }//alignEndpoint
 
-    private alignBundleEndpoint(): LinkVertexAnchor|null
+    private alignBundleEndpoint(mode: VertexAlignmentMode): LinkVertexAnchor|null
     {
         const bundle = this.link as LinkBundle;
         let haveAttachedLinks = false;
@@ -581,7 +579,7 @@ export default class LinkVertex {
             }//if
         }//if
 
-        if (verticesAttachedHere.length === 1) {
+        if (verticesAttachedHere.length === 1 && mode !== "postAlign") {
             const attachedVertex = verticesAttachedHere[0];
             if (attachedVertex._anchor.bundle!.distance === 0) {
                 const lastBeforeAttached = attachedVertex.prevNeighbour;
@@ -753,6 +751,8 @@ export type BundleAttachmentDescriptor = {
 }//BundleAttachmentDescriptor
 
 export type LinkVertexSpec = {vertex: LinkVertex}|{linkID: number, vertexNumber: number};
+
+export type VertexAlignmentMode = "normal" | "postAlign" | "postMove";
 
 // Editor operations
 export class VertexMoveOp extends EditorOperation {

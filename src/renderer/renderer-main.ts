@@ -63,6 +63,7 @@ setKresmerSize();
 statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
+statusBarData.autoAlignVertices = kresmer.autoAlignVertices;
 
 function setKresmerSize()
 {

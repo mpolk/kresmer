@@ -31,7 +31,7 @@ import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
-import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexMoveOp } from "./NetworkLink/LinkVertex";
+import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexAlignmentMode, VertexMoveOp } from "./NetworkLink/LinkVertex";
 import { clone } from "./Utils";
 
 
@@ -941,7 +941,7 @@ ${this.rootSVG.outerHTML}
          * Aligns (or at least tries to) a link vertex to its neighbours
          * @param vertexSpec The specifier of the vertex to align (either direct ref or (linkID, vertexNumber) pair)
          */
-        alignLinkVertex: (vertexSpec: LinkVertexSpec, suspendPostActions = false) =>
+        alignLinkVertex: (vertexSpec: LinkVertexSpec, mode: VertexAlignmentMode = "normal") =>
         {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let vertex: LinkVertex = (vertexSpec as any).vertex;
@@ -955,7 +955,7 @@ ${this.rootSVG.outerHTML}
                     throw new UndefinedVertexException({message: `Attempt to align a non-existent vertex (id=${linkID})`});
             }//if
             this.undoStack.startOperation(new VertexMoveOp(vertex));
-            if (vertex.align(suspendPostActions)) {
+            if (vertex.align(mode)) {
                 this.undoStack.commitOperation();
                 this.emit("link-vertex-moved", vertex);
                 return true;
