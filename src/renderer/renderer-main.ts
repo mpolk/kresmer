@@ -320,6 +320,8 @@ export function updateAppSettings(newAppSettings: AppSettings)
     kresmer.snappingGranularity = newAppSettings.snappingGranularity;
     kresmer.saveDynamicPropValuesWithDrawing = newAppSettings.saveDynamicPropValuesWithDrawing;
     kresmer.autoAlignVertices = statusBarData.autoAlignVertices = newAppSettings.autoAlignVertices;
+    kresmer.animateComponentDragging = newAppSettings.animateComponentDragging;
+    kresmer.animateLinkBundleDragging = newAppSettings.animateLinkBundleDragging;
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
 

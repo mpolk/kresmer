@@ -153,6 +153,22 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label" for="cbAnimateComponentDragging">Animate component dragging</label>
+                            <input type="checkbox" id="cbAnimateComponentDragging" class="form-check-input" v-model="appSettings!.animateComponentDragging" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label" for="cbAnimateLinkBundleDragging">Animate link bundle dragging</label>
+                            <input type="checkbox" id="cbAnimateLinkBundleDragging" class="form-check-input" v-model="appSettings!.animateLinkBundleDragging" />
+                        </div>
+                    </div>
+                </div>
                 <div class="row pt-2">
                     <div class="col d-flex justify-content-between">
                         <span>Management protocols</span>

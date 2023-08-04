@@ -33,6 +33,8 @@ export const localSettings = new Settings("local-settings.json", {
     autoAlignVertices: true as boolean,
     saveDynamicPropValuesWithDrawing: false as boolean,
     customManagementProtocols: [] as CustomManagementProtocol[],
+    animateComponentDragging: false as boolean,
+    animateLinkBundleDragging: false as boolean,
 });
 
 export type AppSettings = {
@@ -41,6 +43,8 @@ export type AppSettings = {
     autoAlignVertices: boolean,
     saveDynamicPropValuesWithDrawing: boolean,
     customManagementProtocols: CustomManagementProtocol[],
+    animateComponentDragging: boolean,
+    animateLinkBundleDragging: boolean,
 }//AppSettings
 
 export type CustomManagementProtocol = {
