@@ -64,6 +64,14 @@ export default class LinkVertex {
         this._anchor.pos = undefined;
     }//attachToBundle
 
+    public detach()
+    {
+        if (this.isConnected || this.isAttachedToBundle) {
+            this.pinUp({...this.coords});
+        }//if
+        return this;
+    }//detach
+
     // This "manual" setter is used to adjust other vertices positioning mode accordingly 
     // to the link's loopback mode
     private setConn(newValue: ConnectionPointProxy|undefined) {
@@ -744,15 +752,6 @@ export default class LinkVertex {
         this.isBlinking = true;
         setTimeout(() => {this.isBlinking = false}, 500);
     }//blink
-
-
-    public detach()
-    {
-        if (this.isConnected) {
-            this.pinUp({...this.coords});
-        }//if
-        return this;
-    }//detach
 }//LinkVertex
 
 
