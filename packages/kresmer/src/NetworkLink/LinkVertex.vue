@@ -26,8 +26,8 @@
         dataLinkBundleVertex: {type: String},
     })
 
-    onBeforeMount(() => props.model.updateSegmentVector());
-    onMounted(() => props.model.updateSegmentVector());
+    onBeforeMount(() => props.model._updateSegmentVector());
+    onMounted(() => props.model._updateSegmentVector());
     onUpdated(() => props.model.updateSegmentVector());
 
     const isEditable = inject(Kresmer.ikIsEditable);

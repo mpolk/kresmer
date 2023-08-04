@@ -6,7 +6,7 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
-import { nextTick, reactive } from "vue";
+import { nextTick } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
@@ -149,13 +149,19 @@ export default class LinkVertex {
     }//_segmentVector
 
     segmentVector?: SegmentVector;
-    updateSegmentVector()
+    _updateSegmentVector()
     {
         if (this.link.isBundle) {
             const vector = this._segmentVector;
             if (vector)
                 this.segmentVector = vector;
         }//if
+    }//_updateSegmentVector
+
+    updateSegmentVector()
+    {
+        this._updateSegmentVector();
+        this.prevNeighbour?._updateSegmentVector();
     }//updateSegmentVector
     
 
@@ -359,7 +365,7 @@ export default class LinkVertex {
         }//for
 
         if (done) {
-            this.link.updateSegmentVectors();
+            this.updateSegmentVector();
             this.ownConnectionPoint.updatePos();
             if (this.link.kresmer.autoAlignVertices)
                 this.performPostMoveActions("postMove");
@@ -380,7 +386,7 @@ export default class LinkVertex {
             this.savedConn = undefined;
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
-        this.link.updateSegmentVectors();
+        this.updateSegmentVector();
         this.ownConnectionPoint.updatePos();
         if (this.link.kresmer.autoAlignVertices) {
             this.performPostMoveActions("postMove");
@@ -418,7 +424,7 @@ export default class LinkVertex {
         }//if
         this.link.kresmer.undoStack.commitOperation();
         this.link.kresmer.emit("link-vertex-connected", this);
-        this.link.updateSegmentVectors();
+        this.updateSegmentVector();
         this.ownConnectionPoint.updatePos();
         return true;
     }//tryToConnectToConnectionPoint
@@ -457,7 +463,7 @@ export default class LinkVertex {
         this.attachToBundle({baseVertex: vertex, distance: d});
         this.link.kresmer.undoStack.commitOperation();
         this.link.kresmer.emit("link-vertex-connected", this);
-        this.link.updateSegmentVectors();
+        this.updateSegmentVector();
         this.ownConnectionPoint.updatePos();
         return true;
     }//tryToAttachToBundle
@@ -533,7 +539,7 @@ export default class LinkVertex {
             if (this.link.isLoopback && newAnchor?.pos)
                 newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
             this.anchor = newAnchor!;
-            this.link.updateSegmentVectors();
+            this.updateSegmentVector();
             this.ownConnectionPoint.updatePos();
             if (this.link.kresmer.autoAlignVertices && mode == "normal")
                 this.performPostMoveActions("postAlign");
