@@ -6,7 +6,7 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
-import { nextTick } from "vue";
+import { nextTick, reactive } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
@@ -119,13 +119,11 @@ export default class LinkVertex {
             const beforeVertex = afterVertex.link.vertices[n+1];
             if (!afterVertex.isInitialized || !beforeVertex.isInitialized)
                 return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
-            const p1 = afterVertex.coords;
-            const p2 = beforeVertex.coords;
-            const h = Math.sqrt((p2.y-p1.y)*(p2.y-p1.y) + (p2.x-p1.x)*(p2.x-p1.x));
+            const {x0, y0, length: h, sinFi, cosFi} = afterVertex.segmentVector!;
             if (d > h)
                 d = h;
-            const x = p1.x + d * (p2.x-p1.x) / h;
-            const y = p1.y + d * (p2.y-p1.y) / h;
+            const x = x0 + d * cosFi;
+            const y = y0 + d * sinFi;
             return {x, y};
         } else if (this._anchor.pos && this.link.isLoopback) {
             const headCoords = this.link.head.coords;
@@ -136,7 +134,31 @@ export default class LinkVertex {
             return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
         }//if
     }//coords
+
+    private get _segmentVector(): SegmentVector|undefined
+    {
+        const nextNeighbour = this.nextNeighbour;
+        if (!nextNeighbour)
+            return undefined;
+        const p1 = this.coords;
+        const p2 = nextNeighbour.coords;
+        const length = Math.sqrt((p2.y-p1.y)*(p2.y-p1.y) + (p2.x-p1.x)*(p2.x-p1.x));
+        const cosFi = (p2.x-p1.x) / length;
+        const sinFi = (p2.y-p1.y) / length;
+        return {x0: p1.x, y0: p1.y, length, cosFi, sinFi};
+    }//_segmentVector
+
+    segmentVector = reactive<SegmentVector>({x0: 0, y0: 0, length: 0, sinFi: 0, cosFi: 0});
+    updateSegmentVector()
+    {
+        if (this.link.isBundle) {
+            const vector = this._segmentVector;
+            if (vector)
+                Object.keys(vector).forEach(key => {this.segmentVector[key as keyof SegmentVector] = vector[key as keyof SegmentVector];});
+        }//if
+    }//updateSegmentVector
     
+
     private readonly _key: number;
     private revision = 0;
     get key() {return `${this._key}.${this.revision}`}
@@ -304,14 +326,14 @@ export default class LinkVertex {
         const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
         const stickToBundles = !this.link.isBundle;
 
+        let done = false;
         for (const element of elementsUnderCursor) {
             if (stickToConnectionPoints) {
                 const connectionPointData = element.getAttribute("data-connection-point");
                 if (connectionPointData) {
                     if (this.tryToConnectToConnectionPoint(connectionPointData)) {
-                        if (this.link.kresmer.autoAlignVertices)
-                            this.performPostMoveActions("postMove");
-                        return true;
+                        done = true;
+                        break;
                     } else
                         continue;
                 }//if
@@ -320,23 +342,28 @@ export default class LinkVertex {
                 const bundleData = element.getAttribute("data-link-bundle");
                 if (bundleData) {
                     if (this.tryToAttachToBundle(bundleData, event)) {
-                        if (this.link.kresmer.autoAlignVertices)
-                            this.performPostMoveActions("postMove");
-                        return true;
+                        done = true;
+                        break;
                     } else
                         continue;
                 }//if
                 const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
                 if (bundleVertexData) {
                     if (this.tryToAttachToBundle(bundleVertexData)) {
-                        if (this.link.kresmer.autoAlignVertices)
-                            this.performPostMoveActions("postMove");
-                        return true;
+                        done = true;
+                        break;
                     } else
                         continue;
                 }//if
             }//if
         }//for
+
+        if (done) {
+            this.link.updateSegmentVectors();
+            if (this.link.kresmer.autoAlignVertices)
+                this.performPostMoveActions("postMove");
+            return true;
+        }//if
 
         if (this.link.kresmer.snapToGrid) {
             this._anchor.pos = {
@@ -353,9 +380,8 @@ export default class LinkVertex {
         }//if
         this.link.kresmer.emit("link-vertex-moved", this);
         this.ownConnectionPoint?.updatePos();
-        console.debug("this.link.kresmer.autoAlignVertices=", this.link.kresmer.autoAlignVertices);
+        this.updateSegmentVector();
         if (this.link.kresmer.autoAlignVertices) {
-            console.debug("this.link.kresmer.autoAlignVertices=", this.link.kresmer.autoAlignVertices);
             this.performPostMoveActions("postMove");
         }//if
         return true;
@@ -753,6 +779,8 @@ export type BundleAttachmentDescriptor = {
 export type LinkVertexSpec = {vertex: LinkVertex}|{linkID: number, vertexNumber: number};
 
 export type VertexAlignmentMode = "normal" | "postAlign" | "postMove";
+
+type SegmentVector = {x0: number, y0: number, length: number, cosFi: number, sinFi: number};
 
 // Editor operations
 export class VertexMoveOp extends EditorOperation {

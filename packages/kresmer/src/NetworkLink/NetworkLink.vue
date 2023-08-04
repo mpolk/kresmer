@@ -28,14 +28,16 @@
         endMarker: {type: String, required: false},
     });
 
+    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(NetworkElement.ikHostElement, props.model);
 
+    // eslint-disable-next-line vue/no-setup-props-destructure
     onBeforeMount(props.model.initVertices);
     onMounted(() => {
         props.model.updateConnectionPoints();
         if (props.model instanceof LinkBundle)
             props.model.updateAttachedLinkVues();
-    })
+    });
 
     const linkClass = computed(() => {
         return {

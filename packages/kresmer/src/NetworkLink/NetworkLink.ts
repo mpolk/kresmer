@@ -237,6 +237,11 @@ class _NetworkLink extends NetworkElement {
         this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos());
     }//updateConnectionPoints()
 
+    public updateSegmentVectors()
+    {
+        this.vertices.forEach(vertex => vertex.updateSegmentVector());
+    }//updateSegmentVectors
+
     public onMouseEnter()
     {
         this.isHighlighted = true;

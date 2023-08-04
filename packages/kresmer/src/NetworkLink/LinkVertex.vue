@@ -6,7 +6,7 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, inject, computed } from 'vue';
+    import { PropType, ref, inject, computed, onUpdated, onBeforeMount, onMounted } from 'vue';
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
     import ConnectionPoint from '../ConnectionPoint/ConnectionPoint.vue';
@@ -25,6 +25,10 @@
         model: {type: Object as PropType<LinkVertex>, required: true},
         dataLinkBundleVertex: {type: String},
     })
+
+    onBeforeMount(() => props.model.updateSegmentVector());
+    onMounted(() => props.model.updateSegmentVector());
+    // onUpdated(() => props.model.updateSegmentVector());
 
     const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<HTMLElement>()!;
