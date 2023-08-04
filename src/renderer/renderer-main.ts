@@ -58,8 +58,7 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar") as InstanceType<typeof StatusBar>;
 
-export const kresmer = new Kresmer("#kresmer", window.electronAPI.initialAppSettings);
-setKresmerSize();
+export const kresmer = new Kresmer("#kresmer", {...window.electronAPI.initialAppSettings, ...calcKresmerSize()});
 statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
@@ -67,12 +66,21 @@ statusBarData.autoAlignVertices = kresmer.autoAlignVertices;
 
 function setKresmerSize()
 {
+    const {mountingWidth, mountingHeight} = calcKresmerSize();
+    kresmer.mountingWidth = mountingWidth;
+    kresmer.mountingHeight = mountingHeight;
+}//setKresmerSize
+
+function calcKresmerSize()
+{
     const body = document.querySelector("body") as HTMLElement;
     const mountingBox = body.getBoundingClientRect();
     mountingBox.height -= vueStatusBar.getHeight();
-    kresmer.mountingWidth = mountingBox.width;
-    kresmer.mountingHeight = mountingBox.height;
-}//setKresmerSize
+    return {
+        mountingWidth: mountingBox.width,
+        mountingHeight: mountingBox.height,
+    }
+}//calcKresmerSize
 
 window.addEventListener("resize", setKresmerSize);
 
