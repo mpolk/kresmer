@@ -64,6 +64,10 @@ class _NetworkLink extends NetworkElement {
     get isHighlighted() {return this._isHighlighted || this.hasHighlightedUplinks}
     set isHighlighted(newValue: boolean) {
         this._highlightDownlinks = this._isHighlighted = newValue;
+        if (newValue)
+            this.kresmer.highlightedLinks.add(this as unknown as NetworkLink);
+        else
+            this.kresmer.highlightedLinks.delete(this as unknown as NetworkLink);
         this.propagateHighlightingUp(newValue, false);
     }//set isHighlighted
 
@@ -239,6 +243,7 @@ class _NetworkLink extends NetworkElement {
 
     public onMouseEnter()
     {
+        this.kresmer.highlightedLinks.forEach(link => link.onMouseLeave());
         this.isHighlighted = true;
         (this as unknown as NetworkLink).bringToTop();
     }//onMouseEnter

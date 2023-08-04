@@ -447,6 +447,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     readonly links = reactive(new NetworkLinkMap());
     readonly linksByName = new Map<string, number>();
+    readonly highlightedLinks = new Set<NetworkLink>();
 
     /** Links bundles (visual aggregates) currently on the drawing */
     readonly linkBundles = new Array<LinkBundle>();

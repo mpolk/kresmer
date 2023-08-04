@@ -29,9 +29,13 @@
         controller: {type: Object as PropType<Kresmer>, required: true},
     });
 
+    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikKresmer, props.controller);
+    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikIsEditable, props.controller.isEditable);
+    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikSnapToGrid, props.controller.snapToGrid);
+    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikSnappingGranularity, props.controller.snappingGranularity);
     const rootSVG = ref<SVGSVGElement>()!;
 
@@ -90,7 +94,7 @@
 
     function rulerMarkings(from: number, to: number, step: number, except?: number) {
         const xs: number[] = [];
-        for (let x = Math.ceil(from / step) * step; x <= Math.floor(to / step) * step; x += step) {
+        for (let x = Math.ceil(from/step) * step; x <= Math.floor(to/step) * step; x += step) {
             if (!except || x % except)
                 xs.push(x);
         }//for
@@ -132,6 +136,11 @@
         props.controller.emit("drawing-mouse-enter");
     }//onMouseEnter
 
+    function onMouseMove()
+    {
+        props.controller.highlightedLinks.forEach(link => link.onMouseLeave());
+    }//onMouseMove
+
     function onMouseLeave()
     {
         props.controller.emit("drawing-mouse-leave");
@@ -146,7 +155,7 @@
         :width="width" :height="height" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
         @contextmenu.self="onCanvasRightClick($event)"
-        @mousemove.prevent.self=""
+        @mousemove.prevent.self="onMouseMove"
         @wheel.ctrl.prevent="onMouseWheel($event)"
         @mouseenter.self="onMouseEnter"
         @mouseleave.self="onMouseLeave"
