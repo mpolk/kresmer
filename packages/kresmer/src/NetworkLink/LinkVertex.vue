@@ -29,7 +29,7 @@
     onBeforeMount(() => props.model._updateSegmentVector());
     onMounted(() => props.model._updateSegmentVector());
     onUpdated(() => {
-        if (!props.model.isDragged)
+        if (!props.model.isDragged || props.model.link.kresmer.animateLinkBundleDragging)
             props.model.updateSegmentVector();
     });
 

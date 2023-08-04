@@ -53,6 +53,8 @@ export default class Kresmer extends KresmerEventHooks {
         snappingGranularity?: number,
         saveDynamicPropValuesWithDrawing?: boolean,
         autoAlignVertices?: boolean,
+        animateComponentDragging?: boolean,
+        animateLinkBundleDragging?: boolean,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -67,6 +69,8 @@ export default class Kresmer extends KresmerEventHooks {
         options?.snappingGranularity && (this.snappingGranularity = options.snappingGranularity);
         this.saveDynamicPropValuesWithDrawing = Boolean(options?.saveDynamicPropValuesWithDrawing);
         this.autoAlignVertices = options?.autoAlignVertices ?? true;
+        this.animateComponentDragging = Boolean(options?.animateComponentDragging);
+        this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -113,6 +117,10 @@ export default class Kresmer extends KresmerEventHooks {
     protected _showGrid = ref(false);
     /** Should vertex alignment be performed automatically after vertex moving */
     autoAlignVertices = true;
+    /** Specifies whether component dragging should be animated */
+    animateComponentDragging = false;
+    /** Specifies whether link bundle dragging should be animated */
+    animateLinkBundleDragging = false;
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
