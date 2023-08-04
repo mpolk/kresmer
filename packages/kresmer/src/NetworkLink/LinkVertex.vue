@@ -198,7 +198,7 @@ class=${JSON.stringify(clazz)}`;
         @dblclick="onDoubleClick()"
         />
     <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
-        @click="onClick"
+        @click="onClick" class="vertex-connection-point"
         />
     <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
         {{ linkNumber.number }}
@@ -241,6 +241,7 @@ class=${JSON.stringify(clazz)}`;
 </template>
 
 <style lang="scss" scoped>
+    .vertex, .vertex-connection-point {cursor: pointer;}
     .connected {
         opacity: 0.8;
         &:hover {
