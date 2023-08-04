@@ -112,7 +112,7 @@ class _NetworkComponentController {
     {
         this.origin.x = this.dragStartPos!.x + delta.x;
         this.origin.y = this.dragStartPos!.y + delta.y;
-        if (this.kresmer.animateComponentDragging)
+        if (!this.isDragged || this.kresmer.animateComponentDragging)
             this.updateConnectionPoints();
         this.kresmer.emit("component-being-moved", this);
     }//moveFromStartPos
