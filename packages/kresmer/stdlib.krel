@@ -565,7 +565,7 @@
     <link-class name="DAC" category="copper-links">
         <extends base="_abstract-link" media-type="DAC" accept-media-types="none"/>
         <style>
-            .link {--link-color: #236e85; --highlighted-link-color: #2f97b6; }
+            .link {--link-color: #236e85; --highlighted-link-color: #23beb3; }
             .padding {stroke-width: 10px;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
             .segment.highlighted, .segment.selected {stroke-width: 3px;}
@@ -577,7 +577,7 @@
     <link-class name="AOC" category="optical-links">
         <extends base="_abstract-link" media-type="AOC" accept-media-types="none"/>
         <style>
-            .link {--link-color: #0098c7; --highlighted-link-color: #00b8f0; }
+            .link {--link-color: #0098c7; --highlighted-link-color: #1de7e7; }
             .padding {stroke-width: 10px;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
             .segment.highlighted, .segment.selected {stroke-width: 3px}
@@ -597,6 +597,7 @@
     <link-bundle-class name="link-bundle" category="link-bundles">
         <extends base="_abstract-link" accept-media-types="none"/>
         <style>
+            .link {--highlighted-link-color: #c22a00; }
             .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 4px; stroke-linejoin: round; }
         </style>
     </link-bundle-class>
