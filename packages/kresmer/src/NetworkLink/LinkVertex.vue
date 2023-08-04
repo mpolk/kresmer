@@ -28,7 +28,7 @@
 
     onBeforeMount(() => props.model.updateSegmentVector());
     onMounted(() => props.model.updateSegmentVector());
-    // onUpdated(() => props.model.updateSegmentVector());
+    onUpdated(() => props.model.updateSegmentVector());
 
     const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<HTMLElement>()!;
