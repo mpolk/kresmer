@@ -626,6 +626,12 @@ ${this.rootSVG.outerHTML}
         return this.rootSVG.getBoundingClientRect();
     }//drawingRect
 
+    /** Returns the center of the drawing bounding rectangle */
+    public get drawingCenter(): Position
+    {
+        return {x: this.drawingRect.width/2, y: this.drawingRect.height/2};
+    }//drawingCenter
+
 
     /**
      * Resets the mode (transform etc.) for all network component modes except the one specified

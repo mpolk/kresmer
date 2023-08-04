@@ -126,7 +126,7 @@ export default class LinkVertex {
             const n = afterVertex.vertexNumber;
             const beforeVertex = afterVertex.link.vertices[n+1];
             if (!afterVertex.isInitialized || !beforeVertex.isInitialized)
-                return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
+                return this.link.kresmer.drawingCenter;
             const {x0, y0, length: h, sinFi, cosFi} = afterVertex.segmentVector!;
             if (d > h)
                 d = h;
@@ -139,7 +139,7 @@ export default class LinkVertex {
         } else if (this._anchor.pos) {
             return this._anchor.pos;
         } else {
-            return {x: this.link.kresmer.drawingRect.width/2, y: this.link.kresmer.drawingRect.height/2};
+            return this.link.kresmer.drawingCenter;
         }//if
     }//coords
 
