@@ -28,7 +28,7 @@ import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import { AppInitStage } from './ElectronAPI.d';
 import { AppSettings } from '../main/main';
-import kresmerCSS from '../../packages/kresmer/dist/style.css';
+import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
