@@ -46,7 +46,7 @@
             <slot />
             <rect v-if="portInfo?.operStatus" v-bind:width="h*0.25" v-bind:height="h*0.25" class="status-indicator" />
             <text v-bind:x="w/2"
-                v-bind:y="h*0.8" text-anchor="middle" v-bind:font-size="fontSize*h"
+                v-bind:y="labelY" text-anchor="middle" v-bind:font-size="fontSize*h"
                 class="port-name" v-bind:class="{disabled: !(portInfo?.adminStatus ?? true)}">{{label}}</text>
             <title>{{title}}</title>
             <connection-point
@@ -63,12 +63,14 @@
         <props>
             <prop name="w" type="Number" required="true" default="25" category="Geometry" description="Port icon width"/>
             <prop name="h" type="Number" required="true" default="25" category="Geometry" description="Port icon height"/>
+            <prop name="labelY" type="Number" category="Geometry" description="Port label vertical poisition"/>
             <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
             <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
         </props>
         <computed-props>
             <computed-prop name="label">String(props.name).replace(props.prefix, '')</computed-prop>
+            <computed-prop name="labelY">props.labelY ?? props.h * 0.8</computed-prop>
             <computed-prop name="title">
                 props.name + 
                     (props.portInfo?.description ? ` ${props.portInfo.description}` : '') +
@@ -171,7 +173,7 @@
     <!-- SFP Port -->
     <component-class name="SfpPort" category=".ports">
         <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
                 <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
@@ -180,6 +182,9 @@
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
+        <computed-props>
+            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+        </computed-props>
     </component-class>
 
     <!-- XFP Port -->
