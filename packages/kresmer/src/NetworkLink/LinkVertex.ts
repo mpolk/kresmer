@@ -573,7 +573,7 @@ export default class LinkVertex {
                         verticesToAlign.push(attachedVertex);
                 }//for
             }//for
-            // await this.alignVertices(verticesToAlign);
+            await this.alignVertices(verticesToAlign);
         }//if
 
         if (mode !== "postAlign") {
