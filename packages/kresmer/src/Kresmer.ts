@@ -500,12 +500,18 @@ export default class Kresmer extends KresmerEventHooks {
     saveDynamicPropValuesWithDrawing = false;
 
 
-    public exportDrawingToSVG()
+    public exportDrawingToSVG(styles: string)
     {
+        const svg = this.rootSVG.cloneNode(true) as SVGElement;
+        const defsElement = document.createElement("defs");
+        const styleElement = document.createElement("style");
+        styleElement.textContent = styles;
+        defsElement.appendChild(styleElement);
+        svg.insertBefore(defsElement, svg.firstChild);
         return `\
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
-${this.rootSVG.outerHTML}
+${svg.outerHTML}
 `;
     }//exportDrawingToSVG
 

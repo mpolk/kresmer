@@ -28,6 +28,7 @@ import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import { AppInitStage } from './ElectronAPI.d';
 import { AppSettings } from '../main/main';
+import kresmerCSS from '../../packages/kresmer/dist/style.css';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -310,7 +311,7 @@ appCommandExecutor.on("save-drawing", () =>
 
 appCommandExecutor.on("export-drawing-to-SVG", () =>
 {
-    const svgData = kresmer.exportDrawingToSVG();
+    const svgData = kresmer.exportDrawingToSVG(kresmerCSS);
     window.electronAPI.completeDrawingExportToSVG(svgData);
 });//saveDrawing
 
