@@ -240,7 +240,7 @@ class=${JSON.stringify(clazz)}`;
     </Transition>
 </template>
 
-<style lang="scss" scoped>
+<style lang="scss">
     .vertex, .vertex-connection-point {cursor: pointer;}
     .connected {
         opacity: 0.8;
