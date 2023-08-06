@@ -190,6 +190,7 @@ export default class LinkVertex {
     private savedConn?: ConnectionPointProxy;
     private dragStartPos?: Position;
     private savedMousePos?: Position;
+    private dragGuide?: {radiusVector: Position, length: number, originalDistance: number};
 
     get isConnected() {return Boolean(this._anchor.conn);}
     get isAttachedToBundle() {return this._anchor.bundle;}
@@ -324,6 +325,13 @@ export default class LinkVertex {
                     this.dragConstraint = "x";
                 else
                     this.dragConstraint = "y";
+            } else if (this.dragConstraint === "bundle") {
+                const baseVertex = this._anchor.bundle!.baseVertex;
+                const originalDistance = this._anchor.bundle!.distance;
+                const nextAfterBase = baseVertex.nextNeighbour!;
+                const radiusVector = {x: nextAfterBase.coords.x - baseVertex.coords.x, y: nextAfterBase.coords.y - baseVertex.coords.y};
+                const length = Math.hypot(radiusVector.x, radiusVector.y);
+                this.dragGuide = {radiusVector, length, originalDistance};
             }//if
             this.savedConn = this._anchor.conn;
             if (this.dragConstraint !== "bundle")
@@ -344,18 +352,14 @@ export default class LinkVertex {
                 }
                 break;
             case "bundle": {
-                    const baseVertex = this._anchor.bundle!.baseVertex;
-                    const nextAfterBase = baseVertex.nextNeighbour!;
                     const r1 = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
-                    const r2 = {x: nextAfterBase.coords.x - baseVertex.coords.x, y: nextAfterBase.coords.y - baseVertex.coords.y};
-                    const l2 = Math.hypot(r2.x, r2.y);
-                    const d = this._anchor.bundle!.distance;
+                    const {radiusVector: r2, length: l2, originalDistance: d0} = this.dragGuide!;
                     let shift = (r1.x*r2.x + r1.y*r2.y) / l2;
-                    if (shift < -d)
-                        shift = -d;
-                    else if (shift > l2 - d)
-                        shift = l2 - d;
-                    this._anchor.bundle!.distance += shift;
+                    if (shift < -d0)
+                        shift = -d0;
+                    else if (shift > l2 - d0)
+                        shift = l2 - d0;
+                    this._anchor.bundle!.distance = d0 + shift;
                     break;
                 }
             default:
