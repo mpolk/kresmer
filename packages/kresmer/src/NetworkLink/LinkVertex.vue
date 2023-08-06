@@ -29,14 +29,8 @@
     onBeforeMount(() => props.model._updateSegmentVector());
     onMounted(() => props.model._updateSegmentVector());
     onUpdated(() => {
-        if (!props.model.isDragged || props.model.link.kresmer.animateLinkBundleDragging)
+        if ((!props.model.isDragged || props.model.link.kresmer.animateLinkBundleDragging) && props.model.link.isBundle)
             props.model.updateSegmentVector();
-        if (!props.model.isDragged && props.model.isConnected && props.model.link.kresmer.autoAlignVertices) {
-            if (props.model.prevNeighbour)
-                props.model.link.kresmer.edAPI.alignLinkVertex({vertex: props.model.prevNeighbour}, "postAlign");
-            if (props.model.nextNeighbour)
-                props.model.link.kresmer.edAPI.alignLinkVertex({vertex: props.model.nextNeighbour}, "postAlign");
-        }//if
     });
 
     const isEditable = inject(Kresmer.ikIsEditable);
