@@ -436,12 +436,13 @@ export default class LinkVertex {
         if (this.isConnected && this._anchor.conn !== this.savedConn) 
             this.link.kresmer.emit("link-vertex-connected", this);
 
+        const postActionMode: VertexAlignmentMode = this.dragConstraint === "bundle" ? "postAlign" : "postMove";
         this.dragConstraint = undefined;
         this.dragGuide = undefined;
         this.savedConn = undefined;
         this.ownConnectionPoint.updatePos();
         if (this.link.kresmer.autoAlignVertices)
-            this.performPostMoveActions("postMove");
+            this.performPostMoveActions(postActionMode);
         return true;
     }//endDrag
 
