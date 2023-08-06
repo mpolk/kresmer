@@ -194,6 +194,7 @@ export default class LinkVertex {
 
     get isConnected() {return Boolean(this._anchor.conn);}
     get isAttachedToBundle() {return Boolean(this._anchor.bundle);}
+    get bundleAttachedTo() {return this._anchor.bundle?.baseVertex.link;}
     get isPinnedUp() {return Boolean(this._anchor.pos);}
     get isHead() {return this.vertexNumber === 0;}
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
@@ -321,6 +322,7 @@ export default class LinkVertex {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
+            this.savedConn = this._anchor.conn;
             if (this.dragConstraint === "bundle") {
                 const baseVertex = this._anchor.bundle!.baseVertex;
                 const originalDistance = this._anchor.bundle!.distance;
@@ -328,10 +330,9 @@ export default class LinkVertex {
                 const radiusVector = {x: nextAfterBase.coords.x - baseVertex.coords.x, y: nextAfterBase.coords.y - baseVertex.coords.y};
                 const length = Math.hypot(radiusVector.x, radiusVector.y);
                 this.dragGuide = {radiusVector, length, originalDistance};
-            }//if
-            this.savedConn = this._anchor.conn;
-            if (this.dragConstraint !== "bundle")
+            } else {
                 this.pinUp(this.coords);
+            }//if
         }//if
 
         if (this.dragConstraint === "unknown") {
@@ -545,9 +546,9 @@ export default class LinkVertex {
             newAnchor = this.alignEndpoint(successor!, mode);
         } else if (!successor) {
             newAnchor = this.alignEndpoint(predecessor, mode);
-        } else if (this.isAttachedToBundle && !predecessor.isAttachedToBundle && successor.isAttachedToBundle) {
+        } else if (this.isAttachedToBundle && predecessor.bundleAttachedTo !== this.bundleAttachedTo && successor.bundleAttachedTo === this.bundleAttachedTo) {
             newAnchor = this.alignOnBundle(predecessor);
-        } else if (this.isAttachedToBundle && predecessor.isAttachedToBundle && !successor.isAttachedToBundle) {
+        } else if (this.isAttachedToBundle && predecessor.bundleAttachedTo === this.bundleAttachedTo && successor.bundleAttachedTo !== this.bundleAttachedTo) {
             newAnchor = this.alignOnBundle(successor);
         } else if (this.isAttachedToBundle) {
             newAnchor = null;
