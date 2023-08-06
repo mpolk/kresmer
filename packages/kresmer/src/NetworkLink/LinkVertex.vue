@@ -135,7 +135,6 @@ class=${JSON.stringify(clazz)}`;
         return {number, pos, clazz, debugInfo};
     })//linkNumber
 
-
     function areAttachedNear(v1: LinkVertex|undefined, v2: LinkVertex|undefined)
     {
         const b1 = v1?.anchor.bundle;
@@ -143,6 +142,13 @@ class=${JSON.stringify(clazz)}`;
         return b1 && b2 && b1.baseVertex === b2.baseVertex && Math.abs(b1.distance - b2.distance) <= 4;
     }//areAttachedNear
 
+    const draggingCursor =  computed(() => {
+        switch (props.model.dragConstraint) {
+            case "x": return "cursor: ew-resize";
+            case "y": return "cursor: ns-resize";
+            default: return "cursor: move";
+        }//switch
+    });
 
     function onMouseDown(event: MouseEvent)
     {
@@ -218,7 +224,7 @@ class=${JSON.stringify(clazz)}`;
         <circle v-if="model.isDragged" ref="padding"
             :cx="model.coords.x" :cy="model.coords.y" 
             class="vertex padding"
-            style="cursor: move; stroke: none;"
+            :style="draggingCursor" style="stroke: none;"
             :is-editable="isEditable"
             @mouseup.stop="onMouseUp($event)"
             @mousemove.stop="onMouseMove($event)"
@@ -227,7 +233,7 @@ class=${JSON.stringify(clazz)}`;
         <circle ref="circle"
             :cx="model.coords.x" :cy="model.coords.y" 
             class="link vertex" :class="{connected: model.isConnected}"
-            style="cursor: move;"
+            :style="draggingCursor"
             :is-editable="isEditable"
             :data-link-bundle-vertex="dataLinkBundleVertex"
             @mousedown.stop="onMouseDown($event)"

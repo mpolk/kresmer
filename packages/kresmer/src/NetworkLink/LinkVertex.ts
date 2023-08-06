@@ -185,6 +185,7 @@ export default class LinkVertex {
 
     isGoingToBeDragged = false;
     isDragged = false;
+    dragConstraint: DragConstraint|undefined;
     isBlinking = false;
     private savedConn?: ConnectionPointProxy;
     private dragStartPos?: Position;
@@ -300,6 +301,8 @@ export default class LinkVertex {
         }//if
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
+        if (event.shiftKey)
+            this.dragConstraint = this._anchor.bundle?.baseVertex.nextNeighbour ? "bundle" : "unknown";
         this.link.kresmer.deselectAllElements(this.link);
         this.link.selectLink();
         this.link.kresmer.emit("link-vertex-move-started", this);
@@ -309,20 +312,58 @@ export default class LinkVertex {
 
     public drag(event: MouseEvent)
     {
+        if (!this.isDragged && !this.isGoingToBeDragged)
+            return false;
+
+        const mousePos = this.getMousePosition(event);
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
+            if (this.dragConstraint === "unknown") {
+                if (mousePos.x - this.savedMousePos!.x > mousePos.y - this.savedMousePos!.y)
+                    this.dragConstraint = "x";
+                else
+                    this.dragConstraint = "y";
+            }//if
             this.savedConn = this._anchor.conn;
-            this.pinUp(this.coords);
-        } else if (!this.isDragged) {
-            return false;
+            if (this.dragConstraint !== "bundle")
+                this.pinUp(this.coords);
         }//if
             
-        const mousePos = this.getMousePosition(event);
-        this._anchor.pos = {
-            x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
-            y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
-        }
+        switch (this.dragConstraint) {
+            case "x":
+                this._anchor.pos = {
+                    x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
+                    y: this.dragStartPos!.y,
+                }
+                break;
+            case "y":
+                this._anchor.pos = {
+                    x: this.dragStartPos!.x,
+                    y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
+                }
+                break;
+            case "bundle": {
+                    const baseVertex = this._anchor.bundle!.baseVertex;
+                    const nextAfterBase = baseVertex.nextNeighbour!;
+                    const r1 = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
+                    const r2 = {x: nextAfterBase.coords.x - baseVertex.coords.x, y: nextAfterBase.coords.y - baseVertex.coords.y};
+                    const l2 = Math.hypot(r2.x, r2.y);
+                    const d = this._anchor.bundle!.distance;
+                    let shift = (r1.x*r2.x + r1.y*r2.y) / l2;
+                    if (shift < -d)
+                        shift = -d;
+                    else if (shift > l2 - d)
+                        shift = l2 - d;
+                    this._anchor.bundle!.distance += shift;
+                    break;
+                }
+            default:
+                this._anchor.pos = {
+                    x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
+                    y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
+                }
+        }//switch
         this.link.kresmer.emit("link-vertex-being-moved", this);
         this.ownConnectionPoint.updatePos();
         return true;
@@ -336,55 +377,62 @@ export default class LinkVertex {
         }//if
 
         this.isDragged = false;
-        const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
-        const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
-        const stickToBundles = !this.link.isBundle;
 
-        let done = false;
-        for (const element of elementsUnderCursor) {
-            if (stickToConnectionPoints) {
-                const connectionPointData = element.getAttribute("data-connection-point");
-                if (connectionPointData) {
-                    if (this.tryToConnectToConnectionPoint(connectionPointData)) {
-                        done = true;
-                        break;
-                    } else
-                        continue;
-                }//if
-            }//if
-            if (stickToBundles) {
-                const bundleData = element.getAttribute("data-link-bundle");
-                if (bundleData) {
-                    if (this.tryToAttachToBundle(bundleData, event)) {
-                        done = true;
-                        break;
-                    } else
-                        continue;
-                }//if
-                const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
-                if (bundleVertexData) {
-                    if (this.tryToAttachToBundle(bundleVertexData)) {
-                        done = true;
-                        break;
-                    } else
-                        continue;
-                }//if
-            }//if
-        }//for
+        if (this.dragConstraint !== "bundle") {
+            const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
+            const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
+            const stickToBundles = !this.link.isBundle;
 
-        if (done) {
-            this.ownConnectionPoint.updatePos();
-            if (this.link.kresmer.autoAlignVertices)
-                this.performPostMoveActions("postMove");
-            return true;
+            let done = false;
+            for (const element of elementsUnderCursor) {
+                if (stickToConnectionPoints) {
+                    const connectionPointData = element.getAttribute("data-connection-point");
+                    if (connectionPointData) {
+                        if (this.tryToConnectToConnectionPoint(connectionPointData)) {
+                            done = true;
+                            break;
+                        } else
+                            continue;
+                    }//if
+                }//if
+                if (stickToBundles) {
+                    const bundleData = element.getAttribute("data-link-bundle");
+                    if (bundleData) {
+                        if (this.tryToAttachToBundle(bundleData, event)) {
+                            done = true;
+                            break;
+                        } else
+                            continue;
+                    }//if
+                    const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
+                    if (bundleVertexData) {
+                        if (this.tryToAttachToBundle(bundleVertexData)) {
+                            done = true;
+                            break;
+                        } else
+                            continue;
+                    }//if
+                }//if
+            }//for
+
+            if (done) {
+                this.dragConstraint = undefined;
+                this.link.kresmer.undoStack.commitOperation();
+                this.link.kresmer.emit("link-vertex-moved", this);
+                this.ownConnectionPoint.updatePos();
+                if (this.link.kresmer.autoAlignVertices)
+                    this.performPostMoveActions("postMove");
+                return true;
+            }//if
+
+            if (this.link.kresmer.snapToGrid) {
+                this._anchor.pos = {
+                    x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity,
+                    y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity
+                };
+            }//if
         }//if
 
-        if (this.link.kresmer.snapToGrid) {
-            this._anchor.pos = {
-                x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity,
-                y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity
-            };
-        }//if
         this.link.kresmer.undoStack.commitOperation();
         if (this.savedConn) {
             if (this._anchor.conn !== this.savedConn) {
@@ -392,6 +440,8 @@ export default class LinkVertex {
             }//if
             this.savedConn = undefined;
         }//if
+
+        this.dragConstraint = undefined;
         this.link.kresmer.emit("link-vertex-moved", this);
         this.ownConnectionPoint.updatePos();
         if (this.link.kresmer.autoAlignVertices) {
@@ -806,10 +856,9 @@ export type BundleAttachmentDescriptor = {
 }//BundleAttachmentDescriptor
 
 export type LinkVertexSpec = {vertex: LinkVertex}|{linkID: number, vertexNumber: number};
-
 export type VertexAlignmentMode = "normal" | "postAlign" | "postMove";
-
 type SegmentVector = {x0: number, y0: number, length: number, cosFi: number, sinFi: number};
+type DragConstraint = "x" | "y" | "bundle" | "unknown";
 
 // Editor operations
 export class VertexMoveOp extends EditorOperation {
