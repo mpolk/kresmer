@@ -321,12 +321,7 @@ export default class LinkVertex {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
-            if (this.dragConstraint === "unknown") {
-                if (mousePos.x - this.savedMousePos!.x > mousePos.y - this.savedMousePos!.y)
-                    this.dragConstraint = "x";
-                else
-                    this.dragConstraint = "y";
-            } else if (this.dragConstraint === "bundle") {
+            if (this.dragConstraint === "bundle") {
                 const baseVertex = this._anchor.bundle!.baseVertex;
                 const originalDistance = this._anchor.bundle!.distance;
                 const nextAfterBase = baseVertex.nextNeighbour!;
@@ -338,7 +333,17 @@ export default class LinkVertex {
             if (this.dragConstraint !== "bundle")
                 this.pinUp(this.coords);
         }//if
-            
+
+        if (this.dragConstraint === "unknown") {
+            const r = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
+            if (Math.hypot(r.x, r.y) > 3) {
+                if (Math.abs(r.x) >= Math.abs(r.y))
+                    this.dragConstraint = "x";
+                else
+                    this.dragConstraint = "y";
+            }//if
+        }//if
+
         switch (this.dragConstraint) {
             case "x":
                 this._anchor.pos = {
