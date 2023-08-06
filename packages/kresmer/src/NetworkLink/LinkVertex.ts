@@ -193,7 +193,8 @@ export default class LinkVertex {
     private dragGuide?: {radiusVector: Position, length: number, originalDistance: number};
 
     get isConnected() {return Boolean(this._anchor.conn);}
-    get isAttachedToBundle() {return this._anchor.bundle;}
+    get isAttachedToBundle() {return Boolean(this._anchor.bundle);}
+    get isPinnedUp() {return Boolean(this._anchor.pos);}
     get isHead() {return this.vertexNumber === 0;}
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
     get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
@@ -387,70 +388,55 @@ export default class LinkVertex {
             const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
             const stickToBundles = !this.link.isBundle;
 
-            let done = false;
             for (const element of elementsUnderCursor) {
                 if (stickToConnectionPoints) {
                     const connectionPointData = element.getAttribute("data-connection-point");
                     if (connectionPointData) {
-                        if (this.tryToConnectToConnectionPoint(connectionPointData)) {
-                            done = true;
+                        if (this.tryToConnectToConnectionPoint(connectionPointData))
                             break;
-                        } else
+                        else
                             continue;
                     }//if
                 }//if
                 if (stickToBundles) {
                     const bundleData = element.getAttribute("data-link-bundle");
                     if (bundleData) {
-                        if (this.tryToAttachToBundle(bundleData, event)) {
-                            done = true;
+                        if (this.tryToAttachToBundle(bundleData, event))
                             break;
-                        } else
+                        else
                             continue;
                     }//if
                     const bundleVertexData = element.getAttribute("data-link-bundle-vertex");
                     if (bundleVertexData) {
-                        if (this.tryToAttachToBundle(bundleVertexData)) {
-                            done = true;
+                        if (this.tryToAttachToBundle(bundleVertexData))
                             break;
-                        } else
+                        else
                             continue;
                     }//if
                 }//if
             }//for
+        }//if
 
-            if (done) {
-                this.dragConstraint = undefined;
-                this.link.kresmer.undoStack.commitOperation();
-                this.link.kresmer.emit("link-vertex-moved", this);
-                this.ownConnectionPoint.updatePos();
-                if (this.link.kresmer.autoAlignVertices)
-                    this.performPostMoveActions("postMove");
-                return true;
-            }//if
-
-            if (this.link.kresmer.snapToGrid) {
-                this._anchor.pos = {
-                    x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity,
-                    y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity
-                };
-            }//if
+        if (this.link.kresmer.snapToGrid && this.isPinnedUp) {
+            this._anchor.pos = {
+                x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity,
+                y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity
+            };
         }//if
 
         this.link.kresmer.undoStack.commitOperation();
-        if (this.savedConn) {
-            if (this._anchor.conn !== this.savedConn) {
-                this.link.kresmer.emit("link-vertex-disconnected", this, this._anchor.conn!);
-            }//if
-            this.savedConn = undefined;
-        }//if
+        if (this.savedConn && this._anchor.conn !== this.savedConn) 
+            this.link.kresmer.emit("link-vertex-disconnected", this, this._anchor.conn!);
+        this.link.kresmer.emit("link-vertex-moved", this);
+        if (this.isConnected && this._anchor.conn !== this.savedConn) 
+            this.link.kresmer.emit("link-vertex-connected", this);
 
         this.dragConstraint = undefined;
-        this.link.kresmer.emit("link-vertex-moved", this);
+        this.dragGuide = undefined;
+        this.savedConn = undefined;
         this.ownConnectionPoint.updatePos();
-        if (this.link.kresmer.autoAlignVertices) {
+        if (this.link.kresmer.autoAlignVertices)
             this.performPostMoveActions("postMove");
-        }//if
         return true;
     }//endDrag
 
@@ -482,9 +468,6 @@ export default class LinkVertex {
             this.link.kresmer.raiseError(new KresmerException(
                 `Reference to undefined connection point "${connectionPointData}"`));
         }//if
-        this.link.kresmer.undoStack.commitOperation();
-        this.link.kresmer.emit("link-vertex-connected", this);
-        this.ownConnectionPoint.updatePos();
         return true;
     }//tryToConnectToConnectionPoint
 
@@ -520,9 +503,6 @@ export default class LinkVertex {
             d = Math.hypot(p.x-v.x, p.y-v.y);
         }//if
         this.attachToBundle({baseVertex: vertex, distance: d});
-        this.link.kresmer.undoStack.commitOperation();
-        this.link.kresmer.emit("link-vertex-connected", this);
-        this.ownConnectionPoint.updatePos();
         return true;
     }//tryToAttachToBundle
 
@@ -621,7 +601,6 @@ export default class LinkVertex {
         if (this.link.isBundle && !this.isTail) {
             const verticesToAlign: LinkVertex[] = [];
             for (const attachedLink of (this.link as LinkBundle).getAttachedLinks()) {
-                console.debug("Attached link:", attachedLink);
                 for (const attachedVertex of attachedLink.vertices) {
                     if (attachedVertex._anchor.bundle?.baseVertex === this)
                         verticesToAlign.push(attachedVertex);
