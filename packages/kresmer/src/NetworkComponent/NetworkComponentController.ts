@@ -28,6 +28,7 @@ class _NetworkComponentController {
     transform: Transform;
     public isGoingToBeDragged = false;
     public isDragged = false;
+    public dragConstraint: DragConstraint|undefined;
     public isBeingTransformed = false;
     public transformMode?: TransformMode;
 
@@ -68,6 +69,8 @@ class _NetworkComponentController {
     public startDrag(this: NetworkComponentController, event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
+        if (event.shiftKey)
+            this.dragConstraint = "unknown";
         this._startDrag();
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
@@ -100,6 +103,16 @@ class _NetworkComponentController {
         } else if (!this.isDragged) {
             return false;
         }//if
+
+        if (this.dragConstraint === "unknown") {
+            const r = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
+            if (Math.hypot(r.x, r.y) > 3) {
+                if (Math.abs(r.x) >= Math.abs(r.y))
+                    this.dragConstraint = "x";
+                else
+                    this.dragConstraint = "y";
+            }//if
+        }//if
             
         this.moveFromStartPos(effectiveMove);
         if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
@@ -110,8 +123,10 @@ class _NetworkComponentController {
 
     public moveFromStartPos(this: NetworkComponentController, delta: Position)
     {
-        this.origin.x = this.dragStartPos!.x + delta.x;
-        this.origin.y = this.dragStartPos!.y + delta.y;
+        if (this.dragConstraint !== "y")
+            this.origin.x = this.dragStartPos!.x + delta.x;
+        if (this.dragConstraint !== "x")
+            this.origin.y = this.dragStartPos!.y + delta.y;
         if (!this.isDragged || this.kresmer.animateComponentDragging)
             this.updateConnectionPoints();
         this.kresmer.emit("component-being-moved", this);
@@ -122,6 +137,7 @@ class _NetworkComponentController {
     {
         if (this.isDragged) {
             this.isDragged = false;
+            this.dragConstraint = undefined;
             if (this.kresmer.snapToGrid) {
                 this.origin = {
                     x: Math.round(this.origin.x / this.kresmer.snappingGranularity) * this.kresmer.snappingGranularity,
@@ -279,6 +295,7 @@ class _NetworkComponentController {
 }//_NetworkComponentController
 
 export default class NetworkComponentController extends withZOrder(_NetworkComponentController) {}
+type DragConstraint = "x" | "y" | "unknown";
 
 
 // Editor operations

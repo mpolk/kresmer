@@ -31,7 +31,9 @@
     const isEditable = inject(Kresmer.ikIsEditable);
     const svg = ref<SVGSVGElement>()!;
     const trGroup = ref<SVGSVGElement>()!;
+    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(NetworkComponent.injectionKey, props.controller.component);
+    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(NetworkElement.ikHostElement, props.controller.component);
 
     const applyTransform = ref(false);
@@ -223,6 +225,8 @@
             [controller.component.getClass().name]: true,
             selected: controller.component.isSelected,
             dragged: controller.isDragged, 
+            x: controller.dragConstraint === 'x',
+            y: controller.dragConstraint === 'y',
             beingTransformed: controller.isBeingTransformed
         }"
         >
@@ -260,9 +264,9 @@
         
         &.dragged {
             outline: thin red solid;
-            .network-component-slot {
-                cursor: move !important;
-            }
+            .network-component-slot { cursor: move; }
+            &.x {.network-component-slot { cursor: ew-resize; }}
+            &.y {.network-component-slot { cursor: ns-resize; }}
         }
         
         &.beingTransformed .network-component-slot {
