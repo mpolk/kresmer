@@ -592,43 +592,29 @@ export default class LinkVertex {
         return shouldMove;
     }//align
 
-    private async performPostMoveActions(mode: VertexAlignmentMode)
+    private performPostMoveActions(mode: VertexAlignmentMode)
     {
-        await nextTick();
-        if (this.prevNeighbour) {
-            this.link.kresmer.edAPI.alignLinkVertex({vertex: this.prevNeighbour}, mode);
-            await nextTick();
-        }//if
+        nextTick(() => {
+            if (this.prevNeighbour)
+                this.link.kresmer.edAPI.alignLinkVertex({vertex: this.prevNeighbour}, mode);
 
-        if (this.nextNeighbour) {
-            this.link.kresmer.edAPI.alignLinkVertex({vertex: this.nextNeighbour}, mode);
-            await nextTick(); 
-        }//if
+            if (this.nextNeighbour)
+                this.link.kresmer.edAPI.alignLinkVertex({vertex: this.nextNeighbour}, mode);
 
-        if (this.link.isBundle && !this.isTail) {
-            const verticesToAlign: LinkVertex[] = [];
-            for (const attachedLink of (this.link as LinkBundle).getAttachedLinks()) {
-                for (const attachedVertex of attachedLink.vertices) {
-                    if (attachedVertex._anchor.bundle?.baseVertex === this)
-                        verticesToAlign.push(attachedVertex);
+            if (this.link.isBundle && !this.isTail) {
+                for (const attachedLink of (this.link as LinkBundle).getAttachedLinks()) {
+                    for (const attachedVertex of attachedLink.vertices) {
+                        if (attachedVertex._anchor.bundle?.baseVertex === this)
+                            this.link.kresmer.edAPI.alignLinkVertex({vertex: attachedVertex}, mode);
+                    }//for
                 }//for
-            }//for
-            await this.alignVertices(verticesToAlign, mode);
-        }//if
+            }//if
 
-        if (mode !== "post-align") {
-            this.link.kresmer.edAPI.alignLinkVertex({vertex: this}, mode);
-        }//if
+            if (mode !== "post-align") {
+                this.link.kresmer.edAPI.alignLinkVertex({vertex: this}, mode);
+            }//if
+        });
     }//performPostMoveActions
-
-    private async alignVertices(vertices: LinkVertex[], mode: VertexAlignmentMode)
-    {
-        if (vertices.length) {
-            this.link.kresmer.edAPI.alignLinkVertex({vertex: vertices[0]}, mode);
-            await nextTick();
-            this.alignVertices(vertices.slice(1), mode);
-        }//if
-    }//alignVertices
 
     private alignEndpoint(neighbor: LinkVertex, mode: VertexAlignmentMode): LinkVertexAnchor|null
     {
