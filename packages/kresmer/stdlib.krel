@@ -300,7 +300,7 @@
                 <text v-if="perspective !== 'none'"
                     v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75"
                     text-anchor="middle" class="device-name"
-                    >{{name}}</text>
+                    >{{name}}<title v-if="comment">{{comment}}</title></text>
                 <a v-else-if="ipAddress &amp;&amp; managementProtocol" v-bind:href="managementProtocol + ipAddress" 
                     v-bind:target="managementRefTarget" class="no-persp">
                     <text v-bind:x="nameX" v-bind:y="nameY" text-anchor="middle">
@@ -573,8 +573,8 @@
             .link {--link-color: #236e85; --highlighted-link-color: #23beb3; }
             .padding {stroke-width: 10px;}
             .vertex.padding {fill: #23beb3;}
-            .segment {stroke-width: 2px; stroke-linejoin: round;}
-            .segment.highlighted, .segment.selected {stroke-width: 3px;}
+            .segment {stroke-width: 1.5px; stroke-linejoin: round;}
+            .segment.highlighted, .segment.selected {stroke-width: 2px;}
             .vertex {stroke-width: 4px; r: 6px}
             .blank.header {fill-opacity: 0.3;}
         </style>
@@ -586,8 +586,8 @@
             .link {--link-color: #0098c7; --highlighted-link-color: #1de7e7; }
             .padding {stroke-width: 10px;}
             .vertex.padding {fill: #1de7e7;}
-            .segment {stroke-width: 2px; stroke-linejoin: round;}
-            .segment.highlighted, .segment.selected {stroke-width: 3px}
+            .segment {stroke-width: 1.5px; stroke-linejoin: round;}
+            .segment.highlighted, .segment.selected {stroke-width: 2px}
             .vertex {stroke-width: 4px; r: 6px}
             .blank.header {fill-opacity: 0.3;}
         </style>
@@ -596,7 +596,7 @@
     <link-class name="AOC-fan" category="optical-links">
         <extends base="AOC" media-type="AOC-fan" accept-media-types="AOC"/>
         <style>
-            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 4px; }
+            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 3px; }
         </style>
     </link-class>
 
@@ -605,7 +605,7 @@
         <extends base="_abstract-link" accept-media-types="none"/>
         <style>
             .link {--highlighted-link-color: #c22a00; }
-            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 4px; stroke-linejoin: round; }
+            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 3px; stroke-linejoin: round; }
         </style>
     </link-bundle-class>
 

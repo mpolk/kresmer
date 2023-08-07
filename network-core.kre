@@ -330,7 +330,7 @@
 
     <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@l">
         <vertex bundle="core-border-bundle" after="0" distance="0"/>
-        <vertex bundle="core-border-bundle" after="1" distance="114.25"/>
+        <vertex bundle="core-border-bundle" after="1" distance="114.29707026979285"/>
     </link>
 
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">
@@ -455,8 +455,8 @@
         <vertex bundle="metro-lower-bundle" after="2" distance="0"/>
     </link>
 
-    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(392, 154)" to="(766, 363)">
-        <vertex x="766" y="154"/>
+    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(392, 154)" to="(760, 363)">
+        <vertex x="760" y="154"/>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="core-upper-bundle" from="(176, 200)" to="(470, 200)">
