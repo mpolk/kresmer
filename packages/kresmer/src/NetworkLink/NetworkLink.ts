@@ -7,7 +7,9 @@
  ***************************************************************************/
 
 import { InjectionKey, nextTick } from "vue";
-import Kresmer, { ConnectionPointProxy } from "../Kresmer";
+import Kresmer from "../Kresmer";
+import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
+import type LinkBundle from "./LinkBundle";
 import { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
@@ -224,17 +226,27 @@ class _NetworkLink extends NetworkElement {
         return vertex;
     }//addVertex
 
-    public wouldAlignVertices()
+    public get wouldAlignVertices()
     {
-        return new Set(this.vertices);
+        const vs = new Set(this.vertices.filter(v => !v.isConnected));
+        if (this.isBundle) {
+            const thisBundle = this as unknown as LinkBundle;
+            for (const attachedLink of thisBundle.getAttachedLinks()) {
+                for (const vertex of attachedLink.vertices) {
+                    if (vertex.bundleAttachedTo === thisBundle)
+                        vs.add(vertex);
+                }//for
+            }//for
+        }//if
+        return vs;
     }//wouldAlignVertices
 
     public alignVertices()
     {
-        const verticesAligned = new Set<LinkVertex>();
-        for (const vertex of this.vertices) {
-            if (vertex.align())
-                verticesAligned.add(vertex);
+        const verticesAligned = this.wouldAlignVertices;
+        for (const vertex of verticesAligned) {
+            if (!vertex.align())
+                verticesAligned.delete(vertex);
         }//for
         return verticesAligned;
     }//alignVertices

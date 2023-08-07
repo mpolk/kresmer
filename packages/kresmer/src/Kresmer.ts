@@ -1000,7 +1000,7 @@ ${svg.outerHTML}
                 if (!link) 
                     throw new UndefinedLinkException({message: `Attempt to align a vertex of the non-existent link (id=${linkID})`});
             }//if
-            const op = new VerticesMoveOp(link.wouldAlignVertices());
+            const op = new VerticesMoveOp(link.wouldAlignVertices);
             this.undoStack.startOperation(op);
             const verticesAligned = link.alignVertices();
             if (verticesAligned.size) {
