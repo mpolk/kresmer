@@ -2,7 +2,7 @@
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="network-core" width="1500" height="1000">
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
-        <origin x="270" y="256"/>
+        <origin x="270" y="216"/>
         <props>
             <prop name="n-stack-units">2</prop>
             <prop name="unit-height">75</prop>
@@ -278,9 +278,9 @@
         <props>
             <prop name="start-label"></prop>
         </props>
-        <vertex bundle="core-lower-bundle" after="0" distance="76.00000000000003"/>
+        <vertex bundle="core-lower-bundle" after="0" distance="74.00000000000003"/>
         <vertex bundle="core-lower-bundle" after="0" distance="0"/>
-        <vertex x="10" y="441"/>
+        <vertex x="12" y="400"/>
         <vertex x="10" y="726"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="11.995403521063876"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="437.5"/>
@@ -308,7 +308,7 @@
 
     <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@l">
         <vertex bundle="core-border-bundle" after="0" distance="0"/>
-        <vertex bundle="core-border-bundle" after="1" distance="154.32943154514572"/>
+        <vertex bundle="core-border-bundle" after="1" distance="114.25"/>
     </link>
 
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">
@@ -427,13 +427,13 @@
         <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
     </link>
 
-    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(392, 154)" to="(766, 403)">
+    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(392, 154)" to="(766, 363)">
         <vertex x="766" y="154"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="core-upper-bundle" from="(244, 242)" to="(474, 242)"/>
+    <link-bundle class="link-bundle" name="core-upper-bundle" from="(244, 204)" to="(470, 204)"/>
 
-    <link-bundle class="link-bundle" name="core-lower-bundle" from="(244, 442)" to="(470, 442)"/>
+    <link-bundle class="link-bundle" name="core-lower-bundle" from="(246, 400)" to="(464, 400)"/>
 
     <link-bundle class="AOC-bundle" name="dipt-uplink-fan" from="border:et0/0/0@d" to="(1042, 90)">
         <vertex x="316.5" y="166"/>
@@ -448,8 +448,8 @@
         <vertex bundle="metro-upper-bundle" after="0" distance="662.5"/>
     </link>
 
-    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(230, 258)" to="(1326, 458)">
-        <vertex x="230" y="328"/>
+    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(230, 218)" to="(1326, 458)">
+        <vertex x="230" y="316"/>
         <vertex x="230" y="458"/>
     </link-bundle>
 
@@ -509,7 +509,7 @@
         <vertex bundle="metro-middle-bundle" after="0" distance="737.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="core-middle-bundle" from="(246, 340)" to="(510, 340)"/>
+    <link-bundle class="link-bundle" name="core-middle-bundle" from="(246, 300)" to="(510, 300)"/>
 
     <link class="DAC" name="core-rugay" from="core:2:1@u" to="rugay:xge0@u">
         <vertex bundle="core-middle-bundle" after="0" distance="73.99999999999999"/>
