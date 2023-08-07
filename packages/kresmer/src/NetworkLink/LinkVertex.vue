@@ -10,7 +10,6 @@
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
     import ConnectionPoint from '../ConnectionPoint/ConnectionPoint.vue';
-    import LinkBundle from './LinkBundle';
     import {Position} from '../Transform/Transform';
 
     export default {
