@@ -13,7 +13,7 @@
     </component>
 
     <component class="Extreme-X670-48x-Stack" name="metro-switch" db-id="1697">
-        <origin x="90" y="686"/>
+        <origin x="142" y="686"/>
         <props>
             <prop name="unit-height">75</prop>
             <prop name="perspective">none</prop>
@@ -302,10 +302,11 @@
         </props>
         <vertex bundle="core-lower-bundle" after="0" distance="74.00000000000003"/>
         <vertex bundle="core-lower-bundle" after="0" distance="0"/>
-        <vertex x="12" y="400"/>
-        <vertex x="10" y="726"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="11.995403521063876"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="393.5"/>
+        <vertex x="150" y="400"/>
+        <vertex x="150" y="506"/>
+        <vertex x="44" y="506"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="409.5"/>
     </link>
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
@@ -382,74 +383,75 @@
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-0" from="kamakura:eth0@d" to="metro-switch:1:26@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="195"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="155"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="506"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="522"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-1" from="kamakura:eth1@d" to="metro-switch:1:27@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="225"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="185"/>
         <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="543.5"/>
+        <vertex bundle="metro-upper-bundle" after="1" distance="557.5"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-2" from="kamakura:eth2@d" to="metro-switch:2:26@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="255"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="215"/>
         <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="510"/>
+        <vertex bundle="metro-lower-bundle" after="1" distance="524"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-3" from="kamakura:eth3@d" to="metro-switch:2:27@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="285"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="245"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="543.5"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="559.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(40, 672)" to="(928, 672)">
-        <vertex x="84" y="672"/>
+    <link-bundle class="link-bundle" name="metro-upper-bundle" from="(76, 672)" to="(980, 672)">
+        <vertex x="122" y="672"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(40, 770)" to="(928, 770)">
-        <vertex x="84" y="770"/>
+    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(44, 770)" to="(980, 770)">
+        <vertex x="77.30583488440888" y="770"/>
+        <vertex x="120" y="770"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="metro-lower-bundle" from="(40, 868)" to="(928, 868)">
-        <vertex x="80" y="868"/>
+    <link-bundle class="link-bundle" name="metro-lower-bundle" from="(76, 868)" to="(980, 868)">
+        <vertex x="118" y="868"/>
     </link-bundle>
 
     <link class="twisted-pair" name="metro-kamakura-4" from="kamakura:eth4@d" to="metro-switch:1:43@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="315"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="275"/>
         <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="2" distance="0"/>
     </link>
 
-    <link-bundle class="link-bundle" name="brases-metro-u-bundle" from="(22, 854)" to="(1011, 524)">
-        <vertex x="22" y="750"/>
-        <vertex x="22" y="658"/>
-        <vertex x="22" y="524"/>
+    <link-bundle class="link-bundle" name="brases-metro-u-bundle" from="(62, 854)" to="(1011, 524)">
+        <vertex x="62" y="754"/>
+        <vertex x="62" y="688"/>
+        <vertex x="62" y="524"/>
     </link-bundle>
 
     <link class="twisted-pair" name="metro-kamakura-5" from="kamakura:eth5@d" to="metro-switch:1:44@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="345"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="305"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-6" from="kamakura:eth6@d" to="metro-switch:2:43@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="375"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="335"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-7" from="kamakura:eth7@d" to="metro-switch:2:44@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="405"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="365"/>
         <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="2" distance="0"/>
@@ -459,8 +461,8 @@
         <vertex x="760" y="154"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="core-upper-bundle" from="(176, 200)" to="(470, 200)">
-        <vertex x="252" y="200"/>
+    <link-bundle class="link-bundle" name="core-upper-bundle" from="(182, 200)" to="(470, 200)">
+        <vertex x="246" y="200"/>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="core-lower-bundle" from="(246, 400)" to="(464, 400)"/>
@@ -472,74 +474,74 @@
     </link-bundle>
 
     <link class="twisted-pair" name="metro-kusay-1" from="kusay:eth0@d" to="metro-switch:1:31@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="487"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="447"/>
         <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="618.4999999999999"/>
+        <vertex bundle="metro-upper-bundle" after="1" distance="632.5"/>
     </link>
 
-    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(230, 222)" to="(906, 418)">
+    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(230, 214)" to="(906, 418)">
         <vertex x="230" y="320"/>
         <vertex x="230" y="418"/>
     </link-bundle>
 
     <link class="DAC" name="core-kusay" from="core:1:1@u" to="kusay:xge0@u">
-        <vertex bundle="core-upper-bundle" after="1" distance="67.99999999999999"/>
+        <vertex bundle="core-upper-bundle" after="1" distance="73.99999999999997"/>
         <vertex bundle="core-upper-bundle" after="1" distance="0"/>
         <vertex bundle="brases-core-bundle" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle" after="2" distance="383.99999999999994"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-2" from="kusay:eth1@d" to="metro-switch:1:32@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="517"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="477"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="618.5"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="634.5"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-3" from="kusay:eth2@d" to="metro-switch:2:31@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="547"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="507"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="618.5"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="634.5"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-4" from="kusay:eth3@d" to="metro-switch:2:32@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="577"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="537"/>
         <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="622.5"/>
+        <vertex bundle="metro-lower-bundle" after="1" distance="636.5"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-5" from="kusay:eth4@d" to="metro-switch:1:29@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="607"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="567"/>
         <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="581"/>
+        <vertex bundle="metro-upper-bundle" after="1" distance="595"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-6" from="kusay:eth5@d" to="metro-switch:2:29@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="637"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="597"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="581"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="597"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-7" from="kusay:eth6@d" to="metro-switch:1:35@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="667"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="627"/>
         <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="693.5"/>
+        <vertex bundle="metro-upper-bundle" after="1" distance="707.5"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-8" from="kusay:eth7@d" to="metro-switch:2:35@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="697"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="657"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="693.5"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="709.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="core-middle-bundle" from="(172, 300)" to="(510, 300)">
+    <link-bundle class="link-bundle" name="core-middle-bundle" from="(180, 300)" to="(510, 300)">
         <vertex x="246" y="300"/>
     </link-bundle>
 
@@ -551,77 +553,77 @@
     </link>
 
     <link class="twisted-pair" name="metro-rugay-1" from="rugay:eth0@d" to="metro-switch:1:33@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="779"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="739"/>
         <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="655.9999999999999"/>
+        <vertex bundle="metro-upper-bundle" after="1" distance="670"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-2" from="rugay:eth1@d" to="metro-switch:1:34@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="809"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="769"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="656"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="672"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-3" from="rugay:eth2@d" to="metro-switch:2:33@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="839"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="799"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="656"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="672"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-4" from="rugay:eth3@d" to="metro-switch:2:34@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="869"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="829"/>
         <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="660"/>
+        <vertex bundle="metro-lower-bundle" after="1" distance="674"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-5" from="rugay:eth4@d" to="metro-switch:1:30@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="899"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="859"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="581"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="597"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-6" from="rugay:eth5@d" to="metro-switch:1:28@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="929"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="889"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="543.5"/>
+        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="559.5"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-7" from="rugay:eth6@d" to="metro-switch:2:30@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="959"/>
+        <vertex bundle="brases-metro-u-bundle" after="3" distance="919"/>
         <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="585"/>
+        <vertex bundle="metro-lower-bundle" after="1" distance="599"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-8" from="rugay:eth7@d" to="metro-switch:2:28@d">
         <vertex bundle="brases-metro-u-bundle" after="3" distance="989"/>
         <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="547.5"/>
+        <vertex bundle="metro-lower-bundle" after="1" distance="561.5"/>
     </link>
 
     <link class="DAC" name="metro-vasilisk" from="vasilisk:xge1@d" to="metro-switch:1:25@u">
-        <vertex bundle="brases-metro-l-bundle" after="3" distance="550"/>
+        <vertex bundle="brases-metro-l-bundle" after="3" distance="512"/>
         <vertex bundle="brases-metro-l-bundle" after="2" distance="0"/>
         <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="506"/>
+        <vertex bundle="metro-upper-bundle" after="1" distance="520"/>
     </link>
 
     <link class="DAC" name="core-vasilisk" from="core:2:3@u" to="vasilisk:xge0@u">
         <vertex bundle="core-middle-bundle" after="1" distance="111.49999999999997"/>
         <vertex bundle="core-middle-bundle" after="0" distance="0"/>
         <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="1" distance="0"/>
-        <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="2" distance="456.00000000000006"/>
+        <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="2" distance="446.00000000000006"/>
     </link>
 
     <link class="DAC" name="core-manticor" from="core:1:3@u" to="manticor:xge0@u">
-        <vertex bundle="core-upper-bundle" after="1" distance="105.49999999999999"/>
+        <vertex bundle="core-upper-bundle" after="1" distance="111.49999999999997"/>
         <vertex bundle="core-upper-bundle" after="0" distance="0"/>
         <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="0" distance="0"/>
         <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="3" distance="0"/>
@@ -630,33 +632,33 @@
     <link class="DAC" name="metro-manticor" from="manticor:xge1@d" to="metro-switch:2:25@u">
         <vertex bundle="brases-metro-l-bundle" after="3" distance="842"/>
         <vertex bundle="brases-metro-l-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="506"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="1.4431641492265186"/>
+        <vertex bundle="metro-middle-bundle" after="2" distance="522"/>
     </link>
 
-    <link-bundle class="DAC-bundle" name="brases-metro-l-bundle" from="(64, 854)" to="(906, 636)">
-        <vertex x="64" y="750.1553007326079"/>
-        <vertex x="64" y="654"/>
-        <vertex x="64" y="635.9999548644806"/>
+    <link-bundle class="DAC-bundle" name="brases-metro-l-bundle" from="(102, 850)" to="(906, 636)">
+        <vertex x="102" y="748"/>
+        <vertex x="102" y="652"/>
+        <vertex x="102" y="636"/>
     </link-bundle>
 
-    <link-bundle class="DAC-bundle" name="Bundle-202fe744-790e-4903-8297-69119423d674" from="(158, 218)" to="(906, 530)">
-        <vertex x="158" y="316"/>
-        <vertex x="158" y="530"/>
+    <link-bundle class="DAC-bundle" name="Bundle-202fe744-790e-4903-8297-69119423d674" from="(168, 214)" to="(906, 530)">
+        <vertex x="168" y="316"/>
+        <vertex x="168" y="530"/>
     </link-bundle>
 
     <link class="DAC" name="core-khvatay" from="core:1:2@d" to="khvatay:xge0@u">
         <vertex bundle="core-middle-bundle" after="1" distance="74.00000000000003"/>
         <vertex bundle="core-middle-bundle" after="0" distance="0"/>
         <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="1" distance="0"/>
-        <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="2" distance="162.00000000000003"/>
+        <vertex bundle="Bundle-202fe744-790e-4903-8297-69119423d674" after="2" distance="152.00000000000003"/>
     </link>
 
     <link class="DAC" name="metro-khvatay" from="khvatay:xge1@d" to="metro-switch:2:36@d">
-        <vertex bundle="brases-metro-l-bundle" after="3" distance="256.00000000000034"/>
+        <vertex bundle="brases-metro-l-bundle" after="3" distance="218"/>
         <vertex bundle="brases-metro-l-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="697.5"/>
+        <vertex bundle="metro-lower-bundle" after="1" distance="1.5474380666915692"/>
+        <vertex bundle="metro-lower-bundle" after="1" distance="711.5"/>
     </link>
 
 </kresmer-drawing>
