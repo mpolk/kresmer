@@ -437,7 +437,7 @@ export default class LinkVertex {
         if (this.isConnected && this._anchor.conn !== this.savedConn) 
             this.link.kresmer.emit("link-vertex-connected", this);
 
-        const postActionMode: VertexAlignmentMode = this.dragConstraint === "bundle" ? "postAlign" : "postMove";
+        const postActionMode: VertexAlignmentMode = this.dragConstraint === "bundle" ? "post-align" : "post-move";
         this.dragConstraint = undefined;
         this.dragGuide = undefined;
         this.savedConn = undefined;
@@ -586,7 +586,7 @@ export default class LinkVertex {
             this.anchor = newAnchor!;
             this.ownConnectionPoint.updatePos();
             if (this.link.kresmer.autoAlignVertices && mode == "normal")
-                this.performPostMoveActions("postAlign");
+                this.performPostMoveActions("post-align");
         }//if
 
         return shouldMove;
@@ -613,20 +613,20 @@ export default class LinkVertex {
                         verticesToAlign.push(attachedVertex);
                 }//for
             }//for
-            await this.alignVertices(verticesToAlign);
+            await this.alignVertices(verticesToAlign, mode);
         }//if
 
-        if (mode !== "postAlign") {
+        if (mode !== "post-align") {
             this.link.kresmer.edAPI.alignLinkVertex({vertex: this}, mode);
         }//if
     }//performPostMoveActions
 
-    private async alignVertices(vertices: LinkVertex[])
+    private async alignVertices(vertices: LinkVertex[], mode: VertexAlignmentMode)
     {
         if (vertices.length) {
-            this.link.kresmer.edAPI.alignLinkVertex({vertex: vertices[0]});
+            this.link.kresmer.edAPI.alignLinkVertex({vertex: vertices[0]}, mode);
             await nextTick();
-            this.alignVertices(vertices.slice(1));
+            this.alignVertices(vertices.slice(1), mode);
         }//if
     }//alignVertices
 
@@ -683,7 +683,7 @@ export default class LinkVertex {
             }//if
         }//if
 
-        if (verticesAttachedHere.length === 1 && mode !== "postAlign") {
+        if (verticesAttachedHere.length === 1 && mode !== "post-align") {
             const attachedVertex = verticesAttachedHere[0];
             if (attachedVertex._anchor.bundle!.distance === 0) {
                 const lastBeforeAttached = attachedVertex.prevNeighbour;
@@ -846,7 +846,7 @@ export type BundleAttachmentDescriptor = {
 }//BundleAttachmentDescriptor
 
 export type LinkVertexSpec = {vertex: LinkVertex}|{linkID: number, vertexNumber: number};
-export type VertexAlignmentMode = "normal" | "postAlign" | "postMove";
+export type VertexAlignmentMode = "normal" | "post-align" | "post-move";
 type SegmentVector = {x0: number, y0: number, length: number, cosFi: number, sinFi: number};
 type DragConstraint = "x" | "y" | "bundle" | "unknown";
 
