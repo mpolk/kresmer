@@ -194,7 +194,8 @@ export default class LinkVertex {
 
     get isConnected() {return Boolean(this._anchor.conn);}
     get isAttachedToBundle() {return Boolean(this._anchor.bundle);}
-    get bundleAttachedTo() {return this._anchor.bundle?.baseVertex.link;}
+    get bundleAttachedTo() {return this._anchor.bundle?.baseVertex.link as LinkBundle;}
+    get bundleDefinitelyAttachedTo() {return this._anchor.bundle!.baseVertex.link as LinkBundle;}
     get isPinnedUp() {return Boolean(this._anchor.pos);}
     get isHead() {return this.vertexNumber === 0;}
     get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
@@ -203,9 +204,9 @@ export default class LinkVertex {
     get prevNeighbour(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
     get nextNeighbour(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
     get isEnteringBundle() {return Boolean(this.isAttachedToBundle && (!this.prevNeighbour?.isAttachedToBundle || 
-                                           this.prevNeighbour.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
+                                           this.prevNeighbour.bundleAttachedTo !== this.bundleDefinitelyAttachedTo));}
     get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbour?.isAttachedToBundle ||
-                                          this.nextNeighbour.anchor.bundle!.baseVertex.link !== this.anchor.bundle?.baseVertex.link));}
+                                          this.nextNeighbour.bundleAttachedTo !== this.bundleDefinitelyAttachedTo));}
 
     toString()
     {

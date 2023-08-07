@@ -53,15 +53,15 @@
         const nextNeighbour = props.model.nextNeighbour;
         if (!thisVertex.isAttachedToBundle || !prevNeighbour || !nextNeighbour)
             return undefined;
-        const prevNeighbourIsBundled = prevNeighbour.anchor.bundle?.baseVertex.link === thisVertex.anchor.bundle!.baseVertex.link;
-        const nextNeighbourIsBundled = nextNeighbour.anchor.bundle?.baseVertex.link === thisVertex.anchor.bundle!.baseVertex.link;
+        const bundle = thisVertex.bundleDefinitelyAttachedTo;
+        const prevNeighbourIsBundled = prevNeighbour.bundleAttachedTo === bundle;
+        const nextNeighbourIsBundled = nextNeighbour.bundleAttachedTo === bundle;
         if (prevNeighbourIsBundled === nextNeighbourIsBundled)
             return undefined;
-        if (thisVertex.link.head.anchor.bundle?.baseVertex.link == thisVertex.anchor.bundle!.baseVertex.link ||
-            thisVertex.link.tail.anchor.bundle?.baseVertex.link == thisVertex.anchor.bundle!.baseVertex.link)
+        if (thisVertex.link.head.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo ||
+            thisVertex.link.tail.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo)
             return undefined;
 
-        const bundle = props.model.anchor.bundle!.baseVertex.link as LinkBundle;
         if (!thisVertex.link.isHighlighted) {
             for (const anotherLink of bundle.getAttachedLinks()) {
                 if (anotherLink !== thisVertex.link) {
@@ -79,7 +79,7 @@
             }//for
         }//if
         
-        const number = bundle.getLinkNumber(props.model.link);
+        const number = bundle.getLinkNumber(thisVertex.link);
         if (!number)
             return undefined;
 
@@ -92,11 +92,11 @@
                 thisVertex.anchor.bundle!.baseVertex.coords :
                 thisVertex.anchor.bundle!.baseVertex.prevNeighbour!.coords;
         const r1 = {x: x0 - x1, y: y0 - y1};
-        if (r1.x === 0 && r1.y === 0)
-            return undefined;
+        // if (r1.x === 0 && r1.y === 0)
+        //     return undefined;
         const r2 = {x: x2 - x1, y: y2 - y1};
-        if (r2.x === 0 && r2.y === 0)
-            return undefined;
+        // if (r2.x === 0 && r2.y === 0)
+        //     return undefined;
         let fi1 = Math.atan2(r1.y, r1.x);
         let fi2 = Math.atan2(r2.y, r2.x);
         if (Math.abs(fi1) == Math.PI && Math.sign(fi2) !== Math.sign(fi1))
