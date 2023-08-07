@@ -572,6 +572,7 @@
         <style>
             .link {--link-color: #236e85; --highlighted-link-color: #23beb3; }
             .padding {stroke-width: 10px;}
+            .vertex.padding {fill: #23beb3;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
             .segment.highlighted, .segment.selected {stroke-width: 3px;}
             .vertex {stroke-width: 4px; r: 6px}
@@ -584,6 +585,7 @@
         <style>
             .link {--link-color: #0098c7; --highlighted-link-color: #1de7e7; }
             .padding {stroke-width: 10px;}
+            .vertex.padding {fill: #1de7e7;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
             .segment.highlighted, .segment.selected {stroke-width: 3px}
             .vertex {stroke-width: 4px; r: 6px}

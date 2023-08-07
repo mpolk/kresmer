@@ -995,6 +995,7 @@ ${svg.outerHTML}
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             let link: NetworkLink|undefined = (linkSpec as any).link;
             if (!link) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const linkID = (linkSpec as any).linkID;
                 link = this.getLinkById(linkID);
                 if (!link) 

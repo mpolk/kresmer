@@ -383,6 +383,7 @@ export default class LinkVertex {
 
     public endDrag(event: MouseEvent)
     {
+        this.isGoingToBeDragged = false;
         if (!this.isDragged) {
             return false;
         }//if

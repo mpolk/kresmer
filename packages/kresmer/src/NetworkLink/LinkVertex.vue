@@ -215,9 +215,9 @@ class=${JSON.stringify(clazz)}`;
             <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />
             <line x1="0" :y1="model.coords.y" :x2="model.link.kresmer.drawingRect.width" :y2="model.coords.y" class="crosshair" />
         </template>
-        <circle v-if="model.isDragged" ref="padding"
+        <circle v-if="model.isDragged || model.isGoingToBeDragged" ref="padding"
             :cx="model.coords.x" :cy="model.coords.y" 
-            class="vertex padding"
+            class="link vertex padding"
             :style="draggingCursor" style="stroke: none;"
             :is-editable="isEditable"
             @mouseup.stop="onMouseUp($event)"
