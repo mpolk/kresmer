@@ -77,12 +77,12 @@
         props.model.vertices.forEach(v => {
             chunks.push(`${prefix}${v.coords.x},${v.coords.y}`)
             prefix = "L";
-            const b1 = v.anchor.bundle;
-            const b2 = v.nextNeighbour?.anchor.bundle;
-            if (b1 && b2 && b1.baseVertex.link === b2.baseVertex.link) {
-                const bundle = b1.baseVertex.link;
-                const n1 = b1.baseVertex.vertexNumber;
-                const n2 = b2.baseVertex.vertexNumber;
+            const bv1 = v.anchor.bundle?.baseVertex;
+            const bv2 = v.nextNeighbour?.anchor.bundle?.baseVertex;
+            const bundle = bv1?.link;
+            if (bundle && bundle === bv2?.link) {
+                const n1 = bv1.vertexNumber;
+                const n2 = bv2.vertexNumber;
                 if (n1 < n2) {
                     for (let i = n1 + 1; i <= n2; i++) {
                         const v1 = bundle.vertices[i];
