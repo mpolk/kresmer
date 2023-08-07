@@ -714,10 +714,18 @@ export default class LinkVertex {
             deltaY = y1 - y0;
         if (deltaX == 0 || deltaY == 0)
             return null;
-        if (deltaX && (deltaY == undefined || Math.abs(deltaX ?? Number.POSITIVE_INFINITY) <= deltaY))
-            d1 = d0 * (1 + deltaX / (x0 - bx1));
-        else if (deltaY && (deltaX == undefined || Math.abs(deltaY ?? Number.POSITIVE_INFINITY) <= deltaX))
-            d1 = d0 * (1 + deltaY / (y0 - by1));
+        if (deltaX && (deltaY == undefined || Math.abs(deltaX ?? Number.POSITIVE_INFINITY) <= deltaY)) {
+            if (d0)
+                d1 = d0 * (1 + deltaX / (x0 - bx1));
+            else
+                d1 = deltaX;
+        }//if
+        else if (deltaY && (deltaX == undefined || Math.abs(deltaY ?? Number.POSITIVE_INFINITY) <= deltaX)) {
+            if (d0)
+                d1 = d0 * (1 + deltaY / (y0 - by1));
+            else
+                d1 = deltaY;
+        }//if
 
         if (d1 !== undefined)
             return {bundle: {baseVertex, distance: d1}};
