@@ -224,6 +224,21 @@ class _NetworkLink extends NetworkElement {
         return vertex;
     }//addVertex
 
+    public wouldAlignVertices()
+    {
+        return new Set(this.vertices);
+    }//wouldAlignVertices
+
+    public alignVertices()
+    {
+        const verticesAligned = new Set<LinkVertex>();
+        for (const vertex of this.vertices) {
+            if (vertex.align())
+                verticesAligned.add(vertex);
+        }//for
+        return verticesAligned;
+    }//alignVertices
+
     override getConnectionPoint(name: string | number): ConnectionPointProxy | undefined {
         const i = Number(name);
         if (i >= 0 && i < this.vertices.length)
@@ -296,6 +311,8 @@ export class NetworkLinkMap extends MapWithZOrder<number, NetworkLink>
         });
     }//sorted
 }//NetworkLinkMap
+
+export type LinkSpec = {link: NetworkLink}|{linkID: number};
 
 
 // Editor operations

@@ -416,6 +416,11 @@ appCommandExecutor.on("align-vertex", (linkID: number, vertexNumber: number) =>
     kresmer.edAPI.alignLinkVertex({linkID, vertexNumber});
 });//alignLinkVertex
 
+appCommandExecutor.on("align-vertices", (linkID: number) =>
+{
+    kresmer.edAPI.alignLinkVertices({linkID});
+});//alignLinkVertices
+
 appCommandExecutor.on("connect-connection-point", async (fromElementID: number, fromConnectionPointName: string|number) =>
 {
     const linkClass = await vueLinkClassSelectionDialog.show(false);

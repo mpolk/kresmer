@@ -876,3 +876,38 @@ export class VertexMoveOp extends EditorOperation {
         this.vertex.ownConnectionPoint?.updatePos();
     }//exec
 }//VertexMoveOp
+
+
+export class VerticesMoveOp extends EditorOperation {
+    constructor(readonly vertices: Set<LinkVertex>)
+    {
+        super();
+        for (const vertex of this.vertices) {
+            this.oldAnchors.set(vertex, vertex.anchor);
+        }//for
+    }//ctor
+
+    private oldAnchors = new Map<LinkVertex, LinkVertexAnchor>();
+    private newAnchors = new Map<LinkVertex, LinkVertexAnchor>();
+
+    override onCommit()
+    {
+        for (const vertex of this.vertices) {
+            this.newAnchors.set(vertex, vertex.anchor);
+        }//for
+    }//onCommit
+
+    override undo(): void {
+        for (const vertex of this.vertices) {
+            vertex.anchor = this.oldAnchors.get(vertex)!;
+            vertex.ownConnectionPoint?.updatePos();
+        }//for
+    }//undo
+
+    override exec(): void {
+        for (const vertex of this.vertices) {
+            vertex.anchor = this.newAnchors.get(vertex)!;
+            vertex.ownConnectionPoint?.updatePos();
+        }//for
+    }//exec
+}//VerticesMoveOp

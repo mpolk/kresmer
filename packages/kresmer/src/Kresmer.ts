@@ -22,7 +22,7 @@ import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, NetworkLinkMap } from "./NetworkLink/NetworkLink";
+import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
 import KresmerException, { UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
@@ -31,7 +31,7 @@ import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
-import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexAlignmentMode, VertexMoveOp } from "./NetworkLink/LinkVertex";
+import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./NetworkLink/LinkVertex";
 import { clone } from "./Utils";
 
 
@@ -985,6 +985,39 @@ ${svg.outerHTML}
                 return false;
             }//if
         },//alignLinkVertex
+
+        /**
+         * Aligns (or at least tries to) all link vertices to their neighbours
+         * @param vertexSpec The specifier of the link (either direct ref or linkID)
+         */
+        alignLinkVertices: (linkSpec: LinkSpec) =>
+        {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let link: NetworkLink|undefined = (linkSpec as any).link;
+            if (!link) {
+                const linkID = (linkSpec as any).linkID;
+                link = this.getLinkById(linkID);
+                if (!link) 
+                    throw new UndefinedLinkException({message: `Attempt to align a vertex of the non-existent link (id=${linkID})`});
+            }//if
+            const op = new VerticesMoveOp(link.wouldAlignVertices());
+            this.undoStack.startOperation(op);
+            const verticesAligned = link.alignVertices();
+            if (verticesAligned.size) {
+                for (const vertex of op.vertices) {
+                    if (!verticesAligned.has(vertex))
+                        op.vertices.delete(vertex);
+                }//for
+                this.undoStack.commitOperation();
+                for (const vertex of op.vertices) {
+                    this.emit("link-vertex-moved", vertex);
+                }//for
+                return true;
+            } else {
+                this.undoStack.cancelOperation();
+                return false;
+            }//if
+        },//alignLinkVertices
 
         /**
          * Deletes a link vertex
