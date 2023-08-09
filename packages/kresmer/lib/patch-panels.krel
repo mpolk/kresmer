@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                        Patch-panels library
+ *           This library contains graphics for patch-panels.
+<*************************************************************************** -->
+<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+
+    <component-class name="patch-panel" category="Passive equipment">
+        <template>
+            <rect class="panel" x="0" y="0" v-bind:width="w" v-bind:height="h"/>
+        </template>
+        <props>
+            <prop name="height" type="Number" required="true" default="50" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientaiton"/>
+            <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientaiton"/>
+            <prop name="orientation" type="String" choices="up, down, left, right" required="true" default="up" category="Geometry" description="Panel orientation: the direction ports are open to" />
+        </props>
+        <computed-props>
+            <computed-prop name="width">props.width ?? props.height * 5</computed-prop>
+            <computed-prop name="w">props.orientation === "up" || props.orientation === "down" ? computedProps.width : props.height</computed-prop>
+            <computed-prop name="h">props.orientation === "up" || props.orientation === "down" ? props.height : computedProps.width</computed-prop>
+        </computed-props>
+    </component-class>
+
+</kresmer-library>
