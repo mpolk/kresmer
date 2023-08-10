@@ -12,18 +12,26 @@
 
     <component-class name="patch-panel" category="Passive equipment">
         <template>
-            <rect class="panel" x="0" y="0" v-bind:width="w" v-bind:height="h"/>
+            <rect class="body" x="0" y="0" v-bind:width="w" v-bind:height="h"/>
         </template>
         <props>
             <prop name="height" type="Number" required="true" default="50" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientaiton"/>
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientaiton"/>
-            <prop name="orientation" type="String" choices="up, down, left, right" required="true" default="up" category="Geometry" description="Panel orientation: the direction ports are open to" />
+            <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
+            <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
+            <prop name="portType" type="String" choices="RJ45, FC, SC-UPC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
+            <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
+            <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry" />
         </props>
         <computed-props>
-            <computed-prop name="width">props.width ?? props.height * 5</computed-prop>
-            <computed-prop name="w">props.orientation === "up" || props.orientation === "down" ? computedProps.width : props.height</computed-prop>
-            <computed-prop name="h">props.orientation === "up" || props.orientation === "down" ? props.height : computedProps.width</computed-prop>
+            <computed-prop name="width">props.width ?? props.height * (1 + props.nPorts)</computed-prop>
+            <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : props.height</computed-prop>
+            <computed-prop name="h">props.orientation === "horizontal" ? props.height : computedProps.width</computed-prop>
+            <computed-prop name="portLayout">props.portLayout ?? props.poptType === "FC" ? "zigzag" : "in-line"</computed-prop>
         </computed-props>
+        <style>
+            .body {fill: #f0e8cb; stroke: #d3bc69}
+        </style>
     </component-class>
 
 </kresmer-library>
