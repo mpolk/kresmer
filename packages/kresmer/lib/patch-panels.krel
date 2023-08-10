@@ -12,7 +12,15 @@
 
     <component-class name="patch-panel" category="Passive equipment">
         <template>
-            <rect class="body" x="0" y="0" v-bind:width="w" v-bind:height="h"/>
+            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
+            <template v-for="i in nPorts/nPortRows">
+                <component v-for="j in nPortRows" v-bind:is="'Kre:RJ45Port'" 
+                    v-bind:x="height*(0.2 + 0.8*(orientation === 'horizontal' ? (i-1) : (nPortRows-j)))" 
+                    v-bind:y="height*(0.2 + 0.8*(orientation === 'horizontal' ? (j-1) : (i-1)))" 
+                    v-bind:d="height*0.6"
+                    v-bind:name="(i-1)*nPortRows + j"
+                    />
+            </template>
         </template>
         <props>
             <prop name="height" type="Number" required="true" default="50" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientaiton"/>
@@ -22,15 +30,18 @@
             <prop name="portType" type="String" choices="RJ45, FC, SC-UPC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
             <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
             <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry" />
+            <prop name="labelsPosition" type="String" choices="above,below,before,after,both-sides,none" category="Presentation" description="Position of the port labels (if any)" />
+            <prop name="color" type="String" default="#f0e8cb" category="Presentation"/>
+            <prop name="strokeColor" type="String" default="#d3bc69" category="Presentation"/>
         </props>
         <computed-props>
-            <computed-prop name="width">props.width ?? props.height * (1 + props.nPorts)</computed-prop>
+            <computed-prop name="width">props.width ?? props.height * (0.2 + 0.8*props.nPorts/props.nPortRows)</computed-prop>
             <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : props.height</computed-prop>
             <computed-prop name="h">props.orientation === "horizontal" ? props.height : computedProps.width</computed-prop>
             <computed-prop name="portLayout">props.portLayout ?? props.poptType === "FC" ? "zigzag" : "in-line"</computed-prop>
         </computed-props>
         <style>
-            .body {fill: #f0e8cb; stroke: #d3bc69}
+            .port-icon.body {fill: #212121;}
         </style>
     </component-class>
 
