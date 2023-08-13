@@ -296,6 +296,13 @@
         </props>
     </component>
 
+    <component class="patch-panel" name="metro-net-patch-panel">
+        <origin x="976" y="252"/>
+        <props>
+            <prop name="n-port-rows">2</prop>
+        </props>
+    </component>
+
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">
         <props>
             <prop name="start-label"></prop>

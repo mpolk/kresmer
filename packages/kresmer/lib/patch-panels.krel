@@ -15,9 +15,9 @@
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <template v-for="i in nPorts/nPortRows">
                 <component v-for="j in nPortRows" v-bind:is="'Kre:RJ45Port'" 
-                    v-bind:x="height*(0.2 + 0.8*(orientation === 'horizontal' ? (i-1) : (nPortRows-j)))" 
-                    v-bind:y="height*(0.2 + 0.8*(orientation === 'horizontal' ? (j-1) : (i-1)))" 
-                    v-bind:d="height*0.6"
+                    v-bind:x="height*(0.2 + (portSize+interPortGap)*(orientation === 'horizontal' ? (i-1) : (nPortRows-j)))" 
+                    v-bind:y="height*(0.2 + (portSize+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1)))" 
+                    v-bind:d="portSize*height"
                     v-bind:name="(i-1)*nPortRows + j"
                     />
             </template>
@@ -35,7 +35,12 @@
             <prop name="strokeColor" type="String" default="#d3bc69" category="Presentation"/>
         </props>
         <computed-props>
-            <computed-prop name="width">props.width ?? props.height * (0.2 + 0.8*props.nPorts/props.nPortRows)</computed-prop>
+            <computed-prop name="padding">0.2</computed-prop>
+            <computed-prop name="interPortGap">0.1</computed-prop>
+            <computed-prop name="portSize">(1-computedProps.interPortGap)/props.nPortRows - computedProps.interPortGap</computed-prop>
+            <computed-prop name="width">
+                props.width ?? props.height * (computedProps.interPortGap + (computedProps.portSize+computedProps.interPortGap)*props.nPorts/props.nPortRows)
+            </computed-prop>
             <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : props.height</computed-prop>
             <computed-prop name="h">props.orientation === "horizontal" ? props.height : computedProps.width</computed-prop>
             <computed-prop name="portLayout">props.portLayout ?? props.poptType === "FC" ? "zigzag" : "in-line"</computed-prop>
