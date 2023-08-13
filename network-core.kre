@@ -297,9 +297,12 @@
     </component>
 
     <component class="patch-panel" name="metro-net-patch-panel">
-        <origin x="976" y="252"/>
+        <origin x="1160" y="190"/>
         <props>
-            <prop name="n-port-rows">2</prop>
+            <prop name="n-port-rows">3</prop>
+            <prop name="height">100</prop>
+            <prop name="n-ports">48</prop>
+            <prop name="orientation">vertical</prop>
         </props>
     </component>
 
