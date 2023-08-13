@@ -232,8 +232,11 @@ Continue?`)) {
     {
         const propsWithErrors: string[] = [];
         for (const prop of elementPropDescriptors.value) {
-            if (validateProp(prop) === null) {
+            const v = validateProp(prop);
+            if (v === null) {
                 propsWithErrors.push(prop.name);
+            } else {
+                prop.value = v;
             }//if
         }//for
 
