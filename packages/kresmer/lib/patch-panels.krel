@@ -23,7 +23,7 @@
             </template>
         </template>
         <props>
-            <prop name="height" type="Number" required="true" default="50" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientaiton"/>
+            <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientaiton"/>
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
             <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
@@ -38,12 +38,14 @@
             <computed-prop name="padding">0.4</computed-prop>
             <computed-prop name="interPortGap">0.2</computed-prop>
             <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
+            <computed-prop name="height">props.height ?? 25 * (props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
             <computed-prop name="width">
-                props.width ?? props.height * computedProps.portSize * 
-                    (props.nPorts/props.nPortRows + (props.nPorts/props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding + (computedProps.portLayout==='zigzag' ? 0.5 : 0))
+                props.width ?? computedProps.height * computedProps.portSize * 
+                    (props.nPorts/props.nPortRows + (props.nPorts/props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding 
+                     + (computedProps.portLayout === 'zigzag' &amp;&amp; props.nPortRows > 1 ? 0.5 : 0))
             </computed-prop>
-            <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : props.height</computed-prop>
-            <computed-prop name="h">props.orientation === "horizontal" ? props.height : computedProps.width</computed-prop>
+            <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
+            <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
             <computed-prop name="portLayout">props.portLayout ?? props.portType === "FC" ? "zigzag" : "in-line"</computed-prop>
         </computed-props>
         <style>
