@@ -15,7 +15,7 @@
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <template v-for="i in nPorts/nPortRows">
                 <component v-for="j in nPortRows" v-bind:is="'Kre:RJ45Port'" 
-                    v-bind:x="height*(padding + (portSize+interPortGap)*(orientation === 'horizontal' ? (i-1) : (nPortRows-j)))" 
+                    v-bind:x="height*(padding + (portSize+interPortGap)*(orientation === 'horizontal' ? (i-1) : (j-1)))" 
                     v-bind:y="height*(padding + (portSize+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1)))" 
                     v-bind:d="portSize*height"
                     v-bind:name="(i-1)*nPortRows + j"
@@ -43,7 +43,7 @@
             </computed-prop>
             <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : props.height</computed-prop>
             <computed-prop name="h">props.orientation === "horizontal" ? props.height : computedProps.width</computed-prop>
-            <computed-prop name="portLayout">props.portLayout ?? props.poptType === "FC" ? "zigzag" : "in-line"</computed-prop>
+            <computed-prop name="portLayout">props.portLayout ?? props.portType === "FC" ? "zigzag" : "in-line"</computed-prop>
         </computed-props>
         <style>
             .port-icon.body {fill: #212121;}
