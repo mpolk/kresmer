@@ -11,7 +11,7 @@
     import { Modal, Offcanvas } from 'bootstrap';
     import { NetworkElement, NetworkElementClass, NetworkElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
-             NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass } from 'kresmer';
+             NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
 
@@ -195,18 +195,18 @@ Continue?`)) {
     function validateProp(prop: ElementPropDescriptor)
     {
         let v: unknown;
-        let wasError = false;
+        let error: string|undefined;
         switch (prop.type) {
             case Array:
                 try {
                     v = JSON.parse(prop.value as string);
-                    if (prop.type === Object) {
-                        wasError = typeof v !== "object";
-                    } else {
-                        wasError = !Array.isArray(v);
+                    if (prop.type === Object && typeof v !== "object") {
+                        error = "Invalid object syntax";
+                    } else if (!Array.isArray(v)) {
+                        error = "Invalid array syntax";
                     }//if
                 } catch {
-                    wasError = true;
+                    error = "Invalid object/array syntax";
                 }
                 break;
             case Number:
@@ -214,14 +214,15 @@ Continue?`)) {
                     v = undefined;
                 } else {
                     v = parseFloat(prop.value as string);
-                    wasError = isNaN(v as number);
+                    if (isNaN(v as number))
+                        error = "Invalid number format";
                 }//if
                 break;
             default:
                 v = prop.value;
         }//switch
 
-        return wasError ? null : v;
+        return error ? new KresmerException(error) : v;
     }//validateProp
 
 
@@ -230,11 +231,11 @@ Continue?`)) {
      */
     function save()
     {
-        const propsWithErrors: string[] = [];
+        const propsWithErrors = new Map<string, string>();
         for (const prop of elementPropDescriptors.value) {
             const v = validateProp(prop);
-            if (v === null) {
-                propsWithErrors.push(prop.name);
+            if (v instanceof KresmerException) {
+                propsWithErrors.set(prop.name, v.message);
             } else {
                 prop.value = v;
             }//if
@@ -243,12 +244,12 @@ Continue?`)) {
         if (propInputs.value) {
             for (const input of propInputs.value) {
                 if (!input.validity.valid) {
-                    propsWithErrors.push(input.dataset.propName!);
-                } else if (propsWithErrors.includes(input.dataset.propName!)) {
-                    input.setCustomValidity("Syntax error!");
+                    propsWithErrors.set(input.dataset.propName!, "Syntax error");
+                } else if (propsWithErrors.has(input.dataset.propName!)) {
+                    input.setCustomValidity(propsWithErrors.get(input.dataset.propName!)!);
                 }//if
             }//for
-            if (propsWithErrors.length || !validateElementName()) {
+            if (propsWithErrors.size || !validateElementName()) {
                 formValidated.value = true;
                 return;
             }//if
