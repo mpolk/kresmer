@@ -15,8 +15,8 @@
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <template v-for="i in nPorts/nPortRows">
                 <component v-for="j in nPortRows" v-bind:is="'Kre:RJ45Port'" 
-                    v-bind:x="height*(padding + (portSize+interPortGap)*(orientation === 'horizontal' ? (i-1) : (j-1)))" 
-                    v-bind:y="height*(padding + (portSize+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1)))" 
+                    v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1) : (j-1)))" 
+                    v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1)))" 
                     v-bind:d="portSize*height"
                     v-bind:name="(i-1)*nPortRows + j"
                     />
@@ -35,11 +35,11 @@
             <prop name="strokeColor" type="String" default="#d3bc69" category="Presentation"/>
         </props>
         <computed-props>
-            <computed-prop name="padding">0.2</computed-prop>
-            <computed-prop name="interPortGap">0.1</computed-prop>
-            <computed-prop name="portSize">(1 - 2*computedProps.padding + computedProps.interPortGap)/props.nPortRows - computedProps.interPortGap</computed-prop>
+            <computed-prop name="padding">0.4</computed-prop>
+            <computed-prop name="interPortGap">0.2</computed-prop>
+            <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
             <computed-prop name="width">
-                props.width ?? props.height * (2*computedProps.padding - computedProps.interPortGap + (computedProps.portSize+computedProps.interPortGap)*props.nPorts/props.nPortRows)
+                props.width ?? props.height * computedProps.portSize * (props.nPorts/props.nPortRows + (props.nPorts/props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)
             </computed-prop>
             <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : props.height</computed-prop>
             <computed-prop name="h">props.orientation === "horizontal" ? props.height : computedProps.width</computed-prop>
