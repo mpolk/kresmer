@@ -10,11 +10,31 @@
 <*************************************************************************** -->
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
+    <component-class name="FC-Port">
+        <template>
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+                    v-bind:port-info="portInfo">
+                <Kre:Ferrule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:d="d/4"/>
+            </Kre:Port>
+        </template>
+        <props extend="Port" except="w,h">
+            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
+        </props>
+        <computed-props>
+            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+        </computed-props>
+        <style extends="Port">
+            .port-icon.body {fill: transparent; stroke: transparent;}
+            .port-name {fill: gray;}
+        </style>
+    </component-class>
+
     <component-class name="patch-panel" category="Passive equipment">
         <template>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <template v-for="i in nPorts/nPortRows">
-                <component v-for="j in nPortRows" v-bind:is="'Kre:RJ45-Port'" 
+                <component v-for="j in nPortRows" v-bind:is="portClass" 
                     v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" 
                     v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" 
                     v-bind:d="portSize*height"
@@ -27,7 +47,7 @@
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
             <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
-            <prop name="portType" type="String" choices="RJ45, FC, SC-UPC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
+            <prop name="portType" type="String" choices="RJ45, FC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
             <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
             <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry" />
             <prop name="labelsPosition" type="String" choices="above,below,before,after,both-sides,none" category="Presentation" description="Position of the port labels (if any)" />
@@ -47,6 +67,7 @@
             <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
             <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
             <computed-prop name="portLayout">props.portLayout ?? props.portType === "FC" ? "zigzag" : "in-line"</computed-prop>
+            <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
         </computed-props>
         <style>
             .port-icon.body {fill: #212121;}
