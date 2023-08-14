@@ -44,17 +44,17 @@
             <rect v-bind:x="height*0.3" v-bind:y="height*0.45" 
                   v-bind:height="height*0.5" v-bind:width="height*4.1" 
                   class="facet"/>
-            <Kre:QsfpPort v-for="i in 4" v-bind:x="height*(i-0.5)" v-bind:y="height*0.53" v-bind:h="height/3" 
+            <Kre:QSFP-Port v-for="i in 4" v-bind:x="height*(i-0.5)" v-bind:y="height*0.53" v-bind:h="height/3" 
                          v-bind:name="`et0/0/${i-1}`" prefix="et0/"
                          v-bind:port-info="portsInfo[`et0/0/${i-1}`]"/>
             <rect v-bind:x="height*4.85" v-bind:y="height*0.07" 
                   v-bind:height="height*0.9" v-bind:width="height*2.2" 
                   class="facet"/>
             <template v-for="i in 4">
-                <Kre:SfpPort v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.15" v-bind:d="height/3" 
+                <Kre:SFP-Port v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.15" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"
                              v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]"/>
-                <Kre:SfpPort v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.53" v-bind:d="height/3" 
+                <Kre:SFP-Port v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.53" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7" key-position="bottom"
                              v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]"/>
             </template>

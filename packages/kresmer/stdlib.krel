@@ -157,7 +157,7 @@
     </component-class>
 
     <!-- RJ45 Port -->
-    <component-class name="RJ45Port" category=".ports">
+    <component-class name="RJ45-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
@@ -171,7 +171,7 @@
     </component-class>
 
     <!-- SFP Port -->
-    <component-class name="SfpPort" category=".ports">
+    <component-class name="SFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
@@ -188,7 +188,7 @@
     </component-class>
 
     <!-- XFP Port -->
-    <component-class name="XfpPort" category=".ports">
+    <component-class name="XFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
                     v-bind:port-info="portInfo">
@@ -205,7 +205,7 @@
     </component-class>
 
     <!-- QSFP Port -->
-    <component-class name="QsfpPort" category=".ports">
+    <component-class name="QSFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="h*2" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
                     v-bind:port-info="portInfo">
