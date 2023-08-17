@@ -10,7 +10,7 @@
 <*************************************************************************** -->
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
-    <component-class name="FC-Port">
+    <component-class name="FC-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
@@ -22,7 +22,6 @@
         </template>
         <props extend="Port" except="w,h,keyPosition">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
             <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
         </props>
         <computed-props>
@@ -37,6 +36,32 @@
             .nut {fill: silver; stroke: white;}
             .cap {fill: #d00101; stroke: #bd0000; stroke-width: 2px}
         </style>
+    </component-class>
+
+    <component-class name="FC-APC-Port" category=".ports">
+        <template>
+            <Kre:FC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" v-bind:port-info="portInfo"/>
+        </template>
+        <props extend="FC-Port"/>
+        <style extends="FC-Port">
+            .cap {fill: #18b933; stroke: #199a2e;}
+        </style>
+    </component-class>
+
+    <component-class name="SC-Port" category=".ports">
+        <template>
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+                    v-bind:port-info="portInfo">
+                <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+            </Kre:Port>
+        </template>
+        <props extend="Port" except="w,h">
+            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
+        </props>
+        <computed-props>
+            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+        </computed-props>
     </component-class>
 
     <component-class name="patch-panel" category="Passive equipment">
@@ -56,7 +81,7 @@
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
             <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
-            <prop name="portType" type="String" choices="RJ45, FC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
+            <prop name="portType" type="String" choices="RJ45, FC, FC-APC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
             <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
             <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry" />
             <prop name="labelsPosition" type="String" choices="above,below,before,after,both-sides,none" category="Presentation" description="Position of the port labels (if any)" />
