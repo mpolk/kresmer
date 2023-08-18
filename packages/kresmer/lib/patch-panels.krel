@@ -93,7 +93,7 @@
                     v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
                     v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight">
                     <rect x="0" y="0" v-bind:width="labelWidth" v-bind:height="labelHeight" />
-                    <text v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelHeight*0.8">{{`${i} ${portLabels[i]}`}}</text>
+                    <text v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
                 </svg>
             </template>
         </template>
@@ -124,9 +124,10 @@
             <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
             <computed-prop name="portLayout">props.portLayout ?? props.portType === "FC" ? "zigzag" : "in-line"</computed-prop>
             <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
-            <computed-prop name="labelHeight">computedProps.width/props.nPorts</computed-prop>
+            <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
+            <computed-prop name="labelFontSize">computedProps.labelHeight*0.8</computed-prop>
             <computed-prop name="labelWidth">
-                (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 2)*computedProps.portSize*computedProps.height*1.1
+                (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)))*computedProps.labelFontSize*0.8
             </computed-prop>
             <computed-prop name="firstLabelX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth :
@@ -136,7 +137,7 @@
             <computed-prop name="firstLabelY">
                 props.portLabelPosition==="below" ? computedProps.width :
                 props.portLabelPosition==="after" ? computedProps.labelWidth :
-                computedProps.padding*computedProps.portSize*computedProps.height
+                (computedProps.padding+0.25) * computedProps.portSize * computedProps.height
             </computed-prop>
         </computed-props>
         <style>

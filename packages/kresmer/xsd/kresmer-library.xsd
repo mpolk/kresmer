@@ -210,6 +210,20 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="svg">
+                    <xs:complexType>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:group ref="svg-elements"/>
+                            <xs:element ref="slot"/>
+                        </xs:choice>
+                        <xs:attributeGroup ref="origin-attrs"></xs:attributeGroup>
+                        <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="vue-directives"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:element name="defs">
                     <xs:complexType>
                         <xs:choice minOccurs="0" maxOccurs="unbounded">
