@@ -52,7 +52,7 @@
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
-                <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+                <Kre:Female-SC-Connector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
         <props extend="Port" except="w,h">
@@ -62,6 +62,19 @@
         <computed-props>
             <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
         </computed-props>
+        <style>
+            .Female-SC-Connector .border {fill: none; stroke: #057aff;}
+        </style>
+    </component-class>
+
+    <component-class name="SC-APC-Port" category=".ports">
+        <template>
+            <Kre:SC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" v-bind:port-info="portInfo" />
+        </template>
+        <props extend="SC-Port"/>
+        <style>
+            .Female-SC-Connector .border {fill: none; stroke: #18b933;}
+        </style>
     </component-class>
 
     <component-class name="patch-panel" category="Passive equipment">

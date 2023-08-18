@@ -95,7 +95,7 @@
     </component-class>
 
     <!-- A port plugin-module: SFP, XFP etc. -->
-    <component-class name="PluginModule" category=".ports">
+    <component-class name="Female-SC-Connector" category=".ports">
         <template>
             <polyline v-bind:points="
                 keyPosition === 'top' ?
@@ -116,6 +116,13 @@
         <computed-props>
             <computed-prop name="q">0.4</computed-prop>
         </computed-props>
+    </component-class>
+
+    <component-class name="PluginModule" category=".ports">
+        <template>
+            <Kre:Female-SC-Connector v-bind:cx="cx"  v-bind:cy="cy"  v-bind:w="w"  v-bind:h="h"  v-bind:key-position="keyPosition" />
+        </template>
+        <props extend="Female-SC-Connector"/>
         <style>
             .border {fill: none; stroke: #8998a9;}
         </style>
