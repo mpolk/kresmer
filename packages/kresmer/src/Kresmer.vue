@@ -150,7 +150,8 @@
 </script>
 
 <template>
-    <svg class="kresmer" ref="rootSVG" 
+    <svg xmlns="http://www.w3.org/2000/svg" 
+        class="kresmer" ref="rootSVG" 
         :style="{marginLeft: x, marginTop: y}" 
         :width="width" :height="height" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
