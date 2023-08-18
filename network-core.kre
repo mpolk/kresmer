@@ -297,14 +297,13 @@
     </component>
 
     <component class="patch-panel" name="metro-net-patch-panel">
-        <origin x="1138" y="184"/>
+        <origin x="1252" y="226"/>
         <props>
             <prop name="n-port-rows">2</prop>
             <prop name="n-ports">48</prop>
             <prop name="orientation">vertical</prop>
             <prop name="port-label-position">before</prop>
-            <prop name="port-layout">in-line</prop>
-            <prop name="port-type">SC</prop>
+            <prop name="port-type">FC</prop>
             <prop name="port-labels">{
                   "1": "ДИПТ (Двор16)",
                   "2": "ДИПТ (Двор16)",

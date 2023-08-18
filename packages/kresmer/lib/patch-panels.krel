@@ -80,6 +80,14 @@
     <component-class name="patch-panel" category="Passive equipment">
         <template>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
+            <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
+                <svg v-for="i in nPorts" class="port-label" v-bind:class="{[i%2 ? 'odd' : 'even']: true}"
+                    v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
+                    v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight">
+                    <rect x="0" y="0" v-bind:width="labelWidth + height*portSize*(padding + i%nPortRows*(1+interPortGap) + 0.5)" v-bind:height="labelHeight" />
+                    <text v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
+                </svg>
+            </template>
             <template v-for="i in nPorts/nPortRows">
                 <component v-for="j in nPortRows" v-bind:is="portClass" 
                     v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" 
@@ -88,17 +96,9 @@
                     v-bind:name="(i-1)*nPortRows + j"
                     />
             </template>
-            <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
-                <svg v-for="i in nPorts" class="port-label"
-                    v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
-                    v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight">
-                    <rect x="0" y="0" v-bind:width="labelWidth" v-bind:height="labelHeight" />
-                    <text v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
-                </svg>
-            </template>
         </template>
         <props>
-            <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientaiton"/>
+            <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
             <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
@@ -113,6 +113,8 @@
         <computed-props>
             <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
             <computed-prop name="interPortGap">0.2</computed-prop><!-- relative to portSize -->
+            <computed-prop name="portLayout">props.portLayout ?? props.portType === "FC" ? "zigzag" : "in-line"</computed-prop>
+            <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
             <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop><!-- relative to height -->
             <computed-prop name="height">props.height ?? 25 * (props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
             <computed-prop name="width">
@@ -122,8 +124,6 @@
             </computed-prop>
             <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
             <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
-            <computed-prop name="portLayout">props.portLayout ?? props.portType === "FC" ? "zigzag" : "in-line"</computed-prop>
-            <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
             <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
             <computed-prop name="labelFontSize">computedProps.labelHeight*0.8</computed-prop>
             <computed-prop name="labelWidth">
@@ -132,17 +132,19 @@
             <computed-prop name="firstLabelX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth :
                 props.portLabelPosition==="after" ? computedProps.width :
-                computedProps.padding*computedProps.portSize*computedProps.height
+                    computedProps.padding*computedProps.portSize*computedProps.height
             </computed-prop>
             <computed-prop name="firstLabelY">
                 props.portLabelPosition==="below" ? computedProps.width :
                 props.portLabelPosition==="after" ? computedProps.labelWidth :
-                (computedProps.padding+0.25) * computedProps.portSize * computedProps.height
+                    (computedProps.padding+0.25) * computedProps.portSize * computedProps.height
             </computed-prop>
         </computed-props>
         <style>
             .port-icon.body {fill: #212121;}
-            .port-label {fill: beige; fill-opacity: 0.5; stroke: lightgray}
+            .port-label {fill-opacity: 0.5; stroke: lightgray}
+            .port-label.odd {fill: lightgray}
+            .port-label.even {fill: beige}
             .port-label text {fill: black; fill-opacity: 1; stroke: none}
         </style>
     </component-class>
