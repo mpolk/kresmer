@@ -215,8 +215,10 @@
                         <xs:choice minOccurs="0" maxOccurs="unbounded">
                             <xs:group ref="svg-elements"/>
                             <xs:element ref="slot"/>
+                            <xs:element ref="template"/>
                         </xs:choice>
                         <xs:attributeGroup ref="origin-attrs"></xs:attributeGroup>
+                        <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
@@ -397,13 +399,13 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="line-attrs">
-        <xs:attribute name="x1" type="xs:decimal"/>
+        <xs:attribute name="x1"/>
         <xs:attribute ref="v-bind:x1"/>
-        <xs:attribute name="y1" type="xs:decimal"/>
+        <xs:attribute name="y1"/>
         <xs:attribute ref="v-bind:y1"/>
-        <xs:attribute name="x2" type="xs:decimal"/>
+        <xs:attribute name="x2"/>
         <xs:attribute ref="v-bind:x2"/>
-        <xs:attribute name="y2" type="xs:decimal"/>
+        <xs:attribute name="y2"/>
         <xs:attribute ref="v-bind:y2"/>
     </xs:attributeGroup>
 
