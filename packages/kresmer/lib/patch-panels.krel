@@ -84,7 +84,8 @@
                 <svg v-for="i in nPorts" class="port-label" v-bind:class="{[i%2 ? 'odd' : 'even']: true}"
                     v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
                     v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight">
-                    <rect x="0" y="0" v-bind:width="labelWidth + height*portSize*(padding + i%nPortRows*(1+interPortGap) + 0.5)" v-bind:height="labelHeight" />
+                    <rect class="pad" x="0" y="0" v-bind:width="labelWidth + height*portSize*(padding + (i-1)%nPortRows*(1+interPortGap) + 0.5)" v-bind:height="labelHeight" />
+                    <rect class="frame" x="0" y="0" v-bind:width="labelWidth + height*portSize*(padding + (i-1)%nPortRows*(1+interPortGap) + 0.5)" v-bind:height="labelHeight" />
                     <text v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
                 </svg>
             </template>
@@ -137,15 +138,16 @@
             <computed-prop name="firstLabelY">
                 props.portLabelPosition==="below" ? computedProps.width :
                 props.portLabelPosition==="after" ? computedProps.labelWidth :
-                    (computedProps.padding+0.25) * computedProps.portSize * computedProps.height
+                    (computedProps.padding + (computedProps.portLayout==="zigzag" ? 0.25 : -0.125)) * computedProps.portSize * computedProps.height
             </computed-prop>
         </computed-props>
         <style>
             .port-icon.body {fill: #212121;}
-            .port-label {fill-opacity: 0.5; stroke: lightgray}
-            .port-label.odd {fill: lightgray}
-            .port-label.even {fill: beige}
-            .port-label text {fill: black; fill-opacity: 1; stroke: none}
+            .port-label .pad {fill-opacity: 0.75}
+            .port-label.odd .pad {fill: #dedede}
+            .port-label.even .pad {fill: #dbf5f5}
+            .port-label .frame {stroke: lightgray; fill: none}
+            .port-label text {fill: black;}
         </style>
     </component-class>
 
