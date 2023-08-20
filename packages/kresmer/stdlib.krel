@@ -607,6 +607,23 @@
         </style>
     </link-class>
 
+    <link-class name="MultifiberCable" category="optical-links">
+        <extends base="_abstract-link" media-type="MultifiberCable" accept-media-types="MultifiberCable"/>
+        <props>
+            <prop name="nFibers" type="Number" category="Hardware" description="The number of fibers in the cable"/>
+            <prop name="mode" type="String" category="Hardware" choices="single-mode, multi-mode" description="Optical mode use"/>
+        </props>
+        <style>
+            .link {--link-color: black; --highlighted-link-color: #ff873d; }
+            .padding {stroke-width: 10px;}
+            .vertex.padding {fill: #ff873d;}
+            .segment {stroke-width: 1.5px; stroke-linejoin: round;}
+            .segment.highlighted, .segment.selected {stroke-width: 2px}
+            .vertex {stroke-width: 4px; r: 6px}
+            .blank.header {fill-opacity: 0.3;}
+        </style>
+    </link-class>
+
     <!-- Link bundles -->
     <link-bundle-class name="link-bundle" category="link-bundles">
         <extends base="_abstract-link" accept-media-types="none"/>
