@@ -125,7 +125,7 @@
         <computed-props>
             <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
             <computed-prop name="interPortGap">0.2</computed-prop><!-- relative to portSize -->
-            <computed-prop name="portLayout">props.portLayout ?? props.portType === "FC" ? "zigzag" : "in-line"</computed-prop>
+            <computed-prop name="portLayout">props.portLayout ?? (props.portType.startsWith("FC") ? "zigzag" : "in-line")</computed-prop>
             <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
             <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop><!-- relative to height -->
             <computed-prop name="height">props.height ?? 25 * (props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
@@ -144,7 +144,7 @@
             <computed-prop name="firstLabelX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth :
                 props.portLabelPosition==="after" ? computedProps.height :
-                    computedProps.padding*computedProps.portSize*computedProps.height
+                    (computedProps.padding + (computedProps.portLayout==="zigzag" ? 0.25 : -0.125)) * computedProps.portSize * computedProps.height
             </computed-prop>
             <computed-prop name="firstLabelY">
                 props.portLabelPosition==="below" ? computedProps.height :
