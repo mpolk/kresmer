@@ -299,7 +299,7 @@
     <component class="patch-panel" name="metro-net-patch-panel">
         <origin x="1162" y="128"/>
         <props>
-            <prop name="n-port-rows">3</prop>
+            <prop name="n-port-rows">2</prop>
             <prop name="n-ports">48</prop>
             <prop name="orientation">vertical</prop>
             <prop name="port-label-position">before</prop>
@@ -310,6 +310,7 @@
                   "3": "УкрТелеком-1",
                   "4": "УкрТелеком-2"
                 }</prop>
+            <prop name="comment">Главный выход в город и мир</prop>
         </props>
     </component>
 

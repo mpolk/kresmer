@@ -79,9 +79,10 @@
 
     <component-class name="patch-panel" category="Passive equipment">
         <template>
+            <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
-                <svg v-for="i in nPorts" class="port-label" v-bind:class="{[i%2 ? 'odd' : 'even']: true}"
+                <svg v-for="i in nPorts" class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}"
                     v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
                     v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight"
                     v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" 
@@ -108,8 +109,12 @@
                     v-bind:name="(i-1)*nPortRows + j"
                     />
             </template>
+            <connection-point
+                v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
+                v-bind="{name: `${name}@${dir[0]}`, d: height*0.2, x, y, dir}" />
         </template>
         <props>
+            <prop name="comment" type="String" description="Device general info"/>
             <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
@@ -155,10 +160,14 @@
         <style>
             .port-icon.body {fill: #212121;}
             .port-label .pad {fill-opacity: 0.75}
-            .port-label.odd .pad {fill: #dedede}
-            .port-label.even .pad {fill: #dbf5f5}
+            /*.port-label.odd .pad {fill: #dedede}
+            .port-label.even .pad {fill: #dbf5f5}*/
+            .port-label.row0 .pad {fill: #dbf5f5}
+            .port-label.row1 .pad {fill: #c4eeee}
+            .port-label.row2 .pad {fill: #a1dede}
+            .port-label.row3 .pad {fill: #7ad1d1}
             .port-label .frame {stroke: lightgray; fill: none}
-            .port-label text {fill: black;}
+            .port-label text {fill: #333333;}
         </style>
     </component-class>
 

@@ -27,6 +27,7 @@
     const hostIsLink = hostElement instanceof NetworkLink;
     const proxy = props.proxy ?? new ConnectionPointProxy(hostElement, props.name, props.dir);
     if (!props.proxy)
+        // eslint-disable-next-line vue/no-setup-props-destructure
         hostElement.addConnectionPoint(props.name, proxy);
 
     const kresmer = inject(Kresmer.ikKresmer)!;
