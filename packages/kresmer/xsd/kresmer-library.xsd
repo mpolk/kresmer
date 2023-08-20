@@ -141,6 +141,7 @@
                         </xs:choice>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="origin-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="text-attrs"/>
                         <xs:attributeGroup ref="vue-directives"/>

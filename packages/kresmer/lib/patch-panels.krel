@@ -84,8 +84,8 @@
                 <svg v-for="i in nPorts" class="port-label" v-bind:class="{[i%2 ? 'odd' : 'even']: true}"
                     v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
                     v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight"
-                    v-bind:width="labelWidth + height*portSize*(padding + (i-1)%nPortRows*(1+interPortGap) + 0.5)" 
-                    v-bind:height="labelHeight"
+                    v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" 
+                    v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth"
                     >
                     <rect class="pad" x="0" y="0" width="100%" height="100%"/>
                     <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
@@ -94,7 +94,10 @@
                         <line class="frame" x1="0" y1="100%" x2="100%" y2="100%"/>
                         <line class="frame" x1="100%" y1="100%" x2="100%" y2="0"/>
                     </template>
-                    <text v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
+                    <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
+                    <text v-else="" v-bind:x="labelHeight*0.8" v-bind:y="labelWidth - labelHeight*0.8" 
+                          v-bind:transform="`rotate(-90, ${labelHeight*0.8}, ${labelWidth - labelHeight*0.8})`" 
+                          v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
                 </svg>
             </template>
             <template v-for="i in nPorts/nPortRows">
@@ -140,12 +143,12 @@
             </computed-prop>
             <computed-prop name="firstLabelX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth :
-                props.portLabelPosition==="after" ? computedProps.width :
+                props.portLabelPosition==="after" ? computedProps.height :
                     computedProps.padding*computedProps.portSize*computedProps.height
             </computed-prop>
             <computed-prop name="firstLabelY">
-                props.portLabelPosition==="below" ? computedProps.width :
-                props.portLabelPosition==="after" ? computedProps.labelWidth :
+                props.portLabelPosition==="below" ? computedProps.height :
+                props.portLabelPosition==="above" ? -computedProps.labelWidth :
                     (computedProps.padding + (computedProps.portLayout==="zigzag" ? 0.25 : -0.125)) * computedProps.portSize * computedProps.height
             </computed-prop>
         </computed-props>
