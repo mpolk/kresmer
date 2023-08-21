@@ -717,7 +717,7 @@
     </link>
 
     <link-bundle class="link-bundle" name="metro-net-bundle" from="(246, 46)" to="(246, 868)">
-        <vertex x="246" y="646"/>
+        <vertex x="246" y="654"/>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="border-upper-bundle" from="(262, 32)" to="(826, 32)"/>
@@ -732,8 +732,15 @@
     <link class="sm-patch-cord" name="Link-d66c992e-9381-4146-b463-aeaa8dd0897d" from="metro-switch:1:17@u" to="metro-net-patch-panel:7@r">
         <vertex bundle="metro-upper-bundle" after="2" distance="410"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="6.510375019141296"/>
+        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="122.49999999999999"/>
+    </link>
+
+    <link class="sm-patch-cord" name="Link-d026fcef-5bbe-4420-b8b7-5e88fb264fce" from="metro-switch:1:1@u" to="metro-net-patch-panel:9@r">
+        <vertex bundle="metro-upper-bundle" after="2" distance="110.00000000000003"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="152.5"/>
     </link>
 
 </kresmer-drawing>

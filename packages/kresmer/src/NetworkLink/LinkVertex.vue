@@ -18,7 +18,7 @@
 </script>
 
 <script setup lang="ts">
-    const linkNumberOffset = 6; //Tunable parameters
+    const linkNumberOffset = 4; //Tunable parameters
 
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},

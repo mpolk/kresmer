@@ -580,6 +580,7 @@
             .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
             .segment {stroke-width: 1px;}
             .segment.highlighted, .segment.selected {stroke-width: 2px}
+            .link-number {filter: brightness(0.6)}
             .blank.header {fill-opacity: 0.3;}
         </style>
     </link-class>
