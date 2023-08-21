@@ -159,7 +159,7 @@
         </computed-props>
         <style>
             .port-icon.body {fill: #212121;}
-            .port-label .pad {fill-opacity: 0.75; fill: #ddf8f8; }
+            .port-label .pad {fill-opacity: 0.75; fill: #e8f7f7; }
             .port-label.row3 .pad {filter: saturate(0.85) brightness(0.85)}
             .port-label.row2 .pad {filter: saturate(0.9) brightness(0.9)}
             .port-label.row1 .pad {filter: saturate(0.95) brightness(0.95)}
