@@ -357,7 +357,7 @@
         <vertex x="358" y="400"/>
         <vertex x="358" y="606"/>
         <vertex x="306" y="606"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="42"/>
         <vertex bundle="metro-middle-bundle" after="2" distance="445.5"/>
     </link>
 
@@ -467,7 +467,7 @@
         <vertex x="370" y="672"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(306, 770)" to="(1268, 770)">
+    <link-bundle class="link-bundle" name="metro-middle-bundle" from="(264, 770)" to="(1268, 770)">
         <vertex x="344" y="770"/>
         <vertex x="372" y="770"/>
     </link-bundle>
@@ -717,30 +717,45 @@
     </link>
 
     <link-bundle class="link-bundle" name="metro-net-bundle" from="(246, 46)" to="(246, 868)">
-        <vertex x="246" y="654"/>
+        <vertex x="246" y="656"/>
+        <vertex x="246" y="752"/>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="border-upper-bundle" from="(262, 32)" to="(826, 32)"/>
 
-    <link class="sm-patch-cord" name="Link-36378159-01a3-411a-a558-20b6f0423736" from="border:xe0/1/0@u" to="metro-net-patch-panel:6@r">
+    <link class="sm-patch-cord" name="Rostnet-uplink" from="border:xe0/1/0@u" to="metro-net-patch-panel:6@r">
         <vertex bundle="border-upper-bundle" after="0" distance="449.75000000000006"/>
         <vertex bundle="border-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="107.5"/>
     </link>
 
-    <link class="sm-patch-cord" name="Link-d66c992e-9381-4146-b463-aeaa8dd0897d" from="metro-switch:1:17@u" to="metro-net-patch-panel:7@r">
+    <link class="sm-patch-cord" name="metro-rum13" from="metro-switch:1:17@u" to="metro-net-patch-panel:7@r">
         <vertex bundle="metro-upper-bundle" after="2" distance="410"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="1" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="122.49999999999999"/>
     </link>
 
-    <link class="sm-patch-cord" name="Link-d026fcef-5bbe-4420-b8b7-5e88fb264fce" from="metro-switch:1:1@u" to="metro-net-patch-panel:9@r">
+    <link class="sm-patch-cord" name="metro-kram-7" from="metro-switch:1:1@u" to="metro-net-patch-panel:9@r">
         <vertex bundle="metro-upper-bundle" after="2" distance="110.00000000000003"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="1" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="152.5"/>
+    </link>
+
+    <link class="sm-patch-cord" name="metro-kant1" from="metro-switch:1:2@d" to="metro-net-patch-panel:11@r">
+        <vertex bundle="metro-middle-bundle" after="2" distance="107.99999999999997"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="182.5"/>
+    </link>
+
+    <link class="sm-patch-cord" name="metro-dvor40" from="metro-switch:1:5@u" to="metro-net-patch-panel:13@r">
+        <vertex bundle="metro-upper-bundle" after="2" distance="185.00000000000003"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="1" distance="1.144526097767995"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="212.5"/>
     </link>
 
 </kresmer-drawing>
