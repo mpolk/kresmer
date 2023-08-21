@@ -95,9 +95,9 @@
                         <line class="frame" x1="0" y1="100%" x2="100%" y2="100%"/>
                         <line class="frame" x1="100%" y1="100%" x2="100%" y2="0"/>
                     </template>
-                    <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.8" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
-                    <text v-else="" v-bind:x="labelHeight*0.8" v-bind:y="labelWidth - labelHeight*0.8" 
-                          v-bind:transform="`rotate(-90, ${labelHeight*0.8}, ${labelWidth - labelHeight*0.8})`" 
+                    <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.4" v-bind:y="labelHeight*0.8" v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
+                    <text v-else="" v-bind:x="labelHeight*0.8" v-bind:y="labelWidth - labelHeight*0.4" 
+                          v-bind:transform="`rotate(-90, ${labelHeight*0.8}, ${labelWidth - labelHeight*0.4})`" 
                           v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
                 </svg>
             </template>
