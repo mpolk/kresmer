@@ -7,5 +7,10 @@
 			"path": "../kresmer-server.adonis"
 		}
 	],
-	"settings": {}
+	"settings": {
+		"files.associations": {
+			"*.kre": "xml",
+			"*.krel": "xml"
+		}
+	}
 }
