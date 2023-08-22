@@ -353,7 +353,7 @@
             .top.facet { filter: brightness(0.7); }
             .side.facet { filter: brightness(0.5); }
             .unit-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
-            .inter-unit-gap { fill-opacity: 0.15; stroke-opacity: 0.5; stroke-width: 1px }
+            .inter-unit-gap { fill-opacity: 0.1; stroke-opacity: 0.5; stroke-width: 1px }
         </style>
         <props extend="ManagedDevice">
             <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
