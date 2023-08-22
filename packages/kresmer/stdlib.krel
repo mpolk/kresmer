@@ -628,8 +628,8 @@
             .link {--link-color: black; --highlighted-link-color: #ff873d; }
             .padding {stroke-width: 10px;}
             .vertex.padding {fill: #ff873d;}
-            .segment {stroke-width: 1.5px; stroke-linejoin: round;}
-            .segment.highlighted, .segment.selected {stroke-width: 2px}
+            .segment {stroke-width: 2px; stroke-linejoin: round;}
+            .segment.highlighted, .segment.selected {stroke-width: 3px}
             .vertex {stroke-width: 4px; r: 6px}
             .blank.header {fill-opacity: 0.3;}
         </style>

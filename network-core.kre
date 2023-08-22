@@ -349,7 +349,7 @@
     </component>
 
     <component class="patch-panel" name="ElitLine-patch-panel">
-        <origin x="1206" y="136"/>
+        <origin x="1148" y="184"/>
         <props>
             <prop name="orientation">vertical</prop>
             <prop name="n-ports">4</prop>
@@ -832,15 +832,15 @@
         <vertex bundle="border-upper-bundle" after="1" distance="0"/>
         <vertex x="1016" y="32"/>
         <vertex x="1016" y="124"/>
-        <vertex x="1178" y="124"/>
-        <vertex x="1178" y="218.5"/>
+        <vertex x="1136" y="124"/>
+        <vertex x="1136" y="266.5"/>
     </link>
 
     <link class="sm-patch-cord" name="Eurotel-uplink" from="border:xe0/1/1@d" to="ElitLine-patch-panel:4@l">
         <vertex bundle="border-lower-bundle" after="0" distance="447.7528352514684"/>
         <vertex bundle="border-lower-bundle" after="1" distance="0"/>
-        <vertex x="1160" y="138"/>
-        <vertex x="1160" y="248.5"/>
+        <vertex x="1122" y="138"/>
+        <vertex x="1122" y="296.5"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-shkad68-1" from="metro-switch:2:6@d" to="metro-net-patch-panel:23@r">
@@ -864,14 +864,25 @@
         <vertex bundle="metro-net-bundle" after="0" distance="392.5"/>
     </link>
 
-    <link class="multifiber-cable" name="metro-net-cable" from="metro-net-patch-panel:metro-net-patch-panel@u" to="(48, 26)">
+    <link class="multifiber-cable" name="metro-net-cable" from="(32, 18)" to="metro-net-patch-panel:u">
         <props>
-            <prop name="end-label">Академична 63</prop>
-            <prop name="end-marker">arrow</prop>
+            <prop name="end-label"></prop>
             <prop name="mode">single-mode</prop>
             <prop name="n-fibers">48</prop>
+            <prop name="start-label">Академична 63</prop>
+            <prop name="start-marker">arrow</prop>
         </props>
-        <vertex x="187.5" y="26"/>
+        <vertex x="187.5" y="18"/>
+    </link>
+
+    <link class="multifiber-cable" name="elitline-cable" from="ElitLine-patch-panel:u" to="(1236, 162)">
+        <props>
+            <prop name="end-label">Элитлайн</prop>
+            <prop name="end-marker">arrow</prop>
+            <prop name="mode">single-mode</prop>
+            <prop name="n-fibers">4</prop>
+        </props>
+        <vertex x="1170.5" y="162"/>
     </link>
 
 </kresmer-drawing>
