@@ -333,16 +333,16 @@
                   "26": "Мира 9",
                   "27": "Марата 7",
                   "28": "Лен 34",
-                  "29": "Возн 23",
+                  "29": "Возн 23 (-)",
                   "30": "Двор 19",
                   "31": "НИИПТМаш-1",
                   "32": "Квартсофт",
                   "33": "Приват",
                   "34": "Днепро 2",
                   "35": "Южн 17",
-                  "36": "17 Парт 2 - 1",
+                  "36": "17Парт 2-1",
                   "37": "бывший Евротел",
-                  "38": "17 Парт 2 - 2",
+                  "38": "17Парт 2-2 (-)",
                   "41": "Центр 1"
                 }</prop>
             <prop name="comment">Главный выход в город и мир</prop>
@@ -933,6 +933,13 @@
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="3" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="557.5"/>
+    </link>
+
+    <link class="sm-patch-cord" name="metro-centr1" from="metro-switch:1:14@d" to="metro-net-patch-panel:41@r">
+        <vertex bundle="metro-middle-bundle" after="2" distance="333.00000000000006"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="1" distance="22.499999999999947"/>
     </link>
 
 </kresmer-drawing>
