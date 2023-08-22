@@ -864,4 +864,14 @@
         <vertex bundle="metro-net-bundle" after="0" distance="392.5"/>
     </link>
 
+    <link class="multifiber-cable" name="metro-net-cable" from="metro-net-patch-panel:metro-net-patch-panel@u" to="(48, 26)">
+        <props>
+            <prop name="end-label">Академична 63</prop>
+            <prop name="end-marker">arrow</prop>
+            <prop name="mode">single-mode</prop>
+            <prop name="n-fibers">48</prop>
+        </props>
+        <vertex x="187.5" y="26"/>
+    </link>
+
 </kresmer-drawing>
