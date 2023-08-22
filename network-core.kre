@@ -726,16 +726,16 @@
         <vertex bundle="metro-lower-bundle" after="2" distance="749.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="metro-net-bundle" from="(246, 46)" to="(246, 892)">
-        <vertex x="246" y="656"/>
-        <vertex x="246" y="752"/>
-        <vertex x="246" y="848"/>
+    <link-bundle class="link-bundle" name="metro-net-bundle" from="(250, 46)" to="(250, 892)">
+        <vertex x="250" y="656"/>
+        <vertex x="250" y="752"/>
+        <vertex x="250" y="854"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="border-upper-bundle" from="(262, 32)" to="(804, 32)"/>
+    <link-bundle class="link-bundle" name="border-upper-bundle" from="(266, 32)" to="(982, 32)"/>
 
     <link class="sm-patch-cord" name="Rostnet-uplink" from="border:xe0/1/0@u" to="metro-net-patch-panel:6@r">
-        <vertex bundle="border-upper-bundle" after="0" distance="411.75000000000006"/>
+        <vertex bundle="border-upper-bundle" after="0" distance="407.75000000000006"/>
         <vertex bundle="border-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="107.5"/>
@@ -745,7 +745,7 @@
         <vertex bundle="metro-upper-bundle" after="2" distance="410"/>
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="122.49999999999999"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="122.5"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-kram-7" from="metro-switch:1:1@u" to="metro-net-patch-panel:9@r">
@@ -773,14 +773,14 @@
         <vertex bundle="metro-middle-bundle" after="2" distance="182.99999999999994"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="227.50000000000003"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="227.5"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-hab32" from="metro-switch:1:12@d" to="metro-net-patch-panel:15@r">
         <vertex bundle="metro-middle-bundle" after="2" distance="295.5"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="1.073579700837854"/>
         <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="242.49999999999997"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="242.5"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-byk25" from="metro-switch:2:12@d" to="metro-net-patch-panel:16@r">
@@ -812,13 +812,13 @@
     </link>
 
     <link class="sm-patch-cord" name="elitline-uplink-1" from="border:xe0/1/3@d" to="metro-net-patch-panel:21@r">
-        <vertex bundle="border-lower-bundle" after="0" distance="447.25000000000006"/>
+        <vertex bundle="border-lower-bundle" after="0" distance="447.25"/>
         <vertex bundle="border-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="107.5882602191171"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="106.67177061120124"/>
         <vertex bundle="metro-net-bundle" after="0" distance="332.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="border-lower-bundle" from="(264, 138)" to="(802, 138)"/>
+    <link-bundle class="link-bundle" name="border-lower-bundle" from="(264, 138)" to="(1048, 138)"/>
 
     <link class="sm-patch-cord" name="metro-khmel15" from="metro-switch:1:6@d" to="metro-net-patch-panel:22@r">
         <vertex bundle="metro-middle-bundle" after="2" distance="183"/>
@@ -828,7 +828,7 @@
     </link>
 
     <link class="sm-patch-cord" name="Elitline-uplink-2" from="border:xe0/1/4@u" to="ElitLine-patch-panel:3@l">
-        <vertex bundle="border-upper-bundle" after="0" distance="486.75"/>
+        <vertex bundle="border-upper-bundle" after="0" distance="482.75"/>
         <vertex bundle="border-upper-bundle" after="1" distance="0"/>
         <vertex x="982" y="32"/>
         <vertex x="982" y="124"/>
