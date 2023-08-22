@@ -143,6 +143,10 @@ export default class LinkVertex {
         }//if
     }//coords
 
+    /** Used for caching the adjacent segment geometry data to ease the later position calculations for the attached vertices */
+    segmentVector?: SegmentVector;
+
+    // The current (not cached) adjacent segment data
     private get _segmentVector(): SegmentVector|undefined
     {
         const nextNeighbour = this.nextNeighbour;
@@ -156,7 +160,6 @@ export default class LinkVertex {
         return {x0: p1.x, y0: p1.y, length, cosFi, sinFi};
     }//_segmentVector
 
-    segmentVector?: SegmentVector;
     _updateSegmentVector()
     {
         if (this.link.isBundle) {
@@ -696,6 +699,8 @@ export default class LinkVertex {
     private alignOnBundle(outOfBundleNeighbour: LinkVertex): LinkVertexAnchor|null
     {
         const {baseVertex, distance: d0} = this._anchor.bundle!;
+        if (d0 === 0)
+            return null;
         if (baseVertex.isTail) {
             if ((baseVertex.link as LinkBundle).getAttachedLinks().length == 1)
                 nextTick(() => this.link.kresmer.edAPI.alignLinkVertex({vertex: baseVertex}));
