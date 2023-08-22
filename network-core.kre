@@ -2,7 +2,7 @@
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="network-core" width="1500" height="1000">
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
-        <origin x="434" y="216"/>
+        <origin x="342" y="216"/>
         <props>
             <prop name="n-stack-units">2</prop>
             <prop name="unit-height">75</prop>
@@ -24,7 +24,7 @@
     </component>
 
     <component class="Juniper-MX204" name="border">
-        <origin x="322" y="48"/>
+        <origin x="284" y="46"/>
         <props>
             <prop name="perspective">none</prop>
             <prop name="height">75</prop>
@@ -349,7 +349,7 @@
     </component>
 
     <component class="patch-panel" name="ElitLine-patch-panel">
-        <origin x="1148" y="184"/>
+        <origin x="1096" y="184"/>
         <props>
             <prop name="orientation">vertical</prop>
             <prop name="n-ports">4</prop>
@@ -361,10 +361,10 @@
         <props>
             <prop name="start-label"></prop>
         </props>
-        <vertex bundle="core-lower-bundle" after="0" distance="72"/>
+        <vertex bundle="core-lower-bundle" after="0" distance="67.99999999999999"/>
         <vertex bundle="core-lower-bundle" after="0" distance="0"/>
-        <vertex x="382" y="400"/>
-        <vertex x="382" y="606"/>
+        <vertex x="320" y="400"/>
+        <vertex x="320" y="606"/>
         <vertex x="306" y="606"/>
         <vertex bundle="metro-middle-bundle" after="0" distance="42"/>
         <vertex bundle="metro-middle-bundle" after="2" distance="445.5"/>
@@ -392,11 +392,11 @@
 
     <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@l">
         <vertex bundle="core-border-bundle" after="0" distance="0"/>
-        <vertex bundle="core-border-bundle" after="1" distance="114.25"/>
+        <vertex bundle="core-border-bundle" after="1" distance="114.24999999999997"/>
     </link>
 
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">
-        <vertex bundle="core-border-bundle" after="0" distance="75.00000000000001"/>
+        <vertex bundle="core-border-bundle" after="0" distance="75.00000000000003"/>
         <vertex bundle="core-border-bundle" after="2" distance="0"/>
     </link>
 
@@ -440,7 +440,7 @@
         <vertex bundle="core-upper-bundle" after="1" distance="0"/>
         <vertex bundle="brases-core-bundle" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle" after="2" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="2" distance="178.14407348632815"/>
+        <vertex bundle="brases-core-bundle" after="2" distance="266.00000000000006"/>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-0" from="kamakura:eth0@d" to="metro-switch:1:26@d">
@@ -522,18 +522,18 @@
         <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
     </link>
 
-    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(460, 154)" to="(926, 363)">
-        <vertex x="926" y="154"/>
+    <link-bundle class="AOC-bundle" name="core-border-bundle" from="(422, 154)" to="(832, 363)">
+        <vertex x="832" y="154"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="core-upper-bundle" from="(380, 200)" to="(634, 200)">
-        <vertex x="406" y="200"/>
+    <link-bundle class="link-bundle" name="core-upper-bundle" from="(284, 200)" to="(542, 200)">
+        <vertex x="322" y="200"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="core-lower-bundle" from="(412, 400)" to="(546, 400)"/>
+    <link-bundle class="link-bundle" name="core-lower-bundle" from="(324, 400)" to="(546, 400)"/>
 
     <link-bundle class="AOC-bundle" name="dipt-uplink-fan" from="border:et0/0/0@d" to="(1042, 90)">
-        <vertex x="384.5" y="166"/>
+        <vertex x="346.5" y="166"/>
         <vertex x="1026" y="166"/>
         <vertex x="1026" y="90"/>
     </link-bundle>
@@ -545,16 +545,16 @@
         <vertex bundle="metro-upper-bundle" after="2" distance="672.5000000000001"/>
     </link>
 
-    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(394, 214)" to="(1156, 412)">
-        <vertex x="394" y="322"/>
-        <vertex x="394" y="412"/>
+    <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(306, 214)" to="(1156, 412)">
+        <vertex x="306" y="322"/>
+        <vertex x="306" y="412"/>
     </link-bundle>
 
     <link class="DAC" name="core-kusay" from="core:1:1@u" to="kusay:xge0@u">
-        <vertex bundle="core-upper-bundle" after="1" distance="77.99999999999999"/>
+        <vertex bundle="core-upper-bundle" after="1" distance="70"/>
         <vertex bundle="core-upper-bundle" after="1" distance="0"/>
         <vertex bundle="brases-core-bundle" after="0" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="2" distance="470.14404296875"/>
+        <vertex bundle="brases-core-bundle" after="2" distance="558"/>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-2" from="kusay:eth1@d" to="metro-switch:1:32@d">
@@ -606,12 +606,12 @@
         <vertex bundle="metro-middle-bundle" after="2" distance="745.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="core-middle-bundle" from="(384, 302)" to="(672, 302)">
-        <vertex x="412" y="302"/>
+    <link-bundle class="link-bundle" name="core-middle-bundle" from="(284, 302)" to="(430, 302)">
+        <vertex x="322" y="302"/>
     </link-bundle>
 
     <link class="DAC" name="core-rugay" from="core:2:1@u" to="rugay:xge0@u">
-        <vertex bundle="core-middle-bundle" after="1" distance="72.00000000000001"/>
+        <vertex bundle="core-middle-bundle" after="1" distance="70.00000000000001"/>
         <vertex bundle="core-middle-bundle" after="1" distance="0"/>
         <vertex bundle="brases-core-bundle" after="1" distance="0"/>
         <vertex bundle="brases-core-bundle" after="3" distance="0"/>
@@ -681,14 +681,14 @@
     </link>
 
     <link class="DAC" name="core-vasilisk" from="core:2:3@u" to="vasilisk:xge0@u">
-        <vertex bundle="core-middle-bundle" after="1" distance="109.5"/>
+        <vertex bundle="core-middle-bundle" after="1" distance="107.5"/>
         <vertex bundle="core-middle-bundle" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle-2" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="2" distance="494"/>
+        <vertex bundle="brases-core-bundle-2" after="2" distance="594"/>
     </link>
 
     <link class="DAC" name="core-manticor" from="core:1:3@u" to="manticor:xge0@u">
-        <vertex bundle="core-upper-bundle" after="1" distance="115.5"/>
+        <vertex bundle="core-upper-bundle" after="1" distance="107.5"/>
         <vertex bundle="core-upper-bundle" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle-2" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle-2" after="3" distance="0"/>
@@ -707,16 +707,16 @@
         <vertex x="352" y="636"/>
     </link-bundle>
 
-    <link-bundle class="DAC-bundle" name="brases-core-bundle-2" from="(370, 214)" to="(1156, 530)">
-        <vertex x="370" y="320"/>
-        <vertex x="370" y="530"/>
+    <link-bundle class="DAC-bundle" name="brases-core-bundle-2" from="(270, 214)" to="(1156, 530)">
+        <vertex x="270" y="320"/>
+        <vertex x="270" y="530"/>
     </link-bundle>
 
     <link class="DAC" name="core-khvatay" from="core:1:2@d" to="khvatay:xge0@u">
-        <vertex bundle="core-middle-bundle" after="1" distance="71.99999999999997"/>
+        <vertex bundle="core-middle-bundle" after="1" distance="70"/>
         <vertex bundle="core-middle-bundle" after="0" distance="0"/>
         <vertex bundle="brases-core-bundle-2" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="2" distance="200.00000000000003"/>
+        <vertex bundle="brases-core-bundle-2" after="2" distance="300.00000000000006"/>
     </link>
 
     <link class="DAC" name="metro-khvatay" from="khvatay:xge1@d" to="metro-switch:2:36@d">
@@ -732,10 +732,10 @@
         <vertex x="246" y="848"/>
     </link-bundle>
 
-    <link-bundle class="link-bundle" name="border-upper-bundle" from="(262, 32)" to="(826, 32)"/>
+    <link-bundle class="link-bundle" name="border-upper-bundle" from="(262, 32)" to="(804, 32)"/>
 
     <link class="sm-patch-cord" name="Rostnet-uplink" from="border:xe0/1/0@u" to="metro-net-patch-panel:6@r">
-        <vertex bundle="border-upper-bundle" after="0" distance="449.75000000000006"/>
+        <vertex bundle="border-upper-bundle" after="0" distance="411.75000000000006"/>
         <vertex bundle="border-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="107.5"/>
@@ -812,13 +812,13 @@
     </link>
 
     <link class="sm-patch-cord" name="elitline-uplink-1" from="border:xe0/1/3@d" to="metro-net-patch-panel:21@r">
-        <vertex bundle="border-lower-bundle" after="0" distance="485.25000000000006"/>
+        <vertex bundle="border-lower-bundle" after="0" distance="447.25000000000006"/>
         <vertex bundle="border-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="107.5882602191171"/>
         <vertex bundle="metro-net-bundle" after="0" distance="332.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="border-lower-bundle" from="(264, 136)" to="(826, 138)"/>
+    <link-bundle class="link-bundle" name="border-lower-bundle" from="(264, 138)" to="(802, 138)"/>
 
     <link class="sm-patch-cord" name="metro-khmel15" from="metro-switch:1:6@d" to="metro-net-patch-panel:22@r">
         <vertex bundle="metro-middle-bundle" after="2" distance="183"/>
@@ -828,19 +828,19 @@
     </link>
 
     <link class="sm-patch-cord" name="Elitline-uplink-2" from="border:xe0/1/4@u" to="ElitLine-patch-panel:3@l">
-        <vertex bundle="border-upper-bundle" after="0" distance="524.75"/>
+        <vertex bundle="border-upper-bundle" after="0" distance="486.75"/>
         <vertex bundle="border-upper-bundle" after="1" distance="0"/>
-        <vertex x="1016" y="32"/>
-        <vertex x="1016" y="124"/>
-        <vertex x="1136" y="124"/>
-        <vertex x="1136" y="266.5"/>
+        <vertex x="982" y="32"/>
+        <vertex x="982" y="124"/>
+        <vertex x="1070" y="124"/>
+        <vertex x="1070" y="266.5"/>
     </link>
 
     <link class="sm-patch-cord" name="Eurotel-uplink" from="border:xe0/1/1@d" to="ElitLine-patch-panel:4@l">
-        <vertex bundle="border-lower-bundle" after="0" distance="447.7528352514684"/>
+        <vertex bundle="border-lower-bundle" after="0" distance="409.74999999999994"/>
         <vertex bundle="border-lower-bundle" after="1" distance="0"/>
-        <vertex x="1122" y="138"/>
-        <vertex x="1122" y="296.5"/>
+        <vertex x="1048" y="138"/>
+        <vertex x="1048" y="296.5"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-shkad68-1" from="metro-switch:2:6@d" to="metro-net-patch-panel:23@r">
@@ -875,14 +875,14 @@
         <vertex x="187.5" y="18"/>
     </link>
 
-    <link class="multifiber-cable" name="elitline-cable" from="ElitLine-patch-panel:u" to="(1236, 162)">
+    <link class="multifiber-cable" name="elitline-cable" from="ElitLine-patch-panel:u" to="(1218, 162)">
         <props>
             <prop name="end-label">Элитлайн</prop>
             <prop name="end-marker">arrow</prop>
             <prop name="mode">single-mode</prop>
             <prop name="n-fibers">4</prop>
         </props>
-        <vertex x="1170.5" y="162"/>
+        <vertex x="1118.5" y="162"/>
     </link>
 
 </kresmer-drawing>
