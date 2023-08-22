@@ -2,7 +2,6 @@
 <xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre">
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
-    <xs:import namespace="v-on" schemaLocation="v-on.xsd"/>
     <xs:import namespace="v-slot" schemaLocation="v-slot.xsd"/>
     <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
 
