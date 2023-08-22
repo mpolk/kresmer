@@ -26,6 +26,7 @@ import DrawingMergeDialog from './DrawingMergeDialog.vue';
 import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
+import AboutDialog from './AboutDialog.vue';
 import { AppInitStage } from './ElectronAPI.d';
 import { AppSettings } from '../main/main';
 import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
@@ -99,6 +100,8 @@ const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMe
     InstanceType<typeof DrawingMergeDialog>;
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
     InstanceType<typeof BackendConnectionDialog>;
+const vueAboutDialog = createApp(AboutDialog).mount("#dlgAbout") as 
+    InstanceType<typeof AboutDialog>;
 export const vueToastPane = createApp(ToastPane).mount("#divToastPane") as InstanceType<typeof ToastPane>;
 
 export function updateWindowTitle()
@@ -534,6 +537,11 @@ appCommandExecutor.on("escape", () => {
     console.debug("Escape pressed");
     kresmer.deselectAllElements();
     kresmer.resetAllComponentMode();
+});
+
+
+appCommandExecutor.on("show-about-dialog", appVersion => {
+    vueAboutDialog.show(appVersion);
 });
 
 // -------------------------------------------------------------------------------------------------

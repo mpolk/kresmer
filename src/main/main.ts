@@ -468,3 +468,10 @@ export function requestDisconnectFromServer()
 {
     sendAppCommand("disconnect-from-server");
 }//requestDisconnectFromServer
+
+
+export function showAboutDialog()
+{
+    console.debug("App version: ",  app.getVersion());
+    sendAppCommand("show-about-dialog", app.getVersion());
+}//showAboutDialog

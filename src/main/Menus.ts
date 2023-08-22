@@ -8,7 +8,7 @@
 import {BrowserWindow, Menu, MenuItemConstructorOptions} from "electron";
 import { Position } from "kresmer";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, sendAppCommand, saveDrawing, 
-         requestConnectToServer, requestDisconnectFromServer, localSettings } from "./main";
+         requestConnectToServer, requestDisconnectFromServer, localSettings, showAboutDialog } from "./main";
 
 const isMac = process.platform === 'darwin'
 
@@ -93,7 +93,7 @@ export default class Menus {
           { label: 'Delete network element', accelerator: "delete", enabled: false,
             id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")},
           { type: 'separator' },
-          { label: 'Auto-align link vertices', type: "checkbox", checked: true, accelerator: "Alt+A", id: "toggleVertexAutoAlignment", 
+          { label: 'Auto-align link vertices', type: "checkbox", checked: true, accelerator: "F2", id: "toggleVertexAutoAlignment", 
             click: () => sendAppCommand("toggle-vertex-auto-alignment") },
           { label: "Drawing properties...", click: () => sendAppCommand("edit-drawing-properties", {x: 0, y: 0})},
           { label: "Application settings...", click: () => sendAppCommand("edit-app-settings", localSettings.data)},
@@ -112,8 +112,8 @@ export default class Menus {
           { label: 'Zoom Out', accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-")},
           { label: 'Actual size', accelerator: "Control+1", click: () => sendAppCommand("scale-drawing", "1")},
           { type: 'separator' },
-          { label: 'Grid', type: "checkbox", checked: false, accelerator: "Alt+g", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
-          { label: 'Rulers', type: "checkbox", checked: false, accelerator: "Alt+r", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
+          { label: 'Rulers', type: "checkbox", checked: false, accelerator: "F3", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
+          { label: 'Grid', type: "checkbox", checked: false, accelerator: "F4", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
           { type: 'separator' },
           { role: 'togglefullscreen' }
         ]
@@ -121,7 +121,7 @@ export default class Menus {
       {
         role: 'help',
         submenu: [
-          { role: 'about' },
+          { label: 'About', click: () => showAboutDialog() },
         ]
       }
     ]// as MenuItemConstructorOptions[]
