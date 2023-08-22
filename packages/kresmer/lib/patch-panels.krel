@@ -10,73 +10,6 @@
 <*************************************************************************** -->
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
-    <component-class name="FC-Port" category=".ports">
-        <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo">
-                <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" 
-                    v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}
-                                    0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`" />
-                <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
-            </Kre:Port>
-        </template>
-        <props extend="Port" except="w,h,keyPosition">
-            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
-            <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
-        </props>
-        <computed-props>
-            <computed-prop name="labelY">props.d*0.67</computed-prop>
-            <computed-prop name="r">props.d*0.5</computed-prop>
-            <computed-prop name="rNut">props.d*0.5</computed-prop>
-            <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
-        </computed-props>
-        <style extends="Port">
-            .port-icon.body {fill: transparent; stroke: transparent;}
-            .port-name {fill: white; font-weight: bold}
-            .nut {fill: silver; stroke: white;}
-            .cap {fill: #d00101; stroke: #bd0000; stroke-width: 2px}
-        </style>
-    </component-class>
-
-    <component-class name="FC-APC-Port" category=".ports">
-        <template>
-            <Kre:FC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" v-bind:port-info="portInfo"/>
-        </template>
-        <props extend="FC-Port"/>
-        <style extends="FC-Port">
-            .cap {fill: #18b933; stroke: #199a2e;}
-        </style>
-    </component-class>
-
-    <component-class name="SC-Port" category=".ports">
-        <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo">
-                <Kre:Female-SC-Connector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
-            </Kre:Port>
-        </template>
-        <props extend="Port" except="w,h">
-            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
-        </props>
-        <computed-props>
-            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
-        </computed-props>
-        <style>
-            .Female-SC-Connector .border {fill: none; stroke: #057aff;}
-        </style>
-    </component-class>
-
-    <component-class name="SC-APC-Port" category=".ports">
-        <template>
-            <Kre:SC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" v-bind:port-info="portInfo" />
-        </template>
-        <props extend="SC-Port"/>
-        <style>
-            .Female-SC-Connector .border {fill: none; stroke: #18b933;}
-        </style>
-    </component-class>
-
     <component-class name="patch-panel" category="Passive equipment">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -168,4 +101,12 @@
         </style>
     </component-class>
 
+    <component-class name="optical-multiplexer" category="optical-equipment">
+        <template>
+            <Kre:patch-panel v-bind:comment="comment" v-bind:width="width" v-bind:height="height" v-bind:orientation="orientation"
+                v-bind:n-ports="nPorts" v-bind:n-port-rows="nPortRows" v-bind:port-layout="portLayout" v-bind:port-label-position="portLabelPosition"
+                v-bind:port-labels="portLabels" v-bind:color="color" v-bind:stroke-color="strokeColor" />
+        </template>
+        <props extend="patch-panel"></props>
+    </component-class>
 </kresmer-library>

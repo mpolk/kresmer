@@ -358,6 +358,15 @@
         </props>
     </component>
 
+    <component class="optical-multiplexer" name="dam-upper-mux">
+        <origin x="62" y="818"/>
+        <props>
+            <prop name="n-ports">4</prop>
+            <prop name="comment">Даманский CWDM (верхний)</prop>
+            <prop name="orientation">horizontal</prop>
+        </props>
+    </component>
+
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">
         <props>
             <prop name="start-label"></prop>
@@ -941,5 +950,14 @@
         <vertex bundle="metro-net-bundle" after="2" distance="0"/>
         <vertex bundle="metro-net-bundle" after="1" distance="22.499999999999947"/>
     </link>
+
+    <link class="sm-patch-cord" name="Link-4e36b735-68d8-43ba-bf72-be71f8de56f0" from="dam-upper-mux:r" to="metro-net-patch-panel:10@r">
+        <vertex bundle="metro-net-bundle" after="2" distance="88.49999999999999"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="167.5"/>
+    </link>
+
+    <link-bundle class="link-bundle" name="upper-dam-mux-bundle" from="(82, 880)" to="(408, 687)">
+        <vertex x="408" y="880"/>
+    </link-bundle>
 
 </kresmer-drawing>
