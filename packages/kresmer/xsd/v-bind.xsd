@@ -32,4 +32,5 @@
   <xs:attribute name="style" />
   <xs:attribute name="href" />
   <xs:attribute name="target" />
+  <xs:attribute name="dominant-baseline" />
 </xs:schema>

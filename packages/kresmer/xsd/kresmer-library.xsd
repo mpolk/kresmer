@@ -470,6 +470,22 @@
         <xs:attribute ref="v-bind:font-family" />
         <xs:attribute name="text-anchor" />
         <xs:attribute ref="v-bind:text-anchor" />
+        <xs:attribute name="dominant-baseline">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="auto"></xs:enumeration>
+                    <xs:enumeration value="hanging"></xs:enumeration>
+                    <xs:enumeration value="middle"></xs:enumeration>
+                    <xs:enumeration value="central"></xs:enumeration>
+                    <xs:enumeration value="ideographic"></xs:enumeration>
+                    <xs:enumeration value="alhabetic"></xs:enumeration>
+                    <xs:enumeration value="mathematical"></xs:enumeration>
+                    <xs:enumeration value="text-top"></xs:enumeration>
+                    <xs:enumeration value="text-bottom"></xs:enumeration>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+        <xs:attribute ref="v-bind:dominant-baseline"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="vue-directives">
