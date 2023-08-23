@@ -40,6 +40,7 @@
                     v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" 
                     v-bind:d="portSize*height"
                     v-bind:name="firstPort - 1 + (i-1)*nPortRows + j"
+                    v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined"
                     />
             </template>
             <connection-point
@@ -60,6 +61,7 @@
             <prop name="portLabels" type="Object" default="{}" category="Network" description="Port (fiber) labels"/>
             <prop name="color" type="String" default="#f0e8cb" category="Presentation"/>
             <prop name="strokeColor" type="String" default="#d3bc69" category="Presentation"/>
+            <prop name="fibers-info" type="Object" category="Optics" description="Various optical parameters of the individual fibers"/>
         </props>
         <computed-props>
             <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->

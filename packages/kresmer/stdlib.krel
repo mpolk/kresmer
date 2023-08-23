@@ -67,6 +67,7 @@
             <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
             <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
+            <prop name="fiber-info" type="object" description="Various fiber optical parameters"/>
         </props>
         <computed-props>
             <computed-prop name="label">String(props.name).replace(props.prefix, '')</computed-prop>
@@ -586,7 +587,7 @@
         <template/>
         <props>
             <prop name="division-mode" type="String" choices="CWDM, DWDM" category="Optics" description="Multiplexer signal division mode"/>
-            <prop name="fibers-info" type="Object" category="Optics" description="Individual beam wavelengthes"/>
+            <prop name="fibers-info" type="Object" category="Optics" description="Individual beam wavelengthes and directions"/>
         </props>
     </component-class>
 
