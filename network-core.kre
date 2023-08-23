@@ -367,30 +367,38 @@
             <prop name="n-port-rows">2</prop>
             <prop name="first-port">9</prop>
             <prop name="division-mode">CWDM</prop>
-            <prop name="wavelengthes">{
+            <prop name="fibers-info">{
                   "9": {
-                    "tx": 1610
+                    "signalDirection": "tx",
+                    "wavelength": 1610
                   },
                   "10": {
-                    "rx": 1470
+                    "signalDirection": "rx",
+                    "wavelength": 1470
                   },
                   "11": {
-                    "tx": 1590
+                    "signalDirection": "tx",
+                    "wavelength": 1590
                   },
                   "12": {
-                    "rx": 1490
+                    "signalDirection": "rx",
+                    "wavelength": 1490
                   },
                   "13": {
-                    "tx": 1570
+                    "signalDirection": "tx",
+                    "wavelength": 1570
                   },
                   "14": {
-                    "rx": 1510
+                    "signalDirection": "rx",
+                    "wavelength": 1510
                   },
                   "15": {
-                    "tx": 1550
+                    "signalDirection": "tx",
+                    "wavelength": 1550
                   },
                   "16": {
-                    "rx": 1530
+                    "signalDirection": "rx",
+                    "wavelength": 1610
                   }
                 }</prop>
         </props>
@@ -405,30 +413,38 @@
             <prop name="n-port-rows">2</prop>
             <prop name="first-port">17</prop>
             <prop name="division-mode">CWDM</prop>
-            <prop name="wavelengthes">{
+            <prop name="fibers-info">{
                   "17": {
-                    "tx": 1610
+                    "signalDirection": "tx",
+                    "wavelength": 1610
                   },
                   "18": {
-                    "rx": 1470
+                    "signalDirection": "rx",
+                    "wavelength": 1470
                   },
                   "19": {
-                    "tx": 1590
+                    "signalDirection": "tx",
+                    "wavelength": 1590
                   },
                   "20": {
-                    "rx": 1490
+                    "signalDirection": "rx",
+                    "wavelength": 1490
                   },
                   "21": {
-                    "tx": 1570
+                    "signalDirection": "tx",
+                    "wavelength": 1570
                   },
                   "22": {
-                    "rx": 1510
+                    "signalDirection": "rx",
+                    "wavelength": 1510
                   },
                   "23": {
-                    "tx": 1550
+                    "signalDirection": "tx",
+                    "wavelength": 1550
                   },
                   "24": {
-                    "rx": 1530
+                    "signalDirection": "rx",
+                    "wavelength": 1610
                   }
                 }</prop>
         </props>

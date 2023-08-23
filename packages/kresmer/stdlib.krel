@@ -586,7 +586,7 @@
         <template/>
         <props>
             <prop name="division-mode" type="String" choices="CWDM, DWDM" category="Optics" description="Multiplexer signal division mode"/>
-            <prop name="wavelengthes" type="Object" category="Optics" description="Individual beam wavelengthes"/>
+            <prop name="fibers-info" type="Object" category="Optics" description="Individual beam wavelengthes"/>
         </props>
     </component-class>
 
