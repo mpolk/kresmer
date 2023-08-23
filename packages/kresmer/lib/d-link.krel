@@ -5,12 +5,12 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
  * ___________________________________________________________________________
- *                        Extreme Networks library
- *      This library contains graphics for Extreme Networks devices
+ *                        DLink Networks library
+ *      This library contains graphics for D-Link devices
 <*************************************************************************** -->
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
-    <component-class name="ExtremeSwitchBody" category=".switch-parts">
+    <component-class name="DLinkSwitchBody" category=".switch-parts">
         <template>
             <Kre:SwitchBody 
                 v-bind:name="name" v-bind:width="width" v-bind:unit-height="unitHeight"
@@ -35,7 +35,7 @@
         </props>
     </component-class>
 
-    <component-class name="ExtremeSwitchStack" category=".switch-parts">
+    <component-class name="DLinkSwitchStack" category=".switch-parts">
         <template/>
         <style>
             .unit-badge { fill: #7e0133; stroke: #e0d900; }
@@ -43,7 +43,7 @@
         </style>
     </component-class>
 
-    <component-class name="ExtremeSwitch" category="Switches/Extreme">
+    <component-class name="DLinkSwitch" category="Switches/DLink">
         <template>
             <Kre:Switch 
                 v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
@@ -53,13 +53,13 @@
                 v-bind:comment="comment"
                 />
         </template>
-        <style extends="Switch, ExtremeSwitchBody" />
+        <style extends="Switch, DLinkSwitchBody" />
         <props extend="Switch"/>
     </component-class>
 
-    <component-class name="Extreme-X590-24x-Stack" category="Switches/Extreme">
+    <component-class name="DLink-X590-24x-Stack" category="Switches/DLink">
         <template>
-            <Kre:ExtremeSwitchBody 
+            <Kre:DLinkSwitchBody 
                 v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
                 v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap"
                 v-bind:top-facet-size="1" v-bind:perspective="perspective" 
@@ -88,8 +88,8 @@
                               v-bind:name="$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]"/>
             </template>
         </template>
-        <style extends="StackUnitBadge, ExtremeSwitchBody, ExtremeSwitchStack"/>
-        <props extend="ExtremeSwitchBody">
+        <style extends="StackUnitBadge, DLinkSwitchBody, DLinkSwitchStack"/>
+        <props extend="DLinkSwitchBody">
             <prop name="width" type="Number" category="Geometry"/>
         </props>
         <computed-props>
@@ -97,9 +97,9 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Extreme-X590-24x" category="Switches/Extreme">
+    <component-class name="DLink-X590-24x" category="Switches/DLink">
         <template>
-            <Kre:Extreme-X590-24x-Stack
+            <Kre:DLink-X590-24x-Stack
                 v-bind:name="name" v-bind:height="height" v-bind:width="width" 
                 v-bind:top-facet-size="1" v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
@@ -108,53 +108,7 @@
                 n-stack-units="1"
                 />
         </template>
-        <props extend="Extreme-X590-24x-Stack" except="nStackUnits"/>
-    </component-class>
-
-    <component-class name="Extreme-X670-48x-Stack" category="Switches/Extreme">
-        <template>
-            <Kre:ExtremeSwitchBody 
-                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:top-facet-size="1" v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap"
-                v-bind:perspective="perspective" 
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
-            <template v-for="unit in nStackUnits">
-                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)"
-                    v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
-                <template v-for="i in 24">
-                    <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`"
-                        v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]" />
-                    <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" key-position="bottom"
-                        v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" />
-                    </template>
-            </template>
-        </template>
-        <style extends="StackUnitBadge, ExtremeSwitchStack, ExtremeSwitchBody"/>
-        <props extend="ExtremeSwitchBody">
-            <prop name="width" type="Number" category="Geometry"/>
-        </props>
-        <computed-props>
-            <computed-prop name="width">props.width ?? props.unitHeight * 12.51</computed-prop>
-        </computed-props>
-    </component-class>
-
-    <component-class name="Extreme-X670-48x" category="Switches/Extreme">
-        <template>
-            <Kre:Extreme-X670-48x-Stack
-                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                v-bind:top-facet-size="1" v-bind:perspective="perspective" 
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                n-stack-units="1"
-                />
-        </template>
-        <props extend="Extreme-X670-48x-Stack" except="nStackUnits" />
+        <props extend="DLink-X590-24x-Stack" except="nStackUnits"/>
     </component-class>
 
 </kresmer-library>
