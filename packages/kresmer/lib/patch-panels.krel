@@ -10,7 +10,7 @@
 <*************************************************************************** -->
 <kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
-    <component-class name="patch-panel" category="Passive equipment">
+    <component-class name="PatchPanel" category="Passive equipment">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -102,12 +102,12 @@
         </style>
     </component-class>
 
-    <component-class name="optical-multiplexer" category="optical-equipment">
+    <component-class name="MuxPatchPanel" category="optical-equipment">
         <template>
-            <Kre:patch-panel v-bind:comment="comment" v-bind:width="width" v-bind:height="height" v-bind:orientation="orientation"
+            <Kre:PatchPanel v-bind:comment="comment" v-bind:width="width" v-bind:height="height" v-bind:orientation="orientation"
                 v-bind:n-ports="nPorts" v-bind:first-port="firstPort" v-bind:n-port-rows="nPortRows" v-bind:port-layout="portLayout" v-bind:port-label-position="portLabelPosition"
                 v-bind:port-labels="portLabels" v-bind:color="color" v-bind:stroke-color="strokeColor" />
         </template>
-        <props extend="patch-panel"></props>
+        <props extend="PatchPanel, OpticalMultiplexer"></props>
     </component-class>
 </kresmer-library>

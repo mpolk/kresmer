@@ -89,7 +89,7 @@ export interface ComputedProp {
 /** Network Component computed props - translate to the common Vue computed properties */
 export type ComputedProps = Record<string, ComputedProp>;
 
-export enum NetworkElementPropCategory {Geometry=1,  Presentation, Hardware, Network}
+export enum NetworkElementPropCategory {Geometry=1,  Presentation, Hardware, Network, Optics}
 export type NetworkElementClassProp = Prop<unknown, unknown> & 
     {
         category?: NetworkElementPropCategory,

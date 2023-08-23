@@ -337,6 +337,7 @@
                                     <xs:enumeration value="Presentation"/>
                                     <xs:enumeration value="Network"/>
                                     <xs:enumeration value="Hardware"/>
+                                    <xs:enumeration value="Optics"/>
                                 </xs:restriction>
                             </xs:simpleType>
                         </xs:attribute>

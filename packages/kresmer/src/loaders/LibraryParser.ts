@@ -325,6 +325,7 @@ export default class LibraryParser {
                         case "Presentation":
                         case "Network":
                         case "Hardware":
+                        case "Optics":
                             prop.category = NetworkElementPropCategory[category];
                         // eslint-disable-next-line no-fallthrough
                         case null:

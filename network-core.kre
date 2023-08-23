@@ -296,7 +296,7 @@
         </props>
     </component>
 
-    <component class="patch-panel" name="metro-net-patch-panel">
+    <component class="PatchPanel" name="metro-net-patch-panel">
         <origin x="150" y="56"/>
         <props>
             <prop name="n-port-rows">2</prop>
@@ -349,7 +349,7 @@
         </props>
     </component>
 
-    <component class="patch-panel" name="ElitLine-patch-panel">
+    <component class="PatchPanel" name="ElitLine-patch-panel">
         <origin x="1096" y="184"/>
         <props>
             <prop name="orientation">vertical</prop>
@@ -358,7 +358,7 @@
         </props>
     </component>
 
-    <component class="optical-multiplexer" name="dam-upper-mux">
+    <component class="MuxPatchPanel" name="dam-upper-mux">
         <origin x="30" y="812"/>
         <props>
             <prop name="n-ports">8</prop>
@@ -369,7 +369,7 @@
         </props>
     </component>
 
-    <component class="optical-multiplexer" name="dam-lower-mux">
+    <component class="MuxPatchPanel" name="dam-lower-mux">
         <origin x="30" y="908"/>
         <props>
             <prop name="n-ports">8</prop>
