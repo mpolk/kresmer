@@ -108,7 +108,7 @@
         <template>
             <Kre:PatchPanel v-bind:comment="comment" v-bind:width="width" v-bind:height="height" v-bind:orientation="orientation"
                 v-bind:n-ports="nPorts" v-bind:first-port="firstPort" v-bind:n-port-rows="nPortRows" v-bind:port-layout="portLayout" v-bind:port-label-position="portLabelPosition"
-                v-bind:port-labels="portLabels" v-bind:color="color" v-bind:stroke-color="strokeColor" />
+                v-bind:port-labels="portLabels" v-bind:color="color" v-bind:stroke-color="strokeColor" v-bind:fibers-info="fibersInfo"/>
         </template>
         <props extend="PatchPanel, OpticalMultiplexer"></props>
     </component-class>

@@ -203,12 +203,8 @@
                 <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
-        <props>
-            <prop name="h" type="Number" required="true" default="25" category="Geometry" />
-            <prop name="prefix" type="String" default="" />
-            <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" />
-            <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
+        <props extend="Port" except="w">
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
     </component-class>
 
@@ -220,24 +216,28 @@
                 <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
-        <props>
-            <prop name="h" type="Number" required="true" default="25" category="Geometry" />
-            <prop name="prefix" type="String" default="" />
-            <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" />
-            <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
+        <props extend="Port" except="w">
+            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
     </component-class>
 
     <component-class name="FC-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo">
+                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo">
                 <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" 
                     v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}
                                     0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`" />
                 <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
             </Kre:Port>
+            <template v-if="fiberInfo">
+                <text v-bind:x="r" v-bind:y="0" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75">
+                    {{fiberInfo.signalDirection}}
+                </text>
+                <text v-bind:x="r" v-bind:y="d" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75">
+                    {{fiberInfo.wavelength}}
+                </text>
+            </template>
         </template>
         <props extend="Port" except="w,h,keyPosition">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
@@ -248,6 +248,7 @@
             <computed-prop name="r">props.d*0.5</computed-prop>
             <computed-prop name="rNut">props.d*0.5</computed-prop>
             <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
+            <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
         </computed-props>
         <style extends="Port">
             .port-icon.body {fill: transparent; stroke: transparent;}
