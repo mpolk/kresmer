@@ -52,6 +52,7 @@
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
             <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
+            <prop name="firstPort" type="Number" default="1" category="Network" description="The base number of the whole port range"/>
             <prop name="portType" type="String" choices="RJ45, FC, FC-APC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
             <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
             <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry" />

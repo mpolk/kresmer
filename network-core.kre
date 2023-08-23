@@ -359,11 +359,24 @@
     </component>
 
     <component class="optical-multiplexer" name="dam-upper-mux">
-        <origin x="62" y="818"/>
+        <origin x="30" y="812"/>
         <props>
-            <prop name="n-ports">4</prop>
+            <prop name="n-ports">8</prop>
             <prop name="comment">Даманский CWDM (верхний)</prop>
             <prop name="orientation">horizontal</prop>
+            <prop name="n-port-rows">2</prop>
+            <prop name="first-port">9</prop>
+        </props>
+    </component>
+
+    <component class="optical-multiplexer" name="dam-lower-mux">
+        <origin x="30" y="908"/>
+        <props>
+            <prop name="n-ports">8</prop>
+            <prop name="comment">Даманский CWDM (нижний)</prop>
+            <prop name="orientation">horizontal</prop>
+            <prop name="n-port-rows">2</prop>
+            <prop name="first-port">17</prop>
         </props>
     </component>
 
@@ -736,7 +749,7 @@
         <vertex bundle="metro-lower-bundle" after="2" distance="749.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="metro-net-bundle" from="(250, 46)" to="(250, 892)">
+    <link-bundle class="link-bundle" name="metro-net-bundle" from="(250, 46)" to="(250, 946)">
         <vertex x="250" y="656"/>
         <vertex x="250" y="752"/>
         <vertex x="250" y="854"/>
@@ -952,12 +965,17 @@
     </link>
 
     <link class="sm-patch-cord" name="Link-4e36b735-68d8-43ba-bf72-be71f8de56f0" from="dam-upper-mux:r" to="metro-net-patch-panel:10@r">
-        <vertex bundle="metro-net-bundle" after="2" distance="88.49999999999999"/>
+        <vertex bundle="metro-net-bundle" after="2" distance="97.5"/>
         <vertex bundle="metro-net-bundle" after="0" distance="167.5"/>
     </link>
 
-    <link-bundle class="link-bundle" name="upper-dam-mux-bundle" from="(82, 880)" to="(408, 687)">
-        <vertex x="408" y="880"/>
+    <link-bundle class="link-bundle" name="dam-mux-bundle" from="(52, 898)" to="(408, 687)">
+        <vertex x="408" y="898"/>
     </link-bundle>
+
+    <link class="sm-patch-cord" name="Link-408f94a8-6fd6-4b4f-89a8-7a899efabf16" from="dam-lower-mux:r" to="metro-net-patch-panel:12@r">
+        <vertex bundle="metro-net-bundle" after="4" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="197.5"/>
+    </link>
 
 </kresmer-drawing>
