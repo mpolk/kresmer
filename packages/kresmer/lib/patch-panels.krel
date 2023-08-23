@@ -39,7 +39,7 @@
                     v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" 
                     v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" 
                     v-bind:d="portSize*height"
-                    v-bind:name="(i-1)*nPortRows + j"
+                    v-bind:name="firstPort - 1 + (i-1)*nPortRows + j"
                     />
             </template>
             <connection-point
@@ -105,7 +105,7 @@
     <component-class name="optical-multiplexer" category="optical-equipment">
         <template>
             <Kre:patch-panel v-bind:comment="comment" v-bind:width="width" v-bind:height="height" v-bind:orientation="orientation"
-                v-bind:n-ports="nPorts" v-bind:n-port-rows="nPortRows" v-bind:port-layout="portLayout" v-bind:port-label-position="portLabelPosition"
+                v-bind:n-ports="nPorts" v-bind:first-port="firstPort" v-bind:n-port-rows="nPortRows" v-bind:port-layout="portLayout" v-bind:port-label-position="portLabelPosition"
                 v-bind:port-labels="portLabels" v-bind:color="color" v-bind:stroke-color="strokeColor" />
         </template>
         <props extend="patch-panel"></props>
