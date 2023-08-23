@@ -225,16 +225,17 @@
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo">
-                <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" 
+                <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" v-bind:stroke="beamColor ?? 'white'"
                     v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}
                                     0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`" />
                 <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
+                <circle v-if="fiberInfo &amp;&amp; false" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.55" fill="none" v-bind:stroke-width="r*0.2" v-bind:stroke="beamColor"/>
             </Kre:Port>
             <template v-if="fiberInfo">
-                <text v-bind:x="r" v-bind:y="0" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75">
+                <text v-bind:x="r" v-bind:y="0" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
                     {{fiberInfo.signalDirection}}
                 </text>
-                <text v-bind:x="r" v-bind:y="d" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75">
+                <text v-bind:x="r" v-bind:y="d*1.1" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
                     {{fiberInfo.wavelength}}
                 </text>
             </template>
@@ -249,12 +250,24 @@
             <computed-prop name="rNut">props.d*0.5</computed-prop>
             <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
             <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
+            <computed-prop name="beamColor">
+                props.fiberInfo?.wavelength === 1470 ? "#C0C0C0" :
+                props.fiberInfo?.wavelength === 1490 ? "#6B0094" :
+                props.fiberInfo?.wavelength === 1510 ? "#0047FF" :
+                props.fiberInfo?.wavelength === 1530 ? "#00FF00" :
+                props.fiberInfo?.wavelength === 1550 ? "#E6FF00" :
+                props.fiberInfo?.wavelength === 1570 ? "#FF950E" :
+                props.fiberInfo?.wavelength === 1590 ? "#FF420E" :
+                props.fiberInfo?.wavelength === 1610 ? "#CC6633" :
+                    undefined
+            </computed-prop>
         </computed-props>
         <style extends="Port">
             .port-icon.body {fill: transparent; stroke: transparent;}
             .port-name {fill: white; font-weight: bold}
-            .nut {fill: silver; stroke: white;}
+            .nut {fill: silver; }
             .cap {fill: #d00101; stroke: #bd0000; stroke-width: 2px}
+            .fiber-info {fill: #3d3d3d;}
         </style>
     </component-class>
 
