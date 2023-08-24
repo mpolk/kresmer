@@ -221,6 +221,26 @@
         </props>
     </component-class>
 
+    <!-- Optical fiber ports -->
+    
+    <component-class name="WDM-Port" category=".port-abstractions">
+        <template/>
+        <computed-props>
+            <computed-prop name="beamColor">
+                props.fiberInfo?.wavelength === 1470 ? "#949494" :
+                props.fiberInfo?.wavelength === 1490 ? "#6B0094" :
+                props.fiberInfo?.wavelength === 1510 ? "#0d4be7" :
+                props.fiberInfo?.wavelength === 1530 ? "#01df01" :
+                props.fiberInfo?.wavelength === 1550 ? "#fffc57" :
+                props.fiberInfo?.wavelength === 1570 ? "#FF950E" :
+                props.fiberInfo?.wavelength === 1590 ? "#ff0f0f" :
+                props.fiberInfo?.wavelength === 1610 ? "#CC6633" :
+                    undefined
+            </computed-prop>
+        </computed-props>
+</component-class>
+
+
     <component-class name="FC-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
@@ -244,23 +264,12 @@
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
         </props>
-        <computed-props>
+        <computed-props extend="WDM-Port">
             <computed-prop name="labelY">props.d*0.67</computed-prop>
             <computed-prop name="r">props.d*0.5</computed-prop>
             <computed-prop name="rNut">props.d*0.5</computed-prop>
             <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
             <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
-            <computed-prop name="beamColor">
-                props.fiberInfo?.wavelength === 1470 ? "#949494" :
-                props.fiberInfo?.wavelength === 1490 ? "#6B0094" :
-                props.fiberInfo?.wavelength === 1510 ? "#0d4be7" :
-                props.fiberInfo?.wavelength === 1530 ? "#01df01" :
-                props.fiberInfo?.wavelength === 1550 ? "#fffc57" :
-                props.fiberInfo?.wavelength === 1570 ? "#FF950E" :
-                props.fiberInfo?.wavelength === 1590 ? "#ff0f0f" :
-                props.fiberInfo?.wavelength === 1610 ? "#CC6633" :
-                    undefined
-            </computed-prop>
         </computed-props>
         <style extends="Port">
             .port-icon.body {fill: transparent; stroke: transparent;}

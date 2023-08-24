@@ -350,6 +350,17 @@ export default class LibraryParser {
     private parseComputedProps(node: Element)
     {
         const computedProps: ComputedProps = {};
+        const baseClassNames = node.getAttribute("extend")?.split(/ *, */);
+        const except = node.getAttribute("except")?.split(/ *, */) ?? [];
+        baseClassNames?.forEach(baseClassName => {
+            const baseClass = NetworkComponentClass.getClass(baseClassName);
+            if (!baseClass) {
+                this.kresmer.raiseError(new LibraryParsingException(`Reference to undefined base class "${baseClassName}"`));
+            } else if (baseClass.computedProps) {
+                Object.entries(baseClass.computedProps).filter(cp => !except.includes(cp[0])).forEach(cp => computedProps[cp[0]] = cp[1]);
+            }//if
+        });
+
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
