@@ -309,7 +309,7 @@
                   "2": "ДИПТ (Двор16)",
                   "3": "УкрТелеком-1",
                   "4": "УкрТелеком-2",
-                  "5": "uplink-2 (запас)",
+                  "5": "Возн 16",
                   "6": "Ростнет",
                   "7": "Рум 13",
                   "8": "Рум 13",
@@ -1160,6 +1160,13 @@
         <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="1" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="482.5"/>
+    </link>
+
+    <link class="sm-patch-cord" name="metro-vozn16" from="metro-switch:2:15@u" to="metro-net-patch-panel:5@r">
+        <vertex bundle="metro-middle-bundle" after="3" distance="318.5"/>
+        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="92.49999999999999"/>
     </link>
 
 </kresmer-drawing>
