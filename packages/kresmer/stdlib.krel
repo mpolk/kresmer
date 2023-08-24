@@ -251,13 +251,13 @@
             <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
             <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
             <computed-prop name="beamColor">
-                props.fiberInfo?.wavelength === 1470 ? "#C0C0C0" :
+                props.fiberInfo?.wavelength === 1470 ? "#949494" :
                 props.fiberInfo?.wavelength === 1490 ? "#6B0094" :
-                props.fiberInfo?.wavelength === 1510 ? "#0047FF" :
-                props.fiberInfo?.wavelength === 1530 ? "#00FF00" :
-                props.fiberInfo?.wavelength === 1550 ? "#E6FF00" :
+                props.fiberInfo?.wavelength === 1510 ? "#0d4be7" :
+                props.fiberInfo?.wavelength === 1530 ? "#01df01" :
+                props.fiberInfo?.wavelength === 1550 ? "#fffc57" :
                 props.fiberInfo?.wavelength === 1570 ? "#FF950E" :
-                props.fiberInfo?.wavelength === 1590 ? "#FF420E" :
+                props.fiberInfo?.wavelength === 1590 ? "#ff0f0f" :
                 props.fiberInfo?.wavelength === 1610 ? "#CC6633" :
                     undefined
             </computed-prop>
