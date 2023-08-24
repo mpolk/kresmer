@@ -14,7 +14,7 @@
     <component-class name="Catalyst" category="Switches/Cisco">
         <template>
             <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
-                v-bind:perspective="perspective" 
+                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:comment="comment"
                 />
         </template>

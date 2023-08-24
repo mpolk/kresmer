@@ -15,7 +15,7 @@
             <Kre:SwitchBody 
                 v-bind:name="name" v-bind:width="width" v-bind:unit-height="unitHeight"
                 v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap" 
-                v-bind:top-facet-size="topFacetSize" v-bind:perspective="perspective" 
+                v-bind:top-facet-size="topFacetSize" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
@@ -47,7 +47,7 @@
         <template>
             <Kre:Switch 
                 v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
-                v-bind:perspective="perspective" 
+                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
@@ -61,7 +61,7 @@
         <template>
             <Kre:DLinkSwitchBody 
                 v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:perspective="perspective" 
+                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"

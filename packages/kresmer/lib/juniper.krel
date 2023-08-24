@@ -23,7 +23,7 @@
             </defs>
             <Kre:RouterBody 
                 v-bind:name="name" v-bind:unit-height="height" v-bind:width="width" 
-                v-bind:top-facet-size="1" v-bind:perspective="perspective"
+                v-bind:top-facet-size="1" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"

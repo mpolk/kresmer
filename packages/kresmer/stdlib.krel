@@ -460,6 +460,7 @@
             <prop name="top-facet-skew" type="Number" default="60" category="Geometry" />
             <prop name="show-device-name" type="boolean" default="true" category="Presentation"/>
             <prop name="show-ip-address" type="boolean" default="true" category="Presentation" />
+            <prop name="name-vertical-pos" type="Number" default="0.3" category="Presentation" description="Device name offset from the device top edge (relative to unitHeight)" />
         </props>
         <computed-props>
             <computed-prop name="perspCorrection">0.85</computed-prop>
@@ -472,7 +473,7 @@
                 props.width*0.5
             </computed-prop>
             <computed-prop name="nameY">
-                props.perspective === "none" ? -props.unitHeight*0.3 : -props.unitHeight*props.topFacetSize*0.393
+                props.perspective === "none" ? -props.unitHeight*props.nameVerticalPos : -props.unitHeight*props.topFacetSize*0.393
             </computed-prop>
         </computed-props>
     </component-class>
@@ -500,7 +501,7 @@
         <template>
             <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
                 v-bind:n-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap" v-bind:perspective="perspective" 
-                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
+                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
@@ -533,7 +534,7 @@
         <template>
             <Kre:SwitchBody 
                 v-bind:width="width" v-bind:unit-height="height"
-                v-bind:perspective="perspective" v-bind:name="name" 
+                v-bind:perspective="perspective" v-bind:name="name" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol" 
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
@@ -562,7 +563,7 @@
     <component-class name="Hub" category="Switches">
         <template>
             <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
-                v-bind:perspective="perspective" 
+                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:comment="comment"
                 />
         </template>
@@ -582,7 +583,7 @@
         <template>
             <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
                 v-bind:n-units="nUnits" v-bind:inter-unit-gap="interUnitGap" v-bind:perspective="perspective" 
-                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew"
+                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
