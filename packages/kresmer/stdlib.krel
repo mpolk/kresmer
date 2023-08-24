@@ -68,9 +68,11 @@
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
             <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
             <prop name="fiber-info" type="object" description="Various fiber optical parameters"/>
+            <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
         </props>
         <computed-props>
-            <computed-prop name="label">String(props.name).replace(props.prefix, '')</computed-prop>
+            <computed-prop name="label0">props.combo ? String(props.name).replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name)</computed-prop>
+            <computed-prop name="label">computedProps.label0.replace(new RegExp('^'+props.prefix), '')</computed-prop>
             <computed-prop name="labelY">props.labelY ?? props.h * 0.8</computed-prop>
             <computed-prop name="title">
                 props.name + 
@@ -168,7 +170,7 @@
     <component-class name="RJ45-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo">
+                    v-bind:port-info="portInfo" v-bind:combo="combo">
                 <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
@@ -185,7 +187,7 @@
     <component-class name="SFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo">
+                    v-bind:port-info="portInfo" v-bind:combo="combo">
                 <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
@@ -202,7 +204,7 @@
     <component-class name="XFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
-                    v-bind:port-info="portInfo">
+                    v-bind:port-info="portInfo" v-bind:combo="combo">
                 <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>

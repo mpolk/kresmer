@@ -451,7 +451,7 @@
     </component>
 
     <component class="DLink-DES-3200-28" name="metro-x" db-id="1698">
-        <origin x="392" y="910"/>
+        <origin x="342" y="910"/>
         <props>
             <prop name="perspective">none</prop>
             <prop name="port25-media">copper</prop>
@@ -1143,15 +1143,23 @@
     </link>
 
     <link class="sm-patch-cord" name="metro-x-niiptmash5" from="metro-x:21@u" to="metro-net-patch-panel:32@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="412.25000000000006"/>
+        <vertex bundle="metro-lower-bundle" after="3" distance="362.25000000000006"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="3" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="497.5"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-metrox" from="metro-switch:2:20@d" to="metro-x:26@l">
-        <vertex x="779.5" y="890"/>
-        <vertex x="779.5" y="962.25"/>
+        <vertex x="779.5" y="888"/>
+        <vertex x="804" y="888"/>
+        <vertex x="804" y="962.25"/>
+    </link>
+
+    <link class="sm-patch-cord" name="metro-niiptmash1" from="metro-switch:1:15@u" to="metro-net-patch-panel:31@r">
+        <vertex bundle="metro-upper-bundle" after="3" distance="318.5"/>
+        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="482.5"/>
     </link>
 
 </kresmer-drawing>

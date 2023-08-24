@@ -76,24 +76,24 @@
                 <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
                     v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
                 <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
-                    v-bind:name="i*2" v-bind:port-info="i*2" key-position="bottom"/>
+                    v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
             </template>
-            <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
-                name="25" v-bind:port-info="port25FiberPortInfo"/>
-            <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
-                name="26" v-bind:port-info="port26FiberPortInfo" key-position="bottom"/>
-            <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
-                name="25" v-bind:port-info="port25CopperPortInfo"/>
-            <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
-                name="26" v-bind:port-info="port26CopperPortInfo" key-position="bottom"/>
-            <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
-                name="27" v-bind:port-info="port27CopperPortInfo"/>
-            <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
-                name="28" v-bind:port-info="port28CopperPortInfo" key-position="bottom"/>
-            <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
-                name="27" v-bind:port-info="port27CopperPortInfo"/>
-            <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
-                name="28" v-bind:port-info="port28CopperPortInfo" key-position="bottom"/>
+            <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="fiber"
+                v-bind:name="port25FiberPortName" v-bind:port-info="port25FiberPortInfo"/>
+            <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="fiber"
+                v-bind:name="port26FiberPortName" v-bind:port-info="port26FiberPortInfo" key-position="bottom"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="copper"
+                v-bind:name="port25CopperPortName" v-bind:port-info="port25CopperPortInfo"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="copper"
+                v-bind:name="port26CopperPortName" v-bind:port-info="port26CopperPortInfo" key-position="bottom"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="copper"
+                v-bind:name="port27CopperPortName" v-bind:port-info="port27CopperPortInfo"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="copper"
+                v-bind:name="port28CopperPortName" v-bind:port-info="port28CopperPortInfo" key-position="bottom"/>
+            <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="fiber"
+                v-bind:name="port27FiberPortName" v-bind:port-info="port27FiberPortInfo"/>
+            <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="fiber"
+                v-bind:name="port28FiberPortName" v-bind:port-info="port28FiberPortInfo" key-position="bottom"/>
         </template>
         <style extends="DLinkSwitchBody"/>
         <props extend="DLinkSwitchBody">
@@ -109,15 +109,23 @@
         <computed-props>
             <computed-prop name="width">props.width ?? props.unitHeight * 8.5</computed-prop>
             <computed-prop name="port25Media">props.port25Media ?? props.portsInfo[25]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port25CopperPortName">computedProps.port25Media === "copper" ? 25 : "25(c)"</computed-prop>
             <computed-prop name="port25CopperPortInfo">computedProps.port25Media === "copper" ? props.portsInfo[25] : undefined</computed-prop>
+            <computed-prop name="port25FiberPortName">computedProps.port25Media === "copper" ? "25(f)" : 25</computed-prop>
             <computed-prop name="port25FiberPortInfo">computedProps.port25Media !== "copper" ? props.portsInfo[25] : undefined</computed-prop>
             <computed-prop name="port26Media">props.port26Media ?? props.portsInfo[26]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port26CopperPortName">computedProps.port26Media === "copper" ? 26 : "26(c)"</computed-prop>
+            <computed-prop name="port26FiberPortName">computedProps.port26Media === "copper" ? "26(f)" : 26</computed-prop>
             <computed-prop name="port26CopperPortInfo">computedProps.port26Media === "copper" ? props.portsInfo[26] : undefined</computed-prop>
             <computed-prop name="port26FiberPortInfo">computedProps.port26Media !== "copper" ? props.portsInfo[26] : undefined</computed-prop>
             <computed-prop name="port27Media">props.port27Media ?? props.portsInfo[27]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port27CopperPortName">computedProps.port27Media === "copper" ? 27 : "27(c)"</computed-prop>
+            <computed-prop name="port27FiberPortName">computedProps.port27Media === "copper" ? "27(f)" : 27</computed-prop>
             <computed-prop name="port27CopperPortInfo">computedProps.port27Media === "copper" ? props.portsInfo[27] : undefined</computed-prop>
             <computed-prop name="port27FiberPortInfo">computedProps.port27Media !== "copper" ? props.portsInfo[27] : undefined</computed-prop>
             <computed-prop name="port28Media">props.port28Media ?? props.portsInfo[28]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port28CopperPortName">computedProps.port28Media === "copper" ? 28 : "28(c)"</computed-prop>
+            <computed-prop name="port28FiberPortName">computedProps.port28Media === "copper" ? "28(f)" : 28</computed-prop>
             <computed-prop name="port28CopperPortInfo">computedProps.port28Media === "copper" ? props.portsInfo[28] : undefined</computed-prop>
             <computed-prop name="port28FiberPortInfo">computedProps.port28Media !== "copper" ? props.portsInfo[28] : undefined</computed-prop>
         </computed-props>
