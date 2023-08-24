@@ -363,6 +363,8 @@
                     </xs:complexType>
                 </xs:element>
             </xs:sequence>
+            <xs:attribute name="extend"/>
+            <xs:attribute name="except"/>
         </xs:complexType>
     </xs:element>
 
