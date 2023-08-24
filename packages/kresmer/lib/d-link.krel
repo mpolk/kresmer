@@ -96,7 +96,7 @@
                 v-bind:name="port28FiberPortName" v-bind:port-info="port28FiberPortInfo" key-position="bottom"/>
         </template>
         <style extends="DLinkSwitchBody"/>
-        <props extend="DLinkSwitchBody">
+        <props extend="DLinkSwitchBody" except="interUnitGap">
             <prop name="width" type="Number" category="Geometry"/>
             <prop name="management-protocol" type="String" category="Network" default="telnet:"
                 description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
