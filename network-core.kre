@@ -450,6 +450,14 @@
         </props>
     </component>
 
+    <component class="DLink-DES-3200-28" name="metro-x" db-id="1698">
+        <origin x="388" y="916"/>
+        <props>
+            <prop name="perspective">none</prop>
+            <prop name="port25-media">copper</prop>
+        </props>
+    </component>
+
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">
         <props>
             <prop name="start-label"></prop>

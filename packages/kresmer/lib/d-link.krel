@@ -24,10 +24,10 @@
         <style extends="SwitchBody">
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
-            .model-name { fill: white; font-family: sans-serif; }
-            .facet { --facet-color: #cf34fe;  }
-            .port-icon { fill: #520f75; }
-            .port-icon.body { stroke: #fde3fd; }
+            .model-name { fill: #383838; font-family: sans-serif; }
+            .facet { --facet-color: #bfbfbf;  }
+            .port-icon { fill: #424242; }
+            .port-icon.body { stroke: #efeedc; }
         </style>
         <props extend="SwitchBody">
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
@@ -57,58 +57,70 @@
         <props extend="Switch"/>
     </component-class>
 
-    <component-class name="DLink-X590-24x-Stack" category="Switches/DLink">
+    <component-class name="DLink-DES-3200-28" category="Switches/DLink">
         <template>
             <Kre:DLinkSwitchBody 
                 v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap"
-                v-bind:top-facet-size="1" v-bind:perspective="perspective" 
+                v-bind:perspective="perspective" 
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
                 v-bind:comment="comment"
                 />
-            <template v-for="unit in nStackUnits">
-                <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)"
-                    v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
-                <text v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.67)+interUnitGap*(unit-1)" v-bind:font-size="unitHeight*0.25" 
-                    class="model-name">X590</text>
-                  <template v-for="i in 12">
-                    <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" 
-                        v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]"/>
-                    <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
-                        v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" 
-                        v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" key-position="bottom"/>
-                </template>
-                <Kre:QSFP-Port v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" 
-                              v-bind:name="$portName(25, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(25, unit, nStackUnits)]"/>
-                <Kre:QSFP-Port v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3"
-                              v-bind:name="$portName(26, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(26, unit, nStackUnits)]"/>
-                <Kre:QSFP-Port v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3"
-                              v-bind:name="$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]"/>
+            <text v-bind:x="unitHeight*6.35" v-bind:y="unitHeight*0.25" v-bind:font-size="unitHeight*0.15" 
+                text-anchor="middle" dominant-baseline="hanging" class="model-name">DES</text>
+            <text v-bind:x="unitHeight*6.35" v-bind:y="unitHeight*0.4" v-bind:font-size="unitHeight*0.15" 
+                text-anchor="middle" dominant-baseline="hanging" class="model-name">3200</text>
+            <text v-bind:x="unitHeight*6.35" v-bind:y="unitHeight*0.55" v-bind:font-size="unitHeight*0.15" 
+                text-anchor="middle" dominant-baseline="hanging" class="model-name">28</text>
+            <template v-for="i in 12">
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2" v-bind:port-info="i*2" key-position="bottom"/>
             </template>
+            <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                name="25" v-bind:port-info="port25FiberPortInfo"/>
+            <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                name="26" v-bind:port-info="port26FiberPortInfo" key-position="bottom"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                name="25" v-bind:port-info="port25CopperPortInfo"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                name="26" v-bind:port-info="port26CopperPortInfo" key-position="bottom"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                name="27" v-bind:port-info="port27CopperPortInfo"/>
+            <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                name="28" v-bind:port-info="port28CopperPortInfo" key-position="bottom"/>
+            <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                name="27" v-bind:port-info="port27CopperPortInfo"/>
+            <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                name="28" v-bind:port-info="port28CopperPortInfo" key-position="bottom"/>
         </template>
-        <style extends="StackUnitBadge, DLinkSwitchBody, DLinkSwitchStack"/>
+        <style extends="DLinkSwitchBody"/>
         <props extend="DLinkSwitchBody">
             <prop name="width" type="Number" category="Geometry"/>
+            <prop name="management-protocol" type="String" category="Network" default="telnet:"
+                description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
+            <prop name="n-ports" type="Number" default="28" description="Fictive property to avoid warnings when loading this param from the DB" />
+            <prop name="port25-media" type="string" choices="fiber,copper" category="Network" description="25th combo port media type" />
+            <prop name="port26-media" type="string" choices="fiber,copper" category="Network" description="26th combo port media type" />
+            <prop name="port27-media" type="string" choices="fiber,copper" category="Network" description="27th combo port media type" />
+            <prop name="port28-media" type="string" choices="fiber,copper" category="Network" description="28th combo port media type" />
         </props>
         <computed-props>
-            <computed-prop name="width">props.width ?? props.unitHeight * 8.6</computed-prop>
+            <computed-prop name="width">props.width ?? props.unitHeight * 8.5</computed-prop>
+            <computed-prop name="port25Media">props.port25Media ?? props.portsInfo[25]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port25CopperPortInfo">computedProps.port25Media === "copper" ? props.portsInfo[25] : undefined</computed-prop>
+            <computed-prop name="port25FiberPortInfo">computedProps.port25Media !== "copper" ? props.portsInfo[25] : undefined</computed-prop>
+            <computed-prop name="port26Media">props.port26Media ?? props.portsInfo[26]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port26CopperPortInfo">computedProps.port26Media === "copper" ? props.portsInfo[26] : undefined</computed-prop>
+            <computed-prop name="port26FiberPortInfo">computedProps.port26Media !== "copper" ? props.portsInfo[26] : undefined</computed-prop>
+            <computed-prop name="port27Media">props.port27Media ?? props.portsInfo[27]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port27CopperPortInfo">computedProps.port27Media === "copper" ? props.portsInfo[27] : undefined</computed-prop>
+            <computed-prop name="port27FiberPortInfo">computedProps.port27Media !== "copper" ? props.portsInfo[27] : undefined</computed-prop>
+            <computed-prop name="port28Media">props.port28Media ?? props.portsInfo[28]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="port28CopperPortInfo">computedProps.port28Media === "copper" ? props.portsInfo[28] : undefined</computed-prop>
+            <computed-prop name="port28FiberPortInfo">computedProps.port28Media !== "copper" ? props.portsInfo[28] : undefined</computed-prop>
         </computed-props>
-    </component-class>
-
-    <component-class name="DLink-X590-24x" category="Switches/DLink">
-        <template>
-            <Kre:DLink-X590-24x-Stack
-                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                v-bind:top-facet-size="1" v-bind:perspective="perspective" 
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                n-stack-units="1"
-                />
-        </template>
-        <props extend="DLink-X590-24x-Stack" except="nStackUnits"/>
     </component-class>
 
 </kresmer-library>

@@ -167,7 +167,7 @@
     <!-- RJ45 Port -->
     <component-class name="RJ45-Port" category=".ports">
         <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
                 <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
@@ -176,6 +176,9 @@
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
+        <computed-props>
+            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+        </computed-props>
     </component-class>
 
     <!-- SFP Port -->
@@ -448,15 +451,15 @@
         </style>
         <props extend="ManagedDevice">
             <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
-            <prop name="unit-height" type="Number" required="true" default="75" category="Geometry" description="The height of a single unit"/>
+            <prop name="unit-height" type="Number" default="75" category="Geometry" description="The height of a single unit"/>
             <prop name="inter-unit-gap" type="Number" default="0" category="Geometry" description="The visual gap between the units"/>
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" 
                   description="Visual perspective of the device image"/>
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
             <prop name="top-facet-skew" type="Number" default="60" category="Geometry" />
-            <prop name="show-device-name" type="boolean" default="true" />
-            <prop name="show-ip-address" type="boolean" default="true" />
+            <prop name="show-device-name" type="boolean" default="true" category="Presentation"/>
+            <prop name="show-ip-address" type="boolean" default="true" category="Presentation" />
         </props>
         <computed-props>
             <computed-prop name="perspCorrection">0.85</computed-prop>
