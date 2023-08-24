@@ -398,7 +398,7 @@
                   },
                   "16": {
                     "signalDirection": "rx",
-                    "wavelength": 1610
+                    "wavelength": 1530
                   }
                 }</prop>
         </props>
@@ -444,7 +444,7 @@
                   },
                   "24": {
                     "signalDirection": "rx",
-                    "wavelength": 1610
+                    "wavelength": 1530
                   }
                 }</prop>
         </props>
