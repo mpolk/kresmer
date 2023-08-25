@@ -62,6 +62,8 @@
             return undefined;
 
         for (const v of thisVertex.anchor.bundle!.baseVertex.attachedVertices) {
+            if (v === thisVertex)
+                continue;
             if (areAttachedNear(v, thisVertex) && 
                 (prevNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
                     (areAttachedNear(v.prevNeighbour, prevNeighbour) || 
