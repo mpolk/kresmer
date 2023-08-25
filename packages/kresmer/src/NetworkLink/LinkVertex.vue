@@ -66,11 +66,9 @@
                 continue;
             if (areAttachedNear(v, thisVertex) && 
                 (prevNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
-                    (areAttachedNear(v.prevNeighbour, prevNeighbour) || 
-                    areAttachedNear(v.nextNeighbour, prevNeighbour)))|| 
+                    (areAttachedNear(v.prevNeighbour, prevNeighbour) || areAttachedNear(v.nextNeighbour, prevNeighbour))) || 
                 (nextNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
-                    (areAttachedNear(v.nextNeighbour, nextNeighbour) || 
-                    areAttachedNear(v.prevNeighbour, nextNeighbour) )))
+                    (areAttachedNear(v.nextNeighbour, nextNeighbour) || areAttachedNear(v.prevNeighbour, nextNeighbour))))
                 return undefined;
         }//for
         

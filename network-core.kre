@@ -456,6 +456,7 @@
             <prop name="perspective">none</prop>
             <prop name="port25-media">copper</prop>
             <prop name="name-vertical-pos">0.1</prop>
+            <prop name="management-protocol">swtn:</prop>
         </props>
     </component>
 
