@@ -174,7 +174,6 @@ export default class LinkVertex {
         this._updateSegmentVector();
         this.prevNeighbour?._updateSegmentVector();
     }//updateSegmentVector
-    
 
     private readonly _key: number;
     private revision = 0;
@@ -810,7 +809,6 @@ export default class LinkVertex {
         }//if
         return newPos ? {pos: newPos} : null;
     }//alignBetweenConnectionAndPosition
-
 
     public blink()
     {
