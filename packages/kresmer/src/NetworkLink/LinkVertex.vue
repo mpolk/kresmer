@@ -61,22 +61,16 @@
             thisVertex.link.tail.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo)
             return undefined;
 
-        if (!thisVertex.link.isHighlighted) {
-            for (const anotherLink of bundle.getAttachedLinks()) {
-                if (anotherLink !== thisVertex.link) {
-                    for (const v of anotherLink.vertices) {
-                        if (areAttachedNear(v, thisVertex) && 
-                            (prevNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
-                             (areAttachedNear(v.prevNeighbour, prevNeighbour) || 
-                              areAttachedNear(v.nextNeighbour, prevNeighbour)))|| 
-                            (nextNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
-                             (areAttachedNear(v.nextNeighbour, nextNeighbour) || 
-                              areAttachedNear(v.prevNeighbour, nextNeighbour) )))
-                            return undefined;
-                    }//for
-                }//if
-            }//for
-        }//if
+        for (const v of thisVertex.anchor.bundle!.baseVertex.attachedVertices) {
+            if (areAttachedNear(v, thisVertex) && 
+                (prevNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
+                    (areAttachedNear(v.prevNeighbour, prevNeighbour) || 
+                    areAttachedNear(v.nextNeighbour, prevNeighbour)))|| 
+                (nextNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
+                    (areAttachedNear(v.nextNeighbour, nextNeighbour) || 
+                    areAttachedNear(v.prevNeighbour, nextNeighbour) )))
+                return undefined;
+        }//for
         
         const number = bundle.getLinkNumber(thisVertex.link);
         if (!number)

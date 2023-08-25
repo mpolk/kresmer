@@ -102,8 +102,10 @@ export default class LinkVertex {
             this._anchor.bundle = newValue;
             if (this._anchor.bundle) {
                 (this._anchor.bundle.baseVertex.link as LinkBundle).registerAttachedLink(this.link);
+                this._anchor.bundle.baseVertex.attachedVertices.add(this);
             } else if (oldBundle) {
                 (oldBundle.baseVertex.link as LinkBundle).unregisterAttachedLink(this.link);
+                oldBundle.baseVertex.attachedVertices.delete(this);
             }//if
             this.ownConnectionPoint.isActive = !this._anchor.conn && !this._anchor.bundle;
             nextTick(() => this.revision++);
@@ -174,6 +176,9 @@ export default class LinkVertex {
         this._updateSegmentVector();
         this.prevNeighbour?._updateSegmentVector();
     }//updateSegmentVector
+    
+    /** A collection of the vertices attached to the adjacent segment*/
+    attachedVertices = new Set<LinkVertex>();
 
     private readonly _key: number;
     private revision = 0;
