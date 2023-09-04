@@ -20,6 +20,7 @@ import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
 
 const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
+const appDir = path.dirname(process.argv0);
 
 export let mainWindow: BrowserWindow;
 export let menus: Menus;
@@ -28,6 +29,7 @@ let defaultDrawingFileName: string;
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
+    libDirs: `lib${path.delimiter}./lib`,
     snapToGrid: true as boolean,
     snappingGranularity: 1,
     autoAlignVertices: true as boolean,
@@ -38,6 +40,7 @@ export const localSettings = new Settings("local-settings.json", {
 });
 
 export type AppSettings = {
+    libDirs: string,
     snapToGrid: boolean,
     snappingGranularity: number,
     autoAlignVertices: boolean,
@@ -53,7 +56,61 @@ export type CustomManagementProtocol = {
 }//CustomManagementProtocol
 
 let drawingToAutoload: string;
-const libsToLoad: string[] = ["./stdlib.krel"];
+const libDirs: string[] = [];
+const libsToLoad: string[] = [];
+const STDLIB = "stdlib.krel";
+
+function addLibDir(libDir: string)
+{
+    if (!libDir.match(/^\.?\//))
+        libDir = path.resolve(appDir, libDir);
+    if (!fs.existsSync(libDir))
+        return;
+    if (!libDirs.includes(libDir))
+        libDirs.push(libDir);
+    fs.readdirSync(libDir).forEach(lib => {
+        if (lib.endsWith(".krel") && lib !== STDLIB) {
+            addLib(path.resolve(libDir!, lib));
+        }//if
+    });
+}//addLibDir
+
+function addLib(libPath: string)
+{
+    if (!libsToLoad.includes(libPath))
+        libsToLoad.push(libPath);
+}//addLib
+
+function loadInitialLibraries()
+{
+    let stdlibFound = false;
+    for (const libDir of libDirs) {
+        const stdlib = path.resolve(libDir, STDLIB);
+        if (fs.existsSync(stdlib)) {
+            libsToLoad.unshift(stdlib);
+            stdlibFound = true;
+            break;
+        }//if
+    }//for
+    
+    if (!stdlibFound) {
+        dialog.showErrorBox("Initialization error", `Cannot find a standard library (${STDLIB})!`);
+        return;
+    }//if
+
+    for (let i = 0; i < libsToLoad.length; i++) {
+        const libPath = libsToLoad[i];
+        const libData = fs.readFileSync(libPath, "utf-8");
+        console.debug(`Library ${libPath} loaded in memory`);
+        const options: LoadLibraryOptions = {libraryFileName: libPath};
+        if (i == libsToLoad.length-1)
+            options.completionSignal = AppInitStage.LIBS_LOADED;
+        sendAppCommand("load-library", libData, options);
+        console.debug(`Library ${libPath} loaded to Kresmer`);
+    }//for
+}//loadInitialLibraries
+
+
 
 /** Parses the command line and save its parameters to the global vars */
 function parseCommandLine()
@@ -72,31 +129,27 @@ function parseCommandLine()
             const key = option[0];
             switch (key) {
                 case 'l': {
-                    let lib: string|undefined;
-                    if (option.length > 1)
-                        lib = option.slice(1);
-                    else
-                        lib = argv.shift();
-                    if (!lib)
-                        console.error("-l command line options should have an argument!");
-                    else if (libsToLoad.findIndex(l => l === lib) < 0)
-                        libsToLoad.push(lib);
-                    break;
-                }
-                case 'L': {
                     let libPath: string|undefined;
                     if (option.length > 1)
                         libPath = option.slice(1);
                     else
                         libPath = argv.shift();
-                    if (!libPath) {
+                    if (!libPath)
+                        console.error("-l command line options should have an argument!");
+                    else 
+                        addLib(libPath);
+                    break;
+                }
+                case 'L': {
+                    let libDir: string|undefined;
+                    if (option.length > 1)
+                        libDir = option.slice(1);
+                    else
+                        libDir = argv.shift();
+                    if (!libDir) {
                         console.error("-L command line options should have an argument!");
-                    } else {
-                        fs.readdirSync(libPath).forEach(lib => {
-                            if (lib.endsWith(".krel"))
-                                libsToLoad.push(path.join(libPath!, lib));
-                        });
-                    }//if
+                    } else 
+                        addLibDir(libDir);
                     break;
                 }
             }//switch
@@ -254,21 +307,11 @@ export function initApp(stage: AppInitStage)
                 break
             }//if
         // eslint-disable-next-line no-fallthrough
-        case AppInitStage.CONNECTED_TO_BACKEND: {
-            console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`)
-            for (let i = 0; i < libsToLoad.length; i++) {
-                const lib = libsToLoad[i];
-                const libData = fs.readFileSync(lib, "utf-8");
-                console.debug(`Library ${lib} loaded in memory`);
-                const options: LoadLibraryOptions = {libraryFileName: lib};
-                if (i == libsToLoad.length-1)
-                    options.completionSignal = AppInitStage.STDLIB_LOADED;
-                sendAppCommand("load-library", libData, options);
-                console.debug(`Library ${lib} loaded to Kresmer`);
-            }//for
+        case AppInitStage.CONNECTED_TO_BACKEND:
+            console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`);
+            loadInitialLibraries();
             break;
-        }
-        case AppInitStage.STDLIB_LOADED: {
+        case AppInitStage.LIBS_LOADED: {
             if (fs.existsSync(drawingToAutoload)) {
                 defaultDrawingFileName = drawingToAutoload;
                 const dwgData = fs.readFileSync(drawingToAutoload, "utf-8");
@@ -310,6 +353,8 @@ function registerCustomManagementProtocols()
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
+    const libDirs = localSettings.get("libDirs").split(path.delimiter);
+    libDirs.forEach(libDir => addLibDir(libDir));
     parseCommandLine();
     mainWindow = createMainWindow();
     initIpcMainHooks();

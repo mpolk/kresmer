@@ -7,7 +7,7 @@
   "main": "dist/main/main.js",
   "config": {
     "port": 5173,
-    "args": "network-core.kre -L ./lib"
+    "args": "network-core.kre"
   },
   "scripts": {
     "build-only": "vite build",
@@ -25,6 +25,7 @@
     "lint": "eslint -c .eslintrc.cjs --ext .ts ./src",
     "app:dev0": "npm run build-component && npm run ts && concurrently vite \"electron . ${npm_package_config_args}\" \"npm run watch\"",
     "app:dev": "npm run build-component && npm run ts && concurrently \"npm run -w kresmer build-watch\" vite \"electron . ${npm_package_config_args}\" \"npm run watch\"",
+    "app:prebuild": "run-s vite:build ts",
     "app:build": "run-s build-component vite:build ts && electron-builder",
     "app:preview": "run-s build-component vite:build ts && electron . ${npm_package_config_args}"
   },

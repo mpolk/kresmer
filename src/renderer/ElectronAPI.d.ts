@@ -33,7 +33,7 @@ export interface ElectronAPI {
 export const enum AppInitStage {
     HANDLERS_INITIALIZED = 0,
     CONNECTED_TO_BACKEND = 1,
-    STDLIB_LOADED = 2,
+    LIBS_LOADED = 2,
     DRAWING_LOADED = 3,
 }//AppInitStage
 
