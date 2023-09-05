@@ -104,7 +104,7 @@
         </style>
     </component-class>
 
-    <component-class name="MuxPatchPanel" category="optical-equipment">
+    <component-class name="MuxPatchPanel" category="OpticalEquipment">
         <template>
             <Kre:PatchPanel v-bind:comment="comment" v-bind:width="width" v-bind:height="height" v-bind:orientation="orientation"
                 v-bind:n-ports="nPorts" v-bind:first-port="firstPort" v-bind:n-port-rows="nPortRows" v-bind:port-layout="portLayout" v-bind:port-label-position="portLabelPosition"
