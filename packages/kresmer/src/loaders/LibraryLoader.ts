@@ -25,18 +25,19 @@ export default class LibraryLoader
      */
     public loadLibrary(libData: string): number
     {
-        console.debug("Loading library...");
+        // console.debug("Loading library...");
         const parser = new LibraryParser(this.kresmer);
         let nErrors = 0;
+        let libName = "";
         for (const element of parser.parseXML(libData)) {
             //console.debug(element);
             if (element instanceof LibParams) {
-                const alreadyLoaded = !this.kresmer._registerLibrary(element.name);
+                libName = element.name;
+                const alreadyLoaded = !this.kresmer._registerLibrary(libName);
                 if (alreadyLoaded) {
-                    console.debug(`  ${element.name} - ignored`);
+                    console.debug(`Library "${libName}" - dup, ignored`);
                     return -1;
                 }//if
-                console.debug(`  ${element.name} - loaded`);
             } else if (element instanceof NetworkComponentClass) {
                 this.kresmer.registerNetworkComponentClass(element);
             } else if (element instanceof NetworkLinkClass) {
@@ -52,6 +53,7 @@ export default class LibraryLoader
                 nErrors++;
             }//if
         }//for
+        console.debug(`Library "${libName}" - loaded (${nErrors} errors)`);
         return nErrors;
     }//loadLibrary
 

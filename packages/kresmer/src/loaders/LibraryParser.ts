@@ -31,7 +31,7 @@ export default class LibraryParser {
      */
     public *parseXML(rawData: string): Generator<ParsedNode>
     {
-        console.debug('Parsing library XML...');
+        // console.debug('Parsing library XML...');
         const domParser = new DOMParser();
         const dom = domParser.parseFromString(rawData, "text/xml") as XMLDocument;
         const root = dom.firstElementChild;

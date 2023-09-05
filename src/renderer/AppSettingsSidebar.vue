@@ -111,6 +111,20 @@
         return `inpProtocol[${appSettings.value?.customManagementProtocols[i]?.name}]`;
     }//protocolInputID
 
+    function addLibDir()
+    {
+        appSettings.value!.libDirs.push("");
+    }//addLibDir
+
+    /**
+     * Deletes the specified library directory
+     * @param i An index of the directory to delete
+     */
+     function deleteLibDir(i: number)
+    {
+        appSettings.value!.libDirs.splice(i, 1);
+    }//deleteLibDir
+
     defineExpose({show});
 </script>
 
@@ -126,6 +140,30 @@
         <!-- Sidebar body -->
         <div class="offcanvas-body">
             <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
+                <div class="row">
+                    <div class="col d-flex justify-content-between">
+                        <span>Library directory(-ies)</span>
+                        <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
+                            title="Add library directory" @click="addLibDir">
+                        <span class="material-symbols-outlined align-top">add</span>
+                    </button>
+                    </div>
+                </div>
+                <div class="row"><div class="col">
+                    <table class="table table-bordered">
+                        <tbody>
+                            <tr v-for="(dir, i) in appSettings?.libDirs" :key="`dir[${i}]`">
+                                <td class="p-1 d-flex justify-content-between align-items-center">
+                                    <input class="form-control form-control-sm border-0" v-model="appSettings!.libDirs[i]"/>
+                                    <button type="button" class="btn btn-sm btn-outline-light" 
+                                            title="Delete library directory" @click="deleteLibDir(i)">
+                                        <span class="material-symbols-outlined align-top">close</span>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div></div>
                 <div class="row">
                     <div class="col">
                         <div class="form-check d-inline-block">
