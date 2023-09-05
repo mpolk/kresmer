@@ -384,16 +384,30 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     private readonly libraryLoader = new LibraryLoader(this);
+    private readonly librariesLoaded = new Set<string>();
 
     /**
      * Loads a component class library from the raw XML data
      * @param libData Library data
+     * @returns Result code: 0 - success, -1 - library already loaded, >0 - the number of errors
      */
-    public loadLibrary(libData: string): boolean
+    public loadLibrary(libData: string): number
     {
         return this.libraryLoader.loadLibrary(libData);
     }//loadLibrary
  
+    /**
+     * 
+     * @param libName Tries to register a library with the given name (for the private use)
+     */
+    public _registerLibrary(libName: string): boolean
+    {
+        if (this.librariesLoaded.has(libName))
+            return false;
+        this.librariesLoaded.add(libName);
+        return true;
+    }//_registerLibrary
+
     /**
      * Components currently placed to the drawing
      */

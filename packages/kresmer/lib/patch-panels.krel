@@ -8,7 +8,7 @@
  *                        Patch-panels library
  *           This library contains graphics for patch-panels.
 <*************************************************************************** -->
-<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="patch-panels" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
     <component-class name="PatchPanel" category="Passive equipment">
         <template>

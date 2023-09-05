@@ -69,7 +69,7 @@ function addLibDir(libDir: string)
     if (!libDirs.includes(libDir))
         libDirs.push(libDir);
     fs.readdirSync(libDir).forEach(lib => {
-        if (lib.endsWith(".krel") && lib !== STDLIB) {
+        if (lib.endsWith(".krel")) {
             addLib(path.resolve(libDir!, lib));
         }//if
     });

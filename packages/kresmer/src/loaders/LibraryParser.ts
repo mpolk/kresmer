@@ -40,6 +40,12 @@ export default class LibraryParser {
             throw new LibraryParsingException(
                 `Invalid library root element: ${root?.nodeName}`);
 
+        const libName = root.getAttribute("name");
+        if (libName === null) 
+            this.kresmer.raiseError(new LibraryParsingException("Library has no name!"));
+        else
+            yield new LibParams(libName);
+
         for (let i = 0; i < root.children.length; i++) {
             const node = root.children[i];
             switch (node.nodeName) {
@@ -441,6 +447,10 @@ export default class LibraryParser {
 
 // Wrappers for the top-level library elements
 
+export class LibParams {
+    constructor(readonly name: string) {}
+}//LibParams
+
 export class DefsLibNode {
     data: Element;
     constructor(data: Element)
@@ -458,7 +468,8 @@ export class StyleLibNode {
 }//StyleLibNode
 
 
-type ParsedNode = NetworkComponentClass | 
+type ParsedNode = LibParams |
+                  NetworkComponentClass | 
                   NetworkLinkClass |
                   DefsLibNode | 
                   StyleLibNode |

@@ -8,7 +8,7 @@
 
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
-import LibraryParser, { DefsLibNode, StyleLibNode } from "./LibraryParser";
+import LibraryParser, { DefsLibNode, LibParams, StyleLibNode } from "./LibraryParser";
 import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
@@ -21,15 +21,23 @@ export default class LibraryLoader
     /**
      * Loads a component class library from the raw XML data
      * @param libData Library data
+     * @returns Result code: 0 - success, -1 - library already loaded, >0 - the number of errors
      */
-    public loadLibrary(libData: string): boolean
+    public loadLibrary(libData: string): number
     {
         console.debug("Loading library...");
         const parser = new LibraryParser(this.kresmer);
-        let wereErrors = false;
+        let nErrors = 0;
         for (const element of parser.parseXML(libData)) {
             //console.debug(element);
-            if (element instanceof NetworkComponentClass) {
+            if (element instanceof LibParams) {
+                const alreadyLoaded = !this.kresmer._registerLibrary(element.name);
+                if (alreadyLoaded) {
+                    console.debug(`  ${element.name} - ignored`);
+                    return -1;
+                }//if
+                console.debug(`  ${element.name} - loaded`);
+            } else if (element instanceof NetworkComponentClass) {
                 this.kresmer.registerNetworkComponentClass(element);
             } else if (element instanceof NetworkLinkClass) {
                 this.kresmer.registerLinkClass(element);
@@ -41,10 +49,10 @@ export default class LibraryLoader
                 this.kresmer.styles.push(this.scopeStyles(element.data, undefined, false));
             } else {
                 this.kresmer.raiseError(element);
-                wereErrors = true;
+                nErrors++;
             }//if
         }//for
-        return !wereErrors;
+        return nErrors;
     }//loadLibrary
 
     /**

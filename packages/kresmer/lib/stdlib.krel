@@ -14,7 +14,7 @@
 <!-- Define some little things to make the life less hard -->
 <!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
 
-<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="stdlib" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
                     <!-- General graphical elements -->
     <!-- Crossing arrows traditionally used to be drawn on the top of routers and switches 

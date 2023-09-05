@@ -254,10 +254,11 @@ window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args
 appCommandExecutor.on("load-library", (libData: string, options?: LoadLibraryOptions) =>
 { 
     try {
-        if (!kresmer.loadLibrary(libData)) {
+        const rc = kresmer.loadLibrary(libData);
+        if (rc > 0) {
             alert("There were errors during library load (see the log)");
         } else if (options?.notifyUser) {
-            alert("Library loaded successfully");
+            alert(rc ? "Library already loaded" : "Library loaded successfully");
         }//if
     } catch (exc) {
         if (exc instanceof KresmerParsingException) {

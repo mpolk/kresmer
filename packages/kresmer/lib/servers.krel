@@ -8,7 +8,7 @@
  *                           Servers library
  *         This library contains graphics for network servers.
 <*************************************************************************** -->
-<kresmer-library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="servers" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
     <!-- General server -->
     <component-class name="ServerBody" category=".server-parts">
