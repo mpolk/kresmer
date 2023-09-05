@@ -29,7 +29,7 @@ let defaultDrawingFileName: string;
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
     server: {url: "http://localhost:3333", password: "", autoConnect: false as boolean},
-    libDirs: `lib${path.delimiter}./lib`,
+    libDirs: ["lib", "./lib"],
     snapToGrid: true as boolean,
     snappingGranularity: 1,
     autoAlignVertices: true as boolean,
@@ -40,7 +40,7 @@ export const localSettings = new Settings("local-settings.json", {
 });
 
 export type AppSettings = {
-    libDirs: string,
+    libDirs: string[],
     snapToGrid: boolean,
     snappingGranularity: number,
     autoAlignVertices: boolean,
@@ -342,7 +342,7 @@ function registerCustomManagementProtocols()
                 cmd = cmd.replaceAll(`$${i+1}`, params[i]);
             }//for
             exec(cmd, (error, stdout, stderr) => {
-                console.debug(`Executed handler for url ${request.url}.\nError: ${error?.message}\nstdout: ${stdout}\nstederr: ${stderr}`);
+                console.debug(`Executed handler for url ${request.url}.\nError: ${error?.message}\nstdout: ${stdout}\nstderr: ${stderr}`);
             });
         });
     }//for
@@ -353,7 +353,7 @@ function registerCustomManagementProtocols()
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    const libDirs = localSettings.get("libDirs").split(path.delimiter);
+    const libDirs = localSettings.get("libDirs");
     libDirs.forEach(libDir => addLibDir(libDir));
     parseCommandLine();
     mainWindow = createMainWindow();

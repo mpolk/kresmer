@@ -11,7 +11,7 @@ import * as path from 'path';
 import { app } from 'electron';
 import * as fs from 'fs';
 
-type RegValue = string | number | boolean | Record<string, string>[];
+type RegValue = string | string[] | number | boolean | Record<string, string>[];
 interface RegData {[key: string]: RegValue|RegData}
 
 export default class Settings<Registry extends RegData>
@@ -71,7 +71,7 @@ export default class Settings<Registry extends RegData>
         if (keys.length > 1 && keys[0] in data)
             this._set(data[keys[0]] as RegData, keys.slice(1), newValue);
         else if (Array.isArray(newValue))
-            data[keys[0]] = [...newValue];
+            data[keys[0]] = [...newValue] as RegValue;
         else
             data[keys[0]] = newValue;
     }//_set
