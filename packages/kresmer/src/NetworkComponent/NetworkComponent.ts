@@ -60,11 +60,6 @@ export default class NetworkComponent extends NetworkElement {
         return `${this.name}: ${this.getClass().name}`;
     }//toString
 
-    override getNamePrefix()
-    {
-        return "Component";
-    }//getNamePrefix
-
     override checkNameUniqueness(name: string): boolean {
         return name == this.name || !this.kresmer.componentsByName.has(name);
     }//checkNameUniqueness

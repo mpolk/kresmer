@@ -43,7 +43,7 @@ export default abstract class NetworkElement {
         this.id = NetworkElement.nextID++;
         this._name = args?.name ? 
             this.assertNameUniqueness(args.name) : 
-            `${this.getNamePrefix()}-${uuidV4()}`;
+            `${this._class.name}-${uuidV4()}`;
         this.dbID = (args?.dbID !== null) ? args?.dbID : undefined;
     }//ctor
 
@@ -123,9 +123,6 @@ export default abstract class NetworkElement {
         }//if
         return name;
     }//assertNameUniqueness
-
-    /** Returns the prefix for the automatic name generation for the elements of this type v*/
-    protected abstract getNamePrefix(): string;
 
 
     protected _dbID?: number|string;

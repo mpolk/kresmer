@@ -124,11 +124,6 @@ class _NetworkLink extends NetworkElement {
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
 
-    override getNamePrefix()
-    {
-        return "Link";
-    }//getNamePrefix
-
     override checkNameUniqueness(name: string): boolean {
         return name == this.name || !this.kresmer.linksByName.has(name);
     }//checkNameUniqueness
