@@ -39,10 +39,6 @@ export default class LinkBundle extends NetworkLink {
     override readonly isBundle = true;
     protected readonly outerXMLTag = "link-bundle";
 
-    override getNamePrefix(): string {
-        return "Bundle";
-    }//getNamePrefix
-
     private attachedLinks = new Map<NetworkLink, {number: number, isAttached: boolean}>();
     private nextAttachedLinkNumber = 1;
 
