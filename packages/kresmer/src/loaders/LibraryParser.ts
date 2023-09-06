@@ -309,7 +309,7 @@ export default class LibraryParser {
                     if (choices) {
                         const validValues = choices.split(/ *, */);
                         const validator = (value: unknown) => {
-                            return typeof value == "string" && validValues.includes(value);
+                            return validValues.includes(String(value));
                         }//validator
                         validator.validValues = validValues;
                         prop.validator = validator;
