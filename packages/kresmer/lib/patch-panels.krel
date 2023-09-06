@@ -6,7 +6,7 @@
  *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
  * ___________________________________________________________________________
  *                        Patch-panels library
- *           This library contains graphics for patch-panels.
+ *         This library contains graphics for various patch-panels.
 <*************************************************************************** -->
 <kresmer-library name="patch-panels" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
