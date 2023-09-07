@@ -461,7 +461,7 @@
     </component>
 
     <component class="CopperToOpticsMediaConverter" name="niiptmash5-media-converter">
-        <origin x="1003" y="909"/>
+        <origin x="995" y="910"/>
     </component>
 
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">

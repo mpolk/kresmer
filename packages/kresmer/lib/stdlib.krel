@@ -70,7 +70,7 @@
             <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
         </props>
         <computed-props>
-            <computed-prop name="label0">props.combo ? String(props.name).replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name)</computed-prop>
+            <computed-prop name="label0">props.combo ? String(props.name ?? "").replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name ?? "")</computed-prop>
             <computed-prop name="label">computedProps.label0.replace(new RegExp('^'+props.prefix), '')</computed-prop>
             <computed-prop name="labelY">props.labelY ?? props.h * 0.8</computed-prop>
             <computed-prop name="title">
@@ -97,34 +97,50 @@
     </component-class>
 
     <!-- A port plugin-module: SFP, XFP etc. -->
-    <component-class name="Female-SC-Connector" category=".ports">
+
+    <component-class name="KeyedConnector">
+        <template/>
+        <props>
+            <prop name="key-position" type="String" choices="top,bottom,left,right" default="top" category="Geometry" description="Key groove position"/>
+        </props>
+    </component-class>
+
+    <component-class name="RectangularConnector" category=".ports">
         <template>
             <polyline v-bind:points="
                 keyPosition === 'top' ?
                     `${cx+h*0.25},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}
                      ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`
-                :
+                : keyPosition === 'bottom' ?
                     `${cx+h*0.25},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}
-                     ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`" 
-                class="border" v-bind:stroke-width="Math.min(w, h)*0.12" />
+                     ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`
+                : keyPosition === 'left' ?
+                    `${cy-h*q},${cx+h*0.25} ${cy-h*q},${cx+w*q} ${cy+h*q},${cx+w*q}
+                     ${cy+h*q},${cx-w*q}    ${cy-h*q},${cx-w*q} ${cy-h*q},${cx-h*0.2}`
+                :
+                    `${-cy+h*q+w},${cx+h*0.25} ${-cy+h*q+w},${cx+w*q}  ${-cy-h*q+w},${cx+w*q}
+                     ${-cy-h*q+w},${cx-w*q}    ${-cy+h*q+w},${cx-w*q}  ${-cy+h*q+w},${cx-h*0.2}`
+            "
+                class="border" v-bind:stroke-width="strokeWidth"/>
         </template>
-        <props>
+        <props extend="KeyedConnector">
             <prop name="cx" type="Number" required="true" default="0" category="Geometry"/>
             <prop name="cy" type="Number" required="true" default="0" category="Geometry"/>
             <prop name="w" type="Number" required="true" default="25" category="Geometry"/>
             <prop name="h" type="Number" required="true" default="25" category="Geometry"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
+            <prop name="strokeWidth" type="number" category="Geometry"/>
         </props>
         <computed-props>
             <computed-prop name="q">0.4</computed-prop>
+            <computed-prop name="strokeWidth">props.strokeWidth ?? Math.min(props.w, props.h)*0.12</computed-prop>
         </computed-props>
     </component-class>
 
     <component-class name="PluginModule" category=".ports">
         <template>
-            <Kre:Female-SC-Connector v-bind:cx="cx"  v-bind:cy="cy"  v-bind:w="w"  v-bind:h="h"  v-bind:key-position="keyPosition" />
+            <Kre:RectangularConnector v-bind:cx="cx"  v-bind:cy="cy"  v-bind:w="w"  v-bind:h="h"  v-bind:key-position="keyPosition" />
         </template>
-        <props extend="Female-SC-Connector"/>
+        <props extend="RectangularConnector"/>
         <style>
             .border {fill: none; stroke: #8998a9;}
         </style>
@@ -139,27 +155,12 @@
             </pattern>
         </defs>
         <template>
-            <polyline v-bind:points="
-                keyPosition === 'top' ?
-                    `${cx+h*0.25},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}
-                     ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`
-                :
-                    `${cx+h*0.25},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}
-                     ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`" 
-                class="border" v-bind:stroke-width="Math.min(w, h)*0.16" />
+            <Kre:RectangularConnector v-bind:cx="cx"  v-bind:cy="cy"  v-bind:w="w"  v-bind:h="h"  v-bind:key-position="keyPosition" 
+                v-bind:stroke-width="Math.min(w, h)*0.16" />
             <rect v-bind:x="w*0.2" v-bind:y="keyPosition === 'top' ? h*0.5 : h*0.2" v-bind:width="w*0.6" v-bind:height="h*0.3" 
                   fill="url(#kre:std:rj45-contacts)"/>
         </template>
-        <props>
-            <prop name="cx" type="Number" required="true" default="0" category="Geometry"/>
-            <prop name="cy" type="Number" required="true" default="0" category="Geometry"/>
-            <prop name="w" type="Number" required="true" default="25" category="Geometry"/>
-            <prop name="h" type="Number" required="true" default="25" category="Geometry"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
-        </props>
-        <computed-props>
-            <computed-prop name="q">0.4</computed-prop>
-        </computed-props>
+        <props extend="RectangularConnector"/>
         <style>
             .border {fill: none; stroke: #597865;}
         </style>
@@ -173,9 +174,8 @@
                 <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
-        <props extend="Port" except="w,h">
+        <props extend="Port, KeyedConnector" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
         <computed-props>
             <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
@@ -190,9 +190,8 @@
                 <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
-        <props extend="Port" except="w,h">
+        <props extend="Port, KeyedConnector" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
         <computed-props>
             <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
@@ -207,9 +206,7 @@
                 <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
-        <props extend="Port" except="w">
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
-        </props>
+        <props extend="Port, KeyedConnector" except="w"/>
     </component-class>
 
     <!-- QSFP Port -->
@@ -220,9 +217,7 @@
                 <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
-        <props extend="Port" except="w">
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
-        </props>
+        <props extend="Port, KeyedConnector" except="w"/>
     </component-class>
 
     <!-- Optical fiber ports -->
@@ -264,7 +259,7 @@
                 </text>
             </template>
         </template>
-        <props extend="Port" except="w,h,keyPosition">
+        <props extend="Port" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
         </props>
@@ -298,18 +293,17 @@
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
-                <Kre:Female-SC-Connector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+                <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
-        <props extend="Port" except="w,h">
+        <props extend="Port, KeyedConnector" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
-            <prop name="key-position" type="String" choices="top,bottom" default="top" category="Geometry" description="Key groove position"/>
         </props>
         <computed-props>
             <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
         </computed-props>
         <style>
-            .Female-SC-Connector .border {fill: none; stroke: #057aff;}
+            .RectangularConnector .border {fill: none; stroke: #057aff;}
         </style>
     </component-class>
 
@@ -319,7 +313,7 @@
         </template>
         <props extend="SC-Port"/>
         <style>
-            .Female-SC-Connector .border {fill: none; stroke: #18b933;}
+            .RectangularConnector .border {fill: none; stroke: #18b933;}
         </style>
     </component-class>
 
