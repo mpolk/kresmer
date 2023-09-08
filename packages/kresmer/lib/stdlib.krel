@@ -294,16 +294,19 @@
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
                     v-bind:port-info="portInfo">
                 <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+                <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8" />
             </Kre:Port>
         </template>
         <props extend="Port, KeyedConnector" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            <prop name="ferruleVisible" type="Boolean" default="false"/>
         </props>
         <computed-props>
             <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
         </computed-props>
         <style>
             .RectangularConnector .border {fill: none; stroke: #057aff;}
+            .ferrule {fill: #ababab; stroke: #707070; stroke-width: 1px;}
         </style>
     </component-class>
 

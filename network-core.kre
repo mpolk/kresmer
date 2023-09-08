@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="network-core" width="1500" height="1000">
+<kresmer-drawing name="network-core" width="1500" height="1200">
     <component class="Extreme-X590-24x-Stack" name="core" db-id="2903">
         <origin x="332" y="218"/>
         <props>
@@ -460,8 +460,11 @@
         </props>
     </component>
 
-    <component class="CopperToOpticsMediaConverter" name="niiptmash5-media-converter">
+    <component class="CopperToOpticsMediaConverter" name="niiptmash4-media-converter">
         <origin x="995" y="910"/>
+        <props>
+            <prop name="n-fibers">1</prop>
+        </props>
     </component>
 
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">
@@ -1147,8 +1150,8 @@
         <vertex bundle="dam-mux-bundle" after="0" distance="75"/>
     </link>
 
-    <link class="sm-patch-cord" name="metro-x-niiptmash5" from="metro-x:21@u" to="metro-net-patch-panel:32@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="362.25000000000006"/>
+    <link class="sm-patch-cord" name="metro-x-niiptmash5" from="(1018, 920)" to="metro-net-patch-panel:32@r">
+        <vertex bundle="metro-lower-bundle" after="3" distance="632.0000000000001"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="3" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="497.5"/>
@@ -1172,6 +1175,12 @@
         <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="2" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="92.49999999999999"/>
+    </link>
+
+    <link class="twisted-pair" name="twisted-pair-277195c6-1afd-46c1-b81f-f923cef33fa8" from="metro-x:21@r" to="niiptmash4-media-converter:c@d">
+        <vertex x="768" y="933.75"/>
+        <vertex x="768" y="1002"/>
+        <vertex x="1016.875" y="1002"/>
     </link>
 
 </kresmer-drawing>
