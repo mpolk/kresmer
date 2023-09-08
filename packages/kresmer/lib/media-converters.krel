@@ -30,6 +30,7 @@
             <prop name="opticalPortType" type="String" choices="SC, SFP" default="SC" category="Hardware" description="The type of the optical port"/>
             <prop name="nFibers" type="Number" choices="1,2" default="1" category="Optics" description="The number of optical fibers"/>
             <prop name="wavelength" type="Number" choices="1310, 1550"  category="Optics" description="Transmitted wawelength"/>
+            <prop name="speed" type="String" choices="100M, 1G" category="Network" description="Data transfer speed"/>
             <prop name="color" type="String" default="#bfbfbf" category="Presentation"/>
             <prop name="strokeColor" type="String" default="transparent" category="Presentation"/>
         </props>

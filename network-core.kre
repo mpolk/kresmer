@@ -464,6 +464,7 @@
         <origin x="995" y="910"/>
         <props>
             <prop name="n-fibers">1</prop>
+            <prop name="speed">100M</prop>
         </props>
     </component>
 
