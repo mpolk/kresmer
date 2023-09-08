@@ -79,9 +79,9 @@
                     v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
             </template>
             <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port25FiberPortName" v-bind:port-info="port25FiberPortInfo"/>
+                v-bind:name="port25FiberPortName" v-bind:port-info="port25FiberPortInfo" v-bind:fiber-info="fibersInfo[25]"/>
             <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port26FiberPortName" v-bind:port-info="port26FiberPortInfo" key-position="bottom"/>
+                v-bind:name="port26FiberPortName" v-bind:port-info="port26FiberPortInfo" v-bind:fiber-info="fibersInfo[26]" key-position="bottom"/>
             <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="copper"
                 v-bind:name="port25CopperPortName" v-bind:port-info="port25CopperPortInfo"/>
             <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="copper"
@@ -91,9 +91,9 @@
             <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="copper"
                 v-bind:name="port28CopperPortName" v-bind:port-info="port28CopperPortInfo" key-position="bottom"/>
             <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port27FiberPortName" v-bind:port-info="port27FiberPortInfo"/>
+                v-bind:name="port27FiberPortName" v-bind:port-info="port27FiberPortInfo" v-bind:fiber-info="fibersInfo[27]"/>
             <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port28FiberPortName" v-bind:port-info="port28FiberPortInfo" key-position="bottom"/>
+                v-bind:name="port28FiberPortName" v-bind:port-info="port28FiberPortInfo" v-bind:fiber-info="fibersInfo[28]" key-position="bottom"/>
         </template>
         <style extends="DLinkSwitchBody"/>
         <props extend="DLinkSwitchBody" except="interUnitGap">

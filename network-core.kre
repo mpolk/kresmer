@@ -20,6 +20,26 @@
             <prop name="n-stack-units">2</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="inter-unit-gap">20</prop>
+            <prop name="fibers-info">{
+                  "1:3": {
+                    "nFibers": 2
+                  },
+                  "1:4": {
+                    "nFibers": 2
+                  },
+                  "2:1": {
+                    "nFibers": 2
+                  },
+                  "2:2": {
+                    "nFibers": 2
+                  },
+                  "2:3": {
+                    "nFibers": 2
+                  },
+                  "2:4": {
+                    "nFibers": 2
+                  }
+                }</prop>
         </props>
     </component>
 
