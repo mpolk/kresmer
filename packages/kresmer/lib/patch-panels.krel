@@ -41,6 +41,7 @@
                     v-bind:d="portSize*height"
                     v-bind:name="firstPort - 1 + (i-1)*nPortRows + j"
                     v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined"
+                    v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'"
                     />
             </template>
             <connection-point
