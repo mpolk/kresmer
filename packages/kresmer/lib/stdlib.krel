@@ -205,7 +205,7 @@
     <component-class name="SFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo" v-bind:combo="combo">
+                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo" v-bind:combo="combo">
                 <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
             </Kre:Port>
         </template>
@@ -221,7 +221,7 @@
     <component-class name="XFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
-                    v-bind:port-info="portInfo" v-bind:combo="combo">
+                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo" v-bind:combo="combo">
                 <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
@@ -232,7 +232,7 @@
     <component-class name="QSFP-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="h*2" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
-                    v-bind:port-info="portInfo">
+                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo">
                 <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" />
             </Kre:Port>
         </template>
@@ -300,7 +300,8 @@
 
     <component-class name="FC-APC-Port" category=".ports">
         <template>
-            <Kre:FC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" v-bind:port-info="portInfo"/>
+            <Kre:FC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+                v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo"/>
         </template>
         <props extend="FC-Port"/>
         <style extends="FC-Port">
@@ -311,7 +312,7 @@
     <component-class name="SC-Port" category=".ports">
         <template>
             <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo">
+                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo">
                 <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
                 <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8" />
             </Kre:Port>
@@ -331,7 +332,8 @@
 
     <component-class name="SC-APC-Port" category=".ports">
         <template>
-            <Kre:SC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" v-bind:port-info="portInfo" />
+            <Kre:SC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
+                v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo" />
         </template>
         <props extend="SC-Port"/>
         <style>
@@ -623,8 +625,8 @@
         </template>
         <style extends="RackMountDevice"/>
         <props extend="RackMountDevice">
-            <prop name="ports-info" type="object" default="{}" category="Network" 
-                description="Ports info for displaying in tooltips and similar"/>
+            <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar"/>
+            <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers"/>
         </props>
     </component-class>
 

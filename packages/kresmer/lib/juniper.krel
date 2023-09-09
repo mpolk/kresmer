@@ -53,10 +53,14 @@
             <template v-for="i in 4">
                 <Kre:SFP-Port v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.15" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7"
-                             v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]"/>
+                             v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]"
+                             v-bind:fiber-info="fibersInfo[`xe0/1/${i*2-2}`]"
+                             />
                 <Kre:SFP-Port v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.53" v-bind:d="height/3" 
                              v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7" key-position="bottom"
-                             v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]"/>
+                             v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]"
+                             v-bind:fiber-info="fibersInfo[`xe0/1/${i*2-1}`]"
+                             />
             </template>
             <rect v-bind:x="height*7.35" v-bind:y="height*0.45" 
                   v-bind:height="height*0.5" v-bind:width="height*0.5" 

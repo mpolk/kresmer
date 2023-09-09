@@ -76,17 +76,31 @@
                   <template v-for="i in 12">
                     <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" 
-                        v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]"/>
+                        v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]"
+                        v-bind:fiber-info="fibersInfo[$portName(i*2-1, unit, nStackUnits)]"
+                        />
                     <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" 
-                        v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" key-position="bottom"/>
+                        v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" 
+                        v-bind:fiber-info="fibersInfo[$portName(i*2, unit, nStackUnits)]" 
+                        key-position="bottom"
+                        />
                 </template>
                 <Kre:QSFP-Port v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" 
-                              v-bind:name="$portName(25, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(25, unit, nStackUnits)]"/>
+                              v-bind:name="$portName(25, unit, nStackUnits)" 
+                              v-bind:port-info="portsInfo[$portName(25, unit, nStackUnits)]"
+                              v-bind:fiber-info="fibersInfo[$portName(25, unit, nStackUnits)]"
+                              />
                 <Kre:QSFP-Port v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3"
-                              v-bind:name="$portName(26, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(26, unit, nStackUnits)]"/>
+                              v-bind:name="$portName(26, unit, nStackUnits)" 
+                              v-bind:port-info="portsInfo[$portName(26, unit, nStackUnits)]"
+                              v-bind:fiber-info="fibersInfo[$portName(26, unit, nStackUnits)]"
+                              />
                 <Kre:QSFP-Port v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3"
-                              v-bind:name="$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]"/>
+                              v-bind:name="$portName(27, unit, nStackUnits)" 
+                              v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]"
+                              v-bind:fiber-info="fibersInfo[$portName(27, unit, nStackUnits)]"
+                              />
             </template>
         </template>
         <style extends="StackUnitBadge, ExtremeSwitchBody, ExtremeSwitchStack"/>
@@ -129,7 +143,7 @@
                     <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`"
                         v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]" 
-                        v-bind:fibers-info="fibersInfo[$portName(i*2-1, unit, nStackUnits)]" 
+                        v-bind:fiber-info="fibersInfo[$portName(i*2-1, unit, nStackUnits)]" 
                         />
                     <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" 
                         v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" key-position="bottom"
