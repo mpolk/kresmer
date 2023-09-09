@@ -61,15 +61,21 @@
             thisVertex.link.tail.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo)
             return undefined;
 
+        let avoidThisDirection: number|undefined;
         for (const v of thisVertex.anchor.bundle!.baseVertex.attachedVertices) {
             if (v === thisVertex)
                 continue;
-            if (areAttachedNear(v, thisVertex) && 
+            if (areAttachedNear(v, thisVertex) && (
                 (prevNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
                     (areAttachedNear(v.prevNeighbour, prevNeighbour) || areAttachedNear(v.nextNeighbour, prevNeighbour))) || 
                 (nextNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
-                    (areAttachedNear(v.nextNeighbour, nextNeighbour) || areAttachedNear(v.prevNeighbour, nextNeighbour))))
+                    (areAttachedNear(v.nextNeighbour, nextNeighbour) || areAttachedNear(v.prevNeighbour, nextNeighbour)))
+                ))
                 return undefined;
+            if (areAttachedNotSoNear(v, thisVertex)) {
+                if (v.anchor.bundle!.distance > thisVertex.anchor.bundle!.distance)
+                    avoidThisDirection = 1;
+            }//if
         }//for
         
         const number = bundle.getLinkNumber(thisVertex.link);
@@ -79,17 +85,21 @@
         const {x: x1, y: y1} = thisVertex.coords;
         const {x: x0, y: y0} = prevNeighbourIsBundled ? nextNeighbour.coords : prevNeighbour.coords;
         const bundledNeighbour = prevNeighbourIsBundled ? prevNeighbour : nextNeighbour;
-        const {x: x2, y: y2} = bundledNeighbour.anchor.bundle!.baseVertex.vertexNumber >= thisVertex.anchor.bundle!.baseVertex.vertexNumber ? 
-                thisVertex.anchor.bundle!.baseVertex.nextNeighbour!.coords :
+        const {x: x2, y: y2, bundleDirection} = 
+            bundledNeighbour.anchor.bundle!.baseVertex.vertexNumber >= thisVertex.anchor.bundle!.baseVertex.vertexNumber ? 
+                {...thisVertex.anchor.bundle!.baseVertex.nextNeighbour!.coords, bundleDirection: 1} :
             thisVertex.anchor.bundle!.distance ? 
-                thisVertex.anchor.bundle!.baseVertex.coords :
-                thisVertex.anchor.bundle!.baseVertex.prevNeighbour!.coords;
+                {...thisVertex.anchor.bundle!.baseVertex.coords, bundleDirection: -1} :
+                {...thisVertex.anchor.bundle!.baseVertex.prevNeighbour!.coords, bundleDirection: -1};
         const r1 = {x: x0 - x1, y: y0 - y1};
         // if (r1.x === 0 && r1.y === 0)
         //     return undefined;
         const r2 = {x: x2 - x1, y: y2 - y1};
         // if (r2.x === 0 && r2.y === 0)
         //     return undefined;
+        if (bundleDirection === avoidThisDirection) {
+            r2.x = -r2.x; r2.y = -r2.y;
+        }//if
         let fi1 = Math.atan2(r1.y, r1.x);
         let fi2 = Math.atan2(r2.y, r2.x);
         if (Math.abs(fi1) == Math.PI && Math.sign(fi2) !== Math.sign(fi1))
@@ -126,8 +136,15 @@ class=${JSON.stringify(clazz)}`;
     {
         const b1 = v1?.anchor.bundle;
         const b2 = v2?.anchor.bundle;
-        return b1 && b2 && b1.baseVertex === b2.baseVertex && Math.abs(b1.distance - b2.distance) <= 4;
+        return b1 && b2 && b1.baseVertex === b2.baseVertex && Math.abs(b1.distance - b2.distance) <= linkNumberOffset;
     }//areAttachedNear
+
+    function areAttachedNotSoNear(v1: LinkVertex|undefined, v2: LinkVertex|undefined)
+    {
+        const b1 = v1?.anchor.bundle;
+        const b2 = v2?.anchor.bundle;
+        return b1 && b2 && b1.baseVertex === b2.baseVertex && Math.abs(b1.distance - b2.distance) <= linkNumberOffset*2.5;
+    }//areAttachedNotSoNear
 
     const draggingCursor =  computed(() => {
         switch (props.model.dragConstraint) {

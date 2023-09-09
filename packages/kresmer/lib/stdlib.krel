@@ -53,10 +53,10 @@
                 v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir}" />
             <connection-point v-else=""
                 v-for="({x, y}, dir) in {
-                    up1: {x: w/3, y: 0}, up2: {x: w*2/3, y: 0}, 
-                    right1: {x: w, y: h/3}, right2: {x: w, y: h*2/3}, 
-                    down1: {x: w/3, y: h}, down2: {x: w*2/3, y: h}, 
-                    left1: {x: 0, y: h/3}, left2: {x: 0, y: h*2/3}
+                    up1: {x: w*0.4, y: 0}, up2: {x: w*0.6, y: 0}, 
+                    right1: {x: w, y: h*0.4}, right2: {x: w, y: h*0.6}, 
+                    down1: {x: w*0.4, y: h}, down2: {x: w*0.6, y: h}, 
+                    left1: {x: 0, y: h*0.4}, left2: {x: 0, y: h*0.6}
                 }" 
                 v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir}" />
         </template>
