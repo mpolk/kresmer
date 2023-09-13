@@ -474,7 +474,7 @@
         <origin x="429" y="910"/>
         <props>
             <prop name="perspective">none</prop>
-            <prop name="port25-media">copper</prop>
+            <prop name="first-combo-media">copper</prop>
             <prop name="name-vertical-pos">0.1</prop>
             <prop name="management-protocol">swtn:</prop>
         </props>

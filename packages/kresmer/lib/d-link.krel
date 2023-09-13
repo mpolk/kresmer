@@ -79,56 +79,57 @@
                 v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
+                v-bind:comment="comment" v-bind:ports-info="portsInfo"
                 />
             <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port25FiberPortName" v-bind:port-info="port25FiberPortInfo" v-bind:fiber-info="fibersInfo[25]"/>
+                v-bind:name="firstComboFiberPortName" v-bind:port-info="firstComboFiberPortInfo" v-bind:fiber-info="fibersInfo[25]"/>
             <Kre:SFP-Port v-bind:x="unitHeight*6.6" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port26FiberPortName" v-bind:port-info="port26FiberPortInfo" v-bind:fiber-info="fibersInfo[26]" key-position="bottom"/>
+                v-bind:name="secondComboFiberPortName" v-bind:port-info="secondComboFiberPortInfo" v-bind:fiber-info="fibersInfo[26]" key-position="bottom"/>
             <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="copper"
-                v-bind:name="port25CopperPortName" v-bind:port-info="port25CopperPortInfo"/>
+                v-bind:name="firstComboCopperPortName" v-bind:port-info="firstComboCopperPortInfo"/>
             <Kre:RJ45-Port v-bind:x="unitHeight*7" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="copper"
-                v-bind:name="port26CopperPortName" v-bind:port-info="port26CopperPortInfo" key-position="bottom"/>
+                v-bind:name="secondComboCopperPortName" v-bind:port-info="secondComboCopperPortInfo" key-position="bottom"/>
             <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="copper"
-                v-bind:name="port27CopperPortName" v-bind:port-info="port27CopperPortInfo"/>
+                v-bind:name="thirdComboCopperPortName" v-bind:port-info="thirdComboCopperPortInfo"/>
             <Kre:RJ45-Port v-bind:x="unitHeight*7.5" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="copper"
-                v-bind:name="port28CopperPortName" v-bind:port-info="port28CopperPortInfo" key-position="bottom"/>
+                v-bind:name="fourthComboCopperPortName" v-bind:port-info="fourthComboCopperPortInfo" key-position="bottom"/>
             <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port27FiberPortName" v-bind:port-info="port27FiberPortInfo" v-bind:fiber-info="fibersInfo[27]"/>
+                v-bind:name="thirdComboFiberPortName" v-bind:port-info="thirdComboFiberPortInfo" v-bind:fiber-info="fibersInfo[27]"/>
             <Kre:SFP-Port v-bind:x="unitHeight*7.9" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="fiber"
-                v-bind:name="port28FiberPortName" v-bind:port-info="port28FiberPortInfo" v-bind:fiber-info="fibersInfo[28]" key-position="bottom"/>
+                v-bind:name="fourthComboFiberPortName" v-bind:port-info="fourthComboFiberPortInfo" v-bind:fiber-info="fibersInfo[28]" key-position="bottom"/>
         </template>
         <style extends="DLinkSwitchBody"/>
         <props extend="DLinkSwitchBody" except="interUnitGap">
             <prop name="width" type="Number" category="Geometry"/>
             <prop name="n-ports" type="Number" default="28" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
-            <prop name="port25-media" type="string" choices="fiber,copper" category="Network" description="25th combo port media type" />
-            <prop name="port26-media" type="string" choices="fiber,copper" category="Network" description="26th combo port media type" />
-            <prop name="port27-media" type="string" choices="fiber,copper" category="Network" description="27th combo port media type" />
-            <prop name="port28-media" type="string" choices="fiber,copper" category="Network" description="28th combo port media type" />
+            <prop name="n-copper-ports" type="Number" default="24" category="Hardware" description="The number of copper ports"/>
+            <prop name="first-combo-media" type="string" choices="fiber,copper" category="Network" description="First combo port media type" />
+            <prop name="second-combo-media" type="string" choices="fiber,copper" category="Network" description="Second combo port media type" />
+            <prop name="third-combo-media" type="string" choices="fiber,copper" category="Network" description="Third combo port media type" />
+            <prop name="fourth-combo-media" type="string" choices="fiber,copper" category="Network" description="Fourth combo port media type" />
         </props>
         <computed-props>
             <computed-prop name="width">props.width ?? props.unitHeight * 8.5</computed-prop>
-            <computed-prop name="port25Media">props.port25Media ?? props.portsInfo[25]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="port25CopperPortName">computedProps.port25Media === "copper" ? 25 : "25(c)"</computed-prop>
-            <computed-prop name="port25CopperPortInfo">computedProps.port25Media === "copper" ? props.portsInfo[25] : undefined</computed-prop>
-            <computed-prop name="port25FiberPortName">computedProps.port25Media === "copper" ? "25(f)" : 25</computed-prop>
-            <computed-prop name="port25FiberPortInfo">computedProps.port25Media !== "copper" ? props.portsInfo[25] : undefined</computed-prop>
-            <computed-prop name="port26Media">props.port26Media ?? props.portsInfo[26]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="port26CopperPortName">computedProps.port26Media === "copper" ? 26 : "26(c)"</computed-prop>
-            <computed-prop name="port26FiberPortName">computedProps.port26Media === "copper" ? "26(f)" : 26</computed-prop>
-            <computed-prop name="port26CopperPortInfo">computedProps.port26Media === "copper" ? props.portsInfo[26] : undefined</computed-prop>
-            <computed-prop name="port26FiberPortInfo">computedProps.port26Media !== "copper" ? props.portsInfo[26] : undefined</computed-prop>
-            <computed-prop name="port27Media">props.port27Media ?? props.portsInfo[27]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="port27CopperPortName">computedProps.port27Media === "copper" ? 27 : "27(c)"</computed-prop>
-            <computed-prop name="port27FiberPortName">computedProps.port27Media === "copper" ? "27(f)" : 27</computed-prop>
-            <computed-prop name="port27CopperPortInfo">computedProps.port27Media === "copper" ? props.portsInfo[27] : undefined</computed-prop>
-            <computed-prop name="port27FiberPortInfo">computedProps.port27Media !== "copper" ? props.portsInfo[27] : undefined</computed-prop>
-            <computed-prop name="port28Media">props.port28Media ?? props.portsInfo[28]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="port28CopperPortName">computedProps.port28Media === "copper" ? 28 : "28(c)"</computed-prop>
-            <computed-prop name="port28FiberPortName">computedProps.port28Media === "copper" ? "28(f)" : 28</computed-prop>
-            <computed-prop name="port28CopperPortInfo">computedProps.port28Media === "copper" ? props.portsInfo[28] : undefined</computed-prop>
-            <computed-prop name="port28FiberPortInfo">computedProps.port28Media !== "copper" ? props.portsInfo[28] : undefined</computed-prop>
+            <computed-prop name="firstComboMedia">props.firstComboMedia ?? props.portsInfo[props.nCopperPorts+1]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="firstComboCopperPortName">computedProps.firstComboMedia === "copper" ? props.nCopperPorts+1 : "25(c)"</computed-prop>
+            <computed-prop name="firstComboCopperPortInfo">computedProps.firstComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+1] : undefined</computed-prop>
+            <computed-prop name="firstComboFiberPortName">computedProps.firstComboMedia === "copper" ? "25(f)" : props.nCopperPorts+1</computed-prop>
+            <computed-prop name="firstComboFiberPortInfo">computedProps.firstComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+1] : undefined</computed-prop>
+            <computed-prop name="secondComboMedia">props.secondComboMedia ?? props.portsInfo[props.nCopperPorts+2]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="secondComboCopperPortName">computedProps.secondComboMedia === "copper" ? `${props.nCopperPorts+2}` : "26(c)"</computed-prop>
+            <computed-prop name="secondComboFiberPortName">computedProps.secondComboMedia === "copper" ? "26(f)" : `${props.nCopperPorts+2}`</computed-prop>
+            <computed-prop name="secondComboCopperPortInfo">computedProps.secondComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+2] : undefined</computed-prop>
+            <computed-prop name="secondComboFiberPortInfo">computedProps.secondComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+2] : undefined</computed-prop>
+            <computed-prop name="thirdComboMedia">props.thirdComboMedia ?? props.portsInfo[props.nCopperPorts+3]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="thirdComboCopperPortName">computedProps.thirdComboMedia === "copper" ? `${props.nCopperPorts+3}` : "27(c)"</computed-prop>
+            <computed-prop name="thirdComboFiberPortName">computedProps.thirdComboMedia === "copper" ? "27(f)" : `${props.nCopperPorts+3}`</computed-prop>
+            <computed-prop name="thirdComboCopperPortInfo">computedProps.thirdComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+3] : undefined</computed-prop>
+            <computed-prop name="thirdComboFiberPortInfo">computedProps.thirdComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+3] : undefined</computed-prop>
+            <computed-prop name="fourthComboMedia">props.fourthComboMedia ?? props.portsInfo[props.nCopperPorts+4]?.media ?? "fiber"</computed-prop>
+            <computed-prop name="fourthComboCopperPortName">computedProps.fourthComboMedia === "copper" ? `${props.nCopperPorts+4}` : "28(c)"</computed-prop>
+            <computed-prop name="fourthComboFiberPortName">computedProps.fourthComboMedia === "copper" ? "28(f)" : `${props.nCopperPorts+4}`</computed-prop>
+            <computed-prop name="fourthComboCopperPortInfo">computedProps.fourthComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+4] : undefined</computed-prop>
+            <computed-prop name="fourthComboFiberPortInfo">computedProps.fourthComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+4] : undefined</computed-prop>
         </computed-props>
     </component-class>
 
@@ -139,7 +140,11 @@
                 v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
+                v-bind:comment="comment" v-bind:ports-info="portsInfo"
+                v-bind:first-combo-media="firstComboMedia"
+                v-bind:second-combo-media="secondComboMedia"
+                v-bind:third-combo-media="thirdComboMedia"
+                v-bind:fourth-combo-media="fourthComboMedia"
                 />
             <text v-bind:x="unitHeight*6.35" v-bind:y="unitHeight*0.25" v-bind:font-size="unitHeight*0.15" 
                 text-anchor="middle" dominant-baseline="hanging" class="model-name">DES</text>
@@ -160,7 +165,11 @@
                 v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
                 v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
                 v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
+                v-bind:comment="comment" v-bind:ports-info="portsInfo"
+                v-bind:first-combo-media="firstComboMedia"
+                v-bind:second-combo-media="secondComboMedia"
+                v-bind:third-combo-media="thirdComboMedia"
+                v-bind:fourth-combo-media="fourthComboMedia"
                 />
             <text v-bind:x="unitHeight*6.35" v-bind:y="unitHeight*0.25" v-bind:font-size="unitHeight*0.15" 
                 text-anchor="middle" dominant-baseline="hanging" class="model-name">DES</text>
