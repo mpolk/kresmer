@@ -537,14 +537,14 @@
             <prop name="width">280</prop>
             <prop name="interfaces">{
                   "eth0": {
-                    "direction": "uplink",
+                    "direction": "downlink",
                     "w1g1": {
                       "direction": ""
                     },
                     "media": "copper"
                   },
                   "w1g1": {
-                    "direction": "downlink",
+                    "direction": "uplink",
                     "media": "copper"
                   }
                 }</prop>
@@ -1283,8 +1283,8 @@
     <link class="twisted-pair" name="twisted-pair-7cac6b33-ead9-4ff9-b305-f36b53b2cc9a" from="office-switch:50@r" to="metro-x:25@r">
         <vertex x="1036" y="1089.25"/>
         <vertex x="1036" y="1011"/>
-        <vertex x="989" y="1011"/>
-        <vertex x="989" y="933.75"/>
+        <vertex x="985" y="1011"/>
+        <vertex x="985" y="933.75"/>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-79862d29-452d-4400-8760-4f86e64528f6" from="edo:eth0@d" to="office-switch:51@u">
@@ -1303,20 +1303,16 @@
         <vertex x="1277" y="889"/>
     </link>
 
-    <link class="twisted-pair" name="twisted-pair-77bb6218-256f-4ce8-9402-e879d3984353" from="asterisk:eth0@u" to="office-switch:52@d">
-        <vertex x="1279" y="1025"/>
-        <vertex x="1133" y="1025"/>
-        <vertex x="1133" y="1131"/>
+    <link class="twisted-pair" name="twisted-pair-77bb6218-256f-4ce8-9402-e879d3984353" from="asterisk:eth0@d" to="office-switch:52@d">
+        <vertex x="1279" y="1131"/>
         <vertex x="1055" y="1131"/>
     </link>
 
-    <link class="twisted-pair" name="twisted-pair-39785ac6-fdfe-4e6c-acb6-2fb2e9ea035c" from="asterisk:w1g1@d" to="UkrTelecom-E1-Multiplexer:c1@d">
-        <vertex x="1279" y="1142"/>
-        <vertex x="1123" y="1142"/>
-        <vertex x="1123" y="1026"/>
-        <vertex x="954" y="1026"/>
-        <vertex x="954" y="1006"/>
-        <vertex x="362.125" y="1006"/>
+    <link class="twisted-pair" name="twisted-pair-39785ac6-fdfe-4e6c-acb6-2fb2e9ea035c" from="asterisk:w1g1@u" to="UkrTelecom-E1-Multiplexer:c1@d">
+        <vertex x="1279" y="1026"/>
+        <vertex x="831" y="1026"/>
+        <vertex x="831" y="997"/>
+        <vertex x="362.125" y="997"/>
     </link>
 
 </kresmer-drawing>
