@@ -21,7 +21,7 @@
                 v-bind:prefix="i>1 ? 'rx' : nFibers>1 ? 'tx' : 'f'"
                 />
             <Kre:RJ45-Port v-for="i in nCopperPorts" v-bind:x="height*5/14 + portSize*(nFibers+i-1)" v-bind:y="height*3/14" v-bind:d="portSize"
-                name="c" prefix="c"
+                v-bind:name="`c${i}`" prefix="c"
                 />
         </template>
         <props>
