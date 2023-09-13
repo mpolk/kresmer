@@ -113,7 +113,7 @@
 
     <!-- A port plugin-module: SFP, XFP etc. -->
 
-    <component-class name="KeyedConnector">
+    <component-class name="KeyedConnector" category=".ports">
         <template/>
         <props>
             <prop name="key-position" type="String" choices="top,bottom,left,right" default="top" category="Geometry" description="Key groove position"/>
