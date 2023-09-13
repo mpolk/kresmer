@@ -471,7 +471,7 @@
     </component>
 
     <component class="DLink-DES-3200-28" name="metro-x" db-id="1698">
-        <origin x="342" y="910"/>
+        <origin x="429" y="910"/>
         <props>
             <prop name="perspective">none</prop>
             <prop name="port25-media">copper</prop>
@@ -481,10 +481,18 @@
     </component>
 
     <component class="CopperToOpticsMediaConverter" name="niiptmash4-media-converter">
-        <origin x="995" y="910"/>
+        <origin x="1079" y="910"/>
         <props>
             <prop name="n-fibers">1</prop>
             <prop name="speed">100M</prop>
+        </props>
+    </component>
+
+    <component class="CopperToOpticsMultiplexer" name="UkrTelecom-E1-Multiplexer">
+        <origin x="284" y="941"/>
+        <props>
+            <prop name="n-fibers">2</prop>
+            <prop name="n-copper-ports">2</prop>
         </props>
     </component>
 
@@ -1171,17 +1179,17 @@
         <vertex bundle="dam-mux-bundle" after="0" distance="75"/>
     </link>
 
-    <link class="sm-patch-cord" name="metro-x-niiptmash5" from="(1018, 920)" to="metro-net-patch-panel:32@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="632"/>
+    <link class="sm-patch-cord" name="metro-x-niiptmash5" from="niiptmash4-media-converter:f@u" to="metro-net-patch-panel:32@r">
+        <vertex bundle="metro-lower-bundle" after="3" distance="714.0788574218751"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="3" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="497.5"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-metrox" from="metro-switch:2:20@d" to="metro-x:26@l">
-        <vertex x="779.5" y="888"/>
-        <vertex x="804" y="888"/>
-        <vertex x="804" y="962.25"/>
+        <vertex x="779.5" y="882"/>
+        <vertex x="889" y="882"/>
+        <vertex x="889" y="962.25"/>
     </link>
 
     <link class="sm-patch-cord" name="metro-niiptmash1" from="metro-switch:1:15@u" to="metro-net-patch-panel:31@r">
@@ -1199,9 +1207,21 @@
     </link>
 
     <link class="twisted-pair" name="twisted-pair-277195c6-1afd-46c1-b81f-f923cef33fa8" from="metro-x:21@r" to="niiptmash4-media-converter:c@d">
-        <vertex x="768" y="933.75"/>
-        <vertex x="768" y="1002"/>
-        <vertex x="1016.875" y="1002"/>
+        <vertex x="853" y="933.75"/>
+        <vertex x="853" y="1002"/>
+        <vertex x="1099.875" y="1002"/>
+    </link>
+
+    <link class="sm-patch-cord" name="sm-patch-cord-60268641-91c8-4b05-a034-dad3f1187980" from="UkrTelecom-E1-Multiplexer:tx@u" to="metro-net-patch-panel:3@r">
+        <vertex x="305.875" y="933.6938696744514"/>
+        <vertex bundle="metro-net-bundle" after="3" distance="79.69386967445146"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="62.50000000000001"/>
+    </link>
+
+    <link class="sm-patch-cord" name="sm-patch-cord-8929a7b8-818a-4f77-87e4-86248aa3d7f1" from="UkrTelecom-E1-Multiplexer:rx@u" to="metro-net-patch-panel:4@r">
+        <vertex x="330.875" y="915.3634369207979"/>
+        <vertex bundle="metro-net-bundle" after="3" distance="61.36343692079783"/>
+        <vertex bundle="metro-net-bundle" after="0" distance="77.5"/>
     </link>
 
 </kresmer-drawing>
