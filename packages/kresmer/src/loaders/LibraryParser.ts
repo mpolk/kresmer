@@ -327,6 +327,7 @@ export default class LibraryParser {
                     }//if
 
                     switch (category) {
+                        case "Hidden":
                         case "Geometry":
                         case "Presentation":
                         case "Network":

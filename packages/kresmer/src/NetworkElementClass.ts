@@ -90,7 +90,8 @@ export interface ComputedProp {
 export type ComputedProps = Record<string, ComputedProp>;
 
 export enum NetworkElementPropCategory {
-    Hardware=1, 
+    Hidden=1,
+    Hardware, 
     Optics,
     Network, 
     Geometry,  

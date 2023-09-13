@@ -334,6 +334,7 @@
                         <xs:attribute name="category">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
+                                    <xs:enumeration value="Hidden"/>
                                     <xs:enumeration value="Geometry"/>
                                     <xs:enumeration value="Presentation"/>
                                     <xs:enumeration value="Network"/>

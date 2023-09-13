@@ -143,6 +143,7 @@ Continue?`)) {
         }//clone
 
         const descriptors = Object.keys(_class.props)
+            .filter(name => _class.props[name].category !== NetworkElementPropCategory.Hidden)
             .map(name => 
                 {
                     const validValues = _class.props[name].validator?.validValues;
