@@ -32,6 +32,8 @@
         <props extend="SwitchBody">
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
+            <prop name="management-protocol" type="String" category="Network" default="telnet:"
+                description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
         </props>
     </component-class>
 
@@ -55,6 +57,32 @@
         </template>
         <style extends="Switch, DLinkSwitchBody" />
         <props extend="Switch"/>
+    </component-class>
+
+    <component-class name="DLink24PortSwitch" category="Switches/DLink">
+        <template>
+            <Kre:DLinkSwitchBody 
+                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
+                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
+                v-bind:comment="comment"
+                />
+            <template v-for="i in 12">
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
+            </template>
+        </template>
+        <style extends="DLinkSwitchBody"/>
+        <props extend="DLinkSwitchBody" except="interUnitGap">
+            <prop name="width" type="Number" category="Geometry"/>
+            <prop name="n-ports" type="Number" default="24" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
+        </props>
+        <computed-props>
+            <computed-prop name="width">props.width ?? props.unitHeight * 8.5</computed-prop>
+        </computed-props>
     </component-class>
 
     <component-class name="DLink-DES-3200-28" category="Switches/DLink">
@@ -100,7 +128,7 @@
             <prop name="width" type="Number" category="Geometry"/>
             <prop name="management-protocol" type="String" category="Network" default="telnet:"
                 description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
-            <prop name="n-ports" type="Number" default="28" description="Fictive property to avoid warnings when loading this param from the DB" />
+            <prop name="n-ports" type="Number" default="28" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
             <prop name="port25-media" type="string" choices="fiber,copper" category="Network" description="25th combo port media type" />
             <prop name="port26-media" type="string" choices="fiber,copper" category="Network" description="26th combo port media type" />
             <prop name="port27-media" type="string" choices="fiber,copper" category="Network" description="27th combo port media type" />
