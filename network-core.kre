@@ -496,6 +496,19 @@
         </props>
     </component>
 
+    <component class="DLink-DES-3052" name="office-switch" db-id="1995">
+        <origin x="30" y="1037"/>
+        <props>
+            <prop name="perspective">none</prop>
+            <prop name="name-vertical-pos">0.1</prop>
+            <prop name="first-combo-media">copper</prop>
+            <prop name="second-combo-media">copper</prop>
+            <prop name="management-protocol">swtn:</prop>
+            <prop name="fourth-combo-media">copper</prop>
+            <prop name="third-combo-media">copper</prop>
+        </props>
+    </component>
+
     <link class="twisted-pair" name="core-metro" from="core:2:2@d" to="metro-switch:1:20@d">
         <props>
             <prop name="start-label"></prop>
@@ -1222,6 +1235,13 @@
         <vertex x="330.875" y="915.3634369207979"/>
         <vertex bundle="metro-net-bundle" after="3" distance="61.36343692079783"/>
         <vertex bundle="metro-net-bundle" after="0" distance="77.5"/>
+    </link>
+
+    <link class="twisted-pair" name="twisted-pair-7cac6b33-ead9-4ff9-b305-f36b53b2cc9a" from="office-switch:50(c)@r" to="metro-x:25@r">
+        <vertex x="1036" y="1089.25"/>
+        <vertex x="1036" y="1017"/>
+        <vertex x="987" y="1017"/>
+        <vertex x="987" y="933.75"/>
     </link>
 
 </kresmer-drawing>
