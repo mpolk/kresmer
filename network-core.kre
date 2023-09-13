@@ -510,17 +510,42 @@
     </component>
 
     <component class="Server" name="edo">
-        <origin x="1137" y="911"/>
+        <origin x="1139" y="910"/>
         <props>
             <prop name="comment">Он же Regul</prop>
             <prop name="ip-address">192.168.111.254</prop>
             <prop name="width">280</prop>
             <prop name="interfaces">{
                   "eth0": {
-                    "direction": "downlink"
+                    "direction": "downlink",
+                    "media": "copper"
                   },
                   "eth1": {
-                    "direction": "uplink"
+                    "direction": "uplink",
+                    "media": "copper"
+                  }
+                }</prop>
+            <prop name="management-protocol">ssh:</prop>
+        </props>
+    </component>
+
+    <component class="Server" name="asterisk">
+        <origin x="1139" y="1037"/>
+        <props>
+            <prop name="comment"></prop>
+            <prop name="ip-address">192.168.111.223</prop>
+            <prop name="width">280</prop>
+            <prop name="interfaces">{
+                  "eth0": {
+                    "direction": "uplink",
+                    "w1g1": {
+                      "direction": ""
+                    },
+                    "media": "copper"
+                  },
+                  "w1g1": {
+                    "direction": "downlink",
+                    "media": "copper"
                   }
                 }</prop>
             <prop name="management-protocol">ssh:</prop>
@@ -1239,8 +1264,8 @@
 
     <link class="twisted-pair" name="twisted-pair-277195c6-1afd-46c1-b81f-f923cef33fa8" from="metro-x:21@r" to="niiptmash4-media-converter:c@d">
         <vertex x="853" y="933.75"/>
-        <vertex x="853" y="1002"/>
-        <vertex x="1099.875" y="1002"/>
+        <vertex x="853" y="996"/>
+        <vertex x="1100.875" y="996"/>
     </link>
 
     <link class="sm-patch-cord" name="sm-patch-cord-60268641-91c8-4b05-a034-dad3f1187980" from="UkrTelecom-E1-Multiplexer:tx@u" to="metro-net-patch-panel:3@r">
@@ -1257,16 +1282,14 @@
 
     <link class="twisted-pair" name="twisted-pair-7cac6b33-ead9-4ff9-b305-f36b53b2cc9a" from="office-switch:50@r" to="metro-x:25@r">
         <vertex x="1036" y="1089.25"/>
-        <vertex x="1036" y="1016"/>
-        <vertex x="987" y="1016"/>
-        <vertex x="987" y="933.75"/>
+        <vertex x="1036" y="1011"/>
+        <vertex x="989" y="1011"/>
+        <vertex x="989" y="933.75"/>
     </link>
 
-    <link class="twisted-pair" name="twisted-pair-79862d29-452d-4400-8760-4f86e64528f6" from="edo:eth0@d" to="office-switch:52@d">
-        <vertex x="1277" y="1007"/>
-        <vertex x="1134" y="1007"/>
-        <vertex x="1134" y="1124"/>
-        <vertex x="1055" y="1124"/>
+    <link class="twisted-pair" name="twisted-pair-79862d29-452d-4400-8760-4f86e64528f6" from="edo:eth0@d" to="office-switch:51@u">
+        <vertex x="1279" y="1011"/>
+        <vertex x="1055" y="1011"/>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-b16e0050-cff4-4c86-b027-07d0a4786fd9" from="core:1:10@d" to="edo:eth1@u">
@@ -1278,6 +1301,22 @@
         <vertex x="1378" y="528"/>
         <vertex x="1378" y="889"/>
         <vertex x="1277" y="889"/>
+    </link>
+
+    <link class="twisted-pair" name="twisted-pair-77bb6218-256f-4ce8-9402-e879d3984353" from="asterisk:eth0@u" to="office-switch:52@d">
+        <vertex x="1279" y="1025"/>
+        <vertex x="1133" y="1025"/>
+        <vertex x="1133" y="1131"/>
+        <vertex x="1055" y="1131"/>
+    </link>
+
+    <link class="twisted-pair" name="twisted-pair-39785ac6-fdfe-4e6c-acb6-2fb2e9ea035c" from="asterisk:w1g1@d" to="UkrTelecom-E1-Multiplexer:c1@d">
+        <vertex x="1279" y="1142"/>
+        <vertex x="1123" y="1142"/>
+        <vertex x="1123" y="1026"/>
+        <vertex x="954" y="1026"/>
+        <vertex x="954" y="1006"/>
+        <vertex x="362.125" y="1006"/>
     </link>
 
 </kresmer-drawing>
