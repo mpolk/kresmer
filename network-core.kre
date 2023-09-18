@@ -1296,9 +1296,9 @@
         <vertex bundle="core-middle-bundle" after="1" distance="215.99999999999997"/>
         <vertex bundle="core-middle-bundle" after="2" distance="0"/>
         <vertex x="1026" y="388"/>
-        <vertex x="1210" y="388"/>
-        <vertex x="1210" y="528"/>
-        <vertex x="1378" y="528"/>
+        <vertex x="1196" y="388"/>
+        <vertex x="1196" y="652"/>
+        <vertex x="1378" y="652"/>
         <vertex x="1378" y="889"/>
         <vertex x="1277" y="889"/>
     </link>
