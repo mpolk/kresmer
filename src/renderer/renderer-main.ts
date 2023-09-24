@@ -237,6 +237,10 @@ kresmer.on("open-url", (url: string) => {
     return true;
 });//onOpenURL
 
+kresmer.on("library-import-requested", async(libName: string, fileName?: string) => {
+    return window.electronAPI.importLibrary(libName, fileName);
+});//onLibraryImportRequested
+
 
 
 // Processing application comand (coming from the main process)
@@ -251,10 +255,10 @@ window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args
 });
 
 
-appCommandExecutor.on("load-library", (libData: string, options?: LoadLibraryOptions) =>
+appCommandExecutor.on("load-library", async(libData: string, options?: LoadLibraryOptions) =>
 { 
     try {
-        const rc = kresmer.loadLibrary(libData);
+        const rc = await kresmer.loadLibrary(libData);
         if (rc > 0) {
             alert("There were errors during library load (see the log)");
         } else if (options?.notifyUser) {

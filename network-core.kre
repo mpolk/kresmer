@@ -829,7 +829,7 @@
         <vertex bundle="brases-metro-u-bundle" after="3" distance="695"/>
         <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
         <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="657.9999999999998"/>
+        <vertex bundle="metro-middle-bundle" after="3" distance="658.0000000000001"/>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-4" from="rugay:eth3@d" to="metro-switch:2:34@d">
@@ -1222,7 +1222,7 @@
     </link>
 
     <link class="sm-patch-cord" name="metro-yub25-1" from="metro-switch:1:4@d1" to="dam-lower-mux:21@u">
-        <vertex bundle="metro-middle-bundle" after="3" distance="92.99999999999996"/>
+        <vertex bundle="metro-middle-bundle" after="3" distance="93.00000000000001"/>
         <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
         <vertex bundle="dam-mux-bundle" after="3" distance="0"/>
         <vertex bundle="dam-mux-bundle" after="0" distance="60.000000000000014"/>
@@ -1236,7 +1236,7 @@
     </link>
 
     <link class="sm-patch-cord" name="metro-x-niiptmash5" from="niiptmash4-media-converter:f@u" to="metro-net-patch-panel:32@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="715.8750000000002"/>
+        <vertex bundle="metro-lower-bundle" after="3" distance="715.875"/>
         <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
         <vertex bundle="metro-net-bundle" after="3" distance="0"/>
         <vertex bundle="metro-net-bundle" after="0" distance="497.5"/>

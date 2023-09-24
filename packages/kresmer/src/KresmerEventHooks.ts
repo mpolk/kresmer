@@ -21,7 +21,7 @@ class KresmerEventFormats  {
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
-    "library-import-requested":         (libName: string, fileName?: string) => string|undefined;
+    "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
     "drawing-scale":                    (newScaleFactor: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;

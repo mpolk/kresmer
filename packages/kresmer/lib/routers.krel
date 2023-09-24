@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                        The standard library
+ * This library contains general graphics and network elements, like ports
+ * switches and routers. More specific network units (servers, 
+ * vendor-specific equipment etc.) contain other libraries.
+<*************************************************************************** -->
+
+<kresmer-library name="routers" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+    <import library="stdlib"/>
+
+    <!-- General router body (differ form the switch body only with a circle on the top facet -->
+
+    <component-class name="RouterBody" category=".router-parts">
+        <template>
+            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
+                v-bind:n-units="nUnits" v-bind:inter-unit-gap="interUnitGap" v-bind:perspective="perspective" 
+                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew" v-bind:name-vertical-pos="nameVerticalPos"
+                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
+                v-bind:management-ref-target="managementRefTarget"
+                v-bind:comment="comment"
+                >
+                <template v-slot:frontFacet="{}">
+                    <slot name="frontFacet" />
+                </template>
+                <template v-slot:topFacetC="{}">
+                    <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
+                    <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
+                    <slot name="topFacetC"/>
+                </template>
+                <template v-slot:topFacetLR="{}">
+                    <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
+                    <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
+                    <slot name="topFacetLR"/>
+                </template>
+            </Kre:RackMountDevice>
+        </template>
+        <style extends="RackMountDevice"/>
+        <props extend="RackMountDevice">
+            <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar"/>
+            <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers"/>
+        </props>
+    </component-class>
+
+</kresmer-library>

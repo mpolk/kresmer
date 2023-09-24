@@ -5,7 +5,7 @@
  * -----------------------------------------------------------------------
  *             An IPC interface to Electron node.js main script
  ***************************************************************************/
-import { ipcMain, IpcMainEvent } from "electron";
+import { ipcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron";
 import { AppInitStage } from "../renderer/ElectronAPI";
 import { ContextMenuID } from "./Menus";
 import { AppSettings } from "./main";
@@ -25,6 +25,7 @@ export interface IpcMainChannels {
     "grid-shown-or-hidden": (shown: boolean) => void;
     "rulers-shown-or-hidden": (shown: boolean) => void;
     "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
+    "import-library": (libName: string, fileName?: string) => string|undefined;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;
@@ -40,5 +41,12 @@ export class IpcMainHooks {
     static once(channel: IpcMainChannel, handler: (...args: unknown[]) => void)
     {
         ipcMain.once(channel, (event: IpcMainEvent, ...args: unknown[]) => handler(...args));
+    }//on
+
+    static onInvokation<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, handler: H): void;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    static onInvokation(channel: IpcMainChannel, handler: (...args: unknown[]) => any)
+    {
+        ipcMain.handle(channel, (event: IpcMainInvokeEvent, ...args: unknown[]) => handler(...args));
     }//on
 }//IpcMainHooks

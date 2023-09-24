@@ -18,6 +18,13 @@ function sendToMain(channel: IpcMainChannel, ...args: unknown[])
     ipcRenderer.send(channel, ...args);
 }//sendToMain
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function invokeFromMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): Promise<any>;
+async function invokeFromMain(channel: IpcMainChannel, ...args: unknown[])
+{
+    return await ipcRenderer.invoke(channel, ...args);
+}//invokeFromMain
+
 function exposeToRenderer(methods: ElectronAPI)
 {
     contextBridge.exposeInMainWorld('electronAPI', methods);
@@ -91,6 +98,9 @@ exposeToRenderer({
         sendToMain("vertex-auto-alignment-toggled", autoAlignVertices)
     },
 
+    importLibrary: (libName: string, fileName?: string) => {
+        return invokeFromMain("import-library", libName, fileName);
+    },
 });
  console.debug("Finished setting up electron API for the renderer");
  

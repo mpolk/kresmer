@@ -42,7 +42,14 @@ export type KresmerExceptionOptions = {
 export class LibraryImportException extends KresmerException {
     constructor(options: KresmerExceptionOptions & {message?: string, libName?: string, fileName?: string})
     {
-        super(options.message ?? `Library import error (libName="${options.libName}", fileName="${options.fileName}")`, options);
+        let message = options.message;
+        if (message === undefined) {
+            message = `Error importing library "${options.libName}"`;
+            if (options.fileName) {
+                message += ` (fileName="${options.fileName}")`;
+            }//if
+        }//if
+        super(message, options);
     }//ctor
 }//LibraryImportException
 

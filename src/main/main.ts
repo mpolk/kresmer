@@ -289,6 +289,10 @@ function initIpcMainHooks()
         Menu.getApplicationMenu()!.getMenuItemById("toggleVertexAutoAlignment")!.checked = autoAlignVertices;
         localSettings.set("autoAlignVertices", autoAlignVertices);
     });
+
+    IpcMainHooks.onInvokation("import-library", (libName: string, fileName?: string) => {
+        return importLibrary(libName, fileName);
+    });
 }//initIpcMainHooks
 
 
@@ -501,6 +505,24 @@ export function loadLibrary()
         sendAppCommand("load-library", libData, {libraryFileName: filePath[0], notifyUser: true});
     }//if
 }//loadLibrary
+
+
+function importLibrary(libName: string, fileName?: string)
+{
+    console.debug(`Trying to import library "${libName}" (fileName="${fileName}")`);
+    const libFile = fileName ?? `${libName}.krel`;
+    for (const libDir of libDirs) {
+        const libPath = path.resolve(libDir, libFile);
+        if (fs.existsSync(libPath)) {
+            try {
+                return fs.readFileSync(libPath, "utf-8");
+            } catch {
+                return undefined;
+            }
+        }//if
+    }//for
+    return undefined;
+}//importLibrary
 
 
 export function requestConnectToServer(forceUI: boolean, completionSignal?: AppInitStage)

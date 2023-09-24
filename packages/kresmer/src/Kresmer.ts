@@ -391,7 +391,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param libData Library data
      * @returns Result code: 0 - success, -1 - library already loaded, >0 - the number of errors
      */
-    public loadLibrary(libData: string): number
+    public async loadLibrary(libData: string): Promise<number>
     {
         return this.libraryLoader.loadLibrary(libData);
     }//loadLibrary

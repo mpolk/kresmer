@@ -24,7 +24,7 @@ export default class LibraryLoader
      * @param libData Library data
      * @returns Result code: 0 - success, -1 - library already loaded, >0 - the number of errors
      */
-    public loadLibrary(libData: string): number
+    public async loadLibrary(libData: string): Promise<number>
     {
         // console.debug("Loading library...");
         const parser = new LibraryParser(this.kresmer);
@@ -39,31 +39,40 @@ export default class LibraryLoader
                     console.debug(`Library "${libName}" - dup, ignored`);
                     return -1;
                 }//if
+
             } else if (element instanceof NetworkComponentClass) {
                 this.kresmer.registerNetworkComponentClass(element);
+
             } else if (element instanceof NetworkLinkClass) {
                 this.kresmer.registerLinkClass(element);
+
             } else if (element instanceof DefsLibNode) {
                 this.kresmer.defs.push(element.data);
-                this.kresmer.appKresmer
-                    .component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
+                this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
+
             } else if (element instanceof StyleLibNode) {
                 this.kresmer.styles.push(this.scopeStyles(element.data, undefined, false));
+
             } else if (element instanceof ImportStatement) {
                 if (!this.kresmer.isLibraryLoaded(element.libName)) {
-                    const importedLibData = this.kresmer.emit("library-import-requested", element.libName, element.fileName);
+                    const importedLibData = await this.kresmer.emit("library-import-requested", element.libName, element.fileName);
                     if (!importedLibData)
                         this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
                     else {
                         const childLoader = new LibraryLoader(this.kresmer);
-                        nErrors += childLoader.loadLibrary(importedLibData);
+                        const nImportErrors = await childLoader.loadLibrary(importedLibData);
+                        if (nImportErrors > 0)
+                            nErrors += nImportErrors;
+                        console.debug(`Library "${element.libName}" - imported`);
                     }//if
                 }//if
+
             } else {
                 this.kresmer.raiseError(element);
                 nErrors++;
             }//if
         }//for
+
         console.debug(`Library "${libName}" - loaded (${nErrors} errors)`);
         return nErrors;
     }//loadLibrary
