@@ -75,6 +75,13 @@ export default class LibraryParser {
                 case "style":
                     yield new StyleLibNode(this.parseCSS(node.innerHTML));
                     break;
+                case "import":
+                    if (node.hasAttribute("library"))
+                        yield new ImportStatement(node.getAttribute("library")!, node.getAttribute("file-name") ?? undefined);
+                    else
+                        yield new LibraryParsingException(
+                            `Import statement without a "library" attribute`);
+                    break;
                 case "parsererror":
                     yield new LibraryParsingException(
                         `Syntax error: "${(node as HTMLElement).innerText}"`);
@@ -452,6 +459,10 @@ export class LibParams {
     constructor(readonly name: string) {}
 }//LibParams
 
+export class ImportStatement {
+    constructor(readonly libName: string, readonly fileName?: string) {}
+}//importStatement
+
 export class DefsLibNode {
     data: Element;
     constructor(data: Element)
@@ -470,6 +481,7 @@ export class StyleLibNode {
 
 
 type ParsedNode = LibParams |
+                  ImportStatement |
                   NetworkComponentClass | 
                   NetworkLinkClass |
                   DefsLibNode | 

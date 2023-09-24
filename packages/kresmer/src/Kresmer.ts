@@ -395,6 +395,16 @@ export default class Kresmer extends KresmerEventHooks {
     {
         return this.libraryLoader.loadLibrary(libData);
     }//loadLibrary
+
+    /**
+     * Checks if the specified is already loaded
+     * @param libName The library name to check
+     * @returns True of the library is already loaded or false otherwise
+     */
+    public isLibraryLoaded(libName: string): boolean
+    {
+        return this.librariesLoaded.has(libName);
+    }//isLibraryLoaded
  
     /**
      * 

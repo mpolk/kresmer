@@ -8,10 +8,11 @@
 
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
-import LibraryParser, { DefsLibNode, LibParams, StyleLibNode } from "./LibraryParser";
+import LibraryParser, { DefsLibNode, ImportStatement, LibParams, StyleLibNode } from "./LibraryParser";
 import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
+import { LibraryImportException } from "../KresmerException";
 
 /**A loader for network element class libraries */
 export default class LibraryLoader
@@ -48,6 +49,16 @@ export default class LibraryLoader
                     .component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
             } else if (element instanceof StyleLibNode) {
                 this.kresmer.styles.push(this.scopeStyles(element.data, undefined, false));
+            } else if (element instanceof ImportStatement) {
+                if (!this.kresmer.isLibraryLoaded(element.libName)) {
+                    const importedLibData = this.kresmer.emit("library-import-requested", element.libName, element.fileName);
+                    if (!importedLibData)
+                        this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
+                    else {
+                        const childLoader = new LibraryLoader(this.kresmer);
+                        nErrors += childLoader.loadLibrary(importedLibData);
+                    }//if
+                }//if
             } else {
                 this.kresmer.raiseError(element);
                 nErrors++;

@@ -9,6 +9,8 @@
  *       This library contains graphics for Juniper Networks devices
 <*************************************************************************** -->
 <kresmer-library name="Juniper" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+    <import library="stdlib" />
+    <import library="routers" />
 
     <component-class name="Juniper-MX204" category="Routers/Juniper">
         <template>

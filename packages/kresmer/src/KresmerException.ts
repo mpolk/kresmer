@@ -39,6 +39,13 @@ export type KresmerExceptionOptions = {
 
 // Specific exceptions
 
+export class LibraryImportException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & {message?: string, libName?: string, fileName?: string})
+    {
+        super(options.message ?? `Library import error (libName="${options.libName}", fileName="${options.fileName}")`, options);
+    }//ctor
+}//LibraryImportException
+
 export class UndefinedElementException extends KresmerException {
     constructor(options: KresmerExceptionOptions & RequireOnlyOne<{element?: string|number, message?: string}>)
     {

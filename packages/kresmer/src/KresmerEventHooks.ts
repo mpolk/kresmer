@@ -21,6 +21,7 @@ class KresmerEventFormats  {
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
+    "library-import-requested":         (libName: string, fileName?: string) => string|undefined;
     "drawing-scale":                    (newScaleFactor: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
@@ -136,10 +137,20 @@ export default class KresmerEventHooks {
 
     /**
      * Is called when an HTML-link on the drawing is clicked
-     * @param url A new dirtiness state
+     * @param url An URL to open
+     * @param target A link target (i.e. window to open the URL in: self, blank etc.)
      */
     @overridableHandler("open-url")
     protected onOpenUrl(url: string, target?: string): boolean { return false; }
+
+    /**
+     * Is called when a library import is requested when loading some other library that references this one
+     * @param libName A name of the library to import
+     * @param fileName Optional library file name (for the case when does not match `${libName}.krel` pattern)
+     * @returns Content of the imported library (as a text string) or "undefined" if the library can not be found)
+     */
+    @overridableHandler("library-import-requested")
+    protected onLibraryImportRequested(libName: string, fileName?: string): string|undefined { return undefined; }
 
     /**
      * Is called when the global drawing scale change occurs

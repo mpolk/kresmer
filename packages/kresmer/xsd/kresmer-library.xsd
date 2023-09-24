@@ -29,6 +29,13 @@
 
                     <xs:element name="link-class" type="link-class"/>
                     <xs:element name="link-bundle-class" type="link-class"/>
+
+                    <xs:element name="import">
+                        <xs:complexType>
+                            <xs:attribute name="library" use="required"/>
+                            <xs:attribute name="file-name"/>
+                        </xs:complexType>
+                    </xs:element>
                     
                 </xs:choice>
             </xs:sequence>
