@@ -16,7 +16,7 @@ import AppSettingsSidebar from './AppSettingsSidebar.vue';
 import DrawingPropsSidebar from './DrawingPropsSidebar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
-    DrawingMergeOptions, Position, KresmerException, KresmerParsingException, 
+    DrawingMergeOptions, Position, KresmerException, KresmerParsingException, LibraryImportException,
     NetworkComponentController, NetworkComponent,
     NetworkLink, NetworkElement, LinkVertex,
     TransformMode, ConnectionPointProxy,
@@ -238,7 +238,7 @@ kresmer.on("open-url", (url: string) => {
 });//onOpenURL
 
 kresmer.on("library-import-requested", async(libName: string, fileName?: string) => {
-    return window.electronAPI.importLibrary(libName, fileName);
+    return window.electronAPI.loadLibraryFile(libName, fileName);
 });//onLibraryImportRequested
 
 
@@ -272,10 +272,20 @@ appCommandExecutor.on("load-library", async(libData: string, options?: LoadLibra
             throw exc;
         }//if
     }//catch
+});//loadLibrary
 
-    if (options?.completionSignal !== undefined) {
-        window.electronAPI.signalReadiness(options?.completionSignal);
-    }//if
+
+appCommandExecutor.on("load-initial-libraries", async(libPaths: string[]) =>
+{ 
+    for (const libPath of libPaths) {
+        const libData = await window.electronAPI.loadLibraryFile("", libPath);
+        if (libData)
+            await kresmer.loadLibrary(libData);
+        else
+            kresmer.raiseError(new LibraryImportException({fileName: libPath}));
+    }//for
+
+    window.electronAPI.signalReadiness(AppInitStage.LIBS_LOADED);
 });//loadLibrary
 
 

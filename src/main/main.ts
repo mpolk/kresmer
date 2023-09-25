@@ -14,7 +14,7 @@ import { app, BrowserWindow, dialog, Menu, protocol, shell } from 'electron';
 const packageJson = require("../../package.json");
 import Settings from './Settings';
 import Menus, {ContextMenuID} from "./Menus";
-import { AppCommand, AppCommandFormats, LoadLibraryOptions } from '../renderer/AppCommands';
+import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import console from 'console';
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
@@ -58,7 +58,6 @@ export type CustomManagementProtocol = {
 let drawingToAutoload: string;
 const libDirs: string[] = [];
 const libsToLoad: string[] = [];
-const STDLIB = "stdlib.krel";
 
 function addLibDir(libDir: string)
 {
@@ -80,35 +79,6 @@ function addLib(libPath: string)
     if (!libsToLoad.includes(libPath))
         libsToLoad.push(libPath);
 }//addLib
-
-function loadInitialLibraries()
-{
-    let stdlibFound = false;
-    for (const libDir of libDirs) {
-        const stdlib = path.resolve(libDir, STDLIB);
-        if (fs.existsSync(stdlib)) {
-            libsToLoad.unshift(stdlib);
-            stdlibFound = true;
-            break;
-        }//if
-    }//for
-    
-    if (!stdlibFound) {
-        dialog.showErrorBox("Initialization error", `Cannot find a standard library (${STDLIB})!`);
-        return;
-    }//if
-
-    for (let i = 0; i < libsToLoad.length; i++) {
-        const libPath = libsToLoad[i];
-        const libData = fs.readFileSync(libPath, "utf-8");
-        console.debug(`Library ${libPath} loaded in memory`);
-        const options: LoadLibraryOptions = {libraryFileName: libPath};
-        if (i == libsToLoad.length-1)
-            options.completionSignal = AppInitStage.LIBS_LOADED;
-        sendAppCommand("load-library", libData, options);
-        console.debug(`Library ${libPath} loaded to Kresmer`);
-    }//for
-}//loadInitialLibraries
 
 
 
@@ -290,8 +260,8 @@ function initIpcMainHooks()
         localSettings.set("autoAlignVertices", autoAlignVertices);
     });
 
-    IpcMainHooks.onInvokation("import-library", (libName: string, fileName?: string) => {
-        return importLibrary(libName, fileName);
+    IpcMainHooks.onInvokation("load-library-file", (libName: string, fileName?: string) => {
+        return loadLibraryFile(libName, fileName);
     });
 }//initIpcMainHooks
 
@@ -313,7 +283,7 @@ export function initApp(stage: AppInitStage)
         // eslint-disable-next-line no-fallthrough
         case AppInitStage.CONNECTED_TO_BACKEND:
             console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`);
-            loadInitialLibraries();
+            sendAppCommand("load-initial-libraries", libsToLoad);
             break;
         case AppInitStage.LIBS_LOADED: {
             if (fs.existsSync(drawingToAutoload)) {
@@ -507,22 +477,27 @@ export function loadLibrary()
 }//loadLibrary
 
 
-function importLibrary(libName: string, fileName?: string)
+function loadLibraryFile(libName: string, fileName?: string)
 {
-    console.debug(`Trying to import library "${libName}" (fileName="${fileName}")`);
+    console.debug(`Trying to load library "${libName}" (fileName="${fileName}")`);
     const libFile = fileName ?? `${libName}.krel`;
     for (const libDir of libDirs) {
         const libPath = path.resolve(libDir, libFile);
         if (fs.existsSync(libPath)) {
             try {
-                return fs.readFileSync(libPath, "utf-8");
+                const libData = fs.readFileSync(libPath, "utf-8");
+                console.debug(`Library "${libPath}" loaded`);
+                return libData;
             } catch {
+                console.debug(`Error loading library "${libPath}"`);
                 return undefined;
             }
         }//if
     }//for
+
+    console.debug(`Could not load library "${libName}" (fileName="${fileName}")`);
     return undefined;
-}//importLibrary
+}//loadLibraryFile
 
 
 export function requestConnectToServer(forceUI: boolean, completionSignal?: AppInitStage)

@@ -27,7 +27,7 @@ export interface ElectronAPI {
     rulersShownOrHidden: (shown: boolean) => void,
     gridShownOrHidden: (shown: boolean) => void,
     autoAlignmentToggled: (autoAlignVertices: boolean) => void,
-    importLibrary: (libName: string, fileName?: string) => Promise<string|undefined>,
+    loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
 }//IElectronAPI
 
 

@@ -98,8 +98,8 @@ exposeToRenderer({
         sendToMain("vertex-auto-alignment-toggled", autoAlignVertices)
     },
 
-    importLibrary: (libName: string, fileName?: string) => {
-        return invokeFromMain("import-library", libName, fileName);
+    loadLibraryFile: (libName: string, fileName?: string) => {
+        return invokeFromMain("load-library-file", libName, fileName);
     },
 });
  console.debug("Finished setting up electron API for the renderer");

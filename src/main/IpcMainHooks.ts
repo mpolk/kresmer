@@ -25,7 +25,7 @@ export interface IpcMainChannels {
     "grid-shown-or-hidden": (shown: boolean) => void;
     "rulers-shown-or-hidden": (shown: boolean) => void;
     "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
-    "import-library": (libName: string, fileName?: string) => string|undefined;
+    "load-library-file": (libName: string, fileName?: string) => string|undefined;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;
