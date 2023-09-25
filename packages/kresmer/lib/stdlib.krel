@@ -193,12 +193,4 @@
         </props>
     </component-class>
 
-    <component-class name="OpticalMultiplexer" category=".optical-equipment">
-        <template/>
-        <props>
-            <prop name="division-mode" type="String" choices="CWDM, DWDM" category="Optics" description="Multiplexer signal division mode"/>
-            <prop name="fibers-info" type="Object" category="Optics" description="Individual beam wavelengthes and directions"/>
-        </props>
-    </component-class>
-
 </kresmer-library>

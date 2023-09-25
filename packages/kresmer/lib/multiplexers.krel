@@ -11,6 +11,14 @@
 
 <kresmer-library name="multiplexers" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
+
+    <component-class name="OpticalMultiplexer" category=".optical-equipment">
+        <template/>
+        <props>
+            <prop name="division-mode" type="String" choices="CWDM, DWDM" category="Optics" description="Multiplexer signal division mode"/>
+            <prop name="fibers-info" type="Object" category="Optics" description="Individual beam wavelengthes and directions"/>
+        </props>
+    </component-class>
     
     <component-class name="CopperToOpticsMultiplexer" category="Multiplexers">
         <template>
