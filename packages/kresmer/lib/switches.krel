@@ -9,9 +9,6 @@
  *        This library contains generic switches and their parts.
 <*************************************************************************** -->
 
-<!-- Define some little things to make the life less hard -->
-<!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
-
 <kresmer-library name="switches" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
