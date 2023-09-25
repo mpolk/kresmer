@@ -59,6 +59,16 @@ class _NetworkLink extends NetworkElement {
         return this._class;
     }//getClass
 
+    override get isSelected() {return super.isSelected}
+    override set isSelected(reallyIs: boolean)
+    {
+        super.isSelected = reallyIs;
+        if (this.isHighlighted && !reallyIs) {
+            (this as unknown as NetworkLink).restoreZPosition();
+            this.isHighlighted = false;
+        }//if
+    }//isSelected
+
     readonly isBundle: boolean = false;
 
     private _isHighlighted = false
@@ -272,7 +282,7 @@ class _NetworkLink extends NetworkElement {
 
     public onMouseLeave()
     {
-        if (this.isHighlighted) {
+        if (this.isHighlighted && !this.isSelected) {
             (this as unknown as NetworkLink).restoreZPosition();
             this.isHighlighted = false;
         }//if
