@@ -7,8 +7,9 @@
  ***************************************************************************/
 import { BrowserWindow, Menu, MenuItemConstructorOptions } from "electron";
 import { Position } from "kresmer";
-import { sendAppCommand, requestConnectToServer, requestDisconnectFromServer, localSettings, showAboutDialog } from "./main";
+import { sendAppCommand, localSettings, showAboutDialog } from "./main";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing } from "./file-ops";
+import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
 
 const isMac = process.platform === 'darwin'
 

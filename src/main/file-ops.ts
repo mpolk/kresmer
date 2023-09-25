@@ -9,7 +9,8 @@
 import { dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { mainWindow, defaultDrawingFileName, sendAppCommand, libDirs } from './main';
+import { mainWindow, sendAppCommand, libDirs } from './main';
+import { defaultDrawingFileName } from './init-funcs';
 import { IpcMainHooks } from './IpcMainHooks';
 
 
