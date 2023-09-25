@@ -9,7 +9,7 @@
 import path from 'path';
 import fs from 'fs';
 import { exec } from 'child_process';
-import { app, BrowserWindow, dialog, Menu, protocol, shell } from 'electron';
+import { app, BrowserWindow, Menu, protocol, shell } from 'electron';
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const packageJson = require("../../package.json");
 import Settings from './Settings';
@@ -18,13 +18,14 @@ import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import console from 'console';
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
+import { loadLibraryFile } from './file-ops';
 
-const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
-const appDir = path.dirname(process.argv0);
+export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
+export const appDir = path.dirname(process.argv0);
 
 export let mainWindow: BrowserWindow;
 export let menus: Menus;
-let defaultDrawingFileName: string;
+export let defaultDrawingFileName: string;
 
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
@@ -56,7 +57,7 @@ export type CustomManagementProtocol = {
 }//CustomManagementProtocol
 
 let drawingToAutoload: string;
-const libDirs: string[] = [];
+export const libDirs: string[] = [];
 const libsToLoad: string[] = [];
 
 function addLibDir(libDir: string)
@@ -357,147 +358,6 @@ export function sendAppCommand<Command extends AppCommand>(command: Command, ...
     // console.debug(command, ...args);
     mainWindow.webContents.send("command", command, ...args);
 }//sendAppCommand
-
-
-export function openDrawing()
-{
-    // console.debug("About to show 'Open drawing dialog...'")
-    const filePath = dialog.showOpenDialogSync(mainWindow, {
-        title: "Open drawing file",
-        filters: [
-            {name: "Kresmer drawing files (*.kre)", extensions: ["kre"]},
-            {name: "All files (*.*)", extensions: ["*"]},
-        ]
-    });
-
-    if (filePath) {
-        const dwgData = fs.readFileSync(filePath[0], "utf-8");
-        const drawingFileName = path.basename(filePath[0]);
-        sendAppCommand("load-drawing", dwgData, {drawingFileName});
-    }//if
-}//openDrawing
-
-
-export function saveDrawing()
-{
-    if (!defaultDrawingFileName) {
-        saveDrawingAs();
-    } else {
-        IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
-                console.debug(`About to save the drawing to the file "${defaultDrawingFileName}"`);
-                fs.writeFileSync(defaultDrawingFileName, dwgData);
-        });
-        sendAppCommand("save-drawing");
-    }//if
-}//saveDrawing
-
-
-export function saveDrawingAs()
-{
-    let filePath = dialog.showSaveDialogSync(mainWindow, {
-        title: "Save drawing",
-        filters: [
-            {name: "Kresmer drawing files (*.kre)", extensions: ["kre"]},
-            {name: "All files (*.*)", extensions: ["*"]},
-        ]
-    });
-
-    if (filePath) {
-        if (!path.extname(filePath)) {
-            filePath += ".kre";
-        }//if
-
-        if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
-            message: `File "${path.basename(filePath)}" exists! Overwrite?`,
-            buttons: ["Ok", "Cancel"],
-            defaultId: 1,
-            })) 
-        {
-            return;
-        }//if
-        
-        IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
-            console.debug(`About to save the drawing to the file "${filePath}"`);
-            fs.writeFileSync(filePath!, dwgData);
-        });
-        sendAppCommand("save-drawing");
-    }//if
-}//saveDrawingAs
-
-
-export function exportDrawingToSVG()
-{
-    let filePath = dialog.showSaveDialogSync(mainWindow, {
-        title: "Export drawing to SVG",
-        filters: [
-            {name: "Scalable Vector Graphics files (*.svg)", extensions: ["svg"]},
-            {name: "All files (*.*)", extensions: ["*"]},
-        ],
-        defaultPath: defaultDrawingFileName.replace(/.kre$/, ".svg"),
-    });
-
-    if (filePath) {
-        if (!path.extname(filePath)) {
-            filePath += ".svg";
-        }//if
-
-        if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
-            message: `File "${path.basename(filePath)}" exists! Overwrite?`,
-            buttons: ["Ok", "Cancel"],
-            defaultId: 1,
-            })) 
-        {
-            return;
-        }//if
-        
-        IpcMainHooks.once("complete-drawing-export-to-SVG", (svgData: string) => {
-            console.debug(`About to export the drawing to the file "${filePath}"`);
-            fs.writeFileSync(filePath!, svgData);
-        });
-        sendAppCommand("export-drawing-to-SVG");
-    }//if
-}//exportDrawingToSVG
-
-
-export function loadLibrary()
-{
-    // console.debug("About to show 'Open drawing dialog...'")
-    const filePath = dialog.showOpenDialogSync(mainWindow, {
-        title: "Load library...",
-        filters: [
-            {name: "Kresmer library files (*.krel)", extensions: ["krel"]},
-            {name: "All files (*.*)", extensions: ["*"]},
-        ]
-    });
-
-    if (filePath) {
-        const libData = fs.readFileSync(filePath[0], "utf-8");
-        sendAppCommand("load-library", libData, {libraryFileName: filePath[0], notifyUser: true});
-    }//if
-}//loadLibrary
-
-
-function loadLibraryFile(libName: string, fileName?: string)
-{
-    console.debug(`Trying to load library "${libName}" (fileName="${fileName}")`);
-    const libFile = fileName ?? `${libName}.krel`;
-    for (const libDir of libDirs) {
-        const libPath = path.resolve(libDir, libFile);
-        if (fs.existsSync(libPath)) {
-            try {
-                const libData = fs.readFileSync(libPath, "utf-8");
-                console.debug(`Library "${libPath}" loaded`);
-                return libData;
-            } catch {
-                console.debug(`Error loading library "${libPath}"`);
-                return undefined;
-            }
-        }//if
-    }//for
-
-    console.debug(`Could not load library "${libName}" (fileName="${fileName}")`);
-    return undefined;
-}//loadLibraryFile
 
 
 export function requestConnectToServer(forceUI: boolean, completionSignal?: AppInitStage)
