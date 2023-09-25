@@ -1136,7 +1136,7 @@
     </link>
 
     <link class="sm-patch-cord" name="dam-upper-mux-common" from="dam-upper-mux:r" to="metro-net-patch-panel:10@r">
-        <vertex bundle="metro-net-bundle" after="2" distance="92.88157894736841"/>
+        <vertex bundle="metro-net-bundle" after="2" distance="90.49999999999997"/>
         <vertex bundle="metro-net-bundle" after="0" distance="167.5"/>
     </link>
 
