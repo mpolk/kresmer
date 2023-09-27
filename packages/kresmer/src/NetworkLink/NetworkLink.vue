@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { computed, onBeforeMount, PropType, provide, onMounted } from 'vue';
+    import { computed, onBeforeMount, PropType, provide, onMounted, CSSProperties } from 'vue';
     import NetworkLink from './NetworkLink';
     import NetworkElement from '../NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
@@ -47,6 +47,12 @@
             highlighted: props.model.isHighlighted,
         }
     })//linkClass
+
+    const linkStyle = computed(() => {
+        return {
+            "pointer-events": props.model.kresmer._allLinkFreezed ? "none" : "auto",
+        } as CSSProperties
+    })//linkStyle
 
     const segmentClass = computed(() => {
         return {
@@ -115,7 +121,7 @@
 </script>
 
 <template>
-    <g :class="linkClass" 
+    <g :class="linkClass" :style="linkStyle"
         @mouseenter="model.onMouseEnter"
         @mouseleave="model.onMouseLeave"
         >

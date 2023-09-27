@@ -816,6 +816,9 @@ ${svg.outerHTML}
         }//if
     }//_abortLinkCreation
 
+    /** Inactivates temporarily normal link behaviour and reactivity (for internal use) */
+    public _allLinkFreezed = false;
+
 
     /** 
      * Starts dragging the selected components following the leading one 
