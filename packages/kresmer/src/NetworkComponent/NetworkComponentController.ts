@@ -113,6 +113,11 @@ class _NetworkComponentController {
                     this.dragConstraint = "y";
             }//if
         }//if
+
+        switch (this.dragConstraint) {
+            case 'x': effectiveMove.y = 0; break;
+            case 'y': effectiveMove.x = 0; break;
+        }//switch
             
         this.moveFromStartPos(effectiveMove);
         if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
@@ -123,11 +128,9 @@ class _NetworkComponentController {
 
     public moveFromStartPos(this: NetworkComponentController, delta: Position)
     {
-        if (this.dragConstraint !== "y")
-            this.origin.x = this.dragStartPos!.x + delta.x;
-        if (this.dragConstraint !== "x")
-            this.origin.y = this.dragStartPos!.y + delta.y;
-        if (!this.isDragged || this.kresmer.animateComponentDragging)
+        this.origin.x = this.dragStartPos!.x + delta.x;
+        this.origin.y = this.dragStartPos!.y + delta.y;
+        if (this.kresmer.animateComponentDragging)
             this.updateConnectionPoints();
         this.kresmer.emit("component-being-moved", this);
     }//moveFromStartPos

@@ -854,6 +854,8 @@ ${svg.outerHTML}
     {
         const operation = this.undoStack.currentOperation as SelectionMoveOp;
         for (const controller of operation.controllers) {
+            if (!this.animateComponentDragging)
+                controller.updateConnectionPoints();
             if (controller.component.isSelected && controller !== leader) {
                 this.emit("component-moved", controller);
             }//if
