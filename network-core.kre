@@ -1300,7 +1300,7 @@
         <vertex x="1196" y="652"/>
         <vertex x="1378" y="652"/>
         <vertex x="1378" y="889"/>
-        <vertex x="1277" y="889"/>
+        <vertex x="1279" y="889"/>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-77bb6218-256f-4ce8-9402-e879d3984353" from="asterisk:eth0@d" to="office-switch:52@d">

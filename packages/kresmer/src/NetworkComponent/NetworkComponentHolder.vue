@@ -259,11 +259,11 @@
 <style lang="scss">
     svg.network-component {
         &.selected {
-            outline: thin green solid;
+            outline: 4px green double;
         }
         
         &.dragged {
-            outline: thin red solid;
+            outline: 4px red double;
             .network-component-slot { cursor: move; }
             &.x {.network-component-slot { cursor: ew-resize; }}
             &.y {.network-component-slot { cursor: ns-resize; }}
