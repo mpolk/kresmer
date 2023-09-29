@@ -7,7 +7,7 @@
   "main": "dist/main/main.js",
   "config": {
     "port": 5173,
-    "args": "network-core.kre"
+    "args": ""
   },
   "scripts": {
     "build-only": "vite build",

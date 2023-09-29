@@ -214,6 +214,9 @@ export function initApp(stage: AppInitStage)
             sendAppCommand("load-initial-libraries", libsToLoad);
             break;
         case AppInitStage.LIBS_LOADED: {
+            if (!drawingToAutoload && localSettings.get("autoloadLastDrawing")) {
+                drawingToAutoload = localSettings.get("lastOpenedDrawing");
+            }//if
             if (fs.existsSync(drawingToAutoload)) {
                 defaultDrawingFileName = drawingToAutoload;
                 const dwgData = fs.readFileSync(drawingToAutoload, "utf-8");

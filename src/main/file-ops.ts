@@ -9,7 +9,7 @@
 import { dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { mainWindow, sendAppCommand, libDirs } from './main';
+import { mainWindow, sendAppCommand, libDirs, localSettings } from './main';
 import { defaultDrawingFileName } from './init-funcs';
 import { IpcMainHooks } from './IpcMainHooks';
 
@@ -29,6 +29,7 @@ export function openDrawing()
         const dwgData = fs.readFileSync(filePath[0], "utf-8");
         const drawingFileName = path.basename(filePath[0]);
         sendAppCommand("load-drawing", dwgData, {drawingFileName});
+        localSettings.set("lastOpenedDrawing", filePath[0]);
     }//if
 }//openDrawing
 
@@ -86,6 +87,7 @@ export function saveDrawingAs(dwgData?: string): boolean
         });
         sendAppCommand("save-drawing");
     }//if
+    localSettings.set("lastOpenedDrawing", filePath);
     return true;
 }//saveDrawingAs
 

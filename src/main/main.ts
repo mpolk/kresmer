@@ -33,6 +33,8 @@ export const localSettings = new Settings("local-settings.json", {
     customManagementProtocols: [] as CustomManagementProtocol[],
     animateComponentDragging: false as boolean,
     animateLinkBundleDragging: false as boolean,
+    lastOpenedDrawing: "",
+    autoloadLastDrawing: true as boolean,
 });
 
 export type AppSettings = {
@@ -44,6 +46,8 @@ export type AppSettings = {
     customManagementProtocols: CustomManagementProtocol[],
     animateComponentDragging: boolean,
     animateLinkBundleDragging: boolean,
+    lastOpenedDrawing: string,
+    autoloadLastDrawing: boolean;
 }//AppSettings
 
 export type CustomManagementProtocol = {
