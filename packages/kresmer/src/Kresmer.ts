@@ -106,7 +106,7 @@ export default class Kresmer extends KresmerEventHooks {
     public styles: PostCSSRoot[] = reactive([]);
 
     /** Drawing name */
-    public drawingName = "?unnamed?";
+    public drawingName = UNNAMED_DRAWING;
     /** Should the drawing border rulers be shown? */
     get showRulers() {return this._showRulers.value}
     set showRulers(show: boolean) {this._showRulers.value = show}
@@ -543,6 +543,7 @@ ${svg.outerHTML}
     /** Erases everything that is in the drawing now */
     public eraseContent()
     {
+        this.drawingName = UNNAMED_DRAWING;
         this.undoStack.reset();
         this.linksByName.clear();
         this.links.clear();
@@ -1090,6 +1091,7 @@ ${svg.outerHTML}
     }//edAPI
 }//Kresmer
 
+const UNNAMED_DRAWING = "?unnamed?";
 
 export type DrawingProps = {
     /** The drawing name */

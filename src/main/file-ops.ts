@@ -43,7 +43,7 @@ export function saveDrawing(dwgData?: string): boolean
     } else {
         IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
                 console.debug(`About to save the drawing to the file "${defaultDrawingFileName}"`);
-                fs.writeFileSync(defaultDrawingFileName, dwgData);
+                fs.writeFileSync(defaultDrawingFileName!, dwgData);
         });
         sendAppCommand("save-drawing");
         return true;
@@ -98,7 +98,7 @@ export function exportDrawingToSVG()
             {name: "Scalable Vector Graphics files (*.svg)", extensions: ["svg"]},
             {name: "All files (*.*)", extensions: ["*"]},
         ],
-        defaultPath: defaultDrawingFileName.replace(/.kre$/, ".svg"),
+        defaultPath: defaultDrawingFileName?.replace(/.kre$/, ".svg"),
     });
 
     if (filePath) {

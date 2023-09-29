@@ -309,6 +309,7 @@ appCommandExecutor.on("create-new-drawing", async() => {
     }//if
 
     kresmer.eraseContent();
+    updateWindowTitle();
 });//create-new-drawing
 
 appCommandExecutor.on("load-drawing", async (drawingData: string, options?: LoadDrawingOptions) =>

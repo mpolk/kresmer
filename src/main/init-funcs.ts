@@ -17,7 +17,7 @@ import { IpcMainHooks } from './IpcMainHooks';
 import { loadLibraryFile, saveDrawing } from './file-ops';
 import { openUrlWithSystemBrowser, requestConnectToServer } from './misc-ops';
 
-export let defaultDrawingFileName: string;
+export let defaultDrawingFileName: string|undefined;
 export let drawingToAutoload: string;
 
 /** Parses the command line and save its parameters to the global vars */
@@ -130,7 +130,7 @@ export function initIpcMainHooks()
     IpcMainHooks.on('renderer-ready', (stage: number) => {initApp(stage)});
 
     IpcMainHooks.on('set-default-drawing-filename', (fileName: string) => {
-        defaultDrawingFileName = fileName
+        defaultDrawingFileName = fileName;
     });
 
     IpcMainHooks.on('enable-delete-menu-item', (enable: boolean) => {
@@ -249,3 +249,9 @@ export function registerCustomManagementProtocols()
         });
     }//for
 }//registerCustomManagementProtocols
+
+
+export function setDefaultDrawingFileName(newName?: string|undefined)
+{
+    defaultDrawingFileName = newName;
+}//setDefaultDrawingFileName

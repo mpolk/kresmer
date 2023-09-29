@@ -12,7 +12,7 @@ import { app, BrowserWindow } from 'electron';
 import Settings from './Settings';
 import Menus from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
-import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine } from './init-funcs';
+import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine, setDefaultDrawingFileName } from './init-funcs';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const packageJson = require("../../package.json");
@@ -116,6 +116,7 @@ export function sendAppCommand<Command extends AppCommand>(command: Command, ...
 export function createNewDrawing()
 {
     sendAppCommand("create-new-drawing");
+    setDefaultDrawingFileName();
 }//createNewDrawing
 
 export function showAboutDialog()
