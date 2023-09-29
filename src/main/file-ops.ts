@@ -10,7 +10,7 @@ import { dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { mainWindow, sendAppCommand, libDirs, localSettings } from './main';
-import { defaultDrawingFileName } from './init-funcs';
+import { defaultDrawingFileName, setDefaultDrawingFileName } from './init-funcs';
 import { IpcMainHooks } from './IpcMainHooks';
 
 
@@ -78,6 +78,7 @@ export function saveDrawingAs(dwgData?: string): boolean
         return false;
     }//if
     
+    setDefaultDrawingFileName(filePath);
     if (dwgData) {
         fs.writeFileSync(filePath!, dwgData);
     } else {
