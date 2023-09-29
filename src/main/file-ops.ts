@@ -33,21 +33,25 @@ export function openDrawing()
 }//openDrawing
 
 
-export function saveDrawing()
+export function saveDrawing(dwgData?: string): boolean
 {
     if (!defaultDrawingFileName) {
-        saveDrawingAs();
+        return saveDrawingAs(dwgData);
+    } else if (dwgData) {
+        fs.writeFileSync(defaultDrawingFileName, dwgData);
+        return true;
     } else {
         IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
                 console.debug(`About to save the drawing to the file "${defaultDrawingFileName}"`);
                 fs.writeFileSync(defaultDrawingFileName, dwgData);
         });
         sendAppCommand("save-drawing");
+        return true;
     }//if
 }//saveDrawing
 
 
-export function saveDrawingAs()
+export function saveDrawingAs(dwgData?: string): boolean
 {
     let filePath = dialog.showSaveDialogSync(mainWindow, {
         title: "Save drawing",
@@ -57,26 +61,32 @@ export function saveDrawingAs()
         ]
     });
 
-    if (filePath) {
-        if (!path.extname(filePath)) {
-            filePath += ".kre";
-        }//if
+    if (!filePath)
+        return false;
 
-        if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
-            message: `File "${path.basename(filePath)}" exists! Overwrite?`,
-            buttons: ["Ok", "Cancel"],
-            defaultId: 1,
-            })) 
-        {
-            return;
-        }//if
-        
+    if (!path.extname(filePath)) {
+        filePath += ".kre";
+    }//if
+
+    if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
+        message: `File "${path.basename(filePath)}" exists! Overwrite?`,
+        buttons: ["Ok", "Cancel"],
+        defaultId: 1,
+        })) 
+    {
+        return false;
+    }//if
+    
+    if (dwgData) {
+        fs.writeFileSync(filePath!, dwgData);
+    } else {
         IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
             console.debug(`About to save the drawing to the file "${filePath}"`);
             fs.writeFileSync(filePath!, dwgData);
         });
         sendAppCommand("save-drawing");
     }//if
+    return true;
 }//saveDrawingAs
 
 

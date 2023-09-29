@@ -18,6 +18,7 @@ export interface ElectronAPI {
     showContextMenu: <MenuID extends ContextMenuID>(menuID: MenuID, ...args: Parameters<ContextMenus[MenuID]>) => void,
     setDefaultDrawingFileName: (fileName: string) => void,
     completeDrawingSaving: (dwgData: string) => void,
+    saveDrawing: (dwgData: string) => Promise<boolean>,
     completeDrawingExportToSVG: (svgData: string) => void,
     enableDeleteMenuItem: (enable: boolean) => void,
     enableDuplicateMenuItem: (enable: boolean) => void,

@@ -26,6 +26,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "edit-app-settings": (appSettings: AppSettings) => void,
     "load-library": (libData: string, options?: LoadLibraryOptions) => void,
     "load-initial-libraries": (libPaths: string[]) => void,
+    "create-new-drawing": () => void,
     "load-drawing": (drawingData: string, options?: LoadDrawingOptions) => void,
     "save-drawing": () => void,
     "export-drawing-to-SVG": () => void,

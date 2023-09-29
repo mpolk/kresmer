@@ -22,6 +22,7 @@ import Kresmer, {
     TransformMode, ConnectionPointProxy,
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
+import MessageBox from './message-box.vue';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
 import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
@@ -30,6 +31,7 @@ import AboutDialog from './AboutDialog.vue';
 import { AppInitStage } from './ElectronAPI.d';
 import { AppSettings } from '../main/main';
 import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
+import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -86,6 +88,7 @@ function calcKresmerSize()
 
 window.addEventListener("resize", setKresmerSize);
 
+const vueMessageBox = createApp(MessageBox).mount("#dlgMessageBox") as InstanceType<typeof MessageBox>;
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
     InstanceType<typeof DrawingPropsSidebar>;
 const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsSidebar") as 
@@ -288,6 +291,25 @@ appCommandExecutor.on("load-initial-libraries", async(libPaths: string[]) =>
     window.electronAPI.signalReadiness(AppInitStage.LIBS_LOADED);
 });//loadLibrary
 
+
+appCommandExecutor.on("create-new-drawing", async() => {
+    if (kresmer.isDirty) {
+        const reply = await vueMessageBox.ask("The drawing is modified. Save it before replacing with a new one?", 
+                                             {buttons: MessageBoxButtons.YES_NO_CANCEL});
+        switch (reply) {
+            case MessageBoxResult.YES: {
+                const dwgData = kresmer.saveDrawing();
+                if (!await window.electronAPI.saveDrawing(dwgData))
+                    return;
+                break;
+            }
+            case MessageBoxResult.CANCEL:
+                return;
+        }//switch
+    }//if
+
+    kresmer.eraseContent();
+});//create-new-drawing
 
 appCommandExecutor.on("load-drawing", async (drawingData: string, options?: LoadDrawingOptions) =>
 {

@@ -7,7 +7,7 @@
  ***************************************************************************/
 import { BrowserWindow, Menu, MenuItemConstructorOptions } from "electron";
 import { Position } from "kresmer";
-import { sendAppCommand, localSettings, showAboutDialog } from "./main";
+import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing } from "./main";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing } from "./file-ops";
 import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
 
@@ -62,6 +62,7 @@ export default class Menus {
         {
             label: 'File',
             submenu: [
+                { label: "New drawing", click: () => createNewDrawing()},
                 { label: "Open drawing...", accelerator: "Control+O", click: () => openDrawing() },
                 { label: "Load library...", accelerator: "Control+L", click: () => loadLibrary() },
                 { type: 'separator' },

@@ -14,7 +14,7 @@ import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, A
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
-import { loadLibraryFile } from './file-ops';
+import { loadLibraryFile, saveDrawing } from './file-ops';
 import { openUrlWithSystemBrowser, requestConnectToServer } from './misc-ops';
 
 export let defaultDrawingFileName: string;
@@ -186,6 +186,10 @@ export function initIpcMainHooks()
 
     IpcMainHooks.onInvokation("load-library-file", (libName: string, fileName?: string) => {
         return loadLibraryFile(libName, fileName);
+    });
+
+    IpcMainHooks.onInvokation("save-drawing", (dwgData: string) => {
+        return saveDrawing(dwgData);
     });
 }//initIpcMainHooks
 

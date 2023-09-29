@@ -62,6 +62,10 @@ exposeToRenderer({
         sendToMain("complete-drawing-saving", dwgData);
     },
 
+    saveDrawing: (dwgData: string) => {
+        return invokeFromMain("save-drawing", dwgData);
+    },
+
     completeDrawingExportToSVG: (svgData: string) => {
         sendToMain("complete-drawing-export-to-SVG", svgData);
     },

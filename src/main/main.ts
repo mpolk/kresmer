@@ -12,7 +12,6 @@ import { app, BrowserWindow } from 'electron';
 import Settings from './Settings';
 import Menus from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
-import console from 'console';
 import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine } from './init-funcs';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
@@ -114,9 +113,13 @@ export function sendAppCommand<Command extends AppCommand>(command: Command, ...
     mainWindow.webContents.send("command", command, ...args);
 }//sendAppCommand
 
+export function createNewDrawing()
+{
+    sendAppCommand("create-new-drawing");
+}//createNewDrawing
 
 export function showAboutDialog()
 {
-    console.debug("App version: ",  app.getVersion());
+    // console.debug("App version: ",  app.getVersion());
     sendAppCommand("show-about-dialog", app.getVersion());
 }//showAboutDialog
