@@ -1,0 +1,14 @@
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ * A catalog of Kresmer XSD schemas for using with XML-support plugins and tools
+<*************************************************************************** -->
+
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+
+    <uri name="xsd/kresmer-library.xsd" uri="./kresmer-library.xsd" />
+    <uri name="xsd/kresmer-drawing.xsd" uri="./kresmer-drawing.xsd" />
+  
+</catalog>

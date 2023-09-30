@@ -1,5 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *              Schema  for the Kresmer drawings validation
+ *************************************************************************** -->
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:element name="kresmer-drawing">
         <xs:complexType>
             <xs:sequence>

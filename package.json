@@ -26,8 +26,7 @@
     "app:dev0": "npm run build-component && npm run ts && concurrently vite \"electron . ${npm_package_config_args}\" \"npm run watch\"",
     "app:dev": "npm run build-component && npm run ts && concurrently \"npm run -w kresmer build-watch\" vite \"electron . ${npm_package_config_args}\" \"npm run watch\"",
     "app:prebuild": "run-s vite:build ts",
-    "app:build": "run-s build-component vite:build ts && electron-builder -l deb AppImage",
-    "app:build-win": "run-s build-component vite:build ts && electron-builder -w",
+    "app:build": "run-s build-component vite:build ts && electron-builder -l deb AppImage -w",
     "app:preview": "run-s build-component vite:build ts && electron . ${npm_package_config_args}"
   },
   "build": {
@@ -42,10 +41,10 @@
     "files": [
       "dist"
     ],
-    "extraFiles": {
-      "from": "lib",
-      "to": "lib"
-    },
+    "extraFiles": [
+      {"from": "lib", "to": "lib"},
+      {"from": "xsd", "to": "xsd"}
+    ],
     "mac": {
       "target": [
         "dmg"

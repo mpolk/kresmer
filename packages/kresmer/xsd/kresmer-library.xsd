@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *            Schema  for the Kresmer libraries validation
+ *************************************************************************** -->
 <xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
            xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre">
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
