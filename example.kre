@@ -312,7 +312,7 @@
                   }
                 }</prop>
             <prop name="width">280</prop>
-            <prop name="comment">Мертвый!</prop>
+            <prop name="comment">Dead!</prop>
         </props>
     </component>
 
@@ -330,21 +330,20 @@
                   "3": "Telecom-1",
                   "4": "Telecom-2",
                   "5": "Broadway 16",
-                  "6": "Ростнет",
-                  "7": "Рум 13",
-                  "8": "Рум 13",
-                  "9": "Крам 7",
-                  "10": "Дам. MUX1 (верх)",
-                  "11": "Кант 1",
-                  "12": "Дам. MUX2 (нижн)",
-                  "13": "Двор 40",
-                  "14": "Парк 59",
-                  "15": "Хаб 32",
-                  "16": "Бык 25",
-                  "17": "Двор 34",
-                  "18": "Парк 51",
-                  "19": "Соц 51",
-                  "20": "Двор 4 (-)",
+                  "6": "Cogent",
+                  "7": "5thAve 13",
+                  "9": "Cram-str 7",
+                  "10": "MUX1 (u)",
+                  "11": "Cant-str 1",
+                  "12": "MUX2 (l)",
+                  "13": "Pal-str 4",
+                  "14": "Park-str 95",
+                  "15": "Khab-str 33",
+                  "16": "Bull-str 25",
+                  "17": "Pal-str 34",
+                  "18": "Park-str 51",
+                  "19": "Soc-str 51",
+                  "20": "Pal-str 4 (-)",
                   "21": "Элитлайн-1",
                   "22": "Хмель 15",
                   "23": "Шкад 68-1",
@@ -513,7 +512,7 @@
         <origin x="1139" y="910"/>
         <props>
             <prop name="comment"></prop>
-            <prop name="ip-address">192.168.111.254</prop>
+            <prop name="ip-address">192.168.1.254</prop>
             <prop name="width">280</prop>
             <prop name="interfaces">{
                   "eth0": {
@@ -533,7 +532,7 @@
         <origin x="1139" y="1037"/>
         <props>
             <prop name="comment"></prop>
-            <prop name="ip-address">192.168.111.223</prop>
+            <prop name="ip-address">192.168.1.223</prop>
             <prop name="width">280</prop>
             <prop name="interfaces">{
                   "eth0": {
