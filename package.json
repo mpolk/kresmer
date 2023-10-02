@@ -35,7 +35,7 @@
     "artifactName": "${productName}_${version}.${ext}",
     "asar": true,
     "directories": {
-      "buildResources": "assets",
+      "buildResources": "src/assets",
       "output": "release/${version}"
     },
     "files": [
@@ -51,7 +51,7 @@
       ]
     },
     "win": {
-      "icon": "./dist/logo.ico",
+      "icon": "logo.ico",
       "target": [
         {
           "target": "nsis",
@@ -68,8 +68,8 @@
       "deleteAppDataOnUninstall": false
     },
     "linux": {
-      "icon": "./dist/logo.png",
-      "category": "Network, Design"
+      "icon": "logo.icns",
+      "category": "Graphics; Engineering"
     }
   },
   "dependencies": {
