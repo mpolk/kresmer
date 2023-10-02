@@ -38,6 +38,7 @@ export const localSettings = new Settings("local-settings.json", {
 });
 
 export type AppSettings = {
+    server: {url: string, password: string, autoConnect: boolean},
     libDirs: string[],
     snapToGrid: boolean,
     snappingGranularity: number,

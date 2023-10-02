@@ -174,6 +174,14 @@
                 </div>
                 <div class="row">
                     <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label" for="cbAutoconnectToServer">Automatically connect to the server</label>
+                            <input type="checkbox" id="cbAutoconnectToServer" class="form-check-input" v-model="appSettings!.server.autoConnect" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
                         <div class="form-check d-inline-block">
                             <label class="form-check-label" for="cbSnapToGrid">Snap to grid,</label>
                             <input type="checkbox" id="cbSnapToGrid" class="form-check-input" v-model="appSettings!.snapToGrid" />
