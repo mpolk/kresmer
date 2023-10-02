@@ -1,5 +1,5 @@
 {
-  "name": "kresmer-electron",
+  "name": "e-kresmer",
   "private": true,
   "version": "0.3.2",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
@@ -31,8 +31,8 @@
   },
   "build": {
     "appId": "kresmer",
-    "productName": "kresmer",
-    "artifactName": "${productName}_${version}.${ext}",
+    "productName": "Kresmer",
+    "artifactName": "kresmer_${version}.${ext}",
     "asar": true,
     "directories": {
       "buildResources": "src/assets",
