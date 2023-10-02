@@ -1,7 +1,7 @@
 {
   "name": "e-kresmer",
   "private": true,
-  "version": "0.3.2",
+  "version": "0.4.0",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "main": "dist/main/main.js",
@@ -76,7 +76,10 @@
     "linux": {
       "icon": "logo.icns",
       "category": "Graphics; Engineering",
-      "target": ["deb", "AppImage"]
+      "target": [
+        "deb",
+        "AppImage"
+      ]
     }
   },
   "dependencies": {
