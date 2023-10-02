@@ -1,7 +1,7 @@
 {
   "name": "kresmer-electron",
   "private": true,
-  "version": "0.3.1",
+  "version": "0.3.2",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "main": "dist/main/main.js",
@@ -42,8 +42,14 @@
       "dist"
     ],
     "extraFiles": [
-      {"from": "lib", "to": "lib"},
-      {"from": "xsd", "to": "xsd"}
+      {
+        "from": "lib",
+        "to": "lib"
+      },
+      {
+        "from": "xsd",
+        "to": "xsd"
+      }
     ],
     "mac": {
       "target": [
