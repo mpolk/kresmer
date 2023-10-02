@@ -245,7 +245,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Shows whether the drawing has no content  */
     public get isEmpty()
     {
-        return !this.links.size && this.networkComponents.size;
+        return !this.links.size && !this.networkComponents.size;
     }//get isEmpty
 
     /** Forces update on the underlying Vue-component */
