@@ -26,6 +26,58 @@ export default class LinkVertex {
         this._key = link.nextVertexKey++;
     }//ctor
 
+
+    /** Postponned part of the initialization delayed until after all components are mounted.
+     *  It takes internally saved initParams and converts it to the "real" anchor data.
+    */
+    init(): LinkVertex
+    {
+        if (this.initParams?.pos) {
+            this.pinUp(this.initParams.pos);
+        } else if (this.initParams?.cpData) {
+            const cpHostElement = this.link.kresmer.getElementByName(this.initParams.cpData.cpHostElement);
+            if (!cpHostElement) {
+                this.link.kresmer.raiseError(new KresmerException(
+                    `Attempt to connect to the non-existing component "${this.initParams.cpData.cpHostElement}"`,
+                    {source: `Link "${this.link.name}"`}));
+                return this;
+            }//if
+            const connectionPoint = cpHostElement.getConnectionPoint(this.initParams.cpData.connectionPoint);
+            if (!connectionPoint) {
+                this.link.kresmer.raiseError(new KresmerException(
+                    `Attempt to connect to non-existing connection point \
+                    "${this.initParams.cpData.cpHostElement}:${this.initParams.cpData.connectionPoint}"`,
+                    {source: `Link "${this.link.name}"`}))
+                return this;
+            }//if
+            this.connect(connectionPoint);
+        } else if (this.initParams?.bundleData) {
+            const bundle = this.link.kresmer.getLinkByName(this.initParams.bundleData.bundleName);
+            if (!bundle) {
+                this.link.kresmer.raiseError(new UndefinedBundleException({
+                    message:`Attempt to connect to the non-existing bundle "${this.initParams.bundleData.bundleName}"`,
+                    source: `Link "${this.link.name}"`}));
+                return this;
+            }//if
+            const afterVertex = bundle.vertices[this.initParams.bundleData.baseVertex];
+            if (!afterVertex) {
+                this.link.kresmer.raiseError(new UndefinedVertexException(
+                    {message: `Attempt to connect to non-existing connection point \
+                    "${this.initParams.bundleData.bundleName}:${this.initParams.bundleData.baseVertex}"`,
+                    source: `Link "${this.link.name}"`}))
+                return this;
+            }//if
+            this.attachToBundle({baseVertex: afterVertex, distance: this.initParams.bundleData.distance});
+        } else if (this.initParams?.conn) {
+            this.connect(this.initParams.conn);
+        // } else {
+        //     throw new KresmerException(`Invalid connection point initialization params: ${this.initParams}`);
+        }//if
+        this.initParams = undefined;
+        return this;
+    }//init
+
+    
     private _vertexNumber: number;
     get vertexNumber() {return this._vertexNumber}
     set vertexNumber(n: number)
@@ -247,57 +299,6 @@ export default class LinkVertex {
             return `<vertex/>`;
         }//if
     }//toXML
-
-
-    /** Postponned part of the initialization delayed until after all components are mounted.
-     *  It takes internally saved initParams and converts it to the "real" anchor data.
-    */
-    init(): LinkVertex
-    {
-        if (this.initParams?.pos) {
-            this.pinUp(this.initParams.pos);
-        } else if (this.initParams?.cpData) {
-            const cpHostElement = this.link.kresmer.getElementByName(this.initParams.cpData.cpHostElement);
-            if (!cpHostElement) {
-                this.link.kresmer.raiseError(new KresmerException(
-                    `Attempt to connect to the non-existing component "${this.initParams.cpData.cpHostElement}"`,
-                    {source: `Link "${this.link.name}"`}));
-                return this;
-            }//if
-            const connectionPoint = cpHostElement.getConnectionPoint(this.initParams.cpData.connectionPoint);
-            if (!connectionPoint) {
-                this.link.kresmer.raiseError(new KresmerException(
-                    `Attempt to connect to non-existing connection point \
-                    "${this.initParams.cpData.cpHostElement}:${this.initParams.cpData.connectionPoint}"`,
-                    {source: `Link "${this.link.name}"`}))
-                return this;
-            }//if
-            this.connect(connectionPoint);
-        } else if (this.initParams?.bundleData) {
-            const bundle = this.link.kresmer.getLinkByName(this.initParams.bundleData.bundleName);
-            if (!bundle) {
-                this.link.kresmer.raiseError(new UndefinedBundleException({
-                    message:`Attempt to connect to the non-existing bundle "${this.initParams.bundleData.bundleName}"`,
-                    source: `Link "${this.link.name}"`}));
-                return this;
-            }//if
-            const afterVertex = bundle.vertices[this.initParams.bundleData.baseVertex];
-            if (!afterVertex) {
-                this.link.kresmer.raiseError(new UndefinedVertexException(
-                    {message: `Attempt to connect to non-existing connection point \
-                    "${this.initParams.bundleData.bundleName}:${this.initParams.bundleData.baseVertex}"`,
-                    source: `Link "${this.link.name}"`}))
-                return this;
-            }//if
-            this.attachToBundle({baseVertex: afterVertex, distance: this.initParams.bundleData.distance});
-        } else if (this.initParams?.conn) {
-            this.connect(this.initParams.conn);
-        // } else {
-        //     throw new KresmerException(`Invalid connection point initialization params: ${this.initParams}`);
-        }//if
-        this.initParams = undefined;
-        return this;
-    }//init
 
     private getMousePosition(event: MouseEvent) {
         return this.link.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
@@ -555,9 +556,13 @@ export default class LinkVertex {
             newAnchor = this.alignEndpoint(successor!, mode);
         } else if (!successor) {
             newAnchor = this.alignEndpoint(predecessor, mode);
-        } else if (this.isAttachedToBundle && predecessor.bundleAttachedTo !== this.bundleAttachedTo && successor.bundleAttachedTo === this.bundleAttachedTo) {
+        } else if (this.isAttachedToBundle && 
+                   predecessor.bundleAttachedTo !== this.bundleAttachedTo && 
+                   successor.bundleAttachedTo === this.bundleAttachedTo) {
             newAnchor = this.alignOnBundle(predecessor);
-        } else if (this.isAttachedToBundle && predecessor.bundleAttachedTo === this.bundleAttachedTo && successor.bundleAttachedTo !== this.bundleAttachedTo) {
+        } else if (this.isAttachedToBundle && 
+                   predecessor.bundleAttachedTo === this.bundleAttachedTo && 
+                   successor.bundleAttachedTo !== this.bundleAttachedTo) {
             newAnchor = this.alignOnBundle(successor);
         } else if (this.isAttachedToBundle) {
             newAnchor = null;
@@ -627,6 +632,9 @@ export default class LinkVertex {
 
     private alignEndpoint(neighbor: LinkVertex, mode: VertexAlignmentMode): LinkVertexAnchor|null
     {
+        if (this.isAttachedToBundle)
+            return null;
+
         if (this.link.isBundle) {
             const newAnchor = this.alignBundleEndpoint(mode);
             if (newAnchor)
