@@ -5,6 +5,9 @@
 		},
 		{
 			"path": "../kresmer-server.adonis"
+		},
+		{
+			"path": "../Сетевые будни/Схемы сети"
 		}
 	],
 	"settings": {

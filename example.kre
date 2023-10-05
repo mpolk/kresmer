@@ -325,35 +325,35 @@
             <prop name="port-label-position">before</prop>
             <prop name="port-type">FC</prop>
             <prop name="port-labels">{
-                  "1": "Uplink (Двор16)",
-                  "2": "Uplink (Двор16)",
+                  "1": "Prov1-trans",
+                  "2": "Prov1-trans",
                   "3": "Telecom-1",
                   "4": "Telecom-2",
-                  "5": "Broadway 16",
-                  "6": "Cogent",
-                  "7": "5thAve 13",
-                  "9": "Cram-str 7",
+                  "5": "16Broadway",
+                  "6": "UplProv2",
+                  "7": "13,5thAve",
+                  "9": "7,Cram-blvd",
                   "10": "MUX1 (u)",
-                  "11": "Cant-str 1",
+                  "11": "1,Cant-str",
                   "12": "MUX2 (l)",
-                  "13": "Pal-str 4",
-                  "14": "Park-str 95",
-                  "15": "Khab-str 33",
-                  "16": "Bull-str 25",
-                  "17": "Pal-str 34",
-                  "18": "Park-str 51",
-                  "19": "Soc-str 51",
-                  "20": "Pal-str 4 (-)",
-                  "21": "Элитлайн-1",
-                  "22": "Хмель 15",
-                  "23": "Шкад 68-1",
-                  "24": "Мира 6",
-                  "25": "Шкад 68-2",
-                  "26": "Мира 9",
-                  "27": "Марата 7",
-                  "28": "Лен 34",
-                  "29": "Возн 23 (-)",
-                  "30": "Двор 19",
+                  "13": "4,Pal-str",
+                  "14": "95,Park-str",
+                  "15": "33,Khab-str",
+                  "16": "25,Bull-str",
+                  "17": "34,Pal-str",
+                  "18": "51,Park-str",
+                  "19": "51,Soc-str",
+                  "20": "4,Pal-str(-)",
+                  "21": "UplProv4-1",
+                  "22": "15,Khmel-str",
+                  "23": "68,Acad-str-1",
+                  "24": "6,Mir-str",
+                  "25": "68,Acad-str-1",
+                  "26": "6,Mir-str",
+                  "27": "7,Mar-str",
+                  "28": "34,Fri-str",
+                  "29": "23,Voz-str (-)",
+                  "30": "19,Pal-str",
                   "31": "НИИПТМаш-1",
                   "32": "Квартсофт",
                   "33": "Приват (-)",
@@ -592,38 +592,38 @@
         <vertex bundle="core-border-bundle" after="2" distance="0"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-0" from="@dipt-uplink-fan:0:0" to="(1220, 70)">
+    <link class="AOC" name="uplink-prov1-0" from="@prov1-uplink-fan:0:0" to="(1220, 70)">
         <props>
-            <prop name="end-label">к свичу ДИПТ (порт 9)</prop>
+            <prop name="end-label">to Prov-1 switch (port 9)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
+        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
         <vertex x="1064" y="70"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-1" from="@dipt-uplink-fan:0:0" to="(1220, 84)">
+    <link class="AOC" name="uplink-prov1-1" from="@prov1-uplink-fan:0:0" to="(1220, 84)">
         <props>
-            <prop name="end-label">к свичу ДИПТ (порт 10)</prop>
+            <prop name="end-label">to Prov-1 switch (port 10)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
+        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
         <vertex x="1064" y="84"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-3" from="@dipt-uplink-fan:0:0" to="(1220, 112)">
+    <link class="AOC" name="uplink-prov1-3" from="@prov1-uplink-fan:0:0" to="(1220, 112)">
         <props>
             <prop name="end-marker">circle</prop>
         </props>
-        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
+        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
         <vertex x="1064" y="112"/>
     </link>
 
-    <link class="AOC" name="uplink-dipt-2" from="@dipt-uplink-fan:0:0" to="(1220, 98)">
+    <link class="AOC" name="uplink-prov1-2" from="@prov1-uplink-fan:0:0" to="(1220, 98)">
         <props>
-            <prop name="end-label">к свичу ДИПТ (порт 11)</prop>
+            <prop name="end-label">to Prov-1 switch (port 11)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex bundle="dipt-uplink-fan" after="4" distance="0"/>
+        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
         <vertex x="1064" y="98"/>
     </link>
 
@@ -725,7 +725,7 @@
 
     <link-bundle class="link-bundle" name="core-lower-bundle" from="(320, 400)" to="(384, 400)"/>
 
-    <link-bundle class="AOC-bundle" name="dipt-uplink-fan" from="border:et0/0/0@d" to="(1042, 90)">
+    <link-bundle class="AOC-bundle" name="prov1-uplink-fan" from="border:et0/0/0@d" to="(1042, 90)">
         <vertex x="346.5" y="166"/>
         <vertex x="1026" y="166"/>
         <vertex x="1026" y="90"/>
