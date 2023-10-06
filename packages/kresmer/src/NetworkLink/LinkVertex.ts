@@ -19,6 +19,12 @@ import type LinkBundle from "./LinkBundle";
 
 export default class LinkVertex {
 
+    /**
+     * Constructs a new vertex
+     * @param link The link this vertex belongs to
+     * @param vertexNumber An index of the vertex within the link
+     * @param initParams A set of the initialization params used in the delayed initialization
+     */
     constructor(public link: NetworkLink, vertexNumber: number, public initParams?: LinkVertexInitParams) {
         this.ownConnectionPoint = new ConnectionPointProxy(this.link, this.vertexNumber, 0);
         this._vertexNumber = vertexNumber;
@@ -27,8 +33,8 @@ export default class LinkVertex {
     }//ctor
 
 
-    /** Postponned part of the initialization delayed until after all components are mounted.
-     *  It takes internally saved initParams and converts it to the "real" anchor data.
+    /** Postponned part of the initialization delayed until all components are mounted.
+     *  It takes internally saved "initParams" and converts it to the "real" anchor data.
     */
     init(): LinkVertex
     {
@@ -77,16 +83,18 @@ export default class LinkVertex {
         return this;
     }//init
 
-    
-    private _vertexNumber: number;
+    /** An index of the vertex within the link */
     get vertexNumber() {return this._vertexNumber}
     set vertexNumber(n: number)
     {
         this._vertexNumber = n;
         this.ownConnectionPoint.name = String(n);
     }//set vertexNumber
+    private _vertexNumber: number;
 
-    private _anchor: LinkVertexAnchor = {pos: {x: 0, y: 0}};
+    /** An object representing the logical position of the vertex. 
+     * It may contain either a position as such (.pos), a reference to some connection point (.conn) or 
+     * to the point within some link bundle (.bundle). */
     get anchor() {return {...this._anchor};}
     set anchor(newPos: LinkVertexAnchor)
     {
@@ -94,6 +102,7 @@ export default class LinkVertex {
         this.setConn(newPos.conn);
         this.setBundle(newPos.bundle);
     }//set anchor
+    private _anchor: LinkVertexAnchor = {pos: {x: 0, y: 0}};
 
     pinUp(pos: Position)
     {
