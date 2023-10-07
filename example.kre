@@ -1066,7 +1066,7 @@
             <prop name="end-label"></prop>
             <prop name="mode">single-mode</prop>
             <prop name="n-fibers">48</prop>
-            <prop name="start-label">Шкадинова 63</prop>
+            <prop name="start-label">Outer world</prop>
             <prop name="start-marker">arrow</prop>
         </props>
         <vertex x="187.5" y="18"/>
@@ -1074,7 +1074,7 @@
 
     <link class="multifiber-cable" name="elitline-cable" from="ElitLine-patch-panel:u" to="(1218, 162)">
         <props>
-            <prop name="end-label">Элитлайн</prop>
+            <prop name="end-label">Provider 4</prop>
             <prop name="end-marker">arrow</prop>
             <prop name="mode">single-mode</prop>
             <prop name="n-fibers">4</prop>
