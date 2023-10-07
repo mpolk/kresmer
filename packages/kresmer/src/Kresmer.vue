@@ -258,7 +258,7 @@
 
 <style lang="scss">
     svg.kresmer {
-        background-color: whitesmoke;
+        background-color: white;
         box-shadow: 0.5rem 0.5rem 0.5rem lightgray;
         outline: thin darkgray dotted;
 

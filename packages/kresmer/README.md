@@ -1,7 +1,7 @@
 # "Kreslennya Merezh" - network diagram editor and viewer
 ## Core component
 
-![screenshot](./src/assets/screenshot.png)
+![screenshot](./src/assets/screenshot.jpg)
 
 ## Get Started
 
