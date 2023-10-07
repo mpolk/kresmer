@@ -1,6 +1,6 @@
 # "Kreslennya Merezh" - network diagram editor and viewer
 
-![screenshot](./src/assets/screenshot.png)
+![screenshot](./src/assets/screenshot.jpg)
 
 ## Get Started
 
