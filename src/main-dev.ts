@@ -10,13 +10,28 @@ import Kresmer, {NetworkComponent, NetworkComponentClass} from 'kresmer';
 
 const kresmer = new Kresmer('#kresmer');
 
+kresmer.on("library-import-requested", async(libName: string) => {
+    const lib = (await fetch(`lib/${libName}.krel`)).text();
+    return lib;
+});
+
 async function init() {
-    for (const libPath of ["stdlib.krel", "lib/kresmer-art.krel", "lib/extreme.krel", "lib/cisco.krel", "lib/juniper.krel", "lib/servers.krel", "lib/patch-panels.krel"]) {
-        const lib = await (await fetch(libPath)).text();
-        kresmer.loadLibrary(lib!);
+    for (const libName of [
+            "D-Link", 
+            "Extreme", 
+            "Cisco", 
+            "Juniper", 
+            "servers", 
+            "multiplexers",
+            "media-converters",
+            "patch-panels",
+            "kresmer-art", 
+        ]) {
+        const lib = await (await fetch(`lib/${libName}.krel`)).text();
+        await kresmer.loadLibrary(lib!);
     }//for
     kresmer.connectToBackend("http://localhost:3333", "thegreatestsecret2");
-    const autoload = await (await fetch("network-core.kre")).text();
+    const autoload = await (await fetch("example.kre")).text();
     await kresmer.loadDrawing(autoload!);
 
     kresmer
