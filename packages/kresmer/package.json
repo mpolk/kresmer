@@ -4,14 +4,17 @@
   "version": "0.5.0",
   "author": "Dmitriy Stepanenko",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the core component",
-  "module": "dist/Kresmer.es.js",
-  "main": "dist/Kresmer.umd.js",
+  "module": "dist/kresmer.es.js",
+  "main": "dist/kresmer.umd.js",
   "types": "dist/Kresmer.d.ts",
-  "style": "dist/styles.css",
+  "style": "dist/style.css",
   "exports": {
     ".": {
       "import": "./dist/kresmer.es.js",
       "require": "./dist/kresmer.umd.js"
+    },
+    "./style": {
+      "import": "./dist/style.css"
     }
   },
   "config": {
@@ -37,6 +40,7 @@
     ]
   },
   "dependencies": {
+    "core-js": "^3.33.2",
     "postcss": "^8.4.21",
     "uuid": "^9.0.0",
     "vue": "^3.2.37"
