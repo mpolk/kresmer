@@ -77,8 +77,7 @@ function setKresmerSize()
 
 function calcKresmerSize()
 {
-    const body = document.querySelector("body") as HTMLElement;
-    const mountingBox = body.getBoundingClientRect();
+    const mountingBox = document.body.getBoundingClientRect();
     mountingBox.height -= vueStatusBar.getHeight();
     return {
         mountingWidth: mountingBox.width,
