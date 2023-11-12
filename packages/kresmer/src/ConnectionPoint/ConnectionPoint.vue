@@ -75,7 +75,10 @@
 </script>
 
 <template>
-    <circle v-if="proxy.isActive" :cx="x" :cy="y" :r="d/2" class="connection-point-marker" ref="cpMarker"
+    <circle v-if="proxy.isActive" :cx="x" :cy="y" :r="d/2" 
+        class="connection-point-marker" 
+        :class="{'visible': kresmer.isEditable}" 
+        ref="cpMarker"
         :data-connection-point="dataAttr"
         @contextmenu.stop="onRightClick()"
         ><title v-if="hostIsLink">{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title></circle>
@@ -87,7 +90,7 @@
         fill-opacity: 0;
         stroke-opacity: 0;
 
-        &:hover {
+        &.visible:hover {
             fill-opacity: 0.5;
             stroke-opacity: 1;
         }
