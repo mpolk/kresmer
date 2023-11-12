@@ -60,7 +60,8 @@ class _NetworkComponentController {
         if (!this.component.isSelected) {
             if (deselectTheRest)
                 this.kresmer.deselectAllElements(this);
-            this.component.isSelected = true;
+            if (this.kresmer.isEditable)
+                this.component.isSelected = true;
         } else if (!deselectTheRest) {
             this.component.isSelected = false;
         }//if
