@@ -50,7 +50,7 @@
 
     const linkStyle = computed(() => {
         return {
-            "pointer-events": props.model.kresmer._allLinkFreezed ? "none" : "auto",
+            "pointer-events": props.model.kresmer._allLinksFreezed ? "none" : "auto",
         } as CSSProperties
     })//linkStyle
 

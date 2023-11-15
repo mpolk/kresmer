@@ -818,7 +818,7 @@ ${svg.outerHTML}
     }//_abortLinkCreation
 
     /** Inactivates temporarily normal link behaviour and reactivity (for internal use) */
-    public _allLinkFreezed = false;
+    public _allLinksFreezed = false;
 
 
     /** 
