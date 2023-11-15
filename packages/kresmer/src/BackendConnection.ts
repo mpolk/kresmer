@@ -18,15 +18,17 @@ export type BackendConnectionTestResult = {
 
 export default class BackendConnection {
 
-    constructor (private serverURL: string, private password: string) {}
+    constructor (private serverURL: string, private password?: string) {}
 
-    private static makeHeaders(password: string)
+    private static makeHeaders(password: string|undefined)
     {
-        const id = window.btoa(unescape(encodeURIComponent(`Kresmer-client:${password}`)));
-        return new Headers({
-            "Authorization": `Basic ${id}`,
-            "Content-Type": "application/json",
-        })//Headers
+        const headers: Record<string, string> = {"Content-Type": "application/json"};
+
+        if (password) {
+            const id = window.btoa(unescape(encodeURIComponent(`Kresmer-client:${password}`)));
+            headers.Authorization = `Basic ${id}`;
+        }//if
+        return headers;
     }//makeHeaders
 
     private static makeURI(...parts: (string|number)[])
