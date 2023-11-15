@@ -36,15 +36,18 @@
                           v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
                 </svg>
             </template>
-            <template v-for="i in nPorts/nPortRows">
-                <component v-for="j in nPortRows" v-bind:is="portClass" 
-                    v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" 
-                    v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" 
-                    v-bind:d="portSize*height"
-                    v-bind:name="firstPort - 1 + (i-1)*nPortRows + j"
-                    v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined"
-                    v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'"
-                    />
+            <template v-for="k in nPorts" v-bind:key="k">
+                <keep-alive>
+                    <component
+                        v-bind:is="portClass" 
+                        v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (Math.floor((k-1)/nPortRows)+(portLayout==='zigzag' ? 0.5 : 0)*(1-((k-1)%nPortRows+1)%2)) : (k-1)%nPortRows))" 
+                        v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? ((k-1)%nPortRows) : (Math.floor((k-1)/nPortRows)+(portLayout==='zigzag' ? 0.5 : 0)*(1-((k-1)%nPortRows+1)%2))))" 
+                        v-bind:d="portSize*height"
+                        v-bind:name="k+firstPort-1"
+                        v-bind:fiber-info="fibersInfo ? fibersInfo[k+firstPort-1] : undefined"
+                        v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'"
+                        />
+                </keep-alive>
             </template>
             <connection-point
                 v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
