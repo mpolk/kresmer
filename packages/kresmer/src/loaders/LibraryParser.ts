@@ -305,7 +305,7 @@ export default class LibraryParser {
 
                     switch (required) {
                         case "true": case "false":
-                            prop.required = (required === "true");
+                            prop.required = (required === "true")&& (_default === null);
                             break;
                         case null: case undefined:
                             break;
