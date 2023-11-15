@@ -88,12 +88,14 @@
             <computed-prop name="firstLabelX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth :
                 props.portLabelPosition==="after" ? computedProps.height :
-                    (computedProps.padding + (computedProps.portLayout==="zigzag" ? 0.25 : -0.125)) * computedProps.portSize * computedProps.height
+                    (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                      * computedProps.portSize * computedProps.height
             </computed-prop>
             <computed-prop name="firstLabelY">
                 props.portLabelPosition==="below" ? computedProps.height :
                 props.portLabelPosition==="above" ? -computedProps.labelWidth :
-                    (computedProps.padding + (computedProps.portLayout==="zigzag" ? 0.25 : -0.125)) * computedProps.portSize * computedProps.height
+                    (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                      * computedProps.portSize * computedProps.height
             </computed-prop>
         </computed-props>
         <style>
