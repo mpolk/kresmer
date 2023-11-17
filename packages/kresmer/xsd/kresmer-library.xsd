@@ -79,7 +79,7 @@
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
@@ -90,7 +90,7 @@
                         <xs:attributeGroup ref="circle-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
@@ -101,7 +101,7 @@
                         <xs:attributeGroup ref="ellipse-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
@@ -111,7 +111,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="line-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
@@ -121,7 +121,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="point-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
@@ -130,7 +130,7 @@
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="d"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
@@ -141,7 +141,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="point-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
@@ -158,7 +158,7 @@
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="text-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -167,7 +167,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="text-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -177,7 +177,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="text-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attributeGroup ref="href-attrs"/>
                     </xs:complexType>
                 </xs:element>
@@ -188,7 +188,7 @@
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                         <xs:attribute name="href"/>
                     </xs:complexType>
@@ -207,7 +207,7 @@
                         </xs:attribute>
                         <xs:attribute ref="v-bind:dir" />
                         <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
                     </xs:complexType>
                 </xs:element>
@@ -221,7 +221,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -237,7 +237,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -247,7 +247,7 @@
                             <xs:group ref="svg-elements"/>
                             <xs:element ref="slot"/>
                         </xs:choice>
-                        <xs:attributeGroup ref="vue-directives"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -317,7 +317,7 @@
     <xs:complexType name="inner-template">
         <xs:complexContent>
             <xs:extension base="outermost-template">
-                <xs:attributeGroup ref="vue-directives"/>
+                <xs:attributeGroup ref="vue-attrs"/>
                 <xs:anyAttribute namespace="v-slot" processContents="lax"/>
             </xs:extension>
         </xs:complexContent>
@@ -512,6 +512,11 @@
         <xs:attribute name="v-if"/>
         <xs:attribute name="v-else"/>
         <xs:attribute name="v-else-if"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="vue-attrs">
+        <xs:attribute ref="v-bind:key"/>
+        <xs:attributeGroup ref="vue-directives"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="href-attrs">

@@ -7,7 +7,7 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide, watch, nextTick, KeepAlive } from 'vue';
+    import { PropType, ref, computed, provide, watch, nextTick } from 'vue';
     import Kresmer from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
@@ -18,7 +18,7 @@
 
     export default {
         name: "Kresmer",
-        components: { KeepAlive, NetworkComponentHolder, NetworkLinkFilters, TransformBoxFilters, ConnectionPointFilters, 
+        components: { NetworkComponentHolder, NetworkLinkFilters, TransformBoxFilters, ConnectionPointFilters, 
                       NetworkLinkVue, NetworkLinkBlankVue },
     }
 </script>
