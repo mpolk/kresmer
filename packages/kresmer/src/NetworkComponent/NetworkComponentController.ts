@@ -76,7 +76,6 @@ class _NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
         this.bringToTop();
-        this.kresmer._allLinksFreezed = true;
         if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
             const op = new SelectionMoveOp(this.kresmer);
             this.kresmer.undoStack.startOperation(op);
@@ -102,6 +101,7 @@ class _NetworkComponentController {
                 return false;
             this.isGoingToBeDragged = false;
             this.isDragged = true;
+            this.kresmer._allLinksFreezed = true;
         } else if (!this.isDragged) {
             return false;
         }//if
