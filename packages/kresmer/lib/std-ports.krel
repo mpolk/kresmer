@@ -303,7 +303,7 @@
             .port-icon.body {fill: transparent; stroke: transparent;}
             .port-name {fill: white; font-weight: bold}
             .nut {fill: silver; }
-            .cap {fill: #d00101; stroke: #bd0000; stroke-width: 2px}
+            .cap {fill: #3d3d3d; stroke: #d00101; stroke-width: 2px}
             .fiber-info {fill: #3d3d3d;}
         </style>
     </component-class>
@@ -315,7 +315,7 @@
         </template>
         <props extend="FC-Port"/>
         <style extends="FC-Port">
-            .cap {fill: #18b933; stroke: #199a2e;}
+            .cap {stroke: #18b933;}
         </style>
     </component-class>
 
