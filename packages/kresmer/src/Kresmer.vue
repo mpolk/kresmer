@@ -41,7 +41,7 @@
 
     function zoomed(size: string|number)
     {
-        const matches = size.toString().match(/^([0-9.]+)(.+)$/);
+        const matches = size.toString().match(/^([0-9]+(?:\.[0-9]*)?)(.*)$/);
         if (!matches)
             return undefined;
 
@@ -53,23 +53,32 @@
     {
         if (props.controller.zoomFactor >= 1)
             return 0;
-        const matches = size.toString().match(/^([0-9.]+)(.+)$/);
+        const matches = size.toString().match(/^([0-9]+(?:\.[0-9]*)?)(.*)$/);
         if (!matches)
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * 0.5 * (1 - props.controller.zoomFactor)}${matches[2]}`;
+        const units = matches[2] || "px";
+        return `${Math.round(n * 0.5 * (1 - props.controller.zoomFactor))}${units}`;
     }//zoomedOffset
 
-    const x = computed(() => zoomedOffset(props.controller.mountingWidth));
-    const y = computed(() => zoomedOffset(props.controller.mountingHeight));
-    const width = computed(() => zoomed(props.controller.mountingWidth));
-    const height = computed(() => zoomed(props.controller.mountingHeight));
+    const margins = computed(() => {
+        return {
+            marginLeft: zoomedOffset(props.controller.mountingWidth), 
+            marginTop: zoomedOffset(props.controller.mountingHeight)
+        }; 
+    });
+    const mountingDims = computed(() => {
+        return {
+            width: zoomed(props.controller.mountingWidth),
+            height: zoomed(props.controller.mountingHeight)
+        }
+    });
     const viewBox = computed(() => `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`);
 
     const drawingOrigin = {x: 0, y: 0};
     provide(Kresmer.ikDrawingOrigin, drawingOrigin);
-    watch([x, y], () => {
+    watch(margins, () => {
         nextTick(() => {
             const styles = getComputedStyle(rootSVG.value!);
             // console.debug(styles);
@@ -152,8 +161,7 @@
 <template>
     <svg xmlns="http://www.w3.org/2000/svg" 
         class="kresmer" ref="rootSVG" 
-        :style="{marginLeft: x, marginTop: y}" 
-        :width="width" :height="height" :viewBox="viewBox"
+        :style="margins" v-bind="mountingDims" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
         @contextmenu.self="onCanvasRightClick($event)"
         @mousemove.prevent.self="onMouseMove"
