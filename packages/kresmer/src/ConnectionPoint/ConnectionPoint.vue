@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject, onMounted, ref, watch, nextTick, computed, PropType } from 'vue';
+    import { inject, onMounted, ref, watch, nextTick, computed, PropType, onBeforeUnmount } from 'vue';
     import Kresmer from '../Kresmer';
     import NetworkElement from '../NetworkElement';
     import NetworkLink from '../NetworkLink/NetworkLink';
@@ -42,7 +42,6 @@
         return `${hostName}:${props.name}`;
     });
 
-    onMounted(updatePos);
     function updatePos()
     {
         if (!cpMarker.value)
@@ -63,6 +62,15 @@
         }//if
         proxy._setPos(coords, proxy.dir0 + rot);
     }//updatePos
+
+    onMounted(() => {
+        proxy.restoreConnectedVertices();
+        updatePos();
+    });
+
+    onBeforeUnmount(() => {
+        proxy.saveConnectedVertices();
+    });
 
     function onRightClick()
     {

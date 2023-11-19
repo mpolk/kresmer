@@ -149,8 +149,10 @@ export default class LinkVertex {
             }//if
             if (this._anchor.conn) {
                 this._anchor.conn.hostElement.registerConnectedLink(this.link);
+                this._anchor.conn.connectedVertices.add(this);
             } else if (oldConn) {
                 oldConn.hostElement.unregisterConnectedLink(this.link);
+                oldConn.connectedVertices.delete(this);
             }//if
             this.ownConnectionPoint.isActive = !this._anchor.conn && !this._anchor.bundle;
         }//if
@@ -172,6 +174,30 @@ export default class LinkVertex {
             nextTick(() => this.revision++);
         }//if
     }//setBundle
+
+
+    /** 
+     * Entering the "suspended" mode when the connection point we are connected to is temporarily deleted
+     * because of some drastic change in its host component.
+    */
+    suspend()
+    {
+        if (!this.isConnected)
+            throw new KresmerException("Attempt to suspend an unconnected vertex", {source: this.toString()});
+        this.initParams = {
+            cpData: {
+                cpHostElement: this._anchor.conn!.hostElement.name, 
+                connectionPoint: this._anchor.conn!.name.toString()
+            }};
+        this._anchor.conn = undefined;
+    }//suspend
+    /**
+     * Exits the "suspended" mode
+     */
+    restore()
+    {
+        this.init();
+    }//restore
 
 
     /** Calculates "physical" coordinates of the vertex, based on its connection to the connection point, 

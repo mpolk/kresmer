@@ -12,6 +12,8 @@ import { reactive } from "vue";
 import NetworkElement from "../NetworkElement";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import { Position } from "../Transform/Transform";
+import LinkVertex from "../NetworkLink/LinkVertex";
+import { NetworkComponent } from "../Kresmer";
 
 export default class ConnectionPointProxy {
     /**
@@ -68,6 +70,22 @@ export default class ConnectionPointProxy {
         this.posUpdateTrigger.value++;
     }//updatePos
 
+    /** A collection of link vertices currently connected to this connection point */
+    readonly connectedVertices = new Set<LinkVertex>();
+    /** Saves connected vertices, which are going to be temporarily disconnected (suspended), inside the host component */
+    saveConnectedVertices()
+    {
+        if (this.hostElement instanceof NetworkComponent) {
+            this.hostElement.saveDisconnectedVertices(...this.connectedVertices.values());
+        }//if
+    }//saveConnectedVertices
+    /** Restores vertices that was temporarily disconnected (suspended) */
+    restoreConnectedVertices()
+    {
+        if (this.hostElement instanceof NetworkComponent) {
+            this.hostElement.restoreDisconnectedVertices(this);
+        }//if
+    }//restoreConnectedVertices
 }//ConnectionPointProxy
 
 

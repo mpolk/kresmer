@@ -89,6 +89,37 @@ export default class NetworkComponent extends NetworkElement {
         this.connectionPoints.forEach(cp => cp.updatePos());
         nextTick(() => this.connectedLinks.forEach(link => link.updateConnectionPoints()));
     }//updateConnectionPoints
+
+    /** 
+     * A collection of link vertex that were connected to this component and are temporarily disconnected
+     * because of connection point deletion/recreation during the component props changing
+     */
+    private readonly disconnectedVertices = new Set<LinkVertex>();
+    /** 
+     * Saves temporarily disconnected vertex inside this component, so it would be able to reconnect when
+     * its connection point is re-created
+     */
+    saveDisconnectedVertices(...vertices: LinkVertex[])
+    {
+        for (const vertex of vertices) {
+            vertex.suspend();
+            this.disconnectedVertices.add(vertex);
+        }//for
+    }//saveDisconnectedVertices
+    /**
+     * Restore temporarily disconnected vertices that were connected to the previous incarnation 
+     * of the specified connection poiny
+     * @param connectionPoint The connection for which the vertices should be restored
+     */
+    restoreDisconnectedVertices(connectionPoint: ConnectionPointProxy)
+    {
+        for (const vertex of this.disconnectedVertices) {
+            if (vertex.initParams?.cpData?.connectionPoint === connectionPoint.name) {
+                vertex.restore();
+                this.disconnectedVertices.delete(vertex);
+            }//if
+        }//for
+    }//restoreDisconnectedVertices
 }//NetworkComponent
 
 
