@@ -114,7 +114,7 @@ export default class NetworkComponent extends NetworkElement {
     restoreDisconnectedVertices(connectionPoint: ConnectionPointProxy)
     {
         for (const vertex of this.disconnectedVertices) {
-            if (vertex.initParams?.cpData?.connectionPoint === connectionPoint.name) {
+            if (vertex.initParams?.cpData?.connectionPoint == connectionPoint.name) {
                 vertex.restore();
                 this.disconnectedVertices.delete(vertex);
             }//if
