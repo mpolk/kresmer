@@ -123,8 +123,8 @@ export default class Menus {
                 { label: 'Zoom Out', accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-") },
                 { label: 'Actual size', accelerator: "Control+1", click: () => sendAppCommand("scale-drawing", "1") },
                 { type: 'separator' },
-                { label: 'Rulers', type: "checkbox", checked: false, accelerator: "F3", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
-                { label: 'Grid', type: "checkbox", checked: false, accelerator: "F4", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
+                { label: 'Rulers', type: "checkbox", checked: false, accelerator: "F4", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
+                { label: 'Grid', type: "checkbox", checked: false, accelerator: "Shift+F4", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
                 { type: 'separator' },
                 { role: 'togglefullscreen' }
             ]
