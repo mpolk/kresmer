@@ -40,7 +40,6 @@
     ]
   },
   "dependencies": {
-    "core-js": "^3.33.2",
     "postcss": "^8.4.21",
     "uuid": "^9.0.0",
     "vue": "^3.2.37"
