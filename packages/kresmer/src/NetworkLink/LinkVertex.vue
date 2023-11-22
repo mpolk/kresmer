@@ -147,6 +147,8 @@ class=${JSON.stringify(clazz)}`;
     }//areAttachedNotSoNear
 
     const draggingCursor =  computed(() => {
+        if (!props.model.link.kresmer.isEditable)
+            return "cursor: default";
         switch (props.model.dragConstraint) {
             case "x": return "cursor: ew-resize";
             case "y": return "cursor: ns-resize";
@@ -213,7 +215,8 @@ class=${JSON.stringify(clazz)}`;
         @contextmenu="onRightClick($event)"
         @dblclick="onDoubleClick()"
         />
-    <ConnectionPoint v-if="!model.link.isBundle" :name="model.vertexNumber" :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
+    <ConnectionPoint v-if="!model.link.isBundle && model.link.kresmer.isEditable" :name="model.vertexNumber" 
+        :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick" class="vertex-connection-point"
         />
     <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">

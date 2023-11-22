@@ -9,6 +9,7 @@
 import Kresmer, {NetworkComponent, NetworkComponentClass} from 'kresmer';
 
 const kresmer = new Kresmer('#kresmer');
+kresmer.isEditable = false;
 
 kresmer.on("library-import-requested", async(libName: string) => {
     const lib = (await fetch(`lib/${libName}.krel`)).text();
