@@ -63,3 +63,68 @@ export function clone<T>(x: T): T
     } else
         return x;
 }//clone
+
+
+let mouseEventCaptureTarget: HTMLElement|undefined;
+let capturedMouseEvents: string[];
+
+export function captureMouseEvents(el: HTMLElement, ...events: string[])
+{
+    mouseEventCaptureTarget = el;
+    capturedMouseEvents = [];
+    if (!events.length)
+        events = ["move", "leave", "enter", "up"];
+    // document.body.style.pointerEvents = 'none';
+    for (const event of events) {
+        const fullEventName = `mouse${event}`;
+        capturedMouseEvents.push(fullEventName);
+        window.addEventListener(fullEventName, dispatchCapturedEvent, {capture: true});
+    }//for
+    window.addEventListener('mouseup', releaseMouseEventsCapture, {capture: true, once: true});
+}//captureMouseEvents
+
+export function releaseMouseEventsCapture()
+{
+    if (!mouseEventCaptureTarget)
+        return;
+    for (const event of capturedMouseEvents) {
+        window.removeEventListener(event, dispatchCapturedEvent, {capture: true});
+    }//for
+    mouseEventCaptureTarget = undefined;
+    capturedMouseEvents = [];
+    // document.body.style.pointerEvents = 'auto';
+}//releaseMouseEventsCapture
+
+function dispatchCapturedEvent(event: Event) 
+{
+    if (event.type === "mouseup")
+        releaseMouseEventsCapture();
+    if (!mouseEventCaptureTarget || event.target === mouseEventCaptureTarget)
+        return true;
+
+    const oldEvent = event as MouseEvent;
+    const newEvent = new MouseEvent(event.type, {
+        detail: oldEvent.detail,
+        view: oldEvent.view,
+        clientX: oldEvent.clientX,
+        clientY: oldEvent.clientY,
+        screenX: oldEvent.screenX,
+        screenY: oldEvent.screenY,
+        ctrlKey: oldEvent.ctrlKey,
+        shiftKey: oldEvent.shiftKey,
+        altKey: oldEvent.altKey,
+        metaKey: oldEvent.metaKey,
+        button: oldEvent.button,
+        buttons: oldEvent.buttons,
+        relatedTarget: oldEvent.relatedTarget,
+    });
+    // newEvent.stopImmediatePropagation();
+    // newEvent.stopPropagation();
+
+    oldEvent.preventDefault();
+    oldEvent.stopPropagation();
+    oldEvent.stopImmediatePropagation();
+
+    mouseEventCaptureTarget!.dispatchEvent(newEvent);
+    return false;
+}//dispatchCapturedEvent

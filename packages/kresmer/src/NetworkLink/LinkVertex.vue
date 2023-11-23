@@ -26,7 +26,10 @@
     })
 
     onBeforeMount(() => props.model._updateSegmentVector());
-    onMounted(() => props.model._updateSegmentVector());
+    onMounted(() => {
+        props.model._updateSegmentVector();
+        props.model._setMouseCaptureTarget(padding.value!);
+    });
     onUpdated(() => {
         if ((!props.model.isDragged || props.model.link.kresmer.animateLinkBundleDragging) && props.model.link.isBundle)
             props.model.updateSegmentVector();
@@ -223,34 +226,33 @@ class=${JSON.stringify(clazz)}`;
         {{ linkNumber.number }}
         <title>{{ linkNumber.debugInfo }}</title>
     </text>
-    <template v-if="model.link.isSelected">
-        <template v-if="model.isDragged">
-            <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />
-            <line x1="0" :y1="model.coords.y" :x2="model.link.kresmer.drawingRect.width" :y2="model.coords.y" class="crosshair" />
-        </template>
-        <circle v-if="model.isDragged || model.isGoingToBeDragged" ref="padding"
-            :cx="model.coords.x" :cy="model.coords.y" 
-            class="link vertex padding"
-            :style="draggingCursor" style="stroke: none;"
-            :is-editable="isEditable"
-            @mouseup.stop="onMouseUp($event)"
-            @mousemove.stop="onMouseMove($event)"
-            @mouseleave.stop="onMouseLeave($event)"
-            />
-        <circle ref="circle"
-            :cx="model.coords.x" :cy="model.coords.y" 
-            class="link vertex" :class="{connected: model.isConnected}"
-            :style="draggingCursor"
-            :is-editable="isEditable"
-            :data-link-bundle-vertex="dataLinkBundleVertex"
-            @mousedown.stop="onMouseDown($event)"
-            @mouseup.stop="onMouseUp($event)"
-            @mousemove.stop="onMouseMove($event)"
-            @mouseleave.stop="onMouseLeave($event)"
-            @contextmenu="onRightClick($event)"
-            @dblclick="onDoubleClick()"
-            />
+    <template v-if="model.link.isSelected && model.isDragged">
+        <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />
+        <line x1="0" :y1="model.coords.y" :x2="model.link.kresmer.drawingRect.width" :y2="model.coords.y" class="crosshair" />
     </template>
+    <circle v-show="model.link.isSelected && (model.isDragged || model.isGoingToBeDragged)" 
+        ref="padding"
+        :cx="model.coords.x" :cy="model.coords.y" 
+        class="link vertex padding"
+        :style="draggingCursor" style="stroke: none;"
+        :is-editable="isEditable"
+        @mouseup.stop="onMouseUp($event)"
+        @mousemove.stop="onMouseMove($event)"
+        @mouseleave.stop="onMouseLeave($event)"
+        />
+    <circle v-if="model.link.isSelected" ref="circle"
+        :cx="model.coords.x" :cy="model.coords.y" 
+        class="link vertex" :class="{connected: model.isConnected}"
+        :style="draggingCursor"
+        :is-editable="isEditable"
+        :data-link-bundle-vertex="dataLinkBundleVertex"
+        @mousedown.stop="onMouseDown($event)"
+        @mouseup.stop="onMouseUp($event)"
+        @mousemove.stop="onMouseMove($event)"
+        @mouseleave.stop="onMouseLeave($event)"
+        @contextmenu="onRightClick($event)"
+        @dblclick="onDoubleClick()"
+        />
     <Transition>
         <circle v-if="model.isBlinking" ref="blinker"
             :cx="model.coords.x" :cy="model.coords.y" 

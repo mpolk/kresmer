@@ -12,7 +12,7 @@ import KresmerException, { UndefinedBundleException, UndefinedVertexException, U
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
 import { EditorOperation } from "../UndoStack";
-import type { RequireAtLeastOne } from "../Utils";
+import { captureMouseEvents, releaseMouseEventsCapture, type RequireAtLeastOne } from "../Utils";
 import type LinkBundle from "./LinkBundle";
 
 /** Link Vertex (either connected or free) */
@@ -302,6 +302,12 @@ export default class LinkVertex {
     get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbour?.isAttachedToBundle ||
                                           this.nextNeighbour.bundleAttachedTo !== this.bundleDefinitelyAttachedTo));}
 
+    private mouseCaptureTarget?: HTMLElement;
+    _setMouseCaptureTarget(el: HTMLElement)
+    {
+        this.mouseCaptureTarget = el;
+    }//_setMouseCaptureTarget
+
     toString()
     {
         if (this._anchor.conn) {
@@ -354,6 +360,7 @@ export default class LinkVertex {
         this.link.selectLink();
         this.link.kresmer.emit("link-vertex-move-started", this);
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
+        captureMouseEvents(this.mouseCaptureTarget!);
     }//startDrag
 
 
@@ -433,6 +440,7 @@ export default class LinkVertex {
         }//if
 
         this.isDragged = false;
+        releaseMouseEventsCapture();
 
         if (this.dragConstraint !== "bundle") {
             const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
