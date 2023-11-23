@@ -65,16 +65,24 @@ export function clone<T>(x: T): T
 }//clone
 
 
+// Our self-made implementation of mouse capture
+
+/** An element that captures mouse events */
 let mouseEventCaptureTarget: HTMLElement|undefined;
+/** A list of the mouse events to be captured */
 let capturedMouseEvents: string[];
 
+/**
+ * Starts mouse event capturing
+ * @param el The element mouse events should be captured for
+ * @param events A list of the mouse events to be captured  (without the "mouse" prefix)
+ */
 export function captureMouseEvents(el: HTMLElement, ...events: string[])
 {
     mouseEventCaptureTarget = el;
     capturedMouseEvents = [];
     if (!events.length)
         events = ["move", "leave", "enter", "up"];
-    // document.body.style.pointerEvents = 'none';
     for (const event of events) {
         const fullEventName = `mouse${event}`;
         capturedMouseEvents.push(fullEventName);
@@ -83,6 +91,7 @@ export function captureMouseEvents(el: HTMLElement, ...events: string[])
     window.addEventListener('mouseup', releaseMouseEventsCapture, {capture: true, once: true});
 }//captureMouseEvents
 
+/** Releases mouse event capture */
 export function releaseMouseEventsCapture()
 {
     if (!mouseEventCaptureTarget)
@@ -92,9 +101,9 @@ export function releaseMouseEventsCapture()
     }//for
     mouseEventCaptureTarget = undefined;
     capturedMouseEvents = [];
-    // document.body.style.pointerEvents = 'auto';
 }//releaseMouseEventsCapture
 
+/** Redirects captured mouse event to the capture target */
 function dispatchCapturedEvent(event: Event) 
 {
     if (event.type === "mouseup")
@@ -118,8 +127,6 @@ function dispatchCapturedEvent(event: Event)
         buttons: oldEvent.buttons,
         relatedTarget: oldEvent.relatedTarget,
     });
-    // newEvent.stopImmediatePropagation();
-    // newEvent.stopPropagation();
 
     oldEvent.preventDefault();
     oldEvent.stopPropagation();
