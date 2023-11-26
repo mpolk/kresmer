@@ -75,7 +75,7 @@ export default class Menus {
                     click: () => requestConnectToServer(true)
                 },
                 {
-                    label: "Disconnect from the backend server", accelerator: "Control+B", id: "disconnectFromServer",
+                    label: "Disconnect from the backend server", accelerator: "Shift+Control+B", id: "disconnectFromServer",
                     click: () => requestDisconnectFromServer(), visible: false, enabled: false
                 },
                 { type: 'separator' },
