@@ -16,19 +16,21 @@ import { IpcMainHooks } from './IpcMainHooks';
 
 export function openDrawing()
 {
-    // console.debug("About to show 'Open drawing dialog...'")
-    const filePath = dialog.showOpenDialogSync(mainWindow, {
+    const options: Record<string, unknown> = {
         title: "Open drawing file",
         filters: [
             {name: "Kresmer drawing files (*.kre)", extensions: ["kre"]},
             {name: "All files (*.*)", extensions: ["*"]},
         ]
-    });
+    };
+    if (localSettings.get("lastOpenedDrawing")) {
+        options.defaultPath = path.dirname(localSettings.get("lastOpenedDrawing"));
+    }//if
+    const filePath = dialog.showOpenDialogSync(mainWindow, options);
 
     if (filePath) {
         const dwgData = fs.readFileSync(filePath[0], "utf-8");
-        const drawingFileName = path.basename(filePath[0]);
-        sendAppCommand("load-drawing", dwgData, {drawingFileName});
+        sendAppCommand("load-drawing", dwgData, {drawingFileName: filePath[0]});
         localSettings.set("lastOpenedDrawing", filePath[0]);
     }//if
 }//openDrawing
@@ -54,13 +56,17 @@ export function saveDrawing(dwgData?: string): boolean
 
 export function saveDrawingAs(dwgData?: string): boolean
 {
-    let filePath = dialog.showSaveDialogSync(mainWindow, {
+    const options: Record<string, unknown> = {
         title: "Save drawing",
         filters: [
             {name: "Kresmer drawing files (*.kre)", extensions: ["kre"]},
             {name: "All files (*.*)", extensions: ["*"]},
         ]
-    });
+    }//options
+    if (defaultDrawingFileName) {
+        options.defaultPath = defaultDrawingFileName;
+    }//if
+    let filePath = dialog.showSaveDialogSync(mainWindow, options);
 
     if (!filePath)
         return false;
