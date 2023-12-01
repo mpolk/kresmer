@@ -26,6 +26,14 @@ export default class LibraryLoader
      */
     public async loadLibrary(libData: string): Promise<number>
     {
+        return this._loadLibrary(
+            libData, (libName, fileName) => this.kresmer.emit("library-import-requested", libName, fileName));
+    }//loadLibrary
+
+
+    private async _loadLibrary(libData: string, 
+                               importHandler: (libName: string, fileName?: string) => Promise<string|undefined>): Promise<number>
+    {
         // console.debug("Loading library...");
         const parser = new LibraryParser(this.kresmer);
         let nErrors = 0;
@@ -55,7 +63,7 @@ export default class LibraryLoader
 
             } else if (element instanceof ImportStatement) {
                 if (!this.kresmer.isLibraryLoaded(element.libName)) {
-                    const importedLibData = await this.kresmer.emit("library-import-requested", element.libName, element.fileName);
+                    const importedLibData = await importHandler(element.libName, element.fileName);
                     if (!importedLibData)
                         this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
                     else {
@@ -75,7 +83,23 @@ export default class LibraryLoader
 
         console.debug(`Library "${libName}" - loaded (${nErrors} errors)`);
         return nErrors;
-    }//loadLibrary
+    }//_loadLibrary
+
+    /**
+     * Loads several libraries at once
+     * @param libs Mapping libName => libData
+     */
+    public async loadLibraries(libs: Record<string, string>)
+    {
+        for (const libName in libs) {
+            const libData = libs[libName];
+            await this._loadLibrary(libData, (libName: string) => {
+                const libData = libs[libName];
+                return libData ? Promise.resolve(libData) : 
+                    this.kresmer.emit("library-import-requested", libName );
+            });
+        }//for
+    }//loadLibraries
 
     /**
      * Adds global and (optionally) component class scopes to the CSS style definition

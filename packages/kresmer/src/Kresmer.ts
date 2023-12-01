@@ -397,6 +397,15 @@ export default class Kresmer extends KresmerEventHooks {
     }//loadLibrary
 
     /**
+     * Loads several libraries at once
+     * @param libs Mapping libName => libData
+     */
+    public loadLibraries(libs: Record<string, string>)
+    {
+        this.libraryLoader.loadLibraries(libs);
+    }//loadLibraries
+
+    /**
      * Checks if the specified is already loaded
      * @param libName The library name to check
      * @returns True of the library is already loaded or false otherwise

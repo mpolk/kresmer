@@ -8,7 +8,7 @@
  *                        The standard library
  * This library contains general graphics and network elements, such as ports,
  * links, device bodies etc. More specific network units (servers, 
- * vendor-specific equipment etc.) are incliude in other libraries.
+ * vendor-specific equipment etc.) are included in other libraries.
 <*************************************************************************** -->
 
 <!-- Define some little things to make the life less hard -->
