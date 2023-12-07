@@ -50,9 +50,16 @@
             <connection-point
                 v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
                 v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" />
+            <text v-if="caption" class="caption" v-bind:x="captionX" v-bind:y="captionY" 
+                  v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`"
+                  v-bind:font-size="captionFontSize"
+                  >
+                {{caption}}
+            </text>
         </template>
         <props>
             <prop name="comment" type="String" description="Device general info"/>
+            <prop name="caption" type="String" description="Device picture caption"/>
             <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open to" />
@@ -98,6 +105,22 @@
                     (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
                       * computedProps.portSize * computedProps.height
             </computed-prop>
+            <computed-prop name="captionX">
+                props.portLabelPosition==="before" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                props.portLabelPosition==="after" ? computedProps.height*1.1 + computedProps.labelWidth :
+                    computedProps.width / 2
+            </computed-prop>
+            <computed-prop name="captionY">
+                props.portLabelPosition==="below" ? computedProps.height + computedProps.labelWidth + computedProps.captionFontSize :
+                props.portLabelPosition==="above" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                    computedProps.width / 2
+            </computed-prop>
+            <computed-prop name="captionRotation">
+                props.portLabelPosition==="before" ? -90 :
+                props.portLabelPosition==="after" ? 90 :
+                    0
+            </computed-prop>
+            <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
         </computed-props>
         <style>
             .port-icon.body {fill: #212121;}
@@ -107,6 +130,7 @@
             .port-label.row1 .pad {filter: saturate(0.95) brightness(0.95)}
             .port-label .frame {stroke: lightgray; fill: none}
             .port-label text {fill: #333333; font-family: sans-serif;}
+            .caption {fill: #333333; font-family: sans-serif; text-anchor: middle;}
         </style>
     </component-class>
 
