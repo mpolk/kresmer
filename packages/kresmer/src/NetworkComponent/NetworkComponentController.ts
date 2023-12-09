@@ -156,6 +156,7 @@ class _NetworkComponentController {
             this.kresmer.undoStack.commitOperation();
             this.kresmer._allLinksFreezed = false;
             this.kresmer.emit("component-moved", this);
+            this.alignConnectedLinks();
             return true;
         }//if
 
@@ -238,6 +239,7 @@ class _NetworkComponentController {
         this.updateConnectionPoints();
         this.kresmer.undoStack.commitOperation();
         this.kresmer.emit("component-transformed", this);
+        this.alignConnectedLinks();
         return true;
     }//endTransform
 
@@ -298,6 +300,18 @@ class _NetworkComponentController {
 
         return xml.join("\n");
     }//toXML
+
+
+    private async alignConnectedLinks()
+    {
+        if (this.kresmer.autoAlignVertices) {
+            await nextTick();
+            await nextTick();
+            for (const link of this.component.connectedLinks) {
+                this.kresmer.edAPI.alignLinkVertices({link});
+            }//for
+        }//if
+    }//alignConnectedLinks
 }//_NetworkComponentController
 
 export default class NetworkComponentController extends withZOrder(_NetworkComponentController) {}
