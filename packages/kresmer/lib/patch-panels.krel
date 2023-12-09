@@ -91,7 +91,7 @@
             <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
             <computed-prop name="labelFontSize">computedProps.labelHeight*0.8</computed-prop>
             <computed-prop name="labelWidth">
-                (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)))*computedProps.labelFontSize*0.75
+                (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 2)*computedProps.labelFontSize*0.6
             </computed-prop>
             <computed-prop name="firstLabelX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth :
