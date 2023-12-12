@@ -129,3 +129,18 @@ export function showAboutDialog()
     // console.debug("App version: ",  app.getVersion());
     sendAppCommand("show-about-dialog", app.getVersion());
 }//showAboutDialog
+
+
+let _isReloadInProgress = false;
+export function isReloadInProgress()
+{
+    const isInProgress = _isReloadInProgress;
+    _isReloadInProgress = false;
+    return isInProgress;
+}//isReloadInProgress
+
+export function reloadContent()
+{
+    _isReloadInProgress = true;
+    mainWindow.webContents.reload();
+}//reloadContent

@@ -10,7 +10,7 @@ import path from "path";
 import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
-import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, AppSettings, addLib, addLibDir } from "./main";
+import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, AppSettings, addLib, addLibDir, isReloadInProgress, mainWindow } from "./main";
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
@@ -191,13 +191,21 @@ export function initIpcMainHooks()
     IpcMainHooks.onInvokation("save-drawing", (dwgData: string) => {
         return saveDrawing(dwgData);
     });
+
+    IpcMainHooks.onInvokation("check-reload-status", () => {
+        return isReloadInProgress();
+    });
+
+    IpcMainHooks.on("reload-content", () => {
+        mainWindow.webContents.reload();
+    });
 }//initIpcMainHooks
 
 
 /** Perform a single step of the App initialization in response to the signals received from the renderer process.
  *  Acts as an coroutine together with the renderer initialization procedure. When the renderer completes
  *  the next stage of its initialization it signals about its readiness with the corresponding AppInitStage.* code.
- * @param stage The ID of the initializtion stage just completed by the renderer process
+ * @param stage The ID of the initialization stage just completed by the renderer process
  */
 export function initApp(stage: AppInitStage)
 {

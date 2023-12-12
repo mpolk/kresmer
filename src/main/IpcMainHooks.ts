@@ -27,6 +27,8 @@ export interface IpcMainChannels {
     "rulers-shown-or-hidden": (shown: boolean) => void;
     "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
     "load-library-file": (libName: string, fileName?: string) => string|undefined;
+    "check-reload-status": () => void;
+    "reload-content": () => void;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;

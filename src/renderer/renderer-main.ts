@@ -122,16 +122,19 @@ window.onbeforeunload = (event: Event) =>
         return undefined;
 
     confirmOperation("closing").then(async(confirmed) => {
+        const continuationHandler = (await window.electronAPI.isReloadInProgress()) ?
+            () => window.electronAPI.reloadContent() :
+            () => window.close();
         switch (confirmed)
         {
             case MessageBoxResult.YES:
                 if (await window.electronAPI.saveDrawing(kresmer.saveDrawing()))
-                    window.close();
+                    continuationHandler();
                 break;
             case MessageBoxResult.NO:
                 kresmer.isDirty = false;
-                window.close();
-        }//switch   
+                continuationHandler();
+            }//switch
     });
 
     event.preventDefault();

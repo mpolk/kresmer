@@ -7,7 +7,7 @@
  ***************************************************************************/
 import { BrowserWindow, Menu, MenuItemConstructorOptions } from "electron";
 import { Position } from "kresmer";
-import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing } from "./main";
+import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent } from "./main";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing } from "./file-ops";
 import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
 
@@ -114,7 +114,7 @@ export default class Menus {
         {
             label: 'View',
             submenu: [
-                { role: 'reload' },
+                { label: 'Reload', accelerator: "Control+R", click: () => reloadContent() },
                 { role: 'forceReload' },
                 { role: 'toggleDevTools' },
                 { type: 'separator' },

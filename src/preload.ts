@@ -105,6 +105,15 @@ exposeToRenderer({
     loadLibraryFile: (libName: string, fileName?: string) => {
         return invokeFromMain("load-library-file", libName, fileName);
     },
+
+    isReloadInProgress: () => {
+        return invokeFromMain("check-reload-status");
+    },
+
+    reloadContent: () => {
+        sendToMain("reload-content");
+    },
 });
- console.debug("Finished setting up electron API for the renderer");
+
+console.debug("Finished setting up electron API for the renderer");
  

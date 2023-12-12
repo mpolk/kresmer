@@ -29,6 +29,8 @@ export interface ElectronAPI {
     gridShownOrHidden: (shown: boolean) => void,
     autoAlignmentToggled: (autoAlignVertices: boolean) => void,
     loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
+    isReloadInProgress: () => Promise<boolean>,
+    reloadContent: () => void,
 }//IElectronAPI
 
 
