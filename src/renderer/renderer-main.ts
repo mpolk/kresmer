@@ -68,13 +68,6 @@ window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 statusBarData.autoAlignVertices = kresmer.autoAlignVertices;
 
-function setKresmerSize()
-{
-    const {mountingWidth, mountingHeight} = calcKresmerSize();
-    kresmer.mountingWidth = mountingWidth;
-    kresmer.mountingHeight = mountingHeight;
-}//setKresmerSize
-
 function calcKresmerSize()
 {
     const mountingBox = document.body.getBoundingClientRect();
@@ -85,7 +78,11 @@ function calcKresmerSize()
     }
 }//calcKresmerSize
 
-window.addEventListener("resize", setKresmerSize);
+window.addEventListener("resize", () => {
+    const {mountingWidth, mountingHeight} = calcKresmerSize();
+    kresmer.mountingWidth = mountingWidth;
+    kresmer.mountingHeight = mountingHeight;
+});
 
 const vueMessageBox = createApp(MessageBox).mount("#dlgMessageBox") as InstanceType<typeof MessageBox>;
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
@@ -117,6 +114,37 @@ export function updateWindowTitle()
     }//if
     window.document.title = title;
 }//updateWindowTitle
+
+
+window.onbeforeunload = (event: Event) =>
+{
+    if (!kresmer.isDirty) 
+        return undefined;
+
+    confirmOperation("closing").then(async(confirmed) => {
+        switch (confirmed)
+        {
+            case MessageBoxResult.YES:
+                if (await window.electronAPI.saveDrawing(kresmer.saveDrawing()))
+                    window.close();
+                break;
+            case MessageBoxResult.NO:
+                kresmer.isDirty = false;
+                window.close();
+        }//switch   
+    });
+
+    event.preventDefault();
+    return false;
+}//onbeforeunload
+
+
+async function confirmOperation(beforeWhat: string): Promise<MessageBoxResult>
+{
+    const prompt = `The current drawing has unsaved changes.\nDo you want to save it before ${beforeWhat}?`;
+    return await vueMessageBox.ask(prompt, {buttons: MessageBoxButtons.YES_NO_CANCEL});
+}//confirmOperation
+
 
 
 // Processing Kresmer events (coming from the main Kresmer component)

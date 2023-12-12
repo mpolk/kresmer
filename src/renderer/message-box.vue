@@ -78,7 +78,7 @@
     }//say
 
 
-    async function ask(msg: string, opts: MessageBoxOptions = {})
+    async function ask(msg: string, opts: MessageBoxOptions = {}): Promise<MessageBoxResult>
     {
         message.value = msg;
         options.value = {buttons: MessageBoxButtons.YES_NO, ...opts};
@@ -92,7 +92,7 @@
     }//ask
 
 
-    async function show()
+    async function show(): Promise<MessageBoxResult>
     {
         if (!modal)
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
