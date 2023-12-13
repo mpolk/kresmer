@@ -114,8 +114,8 @@ export default class Menus {
         {
             label: 'View',
             submenu: [
-                { label: 'Reload', accelerator: "Control+R", click: () => reloadContent() },
-                { role: 'forceReload' },
+                { label: 'Reload', accelerator: "Control+R", click: () => reloadContent(false) },
+                { label: 'Force reload', accelerator: "Control+Shift+R", click: () => reloadContent(true) },
                 { role: 'toggleDevTools' },
                 { type: 'separator' },
                 { label: 'Zoom to fit', accelerator: "Control+0", click: () => sendAppCommand("scale-drawing", "0") },

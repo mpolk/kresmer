@@ -139,8 +139,14 @@ export function isReloadInProgress()
     return isInProgress;
 }//isReloadInProgress
 
-export function reloadContent()
+let ignoreCacheOnReload = false;
+export function reloadContent(ignoreCache?: boolean)
 {
+    if (ignoreCache !== undefined)
+        ignoreCacheOnReload = ignoreCache;
     _isReloadInProgress = true;
-    mainWindow.webContents.reload();
+    if (!ignoreCacheOnReload)
+        mainWindow.webContents.reload();
+    else
+        mainWindow.webContents.reloadIgnoringCache();
 }//reloadContent

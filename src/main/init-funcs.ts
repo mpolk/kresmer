@@ -10,7 +10,8 @@ import path from "path";
 import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
-import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, AppSettings, addLib, addLibDir, isReloadInProgress, mainWindow } from "./main";
+import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, 
+         AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent } from "./main";
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
@@ -197,7 +198,7 @@ export function initIpcMainHooks()
     });
 
     IpcMainHooks.on("reload-content", () => {
-        mainWindow.webContents.reload();
+        reloadContent();
     });
 }//initIpcMainHooks
 
