@@ -121,20 +121,22 @@ window.onbeforeunload = (event: Event) =>
     if (!kresmer.isDirty) 
         return undefined;
 
-    confirmOperation("closing").then(async(confirmed) => {
-        const continuationHandler = (await window.electronAPI.isReloadInProgress()) ?
-            () => window.electronAPI.reloadContent() :
-            () => window.close();
-        switch (confirmed)
-        {
-            case MessageBoxResult.YES:
-                if (await window.electronAPI.saveDrawing(kresmer.saveDrawing()))
+    window.electronAPI.isReloadInProgress().then(reloadInProgress => {
+        const [continuationHandler, opName] = reloadInProgress ?
+            [() => window.electronAPI.reloadContent(), "reload"] :
+            [() => window.close(), "closing"];
+        askForUnsavedChanges(opName).then(async(confirmed) => {
+            switch (confirmed)
+            {
+                case MessageBoxResult.YES:
+                    if (await window.electronAPI.saveDrawing(kresmer.saveDrawing()))
+                        continuationHandler();
+                    break;
+                case MessageBoxResult.NO:
+                    kresmer.isDirty = false;
                     continuationHandler();
-                break;
-            case MessageBoxResult.NO:
-                kresmer.isDirty = false;
-                continuationHandler();
             }//switch
+        });
     });
 
     event.preventDefault();
@@ -142,11 +144,11 @@ window.onbeforeunload = (event: Event) =>
 }//onbeforeunload
 
 
-async function confirmOperation(beforeWhat: string): Promise<MessageBoxResult>
+async function askForUnsavedChanges(opName: string): Promise<MessageBoxResult>
 {
-    const prompt = `The current drawing has unsaved changes.\nDo you want to save it before ${beforeWhat}?`;
+    const prompt = `The current drawing has unsaved changes.\nDo you want to save it before ${opName}?`;
     return await vueMessageBox.ask(prompt, {buttons: MessageBoxButtons.YES_NO_CANCEL});
-}//confirmOperation
+}//askForUnsavedChanges
 
 
 
