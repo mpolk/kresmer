@@ -125,8 +125,8 @@ window.onbeforeunload = (event: Event) =>
         const [continuationHandler, opName] = reloadInProgress ?
             [() => window.electronAPI.reloadContent(), "reload"] :
             [() => window.close(), "closing"];
-        askForUnsavedChanges(opName).then(async(confirmed) => {
-            switch (confirmed)
+        askForUnsavedChanges(opName).then(async(answer) => {
+            switch (answer)
             {
                 case MessageBoxResult.YES:
                     if (await window.electronAPI.saveDrawing(kresmer.saveDrawing()))
