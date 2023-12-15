@@ -16,7 +16,7 @@ import AppSettingsSidebar from './AppSettingsSidebar.vue';
 import DrawingPropsSidebar from './DrawingPropsSidebar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
-    DrawingMergeOptions, Position, KresmerException, KresmerParsingException, LibraryImportException,
+    Position, KresmerException, KresmerParsingException, LibraryImportException,
     NetworkComponentController, NetworkComponent,
     NetworkLink, NetworkElement, LinkVertex,
     TransformMode, ConnectionPointProxy,
@@ -24,6 +24,7 @@ import Kresmer, {
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
 import MessageBox from './message-box.vue';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
+import { DrawingMergeDialogResult } from './DrawingMergeDialog';
 import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue';
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
@@ -347,17 +348,21 @@ appCommandExecutor.on("create-new-drawing", async() => {
 appCommandExecutor.on("load-drawing", async (drawingData: string, options?: LoadDrawingOptions) =>
 {
     try {
-        let mergeOptions: DrawingMergeOptions|undefined;
+        let dialogResult: DrawingMergeDialogResult|undefined;
         if (!options?.completionSignal && !kresmer.isEmpty) {
-            mergeOptions = (await vueDrawingMergeDialog.show()) ?? undefined;
-            if (!mergeOptions) {
+            dialogResult = (await vueDrawingMergeDialog.show()) ?? undefined;
+            if (!dialogResult) {
                 return;
             }//if
         }//if
 
-        if (! await kresmer.loadDrawing(drawingData, mergeOptions)) {
+        if (dialogResult?.saveChanges) {
+            await window.electronAPI.saveDrawing(kresmer.saveDrawing());
+        }//if
+
+        if (! await kresmer.loadDrawing(drawingData, dialogResult?.drawingMergeOption ?? undefined)) {
             alert("There were errors during drawing load (see the log)");
-        } else if (options?.drawingFileName && (!mergeOptions || mergeOptions === "erase-previous-content")) {
+        } else if (options?.drawingFileName && (!dialogResult || dialogResult.drawingMergeOption === "erase-previous-content")) {
             window.electronAPI.setDefaultDrawingFileName(options.drawingFileName);
         }//if
     } catch (exc) {

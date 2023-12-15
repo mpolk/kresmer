@@ -13,18 +13,23 @@
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref } from 'vue';
+    import { onMounted, reactive, ref } from 'vue';
     import {Modal} from 'bootstrap';
     import { DrawingMergeOptions } from 'kresmer';
+    import { kresmer } from '../renderer/renderer-main';
+    import {DrawingMergeDialogResult} from './DrawingMergeDialog'
 
     let modal!: Modal;
     const rootDiv = ref<HTMLDivElement>();
     const btnOk = ref<HTMLButtonElement>();
-    let resolvePromise!: (result: DrawingMergeOptions|null) => void;
+    let resolvePromise!: (result: DrawingMergeDialogResult|null) => void;
     const showWarning = ref(false);
 
+    const result: DrawingMergeDialogResult = reactive({drawingMergeOption: null, saveChanges: false});
+
+    const haveUnsavedChanges = ref(false);
     // eslint-disable-next-line prefer-const
-    let result: DrawingMergeOptions|null = null;
+    let cbSaveChangesClicked = false;
 
     onMounted(() =>
     {
@@ -39,32 +44,41 @@
 
     async function show()
     {
+        haveUnsavedChanges.value = kresmer.isDirty;
         if (!modal)
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
         modal.show();
-        const promise = new Promise<DrawingMergeOptions|null>((resolve) => {
+        const promise = new Promise<DrawingMergeDialogResult|null>((resolve) => {
             resolvePromise = resolve;
         })
         const result = await promise;
         return result;
     }//show
 
-    function setResult(value: DrawingMergeOptions)
+    function setMergeOption(value: DrawingMergeOptions)
     {
         showWarning.value = false;
-        result = value;
-    }//setResult
+        if (!cbSaveChangesClicked) {
+            result.saveChanges = (value === "erase-previous-content");
+        }//if
+        result.drawingMergeOption = value;
+    }//setMergeOption
 
     function submit()
     {
-        if (!result) {
+        if (!result.drawingMergeOption) {
             showWarning.value = true;
         } else {
             close(result);
         }//if
     }//submit
 
-    function close(result: DrawingMergeOptions|null)
+    function cancel()
+    {
+        close(null);
+    }//cancel
+
+    function close(result: DrawingMergeDialogResult|null)
     {
         modal!.hide();
         resolvePromise!(result);
@@ -80,37 +94,47 @@
             <form class="modal-content" @submit.prevent="">
                 <div class="modal-header">
                     <h5 class="modal-title fs-5">Drawing merge options...</h5>
-                    <button type="button" class="btn-close" @click="close(null)"></button>
+                    <button type="button" class="btn-close" @click="cancel"></button>
                 </div>
                 <div class="modal-body">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbErasePreviousContent" name="mergeOptions"
-                            @click="setResult('erase-previous-content')">
+                            @click="setMergeOption('erase-previous-content')">
                         <label class="form-check-label" for="rbErasePreviousContent">
                             Erase previous content
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbMergeDuplicates" name="mergeOptions"
-                            @click="setResult('merge-duplicates')">
+                            @click="setMergeOption('merge-duplicates')">
                         <label class="form-check-label" for="rbMergeDuplicates">
                             Merge duplicates
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbRenameDuplicates" name="mergeOptions"
-                            @click="setResult('rename-duplicates')">
+                            @click="setMergeOption('rename-duplicates')">
                         <label class="form-check-label" for="rbRenameDuplicates">
                             Rename duplicates
                         </label>
                     </div>
+                    <template v-if="haveUnsavedChanges">
+                        <div style="display: inline-block; width: 2rem;"/>
+                        <div class="form-check form-check-inline">
+                            <input class="form-check-input" type="checkbox" id="cbSaveChanges" name="saveChanges"
+                                v-model="result.saveChanges" @click="cbSaveChangesClicked = true">
+                            <label class="form-check-label" for="cbSaveChanges">
+                                ...and save the drawing before opening the new one
+                            </label>
+                        </div>
+                    </template>
                     <div v-if="showWarning" class="text-warning text-center">
                         Please choose one of the options above
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
-                    <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
+                    <button type="button" class="btn btn-secondary" @click="cancel">Cancel</button>
                 </div>
             </form>
         </div>
