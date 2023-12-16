@@ -430,7 +430,8 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Components currently placed to the drawing
      */
-    public readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>());
+    public readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>()) as 
+        MapWithZOrder<number, NetworkComponentController>; // !!! workaround for some Vue "reactive" typing anomaly
     public readonly componentsByName = new Map<string, number>();
 
     /**
@@ -478,7 +479,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-    readonly links = reactive(new NetworkLinkMap());
+    readonly links = reactive(new NetworkLinkMap()) as NetworkLinkMap; // !!! workaround for some Vue "reactive" typing anomaly
     readonly linksByName = new Map<string, number>();
     readonly highlightedLinks = new Set<NetworkLink>();
 
@@ -572,7 +573,7 @@ ${svg.outerHTML}
      * @param id An ID of the element to search for
      * @returns The element if found or "undefined" otherwise
      */
-    public getElementById(id: number)
+    public getElementById(id: number): NetworkElement|undefined
     {
         return this.networkComponents.get(id)?.component ?? this.links.get(id);
     }//getElementById
@@ -583,7 +584,7 @@ ${svg.outerHTML}
      * @param id An ID of the component to search for
      * @returns The component if found or "undefined" otherwise
      */
-    public getComponentById(id: number)
+    public getComponentById(id: number): NetworkComponent|undefined
     {
         return this.networkComponents.get(id)?.component;
     }//getComponentById
@@ -594,7 +595,7 @@ ${svg.outerHTML}
      * @param name A name of the component to search for
      * @returns The component if found or "undefined" otherwise
      */
-    public getComponentByName(name: string)
+    public getComponentByName(name: string): NetworkComponent|undefined
     {
         const id = this.componentsByName.get(name);
         if (id === undefined)
@@ -608,7 +609,7 @@ ${svg.outerHTML}
      * @param id An ID of the link to search for
      * @returns The link if found or "undefined" otherwise
      */
-    public getLinkById(id: number)
+    public getLinkById(id: number): NetworkLink|undefined
     {
         return this.links.get(id);
     }//getLinkById
@@ -619,7 +620,7 @@ ${svg.outerHTML}
      * @param name A name of the link to search for
      * @returns The link if found or "undefined" otherwise
      */
-    public getLinkByName(name: string)
+    public getLinkByName(name: string): NetworkLink|undefined
     {
         const id = this.linksByName.get(name);
         if (id === undefined)
