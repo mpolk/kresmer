@@ -91,7 +91,9 @@ export default class UndoStack {
         if (this.canUndo) {
             this.stack[this.stackPointer--].undo();
             this.kresmer.emit("got-dirty", this.isDirty);
+            return true;
         }//if
+        return false;
     }//undo
 
     /** Shows whether there are operations to undo */
@@ -106,7 +108,9 @@ export default class UndoStack {
         if (this.stackPointer < this.stack.length - 1) {
             this.stack[++this.stackPointer].redo();
             this.kresmer.emit("got-dirty", this.isDirty);
+            return true;
         }//if
+        return false;
     }//redo
 
     /** Clears the stack content and resets the stack to the initial state */

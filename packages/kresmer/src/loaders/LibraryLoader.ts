@@ -89,16 +89,20 @@ export default class LibraryLoader
      * Loads several libraries at once
      * @param libs Mapping libName => libData
      */
-    public async loadLibraries(libs: Record<string, string>)
+    public async loadLibraries(libs: Record<string, string>): Promise<number>
     {
+        let nErrors = 0;
         for (const libName in libs) {
             const libData = libs[libName];
-            await this._loadLibrary(libData, (libName: string) => {
+            const rc = await this._loadLibrary(libData, (libName: string) => {
                 const libData = libs[libName];
                 return libData ? Promise.resolve(libData) : 
                     this.kresmer.emit("library-import-requested", libName );
             });
+            if (rc > 0)
+                nErrors += rc;
         }//for
+        return nErrors;
     }//loadLibraries
 
     /**

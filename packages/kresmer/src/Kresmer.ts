@@ -29,7 +29,7 @@ import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
 import { MapWithZOrder } from "./ZOrdering";
-import BackendConnection from "./BackendConnection";
+import BackendConnection, { BackendConnectionTestResult } from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./NetworkLink/LinkVertex";
 import { clone } from "./Utils";
@@ -215,24 +215,33 @@ export default class Kresmer extends KresmerEventHooks {
      * @param serverURL An URL of the backend server to connect to
      * @param password A password to use for the connection
      */
-    public async testBackendConnection(serverURL: string, password: string)
+    public async testBackendConnection(serverURL: string, password: string): Promise<BackendConnectionTestResult>
     {
         return BackendConnection.testConnection(serverURL, password);
     }//testBackendConnection
 
     /** The stack for undoing editor operations */
     readonly undoStack = new UndoStack(this);
-    public undo() {this.undoStack.undo()}
-    public redo() {this.undoStack.redo()}
+    /** 
+     * Undoes the last editor operation 
+     * @returns boolean True if an operation was undone, else false
+     */
+    public undo(): boolean {return this.undoStack.undo();}
+    /**
+     * Redoes the last undone editor operation 
+     * @returns boolean True if an operation was redone, else false
+     */
+    public redo(): boolean {return this.undoStack.redo();}
 
     /** Signals an application error */
-    public raiseError(exception: KresmerException)
+    public raiseError(exception: KresmerException): Kresmer
     {
         this.emit("error", exception);
+        return this;
     }//raiseError
 
     /** Shows whether the content was modified comparing to the last data loading */
-    public get isDirty()
+    public get isDirty(): boolean
     {
         return this.undoStack.isDirty;
     }//get isDirty
@@ -243,15 +252,16 @@ export default class Kresmer extends KresmerEventHooks {
     }//set isDirty
 
     /** Shows whether the drawing has no content  */
-    public get isEmpty()
+    public get isEmpty(): boolean
     {
         return !this.links.size && !this.networkComponents.size;
     }//get isEmpty
 
     /** Forces update on the underlying Vue-component */
-    public forceUpdate()
+    public forceUpdate(): Kresmer
     {
         this.vueKresmer.$forceUpdate();
+        return this;
     }//forceUpdate
 
     /**
@@ -279,7 +289,7 @@ export default class Kresmer extends KresmerEventHooks {
      * 
      * @param componentClass A Network Component Class to register
      */
-    public registerNetworkComponentClass(componentClass: NetworkComponentClass) 
+    public registerNetworkComponentClass(componentClass: NetworkComponentClass): Kresmer
     {
         // Register a Vue-component for the class itself
         this.appKresmer.component(componentClass.vueName, 
@@ -353,9 +363,8 @@ export default class Kresmer extends KresmerEventHooks {
      * @param linkClass A class to register
      * @returns Kresmer itself
      */
-    public registerLinkClass(linkClass: NetworkLinkClass)
+    public registerLinkClass(linkClass: NetworkLinkClass): Kresmer
     {
-
         // Register class's svg-definitions
         if (linkClass.defs) {
             this.appKresmer.component(linkClass.defsVueName, 
@@ -378,7 +387,8 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public readonly registeredLinkClasses = new Map<string, NetworkLinkClass>();
     /** Returns a list of all Link Classes, registered by Kresmer */
-    public getRegisteredLinkClasses() {
+    public getRegisteredLinkClasses(): Iterator<[string, NetworkLinkClass]>
+    {
         return this.registeredLinkClasses.entries();
     }//getRegisteredLinkClasses
 
@@ -400,9 +410,9 @@ export default class Kresmer extends KresmerEventHooks {
      * Loads several libraries at once
      * @param libs Mapping libName => libData
      */
-    public loadLibraries(libs: Record<string, string>)
+    public loadLibraries(libs: Record<string, string>): Promise<number>
     {
-        this.libraryLoader.loadLibraries(libs);
+        return this.libraryLoader.loadLibraries(libs);
     }//loadLibraries
 
     /**
@@ -439,7 +449,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param component A Network Component to add
      */
     public placeNetworkComponent(component: NetworkComponent,
-                                 origin: Position, transform?: Transform)
+                                 origin: Position, transform?: Transform): Kresmer
     {
         const controller = new NetworkComponentController(
             this, component, {origin, transform});
@@ -450,7 +460,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Adds a new Network Component to the content of the drawing
      * @param controller A Network Component to add
      */
-    public addPositionedNetworkComponent(controller: NetworkComponentController)
+    public addPositionedNetworkComponent(controller: NetworkComponentController): Kresmer
     {
         this.networkComponents.add(controller);
         this.componentsByName.set(controller.component.name, controller.component.id);
@@ -461,7 +471,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Deletes the specified component from the drawing
      * @param controller The controller of the component to delete
      */
-    public deleteComponent(controller: NetworkComponentController)
+    public deleteComponent(controller: NetworkComponentController): Kresmer
     {
         this.links.forEach(link => {
             link.vertices.forEach(vertex => {
@@ -474,6 +484,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.componentsByName.delete(controller.component.name);
         this.networkComponents.delete(controller.component.id);
         this.emit("component-deleted", controller);
+        return this;
     }//deleteComponent
  
     /**
@@ -490,7 +501,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Adds a new Link to the drawing
      * @param link A Link to add
      */
-    public addLink(link: NetworkLink)
+    public addLink(link: NetworkLink): Kresmer
     {
         this.links.add(link);
         this.linksByName.set(link.name, link.id);
@@ -502,7 +513,7 @@ export default class Kresmer extends KresmerEventHooks {
      * Deletes a Link from the content of the drawing
      * @param link A Link to delete
      */
-    public deleteLink(link: NetworkLink)
+    public deleteLink(link: NetworkLink): Kresmer
     {
         this.links.delete(link.id);
         this.linksByName.delete(link.name);
@@ -525,7 +536,7 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     /** Serializes the drawing data to the string and returns this string */
-    public saveDrawing()
+    public saveDrawing(): string
     {
         return this.drawingLoader.saveDrawing();
     }//saveDrawing
@@ -534,7 +545,7 @@ export default class Kresmer extends KresmerEventHooks {
     saveDynamicPropValuesWithDrawing = false;
 
 
-    public exportDrawingToSVG(styles: string)
+    public exportDrawingToSVG(styles: string): string
     {
         const svg = this.rootSVG.cloneNode(true) as SVGElement;
         const defsElement = document.createElement("defs");
@@ -551,7 +562,7 @@ ${svg.outerHTML}
 
 
     /** Erases everything that is in the drawing now */
-    public eraseContent()
+    public eraseContent(): void
     {
         this.drawingName = UNNAMED_DRAWING;
         this.undoStack.reset();
@@ -635,7 +646,7 @@ ${svg.outerHTML}
      * @param name A name of the element to search for
      * @returns The element if found or "undefined" otherwise
      */
-    public getElementByName(name: string)
+    public getElementByName(name: string): NetworkElement|undefined
     {
         if (name.startsWith("-"))
             return this.getLinkByName(name.slice(1));
@@ -649,10 +660,10 @@ ${svg.outerHTML}
      * @param id An ID of the component to search for
      * @returns The component controller if found or "undefined" otherwise
      */
-    public getComponentControllerById(id: number)
+    public getComponentControllerById(id: number): NetworkComponentController|undefined
     {
         return this.networkComponents.get(id);
-    }//getComponentLoavtionById
+    }//getComponentControllerById
   
 
     /** Returns the root SVG element */
