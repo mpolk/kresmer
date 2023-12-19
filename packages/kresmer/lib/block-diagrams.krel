@@ -14,22 +14,43 @@
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 v-bind:fill="fill" v-bind:stroke="strokeColor" v-bind:stroke-width="strokeWidth" stroke-opacity="0.5"></rect>
-            <text x="0" y="0" v-bind:fill="captionColor" v-bind:font-size="fontSize"
-                v-bind:font-family="fontFamily">
+            <text v-bind:x="captionPos.x" v-bind:y="captionPos.y" v-bind:fill="captionColor" v-bind:font-size="fontSize"
+                v-bind:font-family="fontFamily" v-bind:text-anchor="captionAnchor" v-bind:dominant-baseline="captionBaseline">
                 <slot></slot>{{caption}}
             </text>
         </template>
         <props>
-            <prop name="width" type="Number" required="true" default="300" />
-            <prop name="height" type="Number" required="true" default="100" />
-            <prop name="fill" type="String" default="lightgray" />
-            <prop name="stroke-color" type="String" default="black" />
-            <prop name="stroke-width" type="String" default="1px" />
-            <prop name="caption" type="String" />
-            <prop name="caption-color" type="String" default="black" />
-            <prop name="font-size" type="String" default="32" />
-            <prop name="font-family" type="String" />
+            <prop name="width" type="Number" required="true" default="300" category="Geometry"/>
+            <prop name="height" type="Number" required="true" default="100" category="Geometry" />
+            <prop name="fill" type="String" default="lightgray" category="Presentation"/>
+            <prop name="stroke-color" type="String" default="black" category="Presentation"/>
+            <prop name="stroke-width" type="String" default="1px" category="Presentation"/>
+            <prop name="caption" type="String" category="Presentation"/>
+            <prop name="caption-color" type="String" default="black" category="Presentation"/>
+            <prop name="caption-pos" type="String" default="center" 
+                  choices="center, top, bottom, left, right, above, below, before, after" category="Presentation"/>
+            <prop name="font-size" type="String" default="32" category="Presentation"/>
+            <prop name="font-family" type="String" category="Presentation"/>
         </props>
+        <computed-props>
+            <computed-prop name="captionPos">
+                props.captionPos === "center" ? {x: props.width/2, y: props.height/2} :
+                props.captionPos === "left" || props.captionPos === "before" ? {x: 0, y: props.height/2} :
+                props.captionPos === "right" || props.captionPos === "after" ? {x: props.width, y: props.height/2} :
+                props.captionPos === "top" || props.captionPos === "above" ? {x: props.width/2, y: 0} :
+                    {x: props.width/2, y: props.height}
+            </computed-prop>
+            <computed-prop name="captionAnchor">
+                ["center", "top", "above", "bottom", "below"].includes(props.captionPos) ? "middle" :
+                ["right", "before"].includes(props.captionPos) ? "end" :
+                    "start"
+            </computed-prop>
+            <computed-prop name="captionBaseline">
+                ["center", "left", "before", "right", "after"].includes(props.captionPos) ? "middle" :
+                ["top", "below"].includes(props.captionPos) ? "text-before-edge" :
+                    "ideographic"
+            </computed-prop>
+        </computed-props>
     </component-class>
 
 </kresmer-library>
