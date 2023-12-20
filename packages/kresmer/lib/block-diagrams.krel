@@ -14,10 +14,8 @@
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
                 v-bind:fill="fill" v-bind:stroke="strokeColor" v-bind:stroke-width="strokeWidth" stroke-opacity="0.5"></rect>
-            <text v-bind:x="captionPos.x" v-bind:y="captionPos.y" v-bind:fill="captionColor" v-bind:font-size="fontSize"
-                v-bind:font-family="fontFamily" v-bind:text-anchor="captionAnchor" v-bind:dominant-baseline="captionBaseline">
-                <slot></slot>{{caption}}
-            </text>
+            <text v-if="caption" class="caption" v-bind="captionParams">{{caption}}</text>
+            <connection-point v-for="({x, y, dir}, name) in connectionPoints" v-bind="{name, x, y, dir, d: 16}"/>
         </template>
         <props>
             <prop name="width" type="Number" required="true" default="300" category="Geometry"/>
@@ -29,14 +27,17 @@
             <prop name="caption-color" type="String" default="black" category="Presentation"/>
             <prop name="caption-pos" type="String" default="center" 
                   choices="center, top, bottom, left, right, above, below, before, after" category="Presentation"/>
+            <prop name="caption-href" type="String" description="Optional hyperlink for the caption" />
             <prop name="font-size" type="String" default="32" category="Presentation"/>
             <prop name="font-family" type="String" category="Presentation"/>
         </props>
         <computed-props>
             <computed-prop name="captionPos">
                 props.captionPos === "center" ? {x: props.width/2, y: props.height/2} :
-                props.captionPos === "left" || props.captionPos === "before" ? {x: 0, y: props.height/2} :
-                props.captionPos === "right" || props.captionPos === "after" ? {x: props.width, y: props.height/2} :
+                props.captionPos === "left" ? {x: props.width*0.03, y: props.height/2} :
+                props.captionPos === "before" ? {x: -props.width*0.03, y: props.height/2} :
+                props.captionPos === "right"  ? {x: props.width*0.97, y: props.height/2} :
+                props.captionPos === "after" ? {x: props.width*1.03, y: props.height/2} :
                 props.captionPos === "top" || props.captionPos === "above" ? {x: props.width/2, y: 0} :
                     {x: props.width/2, y: props.height}
             </computed-prop>
@@ -49,6 +50,32 @@
                 ["center", "left", "before", "right", "after"].includes(props.captionPos) ? "middle" :
                 ["top", "below"].includes(props.captionPos) ? "text-before-edge" :
                     "ideographic"
+            </computed-prop>
+            <computed-prop name="captionParams">
+                {
+                    ...computedProps.captionPos, fill: props.captionColor, "font-size": props.fontSize, "font-family": props.fontFamily,
+                    "text-anchor": computedProps.captionAnchor, "dominant-baseline": computedProps.captionBaseline,
+                }
+            </computed-prop>
+            <computed-prop name="connectionPoints">
+                {
+                    n: {x: props.width*0.5, y: 0, dir: -90},
+                    nne: {x: props.width*0.75, y: 0, dir: -90},
+                    ne: {x: props.width, y: 0, dir: -Math.atan(props.height/props.width)},
+                    nee: {x: props.width, y: props.height*0.25, dir: 0},
+                    e: {x: props.width, y: props.height*0.5, dir: 0},
+                    see: {x: props.width, y: props.height*0.75, dir: 0},
+                    se: {x: props.width, y: props.height, dir: Math.atan(props.height/props.width)},
+                    sse: {x: props.width*0.75, y: props.height, dir: 90},
+                    s: {x: props.width*0.5, y: props.height, dir: 90},
+                    ssw: {x: props.width*0.25, y: props.height, dir: 90},
+                    sw: {x: 0, y: props.height, dir: 180-Math.atan(props.height/props.width)},
+                    sww: {x: 0, y: props.height*0.75, dir: 180},
+                    w: {x: 0, y: props.height*0.5, dir: 180},
+                    nww: {x: 0, y: props.height*0.25, dir: 180},
+                    nw: {x: 0, y: 0, dir: 180+Math.atan(props.height/props.width)},
+                    nnw: {x: props.width*0.25, y: 0, dir: -90}
+                }
             </computed-prop>
         </computed-props>
     </component-class>
