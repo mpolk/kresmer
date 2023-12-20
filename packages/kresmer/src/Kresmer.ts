@@ -387,7 +387,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public readonly registeredLinkClasses = new Map<string, NetworkLinkClass>();
     /** Returns a list of all Link Classes, registered by Kresmer */
-    public getRegisteredLinkClasses(): Iterator<[string, NetworkLinkClass]>
+    public getRegisteredLinkClasses(): IterableIterator<[string, NetworkLinkClass]>
     {
         return this.registeredLinkClasses.entries();
     }//getRegisteredLinkClasses
