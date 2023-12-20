@@ -77,6 +77,7 @@
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="origin-attrs"/>
                         <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="rect-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
@@ -437,12 +438,16 @@
         <xs:attribute ref="v-bind:r"/>
     </xs:attributeGroup>
 
-    <xs:attributeGroup name="ellipse-attrs">
-        <xs:attributeGroup ref="circle-attrs"/>
+    <xs:attributeGroup name="rect-attrs">
         <xs:attribute name="rx" type="xs:decimal"/>
         <xs:attribute ref="v-bind:rx"/>
         <xs:attribute name="ry" type="xs:decimal"/>
         <xs:attribute ref="v-bind:ry"/>
+    </xs:attributeGroup>
+
+    <xs:attributeGroup name="ellipse-attrs">
+        <xs:attributeGroup ref="circle-attrs"/>
+        <xs:attributeGroup ref="rect-attrs"/>
     </xs:attributeGroup>
 
     <xs:attributeGroup name="presentation-attrs">

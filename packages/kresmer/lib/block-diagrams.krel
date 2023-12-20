@@ -13,20 +13,23 @@
     <component-class name="RectangularBlock" category="BlockDiagrams">
         <template>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height"
-                v-bind:fill="fill" v-bind:stroke="strokeColor" v-bind:stroke-width="strokeWidth" stroke-opacity="0.5"></rect>
+                v-bind:fill="fill" v-bind:stroke="strokeColor" v-bind:stroke-width="strokeWidth" stroke-opacity="0.5"
+                v-bind:rx="cornerRadius"
+                />
             <connection-point v-for="({x, y, dir}, name) in connectionPoints" v-bind="{name, x, y, dir, d: 16}"/>
             <template v-if="caption">
-                <a v-if="captionHref" v-bind:href="captionHref" target="_self"><text v-bind="captionParams">{{caption}}</text></a>
-                <text v-else="" v-bind="captionParams">{{caption}}</text>
+                <a v-if="captionHref" class="caption" v-bind:href="captionHref"><text v-bind="captionParams">{{caption}}</text></a>
+                <text v-else="" class="caption" v-bind="captionParams">{{caption}}</text>
             </template>
         </template>
         <props>
             <prop name="width" type="Number" required="true" default="300" category="Geometry"/>
             <prop name="height" type="Number" required="true" default="100" category="Geometry" />
+            <prop name="corner-radius" type="Number" category="Geometry" />
             <prop name="fill" type="String" default="lightgray" category="Presentation"/>
             <prop name="stroke-color" type="String" default="black" category="Presentation"/>
             <prop name="stroke-width" type="String" default="1px" category="Presentation"/>
-            <prop name="caption" type="String" category="Presentation"/>
+            <prop name="caption" type="String"/>
             <prop name="caption-color" type="String" default="black" category="Presentation"/>
             <prop name="caption-pos" type="String" default="center" 
                   choices="center, top, bottom, left, right, above, below, before, after" category="Presentation"/>
@@ -62,9 +65,9 @@
             </computed-prop>
             <computed-prop name="connectionPoints">
                 {
-                    n: {x: props.width*0.5, y: 0, dir: -90},
-                    nne: {x: props.width*0.75, y: 0, dir: -90},
-                    ne: {x: props.width, y: 0, dir: -Math.atan(props.height/props.width)},
+                    n: {x: props.width*0.5, y: 0, dir: 270},
+                    nne: {x: props.width*0.75, y: 0, dir: 270},
+                    ne: {x: props.width, y: 0, dir: 360-Math.atan(props.height/props.width)},
                     nee: {x: props.width, y: props.height*0.25, dir: 0},
                     e: {x: props.width, y: props.height*0.5, dir: 0},
                     see: {x: props.width, y: props.height*0.75, dir: 0},
@@ -77,10 +80,14 @@
                     w: {x: 0, y: props.height*0.5, dir: 180},
                     nww: {x: 0, y: props.height*0.25, dir: 180},
                     nw: {x: 0, y: 0, dir: 180+Math.atan(props.height/props.width)},
-                    nnw: {x: props.width*0.25, y: 0, dir: -90}
+                    nnw: {x: props.width*0.25, y: 0, dir: 270}
                 }
             </computed-prop>
         </computed-props>
+        <style>
+            .caption {text-decoration: none}
+            .caption:hover {text-decoration: underline}
+        </style>
     </component-class>
 
 </kresmer-library>
