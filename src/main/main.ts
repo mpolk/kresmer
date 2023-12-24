@@ -35,6 +35,7 @@ export const localSettings = new Settings("local-settings.json", {
     animateLinkBundleDragging: false as boolean,
     lastOpenedDrawing: "",
     autoloadLastDrawing: true as boolean,
+    hrefBase: "",
 });
 
 export type AppSettings = {
@@ -48,7 +49,8 @@ export type AppSettings = {
     animateComponentDragging: boolean,
     animateLinkBundleDragging: boolean,
     lastOpenedDrawing: string,
-    autoloadLastDrawing: boolean;
+    autoloadLastDrawing: boolean,
+    hrefBase: string,
 }//AppSettings
 
 export type CustomManagementProtocol = {

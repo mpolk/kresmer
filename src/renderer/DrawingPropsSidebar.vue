@@ -25,10 +25,12 @@
 
     let drawingName: string|undefined;
     let drawingBox: {width: number, height: number};
+    let hrefBase: string|undefined;
 
     function show()
     {
         drawingName = kresmer.drawingName;
+        hrefBase = kresmer.hrefBase.value;
         drawingBox = {width: kresmer.logicalWidth, height: kresmer.logicalHeight};
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
@@ -49,7 +51,8 @@
         kresmer.edAPI.updateDrawingProperties({
             name: drawingName, 
             logicalWidth: drawingBox.width, 
-            logicalHeight: drawingBox.height
+            logicalHeight: drawingBox.height,
+            hrefBase: hrefBase,
         });
         updateWindowTitle();
     }//save
@@ -97,6 +100,15 @@
                             <td class="p-1">
                                 <input type="number" class="form-control form-control-sm text-end border-0" 
                                     id="inpDrawingHeight" v-model="drawingBox.height"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-1 align-middle">
+                                <label class="form-label text-secondary mb-0" for="inpHrefBase">href base</label>
+                            </td>
+                            <td class="p-1">
+                                <input type="text" class="form-control form-control-sm border-0" 
+                                    id="inpHrefBase" v-model="hrefBase"/>
                             </td>
                         </tr>
                     </tbody>

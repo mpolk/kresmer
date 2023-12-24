@@ -52,7 +52,8 @@ export default class DrawingParser {
 
         yield new DrawingHeaderData(root.getAttribute("name")!, 
                                     root.getAttribute("width"),
-                                    root.getAttribute("height")
+                                    root.getAttribute("height"),
+                                    root.getAttribute("href-base"),
                                     );
 
         for (let i = 0; i < root.children.length; i++) {
@@ -446,14 +447,17 @@ export class DrawingHeaderData {
     constructor(public readonly name: string,
                 width: string|null,
                 height: string|null,
+                hrefBase: string|null,
                 ) 
     {
         width && (this.width = parseFloat(width));
         height && (this.height = parseFloat(height));
+        hrefBase && (this.hrefBase = hrefBase);
     }//ctor
 
     readonly width?: number;
     readonly height?: number;
+    readonly hrefBase?: string;
 }//DrawingHeaderData
 
 export type ParsedNode = 

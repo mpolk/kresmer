@@ -55,6 +55,7 @@ export default class Kresmer extends KresmerEventHooks {
         autoAlignVertices?: boolean,
         animateComponentDragging?: boolean,
         animateLinkBundleDragging?: boolean,
+        hrefBase?: string,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -71,6 +72,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.autoAlignVertices = options?.autoAlignVertices ?? true;
         this.animateComponentDragging = Boolean(options?.animateComponentDragging);
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
+        options?.hrefBase && (this.hrefBase.value = options.hrefBase);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -88,6 +90,7 @@ export default class Kresmer extends KresmerEventHooks {
                 ...TransformFunctons,
                 ...NetworkComponentFunctions,
                 $openURL: this.openURL,
+                $href: this.makeHref,
             }
             ;
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
@@ -193,6 +196,14 @@ export default class Kresmer extends KresmerEventHooks {
     snappingGranularity = 1;
     /** A symbolic key for the snap-to-grid step injection */
     static readonly ikSnappingGranularity = Symbol() as InjectionKey<number>;
+
+    /** A base (common) prefix for all hyperlinks on the drawing */
+    readonly hrefBase = ref("");
+    /** Makes a hyperlink from the commpon prefix and the specific tail */
+    private makeHref = (tail: string) =>
+    {
+        return `${this.hrefBase.value.replace(/\/$/, '')}/${tail.replace(/^\//, '')}`;
+    }//makeHref
 
     /** Kresmer-backend server connection (if any) */
     public backendConnection?: BackendConnection;
@@ -440,7 +451,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Components currently placed to the drawing
      */
-    public readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>()) as 
+    public readonly networkComponents = reactive(new MapWithZOrder<number, NetworkComponentController>()) as unknown as 
         MapWithZOrder<number, NetworkComponentController>; // !!! workaround for some Vue "reactive" typing anomaly
     public readonly componentsByName = new Map<string, number>();
 
@@ -490,7 +501,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Links currently placed to the drawing
      */
-    readonly links = reactive(new NetworkLinkMap()) as NetworkLinkMap; // !!! workaround for some Vue "reactive" typing anomaly
+    readonly links = reactive(new NetworkLinkMap()) as unknown as NetworkLinkMap; // !!! workaround for some Vue "reactive" typing anomaly
     readonly linksByName = new Map<string, number>();
     readonly highlightedLinks = new Set<NetworkLink>();
 
@@ -1121,6 +1132,8 @@ export type DrawingProps = {
     logicalWidth?: number|undefined;
     /** The drawing logical height */
     logicalHeight?: number|undefined;
+    /** A common base prefix for all hrefs on the drawing */
+    hrefBase?: string;
 }//DrawingProps
 
 
@@ -1132,7 +1145,8 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.oldProps = {
             name: kresmer.drawingName,
             logicalWidth: kresmer.logicalWidth,
-            logicalHeight: kresmer.logicalHeight
+            logicalHeight: kresmer.logicalHeight,
+            hrefBase: kresmer.hrefBase.value,
         }//oldProps
     }//ctor
 
@@ -1143,6 +1157,7 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.newProps.name && (this.kresmer.drawingName = this.newProps.name);
         this.newProps.logicalWidth && (this.kresmer.logicalWidth = this.newProps.logicalWidth);
         this.newProps.logicalHeight && (this.kresmer.logicalHeight = this.newProps.logicalHeight);
+        this.newProps.hrefBase && (this.kresmer.hrefBase.value = this.newProps.hrefBase);
     }//exec
 
     override undo(): void
@@ -1152,7 +1167,8 @@ class UpdateDrawingPropsOp extends EditorOperation
             (this.kresmer.logicalWidth = this.oldProps.logicalWidth);
         this.oldProps.logicalHeight != this.kresmer.logicalHeight && 
             (this.kresmer.logicalHeight = this.oldProps.logicalHeight);
-    }//undo
+        this.oldProps.hrefBase != this.kresmer.hrefBase.value && (this.kresmer.hrefBase.value = this.oldProps.hrefBase);
+        }//undo
 }//UpdateDrawingPropsOp
 
 
@@ -1174,7 +1190,7 @@ export const GeneralTemplateFunctions = {
         if (!(name in GeneralTemplateFunctions.$$)) {
             Object.defineProperty(GeneralTemplateFunctions.$$, name, {value});
         }//if
-    }//$global
+    },//$global
 }//GeneralTemplateFunctions
 
 
