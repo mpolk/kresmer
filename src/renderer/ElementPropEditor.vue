@@ -128,9 +128,12 @@
     /** Builds the model object for the value of the prop being edited  */
     const subpropModel = computed({
         get() {
-            if (props.subpropLevel == 0)
-                return props.propToEdit.value;
-            else
+            if (props.subpropLevel == 0) {
+                let value = props.propToEdit.value;
+                if (props.propToEdit.editor === 'color-picker' && props.propToEdit.value === undefined)
+                    value = props.propToEdit.default;
+                return value;
+            } else
                 return getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
         },
         set(newValue) {
@@ -255,6 +258,10 @@
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-control form-control-sm text-secondary border-0" readonly
                 :value="JSON.stringify(propToEdit.value)"/>
+            <input v-else-if="propToEdit.editor === 'color-picker'" type="color"
+                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
+                class="form-control form-control-sm border-0"
+                v-model="subpropModel"/>
             <input v-else 
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 :pattern="propToEdit.pattern"

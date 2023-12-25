@@ -102,5 +102,6 @@ export type NetworkElementClassProp = Prop<unknown, unknown> &
     {
         category?: NetworkElementPropCategory,
         description?: string,
+        editor?: string,
     };
 export type NetworkElementClassProps = Record<string, NetworkElementClassProp>;

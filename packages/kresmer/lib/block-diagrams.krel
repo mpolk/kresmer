@@ -26,11 +26,11 @@
             <prop name="width" type="Number" required="true" default="300" category="Geometry"/>
             <prop name="height" type="Number" required="true" default="100" category="Geometry" />
             <prop name="corner-radius" type="Number" category="Geometry" />
-            <prop name="fill" type="String" default="lightgray" category="Presentation"/>
-            <prop name="stroke-color" type="String" default="black" category="Presentation"/>
+            <prop name="fill" type="Color" default="#d3d3d3" category="Presentation"/>
+            <prop name="stroke-color" type="Color" default="#000000" category="Presentation"/>
             <prop name="stroke-width" type="String" default="1px" category="Presentation"/>
             <prop name="caption" type="String"/>
-            <prop name="caption-color" type="String" default="black" category="Presentation"/>
+            <prop name="caption-color" type="Color" default="#000000" category="Presentation"/>
             <prop name="caption-pos" type="String" default="center" 
                   choices="center, top, bottom, left, right, above, below, before, after" category="Presentation"/>
             <prop name="caption-href" type="String" description="Optional hyperlink for the caption" />

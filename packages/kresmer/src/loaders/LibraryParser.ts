@@ -246,8 +246,9 @@ export default class LibraryParser {
 
     private parseProps(node: Element, propsBaseClasses?: NetworkElementClass[], exceptProps?: string[])
     {
-        const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown}> = {
+        const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown, editor?: string}> = {
             "string": {propType: String, makeDefault: d => d}, 
+            "color": {propType: String, makeDefault: d => d, editor: "color-picker"}, 
             "number": {propType: Number, makeDefault: Number},
             "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
             "object": {propType: Object, makeDefault: JSON.parse}, 
@@ -285,6 +286,7 @@ export default class LibraryParser {
                             prop.type = allowedTypes[typeName].propType;
                             if (_default != null)
                                 prop.default = allowedTypes[typeName].makeDefault(_default);
+                            prop.editor = allowedTypes[typeName].editor;
                         }//if
                     });
 
