@@ -32,8 +32,8 @@
             <prop name="nFibers" type="Number" choices="1,2" default="1" category="Optics" description="The number of optical fibers"/>
             <prop name="wavelength" type="Number" choices="1310, 1550"  category="Optics" description="Transmitted wawelength"/>
             <prop name="speed" type="String" choices="100M, 1G" category="Network" description="Data transfer speed"/>
-            <prop name="color" type="String" default="#1f1f1f" category="Presentation"/>
-            <prop name="strokeColor" type="String" default="transparent" category="Presentation"/>
+            <prop name="color" type="Color" default="#1f1f1f" category="Presentation"/>
+            <prop name="strokeColor" type="Color" default="transparent" category="Presentation"/>
         </props>
         <computed-props>
             <computed-prop name="height">props.height ?? (props.width ? props.width*(12 + 4*(props.nFibers-1))/7 : (75 + (props.nFibers-1)*25))</computed-prop>

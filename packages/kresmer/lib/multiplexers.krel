@@ -40,8 +40,8 @@
             <prop name="opticalPortType" type="String" choices="SC, LC" default="SC" category="Hardware" description="The type of the optical port"/>
             <prop name="nFibers" type="Number" choices="1,2" default="1" category="Optics" description="The number of optical fibers"/>
             <prop name="nCopperPorts" type="Number" default="1" category="Hardware" description="The number of copper ports"/>
-            <prop name="color" type="String" default="#bfbfbf" category="Presentation"/>
-            <prop name="strokeColor" type="String" default="transparent" category="Presentation"/>
+            <prop name="color" type="Color" default="#bfbfbf" category="Presentation"/>
+            <prop name="strokeColor" type="Color" default="#bfbfbf" category="Presentation"/>
         </props>
         <computed-props>
             <computed-prop name="nPorts">props.nFibers + props.nCopperPorts - 2</computed-prop>

@@ -70,8 +70,8 @@
             <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry" />
             <prop name="portLabelPosition" type="String" choices="above,below,before,after,none" category="Presentation" description="Position of the port labels (if any)" />
             <prop name="portLabels" type="Object" default="{}" category="Network" description="Port (fiber) labels"/>
-            <prop name="color" type="String" default="#f0e8cb" category="Presentation"/>
-            <prop name="strokeColor" type="String" default="#d3bc69" category="Presentation"/>
+            <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
+            <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
             <prop name="fibers-info" type="Object" category="Optics" description="Various optical parameters of the individual fibers"/>
         </props>
         <computed-props>

@@ -26,7 +26,7 @@
         <props>
             <prop name="width" type="Number" required="true" default="300" />
             <prop name="height" type="Number" required="true" default="100" />
-            <prop name="fill" type="String" default="yellow" />
+            <prop name="fill" type="Color" default="yellow" />
         </props>
     </component-class>
 
@@ -39,7 +39,7 @@
             </text>
         </template>
         <props>
-            <prop name="color" type="String" default="black" />
+            <prop name="color" type="Color" default="black" />
             <prop name="font-size" type="String" default="32" />
             <prop name="font-family" type="String" />
         </props>
@@ -57,7 +57,7 @@
         <props>
             <prop name="width" type="Number" required="true" default="200" />
             <prop name="height" type="Number" required="true" default="50" />
-            <prop name="fill" type="String" default="yellow" />
+            <prop name="fill" type="Color" default="yellow" />
             <prop name="text" type="String" default="BorderedKresmer" />
             <prop name="textColor" type="String" default="black" />
             <prop name="font-size" type="String" />
@@ -92,7 +92,7 @@
         </template>
         <props>
             <prop name="fontSize" type="String" />
-            <prop name="color" type="String" default="gold" />
+            <prop name="color" type="Color" default="gold" />
         </props>
     </component-class>
 
