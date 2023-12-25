@@ -21,6 +21,7 @@
                 <a v-if="captionHref" class="caption" v-bind:href="$href(captionHref)"><text v-bind="captionParams">{{caption}}</text></a>
                 <text v-else="" class="caption" v-bind="captionParams">{{caption}}</text>
             </template>
+            <text v-if="subtitle" class="subtitle" v-bind="subtitleParams">{{subtitle}}</text>
         </template>
         <props>
             <prop name="width" type="Number" required="true" default="300" category="Geometry"/>
@@ -36,6 +37,8 @@
             <prop name="caption-href" type="String" description="Optional hyperlink for the caption" />
             <prop name="font-size" type="String" default="32" category="Presentation"/>
             <prop name="font-family" type="String" category="Presentation"/>
+            <prop name="subtitle" type="String"/>
+            <prop name="subtitle-font-size" type="String" category="Presentation"/>
         </props>
         <computed-props>
             <computed-prop name="captionPos">
@@ -63,6 +66,25 @@
                     "text-anchor": computedProps.captionAnchor, "dominant-baseline": computedProps.captionBaseline,
                 }
             </computed-prop>
+            <computed-prop name="subtitleFontSize">props.subtitleFontSize ?? props.fontSize*0.75</computed-prop>
+            <computed-prop name="subtitlePos">
+                {
+                    x: computedProps.captionPos.x, 
+                    y: computedProps.captionPos.y + 
+                       Number(computedProps.captionBaseline === "ideographic" ? computedProps.subtitleFontSize : props.fontSize)
+                }
+        </computed-prop>
+            <computed-prop name="subtitleBaseline">
+                computedProps.captionBaseline === "middle" ? "ideographic" :
+                computedProps.captionBaseline === "text-before-edge" ? "hanging" :
+                    computedProps.captionBaseline
+            </computed-prop>
+            <computed-prop name="subtitleParams">
+                {
+                    ...computedProps.subtitlePos, fill: props.captionColor, "font-size": props.subtitleFontSize, "font-family": props.fontFamily,
+                    "text-anchor": computedProps.captionAnchor, "dominant-baseline": computedProps.subtitleBaseline,
+                }
+            </computed-prop>
             <computed-prop name="connectionPoints">
                 {
                     n: {x: props.width*0.5, y: 0, dir: 270},
@@ -87,6 +109,7 @@
         <style>
             .caption {text-decoration: none}
             .caption:hover {text-decoration: underline}
+            .subtitle {opacity: 0.7}
         </style>
     </component-class>
 
