@@ -62,6 +62,7 @@
             <xs:attribute name="name" use="required" />
             <xs:attribute name="width" type="xs:float" />
             <xs:attribute name="height" type="xs:float" />
+            <xs:attribute name="href-base"/>
         </xs:complexType>
     </xs:element>
 
