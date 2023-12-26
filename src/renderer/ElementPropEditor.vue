@@ -199,6 +199,10 @@
     {
         props.propToEdit.value = cbColorDefined.value?.checked ? (props.propToEdit.default ?? "#ffffff") : undefined;
     }//onColorDefUndef
+
+    const valueCellClass = computed(() => {
+        return {"text-center": props.propToEdit.type === Boolean};
+    })//valueCellClass
 </script>
 
 <template>
@@ -243,7 +247,7 @@
             </div>
         </td>
         <!-- Prop value -->
-        <td class="p-1">
+        <td class="p-1" :class="valueCellClass">
             <select v-if="propToEdit.validValues" ref="propInputs" :data-prop-name="propToEdit.name"
                     class="form-select form-select-sm border-0" :id="subpropInputID(propToEdit)"
                     v-model="subpropModel">
@@ -258,7 +262,7 @@
                 v-model="subpropModel"/>
             <input v-else-if="propToEdit.type === Boolean" type="checkbox"
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                class="form-check-input"
+                class="form-check-input" :indeterminate="propToEdit.value === undefined"
                 v-model="subpropModel"/>
             <input v-else-if="propToEdit.type === Object"
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
