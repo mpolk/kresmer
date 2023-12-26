@@ -193,6 +193,12 @@
     {
         emit("add-subprop", parentProp, type);
     }//onDescendantAddSubprop
+
+    const cbColorDefined = ref<HTMLInputElement>();
+    function onColorDefUndef()
+    {
+        props.propToEdit.value = cbColorDefined.value?.checked ? (props.propToEdit.default ?? "#ffffff") : undefined;
+    }//onColorDefUndef
 </script>
 
 <template>
@@ -258,10 +264,19 @@
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-control form-control-sm text-secondary border-0" readonly
                 :value="JSON.stringify(propToEdit.value)"/>
-            <input v-else-if="propToEdit.editor === 'color-picker'" type="color"
-                ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                class="form-control form-control-sm border-0"
-                v-model="subpropModel"/>
+            <div v-else-if="propToEdit.editor === 'color-picker'" class="row">
+                <div v-if="!propToEdit.required" class="col-auto">
+                    <div class="form-check form-switch form-check-inline d-inline-block">
+                        <input class="form-check-input" type="checkbox" ref="cbColorDefined" :checked="Boolean(propToEdit.value)" @click="onColorDefUndef"/>
+                    </div>
+                </div>
+                <div class="col">
+                    <input v-show="propToEdit.value" type="color"
+                        ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
+                        class="form-control form-control-sm border-0"
+                        v-model="subpropModel"/>
+                </div>
+            </div>
             <input v-else 
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 :pattern="propToEdit.pattern"
