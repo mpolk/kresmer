@@ -26,6 +26,9 @@
         endLabel: {type: String, required: false},
         startMarker: {type: String, required: false},
         endMarker: {type: String, required: false},
+        color: {type: String, required: false},
+        layingMethod: {type: String, required: false},
+        nFibers: {type: Number, required: false},
     });
 
     // eslint-disable-next-line vue/no-setup-props-destructure
@@ -71,6 +74,7 @@
 
     const segmentStyle = computed(() => {
         return {
+            stroke: props.color,
             cursor: cursorStyle.value.cursor,
             markerStart: props.startMarker ? `url(#kre:link-marker-${props.startMarker})` : "none",
             markerEnd: props.endMarker ? `url(#kre:link-marker-${props.endMarker})` : "none",

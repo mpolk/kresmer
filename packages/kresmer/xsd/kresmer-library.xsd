@@ -339,7 +339,24 @@
                 <xs:element name="prop" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
                         <xs:attribute name="name" use="required" />
-                        <xs:attribute name="type" use="required" />
+
+                        <xs:attribute name="type" use="required">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:string">
+                                    <xs:enumeration value="String"/>
+                                    <xs:enumeration value="string"/>
+                                    <xs:enumeration value="Number"/>
+                                    <xs:enumeration value="number"/>
+                                    <xs:enumeration value="Boolean"/>
+                                    <xs:enumeration value="boolean"/>
+                                    <xs:enumeration value="Object"/>
+                                    <xs:enumeration value="object"/>
+                                    <xs:enumeration value="Color"/>
+                                    <xs:enumeration value="color"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
+
                         <xs:attribute name="required" type="xs:boolean" />
                         <xs:attribute name="default" />
                         <xs:attribute name="choices" />
@@ -352,6 +369,7 @@
                                     <xs:enumeration value="Hidden"/>
                                     <xs:enumeration value="Geometry"/>
                                     <xs:enumeration value="Presentation"/>
+                                    <xs:enumeration value="Construction"/>
                                     <xs:enumeration value="Network"/>
                                     <xs:enumeration value="Hardware"/>
                                     <xs:enumeration value="Optics"/>

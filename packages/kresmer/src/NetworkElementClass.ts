@@ -96,6 +96,7 @@ export enum NetworkElementPropCategory {
     Network, 
     Geometry,  
     Presentation, 
+    Construction, 
 }//NetworkElementPropCategory
 
 export type NetworkElementClassProp = Prop<unknown, unknown> & 

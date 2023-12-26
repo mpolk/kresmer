@@ -38,6 +38,7 @@
             <prop name="endLabel" type="string"/>
             <prop name="startMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
             <prop name="endMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
+            <prop name="color" type="Color" default="#3b3b3b" category="Presentation"/>
         </props>
         <style>
             .padding {stroke-width: 8px;}
@@ -118,6 +119,7 @@
         <props>
             <prop name="nFibers" type="Number" category="Hardware" description="The number of fibers in the cable"/>
             <prop name="mode" type="String" category="Hardware" choices="single-mode, multi-mode" description="Optical mode use"/>
+            <prop name="laying-method" type="string" choices="by-the-poles, by-the-roofs, in-canalization" category="Construction"/>
         </props>
         <style>
             .link {--link-color: black; --highlighted-link-color: #ff873d; }
