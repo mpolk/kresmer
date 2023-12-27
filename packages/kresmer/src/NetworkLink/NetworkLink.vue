@@ -88,6 +88,12 @@
         }
     })//segmentStyle
 
+    const segMarkStyle = computed(() => {
+        return {
+            fill: props.model.isHighlighted || props.model.isSelected ? props.highlightColor : props.color,
+        }
+    })//segMarkStyle
+
     const path = computed(() => {
         const chunks: string[] = [];
         let prefix = "M";
@@ -117,6 +123,7 @@
     })//path
 
     const pathID = computed(() => `kre:link${props.model.id}path`);
+    function segmentPathID(i: number) { return `kre:link${props.model.id}seg${i}path`; }
 
     function segmentDataAttr(i: number)
     {
@@ -144,8 +151,8 @@
             <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}<template v-if="endMarker">&nbsp;&nbsp;&nbsp;</template></textPath>
         </text>
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
-            <template v-if="i && segmentHasPadding(i)">
-                <line :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
+            <template v-if="i">
+                <line v-if="segmentHasPadding(i)" :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
                     :x2="vertex.coords.x" :y2="vertex.coords.y" 
                     class="padding" style="stroke: transparent; fill: none;" 
                     @click.self="model.onClick(i - 1, $event)"
@@ -154,6 +161,14 @@
                     :style="cursorStyle"
                     :data-link-bundle="segmentDataAttr(i-1)"
                     ><title>{{model.displayString}}</title></line>
+                <template v-if="nFibers">
+                    <path :id="segmentPathID(i)" 
+                        :d="`M${model.vertices[i-1].coords.x},${model.vertices[i-1].coords.y} ${model.vertices[i].coords.x},${model.vertices[i].coords.y}`"
+                        fill="none" stroke="none"/>
+                    <text class="seg-mark" :style="segMarkStyle">
+                        <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ `/${nFibers}` }}</textPath>
+                    </text>
+                </template>
             </template>
         </template>
         <template v-for="(vertex, i) in model.vertices" :key="`vertex${vertex.key}`">
@@ -169,5 +184,9 @@
             &.start {text-anchor: start;}
             &.end {text-anchor: end;}
         }
+    }
+
+    .seg-mark {
+        dominant-baseline: ideographic; text-anchor: middle;
     }
 </style>

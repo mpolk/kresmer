@@ -74,6 +74,7 @@
             .blank.origin-center {fill: red;}
             .blank.header {stroke: var(--link-color); stroke-width: 2px; fill: var(--link-color); fill-opacity: 0.5;}
             .blank.header-center {fill: var(--link-color); filter: brightness(0.2);}
+            .seg-mark {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
         </style>
     </link-class>
 
