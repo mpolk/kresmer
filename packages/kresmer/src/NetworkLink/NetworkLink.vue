@@ -74,11 +74,17 @@
     })//segmentStyle
 
     const segmentStyle = computed(() => {
+        const midMarker = 
+            props.layingMethod === "in-canalization" ? "canalization" :
+            props.layingMethod === "by-the-roofs" ? "roof" :
+            props.layingMethod === "by-the-poles" ? "pole" :
+                undefined;
         return {
             stroke: props.model.isHighlighted || props.model.isSelected ? props.highlightColor : props.color,
             cursor: cursorStyle.value.cursor,
-            markerStart: props.startMarker ? `url(#kre:link-marker-${props.startMarker})` : "none",
-            markerEnd: props.endMarker ? `url(#kre:link-marker-${props.endMarker})` : "none",
+            markerStart: props.startMarker ? `url(#kre:link-marker-${props.startMarker})` : undefined,
+            markerEnd: props.endMarker ? `url(#kre:link-marker-${props.endMarker})` : undefined,
+            markerMid: props.layingMethod ? `url(#kre:link-marker-${midMarker})` : undefined,
         }
     })//segmentStyle
 
