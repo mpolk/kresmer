@@ -27,6 +27,7 @@
         startMarker: {type: String, required: false},
         endMarker: {type: String, required: false},
         color: {type: String, required: false},
+        highlightColor: {type: String, required: false},
         layingMethod: {type: String, required: false},
         nFibers: {type: Number, required: false},
     });
@@ -74,7 +75,7 @@
 
     const segmentStyle = computed(() => {
         return {
-            stroke: props.color,
+            stroke: props.model.isHighlighted || props.model.isSelected ? props.highlightColor : props.color,
             cursor: cursorStyle.value.cursor,
             markerStart: props.startMarker ? `url(#kre:link-marker-${props.startMarker})` : "none",
             markerEnd: props.endMarker ? `url(#kre:link-marker-${props.endMarker})` : "none",

@@ -38,11 +38,12 @@
             <prop name="endLabel" type="string"/>
             <prop name="startMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
             <prop name="endMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
-            <prop name="color" type="Color" default="#3b3b3b" category="Presentation"/>
+            <prop name="color" type="Color" category="Presentation"/>
+            <prop name="highlightColor" type="Color" category="Presentation"/>
         </props>
         <style>
             .padding {stroke-width: 8px;}
-            .link {--link-color: #3b3b3b; --highlighted-link-color: black;}
+            .link {--link-color: #3b3b3b; --highlighted-link-color: #000000;}
             .segment {stroke: var(--link-color); stroke-width: 2px; stroke-linecap: round; xx-filter: url(#kre:fltLinkFilter)}
             .segment.highlighted, .segment.selected {stroke: var(--highlighted-link-color); stroke-width: 3px}
             .vertex {stroke: var(--highlighted-link-color); stroke-width: 4px; fill: white; r: 6px}
