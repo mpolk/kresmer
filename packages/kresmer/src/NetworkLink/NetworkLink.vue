@@ -166,7 +166,8 @@
                     @dblclick.self="model.onDoubleClick(i - 1, $event)"
                     :style="cursorStyle"
                     :data-link-bundle="segmentDataAttr(i-1)"
-                    ><title>{{model.displayString}}</title></line>
+                    ><title>{{model.displayString}}</title>
+                </line>
                 <template v-if="nFibers && (!startLabel || i > 1) && (!endLabel || i < model.vertices.length-1)">
                     <path :id="segmentPathID(i)" :d="segMarkPathData(i)" fill="none" stroke="none"/>
                     <text class="seg-mark" :style="segMarkStyle">
