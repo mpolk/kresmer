@@ -161,7 +161,7 @@
                     :style="cursorStyle"
                     :data-link-bundle="segmentDataAttr(i-1)"
                     ><title>{{model.displayString}}</title></line>
-                <template v-if="nFibers">
+                <template v-if="nFibers && (!startLabel || i > 1) && (!endLabel || i < model.vertices.length-1)">
                     <path :id="segmentPathID(i)" 
                         :d="`M${model.vertices[i-1].coords.x},${model.vertices[i-1].coords.y} ${model.vertices[i].coords.x},${model.vertices[i].coords.y}`"
                         fill="none" stroke="none"/>
