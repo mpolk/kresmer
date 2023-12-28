@@ -135,7 +135,7 @@ export default class DrawingLoader {
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}"\
- href-base="${this.kresmer.hrefBase.value}">
+ ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}>
 `;
 
         for (const controller of this.kresmer.networkComponents.values()) {

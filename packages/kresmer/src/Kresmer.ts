@@ -578,6 +578,7 @@ ${svg.outerHTML}
     public eraseContent(): void
     {
         this.drawingName = UNNAMED_DRAWING;
+        this.hrefBase.value = "";
         this.undoStack.reset();
         this.linksByName.clear();
         this.links.clear();
