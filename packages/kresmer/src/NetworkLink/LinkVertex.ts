@@ -436,6 +436,7 @@ export default class LinkVertex {
 
     public endDrag(event: MouseEvent)
     {
+        this.link.kresmer._showAllConnectionPoints.value = false;
         this.isGoingToBeDragged = false;
         if (!this.isDragged) {
             return false;
@@ -443,7 +444,6 @@ export default class LinkVertex {
 
         this.isDragged = false;
         MouseEventCapture.release();
-        this.link.kresmer._showAllConnectionPoints.value = false;
 
         if (this.dragConstraint !== "bundle") {
             const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
@@ -578,6 +578,7 @@ export default class LinkVertex {
 
     public onDoubleClick()
     {
+        this.link.kresmer._showAllConnectionPoints.value = false;
         this.link.kresmer.edAPI.alignLinkVertex({vertex: this});
     }//onDoubleClick
 

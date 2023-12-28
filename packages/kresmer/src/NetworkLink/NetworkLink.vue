@@ -136,6 +136,12 @@
                !props.model.vertices[i-1].isAttachedToBundle || 
                props.model.vertices[i-1].anchor.bundle?.baseVertex.link !== props.model.vertices[i].anchor.bundle?.baseVertex.link;
     }//segmentHasPadding
+
+    function segMarkPathData(i: number)
+    {
+        const p1 = props.model.vertices[i-1].coords, p2 = props.model.vertices[i].coords;
+        return (p2.x < p1.x) ? `M${p2.x},${p2.y} ${p1.x},${p1.y}` : `M${p1.x},${p1.y} ${p2.x},${p2.y}`;
+    }//segMarkPathData
 </script>
 
 <template>
@@ -162,9 +168,7 @@
                     :data-link-bundle="segmentDataAttr(i-1)"
                     ><title>{{model.displayString}}</title></line>
                 <template v-if="nFibers && (!startLabel || i > 1) && (!endLabel || i < model.vertices.length-1)">
-                    <path :id="segmentPathID(i)" 
-                        :d="`M${model.vertices[i-1].coords.x},${model.vertices[i-1].coords.y} ${model.vertices[i].coords.x},${model.vertices[i].coords.y}`"
-                        fill="none" stroke="none"/>
+                    <path :id="segmentPathID(i)" :d="segMarkPathData(i)" fill="none" stroke="none"/>
                     <text class="seg-mark" :style="segMarkStyle">
                         <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ `/${nFibers}` }}</textPath>
                     </text>
@@ -188,5 +192,6 @@
 
     .seg-mark {
         dominant-baseline: ideographic; text-anchor: middle;
+        cursor: default;
     }
 </style>
