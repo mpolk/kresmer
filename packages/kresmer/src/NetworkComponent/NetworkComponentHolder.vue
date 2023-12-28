@@ -16,6 +16,7 @@
     import NetworkElement from "../NetworkElement";
     import { Transform } from '../Transform/Transform';
     import Kresmer from '../Kresmer';
+import { toCamelCase } from '../Utils';
 
     export default {
         components: { TransformBox },
@@ -30,7 +31,8 @@
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
     const svg = ref<SVGSVGElement>()!;
-    const trGroup = ref<SVGSVGElement>()!;
+    const trGroup = ref<SVGGElement>()!;
+    const trBox = ref<InstanceType<typeof TransformBox>>()!;
     // eslint-disable-next-line vue/no-setup-props-destructure
     provide(NetworkComponent.injectionKey, props.controller.component);
     // eslint-disable-next-line vue/no-setup-props-destructure
@@ -60,6 +62,7 @@
         updateBoundingBox();
         // eslint-disable-next-line vue/no-mutating-props
         props.controller.component.svg = svg.value;
+        props.controller._setMouseCaptureTarget(trGroup.value!);
     })//onMounted
 
     watch(() => props.controller.component.propsUpdateIndicator, () => {
@@ -138,14 +141,18 @@
     {
         if (transformStartEvent)
             transformStartEvent = undefined;
-        else if (isEditable)
+        else if (isEditable) {
+            props.controller._setMouseCaptureTarget(trGroup.value!);
             props.controller.endTransform(event) || props.controller.endDrag(event);
+        }//if
     }//onMouseUpInTransformBox
 
     function onMouseMoveInTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
         event.preventDefault();
         if (isEditable && transformStartEvent) {
+            const handleRef = toCamelCase(zone) as keyof InstanceType<typeof TransformBox>;
+            props.controller._setMouseCaptureTarget(trBox.value![handleRef]);
             switch(zone) {
                 case "tr-box":
                     props.controller.startDrag(transformStartEvent);
@@ -197,7 +204,7 @@
 
     function onMouseLeaveFromTransformBox(zone: TransformBoxZone, event: MouseEvent)
     {
-        onMouseUpInTransformBox(zone, event);
+        // onMouseUpInTransformBox(zone, event);
     }//onMouseLeaveFromTransformBox
 
     function onTransformBoxClick(event: MouseEvent) {

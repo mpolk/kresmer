@@ -68,7 +68,7 @@ export function clone<T>(x: T): T
 // Our self-made implementation of mouse capture
 
 /** An element that captures mouse events */
-let mouseEventCaptureTarget: HTMLElement|undefined;
+let mouseEventCaptureTarget: SVGElement|undefined;
 /** A list of the mouse events to be captured */
 let capturedMouseEvents: string[];
 
@@ -77,7 +77,7 @@ let capturedMouseEvents: string[];
  * @param el The element mouse events should be captured for
  * @param events A list of the mouse events to be captured  (without the "mouse" prefix)
  */
-export function captureMouseEvents(el: HTMLElement, ...events: string[])
+export function captureMouseEvents(el: SVGElement, ...events: string[])
 {
     mouseEventCaptureTarget = el;
     capturedMouseEvents = [];

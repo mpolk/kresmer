@@ -302,8 +302,8 @@ export default class LinkVertex {
     get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbour?.isAttachedToBundle ||
                                           this.nextNeighbour.bundleAttachedTo !== this.bundleDefinitelyAttachedTo));}
 
-    private mouseCaptureTarget?: HTMLElement;
-    _setMouseCaptureTarget(el: HTMLElement)
+    private mouseCaptureTarget?: SVGElement;
+    _setMouseCaptureTarget(el: SVGElement)
     {
         this.mouseCaptureTarget = el;
     }//_setMouseCaptureTarget

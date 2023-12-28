@@ -13,7 +13,7 @@ import NetworkComponent from "./NetworkComponent";
 import { Position, Transform, ITransform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
 import { EditorOperation } from "../UndoStack";
-import { indent } from "../Utils";
+import { captureMouseEvents, indent, releaseMouseEventsCapture } from "../Utils";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
 import { withZOrder  } from "../ZOrdering";
@@ -51,6 +51,12 @@ class _NetworkComponentController {
 
     get id() {return this.component.id}
 
+    private mouseCaptureTarget?: SVGElement;
+    _setMouseCaptureTarget(el: SVGElement)
+    {
+        this.mouseCaptureTarget = el;
+    }//_setMouseCaptureTarget
+
     private getMousePosition(event: MouseEvent) {
         return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
@@ -83,6 +89,7 @@ class _NetworkComponentController {
         } else {
             this.kresmer.undoStack.startOperation(new ComponentMoveOp(this));
         }//if
+        captureMouseEvents(this.mouseCaptureTarget!);
     }//startDrag
 
     public _startDrag(this: NetworkComponentController)
@@ -143,6 +150,7 @@ class _NetworkComponentController {
         if (this.isDragged) {
             this.isDragged = false;
             this.dragConstraint = undefined;
+            releaseMouseEventsCapture();
             if (this.kresmer.snapToGrid) {
                 this.origin = {
                     x: Math.round(this.origin.x / this.kresmer.snappingGranularity) * this.kresmer.snappingGranularity,
@@ -172,6 +180,7 @@ class _NetworkComponentController {
         this.isBeingTransformed = true;
         this.transformMode = "rotation";
         this.bringToTop();
+        captureMouseEvents(this.mouseCaptureTarget!);
         this.kresmer.emit("component-transform-started", this);
         this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startRotate
@@ -205,8 +214,9 @@ class _NetworkComponentController {
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
         this.transformMode = "scaling";
-        this.kresmer.emit("component-transform-started", this);
         this.bringToTop();
+        captureMouseEvents(this.mouseCaptureTarget!);
+        this.kresmer.emit("component-transform-started", this);
         this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startScale
 
@@ -236,6 +246,7 @@ class _NetworkComponentController {
         }//if
 
         this.isBeingTransformed = false;
+        releaseMouseEventsCapture();
         this.updateConnectionPoints();
         this.kresmer.undoStack.commitOperation();
         this.kresmer.emit("component-transformed", this);

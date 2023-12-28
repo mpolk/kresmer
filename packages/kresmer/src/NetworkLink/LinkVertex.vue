@@ -36,8 +36,8 @@
     });
 
     const isEditable = inject(Kresmer.ikIsEditable);
-    const circle = ref<HTMLElement>()!;
-    const padding = ref<HTMLElement>()!;
+    const circle = ref<SVGElement>()!;
+    const padding = ref<SVGElement>()!;
 
     type LinkNumber = {
         number: number,
