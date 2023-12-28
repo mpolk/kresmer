@@ -181,11 +181,11 @@ class=${JSON.stringify(clazz)}`;
 
     function onMouseLeave(event: MouseEvent)
     {
-        event.relatedTarget !== circle.value &&
-        event.relatedTarget !== padding.value &&
-        isEditable &&
-        props.model.endDrag(event) && 
-        props.model.link.restoreZPosition();
+        // event.relatedTarget !== circle.value &&
+        // event.relatedTarget !== padding.value &&
+        // isEditable &&
+        // props.model.endDrag(event) && 
+        // props.model.link.restoreZPosition();
     }//onMouseLeave
 
     function onRightClick(event: MouseEvent)
