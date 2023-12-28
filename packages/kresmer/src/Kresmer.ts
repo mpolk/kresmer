@@ -854,6 +854,10 @@ ${svg.outerHTML}
     /** Inactivates temporarily normal link behaviour and reactivity (for internal use) */
     public _allLinksFreezed = false;
 
+    /** Temporarily makes all connections points visible (for internal use) */
+    readonly _showAllConnectionPoints = reactive({value: false}); 
+    //!!! workaround for some Vue bug: normal "ref" doesn't work in this context
+
 
     /** 
      * Starts dragging the selected components following the leading one 

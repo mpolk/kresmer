@@ -85,7 +85,7 @@
 <template>
     <circle v-if="proxy.isActive" :cx="x" :cy="y" :r="d/2" 
         class="connection-point-marker" 
-        :class="{'visible': kresmer.isEditable}" 
+        :class="{visible: kresmer.isEditable, always: kresmer._showAllConnectionPoints.value}" 
         ref="cpMarker"
         :data-connection-point="dataAttr"
         @contextmenu.stop="onRightClick()"
@@ -98,7 +98,7 @@
         fill-opacity: 0;
         stroke-opacity: 0;
 
-        &.visible:hover {
+        &.visible:hover, &.always.visible {
             fill-opacity: 0.5;
             stroke-opacity: 1;
         }

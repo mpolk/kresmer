@@ -41,10 +41,12 @@ export default class NetworkLinkBlank {
     public onMouseDown(_event: MouseEvent)
     {
         this.kresmer.deselectAllElements(this);
+        this.kresmer._showAllConnectionPoints.value = true;
     }//onMouseDown
 
     public onMouseUp(event: MouseEvent)
     {
+        this.kresmer._showAllConnectionPoints.value = false;
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
         for (const element of elementsUnderCursor) {
             const connectionPointData = element.getAttribute("data-connection-point");

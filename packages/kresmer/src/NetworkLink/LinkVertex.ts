@@ -358,9 +358,10 @@ export default class LinkVertex {
             this.dragConstraint = this._anchor.bundle?.baseVertex.nextNeighbour ? "bundle" : "unknown";
         this.link.kresmer.deselectAllElements(this.link);
         this.link.selectLink();
+        captureMouseEvents(this.mouseCaptureTarget!);
+        this.link.kresmer._showAllConnectionPoints.value = true;
         this.link.kresmer.emit("link-vertex-move-started", this);
         this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
-        captureMouseEvents(this.mouseCaptureTarget!);
     }//startDrag
 
 
@@ -441,6 +442,7 @@ export default class LinkVertex {
 
         this.isDragged = false;
         releaseMouseEventsCapture();
+        this.link.kresmer._showAllConnectionPoints.value = false;
 
         if (this.dragConstraint !== "bundle") {
             const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
