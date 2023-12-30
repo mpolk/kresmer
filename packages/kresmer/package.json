@@ -1,7 +1,7 @@
 {
   "name": "kresmer",
   "private": true,
-  "version": "0.5.16",
+  "version": "0.5.17",
   "author": "Dmitriy Stepanenko",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the core component",
   "module": "dist/kresmer.es.js",
