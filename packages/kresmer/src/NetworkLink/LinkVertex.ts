@@ -96,7 +96,7 @@ export default class LinkVertex {
     /** An object representing the logical position of the vertex. 
      * It may contain either a position as such (.pos), a reference to some connection point (.conn) or 
      * to the point within some link bundle (.bundle). */
-    get anchor() {return {...this._anchor};}
+    get anchor() {return this._anchor;}
     set anchor(newPos: LinkVertexAnchor)
     {
         this._anchor.pos = newPos.pos;

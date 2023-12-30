@@ -100,8 +100,8 @@ class _NetworkLink extends NetworkElement {
     private get hasHighlightedUplinks()
     {
         for (const vertex of this.vertices) {
-            if (vertex.anchor.conn?.hostElement instanceof NetworkLink && 
-                (vertex.anchor.conn.hostElement._highlightDownlinks || vertex.anchor.conn.hostElement.hasHighlightedUplinks)) 
+            const hostElement = vertex.anchor.conn?.hostElement;
+            if (hostElement instanceof NetworkLink && (hostElement._highlightDownlinks || hostElement.hasHighlightedUplinks)) 
                 return true;
         }//for
         return false;
