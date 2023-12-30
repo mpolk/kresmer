@@ -104,6 +104,7 @@ export default class LinkVertex {
         this.setBundle(newPos.bundle);
     }//set anchor
     private _anchor: LinkVertexAnchor = {pos: {x: 0, y: 0}};
+    anchorCopy() {return {...this._anchor};}
 
     pinUp(pos: Position)
     {
@@ -914,7 +915,7 @@ export class VertexMoveOp extends EditorOperation {
     constructor(private vertex: LinkVertex)
     {
         super();
-        this.oldAnchor = vertex.anchor;
+        this.oldAnchor = vertex.anchorCopy();
     }//ctor
 
     private oldAnchor: LinkVertexAnchor;
@@ -922,7 +923,7 @@ export class VertexMoveOp extends EditorOperation {
 
     override onCommit()
     {
-        this.newAnchor = this.vertex.anchor;
+        this.newAnchor = this.vertex.anchorCopy();
     }//onCommit
 
     override undo(): void {
@@ -942,7 +943,7 @@ export class VerticesMoveOp extends EditorOperation {
     {
         super();
         for (const vertex of this.vertices) {
-            this.oldAnchors.set(vertex, vertex.anchor);
+            this.oldAnchors.set(vertex, vertex.anchorCopy());
         }//for
     }//ctor
 
@@ -952,7 +953,7 @@ export class VerticesMoveOp extends EditorOperation {
     override onCommit()
     {
         for (const vertex of this.vertices) {
-            this.newAnchors.set(vertex, vertex.anchor);
+            this.newAnchors.set(vertex, vertex.anchorCopy());
         }//for
     }//onCommit
 
