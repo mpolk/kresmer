@@ -130,7 +130,7 @@
         get() {
             if (props.subpropLevel == 0) {
                 let value = props.propToEdit.value;
-                if (props.propToEdit.editor === 'color-picker' && props.propToEdit.value === undefined)
+                if (props.propToEdit.subtype === 'color' && props.propToEdit.value === undefined)
                     value = props.propToEdit.default;
                 return value;
             } else
@@ -268,7 +268,7 @@
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-control form-control-sm text-secondary border-0" readonly
                 :value="JSON.stringify(propToEdit.value)"/>
-            <div v-else-if="propToEdit.editor === 'color-picker'" class="row">
+            <div v-else-if="propToEdit.subtype === 'color'" class="row">
                 <div v-if="!propToEdit.required" class="col-auto">
                     <div class="form-check form-switch form-check-inline d-inline-block">
                         <input class="form-check-input" type="checkbox" ref="cbColorDefined" :checked="Boolean(propToEdit.value)" @click="onColorDefUndef"/>

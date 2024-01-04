@@ -17,9 +17,9 @@
 
     export type ElementPropDescriptor = {
         // eslint-disable-next-line @typescript-eslint/ban-types
-        name: string, value: unknown, type: Function, required: boolean, 
+        name: string, value: unknown, type: Function, subtype?: string, required: boolean, 
         validValues?: string[], pattern?: string, 
-        category?: NetworkElementPropCategory, default?: string, description?: string, editor?: string,
+        category?: NetworkElementPropCategory, default?: string, description?: string,
         parentPropDescriptor?: ElementPropDescriptor,
     };
 
@@ -158,7 +158,7 @@ Continue?`)) {
                         pattern,
                         default: _class.props[name].default,
                         description: _class.props[name].description,
-                        editor: _class.props[name].editor,
+                        subtype: _class.props[name].subtype,
                         isExpanded: false,
                     }
                 })

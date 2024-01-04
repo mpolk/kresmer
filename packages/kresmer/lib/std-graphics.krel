@@ -34,4 +34,34 @@
         ])}}
     </defs>
 
+    <!-- Standalone raster image -->
+    <component-class name="Image" category="General">
+        <template>
+            <image v-bind:width="width" v-bind:height="height" v-bind:href="url" v-bind:preserveAspectRatio="preserveAspectRatio"/>
+        </template>
+        <props>
+            <prop name="width" type="String" required="true" default="200" category="Geometry" />
+            <prop name="height" type="String" required="true" default="80" category="Geometry" />
+            <prop name="aspectRatioAlign" type="String" 
+                choices="none, xMinYMin, xMinYMid, xMinYMax, 
+                               xMidYMin, xMidYMid, xMidYMax, 
+                               xMaxYMin, xMaxYMid, xMaxYMax" 
+                category="Geometry"/>
+            <prop name="aspectRatioSlice" type="Boolean" category="Geometry"/>
+            <prop name="url" type="URL" required="true" default="data:image/png;base64,
+                iVBORw0KGgoAAAANSUhEUgAAAMgAAABQCAIAAADTD63nAAAACXBIWXMAAC4jAAAuIwF4pT92AAAA
+                qUlEQVR42u3SMREAMAgAsVLDqEQJRhiwwJhI+PvIrgfXvgQYC2NhLDAWxsJYYCyMhbHAWBgLY4Gx
+                MBbGAmNhLIwFxsJYGAuMhbEwFhgLY2EsMBbGwlhgLIyFscBYGAtjgbEwFsYCY2EsjAXGwlgYC4yF
+                sTAWGAtjYSwwFsbCWGAsjIWxwFgYC2OBsTAWxgJjYSyMBcbCWBgLjIWxMBYYC2NhLDAWxsJYsAYC
+                eAK3onjlkAAAAABJRU5ErkJggg=="
+            />
+        </props>
+        <computed-props>
+            <computed-prop name="preserveAspectRatio">
+                props.aspectRatioAlign === undefined || props.aspectRatioAlign === "none" ? "none" :
+                    props.aspectRatioAlign + (props.aspectRatioSlice ? " slice" : "")
+            </computed-prop>
+        </computed-props>
+    </component-class>
+
 </kresmer-library>
