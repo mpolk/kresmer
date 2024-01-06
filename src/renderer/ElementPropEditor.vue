@@ -29,7 +29,19 @@
         return `inpSubprop[${path.join(".")}]`;
     }//subpropInputID
 
-    type UrlType = "data"|"href"|"file-abs"|"file-rel";
+    enum UrlType {
+        data = "data:",
+        href = "href",
+        fileAbs = "file: (abs)",
+        fileRel = "file: (rel)",
+    }//UrlType
+
+    const UrlTypeDescriptions = {
+        [UrlType.data]: "Embedded graphics data",
+        [UrlType.href]: "Regular URL (http: or https:)",
+        [UrlType.fileAbs]: "File URL with an absolute path",
+        [UrlType.fileRel]: "File URL with a relative path",
+    }//UrlTypeDescriptions
 </script>
 
 <script setup lang="ts">
@@ -206,7 +218,25 @@
         return {"text-center": props.propToEdit.type === Boolean};
     })//valueCellClass
 
-    const urlType = ref<UrlType>("data");
+    const urlType = ref<UrlType>(
+        props.propToEdit.subtype !== "url" || 
+            !props.propToEdit.value || 
+            typeof props.propToEdit.value !== "string" || 
+            props.propToEdit.value.startsWith("data:") ? UrlType.data :
+        !props.propToEdit.value.startsWith("file:") ? UrlType.href :
+        props.propToEdit.value.match(/^file:(\/\/)?(\/|\\|[a-zA-Z]:)/) ? UrlType.fileAbs :
+        UrlType.fileRel
+    );
+
+    function setUrlType(newType: UrlType)
+    {
+        urlType.value = newType;
+    }//setUrlType
+
+    async function openFileForURL()
+    {
+        alert("Opening a file for URL");
+    }//openFileForURL
 </script>
 
 <template>
@@ -273,17 +303,19 @@
                 class="form-control form-control-sm text-secondary border-0" readonly
                 :value="JSON.stringify(propToEdit.value)"/>
             <div v-else-if="propToEdit.subtype === 'url'" class="input-group">
-                <select class="form-select form-select-sm" v-model="urlType">
-                    <option value="data">data:</option>
-                    <option value="href">href</option>
-                    <option value="file-abs">file: (abs)</option>
-                    <option value="file-rel">file: (rel)</option>
-                </select>
+                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    {{ urlType }}
+                </button>
+                <ul class="dropdown-menu">
+                    <li v-for="ut in UrlType" :key="ut" :title="UrlTypeDescriptions[ut]">
+                        <a class="dropdown-item" href="#" @click="setUrlType(ut)">{{ ut }}</a>
+                    </li>
+                </ul>
+                <button v-if="urlType !== 'href'" class="btn btn-secondary btn-sm" type="button">
+                    <span class="material-symbols-outlined" @click="openFileForURL">file_open</span>
+                </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                     class="form-control form-control-sm" :readonly="urlType !== 'href'" v-model="subpropModel"/>
-                <button v-if="urlType !== 'href'" class="btn btn-secondary btn-sm" type="button">
-                    <span class="material-symbols-outlined">file_open</span>
-                </button>
             </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">
                 <div v-if="!propToEdit.required" class="col-auto">

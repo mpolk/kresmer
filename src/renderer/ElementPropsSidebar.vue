@@ -333,7 +333,7 @@ Continue?`)) {
 </script>
 
 <template>
-    <div ref="rootDiv" class="offcanvas offcanvas-end w-50" tabindex="-1">
+    <div ref="rootDiv" class="offcanvas offcanvas-end w-50" style="max-width: 600px;" tabindex="-1">
         <!-- Sidebar header -->
         <div class="offcanvas-header align-items-baseline">
             <div>
