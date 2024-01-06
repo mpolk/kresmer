@@ -37,7 +37,8 @@
     <!-- Standalone raster image -->
     <component-class name="Image" category="General">
         <template>
-            <image v-bind:width="width" v-bind:height="height" v-bind:href="url" v-bind:preserveAspectRatio="preserveAspectRatio"/>
+            <image v-bind:width="width" v-bind:height="height" v-bind:href="$href(url)" 
+                   v-bind:preserveAspectRatio="preserveAspectRatio" />
         </template>
         <props>
             <prop name="width" type="String" required="true" default="200" category="Geometry" />
@@ -46,8 +47,11 @@
                 choices="none, xMinYMin, xMinYMid, xMinYMax, 
                                xMidYMin, xMidYMid, xMidYMax, 
                                xMaxYMin, xMaxYMid, xMaxYMax" 
-                category="Geometry"/>
-            <prop name="aspectRatioSlice" type="Boolean" category="Geometry"/>
+                category="Geometry"
+                description="Specifies whether the image aspect ratio has to be preserved and how the image should be aligned if the ratio is preserved"
+                />
+            <prop name="aspectRatioSlice" type="Boolean" category="Geometry"
+                description="Specifies whether the image should zoomed in or out (sliced) in order to preserve the aspect ratio" />
             <prop name="url" type="URL" required="true" default="data:image/png;base64,
                 iVBORw0KGgoAAAANSUhEUgAAAMgAAABQCAIAAADTD63nAAAACXBIWXMAAC4jAAAuIwF4pT92AAAA
                 qUlEQVR42u3SMREAMAgAsVLDqEQJRhiwwJhI+PvIrgfXvgQYC2NhLDAWxsJYYCyMhbHAWBgLY4Gx

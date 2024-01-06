@@ -202,7 +202,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** Makes a hyperlink from the commpon prefix and the specific tail */
     private makeHref = (tail: string) =>
     {
-        if (!this.hrefBase || tail.startsWith('/'))
+        if (!this.hrefBase || tail.match(/^(\/|data:|file:|[a-z]+:\/\/)/))
             return tail;
         return `${this.hrefBase.value.replace(/\/$/, '')}/${tail}`;
     }//makeHref

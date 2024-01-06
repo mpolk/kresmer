@@ -28,6 +28,8 @@
             path.push(subpropName);
         return `inpSubprop[${path.join(".")}]`;
     }//subpropInputID
+
+    type UrlType = "data"|"href"|"file-abs"|"file-rel";
 </script>
 
 <script setup lang="ts">
@@ -203,6 +205,8 @@
     const valueCellClass = computed(() => {
         return {"text-center": props.propToEdit.type === Boolean};
     })//valueCellClass
+
+    const urlType = ref<UrlType>("data");
 </script>
 
 <template>
@@ -268,10 +272,24 @@
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-control form-control-sm text-secondary border-0" readonly
                 :value="JSON.stringify(propToEdit.value)"/>
+            <div v-else-if="propToEdit.subtype === 'url'" class="input-group">
+                <select class="form-select form-select-sm" v-model="urlType">
+                    <option value="data">data:</option>
+                    <option value="href">href</option>
+                    <option value="file-abs">file: (abs)</option>
+                    <option value="file-rel">file: (rel)</option>
+                </select>
+                <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
+                    class="form-control form-control-sm" :readonly="urlType !== 'href'" v-model="subpropModel"/>
+                <button v-if="urlType !== 'href'" class="btn btn-secondary btn-sm" type="button">
+                    <span class="material-symbols-outlined">file_open</span>
+                </button>
+            </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">
                 <div v-if="!propToEdit.required" class="col-auto">
                     <div class="form-check form-switch form-check-inline d-inline-block">
-                        <input class="form-check-input" type="checkbox" ref="cbColorDefined" :checked="Boolean(propToEdit.value)" @click="onColorDefUndef"/>
+                        <input class="form-check-input" type="checkbox" ref="cbColorDefined" 
+                            :checked="Boolean(propToEdit.value)" @click="onColorDefUndef"/>
                     </div>
                 </div>
                 <div class="col">
