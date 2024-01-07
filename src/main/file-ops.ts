@@ -6,12 +6,13 @@
  *        File operation procedures for the Electron node.js main script
  ***************************************************************************/
 
-import { dialog } from 'electron';
+import { FileFilter, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
 import { mainWindow, sendAppCommand, libDirs, localSettings } from './main';
 import { defaultDrawingFileName, setDefaultDrawingFileName } from './init-funcs';
 import { IpcMainHooks } from './IpcMainHooks';
+import { UrlType } from '../renderer/UrlType';
 
 
 export function openDrawing()
@@ -172,3 +173,27 @@ export function loadLibraryFile(libName: string, fileName?: string)
     console.debug(`Could not load library "${libName}" (fileName="${fileName}")`);
     return undefined;
 }//loadLibraryFile
+
+
+export function selectOrLoadFile(requiredResultType: UrlType, filters: FileFilter[]) 
+{
+    const filePaths = dialog.showOpenDialogSync(mainWindow, {
+        title: "Open file...",
+        filters
+    });
+
+    let filePath = filePaths ? filePaths[0] : undefined
+    let data: string|undefined;
+
+    if (filePath) {
+        switch (requiredResultType) {
+            case UrlType.data: 
+                data = fs.readFileSync(filePath).toString("base64");
+                break;
+            case UrlType.fileRel:
+                filePath = path.relative(filePath, ".");
+        }//switch
+    }//if
+
+    return {filePath, data};
+}//selectOrLoadFile

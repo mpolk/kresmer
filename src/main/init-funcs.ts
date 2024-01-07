@@ -15,7 +15,7 @@ import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad,
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
-import { loadLibraryFile, saveDrawing } from './file-ops';
+import { loadLibraryFile, saveDrawing, selectOrLoadFile } from './file-ops';
 import { openUrlWithSystemBrowser, requestConnectToServer } from './misc-ops';
 
 export let defaultDrawingFileName: string|undefined;
@@ -200,6 +200,8 @@ export function initIpcMainHooks()
     IpcMainHooks.on("reload-content", () => {
         reloadContent();
     });
+
+    IpcMainHooks.onInvokation("select-or-load-file", selectOrLoadFile);
 }//initIpcMainHooks
 
 

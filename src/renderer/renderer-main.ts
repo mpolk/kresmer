@@ -85,6 +85,11 @@ window.addEventListener("resize", () => {
     kresmer.mountingHeight = mountingHeight;
 });
 
+export type fileSelectOrLoadResult = {
+    filePath: string|undefined;
+    data?: string|undefined;
+}; //fileSelectOrLoadResult
+
 const vueMessageBox = createApp(MessageBox).mount("#dlgMessageBox") as InstanceType<typeof MessageBox>;
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
     InstanceType<typeof DrawingPropsSidebar>;

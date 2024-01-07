@@ -6,9 +6,10 @@
  *        Renderer-to-main electron interprocess API declaration
  ***************************************************************************/
 
-import {IpcRendererEvent} from 'electron';
+import {FileFilter, IpcRendererEvent} from 'electron';
 import { ContextMenus, ContextMenuID } from './main/menus';
 import { AppSettings } from '../main/main';
+import { fileSelectOrLoadResult, UrlType } from './renderer-main';
 
 export interface ElectronAPI {
     signalReadiness: (stage: AppInitStage) => void,
@@ -31,6 +32,7 @@ export interface ElectronAPI {
     loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
     isReloadInProgress: () => Promise<boolean>,
     reloadContent: () => void,
+    selectOrLoadFile: (requiredResultType: UrlType, filters: FileFilter[]) => Promise<fileSelectOrLoadResult>,
 }//IElectronAPI
 
 

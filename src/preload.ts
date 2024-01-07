@@ -6,11 +6,12 @@
  *                      Electron node.js preload script
  ***************************************************************************/
 
-import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { contextBridge, FileFilter, ipcRenderer, IpcRendererEvent } from 'electron';
 import { ContextMenuID } from './main/Menus';
 import { AppInitStage, ElectronAPI } from './renderer/ElectronAPI';
 import { IpcMainChannel, IpcMainChannels } from './main/IpcMainHooks';
 import { AppSettings } from './main/main';
+import { type UrlType } from './renderer/UrlType';
 
 function sendToMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): void;
 function sendToMain(channel: IpcMainChannel, ...args: unknown[])
@@ -112,6 +113,10 @@ exposeToRenderer({
 
     reloadContent: () => {
         sendToMain("reload-content");
+    },
+
+    selectOrLoadFile: (requiredResultType: UrlType, filters: FileFilter[]) => {
+        return invokeFromMain("select-or-load-file", requiredResultType, filters);
     },
 });
 

@@ -11,6 +11,7 @@
     import { PropType, computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
+    import { UrlType } from './UrlType';
 
     export default {
         name: "ElementPropEditor",
@@ -28,13 +29,6 @@
             path.push(subpropName);
         return `inpSubprop[${path.join(".")}]`;
     }//subpropInputID
-
-    enum UrlType {
-        data = "data:",
-        href = "href",
-        fileAbs = "file: (abs)",
-        fileRel = "file: (rel)",
-    }//UrlType
 
     const UrlTypeDescriptions = {
         [UrlType.data]: "Embedded graphics data",
@@ -235,7 +229,28 @@
 
     async function openFileForURL()
     {
-        alert("Opening a file for URL");
+        const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType.value, [
+            {name: "Graphics files", extensions: ["png", "jpg", "jpeg"]},
+        ]);
+
+        if (!filePath)
+            return;
+
+        if (urlType.value !== UrlType.data) {
+            props.propToEdit.value = `file:${filePath}`;
+        } else {
+            const ext = filePath.slice(filePath.lastIndexOf('.')+1).toLowerCase();
+            let mimeType = "";
+            switch (ext) {
+                case "jpeg": case "jpg":
+                    mimeType = "image/jpeg";
+                    break;
+                case "png":
+                    mimeType = "image/png";
+                    break;
+            }//switch
+            props.propToEdit.value = `data:${mimeType};base64,${data}`;
+        }//if
     }//openFileForURL
 </script>
 

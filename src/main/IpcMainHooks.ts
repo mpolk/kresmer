@@ -5,10 +5,12 @@
  * -----------------------------------------------------------------------
  *             An IPC interface to Electron node.js main script
  ***************************************************************************/
-import { ipcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron";
+import { FileFilter, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron";
 import { AppInitStage } from "../renderer/ElectronAPI";
 import { ContextMenuID } from "./Menus";
 import { AppSettings } from "./main";
+import type { UrlType } from '../renderer/UrlType';
+import type { fileSelectOrLoadResult } from '../renderer/renderer-main';
 
 export interface IpcMainChannels {
     "update-app-settings": (newAppSettings: AppSettings) => void;
@@ -29,6 +31,7 @@ export interface IpcMainChannels {
     "load-library-file": (libName: string, fileName?: string) => string|undefined;
     "check-reload-status": () => void;
     "reload-content": () => void;
+    "select-or-load-file": (requiredResultType: UrlType, filters: FileFilter[]) => fileSelectOrLoadResult;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;
