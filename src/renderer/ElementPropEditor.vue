@@ -330,7 +330,7 @@
                     <span class="material-symbols-outlined" @click="openFileForURL">file_open</span>
                 </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                    class="form-control form-control-sm" :readonly="urlType !== 'href'" v-model="subpropModel"/>
+                    class="form-control form-control-sm" :readonly="urlType === UrlType.data" v-model="subpropModel"/>
             </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">
                 <div v-if="!propToEdit.required" class="col-auto">
