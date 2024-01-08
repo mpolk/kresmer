@@ -443,11 +443,6 @@ appCommandExecutor.on("delete-component", (componentID?: number) =>
     kresmer.edAPI.deleteComponent(componentID!);
 });//deleteComponent
 
-appCommandExecutor.on("duplicate-selected-component", () =>
-{
-    kresmer.edAPI.duplicateComponent(kresmer.getComponentControllerById(kresmer.selectedElement!.id)!);
-});//duplicateSelectedElement
-
 appCommandExecutor.on("duplicate-component", (componentID?: number) =>
 {
     const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;

@@ -127,9 +127,10 @@ export default class Menus {
             label: 'Component',
             submenu: [
                 { label: 'Add...', accelerator: "insert", click: () => sendAppCommand("add-component") },
+                { label: "Transform", id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
                 {
-                    label: 'Duplicate', accelerator: "Control+D", enabled: false, id: "duplicate-selected-component",
-                    click: () => sendAppCommand("duplicate-selected-component")
+                    label: 'Duplicate', accelerator: "Control+D", enabled: false, id: "duplicate-component",
+                    click: () => sendAppCommand("duplicate-component")
                 },
                 { type: 'separator' },
                 { label: 'Move to top', accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
@@ -167,17 +168,16 @@ export default class Menus {
                 { label: "Duplicate component", id: "duplicate-component" },
                 { label: "Delete component", id: "delete-component" },
                 { type: 'separator' },
-                { label: 'Move to top', id: "move-component-to-top" },
-                { label: 'Move up', id: "move-component-up" },
-                { label: 'Move down', id: "move-component-down" },
-                { label: 'Move to bottom', id: "move-component-to-bottom" },
+                { label: 'Move component to top', id: "move-component-to-top" },
+                { label: 'Move component up', id: "move-component-up" },
+                { label: 'Move component down', id: "move-component-down" },
+                { label: 'Move component to bottom', id: "move-component-to-bottom" },
                 { type: 'separator' },
                 { label: " Component properties...", id: "edit-component-properties" },
             ],
             "link": [
                 { label: "Align vertices", id: "align-vertices" },
                 { label: "Add vertex", id: "add-vertex" },
-                { type: 'separator' },
                 { type: 'separator' },
                 { label: "Delete link", id: "delete-link" },
                 { type: 'separator' },

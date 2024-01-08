@@ -149,7 +149,7 @@ export function initIpcMainHooks()
     });
 
     IpcMainHooks.on('enable-duplicate-component-menu-item', (enable: boolean) => {
-        Menu.getApplicationMenu()!.getMenuItemById("duplicate-selected-component")!.enabled = enable;
+        Menu.getApplicationMenu()!.getMenuItemById("duplicate-component")!.enabled = enable;
     });
 
     IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {

@@ -42,7 +42,6 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "toggle-rulers": () => void,
     "add-component": (position?: {x: number, y: number}) => void,
     "delete-selected-element": () => void,
-    "duplicate-selected-component": () => void,
     "show-about-dialog": (appVersion: string) => void,
 }//AppCommandFormats
 
