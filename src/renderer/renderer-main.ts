@@ -442,33 +442,20 @@ appCommandExecutor.on("duplicate-component", (componentID?: number) =>
     kresmer.edAPI.duplicateComponent(controller);
 });//duplicateComponent
 
-appCommandExecutor.on("move-component-down", (componentID?: number) => {
-    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
-    kresmer.edAPI.moveComponentDown(controller);
-    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
-    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
-});//moveComponentDown
+function moveComponentInZOrder(moveMethod: (controller: NetworkComponentController) => void)
+{
+    return (componentID?: number) => {
+        const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
+        moveMethod(controller);
+        window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
+        window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
+    }
+}//moveComponentInZOrder
 
-appCommandExecutor.on("move-component-to-bottom", (componentID?: number) => {
-    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
-    kresmer.edAPI.moveComponentToBottom(controller);
-    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
-    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
-});//moveComponentToBottom
-
-appCommandExecutor.on("move-component-up", (componentID?: number) => {
-    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
-    kresmer.edAPI.moveComponentUp(controller);
-    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
-    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
-});//moveComponentDown
-
-appCommandExecutor.on("move-component-to-top", (componentID?: number) => {
-    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
-    kresmer.edAPI.moveComponentToTop(controller);
-    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
-    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
-});//moveComponentToTop
+appCommandExecutor.on("move-component-down", moveComponentInZOrder(kresmer.edAPI.moveComponentDown));
+appCommandExecutor.on("move-component-to-bottom", moveComponentInZOrder(kresmer.edAPI.moveComponentToBottom));
+appCommandExecutor.on("move-component-up", moveComponentInZOrder(kresmer.edAPI.moveComponentUp));
+appCommandExecutor.on("move-component-to-top", moveComponentInZOrder(kresmer.edAPI.moveComponentToTop));
 
 appCommandExecutor.on("edit-component-properties", (componentID?: number) =>
 {

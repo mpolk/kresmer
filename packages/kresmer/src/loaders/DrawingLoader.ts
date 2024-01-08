@@ -131,6 +131,7 @@ export default class DrawingLoader {
     /** Serializes the drawing data to the string and returns this string */
     public saveDrawing()
     {
+        this.kresmer.deselectAllElements();
         let xml = `\
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
@@ -138,11 +139,11 @@ export default class DrawingLoader {
  ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}>
 `;
 
-        for (const controller of this.kresmer.networkComponents.values()) {
+        for (const controller of this.kresmer.networkComponents.sorted.values()) {
             xml += controller.toXML(1) + "\n\n";
         }//for
 
-        for (const link of this.kresmer.links.values()) {
+        for (const link of this.kresmer.links.sorted.values()) {
             xml += link.toXML(1) + "\n\n";
         }//for
 
