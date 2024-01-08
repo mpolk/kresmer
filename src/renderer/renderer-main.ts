@@ -447,10 +447,20 @@ appCommandExecutor.on("move-component-down", (componentID?: number) => {
     kresmer.edAPI.moveComponentDown(controller);
 });//moveComponentDown
 
+appCommandExecutor.on("move-component-to-bottom", (componentID?: number) => {
+    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
+    kresmer.edAPI.moveComponentToBottom(controller);
+});//moveComponentToBottom
+
 appCommandExecutor.on("move-component-up", (componentID?: number) => {
     const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
     kresmer.edAPI.moveComponentUp(controller);
 });//moveComponentDown
+
+appCommandExecutor.on("move-component-to-top", (componentID?: number) => {
+    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
+    kresmer.edAPI.moveComponentToTop(controller);
+});//moveComponentToTop
 
 appCommandExecutor.on("edit-component-properties", (componentID?: number) =>
 {

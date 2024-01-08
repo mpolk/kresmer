@@ -104,7 +104,7 @@ import { toCamelCase } from '../Utils';
     function onMouseUp(event: MouseEvent)
     {
         if (isEditable && !props.controller.transformMode && props.controller.endDrag(event)) { 
-            props.controller.restoreZPosition();
+            props.controller.returnFromTop();
             return;
         }//if
 

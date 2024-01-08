@@ -102,6 +102,42 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
 
         item.zIndex = bottomItem.zIndex;
     }//moveItemToBottom
+
+    public moveItemTo(item: T, newZIndex: number)
+    {
+        if (newZIndex < item.zIndex)
+            this.moveItemDownTo(item, newZIndex);
+        else if (newZIndex > item.zIndex)
+            this.moveItemUpTo(item, newZIndex);
+    }//moveItemTo
+
+    private moveItemDownTo(item: T, newZIndex: number)
+    {
+        let bottomItem = item;
+        for (const entry of this) {
+            const item1 = entry[1];
+            if (item1.zIndex < bottomItem.zIndex && item1.zIndex >= newZIndex)
+                bottomItem = item1;
+            if (item1.zIndex < item.zIndex && item1.zIndex >= newZIndex)
+                item1.zIndex++;
+        }//for
+
+        item.zIndex = bottomItem.zIndex;
+    }//moveItemDownTo
+
+    private moveItemUpTo(item: T, newZIndex: number)
+    {
+        let topItem = item;
+        for (const entry of this) {
+            const item1 = entry[1];
+            if (item1.zIndex > topItem.zIndex && item1.zIndex <= newZIndex)
+                topItem = item1;
+            if (item1.zIndex > item.zIndex && item1.zIndex <= newZIndex)
+                item1.zIndex--;
+        }//for
+
+        item.zIndex = topItem.zIndex;
+    }//moveItemUpTo
 }//MapWithZOrder
 
 /**
@@ -124,11 +160,11 @@ export function withZOrder<TBase extends new(...args: any[]) => object>(Base: TB
             }//if
         }//bringToTop
     
-        public restoreZPosition()
+        public returnFromTop()
         {
             if (this.zIndex === Z_INDEX_INF) {
                 this.zIndex = this._savedZIndex;
             }//if
-        }//restoreZPosition
+        }//returnFromTop
     }//class
 }//withZOrder

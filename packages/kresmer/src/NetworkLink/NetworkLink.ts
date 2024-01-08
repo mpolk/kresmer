@@ -64,7 +64,7 @@ class _NetworkLink extends NetworkElement {
     {
         super.isSelected = reallyIs;
         if (this.isHighlighted && !reallyIs) {
-            (this as unknown as NetworkLink).restoreZPosition();
+            (this as unknown as NetworkLink).returnFromTop();
             this.isHighlighted = false;
         }//if
     }//isSelected
@@ -283,7 +283,7 @@ class _NetworkLink extends NetworkElement {
     public onMouseLeave()
     {
         if (this.isHighlighted && !this.isSelected) {
-            (this as unknown as NetworkLink).restoreZPosition();
+            (this as unknown as NetworkLink).returnFromTop();
             this.isHighlighted = false;
         }//if
     }//onMouseLeave

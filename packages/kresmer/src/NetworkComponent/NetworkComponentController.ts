@@ -277,7 +277,7 @@ class _NetworkComponentController {
         // this.isBeingTransformed = false;
         this.transformMode = undefined;
         //this.kresmer.onComponentExitingTransformMode(this);
-        this.restoreZPosition();
+        this.returnFromTop();
     }//resetMode
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -520,12 +520,12 @@ export class ComponentMoveUpOp extends EditorOperation {
     }//ctor
 
     override exec(): void {
-        this.controller.restoreZPosition();
+        this.controller.returnFromTop();
         this.controller.kresmer.networkComponents.moveItemUp(this.controller);
     }//exec
 
     override undo(): void {
-        this.controller.restoreZPosition();
+        this.controller.returnFromTop();
         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
     }//undo
 
@@ -539,14 +539,17 @@ export class ComponentMoveToTopOp extends EditorOperation {
         super();
     }//ctor
 
+    private savedZIndex = 0;
+
     override exec(): void {
-        this.controller.restoreZPosition();
+        this.controller.returnFromTop();
+        this.savedZIndex = this.controller.zIndex;
         this.controller.kresmer.networkComponents.moveItemToTop(this.controller);
     }//exec
 
     override undo(): void {
-        this.controller.restoreZPosition();
-        this.controller.kresmer.networkComponents.moveItemDown(this.controller);
+        this.controller.returnFromTop();
+        this.controller.kresmer.networkComponents.moveItemTo(this.controller, this.savedZIndex);
     }//undo
 
 }//ComponentMoveToTopOp
@@ -559,13 +562,36 @@ export class ComponentMoveDownOp extends EditorOperation {
     }//ctor
 
     override exec(): void {
-        this.controller.restoreZPosition();
+        this.controller.returnFromTop();
         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
     }//exec
 
     override undo(): void {
-        this.controller.restoreZPosition();
+        this.controller.returnFromTop();
         this.controller.kresmer.networkComponents.moveItemUp(this.controller);
     }//undo
 
 }//ComponentMoveDownOp
+
+
+export class ComponentMoveToBottomOp extends EditorOperation {
+
+    constructor(private controller: NetworkComponentController) 
+    {
+        super();
+    }//ctor
+
+    private savedZIndex = 0;
+
+    override exec(): void {
+        this.controller.returnFromTop();
+        this.savedZIndex = this.controller.zIndex;
+        this.controller.kresmer.networkComponents.moveItemToBottom(this.controller);
+    }//exec
+
+    override undo(): void {
+        this.controller.returnFromTop();
+        this.controller.kresmer.networkComponents.moveItemTo(this.controller, this.savedZIndex);
+    }//undo
+
+}//ComponentMoveToBottomOp

@@ -13,8 +13,8 @@ import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
 import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
 import NetworkComponent, {ChangeComponentClassOp, NetworkComponentFunctions} from "./NetworkComponent/NetworkComponent";
-import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, ComponentMoveUpOp, ComponentMoveDownOp, SelectionMoveOp } 
-    from "./NetworkComponent/NetworkComponentController";
+import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, ComponentMoveUpOp, ComponentMoveToTopOp, 
+    ComponentMoveDownOp, ComponentMoveToBottomOp, SelectionMoveOp } from "./NetworkComponent/NetworkComponentController";
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "./NetworkLink/NetworkLinkClass";
@@ -746,13 +746,13 @@ ${svg.outerHTML}
         this.networkComponents.forEach(controller => {
             if (controller !== except) {
                 controller.component.isSelected = false;
-                controller.restoreZPosition();
+                controller.returnFromTop();
             }//if
         });
         this.links.forEach(link => {
             if (link !== except) {
                 link.isSelected = false;
-                link.restoreZPosition();
+                link.returnFromTop();
             }//if
         });
 
@@ -959,7 +959,7 @@ ${svg.outerHTML}
                 throw new KresmerException(`Attempt to delete non-existent component (id=${componentID})`);
             }//if
             controller.component.isSelected = false;
-            controller.restoreZPosition();
+            controller.returnFromTop();
             this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
         },//deleteComponent
 
@@ -972,12 +972,28 @@ ${svg.outerHTML}
         },//moveComponentUp
 
         /**
+         * Move component to the top in z-order
+         * @param controller A component to move
+         */
+        moveComponentToTop: (controller: NetworkComponentController) => {
+            this.undoStack.execAndCommit(new ComponentMoveToTopOp(controller));
+        },//moveComponentToTop
+
+        /**
          * Move component one step down in z-order
          * @param controller A component to move
          */
         moveComponentDown: (controller: NetworkComponentController) => {
             this.undoStack.execAndCommit(new ComponentMoveDownOp(controller));
         },//moveComponentUp
+
+        /**
+         * Move component to the bottom in z-order
+         * @param controller A component to move
+         */
+        moveComponentToBottom: (controller: NetworkComponentController) => {
+            this.undoStack.execAndCommit(new ComponentMoveToBottomOp(controller));
+        },//moveComponentToBottom
 
         /**
          * Changes class of the specified component
@@ -1022,7 +1038,7 @@ ${svg.outerHTML}
                 return;
             }//if
             link.isSelected = false;
-            link.restoreZPosition();
+            link.returnFromTop();
             this.undoStack.execAndCommit(new DeleteLinkOp(link));
         },//deleteLink
 
