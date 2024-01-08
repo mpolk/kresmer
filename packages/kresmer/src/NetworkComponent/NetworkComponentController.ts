@@ -520,14 +520,36 @@ export class ComponentMoveUpOp extends EditorOperation {
     }//ctor
 
     override exec(): void {
+        this.controller.restoreZPosition();
         this.controller.kresmer.networkComponents.moveItemUp(this.controller);
     }//exec
 
     override undo(): void {
+        this.controller.restoreZPosition();
         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
     }//undo
 
 }//ComponentMoveUpOp
+
+
+export class ComponentMoveToTopOp extends EditorOperation {
+
+    constructor(private controller: NetworkComponentController) 
+    {
+        super();
+    }//ctor
+
+    override exec(): void {
+        this.controller.restoreZPosition();
+        this.controller.kresmer.networkComponents.moveItemToTop(this.controller);
+    }//exec
+
+    override undo(): void {
+        this.controller.restoreZPosition();
+        this.controller.kresmer.networkComponents.moveItemDown(this.controller);
+    }//undo
+
+}//ComponentMoveToTopOp
 
 export class ComponentMoveDownOp extends EditorOperation {
 
@@ -537,10 +559,12 @@ export class ComponentMoveDownOp extends EditorOperation {
     }//ctor
 
     override exec(): void {
+        this.controller.restoreZPosition();
         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
     }//exec
 
     override undo(): void {
+        this.controller.restoreZPosition();
         this.controller.kresmer.networkComponents.moveItemUp(this.controller);
     }//undo
 

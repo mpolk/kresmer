@@ -963,10 +963,18 @@ ${svg.outerHTML}
             this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
         },//deleteComponent
 
+        /**
+         * Move component one step up in z-order
+         * @param controller A component to move
+         */
         moveComponentUp: (controller: NetworkComponentController) => {
             this.undoStack.execAndCommit(new ComponentMoveUpOp(controller));
         },//moveComponentUp
 
+        /**
+         * Move component one step down in z-order
+         * @param controller A component to move
+         */
         moveComponentDown: (controller: NetworkComponentController) => {
             this.undoStack.execAndCommit(new ComponentMoveDownOp(controller));
         },//moveComponentUp
