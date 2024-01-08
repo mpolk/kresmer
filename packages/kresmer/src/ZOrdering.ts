@@ -63,16 +63,16 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
 
     public moveItemToTop(item: T)
     {
-        let topmostItem = item;
+        let maxZIndex = item.zIndex;
         for (const entry of this) {
             const item1 = entry[1];
-            if (item1.zIndex > topmostItem.zIndex && item1.zIndex < Z_INDEX_INF)
-                topmostItem = item1;
+            if (item1.zIndex > maxZIndex && item1.zIndex < Z_INDEX_INF)
+                maxZIndex = item1.zIndex;
             if (item1.zIndex > item.zIndex && item1.zIndex < Z_INDEX_INF)
                 item1.zIndex--;
         }//for
 
-        item.zIndex = topmostItem.zIndex;
+        item.zIndex = maxZIndex;
     }//moveItemToTop
 
     public moveItemDown(item: T)
@@ -91,16 +91,16 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
 
     public moveItemToBottom(item: T)
     {
-        let bottomItem = item;
+        let minZIndex = item.zIndex;
         for (const entry of this) {
             const item1 = entry[1];
-            if (item1.zIndex < bottomItem.zIndex)
-                bottomItem = item1;
+            if (item1.zIndex < minZIndex)
+                minZIndex = item1.zIndex;
             if (item1.zIndex < item.zIndex)
                 item1.zIndex++;
         }//for
 
-        item.zIndex = bottomItem.zIndex;
+        item.zIndex = minZIndex;
     }//moveItemToBottom
 
     public moveItemTo(item: T, newZIndex: number)
@@ -113,30 +113,30 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
 
     private moveItemDownTo(item: T, newZIndex: number)
     {
-        let bottomItem = item;
+        let minZIndex = item.zIndex;
         for (const entry of this) {
             const item1 = entry[1];
-            if (item1.zIndex < bottomItem.zIndex && item1.zIndex >= newZIndex)
-                bottomItem = item1;
+            if (item1.zIndex < minZIndex && item1.zIndex >= newZIndex)
+                minZIndex = item1.zIndex;
             if (item1.zIndex < item.zIndex && item1.zIndex >= newZIndex)
                 item1.zIndex++;
         }//for
 
-        item.zIndex = bottomItem.zIndex;
+        item.zIndex = minZIndex;
     }//moveItemDownTo
 
     private moveItemUpTo(item: T, newZIndex: number)
     {
-        let topItem = item;
+        let maxZIndex = item.zIndex;
         for (const entry of this) {
             const item1 = entry[1];
-            if (item1.zIndex > topItem.zIndex && item1.zIndex <= newZIndex)
-                topItem = item1;
+            if (item1.zIndex > maxZIndex && item1.zIndex <= newZIndex)
+                maxZIndex = item1.zIndex;
             if (item1.zIndex > item.zIndex && item1.zIndex <= newZIndex)
                 item1.zIndex--;
         }//for
 
-        item.zIndex = topItem.zIndex;
+        item.zIndex = maxZIndex;
     }//moveItemUpTo
 }//MapWithZOrder
 
