@@ -162,8 +162,10 @@ export default class DrawingParser {
             componentName = undefined;
         }//if
         const component = new NetworkComponent(this.kresmer, className, {name: componentName, dbID, props, content});
-        return new NetworkComponentController(this.kresmer, component, 
+        const controller =  new NetworkComponentController(this.kresmer, component, 
             {origin: {x: origin.x, y: origin.y}, transform});
+        component.controller = controller;
+        return controller;
     }//parseComponentNode
 
 

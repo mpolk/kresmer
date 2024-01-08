@@ -222,8 +222,10 @@ kresmer.on("component-selected", (component: NetworkComponent, isSelected: boole
     } else {
         statusBarData.selectedElement = null;
     }//if
-    window.electronAPI.enableDeleteMenuItem(isSelected);
-    window.electronAPI.enableDuplicateMenuItem(isSelected);
+    window.electronAPI.enableDeleteComponentMenuItem(isSelected);
+    window.electronAPI.enableDuplicateComponentMenuItem(isSelected);
+    window.electronAPI.enableMoveComponentUpMenuItems(isSelected && !kresmer.networkComponents.isOnTop(component.controller!));
+    window.electronAPI.enableMoveComponentDownMenuItems(isSelected && !kresmer.networkComponents.isOnBottom(component.controller!));
 });//onComponentSelected
 
 kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) => 
@@ -233,7 +235,7 @@ kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) =>
     } else {
         statusBarData.selectedElement = null;
     }//if
-    window.electronAPI.enableDeleteMenuItem(isSelected);
+    window.electronAPI.enableDeleteComponentMenuItem(isSelected);
 });//onLinkSelected
 
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>

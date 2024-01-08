@@ -34,6 +34,10 @@ export interface ContextMenuCommands {
     "delete-component": ContextMenuHandler<"component">,
     "duplicate-component": ContextMenuHandler<"component">,
     "edit-component-properties": ContextMenuHandler<"component">,
+    "move-component-up": ContextMenuHandler<"component">,
+    "move-component-down": ContextMenuHandler<"component">,
+    "move-component-to-top": ContextMenuHandler<"component">,
+    "move-component-to-bottom": ContextMenuHandler<"component">,
 
     "align-vertices": ContextMenuHandler<"link">,
     "add-vertex": ContextMenuHandler<"link">,
@@ -58,7 +62,6 @@ export default class Menus {
     }//ctor
 
     private static readonly appMenuTemplate: MenuItemConstructorOptions[] = [
-        // { role: 'fileMenu' }
         {
             label: 'File',
             submenu: [
@@ -82,7 +85,6 @@ export default class Menus {
                 isMac ? { role: 'close' } : { role: 'quit' }
             ]
         },
-        // { role: 'editMenu' }
         {
             label: 'Edit',
             submenu: [
@@ -90,13 +92,6 @@ export default class Menus {
                 { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
                 { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
                 { type: 'separator' },
-                { label: 'Add component...', accelerator: "insert", click: () => sendAppCommand("add-component") },
-                {
-                    label: 'Duplicate component...', accelerator: "Control+D", enabled: false, id: "duplicate-selected-component",
-                    click: () => sendAppCommand("duplicate-selected-component")
-                },
-                { label: 'Add link...', accelerator: "Alt+l", click: () => sendAppCommand("create-link") },
-                { label: 'Add link bundle...', accelerator: "Alt+b", click: () => sendAppCommand("create-link-bundle") },
                 {
                     label: 'Delete network element', accelerator: "delete", enabled: false,
                     id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")
@@ -110,7 +105,6 @@ export default class Menus {
                 { label: "Application settings...", click: () => sendAppCommand("edit-app-settings", localSettings.data) },
             ]
         },
-        // { role: 'viewMenu' }
         {
             label: 'View',
             submenu: [
@@ -130,6 +124,28 @@ export default class Menus {
             ]
         },
         {
+            label: 'Component',
+            submenu: [
+                { label: 'Add...', accelerator: "insert", click: () => sendAppCommand("add-component") },
+                {
+                    label: 'Duplicate', accelerator: "Control+D", enabled: false, id: "duplicate-selected-component",
+                    click: () => sendAppCommand("duplicate-selected-component")
+                },
+                { type: 'separator' },
+                { label: 'Move to top', accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
+                { label: 'Move up', accelerator: "PageUp", id: "move-component-up", enabled: false, click: () => sendAppCommand("move-component-up") },
+                { label: 'Move down', accelerator: "PageDown", id: "move-component-down", enabled: false, click: () => sendAppCommand("move-component-down") },
+                { label: 'Move to bottom', accelerator: "Control+PageDown", id: "move-component-to-bottom", enabled: false, click: () => sendAppCommand("move-component-to-bottom") },
+            ]
+        },
+        {
+            label: 'Link',
+            submenu: [
+                { label: 'Add...', accelerator: "Alt+l", click: () => sendAppCommand("create-link") },
+                { label: 'Add bundle...', accelerator: "Alt+b", click: () => sendAppCommand("create-link-bundle") },
+            ]
+        },
+        {
             role: 'help',
             submenu: [
                 { label: 'About', click: () => showAboutDialog() },
@@ -141,18 +157,22 @@ export default class Menus {
         {
             "drawing": [
                 { label: "Add component...", id: "add-component" },
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 { label: "Create link", id: "create-link" },
                 { label: "Create link bundle", id: "create-link-bundle" },
                 { type: 'separator' },
                 { label: "Properties...", id: "edit-drawing-properties" },
             ],
             "component": [
-                { label: "Transform", id: "transform-component" },
+                { label: "Transform component", id: "transform-component" },
                 { label: "Duplicate component", id: "duplicate-component" },
                 { label: "Delete component", id: "delete-component" },
                 { type: 'separator' },
-                { label: "Properties...", id: "edit-component-properties" },
+                { label: 'Move to top', id: "move-component-to-top" },
+                { label: 'Move up', id: "move-component-up" },
+                { label: 'Move down', id: "move-component-down" },
+                { label: 'Move to bottom', id: "move-component-to-bottom" },
+                { type: 'separator' },
+                { label: " Component properties...", id: "edit-component-properties" },
             ],
             "link": [
                 { label: "Align vertices", id: "align-vertices" },

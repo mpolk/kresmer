@@ -71,12 +71,20 @@ exposeToRenderer({
         sendToMain("complete-drawing-export-to-SVG", svgData);
     },
 
-    enableDeleteMenuItem: (enable: boolean) => {
-        sendToMain("enable-delete-menu-item", enable);
+    enableDeleteComponentMenuItem: (enable: boolean) => {
+        sendToMain("enable-delete-component-menu-item", enable);
     },
 
-    enableDuplicateMenuItem: (enable: boolean) => {
-        sendToMain("enable-duplicate-menu-item", enable);
+    enableDuplicateComponentMenuItem: (enable: boolean) => {
+        sendToMain("enable-duplicate-component-menu-item", enable);
+    },
+
+    enableMoveComponentUpMenuItems: (enable: boolean) => {
+        sendToMain("enable-move-component-up-menu-items", enable);
+    },
+
+    enableMoveComponentDownMenuItems: (enable: boolean) => {
+        sendToMain("enable-move-component-down-menu-items", enable);
     },
 
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => {

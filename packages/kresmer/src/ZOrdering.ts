@@ -28,6 +28,24 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
     {
         return Array.from(this.values()).sort((item1, item2) => item1.zIndex - item2.zIndex);
     }//sorted
+
+    public isOnTop(item: T)
+    {
+        for (const item1 of this) {
+            if (item1[1].zIndex > item.zIndex)
+                return false;
+        }//for
+        return true;
+    }//isOnTop
+
+    public isOnBottom(item: T)
+    {
+        for (const item1 of this) {
+            if (item1[1].zIndex < item.zIndex)
+                return false;
+        }//for
+        return true;
+    }//isOnTop
 }//MapWithZOrder
 
 /**

@@ -10,6 +10,7 @@ import { InjectionKey, nextTick } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
 import NetworkElement, {NetworkElementData} from '../NetworkElement';
 import Kresmer from "../Kresmer";
+import NetworkComponentController from "./NetworkComponentController";
 import { EditorOperation } from "../UndoStack";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
@@ -40,6 +41,8 @@ export default class NetworkComponent extends NetworkElement {
         super(kresmer, componentClass, args);
         this.content = args?.content ?? componentClass.defaultContent;
     }//ctor
+
+    public controller?: NetworkComponentController;
 
     declare protected _class: NetworkComponentClass;
     override getClass(): NetworkComponentClass {

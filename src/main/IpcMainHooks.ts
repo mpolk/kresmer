@@ -20,8 +20,10 @@ export interface IpcMainChannels {
     "complete-drawing-saving": (dwgData: string) => void;
     "save-drawing": (dwgData: string) => boolean;
     "complete-drawing-export-to-SVG": (svgData: string) => void;
-    "enable-delete-menu-item": (enable: boolean) => void;
-    "enable-duplicate-menu-item": (enable: boolean) => void;
+    "enable-delete-component-menu-item": (enable: boolean) => void;
+    "enable-duplicate-component-menu-item": (enable: boolean) => void;
+    "enable-move-component-up-menu-items": (enable: boolean) => void;
+    "enable-move-component-down-menu-items": (enable: boolean) => void;
     "backend-server-connected": (url: string, password: string, autoConnect: boolean) => void;
     "backend-server-disconnected": () => void;
     "open-url": (url: string) => void;

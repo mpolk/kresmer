@@ -466,6 +466,7 @@ export default class Kresmer extends KresmerEventHooks {
     {
         const controller = new NetworkComponentController(
             this, component, {origin, transform});
+        component.controller = controller;
         return this.addPositionedNetworkComponent(controller);
     }//placeNetworkComponent
 
