@@ -12,6 +12,7 @@
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
     import { UrlType } from './UrlType';
+import { FileFilter } from 'electron';
 
     export default {
         name: "ElementPropEditor",
@@ -227,11 +228,13 @@
         urlType.value = newType;
     }//setUrlType
 
-    async function openFileForURL()
+    const graphicsFileFilters = [
+        {name: "Graphics files", extensions: ["png", "jpg", "jpeg"]},
+    ];
+
+    async function selectOrLoadFile(filters: FileFilter[])
     {
-        const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType.value, [
-            {name: "Graphics files", extensions: ["png", "jpg", "jpeg"]},
-        ]);
+        const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType.value, filters);
 
         if (!filePath)
             return;
@@ -251,7 +254,7 @@
             }//switch
             props.propToEdit.value = `data:${mimeType};base64,${data}`;
         }//if
-    }//openFileForURL
+    }//selectOrLoadFile
 </script>
 
 <template>
@@ -317,7 +320,7 @@
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-control form-control-sm text-secondary border-0" readonly
                 :value="JSON.stringify(propToEdit.value)"/>
-            <div v-else-if="propToEdit.subtype === 'url'" class="input-group">
+            <div v-else-if="propToEdit.subtype === 'image-url'" class="input-group">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     {{ urlType }}
                 </button>
@@ -326,11 +329,13 @@
                         <a class="dropdown-item" href="#" @click="setUrlType(ut)">{{ ut }}</a>
                     </li>
                 </ul>
-                <button v-if="urlType !== 'href'" class="btn btn-secondary btn-sm" type="button">
-                    <span class="material-symbols-outlined" @click="openFileForURL">file_open</span>
+                <button v-if="urlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" 
+                    @click="selectOrLoadFile(graphicsFileFilters)">
+                    <span class="material-symbols-outlined">file_open</span>
                 </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                    class="form-control form-control-sm" :readonly="urlType === UrlType.data" v-model="subpropModel"/>
+                    class="form-control form-control-sm" :readonly="urlType === UrlType.data" 
+                    :placeholder="propToEdit.default" v-model="subpropModel"/>
             </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">
                 <div v-if="!propToEdit.required" class="col-auto">

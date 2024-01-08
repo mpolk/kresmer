@@ -249,7 +249,7 @@ export default class LibraryParser {
         const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown, subtype?: string}> = {
             "string": {propType: String, makeDefault: d => d}, 
             "color": {propType: String, makeDefault: d => d, subtype: "color"}, 
-            "url": {propType: String, makeDefault: d => d, subtype: "url"}, 
+            "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
             "number": {propType: Number, makeDefault: Number},
             "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
             "object": {propType: Object, makeDefault: JSON.parse}, 
@@ -283,7 +283,7 @@ export default class LibraryParser {
                     }//if
 
                     Object.getOwnPropertyNames(allowedTypes).forEach(typeName => {
-                        if (type?.toLowerCase() === typeName) {
+                        if (type?.replaceAll('-', '').toLowerCase() === typeName) {
                             prop.type = allowedTypes[typeName].propType;
                             if (_default != null)
                                 prop.default = allowedTypes[typeName].makeDefault(_default);

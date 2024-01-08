@@ -186,6 +186,7 @@
                 <xs:element name="image">
                     <xs:complexType>
                         <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="image-attrs"/>
                         <xs:attribute name="href"/>
                         <xs:attribute ref="v-bind:href"/>
                     </xs:complexType>
@@ -277,9 +278,9 @@
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="image-attrs"/>
                         <xs:attribute ref="viewBox"/>
                         <xs:attribute name="patternUnits" type="coordSystem"/>
-                        <xs:attribute name="preserveAspectRatio" type="preserveAspectRatioOptions"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -291,6 +292,7 @@
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
+                        <xs:attributeGroup ref="image-attrs"/>
                         <xs:attribute name="markerUnits" type="coordSystem"/>
                         <xs:attribute name="markerWidth" type="xs:decimal"/>
                         <xs:attribute name="markerHeight" type="xs:decimal"/>
@@ -298,7 +300,6 @@
                         <xs:attribute name="orient"/>
                         <xs:attribute name="refX" type="xs:decimal"/>
                         <xs:attribute name="refY" type="xs:decimal"/>
-                        <xs:attribute name="preserveAspectRatio"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -361,6 +362,8 @@
                                     <xs:enumeration value="object"/>
                                     <xs:enumeration value="Color"/>
                                     <xs:enumeration value="color"/>
+                                    <xs:enumeration value="ImageURL"/>
+                                    <xs:enumeration value="image-url"/>
                                 </xs:restriction>
                             </xs:simpleType>
                         </xs:attribute>
@@ -537,6 +540,11 @@
         <xs:attribute ref="v-bind:dominant-baseline"/>
     </xs:attributeGroup>
 
+    <xs:attributeGroup name="image-attrs">
+        <xs:attribute name="preserveAspectRatio" type="preserveAspectRatioOptions"/>
+        <xs:attribute ref="v-bind:preserveAspectRatio"/>
+    </xs:attributeGroup>
+
     <xs:attributeGroup name="vue-directives">
         <xs:attribute name="v-bind"/>
         <xs:attribute name="v-for"/>
@@ -551,7 +559,7 @@
     </xs:attributeGroup>
 
     <xs:attributeGroup name="href-attrs">
-        <xs:attribute name="href" type="xs:string"/>
+        <xs:attribute name="href" type="xs:anyURI"/>
         <xs:attribute ref="v-bind:href"/>
         <xs:attribute name="target"/>
         <xs:attribute ref="v-bind:target"/>

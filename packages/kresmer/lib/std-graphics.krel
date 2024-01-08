@@ -52,7 +52,7 @@
                 />
             <prop name="aspectRatioSlice" type="Boolean" category="Geometry"
                 description="Specifies whether the image should zoomed in or out (sliced) in order to preserve the aspect ratio" />
-            <prop name="url" type="URL" required="true" default="data:image/png;base64,
+            <prop name="url" type="ImageURL" required="true" default="data:image/png;base64,
                 iVBORw0KGgoAAAANSUhEUgAAAMgAAABQCAIAAADTD63nAAAACXBIWXMAAC4jAAAuIwF4pT92AAAA
                 qUlEQVR42u3SMREAMAgAsVLDqEQJRhiwwJhI+PvIrgfXvgQYC2NhLDAWxsJYYCyMhbHAWBgLY4Gx
                 MBbGAmNhLIwFxsJYGAuMhbEwFhgLY2EsMBbGwlhgLIyFscBYGAtjgbEwFsYCY2EsjAXGwlgYC4yF

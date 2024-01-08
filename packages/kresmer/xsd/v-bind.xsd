@@ -34,4 +34,5 @@
   <xs:attribute name="href" />
   <xs:attribute name="target" />
   <xs:attribute name="dominant-baseline" />
+  <xs:attribute name="preserveAspectRatio" />
 </xs:schema>
