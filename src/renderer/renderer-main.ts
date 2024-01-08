@@ -445,21 +445,29 @@ appCommandExecutor.on("duplicate-component", (componentID?: number) =>
 appCommandExecutor.on("move-component-down", (componentID?: number) => {
     const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
     kresmer.edAPI.moveComponentDown(controller);
+    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
+    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
 });//moveComponentDown
 
 appCommandExecutor.on("move-component-to-bottom", (componentID?: number) => {
     const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
     kresmer.edAPI.moveComponentToBottom(controller);
+    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
+    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
 });//moveComponentToBottom
 
 appCommandExecutor.on("move-component-up", (componentID?: number) => {
     const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
     kresmer.edAPI.moveComponentUp(controller);
+    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
+    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
 });//moveComponentDown
 
 appCommandExecutor.on("move-component-to-top", (componentID?: number) => {
     const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
     kresmer.edAPI.moveComponentToTop(controller);
+    window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
+    window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
 });//moveComponentToTop
 
 appCommandExecutor.on("edit-component-properties", (componentID?: number) =>
