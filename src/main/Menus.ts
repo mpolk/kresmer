@@ -15,7 +15,7 @@ const isMac = process.platform === 'darwin'
 
 export interface ContextMenus {
     "drawing": (mousePos?: Position) => void,
-    "component": (componentID: number) => void,
+    "component": (componentID?: number) => void,
     "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
     "link-vertex": (linkID: number, vertexNumber: number) => void,
     "connection-point": (componentID: number, connectionPointName: number) => void,

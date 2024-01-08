@@ -40,12 +40,40 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
 
     public isOnBottom(item: T)
     {
-        for (const item1 of this) {
-            if (item1[1].zIndex < item.zIndex)
+        for (const entry of this) {
+            if (entry[1].zIndex < item.zIndex)
                 return false;
         }//for
         return true;
     }//isOnTop
+
+    public moveItemUp(item: T)
+    {
+        let nextItem: T|undefined;
+        for (const entry of this) {
+            const item1 = entry[1];
+            if (item1.zIndex > item.zIndex && (nextItem === undefined || item1.zIndex < nextItem.zIndex))
+                nextItem = item1;
+        }//for
+
+        if (nextItem) {
+            ({z: nextItem.zIndex, zn: item.zIndex} = {z: item.zIndex, zn: nextItem.zIndex});
+        }//if
+    }//moveItemUp
+
+    public moveItemDown(item: T)
+    {
+        let prevItem: T|undefined;
+        for (const entry of this) {
+            const item1 = entry[1];
+            if (item1.zIndex < item.zIndex && (prevItem === undefined || item1.zIndex > prevItem.zIndex))
+                prevItem = item1;
+        }//for
+
+        if (prevItem) {
+            ({z: prevItem.zIndex, zp: item.zIndex} = {z: item.zIndex, zp: prevItem.zIndex});
+        }//if
+    }//moveItemDown
 }//MapWithZOrder
 
 /**

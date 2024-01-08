@@ -438,9 +438,9 @@ appCommandExecutor.on("delete-selected-element", () =>
     }//if
 });//deleteSelectedElement
 
-appCommandExecutor.on("delete-component", (componentID: number) =>
+appCommandExecutor.on("delete-component", (componentID?: number) =>
 {
-    kresmer.edAPI.deleteComponent(componentID);
+    kresmer.edAPI.deleteComponent(componentID!);
 });//deleteComponent
 
 appCommandExecutor.on("duplicate-selected-component", () =>
@@ -448,14 +448,25 @@ appCommandExecutor.on("duplicate-selected-component", () =>
     kresmer.edAPI.duplicateComponent(kresmer.getComponentControllerById(kresmer.selectedElement!.id)!);
 });//duplicateSelectedElement
 
-appCommandExecutor.on("duplicate-component", (componentID: number) =>
+appCommandExecutor.on("duplicate-component", (componentID?: number) =>
 {
-    kresmer.edAPI.duplicateComponent(kresmer.getComponentControllerById(componentID)!);
+    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
+    kresmer.edAPI.duplicateComponent(controller);
 });//duplicateComponent
 
-appCommandExecutor.on("edit-component-properties", (componentID: number) =>
+appCommandExecutor.on("move-component-down", (componentID?: number) => {
+    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
+    kresmer.edAPI.moveComponentDown(controller);
+});//moveComponentDown
+
+appCommandExecutor.on("move-component-up", (componentID?: number) => {
+    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
+    kresmer.edAPI.moveComponentUp(controller);
+});//moveComponentDown
+
+appCommandExecutor.on("edit-component-properties", (componentID?: number) =>
 {
-    const component = kresmer.getComponentById(componentID);
+    const component = componentID ? kresmer.getComponentById(componentID) : kresmer.selectedElement;
     if (!component) {
         console.error(`No such component (id=${componentID})`);
         return;
@@ -463,9 +474,9 @@ appCommandExecutor.on("edit-component-properties", (componentID: number) =>
     vueComponentPropsSidebar.show(component);
 });//editComponentProperties
 
-appCommandExecutor.on("transform-component", (componentID: number) =>
+appCommandExecutor.on("transform-component", (componentID?: number) =>
 {
-    const controller = kresmer.getComponentControllerById(componentID);
+    const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id);
     if (controller) {
         controller.transformMode = "scaling";
     }//if

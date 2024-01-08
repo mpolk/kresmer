@@ -13,7 +13,7 @@ import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
 import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
 import NetworkComponent, {ChangeComponentClassOp, NetworkComponentFunctions} from "./NetworkComponent/NetworkComponent";
-import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, SelectionMoveOp } 
+import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, ComponentMoveUpOp, ComponentMoveDownOp, SelectionMoveOp } 
     from "./NetworkComponent/NetworkComponentController";
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
@@ -962,6 +962,14 @@ ${svg.outerHTML}
             controller.restoreZPosition();
             this.undoStack.execAndCommit(new ComponentDeleteOp(controller));
         },//deleteComponent
+
+        moveComponentUp: (controller: NetworkComponentController) => {
+            this.undoStack.execAndCommit(new ComponentMoveUpOp(controller));
+        },//moveComponentUp
+
+        moveComponentDown: (controller: NetworkComponentController) => {
+            this.undoStack.execAndCommit(new ComponentMoveDownOp(controller));
+        },//moveComponentUp
 
         /**
          * Changes class of the specified component

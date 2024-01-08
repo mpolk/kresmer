@@ -511,3 +511,37 @@ export class ComponentDeleteOp extends EditorOperation {
 
 }//ComponentDeleteOp
 
+
+export class ComponentMoveUpOp extends EditorOperation {
+
+    constructor(private controller: NetworkComponentController) 
+    {
+        super();
+    }//ctor
+
+    override exec(): void {
+        this.controller.kresmer.networkComponents.moveItemUp(this.controller);
+    }//exec
+
+    override undo(): void {
+        this.controller.kresmer.networkComponents.moveItemDown(this.controller);
+    }//undo
+
+}//ComponentMoveUpOp
+
+export class ComponentMoveDownOp extends EditorOperation {
+
+    constructor(private controller: NetworkComponentController) 
+    {
+        super();
+    }//ctor
+
+    override exec(): void {
+        this.controller.kresmer.networkComponents.moveItemDown(this.controller);
+    }//exec
+
+    override undo(): void {
+        this.controller.kresmer.networkComponents.moveItemUp(this.controller);
+    }//undo
+
+}//ComponentMoveDownOp
