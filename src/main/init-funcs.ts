@@ -138,6 +138,11 @@ export function initIpcMainHooks()
         Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
     });
 
+    IpcMainHooks.on('enable-component-op-menu-items', (enable: boolean) => {
+        Menu.getApplicationMenu()!.getMenuItemById("duplicate-component")!.enabled = enable;
+        Menu.getApplicationMenu()!.getMenuItemById("transform-component")!.enabled = enable;
+    });
+
     IpcMainHooks.on('enable-move-component-up-menu-items', (enable: boolean) => {
         Menu.getApplicationMenu()!.getMenuItemById("move-component-up")!.enabled = enable;
         Menu.getApplicationMenu()!.getMenuItemById("move-component-to-top")!.enabled = enable;
@@ -146,10 +151,6 @@ export function initIpcMainHooks()
     IpcMainHooks.on('enable-move-component-down-menu-items', (enable: boolean) => {
         Menu.getApplicationMenu()!.getMenuItemById("move-component-down")!.enabled = enable;
         Menu.getApplicationMenu()!.getMenuItemById("move-component-to-bottom")!.enabled = enable;
-    });
-
-    IpcMainHooks.on('enable-duplicate-component-menu-item', (enable: boolean) => {
-        Menu.getApplicationMenu()!.getMenuItemById("duplicate-component")!.enabled = enable;
     });
 
     IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {

@@ -75,8 +75,8 @@ exposeToRenderer({
         sendToMain("enable-delete-component-menu-item", enable);
     },
 
-    enableDuplicateComponentMenuItem: (enable: boolean) => {
-        sendToMain("enable-duplicate-component-menu-item", enable);
+    enableComponentOpMenuItems: (enable: boolean) => {
+        sendToMain("enable-component-op-menu-items", enable);
     },
 
     enableMoveComponentUpMenuItems: (enable: boolean) => {

@@ -21,7 +21,7 @@ export interface IpcMainChannels {
     "save-drawing": (dwgData: string) => boolean;
     "complete-drawing-export-to-SVG": (svgData: string) => void;
     "enable-delete-component-menu-item": (enable: boolean) => void;
-    "enable-duplicate-component-menu-item": (enable: boolean) => void;
+    "enable-component-op-menu-items": (enable: boolean) => void;
     "enable-move-component-up-menu-items": (enable: boolean) => void;
     "enable-move-component-down-menu-items": (enable: boolean) => void;
     "backend-server-connected": (url: string, password: string, autoConnect: boolean) => void;

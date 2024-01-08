@@ -223,7 +223,7 @@ kresmer.on("component-selected", (component: NetworkComponent, isSelected: boole
         statusBarData.selectedElement = null;
     }//if
     window.electronAPI.enableDeleteComponentMenuItem(isSelected);
-    window.electronAPI.enableDuplicateComponentMenuItem(isSelected);
+    window.electronAPI.enableComponentOpMenuItems(isSelected);
     window.electronAPI.enableMoveComponentUpMenuItems(isSelected && !kresmer.networkComponents.isOnTop(component.controller!));
     window.electronAPI.enableMoveComponentDownMenuItems(isSelected && !kresmer.networkComponents.isOnBottom(component.controller!));
 });//onComponentSelected
