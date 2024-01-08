@@ -16,7 +16,7 @@ const isMac = process.platform === 'darwin'
 export interface ContextMenus {
     "drawing": (mousePos?: Position) => void,
     "component": (componentID?: number) => void,
-    "link": (linkID: number, segmentNumber: number, mousePos: Position) => void,
+    "link": (linkID?: number, segmentNumber?: number, mousePos?: Position) => void,
     "link-vertex": (linkID: number, vertexNumber: number) => void,
     "connection-point": (componentID: number, connectionPointName: number) => void,
 }//ContextMenus
@@ -132,6 +132,10 @@ export default class Menus {
                     label: 'Duplicate', accelerator: "Control+D", enabled: false, id: "duplicate-component",
                     click: () => sendAppCommand("duplicate-component")
                 },
+                {
+                    label: 'Delete', enabled: false,
+                    id: "delete-component", click: () => sendAppCommand("delete-component")
+                },
                 { type: 'separator' },
                 { label: 'Move to top', accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
                 { label: 'Move up', accelerator: "PageUp", id: "move-component-up", enabled: false, click: () => sendAppCommand("move-component-up") },
@@ -144,6 +148,10 @@ export default class Menus {
             submenu: [
                 { label: 'Add...', accelerator: "Alt+l", click: () => sendAppCommand("create-link") },
                 { label: 'Add bundle...', accelerator: "Alt+b", click: () => sendAppCommand("create-link-bundle") },
+                {
+                    label: 'Delete', enabled: false,
+                    id: "delete-link", click: () => sendAppCommand("delete-link")
+                },
             ]
         },
         {

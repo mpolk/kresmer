@@ -134,13 +134,18 @@ export function initIpcMainHooks()
         defaultDrawingFileName = fileName;
     });
 
-    IpcMainHooks.on('enable-delete-component-menu-item', (enable: boolean) => {
+    IpcMainHooks.on('enable-delete-selected-element-menu-item', (enable: boolean) => {
         Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
     });
 
     IpcMainHooks.on('enable-component-op-menu-items', (enable: boolean) => {
+        Menu.getApplicationMenu()!.getMenuItemById("delete-component")!.enabled = enable;
         Menu.getApplicationMenu()!.getMenuItemById("duplicate-component")!.enabled = enable;
         Menu.getApplicationMenu()!.getMenuItemById("transform-component")!.enabled = enable;
+    });
+
+    IpcMainHooks.on('enable-link-op-menu-items', (enable: boolean) => {
+        Menu.getApplicationMenu()!.getMenuItemById("delete-link")!.enabled = enable;
     });
 
     IpcMainHooks.on('enable-move-component-up-menu-items', (enable: boolean) => {

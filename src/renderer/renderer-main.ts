@@ -217,12 +217,8 @@ kresmer.on("component-being-moved", (controller: NetworkComponentController) =>
 
 kresmer.on("component-selected", (component: NetworkComponent, isSelected: boolean) =>
 {
-    if (isSelected) {
-        statusBarData.selectedElement = component;
-    } else {
-        statusBarData.selectedElement = null;
-    }//if
-    window.electronAPI.enableDeleteComponentMenuItem(isSelected);
+    statusBarData.selectedElement = isSelected ? component : null;
+    window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
     window.electronAPI.enableComponentOpMenuItems(isSelected);
     window.electronAPI.enableMoveComponentUpMenuItems(isSelected && !kresmer.networkComponents.isOnTop(component.controller!));
     window.electronAPI.enableMoveComponentDownMenuItems(isSelected && !kresmer.networkComponents.isOnBottom(component.controller!));
@@ -230,12 +226,9 @@ kresmer.on("component-selected", (component: NetworkComponent, isSelected: boole
 
 kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) => 
 {
-    if (isSelected) {
-        statusBarData.selectedElement = link;
-    } else {
-        statusBarData.selectedElement = null;
-    }//if
-    window.electronAPI.enableDeleteComponentMenuItem(isSelected);
+    statusBarData.selectedElement = isSelected ? link : null;
+    window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
+    window.electronAPI.enableLinkOpMenuItems(isSelected);
 });//onLinkSelected
 
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>
@@ -440,7 +433,7 @@ appCommandExecutor.on("delete-selected-element", () =>
 
 appCommandExecutor.on("delete-component", (componentID?: number) =>
 {
-    kresmer.edAPI.deleteComponent(componentID!);
+    kresmer.edAPI.deleteComponent(componentID ?? kresmer.selectedElement!.id);
 });//deleteComponent
 
 appCommandExecutor.on("duplicate-component", (componentID?: number) =>
@@ -477,14 +470,14 @@ appCommandExecutor.on("transform-component", (componentID?: number) =>
     }//if
 });//transformComponent
 
-appCommandExecutor.on("delete-link", (linkID: number) =>
+appCommandExecutor.on("delete-link", (linkID?: number) =>
 {
-    kresmer.edAPI.deleteLink(linkID);
+    kresmer.edAPI.deleteLink(linkID ?? kresmer.selectedElement!.id);
 });//deleteLink
 
-appCommandExecutor.on("edit-link-properties", (linkID: number) =>
+appCommandExecutor.on("edit-link-properties", (linkID?: number) =>
 {
-    const link = kresmer.getLinkById(linkID);
+    const link = kresmer.getLinkById(linkID ?? kresmer.selectedElement!.id);
     if (!link) {
         console.error(`No such link (id=${linkID})`);
         return;
@@ -492,9 +485,9 @@ appCommandExecutor.on("edit-link-properties", (linkID: number) =>
     vueComponentPropsSidebar.show(link);
 });//editLinkProperties
 
-appCommandExecutor.on("add-vertex", (linkID: number, segmentNumber: number, mousePos: Position) =>
+appCommandExecutor.on("add-vertex", (linkID?: number, segmentNumber?: number, mousePos?: Position) =>
 {
-    kresmer.edAPI.addLinkVertex(linkID, segmentNumber, mousePos);
+    kresmer.edAPI.addLinkVertex(linkID!, segmentNumber!, mousePos!);
 });//addLinkVertex
 
 appCommandExecutor.on("delete-vertex", (linkID: number, vertexNumber: number) =>
@@ -507,9 +500,9 @@ appCommandExecutor.on("align-vertex", (linkID: number, vertexNumber: number) =>
     kresmer.edAPI.alignLinkVertex({linkID, vertexNumber});
 });//alignLinkVertex
 
-appCommandExecutor.on("align-vertices", (linkID: number) =>
+appCommandExecutor.on("align-vertices", (linkID?: number) =>
 {
-    kresmer.edAPI.alignLinkVertices({linkID});
+    kresmer.edAPI.alignLinkVertices({linkID: linkID!});
 });//alignLinkVertices
 
 appCommandExecutor.on("connect-connection-point", async (fromElementID: number, fromConnectionPointName: string|number) =>

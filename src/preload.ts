@@ -71,12 +71,16 @@ exposeToRenderer({
         sendToMain("complete-drawing-export-to-SVG", svgData);
     },
 
-    enableDeleteComponentMenuItem: (enable: boolean) => {
-        sendToMain("enable-delete-component-menu-item", enable);
+    enableDeleteSelectedElementMenuItem: (enable: boolean) => {
+        sendToMain("enable-delete-selected-element-menu-item", enable);
     },
 
     enableComponentOpMenuItems: (enable: boolean) => {
         sendToMain("enable-component-op-menu-items", enable);
+    },
+
+    enableLinkOpMenuItems: (enable: boolean) => {
+        sendToMain("enable-link-op-menu-items", enable);
     },
 
     enableMoveComponentUpMenuItems: (enable: boolean) => {
