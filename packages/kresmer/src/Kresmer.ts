@@ -965,7 +965,7 @@ ${svg.outerHTML}
 
         /**
          * Move component one step up in z-order
-         * @param controller A component to move
+         * @param controller A controller of the component to move
          */
         moveComponentUp: (controller: NetworkComponentController) => {
             this.undoStack.execAndCommit(new ComponentMoveUpOp(controller));
@@ -973,7 +973,7 @@ ${svg.outerHTML}
 
         /**
          * Move component to the top in z-order
-         * @param controller A component to move
+         * @param controller A controller of the component to move
          */
         moveComponentToTop: (controller: NetworkComponentController) => {
             this.undoStack.execAndCommit(new ComponentMoveToTopOp(controller));
@@ -981,7 +981,7 @@ ${svg.outerHTML}
 
         /**
          * Move component one step down in z-order
-         * @param controller A component to move
+         * @param controller A controller of the component to move
          */
         moveComponentDown: (controller: NetworkComponentController) => {
             this.undoStack.execAndCommit(new ComponentMoveDownOp(controller));
@@ -989,7 +989,7 @@ ${svg.outerHTML}
 
         /**
          * Move component to the bottom in z-order
-         * @param controller A component to move
+         * @param controller A controller of the component to move
          */
         moveComponentToBottom: (controller: NetworkComponentController) => {
             this.undoStack.execAndCommit(new ComponentMoveToBottomOp(controller));
