@@ -40,6 +40,17 @@ export default class NetworkComponentClass extends NetworkElementClass {
     {
         super(name, params);
         this.template = params.template;
+
+        if (this.baseClass  && this.template instanceof Element) {
+            const baseClass = this.baseClass as NetworkComponentClass;
+            const baseInstanceNode = this.template.ownerDocument.createElement(baseClass.adapterVueName);
+            baseInstanceNode.setAttribute("v-bind:name", "name");
+            for (const propName in this.props) {
+                baseInstanceNode.setAttribute(`v-bind:${propName}`, propName);
+            }//for
+            this.template.prepend(baseInstanceNode);
+        }//if
+
         this.defaultContent = params.defaultContent;
         NetworkComponentClass.allClasses[name] = this;
     }//ctor

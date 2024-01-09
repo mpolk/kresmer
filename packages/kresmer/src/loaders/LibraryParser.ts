@@ -140,9 +140,7 @@ export default class LibraryParser {
         }//for
 
         if (!template) {
-            throw new LibraryParsingException(
-                `Component class without template`,
-                {source: `Component class ${className}`});
+            template = node.ownerDocument.createElement("template");
         }//if
 
         if (!style && baseClass) {

@@ -43,7 +43,6 @@ export default abstract class NetworkElementClass {
         if (params.baseClass) {
             this.props = {...params.baseClass.props, ...this.props};
             // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
-            // this.styleBaseClasses?.splice(0, 0, params.baseClass);
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if
         this.computedProps = params.computedProps;

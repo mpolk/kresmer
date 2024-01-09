@@ -22,7 +22,8 @@
                     <xs:element name="component-class">
                         <xs:complexType>
                             <xs:all>
-                                <xs:element name="template" type="outermost-template"/>
+                                <xs:element ref="extends" minOccurs="0" />
+                                <xs:element name="template" minOccurs="0" type="outermost-template"/>
                                 <xs:element ref="props" minOccurs="0"/>
                                 <xs:element ref="computed-props" minOccurs="0"/>
                                 <xs:element ref="defs" minOccurs="0"/>
@@ -52,11 +53,7 @@
 
     <xs:complexType name="link-class">
         <xs:all>
-            <xs:element name="extends" minOccurs="0">
-                <xs:complexType mixed="true">
-                    <xs:anyAttribute processContents="lax"/>
-                </xs:complexType>
-            </xs:element>
+            <xs:element ref="extends" minOccurs="0" />
             <xs:element ref="props" minOccurs="0"/>
             <xs:element ref="computed-props" minOccurs="0"/>
             <xs:element ref="defs" minOccurs="0"/>
@@ -335,9 +332,17 @@
 
     <xs:element name="template" type="inner-template"/>
 
+    <!-- Vue slots -->
     <xs:element name="slot">
         <xs:complexType mixed="true">
             <xs:attribute name="name" type="xs:string"/>
+        </xs:complexType>
+    </xs:element>
+    
+    <!-- Network element base class clause -->
+    <xs:element name="extends">
+        <xs:complexType>
+            <xs:anyAttribute processContents="lax"/>
         </xs:complexType>
     </xs:element>
 
