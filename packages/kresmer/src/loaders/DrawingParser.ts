@@ -347,6 +347,11 @@ export default class DrawingParser {
 
         for (let propName in rawProps) {
             const value = rawProps[propName];
+            if (propName.startsWith("v-bind:")) {
+                props[propName] = value;
+                break;
+            }//if
+
             // eslint-disable-next-line @typescript-eslint/ban-types
             let propType: Function;
             if (propName === "name") {
@@ -362,8 +367,7 @@ export default class DrawingParser {
                         continue;
                     }//if
                 }//if
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                propType = (classProp as any).type;
+                propType = (classProp as {type: typeof Function}).type;
             }//if
 
             switch (propType) {

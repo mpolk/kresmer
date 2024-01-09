@@ -341,7 +341,8 @@
     
     <!-- Network element base class clause -->
     <xs:element name="extends">
-        <xs:complexType>
+        <xs:complexType mixed="true">
+            <xs:attribute name="base" use="required"/>
             <xs:anyAttribute processContents="lax"/>
         </xs:complexType>
     </xs:element>
