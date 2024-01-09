@@ -85,7 +85,7 @@
                 v-bind:comment="comment"
                 />
         </template>
-        <style extends="Switch">
+        <style>
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
             .facet {fill: #ffcc00;}
             .port-icon { fill: #ff6600; }

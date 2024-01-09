@@ -39,12 +39,13 @@ export default abstract class NetworkElementClass {
         this.baseClass = params.baseClass;
         this.styleBaseClasses = params.styleBaseClasses;
         this.propsBaseClasses = params.propsBaseClasses;
-        if (params.baseClass) {
-            params.props = {...params.baseClass.props, ...params.props};
-            if (params.style)
-                params.style = params.baseClass.style?.append(...params.style.nodes);
-        }//if
         this.props = params.props ?? {};
+        if (params.baseClass) {
+            this.props = {...params.baseClass.props, ...this.props};
+            // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
+            // this.styleBaseClasses?.splice(0, 0, params.baseClass);
+            this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
+        }//if
         this.computedProps = params.computedProps;
         this.defs = params.defs;
         this.style = params.style;
