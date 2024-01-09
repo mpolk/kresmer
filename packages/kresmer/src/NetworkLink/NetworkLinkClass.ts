@@ -35,9 +35,6 @@ export default class NetworkLinkClass extends NetworkElementClass {
         category?: string,
     })
     {
-        if (params.baseClass) {
-            params.props = {...params.baseClass.props, ...params.props};
-        }//if
         super(name, params);
         NetworkLinkClass.allClasses[name] = this;
     }//ctor

@@ -78,6 +78,7 @@
          Kresmer classes before and also he could not know that we call concentrator switches in our 
          metro-network "hubs". -->
     <component-class name="Hub" category="Switches">
+        <extends base="Switch" />
         <template>
             <Kre:Switch v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
                 v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
@@ -90,7 +91,6 @@
             .port-icon { fill: #ff6600; }
             .port-icon.body { stroke: #ffcc00; }
         </style>
-        <props extend="Switch"/>
     </component-class>
 
 </kresmer-library>

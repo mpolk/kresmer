@@ -101,6 +101,8 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
+        let baseClass: NetworkComponentClass | undefined;
+        let baseClassPropBindings: NetworkElementProps | undefined;
         let template: Element | undefined;
         let props: NetworkElementClassProps = {};
         let computedProps: ComputedProps = {};
@@ -111,6 +113,9 @@ export default class LibraryParser {
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
+                case "extends":
+                    ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, NetworkComponentClass) ?? {});
+                    break
                 case "template":
                     template = child;
                     break;
@@ -140,6 +145,10 @@ export default class LibraryParser {
                 {source: `Component class ${className}`});
         }//if
 
+        if (!style && baseClass) {
+            style = this.parseCSS("", [baseClass]);
+        }//if
+
         let defaultContent: string | undefined;
         const slot = template.querySelector("slot");
         if (slot?.textContent) {
@@ -147,7 +156,8 @@ export default class LibraryParser {
         }//if
 
 
-        return new NetworkComponentClass(className, {styleBaseClasses, propsBaseClasses, template, props, computedProps, defs, 
+        return new NetworkComponentClass(className, {baseClass, styleBaseClasses, propsBaseClasses, template, 
+                                                     props, baseClassPropBindings, computedProps, defs, 
                                                      style, defaultContent, category});
     }//parseComponentClassNode
 

@@ -10,6 +10,7 @@
 import { Prop } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "./Kresmer";
+import { NetworkElementProps } from "./loaders/DrawingParser";
 
 /**
  * Network Component Class - a generic network element class
@@ -27,6 +28,7 @@ export default abstract class NetworkElementClass {
         styleBaseClasses?: NetworkElementClass[],
         propsBaseClasses?: NetworkElementClass[],
         props?: NetworkElementClassProps,
+        baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,
         defs?: Template,
         style?: PostCSSRoot,
@@ -37,6 +39,11 @@ export default abstract class NetworkElementClass {
         this.baseClass = params.baseClass;
         this.styleBaseClasses = params.styleBaseClasses;
         this.propsBaseClasses = params.propsBaseClasses;
+        if (params.baseClass) {
+            params.props = {...params.baseClass.props, ...params.props};
+            if (params.style)
+                params.style = params.baseClass.style?.append(...params.style.nodes);
+        }//if
         this.props = params.props ?? {};
         this.computedProps = params.computedProps;
         this.defs = params.defs;
