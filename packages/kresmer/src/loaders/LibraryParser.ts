@@ -106,6 +106,7 @@ export default class LibraryParser {
         let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
         let template: Element | undefined;
         let props: NetworkElementClassProps = {};
+        let exceptProps: string[] | undefined;
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
@@ -122,10 +123,10 @@ export default class LibraryParser {
                     template = child;
                     break;
                 case "props":
+                    exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
                     propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
                         .map(className => NetworkComponentClass.getClass(className));
-                    props = this.parseProps(child, propsBaseClasses, 
-                                            child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc)));
+                    props = this.parseProps(child, propsBaseClasses, exceptProps);
                     break;
                 case "computed-props":
                     computedProps = this.parseComputedProps(child);
@@ -158,7 +159,7 @@ export default class LibraryParser {
 
         return new NetworkComponentClass(className, {baseClass, baseClassPropBindings, baseClassChildNodes, 
                                                      styleBaseClasses, propsBaseClasses, template, 
-                                                     props, computedProps, defs, 
+                                                     props, exceptProps, computedProps, defs, 
                                                      style, defaultContent, category});
     }//parseComponentClassNode
 
@@ -171,6 +172,7 @@ export default class LibraryParser {
             throw new LibraryParsingException("Link class without the name");
 
         let props: NetworkElementClassProps = {};
+        let exceptProps: string[] | undefined;
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
@@ -185,8 +187,9 @@ export default class LibraryParser {
                     ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, NetworkLinkClass) ?? {});
                     break
                 case "props":
+                    exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"));
-                    props = this.parseProps(child, propsBaseClasses, child.getAttribute("except")?.split(/ *, */));
+                    props = this.parseProps(child, propsBaseClasses, exceptProps);
                     break;
                 case "computed-props":
                     computedProps = this.parseComputedProps(child);
@@ -209,7 +212,7 @@ export default class LibraryParser {
         }//if
 
         const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
-        const linkClass = new ctor(className, {baseClass, styleBaseClasses, propsBaseClasses, props, 
+        const linkClass = new ctor(className, {baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
                                                baseClassPropBindings, computedProps, defs, style, category});
         return linkClass;
     }//parseLinkClassNode

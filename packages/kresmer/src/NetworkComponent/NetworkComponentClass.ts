@@ -30,6 +30,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         styleBaseClasses?: NetworkComponentClass[],
         template: Template,
         props?: NetworkElementClassProps,
+        exceptProps?: string[],
         baseClassChildNodes?: NodeListOf<ChildNode>,
         baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,

@@ -28,6 +28,7 @@ export default class NetworkLinkClass extends NetworkElementClass {
         propsBaseClasses?: NetworkLinkClass[],
         styleBaseClasses?: NetworkLinkClass[],
         props?: NetworkElementClassProps,
+        exceptProps?: string[],
         baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,
         defs?: Template,

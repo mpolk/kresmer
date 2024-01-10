@@ -30,7 +30,7 @@
         <style>
             .facet { --facet-color: lightgray; }
         </style>
-        <props extend="RackMountDevice" except="n-units">
+        <props except="n-units">
             <prop name="n-stack-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
             <prop name="ports-info" type="object" default="{}" category="Network" 
                 description="Ports info for displaying in tooltips and similar"/>

@@ -29,6 +29,7 @@ export default abstract class NetworkElementClass {
         styleBaseClasses?: NetworkElementClass[],
         propsBaseClasses?: NetworkElementClass[],
         props?: NetworkElementClassProps,
+        exceptProps?: string[],
         baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,
         defs?: Template,
@@ -42,7 +43,12 @@ export default abstract class NetworkElementClass {
         this.propsBaseClasses = params.propsBaseClasses;
         this.props = params.props ?? {};
         if (params.baseClass) {
-            this.props = {...clone(params.baseClass.props), ...clone(this.props)};
+            this.props = {
+                ...clone(Object.fromEntries(
+                    Object.entries(params.baseClass.props)
+                        .filter(entry => {return !params.exceptProps?.includes(entry[0])})
+                )), 
+                ...clone(this.props)};
             // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if
