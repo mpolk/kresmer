@@ -13,7 +13,6 @@
 
     <!-- Switch or router port -->
     <component-class name="MultiFiberPort" category=".port-abstractions">
-        <template/>
         <computed-props>
             <computed-prop name="nFibers">props.fiberInfo?.nFibers ?? props.portInfo?.nFibers ?? 1</computed-prop>
         </computed-props>
@@ -87,9 +86,9 @@
     <!-- A port plugin-module: SFP, XFP etc. -->
 
     <component-class name="KeyedConnector" category=".ports">
-        <template/>
         <props>
-            <prop name="key-position" type="String" choices="top,bottom,left,right" default="top" category="Geometry" description="Key groove position"/>
+            <prop name="key-position" type="String" choices="top,bottom,left,right" default="top" category="Geometry" 
+                  description="Key groove position"/>
         </props>
     </component-class>
 
@@ -154,10 +153,7 @@
     </component-class>
 
     <component-class name="PluginModule" category=".ports">
-        <template>
-            <Kre:RectangularConnector v-bind:cx="cx"  v-bind:cy="cy"  v-bind:w="w" v-bind:h="h" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers"/>
-        </template>
-        <props extend="RectangularConnector"/>
+        <extends base="RectangularConnector" />
         <style>
             .border {fill: none; stroke: #8998a9;}
         </style>
@@ -165,6 +161,7 @@
 
     <!-- An RJ45 connector (for placing inside the port) -->
     <component-class name="RJ45" category=".ports">
+        <extends base="RectangularConnector" v-bind:stroke-width="Math.min(w, h)*0.16" />
         <defs>
             <pattern id="kre:std:rj45-contacts-v" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" 
                 preserveAspectRatio="none">
@@ -176,15 +173,12 @@
             </pattern>
         </defs>
         <template>
-            <Kre:RectangularConnector v-bind:cx="cx"  v-bind:cy="cy"  v-bind:w="w"  v-bind:h="h"  v-bind:key-position="keyPosition" 
-                v-bind:stroke-width="Math.min(w, h)*0.16" />
             <rect v-bind:x="keyPosition === 'left' ? w*0.5 : w*0.2" 
                   v-bind:y="keyPosition === 'top' ? h*0.5 : h*0.2" 
                   v-bind:width="orientation === 'v' ? w*0.6 : h*0.3" 
                   v-bind:height="orientation === 'v' ? h*0.3 : w*0.6" 
                   v-bind:fill="`url(#kre:std:rj45-contacts-${orientation})`"/>
         </template>
-        <props extend="RectangularConnector"/>
         <computed-props>
             <computed-prop name="orientation">props.keyPosition === "top" || props.keyPosition === "bottom" ? "v" : "h"</computed-prop>
         </computed-props>
@@ -195,13 +189,10 @@
 
     <!-- RJ45 Port -->
     <component-class name="RJ45-Port" category=".ports">
-        <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo" v-bind:combo="combo">
-                <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
-            </Kre:Port>
-        </template>
-        <props extend="Port, KeyedConnector" except="w,h">
+        <extends base="Port" v-bind:w="d" v-bind:h="d">
+            <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+        </extends>
+        <props extend="KeyedConnector" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
         </props>
         <computed-props>
@@ -211,13 +202,10 @@
 
     <!-- SFP Port -->
     <component-class name="SFP-Port" category=".ports">
-        <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo" v-bind:combo="combo">
-                <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers"/>
-            </Kre:Port>
-        </template>
-        <props extend="Port, KeyedConnector" except="w,h">
+        <extends base="Port" v-bind:w="d" v-bind:h="d">
+            <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers"/>
+        </extends>
+        <props extend="KeyedConnector" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
         </props>
         <computed-props extend="MultiFiberPort">
@@ -227,32 +215,25 @@
 
     <!-- XFP Port -->
     <component-class name="XFP-Port" category=".ports">
-        <template>
-            <Kre:Port v-bind:w="h*2.5" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
-                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo" v-bind:combo="combo">
-                <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers" />
-            </Kre:Port>
-        </template>
-        <props extend="Port, KeyedConnector" except="w"/>
+        <extends base="Port" v-bind:w="h*2.5" >
+            <Kre:PluginModule v-bind:cx="h*1.25" v-bind:cy="h/2" v-bind:w="h*2.75" v-bind:h="h" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers" />
+        </extends>
+        <props extend="KeyedConnector" except="w"/>
         <computed-props extend="MultiFiberPort"/>
     </component-class>
 
     <!-- QSFP Port -->
     <component-class name="QSFP-Port" category=".ports">
-        <template>
-            <Kre:Port v-bind:w="h*2" v-bind:h="h" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize"
-                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo">
-                <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers" />
-            </Kre:Port>
-        </template>
-        <props extend="Port, KeyedConnector" except="w"/>
+        <extends base="Port" v-bind:w="h*2" >
+            <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers" />
+        </extends>
+        <props extend="KeyedConnector" except="w"/>
         <computed-props extend="MultiFiberPort"/>
     </component-class>
 
     <!-- Optical fiber ports -->
     
     <component-class name="WDM-Port" category=".port-abstractions">
-        <template/>
         <computed-props>
             <computed-prop name="beamColor">
                 props.fiberInfo?.wavelength === 1470 ? "#949494" :
@@ -270,15 +251,14 @@
 
 
     <component-class name="FC-Port" category=".ports">
+        <extends base="Port" v-bind:w="d" v-bind:h="d">
+            <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" v-bind:stroke="beamColor ?? 'white'"
+                v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}
+                                0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`" />
+            <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
+            <circle v-if="fiberInfo &amp;&amp; false" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.55" fill="none" v-bind:stroke-width="r*0.2" v-bind:stroke="beamColor"/>
+        </extends>
         <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo">
-                <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" v-bind:stroke="beamColor ?? 'white'"
-                    v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}
-                                    0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`" />
-                <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
-                <circle v-if="fiberInfo &amp;&amp; false" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.55" fill="none" v-bind:stroke-width="r*0.2" v-bind:stroke="beamColor"/>
-            </Kre:Port>
             <template v-if="fiberInfo">
                 <text v-bind:x="r" v-bind:y="0" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
                     {{fiberInfo.signalDirection}}
@@ -288,7 +268,7 @@
                 </text>
             </template>
         </template>
-        <props extend="Port" except="w,h">
+        <props except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
         </props>
@@ -299,7 +279,7 @@
             <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
             <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
         </computed-props>
-        <style extends="Port">
+        <style>
             .port-icon.body {fill: transparent; stroke: transparent;}
             .port-name {fill: white; font-weight: bold}
             .nut {fill: silver; }
@@ -309,25 +289,18 @@
     </component-class>
 
     <component-class name="FC-APC-Port" category=".ports">
-        <template>
-            <Kre:FC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo"/>
-        </template>
-        <props extend="FC-Port"/>
-        <style extends="FC-Port">
+        <extends base="FC-Port" />
+        <style>
             .cap {stroke: #18b933;}
         </style>
     </component-class>
 
     <component-class name="SC-Port" category=".ports">
-        <template>
-            <Kre:Port v-bind:w="d" v-bind:h="d" v-bind:labelY="labelY" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                    v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo">
-                <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
-                <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8" />
-            </Kre:Port>
-        </template>
-        <props extend="Port, KeyedConnector" except="w,h">
+        <extends base="Port" v-bind:w="d" v-bind:h="d">
+            <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+            <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8" />
+        </extends>
+        <props extend="KeyedConnector" except="w,h">
             <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
             <prop name="ferruleVisible" type="Boolean" default="false"/>
         </props>
@@ -341,11 +314,7 @@
     </component-class>
 
     <component-class name="SC-APC-Port" category=".ports">
-        <template>
-            <Kre:SC-Port v-bind:d="d" v-bind:name="name" v-bind:prefix="prefix" v-bind:font-size="fontSize" 
-                v-bind:port-info="portInfo" v-bind:fiber-info="fiberInfo" />
-        </template>
-        <props extend="SC-Port"/>
+        <extends base="SC-Port" />
         <style>
             .RectangularConnector .border {fill: none; stroke: #18b933;}
         </style>

@@ -108,6 +108,7 @@
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="line-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
@@ -118,6 +119,7 @@
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
                         <xs:attributeGroup ref="point-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>
@@ -127,6 +129,7 @@
                 <xs:element name="path" minOccurs="0">
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="d"/>
@@ -137,6 +140,7 @@
                 <xs:element name="polygon" minOccurs="0">
                     <xs:complexType>
                         <xs:attributeGroup ref="general-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="point-attrs"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
@@ -183,6 +187,7 @@
                 <xs:element name="image">
                     <xs:complexType>
                         <xs:attributeGroup ref="dim-attrs"/>
+                        <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="image-attrs"/>
                         <xs:attribute name="href"/>
                         <xs:attribute ref="v-bind:href"/>

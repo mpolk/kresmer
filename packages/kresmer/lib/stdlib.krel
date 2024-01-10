@@ -23,7 +23,6 @@
     
     <!-- Any device that has an ip-address and can be managed using some network protocol -->
     <component-class name="ManagedDevice" category=".general">
-        <template/>
         <props>
             <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network"
                 description="Device management ip-address"/>

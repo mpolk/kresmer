@@ -31,7 +31,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         template: Template,
         props?: NetworkElementClassProps,
         exceptProps?: string[],
-        baseClassChildNodes?: NodeListOf<ChildNode>,
+        baseClassChildNodes?: NodeList,
         baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,
         defs?: Template,
@@ -46,9 +46,12 @@ export default class NetworkComponentClass extends NetworkElementClass {
         if (this.baseClass  && this.template instanceof Element) {
             const baseClass = this.baseClass as NetworkComponentClass;
             const baseInstanceNode = this.template.ownerDocument.createElement(baseClass.adapterVueName);
-            params.baseClassChildNodes?.forEach(childNode => {
-                baseInstanceNode.append(childNode);
-            });
+            if (params.baseClassChildNodes) {
+                const n = params.baseClassChildNodes.length;
+                for (let i = 0; i < n; i++) {
+                    baseInstanceNode.append(params.baseClassChildNodes[0]);
+                }//for
+            }//if
             baseInstanceNode.setAttribute("v-bind:name", "name");
             for (const propName in this.props) {
                 baseInstanceNode.setAttribute(`v-bind:${propName}`, propName);
@@ -88,7 +91,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
 
     /**
      * Returns the name of the adapter vue-component for this class
-     * @returns The holder vue-component name
+     * @returns The adapter vue-component name
      */
     get adapterVueName() {return "Kre:" + this.name}
 
