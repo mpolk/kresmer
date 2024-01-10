@@ -55,8 +55,7 @@
                 v-bind:name="i" v-bind:port-info="portsInfo[i]" v-bind:fiber-info="fibersInfo[i]"
                 />
         </template>
-        <style extends="SwitchBody" />
-        <props extend="SwitchBody">
+        <props>
             <prop name="nPorts" type="Number" default="8" category="Hardware" />
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
             <prop name="width" type="Number" category="Geometry"/>
