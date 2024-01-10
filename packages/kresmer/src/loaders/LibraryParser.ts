@@ -103,6 +103,7 @@ export default class LibraryParser {
 
         let baseClass: NetworkComponentClass | undefined;
         let baseClassPropBindings: NetworkElementProps | undefined;
+        let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
         let template: Element | undefined;
         let props: NetworkElementClassProps = {};
         let computedProps: ComputedProps = {};
@@ -114,7 +115,8 @@ export default class LibraryParser {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "extends":
-                    ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, NetworkComponentClass) ?? {});
+                    ({baseClass, baseClassPropBindings, childNodes: baseClassChildNodes} = 
+                        this.parseClassInheritance(child, NetworkComponentClass) ?? {});
                     break
                 case "template":
                     template = child;
@@ -154,8 +156,9 @@ export default class LibraryParser {
         }//if
 
 
-        return new NetworkComponentClass(className, {baseClass, styleBaseClasses, propsBaseClasses, template, 
-                                                     props, baseClassPropBindings, computedProps, defs, 
+        return new NetworkComponentClass(className, {baseClass, baseClassPropBindings, baseClassChildNodes, 
+                                                     styleBaseClasses, propsBaseClasses, template, 
+                                                     props, computedProps, defs, 
                                                      style, defaultContent, category});
     }//parseComponentClassNode
 
@@ -226,7 +229,7 @@ export default class LibraryParser {
 
     private parseClassInheritance<T extends typeof NetworkComponentClass|typeof NetworkLinkClass>(node: Element, baseClassCtor: T)
     {
-        const baseClassName = node.textContent || node.getAttribute("base");
+        const baseClassName = node.getAttribute("base");
         if (!baseClassName) {
             this.kresmer.raiseError(new LibraryParsingException("Base class name is not specified", 
                                     {source: `Link ${node.parentElement!.getAttribute("name")}`}));
@@ -242,13 +245,13 @@ export default class LibraryParser {
 
         const baseClassRawProps: NetworkElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
-            if (attrName !== "base" || node.textContent) {
+            if (attrName !== "base") {
                 baseClassRawProps[attrName] = node.getAttribute(attrName)!;
             }//if
         }//for
         const baseClassPropBindings = DrawingParser.normalizeProps(baseClassRawProps, baseClass, this.kresmer);
 
-        return {baseClass, baseClassPropBindings};
+        return {baseClass, baseClassPropBindings, childNodes: node.childNodes};
     }//parseClassInheritance
 
 

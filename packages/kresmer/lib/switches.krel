@@ -14,28 +14,20 @@
 
     <!-- Generic switch body, i.e. a single box or some stacked boxes without ports -->
     <component-class name="SwitchBody" category=".switch-parts">
-        <template>
-            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap" v-bind:perspective="perspective" 
-                v-bind:top-facet-size="topFacetSize" v-bind:top-facet-skew="topFacetSkew" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                >
-                <template v-slot:frontFacet="{}">
-                    <slot name="frontFacet" />
-                </template>
-                <template v-slot:topFacetC="{}">
-                    <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
-                    <slot name="topFacetC"/>
-                </template>
-                <template v-slot:topFacetLR="{}">
-                    <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
-                    <slot name="topFacetLR"/>
-                </template>
-            </Kre:RackMountDevice>
-        </template>
-        <style extends="RackMountDevice">
+        <extends base="RackMountDevice" v-bind:n-units="nStackUnits">
+            <template v-slot:frontFacet="{}">
+                <slot name="frontFacet" />
+            </template>
+            <template v-slot:topFacetC="{}">
+                <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
+                <slot name="topFacetC"/>
+            </template>
+            <template v-slot:topFacetLR="{}">
+                <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
+                <slot name="topFacetLR"/>
+            </template>
+        </extends>
+        <style>
             .facet { --facet-color: lightgray; }
         </style>
         <props extend="RackMountDevice" except="n-units">

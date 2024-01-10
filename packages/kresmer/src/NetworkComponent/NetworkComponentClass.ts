@@ -30,6 +30,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         styleBaseClasses?: NetworkComponentClass[],
         template: Template,
         props?: NetworkElementClassProps,
+        baseClassChildNodes?: NodeListOf<ChildNode>,
         baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,
         defs?: Template,
@@ -44,6 +45,9 @@ export default class NetworkComponentClass extends NetworkElementClass {
         if (this.baseClass  && this.template instanceof Element) {
             const baseClass = this.baseClass as NetworkComponentClass;
             const baseInstanceNode = this.template.ownerDocument.createElement(baseClass.adapterVueName);
+            params.baseClassChildNodes?.forEach(childNode => {
+                baseInstanceNode.append(childNode);
+            });
             baseInstanceNode.setAttribute("v-bind:name", "name");
             for (const propName in this.props) {
                 baseInstanceNode.setAttribute(`v-bind:${propName}`, propName);
