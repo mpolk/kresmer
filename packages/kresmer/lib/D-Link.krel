@@ -12,17 +12,8 @@
     <import library="switches" />
 
     <component-class name="DLinkSwitchBody" category=".switch-parts">
-        <template>
-            <Kre:SwitchBody 
-                v-bind:name="name" v-bind:width="width" v-bind:unit-height="unitHeight"
-                v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap" 
-                v-bind:top-facet-size="topFacetSize" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
-        </template>
-        <style extends="SwitchBody">
+        <extends base="SwitchBody" />
+        <style>
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
             .model-name { fill: #383838; font-family: sans-serif; }
@@ -31,7 +22,7 @@
             .port-icon { fill: #303030; }
             .port-icon.body { stroke: #efeedc; }
         </style>
-        <props extend="SwitchBody">
+        <props>
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
             <prop name="management-protocol" type="String" category="Network" default="telnet:"
@@ -40,7 +31,6 @@
     </component-class>
 
     <component-class name="DLinkSwitchStack" category=".switch-parts">
-        <template/>
         <style>
             .unit-badge { fill: #7e0133; stroke: #e0d900; }
             .unit-badge-text { fill: white; }
@@ -48,14 +38,8 @@
     </component-class>
 
     <component-class name="DLinkSwitch" category="Switches/DLink">
+        <extends base="DLinkSwitchBody" />
         <template>
-            <Kre:DLinkSwitchBody 
-                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
             <template v-for="i in nPorts/2">
                 <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
                     v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
@@ -63,8 +47,7 @@
                     v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
             </template>
         </template>
-        <style extends="DLinkSwitchBody"/>
-        <props extend="DLinkSwitchBody" except="interUnitGap">
+        <props except="interUnitGap">
             <prop name="width" type="Number" category="Geometry"/>
             <prop name="n-ports" type="Number" default="24" category="Hardware" description="The number of ports" />
         </props>
@@ -74,14 +57,8 @@
     </component-class>
 
     <component-class name="DLink4ComboPortsSwitch" category="Switches/DLink">
+        <extends base="DLinkSwitch" v-bind:n-ports="nCopperPorts" />
         <template>
-            <Kre:DLinkSwitch
-                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:n-ports="nCopperPorts" v-bind:width="width"
-                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment" v-bind:ports-info="portsInfo"
-                />
             <text v-for="(line, i) in modelNameLines" v-bind:x="width - unitHeight*2.15" 
                 v-bind:y="unitHeight*(0.25 + 0.15*i)" v-bind:font-size="unitHeight*0.15" 
                 text-anchor="middle" dominant-baseline="hanging" class="model-name">{{line}}</text>
@@ -102,8 +79,7 @@
             <Kre:SFP-Port v-bind:x="width - unitHeight*0.56" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" combo="fiber"
                 v-bind:name="fourthComboFiberPortName" v-bind:port-info="fourthComboFiberPortInfo" v-bind:fiber-info="fibersInfo[nCopperPorts+4]" key-position="bottom"/>
         </template>
-        <style extends="DLinkSwitch"/>
-        <props extend="DLinkSwitch">
+        <props>
             <prop name="n-ports" type="Number" default="28" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
             <prop name="n-copper-ports" type="Number" default="24" category="Hardware" description="The number of copper ports"/>
             <prop name="first-combo-media" type="string" choices="fiber,copper" category="Network" description="First combo port media type" />
