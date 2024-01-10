@@ -15,7 +15,7 @@ import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";
 import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
-import { toCamelCase } from "../Utils";
+import { clone, toCamelCase } from "../Utils";
 
 /**
  * Component library parser
@@ -268,7 +268,7 @@ export default class LibraryParser {
         propsBaseClasses?.forEach(baseClass => {
             for (const propName in baseClass.props) {
                 if (!exceptProps || exceptProps.findIndex(exc => exc === propName) < 0)
-                    props[propName] = baseClass.props[propName];
+                    props[propName] = clone(baseClass.props[propName]);
             }//for
         });
         for (let i = 0; i < node.children.length; i++) {

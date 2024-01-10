@@ -10,6 +10,7 @@
 import { Prop } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "./Kresmer";
+import { clone } from "./Utils";
 import { NetworkElementProps } from "./loaders/DrawingParser";
 
 /**
@@ -41,10 +42,11 @@ export default abstract class NetworkElementClass {
         this.propsBaseClasses = params.propsBaseClasses;
         this.props = params.props ?? {};
         if (params.baseClass) {
-            this.props = {...params.baseClass.props, ...this.props};
+            this.props = {...clone(params.baseClass.props), ...clone(this.props)};
             // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if
+        this.baseClassPropBindings = params.baseClassPropBindings;
         this.computedProps = params.computedProps;
         this.defs = params.defs;
         this.style = params.style;
@@ -55,6 +57,8 @@ export default abstract class NetworkElementClass {
     readonly name: string;
     /** Base class (for the element as a whole) */
     readonly baseClass?: NetworkElementClass;
+    /** Base class prop values set from the "extends" clause */
+    readonly baseClassPropBindings?: NetworkElementProps;
     /** A list of the base classes for this class CSS */
     readonly styleBaseClasses?: NetworkElementClass[];
     /** A list of the base classes for this class props set */

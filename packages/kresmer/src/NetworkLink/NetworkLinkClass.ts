@@ -36,6 +36,11 @@ export default class NetworkLinkClass extends NetworkElementClass {
     })
     {
         super(name, params);
+
+        for (const propName in params.baseClassPropBindings) {
+            (this.props[propName] as {default: unknown}).default = params.baseClassPropBindings[propName];
+        }//for
+
         NetworkLinkClass.allClasses[name] = this;
     }//ctor
 
