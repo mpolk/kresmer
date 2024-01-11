@@ -12,17 +12,8 @@
     <import library="switches" />
 
     <component-class name="ExtremeSwitchBody" category=".switch-parts">
-        <template>
-            <Kre:SwitchBody 
-                v-bind:name="name" v-bind:width="width" v-bind:unit-height="unitHeight"
-                v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap" 
-                v-bind:top-facet-size="topFacetSize" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
-        </template>
-        <style extends="SwitchBody">
+        <extends base="SwitchBody" />
+        <style>
             .device-name { fill: white; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
             .model-name { fill: white; font-family: sans-serif; }
@@ -30,14 +21,13 @@
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
-        <props extend="SwitchBody">
+        <props>
             <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
         </props>
     </component-class>
 
     <component-class name="ExtremeSwitchStack" category=".switch-parts">
-        <template/>
         <style>
             .unit-badge { fill: #7e0133; stroke: #e0d900; }
             .unit-badge-text { fill: white; }
@@ -45,30 +35,13 @@
     </component-class>
 
     <component-class name="ExtremeSwitch" category="Switches/Extreme">
-        <template>
-            <Kre:Switch 
-                v-bind:name="name" v-bind:height="height" v-bind:n-ports="nPorts"
-                v-bind:ports-info="portsInfo" v-bind:fibers-info="fibersInfo"
-                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
-        </template>
-        <style extends="Switch, ExtremeSwitchBody" />
-        <props extend="Switch"/>
+        <extends base="Switch"/>
+        <style extends="ExtremeSwitchBody" />
     </component-class>
 
     <component-class name="Extreme-X590-24x-Stack" category="Switches/Extreme">
+        <extends base="ExtremeSwitchBody" v-bind:top-facet-size="1" />
         <template>
-            <Kre:ExtremeSwitchBody 
-                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap"
-                v-bind:top-facet-size="1" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
             <template v-for="unit in nStackUnits">
                 <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)"
                     v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
@@ -104,8 +77,8 @@
                               />
             </template>
         </template>
-        <style extends="StackUnitBadge, ExtremeSwitchBody, ExtremeSwitchStack"/>
-        <props extend="ExtremeSwitchBody">
+        <style extends="StackUnitBadge, ExtremeSwitchStack"/>
+        <props>
             <prop name="width" type="Number" category="Geometry"/>
         </props>
         <computed-props>
@@ -114,29 +87,13 @@
     </component-class>
 
     <component-class name="Extreme-X590-24x" category="Switches/Extreme">
-        <template>
-            <Kre:Extreme-X590-24x-Stack
-                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                v-bind:top-facet-size="1" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                n-stack-units="1"
-                />
-        </template>
-        <props extend="Extreme-X590-24x-Stack" except="nStackUnits"/>
+        <extends base="Extreme-X590-24x-Stack" v-bind:top-facet-size="1" v-bind:n-stack-units="1" />
+        <props except="nStackUnits"/>
     </component-class>
 
     <component-class name="Extreme-X670-48x-Stack" category="Switches/Extreme">
+        <extends base="ExtremeSwitchBody" v-bind:top-facet-size="1" />
         <template>
-            <Kre:ExtremeSwitchBody 
-                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:top-facet-size="1" v-bind:n-stack-units="nStackUnits" v-bind:inter-unit-gap="interUnitGap"
-                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
             <template v-for="unit in nStackUnits">
                 <Kre:StackUnitBadge v-if="nStackUnits > 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)"
                     v-bind:width = "unitHeight*0.25" v-bind:height = "unitHeight*0.25" v-bind:unit="unit" />
@@ -154,8 +111,8 @@
                     </template>
             </template>
         </template>
-        <style extends="StackUnitBadge, ExtremeSwitchStack, ExtremeSwitchBody"/>
-        <props extend="ExtremeSwitchBody">
+        <style extends="StackUnitBadge, ExtremeSwitchStack"/>
+        <props>
             <prop name="width" type="Number" category="Geometry"/>
         </props>
         <computed-props>
@@ -164,17 +121,8 @@
     </component-class>
 
     <component-class name="Extreme-X670-48x" category="Switches/Extreme">
-        <template>
-            <Kre:Extreme-X670-48x-Stack
-                v-bind:name="name" v-bind:height="height" v-bind:width="width" 
-                v-bind:top-facet-size="1" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                n-stack-units="1"
-                />
-        </template>
-        <props extend="Extreme-X670-48x-Stack" except="nStackUnits" />
+        <extends base="Extreme-X670-48x-Stack" v-bind:top-facet-size="1" v-bind:n-stack-units="1" />
+        <props except="nStackUnits" />
     </component-class>
 
 </kresmer-library>
