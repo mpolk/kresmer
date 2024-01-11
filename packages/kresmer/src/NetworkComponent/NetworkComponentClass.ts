@@ -27,6 +27,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
     public constructor(name: string, params: {
         baseClass?: NetworkComponentClass,
         propsBaseClasses?: NetworkComponentClass[],
+        computedPropsBaseClasses?: NetworkComponentClass[],
         styleBaseClasses?: NetworkComponentClass[],
         template: Template,
         props?: NetworkElementClassProps,

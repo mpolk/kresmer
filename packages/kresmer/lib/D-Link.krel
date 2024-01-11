@@ -88,7 +88,7 @@
             <prop name="fourth-combo-media" type="string" choices="fiber,copper" category="Network" description="Fourth combo port media type" />
             <prop name="model-name" type="String" />
         </props>
-        <computed-props extend="DLinkSwitch">
+        <computed-props>
             <computed-prop name="width">props.width ?? props.unitHeight * ((props.nCopperPorts + 4) * 0.25 + 1.46)</computed-prop>
             <computed-prop name="firstComboMedia">props.firstComboMedia ?? props.portsInfo[props.nCopperPorts+1]?.media ?? "fiber"</computed-prop>
             <computed-prop name="firstComboCopperPortName">computedProps.firstComboMedia === "copper" ? `${props.nCopperPorts+1}` : `${props.nCopperPorts+1}(c)`</computed-prop>

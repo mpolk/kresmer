@@ -12,7 +12,7 @@ import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
 import ParsingException from "./ParsingException";
-import { KresmerExceptionSeverity, UndefinedLinkClassException } from "../KresmerException";
+import { KresmerExceptionSeverity, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";
 import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
 import { clone, toCamelCase } from "../Utils";
@@ -124,8 +124,7 @@ export default class LibraryParser {
                     break;
                 case "props":
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    propsBaseClasses = child.getAttribute("extend")?.split(/ *, */)
-                        .map(className => NetworkComponentClass.getClass(className));
+                    propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
                     props = this.parseProps(child, propsBaseClasses, exceptProps);
                     break;
                 case "computed-props":
@@ -135,8 +134,10 @@ export default class LibraryParser {
                     defs = child;
                     break;
                 case "style":
-                    styleBaseClasses = child.getAttribute("extends")?.split(/ *, */)
-                        .map(className => NetworkComponentClass.getClass(className));
+                    styleBaseClasses = this.parseClassList(child.getAttribute("extends"), NetworkComponentClass);
+                    if (baseClass && !styleBaseClasses?.includes(baseClass)) {
+                        styleBaseClasses = styleBaseClasses ? [baseClass, ...styleBaseClasses] : [baseClass];
+                    }//if
                     style = this.parseCSS(child.innerHTML, styleBaseClasses);
                     break;
             }//switch
@@ -188,7 +189,7 @@ export default class LibraryParser {
                     break
                 case "props":
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    propsBaseClasses = this.parseClassList(child.getAttribute("extend"));
+                    propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
                     props = this.parseProps(child, propsBaseClasses, exceptProps);
                     break;
                 case "computed-props":
@@ -198,7 +199,7 @@ export default class LibraryParser {
                     defs = child;
                     break;
                 case "style":
-                    styleBaseClasses = this.parseClassList(child.getAttribute("extends"));
+                    styleBaseClasses = this.parseClassList(child.getAttribute("extends"), NetworkLinkClass);
                     if (baseClass && !styleBaseClasses?.includes(baseClass)) {
                         styleBaseClasses = styleBaseClasses ? [baseClass, ...styleBaseClasses] : [baseClass];
                     }//if
@@ -218,15 +219,20 @@ export default class LibraryParser {
     }//parseLinkClassNode
 
 
-    private parseClassList(rawList: string|null)
+    private parseClassList<T extends typeof NetworkComponentClass|typeof NetworkLinkClass>(
+        rawList: string|null, listElemClass: T): InstanceType<T>[]|undefined
     {
         return rawList?.split(/ *, */)
             .map(className => {
-                const clazz = NetworkLinkClass.getClass(className);
-                if (!clazz)
-                    this.kresmer.raiseError(new UndefinedLinkClassException({className}));
-                return clazz;
-            }).filter(clazz => Boolean(clazz)) as NetworkLinkClass[];
+                const clazz =  listElemClass.getClass(className);
+                if (!clazz) {
+                    const exceptionClass = listElemClass === NetworkComponentClass ?
+                        UndefinedComponentClassException :
+                        UndefinedLinkClassException;
+                    this.kresmer.raiseError(new exceptionClass({className}));
+                }//if
+                return clazz as InstanceType<T>;
+            }).filter(clazz => Boolean(clazz));
     }//parseClassList
 
 
@@ -389,7 +395,8 @@ export default class LibraryParser {
             if (!baseClass) {
                 this.kresmer.raiseError(new LibraryParsingException(`Reference to undefined base class "${baseClassName}"`));
             } else if (baseClass.computedProps) {
-                Object.entries(baseClass.computedProps).filter(cp => !except.includes(cp[0])).forEach(cp => computedProps[cp[0]] = cp[1]);
+                Object.entries(baseClass.computedProps).filter(cp => !except.includes(cp[0]))
+                    .forEach(cp => computedProps[cp[0]] = cp[1]);
             }//if
         });
 

@@ -69,6 +69,13 @@ export class UndefinedComponentException extends KresmerException {
     }//ctor
 }//UndefinedComponentException
 
+export class UndefinedComponentClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Undefined component class "${options.className}"`, options);
+    }//ctor
+}//UndefinedComponentClassException
+
 export class UndefinedLinkException extends KresmerException {
     constructor(options: KresmerExceptionOptions & RequireOnlyOne<{link?: string|number, message?: string}>)
     {

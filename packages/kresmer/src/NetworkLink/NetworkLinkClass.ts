@@ -26,6 +26,7 @@ export default class NetworkLinkClass extends NetworkElementClass {
     public constructor(name: string, params: {
         baseClass?: NetworkLinkClass,
         propsBaseClasses?: NetworkLinkClass[],
+        computedPropsBaseClasses?: NetworkLinkClass[],
         styleBaseClasses?: NetworkLinkClass[],
         props?: NetworkElementClassProps,
         exceptProps?: string[],

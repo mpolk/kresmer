@@ -27,6 +27,7 @@ export default abstract class NetworkElementClass {
     public constructor(name: string, params: {
         baseClass?: NetworkElementClass,
         styleBaseClasses?: NetworkElementClass[],
+        computedPropsBaseClasses?: NetworkElementClass[],
         propsBaseClasses?: NetworkElementClass[],
         props?: NetworkElementClassProps,
         exceptProps?: string[],
@@ -81,6 +82,7 @@ export default abstract class NetworkElementClass {
     readonly style?: PostCSSRoot;
     /** Class category (for ordering and usability) */
     readonly category?: string;
+
     /** Limits this class usage for embedding or inheritance */
     get isAbstract(): boolean {return Boolean(this.category?.startsWith('.'))}
 
