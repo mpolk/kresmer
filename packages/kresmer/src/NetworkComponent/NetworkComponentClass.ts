@@ -55,7 +55,8 @@ export default class NetworkComponentClass extends NetworkElementClass {
             }//if
             baseInstanceNode.setAttribute("v-bind:name", "name");
             for (const propName in this.props) {
-                baseInstanceNode.setAttribute(`v-bind:${propName}`, propName);
+                if (!params.baseClassPropBindings || !(propName in params.baseClassPropBindings))
+                    baseInstanceNode.setAttribute(`v-bind:${propName}`, propName);
             }//for
             for (const propName in params.baseClassPropBindings) {
                 baseInstanceNode.setAttribute(propName, String(params.baseClassPropBindings[propName]));

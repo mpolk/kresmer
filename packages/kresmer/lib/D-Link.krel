@@ -115,69 +115,15 @@
     </component-class>
 
     <component-class name="DLink-DES-3028" category="Switches/DLink">
-        <template>
-            <Kre:DLink4ComboPortsSwitch
-                v-bind:name="name" v-bind:unit-height="unitHeight"
-                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment" v-bind:ports-info="portsInfo"
-                model-name="DES 3028"
-                v-bind:n-copper-ports="24"
-                v-bind:first-combo-media="firstComboMedia"
-                v-bind:second-combo-media="secondComboMedia"
-                v-bind:third-combo-media="thirdComboMedia"
-                v-bind:fourth-combo-media="fourthComboMedia"
-                />
-        </template>
-        <style extends="DLink4ComboPortsSwitch"/>
-        <props extend="DLink4ComboPortsSwitch">
-            <prop name="n-ports" type="Number" default="28" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
-        </props>
+        <extends base="DLink4ComboPortsSwitch" model-name="DES 3028" v-bind:n-copper-ports="24" />
     </component-class>
 
     <component-class name="DLink-DES-3052" category="Switches/DLink">
-        <template>
-            <Kre:DLink4ComboPortsSwitch
-                v-bind:name="name" v-bind:unit-height="unitHeight"
-                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment" v-bind:ports-info="portsInfo"
-                model-name="DES 3052"
-                v-bind:n-copper-ports="48"
-                v-bind:first-combo-media="firstComboMedia"
-                v-bind:second-combo-media="secondComboMedia"
-                v-bind:third-combo-media="thirdComboMedia"
-                v-bind:fourth-combo-media="fourthComboMedia"
-                />
-        </template>
-        <style extends="DLink4ComboPortsSwitch"/>
-        <props extend="DLink4ComboPortsSwitch">
-            <prop name="n-ports" type="Number" default="52" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
-        </props>
+        <extends base="DLink4ComboPortsSwitch" model-name="DES 3052" v-bind:n-copper-ports="48" />
     </component-class>
 
     <component-class name="DLink-DES-3200-28" category="Switches/DLink">
-        <template>
-            <Kre:DLink4ComboPortsSwitch
-                v-bind:name="name" v-bind:unit-height="unitHeight"
-                v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment" v-bind:ports-info="portsInfo"
-                model-name="DES 3200 28"
-                v-bind:n-copper-ports="24"
-                v-bind:first-combo-media="firstComboMedia"
-                v-bind:second-combo-media="secondComboMedia"
-                v-bind:third-combo-media="thirdComboMedia"
-                v-bind:fourth-combo-media="fourthComboMedia"
-                />
-        </template>
-        <style extends="DLink4ComboPortsSwitch"/>
-        <props extend="DLink4ComboPortsSwitch">
-            <prop name="n-ports" type="Number" default="28" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
-        </props>
+        <extends base="DLink4ComboPortsSwitch" model-name="DES 3200 28" v-bind:n-copper-ports="24" />
     </component-class>
 
 

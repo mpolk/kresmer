@@ -349,7 +349,7 @@ export default class DrawingParser {
             const value = rawProps[propName];
             if (propName.startsWith("v-bind:")) {
                 props[propName] = value;
-                break;
+                continue;
             }//if
 
             // eslint-disable-next-line @typescript-eslint/ban-types
