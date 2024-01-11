@@ -12,6 +12,7 @@
     <import library="routers" />
 
     <component-class name="Juniper-MX204" category="Routers/Juniper">
+        <extends base="RouterBody" v-bind:top-facet-size="1" />
         <template>
             <defs>
                 <pattern v-bind:id="`kre:std:Juniper-MX204-front-grid-${componentId}`" patternUnits="userSpaceOnUse" 
@@ -22,13 +23,6 @@
                         style="stroke-width: 8.5; stroke: #b8b8b8; fill: none;"/>
                 </pattern>
             </defs>
-            <Kre:RouterBody 
-                v-bind:name="name" v-bind:unit-height="height" v-bind:width="width" 
-                v-bind:top-facet-size="1" v-bind:perspective="perspective" v-bind:name-vertical-pos="nameVerticalPos"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-                />
             <rect v-bind:x="height*0.08" v-bind:y="height*0.08" 
                     v-bind:height="height*0.84" v-bind:width="width-height*0.16" 
                     v-bind:fill="`url(#kre:std:Juniper-MX204-front-grid-${componentId})`"/>
@@ -71,14 +65,14 @@
                         v-bind:r="height*0.05" class="sync-port"/>
             </template>
         </template>
-        <style extends="RouterBody">
+        <style>
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #faffd6; text-shadow: 1px 1px 1px black;}
             .model-name { fill: #ffffff; font-family: sans-serif; }
             .facet {--facet-color: #b8b8b8;}
             .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
         </style>
-        <props extend="RouterBody" except="unit-height">
+        <props except="unit-height">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
             <prop name="width" type="Number" category="Geometry"/>
         </props>
