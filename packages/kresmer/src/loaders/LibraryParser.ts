@@ -108,9 +108,11 @@ export default class LibraryParser {
         let props: NetworkElementClassProps = {};
         let exceptProps: string[] | undefined;
         let computedProps: ComputedProps = {};
+        let exceptCProps: string[] | undefined;
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let propsBaseClasses: NetworkComponentClass[] | undefined;
+        let cPropsBaseClasses: NetworkComponentClass[] | undefined;
         let styleBaseClasses: NetworkComponentClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -128,7 +130,12 @@ export default class LibraryParser {
                     props = this.parseProps(child, propsBaseClasses, exceptProps);
                     break;
                 case "computed-props":
-                    computedProps = this.parseComputedProps(child);
+                    cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
+                    exceptCProps = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !cPropsBaseClasses?.includes(baseClass)) {
+                        cPropsBaseClasses = cPropsBaseClasses ? [baseClass, ...cPropsBaseClasses] : [baseClass];
+                    }//if
+                    computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
                     break;
                 case "defs":
                     defs = child;
@@ -174,12 +181,14 @@ export default class LibraryParser {
 
         let props: NetworkElementClassProps = {};
         let exceptProps: string[] | undefined;
+        let exceptCProps: string[] | undefined;
         let computedProps: ComputedProps = {};
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let baseClass: NetworkLinkClass | undefined;
         let baseClassPropBindings: NetworkElementProps | undefined;
         let propsBaseClasses: NetworkLinkClass[] | undefined;
+        let cPropsBaseClasses: NetworkLinkClass[] | undefined;
         let styleBaseClasses: NetworkLinkClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -188,12 +197,17 @@ export default class LibraryParser {
                     ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, NetworkLinkClass) ?? {});
                     break
                 case "props":
-                    exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
+                    exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
                     props = this.parseProps(child, propsBaseClasses, exceptProps);
                     break;
                 case "computed-props":
-                    computedProps = this.parseComputedProps(child);
+                    cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
+                    exceptCProps = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !cPropsBaseClasses?.includes(baseClass)) {
+                        cPropsBaseClasses = cPropsBaseClasses ? [baseClass, ...cPropsBaseClasses] : [baseClass];
+                    }//if
+                    computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
                     break;
                 case "defs":
                     defs = child;
@@ -385,18 +399,13 @@ export default class LibraryParser {
     }//parseProps
 
 
-    private parseComputedProps(node: Element)
+    private parseComputedProps(node: Element, baseClasses: NetworkElementClass[]|undefined, except: string[])
     {
         const computedProps: ComputedProps = {};
-        const baseClassNames = node.getAttribute("extend")?.split(/ *, */);
-        const except = node.getAttribute("except")?.split(/ *, */) ?? [];
-        baseClassNames?.forEach(baseClassName => {
-            const baseClass = NetworkComponentClass.getClass(baseClassName);
-            if (!baseClass) {
-                this.kresmer.raiseError(new LibraryParsingException(`Reference to undefined base class "${baseClassName}"`));
-            } else if (baseClass.computedProps) {
-                Object.entries(baseClass.computedProps).filter(cp => !except.includes(cp[0]))
-                    .forEach(cp => computedProps[cp[0]] = cp[1]);
+        baseClasses?.forEach(baseClass => {
+            if (baseClass.computedProps) {
+                Object.entries(baseClass.computedProps).filter(cprop => !except.includes(cprop[0]))
+                    .forEach(cprop => computedProps[cprop[0]] = cprop[1]);
             }//if
         });
 
