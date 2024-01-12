@@ -123,7 +123,7 @@
             <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
         </computed-props>
         <style>
-            .port-icon.body {fill: #212121;}
+            /* .port-icon.body {fill: #212121;} */
             .port-label .pad {fill-opacity: 0.75; fill: #e8f7f7; }
             .port-label.row3 .pad {filter: saturate(0.85) brightness(0.85)}
             .port-label.row2 .pad {filter: saturate(0.9) brightness(0.9)}
@@ -135,11 +135,7 @@
     </component-class>
 
     <component-class name="MuxPatchPanel" category="OpticalEquipment">
-        <template>
-            <Kre:PatchPanel v-bind:comment="comment" v-bind:width="width" v-bind:height="height" v-bind:orientation="orientation"
-                v-bind:n-ports="nPorts" v-bind:first-port="firstPort" v-bind:n-port-rows="nPortRows" v-bind:port-layout="portLayout" v-bind:port-label-position="portLabelPosition"
-                v-bind:port-labels="portLabels" v-bind:color="color" v-bind:stroke-color="strokeColor" v-bind:fibers-info="fibersInfo"/>
-        </template>
-        <props extend="PatchPanel, OpticalMultiplexer"></props>
+        <extends base="PatchPanel"/>
+        <props extend="OpticalMultiplexer"/>
     </component-class>
 </kresmer-library>
