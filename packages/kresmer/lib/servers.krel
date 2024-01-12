@@ -13,36 +13,26 @@
 
     <!-- General server -->
     <component-class name="ServerBody" category=".server-parts">
-        <template>
-            <Kre:RackMountDevice v-bind:name="name" v-bind:unit-height="unitHeight"
-                v-bind:width="width"
-                v-bind:n-units="nUnits" v-bind:perspective="perspective"
-                v-bind:top-facet-size="0.8" v-bind:top-facet-skew="topFacetSkew"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment" v-bind:show-device-name="false"
-                v-bind:show-ip-address="false"
-            >
-                <template v-slot:frontFacet="{}">
-                    <slot name="frontFacet" />
-                </template>
-                <template v-slot:topFacetC="{}">
-                    <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet"
-                        style="fill: none; stroke-width: 0.015" />
-                    <slot name="topFacetC" />
-                </template>
-                <template v-slot:topFacetLR="{}">
-                    <circle cx="0.5" cy="0.5" r="0.45" class="facet"
-                        style="fill: none; stroke-width: 0.015" />
-                    <slot name="topFacetLR" />
-                </template>
-            </Kre:RackMountDevice>
-        </template>
-        <style extends="RackMountDevice" />
-        <props extend="RackMountDevice" />
+        <extends base="RackMountDevice" v-bind:top-facet-size="0.8" 
+            v-bind:show-device-name="false" v-bind:show-ip-address="false">
+            <template v-slot:frontFacet="{}">
+                <slot name="frontFacet" />
+            </template>
+            <template v-slot:topFacetC="{}">
+                <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet"
+                    style="fill: none; stroke-width: 0.015" />
+                <slot name="topFacetC" />
+            </template>
+            <template v-slot:topFacetLR="{}">
+                <circle cx="0.5" cy="0.5" r="0.45" class="facet"
+                    style="fill: none; stroke-width: 0.015" />
+                <slot name="topFacetLR" />
+            </template>
+        </extends>
     </component-class>
 
     <component-class name="Server" category="Servers">
+        <extends base="ServerBody"/>
         <template>
             <defs>
                 <pattern v-bind:id="`kre:std:server-front-grid-${componentId}`" patternUnits="userSpaceOnUse" 
@@ -51,13 +41,6 @@
                     <rect x="2" y="2" width="6" height="6" fill="#1f1f1f" />
                 </pattern>
             </defs>
-            <Kre:ServerBody
-                v-bind:name="name" v-bind:unit-height="unitHeight" v-bind:width="width"
-                v-bind:perspective="perspective"
-                v-bind:ip-address="ipAddress" v-bind:management-protocol="managementProtocol"
-                v-bind:management-ref-target="managementRefTarget"
-                v-bind:comment="comment"
-            />
             <rect v-bind:x="unitHeight*0.08" v-bind:y="unitHeight*0.08"
                 v-bind:height="unitHeight*0.84" v-bind:width="width-unitHeight*0.16"
                 v-bind:fill="`url(#kre:std:server-front-grid-${componentId})`" />
@@ -115,7 +98,7 @@
                 key-position="bottom"
                 v-bind:port-info="interface" />
         </template>
-        <style extends="ServerBody">
+        <style>
             .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
             .ip-address { fill: #faffd6; text-shadow: 1px 1px 1px black;}
             .model-name { fill: #ffffff; font-family: sans-serif; }
@@ -125,7 +108,7 @@
             .led.dark-green {stroke: #007a00; fill: #16b616}
             .led.red {stroke: #ad0101; fill: #d50101}
         </style>
-        <props extend="ServerBody" except="top-facet-size, top-facet-skew">
+        <props except="top-facet-size, top-facet-skew">
             <prop name="width" type="Number" category="Geometry" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="none" category="Presentation" 
                   description="Visual perspective of the device image"/>
