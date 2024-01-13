@@ -11,7 +11,7 @@ import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
 import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, 
-         AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent } from "./main";
+         AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent, recentDrawings } from "./main";
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/ElectronAPI';
 import { IpcMainHooks } from './IpcMainHooks';
@@ -242,7 +242,7 @@ export function initApp(stage: AppInitStage)
             break;
         case AppInitStage.LIBS_LOADED: {
             if (!drawingToAutoload && localSettings.get("autoloadLastDrawing")) {
-                drawingToAutoload = localSettings.get("lastOpenedDrawing");
+                drawingToAutoload = recentDrawings.last;
             }//if
             if (fs.existsSync(drawingToAutoload)) {
                 defaultDrawingFileName = drawingToAutoload;

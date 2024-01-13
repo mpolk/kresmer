@@ -13,6 +13,7 @@ import Settings from './Settings';
 import Menus from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine, setDefaultDrawingFileName } from './init-funcs';
+import { RecentDrawings } from './file-ops';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const packageJson = require("../../package.json");
@@ -33,7 +34,7 @@ export const localSettings = new Settings("local-settings.json", {
     customManagementProtocols: [] as CustomManagementProtocol[],
     animateComponentDragging: false as boolean,
     animateLinkBundleDragging: false as boolean,
-    lastOpenedDrawing: "",
+    recentDrawings: [] as string[],
     autoloadLastDrawing: true as boolean,
     hrefBase: "",
 });
@@ -48,7 +49,7 @@ export type AppSettings = {
     customManagementProtocols: CustomManagementProtocol[],
     animateComponentDragging: boolean,
     animateLinkBundleDragging: boolean,
-    lastOpenedDrawing: string,
+    recentDrawings: string[],
     autoloadLastDrawing: boolean,
     hrefBase: string,
 }//AppSettings
@@ -57,6 +58,8 @@ export type CustomManagementProtocol = {
     name: string,
     cmd: string,
 }//CustomManagementProtocol
+
+export const recentDrawings = new RecentDrawings();
 
 export const libDirs: string[] = [];
 export const libsToLoad: string[] = [];
@@ -70,6 +73,7 @@ app.whenReady().then(() => {
     parseCommandLine();
     mainWindow = createMainWindow();
     menus = new Menus(mainWindow);
+    menus.buildRecentDrawingsSubmenu();
     initIpcMainHooks();
     registerCustomManagementProtocols();
 

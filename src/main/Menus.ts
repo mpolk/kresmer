@@ -5,10 +5,10 @@
  * -----------------------------------------------------------------------
  *                      Menus for Electron application
  ***************************************************************************/
-import { BrowserWindow, Menu, MenuItemConstructorOptions } from "electron";
+import { BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions } from "electron";
 import { Position } from "kresmer";
-import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent } from "./main";
-import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing } from "./file-ops";
+import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent, recentDrawings } from "./main";
+import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing, openDrawingFromPath } from "./file-ops";
 import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
 
 const isMac = process.platform === 'darwin'
@@ -58,7 +58,8 @@ export default class Menus {
 
     constructor(browserWindow: BrowserWindow) {
         this.browserWindow = browserWindow;
-        Menu.setApplicationMenu(Menu.buildFromTemplate(Menus.appMenuTemplate));
+        this.mainMenu = Menu.buildFromTemplate(Menus.appMenuTemplate);
+        Menu.setApplicationMenu(this.mainMenu);
     }//ctor
 
     private static readonly appMenuTemplate: MenuItemConstructorOptions[] = [
@@ -67,6 +68,7 @@ export default class Menus {
             submenu: [
                 { label: "New drawing", click: () => createNewDrawing()},
                 { label: "Open drawing...", accelerator: "Control+O", click: () => openDrawing() },
+                { label: "Open recent", id: "open-recent", submenu: []},
                 { label: "Load library...", accelerator: "Control+L", click: () => loadLibrary() },
                 { type: 'separator' },
                 { label: "Save drawing", accelerator: "Control+S", click: () => saveDrawing() },
@@ -201,6 +203,27 @@ export default class Menus {
         }
 
     private readonly browserWindow: BrowserWindow;
+    private readonly mainMenu: Menu;
+
+    public buildRecentDrawingsSubmenu()
+    {
+        const submenu = this.mainMenu.getMenuItemById("open-recent")!.submenu!;
+        recentDrawings.paths.forEach(path => {
+            submenu.append(new MenuItem({
+                label: path,
+                click: () => openDrawingFromPath(path),
+            }));
+        });
+    }//buildRecentDrawingsSubmenu
+
+    public addRecentDrawingItem(path: string)
+    {
+        const submenu = this.mainMenu.getMenuItemById("open-recent")!.submenu!;
+        submenu.insert(0, new MenuItem({
+            label: path,
+            click: () => openDrawingFromPath(path),
+        }));
+    }//addRecentDrawingItem
 
     public contextMenu(id: ContextMenuID, ...args: unknown[]) {
         const template = [...this.contextMenus[id]];

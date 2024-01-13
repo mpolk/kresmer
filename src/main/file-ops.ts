@@ -9,10 +9,37 @@
 import { FileFilter, dialog } from 'electron';
 import path from 'path';
 import fs from 'fs';
-import { mainWindow, sendAppCommand, libDirs, localSettings } from './main';
+import { mainWindow, sendAppCommand, libDirs, localSettings, menus, recentDrawings } from './main';
 import { defaultDrawingFileName, setDefaultDrawingFileName } from './init-funcs';
 import { IpcMainHooks } from './IpcMainHooks';
 import { UrlType } from '../renderer/UrlType';
+
+export class RecentDrawings
+{
+    static MAX = 10;
+
+    constructor()
+    {
+        this.paths = [...new Set(localSettings.get("recentDrawings"))];
+    }//ctor
+
+    paths: string[];
+
+    get last() { return this.paths[0]; }
+    set last(newPath: string)
+    {
+        const i = this.paths.indexOf(newPath);
+        if (i < 0) {
+            if (this.paths.unshift(newPath) >= RecentDrawings.MAX)
+                this.paths.pop();
+            menus.addRecentDrawingItem(newPath);
+        } else {
+            this.paths.splice(i, 1);
+            this.paths.unshift(newPath);
+        }//if
+        localSettings.set("recentDrawings", this.paths);
+    }//last
+}//RecentDrawings
 
 
 export function openDrawing()
@@ -24,17 +51,23 @@ export function openDrawing()
             {name: "All files (*.*)", extensions: ["*"]},
         ]
     };
-    if (localSettings.get("lastOpenedDrawing")) {
-        options.defaultPath = path.dirname(localSettings.get("lastOpenedDrawing"));
+    if (recentDrawings.last) {
+        options.defaultPath = path.dirname(recentDrawings.last);
     }//if
-    const filePath = dialog.showOpenDialogSync(mainWindow, options);
+    const filePaths = dialog.showOpenDialogSync(mainWindow, options);
 
-    if (filePath) {
-        const dwgData = fs.readFileSync(filePath[0], "utf-8");
-        sendAppCommand("load-drawing", dwgData, {drawingFileName: filePath[0]});
-        localSettings.set("lastOpenedDrawing", filePath[0]);
+    if (filePaths) {
+        openDrawingFromPath(filePaths[0]);
+        recentDrawings.last = filePaths[0];
     }//if
 }//openDrawing
+
+
+export function openDrawingFromPath(path: string)
+{
+    const dwgData = fs.readFileSync(path, "utf-8");
+    sendAppCommand("load-drawing", dwgData, {drawingFileName: path});
+}//openDrawingFromPath
 
 
 export function saveDrawing(dwgData?: string): boolean
@@ -95,7 +128,7 @@ export function saveDrawingAs(dwgData?: string): boolean
         });
         sendAppCommand("save-drawing");
     }//if
-    localSettings.set("lastOpenedDrawing", filePath);
+    recentDrawings.last = filePath;
     return true;
 }//saveDrawingAs
 
