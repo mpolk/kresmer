@@ -439,8 +439,8 @@ export default class Kresmer extends KresmerEventHooks {
     }//isLibraryLoaded
  
     /**
-     * 
-     * @param libName Tries to register a library with the given name (for the private use)
+     * Tries to register a library with the given name (for the private use)
+     * @param libName The name of th library to register
      */
     public _registerLibrary(libName: string): boolean
     {
@@ -464,8 +464,7 @@ export default class Kresmer extends KresmerEventHooks {
     public placeNetworkComponent(component: NetworkComponent,
                                  origin: Position, transform?: Transform): Kresmer
     {
-        const controller = new NetworkComponentController(
-            this, component, {origin, transform});
+        const controller = new NetworkComponentController(this, component, {origin, transform});
         component.controller = controller;
         return this.addPositionedNetworkComponent(controller);
     }//placeNetworkComponent
