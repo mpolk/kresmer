@@ -58,7 +58,6 @@ export function openDrawing()
 
     if (filePaths) {
         openDrawingFromPath(filePaths[0]);
-        recentDrawings.last = filePaths[0];
     }//if
 }//openDrawing
 
@@ -67,6 +66,7 @@ export function openDrawingFromPath(path: string)
 {
     const dwgData = fs.readFileSync(path, "utf-8");
     sendAppCommand("load-drawing", dwgData, {drawingFileName: path});
+    recentDrawings.last = path;
 }//openDrawingFromPath
 
 
