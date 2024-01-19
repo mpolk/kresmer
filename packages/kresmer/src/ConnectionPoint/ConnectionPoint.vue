@@ -12,7 +12,7 @@
     import Kresmer from '../Kresmer';
     import NetworkElement from '../NetworkElement';
     import NetworkLink from '../NetworkLink/NetworkLink';
-    import ConnectionPointProxy from './ConnectionPointProxy';
+    import ConnectionPoint from './ConnectionPoint';
 
     const props = defineProps({
         name: {type: [String, Number], required: true},
@@ -20,12 +20,12 @@
         y: {type: Number, default: 0}, 
         d: {type: Number, default: 10}, 
         dir: {type: [Number, String], default: 90},
-        proxy: {type: Object as PropType<ConnectionPointProxy>},
+        proxy: {type: Object as PropType<ConnectionPoint>},
     });
 
     const hostElement = inject(NetworkElement.ikHostElement)!;
     const hostIsLink = hostElement instanceof NetworkLink;
-    const proxy = props.proxy ?? new ConnectionPointProxy(hostElement, props.name, props.dir);
+    const proxy = props.proxy ?? new ConnectionPoint(hostElement, props.name, props.dir);
     if (!props.proxy)
         // eslint-disable-next-line vue/no-setup-props-destructure
         hostElement.addConnectionPoint(props.name, proxy);
@@ -103,4 +103,4 @@
             stroke-opacity: 1;
         }
     }
-</style>
+</style>./ConnectionPoint

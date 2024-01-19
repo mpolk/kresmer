@@ -15,7 +15,7 @@ import { Position } from "../Transform/Transform";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { NetworkComponent } from "../Kresmer";
 
-export default class ConnectionPointProxy {
+export default class ConnectionPoint {
     /**
      * Constructs a connection point
      * @param hostElement The network element this connection point belongs to

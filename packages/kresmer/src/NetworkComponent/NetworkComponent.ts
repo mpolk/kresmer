@@ -13,7 +13,7 @@ import Kresmer from "../Kresmer";
 import NetworkComponentController from "./NetworkComponentController";
 import { EditorOperation } from "../UndoStack";
 import LinkVertex from "../NetworkLink/LinkVertex";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
+import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 
 /**
  * Network Component - a generic network element instance 
@@ -77,11 +77,11 @@ export default class NetworkComponent extends NetworkElement {
     }//setData
 
     /** A collection of this component connection points indexed by their names */
-    private readonly connectionPoints = new Map<string, ConnectionPointProxy>();
+    private readonly connectionPoints = new Map<string, ConnectionPoint>();
     /** Returns the connection with the given name */
     getConnectionPoint(name: string|number) {return this.connectionPoints.get(String(name))}
     /** Adds a connection point with the given name or replaces the existing one */
-    addConnectionPoint(name: string|number, connectionPoint: ConnectionPointProxy)
+    addConnectionPoint(name: string|number, connectionPoint: ConnectionPoint)
     {
         this.connectionPoints.set(String(name), connectionPoint);
     }//setConnectionPoint
@@ -114,7 +114,7 @@ export default class NetworkComponent extends NetworkElement {
      * of the specified connection poiny
      * @param connectionPoint The connection for which the vertices should be restored
      */
-    restoreDisconnectedVertices(connectionPoint: ConnectionPointProxy)
+    restoreDisconnectedVertices(connectionPoint: ConnectionPoint)
     {
         for (const vertex of this.disconnectedVertices) {
             if (vertex.initParams?.cpData?.connectionPoint == connectionPoint.name) {

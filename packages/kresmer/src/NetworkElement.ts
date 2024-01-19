@@ -15,7 +15,7 @@ import NetworkLink from "./NetworkLink/NetworkLink";
 import { EditorOperation } from "./UndoStack";
 import KresmerException from "./KresmerException";
 import { encodeHtmlEntities, indent, toKebabCase } from "./Utils";
-import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
+import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 
 export default abstract class NetworkElement {
     /**
@@ -101,9 +101,9 @@ export default abstract class NetworkElement {
     static readonly ikHostElement = Symbol() as InjectionKey<NetworkElement>;
 
     /** Returns the connection with the given name */
-    abstract getConnectionPoint(name: string|number): ConnectionPointProxy|undefined;
+    abstract getConnectionPoint(name: string|number): ConnectionPoint|undefined;
     /** Adds a connection point with the given name or replaces the existing one */
-    abstract addConnectionPoint(name: string|number, connectionPoint: ConnectionPointProxy): void;
+    abstract addConnectionPoint(name: string|number, connectionPoint: ConnectionPoint): void;
     /** Update component's connection points position to the actual values */
     abstract updateConnectionPoints(): void;
 

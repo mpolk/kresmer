@@ -10,7 +10,7 @@ import { nextTick } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
-import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
+import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPoint";
 import { EditorOperation } from "../UndoStack";
 import { type RequireAtLeastOne } from "../Utils";
 import MouseEventCapture from "../MouseEventCapture";

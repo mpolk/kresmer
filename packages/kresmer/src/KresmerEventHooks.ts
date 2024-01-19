@@ -8,7 +8,7 @@
  *   Event-related features for incorporating to the main Kresmer class
 \**************************************************************************/
 
-import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
+import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 import KresmerException from "./KresmerException";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
@@ -59,9 +59,9 @@ class KresmerEventFormats  {
     "link-vertex-being-moved":          (vertex: LinkVertex) => void;
     "link-vertex-moved":                (vertex: LinkVertex) => void;
     "link-vertex-connected":            (vertex: LinkVertex) => void;
-    "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPointProxy) => void;
+    "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPoint) => void;
     "link-vertex-right-click":          (vertex: LinkVertex, mouseEvent: MouseEvent) => void;
-    "connection-point-right-click":     (connectionPoint: ConnectionPointProxy) => void;
+    "connection-point-right-click":     (connectionPoint: ConnectionPoint) => void;
 }//KresmerEventFormats
 
 /** Event names alone */
@@ -389,7 +389,7 @@ export default class KresmerEventHooks {
      * @param controller The vertex been moved
      */
     @overridableHandler("link-vertex-disconnected")
-    protected onLinkVertexDisconnected(vertex: LinkVertex, connectionPoint: ConnectionPointProxy) {}
+    protected onLinkVertexDisconnected(vertex: LinkVertex, connectionPoint: ConnectionPoint) {}
 
     /**
      * Is called upon right mouse click on the network link vertex
@@ -403,7 +403,7 @@ export default class KresmerEventHooks {
      * @param link The connection point been clicked
      */
     @overridableHandler("connection-point-right-click")
-    protected onConnectionPointRightClick(connectionPoint: ConnectionPointProxy) {}
+    protected onConnectionPointRightClick(connectionPoint: ConnectionPoint) {}
 
 }//KresmerEventHooks
 

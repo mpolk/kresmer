@@ -8,7 +8,7 @@
 
 import { reactive } from "vue";
 import Kresmer, { KresmerException } from "../Kresmer";
-import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPointProxy";
+import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPoint";
 import NetworkLinkClass, { LinkBundleClass } from "./NetworkLinkClass";
 import { Position } from "../Transform/Transform";
 import { LinkVertexAnchor } from "./LinkVertex";

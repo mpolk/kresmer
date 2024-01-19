@@ -8,7 +8,7 @@
 
 import { InjectionKey, nextTick } from "vue";
 import Kresmer from "../Kresmer";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPointProxy";
+import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
 import type LinkBundle from "./LinkBundle";
 import { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";

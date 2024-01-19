@@ -27,7 +27,7 @@ import KresmerException, { UndefinedLinkException, UndefinedVertexException } fr
 import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
-import ConnectionPointProxy from "./ConnectionPoint/ConnectionPointProxy";
+import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection, { BackendConnectionTestResult } from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
@@ -825,7 +825,7 @@ ${svg.outerHTML}
      * Completes the new link creation (for private use only)
      * @param toConnectionPoint The connection point, which will be the end of the new link
      */
-    public _completeLinkCreation(toConnectionPoint?: ConnectionPointProxy)
+    public _completeLinkCreation(toConnectionPoint?: ConnectionPoint)
     {
         const to = toConnectionPoint ? 
             {conn: toConnectionPoint} :
@@ -1249,5 +1249,5 @@ export {default as LinkVertex} from "./NetworkLink/LinkVertex";
 export type {LinkVertexAnchor} from "./NetworkLink/LinkVertex";
 export {default as KresmerException, LibraryImportException} from "./KresmerException";
 export {default as KresmerParsingException} from "./loaders/ParsingException";
-export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPointProxy";
+export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPoint";
 export type {DrawingMergeOptions} from "./loaders/DrawingLoader";

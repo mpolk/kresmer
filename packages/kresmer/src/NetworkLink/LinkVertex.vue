@@ -9,11 +9,11 @@
     import { PropType, ref, inject, computed, onUpdated, onBeforeMount, onMounted } from 'vue';
     import Kresmer from '../Kresmer';
     import LinkVertex from './LinkVertex';
-    import ConnectionPoint from '../ConnectionPoint/ConnectionPoint.vue';
+    import ConnectionPointVue from '../ConnectionPoint/ConnectionPoint.vue';
     import {Position} from '../Transform/Transform';
 
     export default {
-        components: {ConnectionPoint},
+        components: {ConnectionPointVue},
     }
 </script>
 
@@ -218,7 +218,7 @@ class=${JSON.stringify(clazz)}`;
         @contextmenu="onRightClick($event)"
         @dblclick="onDoubleClick()"
         />
-    <ConnectionPoint v-if="!model.link.isBundle && model.link.kresmer.isEditable" :name="model.vertexNumber" 
+    <ConnectionPointVue v-if="!model.link.isBundle && model.link.kresmer.isEditable" :name="model.vertexNumber" 
         :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick" class="vertex-connection-point"
         />
