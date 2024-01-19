@@ -33,7 +33,7 @@
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
     const drawingOrigin = inject(Kresmer.ikDrawingOrigin)!;
-    const cpMarker = ref<SVGCircleElement>();
+    const thisCP = ref<SVGCircleElement>();
 
     const dataAttr = computed(() => {
         if (!proxy.isActive)
@@ -44,14 +44,14 @@
 
     function updatePos()
     {
-        if (!cpMarker.value)
+        if (!thisCP.value)
             return;
         const drawingRect = kresmer.drawingRect;
         const mountingRect = kresmer.mountPoint.getBoundingClientRect();
         let coords = {x: props.x, y: props.y};
         let rot = 0;
-        if (cpMarker.value.ownerSVGElement != kresmer.rootSVG) {
-            const matrix = cpMarker.value.getCTM()!;
+        if (thisCP.value.ownerSVGElement != kresmer.rootSVG) {
+            const matrix = thisCP.value.getCTM()!;
             coords = {
                 x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
                     drawingRect.left + mountingRect.left + drawingOrigin.x,
@@ -83,14 +83,17 @@
 </script>
 
 <template>
-    <circle v-if="proxy.isActive" :cx="x" :cy="y" :r="d/2" 
-        class="connection-point-marker" 
-        :class="{visible: kresmer.isEditable, always: kresmer._showAllConnectionPoints.value}" 
-        ref="cpMarker"
-        :data-connection-point="dataAttr"
-        @contextmenu.stop="onRightClick()"
-        ><title v-if="hostIsLink">{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title></circle>
-    <circle v-else :cx="x" :cy="y" :r="d/2" fill="none" stroke="none" ref="cpMarker"/>
+    <g v-if="proxy.isActive" @contextmenu.stop="onRightClick()">
+        <title v-if="!hostIsLink">{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title>
+        <circle :cx="x" :cy="y" :r="d/2" fill="transparent" stroke="transparent"
+            ref="thisCP" :data-connection-point="dataAttr"
+            />
+        <polygon :points="`${x-d*0.5},${y} ${x},${y-d*0.5} ${x+d*0.5},${y} ${x},${y+d*0.5}`"
+            class="connection-point-marker" 
+            :class="{visible: kresmer.isEditable, always: kresmer._showAllConnectionPoints.value || hostElement.isSelected}" 
+            />
+    </g>
+    <circle v-else :cx="x" :cy="y" :r="d/2" fill="none" stroke="none" ref="thisCP"/>
 </template>
 
 <style lang="scss">
@@ -103,4 +106,4 @@
             stroke-opacity: 1;
         }
     }
-</style>./ConnectionPoint
+</style>
