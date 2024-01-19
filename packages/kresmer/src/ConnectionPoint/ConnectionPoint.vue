@@ -85,7 +85,9 @@
 <template>
     <g v-if="proxy.isActive" @contextmenu.stop="onRightClick()">
         <title v-if="!hostIsLink">{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title>
-        <circle :cx="x" :cy="y" :r="d/2" fill="transparent" stroke="transparent"
+        <circle :cx="x" :cy="y" :r="d/2"
+            class="connection-point-padding" 
+            :class="{visible: kresmer.isEditable}" 
             ref="thisCP" :data-connection-point="dataAttr"
             />
         <polygon :points="`${x-d*0.5},${y} ${x},${y-d*0.5} ${x+d*0.5},${y} ${x},${y+d*0.5}`"
@@ -98,12 +100,18 @@
 
 <style lang="scss">
     .connection-point-marker {
+        fill: black;
+        stroke: black;
         fill-opacity: 0;
         stroke-opacity: 0;
 
         &.visible:hover, &.always.visible {
-            fill-opacity: 0.5;
-            stroke-opacity: 1;
+            fill-opacity: 0.4;
+            stroke-opacity: 0.8;
         }
+    }
+    .connection-point-padding {
+        fill-opacity: 0;
+        stroke-opacity: 0;
     }
 </style>

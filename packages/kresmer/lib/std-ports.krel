@@ -44,7 +44,7 @@
             .port-name.disabled {fill: lightgray; opacity: 0.75;}
             .port-icon.body {stroke: white;}
             .status-indicator {fill: #b7f598; stroke: green; stroke-width: 1px}
-            .connection-point-marker {fill: yellow;}
+            .connection-point-marker {fill: yellow; stroke: rgb(184, 169, 0);}
         </style>
         <props>
             <prop name="w" type="Number" required="true" default="25" category="Geometry" description="Port icon width"/>
