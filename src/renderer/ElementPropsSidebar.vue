@@ -18,7 +18,7 @@
     export type ElementPropDescriptor = {
         // eslint-disable-next-line @typescript-eslint/ban-types
         name: string, value: unknown, type: Function, subtype?: string, required: boolean, 
-        validValues?: string[], pattern?: string, 
+        min?: number, max?: number, validValues?: string[], pattern?: string, 
         category?: NetworkElementPropCategory, default?: string, description?: string,
         parentPropDescriptor?: ElementPropDescriptor,
     };
@@ -58,7 +58,8 @@
      * Displays the sidebars and allows to edit the element
      * @param element An element to edit
      */
-     function show(element: NetworkElement)
+     
+    function show(element: NetworkElement)
     {
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
@@ -148,12 +149,15 @@ Continue?`)) {
                 {
                     const validValues = _class.props[name].validator?.validValues;
                     const pattern = _class.props[name].validator?.pattern;
+                    const min = _class.props[name].validator?.min;
+                    const max = _class.props[name].validator?.max;
                     return {
                         name, 
                         value: clone(elementToEdit.props[name]), 
                         type: _class.props[name].type,
                         required: _class.props[name].required,
                         category: _class.props[name].category,
+                        min, max,
                         validValues,
                         pattern,
                         default: _class.props[name].default,

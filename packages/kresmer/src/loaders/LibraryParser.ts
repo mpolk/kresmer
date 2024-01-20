@@ -308,6 +308,7 @@ export default class LibraryParser {
                         _default = child.getAttribute("default"),
                         choices = child.getAttribute("choices"),
                         pattern = child.getAttribute("pattern"),
+                        range = child.getAttribute("range"),
                         category = child.getAttribute("category"),
                         description = child.getAttribute("description");
                     if (!propName) {
@@ -356,6 +357,17 @@ export default class LibraryParser {
                             return validValues.includes(String(value));
                         }//validator
                         validator.validValues = validValues;
+                        prop.validator = validator;
+                    }//if
+
+                    if (range) {
+                        const [min, max] = range.split("..").map(s => Number(s));
+                        const validator = (value: unknown) => {
+                            const n = Number(value);
+                            return n >= min && n <= max;
+                        }//validator
+                        validator.min = min;
+                        validator.max = max;
                         prop.validator = validator;
                     }//if
 

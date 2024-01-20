@@ -38,7 +38,7 @@
     <component-class name="Image" category="General">
         <template>
             <image v-bind:width="width" v-bind:height="height" v-bind:href="$href(url)" 
-                   v-bind:preserveAspectRatio="preserveAspectRatio" />
+                   v-bind:preserveAspectRatio="preserveAspectRatio" v-bind:opacity="opacity"/>
         </template>
         <props>
             <prop name="width" type="String" required="true" default="200" category="Geometry" />
@@ -59,6 +59,7 @@
                 sTAWGAtjYSwwFsbCWGAsjIWxwFgYC2OBsTAWxgJjYSyMBcbCWBgLjIWxMBYYC2NhLDAWxsJYsAYC
                 eAK3onjlkAAAAABJRU5ErkJggg=="
             />
+            <prop name="opacity" type="Number" range="0..1" default="1" category="Presentation" />
         </props>
         <computed-props>
             <computed-prop name="preserveAspectRatio">

@@ -307,11 +307,17 @@ import { FileFilter } from 'electron';
                 <option v-for="(choice, i) in propToEdit.validValues" class="text-secondary"
                         :key="`${propToEdit.name}[${i}]`">{{ choice }}</option>
             </select>
-            <input v-else-if="propToEdit.type === Number" type="number" :id="subpropInputID(propToEdit)"
-                ref="propInputs" :data-prop-name="propToEdit.name"
-                class="form-control form-control-sm text-end border-0"
-                :placeholder="propToEdit.default"
-                v-model="subpropModel"/>
+            <template v-else-if="propToEdit.type === Number">
+                <input type="number" :id="subpropInputID(propToEdit)"
+                    ref="propInputs" :data-prop-name="propToEdit.name"
+                    class="form-control form-control-sm text-end border-0"
+                    :placeholder="propToEdit.default"
+                    v-model="subpropModel"/>
+                <input v-if="propToEdit.min !== undefined && propToEdit.max !== undefined" type="range" class="form-range" 
+                    :min="propToEdit.min" :max="propToEdit.max" :step="(propToEdit.max - propToEdit.min)*0.05" 
+                    :value="propToEdit.value ?? propToEdit.default" 
+                    @input="event => propToEdit.value = (event.target as HTMLInputElement).value">
+            </template>
             <input v-else-if="propToEdit.type === Boolean" type="checkbox"
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-check-input" :indeterminate="propToEdit.value === undefined"
