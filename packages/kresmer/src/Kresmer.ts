@@ -33,6 +33,7 @@ import BackendConnection, { BackendConnectionTestResult } from "./BackendConnect
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./NetworkLink/LinkVertex";
 import { clone } from "./Utils";
+import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 
 
 /**
@@ -84,6 +85,7 @@ export default class Kresmer extends KresmerEventHooks {
             .component("NetworkComponentHolder", NetworkComponentHolderVue)
             .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
             .component("ConnectionPoint", ConnectionPointVue)
+            .component("AdjustmentRuler", AdjustmentRulerVue)
             // register the functions that can be used in templates
             .config.globalProperties = {
                 ...GeneralTemplateFunctions, 

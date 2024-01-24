@@ -224,6 +224,14 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="adjustment-ruler">
+                    <xs:complexType>
+                        <xs:attribute name="prop" type="xs:string" use="required"/>
+                        <xs:attributeGroup ref="line-attrs"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:element name="g">
                     <xs:complexType>
                         <xs:choice minOccurs="0" maxOccurs="unbounded">

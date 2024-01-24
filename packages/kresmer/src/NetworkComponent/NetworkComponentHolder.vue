@@ -16,7 +16,7 @@
     import NetworkElement from "../NetworkElement";
     import { Transform } from '../Transform/Transform';
     import Kresmer from '../Kresmer';
-import { toCamelCase } from '../Utils';
+    import { toCamelCase } from '../Utils';
 
     export default {
         components: { TransformBox },

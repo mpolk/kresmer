@@ -46,6 +46,9 @@
                 </template>
             </template>
             <slot name="frontFacet"/>
+            <adjustment-ruler v-for="i in 2" prop="unitHeight" 
+                v-bind:x1="width*(i-1)" v-bind:y1="0" 
+                v-bind:x2="width*(i-1)" v-bind:y2="nUnits*(unitHeight+interUnitGap)"/>
             <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
                 <polyline
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
