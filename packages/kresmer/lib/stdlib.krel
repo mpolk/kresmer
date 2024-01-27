@@ -46,9 +46,6 @@
                 </template>
             </template>
             <slot name="frontFacet"/>
-            <adjustment-ruler v-for="i in 2" prop="unitHeight" 
-                v-bind:x1="width*(i-1)" v-bind:y1="0" 
-                v-bind:x2="width*(i-1)" v-bind:y2="nUnits*(unitHeight+interUnitGap)"/>
             <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
                 <polyline
                     v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
@@ -129,6 +126,11 @@
                     {{ipAddress}}
                 </text>
             </template>
+            <adjustment-ruler v-for="i in 2" prop="unitHeight" 
+                v-bind:x1="width*(i-1)" v-bind:y1="0" 
+                v-bind:x2="width*(i-1)" v-bind:y2="nUnits*(unitHeight+interUnitGap)"
+                fixed-end="1"
+                />
         </template>
         <style>
             .device-name { font-family: sans-serif; fill: black; text-shadow: none}
@@ -194,5 +196,22 @@
             <prop name="height" type="Number" required="true" category="Geometry" />
         </props>
     </component-class>
+
+    <!-- Graphics for adjustment-handles - visual elements used for "on-the-fly" editing network component props 
+        without opening a modal form -->
+    <defs>
+        <marker id="kre:adjustment-ruler-marker" markerWidth="6" markerHeight="6" refX="5" refY="5" viewBox="0 0 10 10"
+            orient="auto-start-reverse">
+            <polygon points="0,5 5,0 10,5 5,10" class="adjustment-ruler-marker"/>
+        </marker>
+        <marker id="kre:adjustment-ruler-marker-fixed" markerWidth="6" markerHeight="6" refX="5" refY="5" viewBox="0 0 10 10"
+            orient="auto-start-reverse">
+            <polygon points="0,5 5,0 10,5 5,10" class="adjustment-ruler-marker fixed"/>
+        </marker>
+    </defs>
+    <style>
+        .adjustment-ruler-marker {fill: green}
+        .adjustment-ruler-marker.fixed {fill: red}
+    </style>
 
 </kresmer-library>
