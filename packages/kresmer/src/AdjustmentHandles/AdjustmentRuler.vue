@@ -36,18 +36,7 @@
 
 <template>
     <template v-if="hostComponent?.isSelected">
-        <line v-bind="props" class="ruler" :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
+        <line :x1="x1" :y1="y1" :x2="x2" :y2="y2"
+            class="adjustment-ruler" :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
     </template>
 </template>
-
-<style lang="scss">
-    .ruler {
-        stroke: brown;
-        stroke-width: 4px;
-        opacity: 0.5;
-
-        &:hover {
-            opacity: 1;
-        }
-    }
-</style>

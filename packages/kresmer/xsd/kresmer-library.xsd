@@ -38,6 +38,14 @@
                     <xs:element name="link-class" type="link-class"/>
                     <xs:element name="link-bundle-class" type="link-class"/>
 
+                    <xs:element name="defs">
+                        <xs:complexType>
+                            <xs:group ref="svg-elements" minOccurs="0" maxOccurs="unbounded"/>
+                        </xs:complexType>
+                    </xs:element>
+
+                    <xs:element ref="style"/>
+    
                     <xs:element name="import">
                         <xs:complexType>
                             <xs:attribute name="library" use="required"/>
@@ -189,6 +197,7 @@
                         <xs:attributeGroup ref="dim-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="image-attrs"/>
+                        <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attribute name="href"/>
                         <xs:attribute ref="v-bind:href"/>
                     </xs:complexType>
@@ -229,6 +238,14 @@
                         <xs:attribute name="prop" type="xs:string" use="required"/>
                         <xs:attributeGroup ref="line-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
+                        <xs:attribute name="fixed-end">
+                            <xs:simpleType>
+                                <xs:restriction base="xs:unsignedInt">
+                                    <xs:enumeration value="1"/>
+                                    <xs:enumeration value="2"/>
+                                </xs:restriction>
+                            </xs:simpleType>
+                        </xs:attribute>
                     </xs:complexType>
                 </xs:element>
 
@@ -267,7 +284,6 @@
                             <xs:group ref="svg-elements"/>
                             <xs:element ref="slot"/>
                         </xs:choice>
-                        <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
                 </xs:element>
 
@@ -394,6 +410,7 @@
                         <xs:attribute name="required" type="xs:boolean" />
                         <xs:attribute name="default" />
                         <xs:attribute name="choices" />
+                        <xs:attribute name="range" />
                         <xs:attribute name="pattern" />
                         <xs:attribute name="description"/>
 
@@ -509,6 +526,8 @@
         <xs:attribute name="stroke-width" />
         <xs:attribute name="stroke-opacity" type="xs:decimal" />
         <xs:attribute ref="v-bind:stroke-opacity" />
+        <xs:attribute name="opacity" type="xs:decimal" />
+        <xs:attribute ref="v-bind:opacity" />
         <xs:attribute name="fill" type="xs:string"/>
         <xs:attribute ref="v-bind:fill" />
         <xs:attribute name="filter" type="xs:string"/>

@@ -23,6 +23,7 @@
   <xs:attribute name="stroke" />
   <xs:attribute name="stroke-width" />
   <xs:attribute name="stroke-opacity" />
+  <xs:attribute name="opacity" />
   <xs:attribute name="font-size" />
   <xs:attribute name="font-family" />
   <xs:attribute name="text-anchor" />

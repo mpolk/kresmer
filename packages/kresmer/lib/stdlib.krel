@@ -200,17 +200,27 @@
     <!-- Graphics for adjustment-handles - visual elements used for "on-the-fly" editing network component props 
         without opening a modal form -->
     <defs>
-        <marker id="kre:adjustment-ruler-marker" markerWidth="6" markerHeight="6" refX="5" refY="5" viewBox="0 0 10 10"
+        <g id="kre:adjustment-ruler-marker-common">
+            <polygon points="0,5 5,0 10,5 5,10" />
+            <circle cx="5" cy="5" r="2" style="filter: brightness(0.25) invert(100%)"/>
+        </g>
+        <marker id="kre:adjustment-ruler-marker" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10"
             orient="auto-start-reverse">
-            <polygon points="0,5 5,0 10,5 5,10" class="adjustment-ruler-marker"/>
+            <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker"/>
         </marker>
-        <marker id="kre:adjustment-ruler-marker-fixed" markerWidth="6" markerHeight="6" refX="5" refY="5" viewBox="0 0 10 10"
+        <marker id="kre:adjustment-ruler-marker-fixed" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10"
             orient="auto-start-reverse">
-            <polygon points="0,5 5,0 10,5 5,10" class="adjustment-ruler-marker fixed"/>
+            <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker fixed"/>
         </marker>
     </defs>
     <style>
-        .adjustment-ruler-marker {fill: green}
+        .adjustment-ruler {
+            stroke: brown;
+            stroke-width: 3px;
+            opacity: 0.5;
+        }
+        .adjustment-ruler:hover { opacity: 1; }
+        .adjustment-ruler-marker {fill: green;}
         .adjustment-ruler-marker.fixed {fill: red}
     </style>
 
