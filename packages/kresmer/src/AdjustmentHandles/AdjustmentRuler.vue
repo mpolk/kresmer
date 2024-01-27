@@ -19,6 +19,7 @@
 <script setup lang="ts">
 
     const props = defineProps({
+        targetProp: {type: String, required: true},
         x1: {type: Number, required: true},
         y1: {type: Number, required: true},
         x2: {type: Number, required: true},
@@ -32,11 +33,22 @@
     {
         return `kre:adjustment-ruler-marker${forEnd == props.fixedEnd ? "-fixed" : ""}`;
     }//markerID
+
+    function markerCenter(forEnd: 1 | 2)
+    {
+        return forEnd === 1 ? {cx: props.x1, cy: props.y1} : {cx: props.x2, cy: props.y2};
+    }//markerCenter
 </script>
 
 <template>
     <template v-if="hostComponent?.isSelected">
-        <line :x1="x1" :y1="y1" :x2="x2" :y2="y2"
-            class="adjustment-ruler" :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
+        <g class="adjustment-ruler">
+            <line :x1="x1" :y1="y1" :x2="x2" :y2="y2"
+                :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
+            <template v-for="i in 2">
+                <circle v-if="i != fixedEnd" :key="`padding${i}`" v-bind="markerCenter(i as 1|2)" 
+                    class="marker-padding" style="cursor: move; fill: transparent; stroke: transparent;" />
+            </template>
+        </g>
     </template>
 </template>

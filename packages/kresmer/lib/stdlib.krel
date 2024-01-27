@@ -126,7 +126,7 @@
                     {{ipAddress}}
                 </text>
             </template>
-            <adjustment-ruler v-for="i in 2" prop="unitHeight" 
+            <adjustment-ruler v-for="i in 2" target-prop="unitHeight" 
                 v-bind:x1="width*(i-1)" v-bind:y1="0" 
                 v-bind:x2="width*(i-1)" v-bind:y2="nUnits*(unitHeight+interUnitGap)"
                 fixed-end="1"
@@ -226,6 +226,7 @@
         .adjustment-ruler-marker.fixed {
             fill: red
         }
+        .adjustment-ruler .marker-padding {r: 3px}
     </style>
 
 </kresmer-library>

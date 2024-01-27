@@ -16,9 +16,10 @@
     <xs:element name="kresmer-library">
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="defs" minOccurs="0"/>
 
                 <xs:choice minOccurs="0" maxOccurs="unbounded">
+                    <xs:element ref="defs" minOccurs="0"/>
+                    
                     <xs:element name="component-class">
                         <xs:complexType>
                             <xs:all>
@@ -37,12 +38,6 @@
 
                     <xs:element name="link-class" type="link-class"/>
                     <xs:element name="link-bundle-class" type="link-class"/>
-
-                    <xs:element name="defs">
-                        <xs:complexType>
-                            <xs:group ref="svg-elements" minOccurs="0" maxOccurs="unbounded"/>
-                        </xs:complexType>
-                    </xs:element>
 
                     <xs:element ref="style"/>
     
@@ -235,7 +230,7 @@
 
                 <xs:element name="adjustment-ruler">
                     <xs:complexType>
-                        <xs:attribute name="prop" type="xs:string" use="required"/>
+                        <xs:attribute name="target-prop" type="xs:string" use="required"/>
                         <xs:attributeGroup ref="line-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="fixed-end">
