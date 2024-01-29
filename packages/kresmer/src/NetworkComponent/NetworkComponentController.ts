@@ -32,6 +32,7 @@ class _NetworkComponentController {
     public dragConstraint: DragConstraint|undefined;
     public isBeingTransformed = false;
     public transformMode?: TransformMode;
+    public isInAdjustmentMode = false;
 
     private dragStartPos?: Position;
     private savedMousePos?: Position;
@@ -271,12 +272,27 @@ class _NetworkComponentController {
         this.bringToTop();
     }//enterTransformMode
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public enterAdjustmentMode(this: NetworkComponentController, _event:  MouseEvent)
+    {
+        this.kresmer.resetAllComponentMode(this);
+        this.isInAdjustmentMode = true;
+        this.kresmer.emit("component-entered-adjustment-mode", this);
+        this.bringToTop();
+    }//enterAdjustmentMode
+
     public resetMode(this: NetworkComponentController)
     {
         // this.component.isSelected = false;
         // this.isBeingTransformed = false;
-        this.transformMode = undefined;
-        //this.kresmer.onComponentExitingTransformMode(this);
+        if (this.transformMode) {
+            this.transformMode = undefined;
+            this.kresmer.emit("component-exited-transform-mode", this);
+        }//if
+        if (this.isInAdjustmentMode) {
+            this.isInAdjustmentMode = false;
+            this.kresmer.emit("component-exited-transform-mode", this);
+        }//if
         this.returnFromTop();
     }//resetMode
 

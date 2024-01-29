@@ -220,13 +220,9 @@
             opacity: 0.5;
         }
         .adjustment-ruler:hover { opacity: 1; }
-        .adjustment-ruler-marker {
-            fill: green;
-        }
-        .adjustment-ruler-marker.fixed {
-            fill: red
-        }
-        .adjustment-ruler .marker-padding {r: 3px}
+        .adjustment-ruler-marker { fill: green; }
+        .adjustment-ruler-marker.fixed { fill: red; }
+        .adjustment-ruler .marker-padding { r: 3px; }
     </style>
 
 </kresmer-library>

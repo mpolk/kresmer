@@ -67,7 +67,7 @@
 
     watch(() => props.controller.component.propsUpdateIndicator, () => {
         nextTick(updateBoundingBox);
-    })//watch(props.controller.component.propsUpdateWatcher
+    })//watch
 
     const transform = computed(() => {
         if (props.controller.transform && applyTransform.value)
@@ -95,6 +95,8 @@
             event.preventDefault();
             if (!event.ctrlKey) {
                 props.controller.startDrag(event);
+            } else if (event.shiftKey) {
+                props.controller.enterAdjustmentMode(event);
             } else {
                 props.controller.enterTransformMode(event);
             }//if
@@ -108,7 +110,7 @@
             return;
         }//if
 
-        if (!props.controller.transformMode) {
+        if (!props.controller.transformMode && !props.controller.isInAdjustmentMode) {
             props.controller.selectComponent(!event.shiftKey);
         }//if
     }//onMouseUp

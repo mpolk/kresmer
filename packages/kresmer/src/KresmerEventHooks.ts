@@ -37,10 +37,12 @@ class KresmerEventFormats  {
     "component-moved":                  (controller: NetworkComponentController) => void;
     "component-entered-transform-mode": (controller: NetworkComponentController, 
                                          mode: TransformMode) => void;
+    "component-entered-adjustment-mode": (controller: NetworkComponentController) => void;
     "component-transform-started":      (controller: NetworkComponentController) => void;
     "component-being-transformed":      (controller: NetworkComponentController) => void;
     "component-transformed":            (controller: NetworkComponentController) => void;
     "component-exited-transform-mode":  (controller: NetworkComponentController) => void;
+    "component-exited-adjustment-mode": (controller: NetworkComponentController) => void;
     "component-double-click":           (controller: NetworkComponentController, 
                                          nativeEvent: MouseEvent) => void;
     "component-right-click":            (controller: NetworkComponentController, 
@@ -239,7 +241,7 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("component-moved")
     protected onComponentMoved(controller: NetworkComponentController) {}
- 
+
     /**
      * Is called when a network component has entered transform mode
      * @param controller The controller of the component entered mode
@@ -247,7 +249,14 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("component-entered-transform-mode")
     protected onComponentEnteredTransformMode(controller: NetworkComponentController, 
-                                               mode: TransformMode) {}
+                                              mode: TransformMode) {}
+
+    /**
+     * Is called when a network component has entered adjustment mode
+     * @param controller The controller of the component entered mode
+     */
+    @overridableHandler("component-entered-adjustment-mode")
+    protected onComponentEnteredAdjustmentMode(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component transform starts
@@ -276,6 +285,13 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("component-exited-transform-mode")
     protected onComponentExitedTransformMode(controller: NetworkComponentController) {}
+ 
+    /**
+     * Is called when a network component has exited adjustment mode
+     * @param controller The controller of the component entered mode
+     */
+    @overridableHandler("component-exited-adjustment-mode")
+    protected onComponentExitedAdjustmentMode(controller: NetworkComponentController) {}
 
     /**
      * Is called when a network component is double-clicked

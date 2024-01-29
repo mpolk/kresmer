@@ -170,6 +170,7 @@ kresmer
     .on("component-transform-started", () => hints.push(""))
     .on("component-transformed", () => hints.pop())
     .on("component-exited-transform-mode", () => hints.pop())
+    .on("component-exited-adjustment-mode", () => hints.pop())
     .on("link-vertex-moved", () => hints.pop())
     .on("link-vertex-connected", () => hints.pop())
     .on("link-vertex-disconnected", () => hints.pop())
@@ -197,6 +198,12 @@ kresmer.on("component-right-click", (controller: NetworkComponentController) =>
 kresmer.on("component-entered-transform-mode", (_: NetworkComponentController, mode: TransformMode) =>
 {
     hints.push(mode == "rotation" ? Hints.onRotation : Hints.onScaling);
+});//onComponentEnteredTransformMode
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+kresmer.on("component-entered-adjustment-mode", (_: NetworkComponentController) =>
+{
+    hints.push(Hints.onAdjustment);
 });//onComponentEnteredTransformMode
 
 kresmer.on("component-being-transformed", (controller: NetworkComponentController) =>

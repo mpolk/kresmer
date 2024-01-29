@@ -52,4 +52,6 @@ export default class Hints {
     static onDrag = "Drop the component where you want to leave it...";
     static onRotation = "Rotate the component around the center mark or click to switch to the scaling mode";
     static onScaling = "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode";
+    static onAdjustment = "Click on any adjustment tool to adjust (edit) the corresponding component prop";
+    static onAdjustmentHandleSelected = "Drag any free (green) handle to adjust the corresponding component prop";
 }//Hints
