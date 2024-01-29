@@ -93,7 +93,9 @@
     {
         if (event.buttons === 1 && !props.controller.transformMode && isEditable) {
             event.preventDefault();
-            if (!event.ctrlKey) {
+            if (event.altKey) {
+                props.controller.enterAdjustmentMode(event);
+            } else if (!event.ctrlKey) {
                 props.controller.startDrag(event);
             } else if (event.shiftKey) {
                 props.controller.enterAdjustmentMode(event);

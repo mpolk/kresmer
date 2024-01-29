@@ -94,6 +94,8 @@
         .pane {
             display: inline-block;
             padding: 0 0.5rem;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
 
             &.selected-element {
                 min-width: 15rem;
