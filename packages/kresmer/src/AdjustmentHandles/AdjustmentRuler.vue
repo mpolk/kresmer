@@ -8,7 +8,8 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { inject } from 'vue';
+    import { inject, reactive } from 'vue';
+    import AdjustmentRuler from './AdjustmentRuler';
     import { NetworkComponent } from '../Kresmer';
 
     export default {
@@ -27,7 +28,9 @@
         fixedEnd: {type: [Number, String]},
     });//props
 
-    const hostComponent = inject(NetworkComponent.injectionKey);
+    const hostComponent = inject(NetworkComponent.injectionKey)!;
+    const proxy = reactive(new AdjustmentRuler(hostComponent, props.targetProp)) as unknown as AdjustmentRuler;
+    hostComponent.addAdjustmentHandle(proxy);
 
     function markerID(forEnd: 1 | 2)
     {
@@ -42,7 +45,7 @@
 
 <template>
     <template v-if="hostComponent?.controller?.isInAdjustmentMode">
-        <g class="adjustment-ruler">
+        <g class="adjustment-ruler" :class="{selected: proxy.isSelected}" @click="hostComponent.selectAdjustmentHandle(proxy)">
             <line :x1="x1" :y1="y1" :x2="x2" :y2="y2"
                 :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
             <template v-for="i in 2">

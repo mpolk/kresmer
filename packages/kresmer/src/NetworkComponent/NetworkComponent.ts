@@ -14,6 +14,7 @@ import NetworkComponentController from "./NetworkComponentController";
 import { EditorOperation } from "../UndoStack";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
+import AdjustmentHandle from "../AdjustmentHandles/AdjustmentHandle";
 
 /**
  * Network Component - a generic network element instance 
@@ -92,6 +93,21 @@ export default class NetworkComponent extends NetworkElement {
         this.connectionPoints.forEach(cp => cp.updatePos());
         nextTick(() => this.connectedLinks.forEach(link => link.updateConnectionPoints()));
     }//updateConnectionPoints
+
+    /** A collection of adjustment handles used for on-the-fly editing of the numeric props */
+    private readonly adjustmentHandles = new Set<AdjustmentHandle>();
+    /** Adds a new AdjustmentHandle */
+    addAdjustmentHandle(adjustmentHandle: AdjustmentHandle) {this.adjustmentHandles.add(adjustmentHandle)}
+    /** Selects the specified adjustment handle or deselects all of them */
+    selectAdjustmentHandle(handleToSelect?: AdjustmentHandle)
+    {
+        this.adjustmentHandles.forEach(handle => {
+            if (handle === handleToSelect)
+                handle.isSelected = true;
+            else if (handle.isSelected)
+                handle.isSelected = false;
+        })//forEach
+    }//selectAdjustmentHandle
 
     /** 
      * A collection of link vertex that were connected to this component and are temporarily disconnected
