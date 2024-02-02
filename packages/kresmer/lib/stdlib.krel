@@ -218,6 +218,7 @@
             stroke: brown;
             stroke-width: 3px;
             opacity: 0.5;
+            cursor: pointer;
         }
         .adjustment-ruler.selected, .adjustment-ruler:hover { opacity: 1; }
         .adjustment-ruler-marker { fill: green; }

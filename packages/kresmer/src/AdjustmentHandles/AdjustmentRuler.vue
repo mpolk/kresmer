@@ -41,6 +41,11 @@
     {
         return forEnd === 1 ? {cx: props.x1, cy: props.y1} : {cx: props.x2, cy: props.y2};
     }//markerCenter
+
+    function markerPaddingStyle(forEnd: 1 | 2)
+    {
+        return forEnd != props.fixedEnd && proxy.isSelected ? "cursor: move" : "";
+    }//markerPaddingStyle
 </script>
 
 <template>
@@ -48,10 +53,9 @@
         <g class="adjustment-ruler" :class="{selected: proxy.isSelected}" @click="hostComponent.selectAdjustmentHandle(proxy)">
             <line :x1="x1" :y1="y1" :x2="x2" :y2="y2"
                 :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
-            <template v-for="i in 2">
-                <circle v-if="i != fixedEnd" :key="`padding${i}`" v-bind="markerCenter(i as 1|2)" 
-                    class="marker-padding" style="cursor: move; fill: transparent; stroke: transparent;" />
-            </template>
+            <circle v-for="i in 2" :key="`padding${i}`" v-bind="markerCenter(i as 1|2)" 
+                class="marker-padding" style="fill: transparent; stroke: transparent;" 
+                :style="markerPaddingStyle(i as 1|2)"/>
         </g>
     </template>
 </template>
