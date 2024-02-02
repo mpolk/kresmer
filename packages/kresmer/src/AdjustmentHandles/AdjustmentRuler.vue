@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { inject, reactive } from 'vue';
+    import { inject, reactive, ref } from 'vue';
     import AdjustmentRuler from './AdjustmentRuler';
     import { NetworkComponent } from '../Kresmer';
 
@@ -32,6 +32,8 @@
     const proxy = reactive(new AdjustmentRuler(hostComponent, props.targetProp)) as unknown as AdjustmentRuler;
     hostComponent.addAdjustmentHandle(proxy);
 
+    const markerPadding = ref<SVGElement[]>()!;
+
     function markerID(forEnd: 1 | 2)
     {
         return `kre:adjustment-ruler-marker${forEnd == props.fixedEnd ? "-fixed" : ""}`;
@@ -49,9 +51,12 @@
 
     function onMouseDownInMarker(event: MouseEvent, forEnd: 1 | 2)
     {
-        if (forEnd == props.fixedEnd)
+        if (forEnd == props.fixedEnd || !proxy.isSelected)
             return;
+
         event.preventDefault();
+        event.stopPropagation();
+        proxy.startDrag(event, markerPadding.value![forEnd-1]);
     }//onMouseDownInMarker
 </script>
 
@@ -60,7 +65,7 @@
         <g class="adjustment-ruler" :class="{selected: proxy.isSelected}" @click="hostComponent.selectAdjustmentHandle(proxy)">
             <line :x1="x1" :y1="y1" :x2="x2" :y2="y2"
                 :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
-            <circle v-for="i in 2" :key="`padding${i}`" v-bind="markerCenter(i as 1|2)" 
+            <circle v-for="i in 2" :key="`padding${i}`" ref="markerPadding" v-bind="markerCenter(i as 1|2)" 
                 class="marker-padding" style="fill: transparent; stroke: transparent;" 
                 :style="markerPaddingStyle(i as 1|2)"
                 @mousedown="onMouseDownInMarker($event, i as 1|2)"
