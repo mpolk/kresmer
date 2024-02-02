@@ -46,6 +46,13 @@
     {
         return forEnd != props.fixedEnd && proxy.isSelected ? "cursor: move" : "";
     }//markerPaddingStyle
+
+    function onMouseDownInMarker(event: MouseEvent, forEnd: 1 | 2)
+    {
+        if (forEnd == props.fixedEnd)
+            return;
+        event.preventDefault();
+    }//onMouseDownInMarker
 </script>
 
 <template>
@@ -55,7 +62,9 @@
                 :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />
             <circle v-for="i in 2" :key="`padding${i}`" v-bind="markerCenter(i as 1|2)" 
                 class="marker-padding" style="fill: transparent; stroke: transparent;" 
-                :style="markerPaddingStyle(i as 1|2)"/>
+                :style="markerPaddingStyle(i as 1|2)"
+                @mousedown="onMouseDownInMarker($event, i as 1|2)"
+                />
         </g>
     </template>
 </template>
