@@ -56,7 +56,7 @@
 
         event.preventDefault();
         event.stopPropagation();
-        proxy.startDrag(event, markerPadding.value![forEnd-1]);
+        proxy.startDrag(event, markerPadding.value![forEnd-1], [{x: props.x1, y: props.y1}, {x: props.x2, y: props.y2}]);
     }//onMouseDownInMarker
 </script>
 
