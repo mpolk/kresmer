@@ -71,6 +71,7 @@ export default class AdjustmentRuler extends AdjustmentHandle {
             this.hostComponent.updateConnectionPoints();
             this.hostComponent.kresmer.undoStack.commitOperation();
             this.hostComponent.kresmer._allLinksFreezed = false;
+            this.hostComponent.propsUpdateIndicator++;
             this.hostComponent.controller!.alignConnectedLinks();
         }//if
     }//endDrag

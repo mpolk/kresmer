@@ -267,6 +267,7 @@ class _NetworkComponentController {
     {
         // this.isBeingTransformed = true;
         this.kresmer.resetAllComponentMode(this);
+        this.isInAdjustmentMode = false;
         this.transformMode = "scaling";
         this.kresmer.emit("component-entered-transform-mode", this, this.transformMode);
         this.bringToTop();
@@ -276,6 +277,7 @@ class _NetworkComponentController {
     public enterAdjustmentMode(this: NetworkComponentController, _event:  MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
+        this.transformMode = undefined;
         this.isInAdjustmentMode = true;
         this.kresmer.emit("component-entered-adjustment-mode", this);
         this.bringToTop();
