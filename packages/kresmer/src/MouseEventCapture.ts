@@ -20,7 +20,7 @@ export default class MouseEventCapture {
         if (!events.length)
             events = ["move", "leave", "enter", "up"];
         for (const event of events) {
-            const fullEventName = `mouse${event}`;
+            const fullEventName = event.startsWith("mouse") ? event : `mouse${event}`;
             MouseEventCapture.capturedEvents.push(fullEventName);
             window.addEventListener(fullEventName, MouseEventCapture.dispatchCapturedEvent, { capture: true });
         } //for
@@ -34,14 +34,15 @@ export default class MouseEventCapture {
         for (const event of MouseEventCapture.capturedEvents) {
             window.removeEventListener(event, MouseEventCapture.dispatchCapturedEvent, { capture: true });
         } //for
+        window.removeEventListener('mouseup', MouseEventCapture.release, { capture: true });
         MouseEventCapture.target = undefined;
         MouseEventCapture.capturedEvents = [];
     } //release
 
     /** Redirects captured mouse event to the capture target */
     private static dispatchCapturedEvent(event: Event) {
-        if (event.type === "mouseup")
-        MouseEventCapture.release();
+        // if (event.type === "mouseup")
+        //     MouseEventCapture.release();
         if (!MouseEventCapture.target || event.target === MouseEventCapture.target)
             return true;
 
