@@ -51,11 +51,11 @@
     function updateBoundingBox()
     {
         applyTransform.value = false;
-            bBox.value = svg.value?.getBBox({stroke: true});
-            applyTransform.value = true;
-            if (props.controller.transform.nonEmpty) {
-                props.controller.updateConnectionPoints();
-            }//if
+        bBox.value = svg.value?.getBBox({stroke: true});
+        applyTransform.value = true;
+        if (props.controller.transform.nonEmpty) {
+            props.controller.updateConnectionPoints();
+        }//if
     }//updateBoundingBox
 
     onMounted(() => {

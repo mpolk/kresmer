@@ -186,6 +186,9 @@ export default abstract class NetworkElement {
         }//if
     }//propsToXML
 
+    /** A counter, which increment indicates that some props were changed and which may trigger some derived data updates*/
+    propsUpdateIndicator = 0;
+
     /** Returns the element "mutable" data, i.e. the data meant to updatable by the host process */
     public getData(): NetworkElementData
     {
@@ -215,6 +218,7 @@ export default abstract class NetworkElement {
             this.name = data.name;
         }//if
         this.dbID = data.dbID;
+        this.propsUpdateIndicator++;
     }//setData
 
     protected _isSelected = false;
@@ -262,6 +266,7 @@ export class UpdateElementOp extends EditorOperation {
     override undo(): void 
     {
         this.element.setData(this.oldData);
+        this.element.propsUpdateIndicator++;
     }//undo
 
 }//UpdateElementOp

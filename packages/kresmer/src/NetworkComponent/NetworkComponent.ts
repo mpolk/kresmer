@@ -68,12 +68,9 @@ export default class NetworkComponent extends NetworkElement {
         return name == this.name || !this.kresmer.componentsByName.has(name);
     }//checkNameUniqueness
 
-    propsUpdateIndicator = 0;
-
     override setData(data: NetworkElementData)
     {
         super.setData(data);
-        this.propsUpdateIndicator++;
         this.updateConnectionPoints();
     }//setData
 
