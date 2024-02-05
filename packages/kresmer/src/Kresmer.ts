@@ -744,6 +744,7 @@ ${svg.outerHTML}
         }//if
 
         this._selectedElement = newSelectedElement;
+        this.resetAllComponentMode();
     }//set selectedElement
 
 
