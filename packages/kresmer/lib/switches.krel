@@ -46,8 +46,18 @@
                 v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2"
                 v-bind:name="i" v-bind:port-info="portsInfo[i]" v-bind:fiber-info="fibersInfo[i]"
                 />
+            <adjustment-ruler target-prop="height" 
+                v-bind:x1="0" v-bind:y1="0" 
+                v-bind:x2="0" v-bind:y2="height"
+                fixed-end="1"
+                />
+            <adjustment-ruler target-prop="width" 
+                v-bind:x1="0" v-bind:y1="0" 
+                v-bind:x2="width" v-bind:y2="0"
+                fixed-end="1"
+                />
         </template>
-        <props>
+        <props except="unitHeight">
             <prop name="nPorts" type="Number" default="8" category="Hardware" />
             <prop name="height" type="Number" required="true" default="50" category="Geometry" />
             <prop name="width" type="Number" category="Geometry"/>

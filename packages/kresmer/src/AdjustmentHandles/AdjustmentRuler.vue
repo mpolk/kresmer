@@ -9,6 +9,8 @@
 
 <script lang="ts">
     import { inject, reactive, ref } from 'vue';
+    import Kresmer from '../Kresmer';
+    import { Position } from '../Transform/Transform';
     import AdjustmentRuler from './AdjustmentRuler';
     import { NetworkComponent } from '../Kresmer';
 
@@ -31,8 +33,9 @@
     const hostComponent = inject(NetworkComponent.injectionKey)!;
     const proxy = reactive(new AdjustmentRuler(hostComponent, props.targetProp)) as unknown as AdjustmentRuler;
     hostComponent.addAdjustmentHandle(proxy);
-
-    const markerPadding = ref<SVGElement[]>()!;
+    const kresmer = inject(Kresmer.ikKresmer)!;
+    const drawingOrigin = inject(Kresmer.ikDrawingOrigin)!;
+    const markerPadding = ref<SVGCircleElement[]>()!;
 
     function markerID(forEnd: 1 | 2)
     {
@@ -49,6 +52,7 @@
         return forEnd != props.fixedEnd && proxy.isSelected ? "cursor: move" : "";
     }//markerPaddingStyle
 
+
     function onMouseDownInMarker(event: MouseEvent, forEnd: 1 | 2)
     {
         if (forEnd == props.fixedEnd || !proxy.isSelected)
@@ -56,8 +60,48 @@
 
         event.preventDefault();
         event.stopPropagation();
-        proxy.startDrag(event, markerPadding.value![forEnd-1], [{x: props.x1, y: props.y1}, {x: props.x2, y: props.y2}]);
+
+        const drawingRect = kresmer.drawingRect;
+        const mountingRect = kresmer.mountPoint.getBoundingClientRect();
+        const ends: [Position, Position] = [{x: props.x1, y: props.y1}, {x: props.x2, y: props.y2}];
+        for (const i of [0,1]) {
+            const mp = markerPadding.value![i];
+            if (mp.ownerSVGElement != kresmer.rootSVG) {
+                const matrix = mp.getCTM()!;
+                ends[i] = {
+                    x: (matrix.a * ends[i].x) + (matrix.c * ends[i].y) + matrix.e - 
+                        drawingRect.left + mountingRect.left + drawingOrigin.x,
+                    y: (matrix.b * ends[i].x) + (matrix.d * ends[i].y) + matrix.f - 
+                        drawingRect.top + mountingRect.top + drawingOrigin.y,
+                };        
+            }//if
+        }//if
+        if (forEnd === 1)
+            ends.reverse();
+        proxy.startDrag(event, markerPadding.value![forEnd-1], ends);
     }//onMouseDownInMarker
+
+
+    function onMouseMoveInMarker(event: MouseEvent, forEnd: 1 | 2)
+    {
+        if (forEnd == props.fixedEnd || !(event.buttons & 1))
+            return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        proxy.drag(event);
+    }//onMouseMoveInMarker
+
+
+    function onMouseUpInMarker(event: MouseEvent, forEnd: 1 | 2)
+    {
+        if (forEnd == props.fixedEnd || !proxy.isDragged)
+            return;
+
+        event.preventDefault();
+        event.stopPropagation();
+        proxy.endDrag(event);
+    }//onMouseMoveUpMarker
 </script>
 
 <template>
@@ -69,6 +113,8 @@
                 class="marker-padding" style="fill: transparent; stroke: transparent;" 
                 :style="markerPaddingStyle(i as 1|2)"
                 @mousedown="onMouseDownInMarker($event, i as 1|2)"
+                @mousemove="onMouseMoveInMarker($event, i as 1|2)"
+                @mouseup="onMouseUpInMarker($event, i as 1|2)"
                 />
         </g>
     </template>

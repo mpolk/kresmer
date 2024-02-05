@@ -8,9 +8,11 @@
 \***************************************************************************/
 
 import AdjustmentHandle from "./AdjustmentHandle";
-import { Position } from "../Transform/Transform";
+import { Position, Shift } from "../Transform/Transform";
 import MouseEventCapture from "../MouseEventCapture";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
+import { NetworkElementClassPropDef } from "../NetworkElementClass";
+import { UpdateElementOp } from "../NetworkElement";
 
 export default class AdjustmentRuler extends AdjustmentHandle {
 
@@ -19,10 +21,11 @@ export default class AdjustmentRuler extends AdjustmentHandle {
     }//ctor
 
     private isGoingToBeDragged = false;
-    private isDragged = false;
+    public isDragged = false;
     private savedMousePos?: Position;
-    private savedPropValue?: number;
-    private savedEnds?: [Position, Position];
+    private savedTargetPropValue?: number;
+    private savedRulerVector?: Shift;
+    private savedRulerLengthSq?: number;
 
     private getMousePosition(event: MouseEvent) {
         return this.hostComponent.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
@@ -32,28 +35,44 @@ export default class AdjustmentRuler extends AdjustmentHandle {
     {
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
-        this.savedPropValue = this.hostComponent.props[this.targetProp] as number;
-        this.savedEnds = ends;
+        this.savedTargetPropValue = (this.hostComponent.props[this.targetProp] as number|undefined) ?? 
+            (this.hostComponent.getClass().props[this.targetProp] as NetworkElementClassPropDef).default as number;
+        this.savedRulerVector = {x: ends[1].x - ends[0].x, y: ends[1].y - ends[0].y};
+        this.savedRulerLengthSq = this.savedRulerVector!.x*this.savedRulerVector!.x + this.savedRulerVector!.y*this.savedRulerVector!.y;
+        this.hostComponent.kresmer.undoStack.startOperation(new UpdateElementOp(this.hostComponent));
         MouseEventCapture.start(mouseCaptureTarget);
     }//startDrag
 
     public drag(event: MouseEvent)
     {
         const mousePos = this.getMousePosition(event);
-        const effectiveMove = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
+        const move = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
 
         if (this.isGoingToBeDragged) {
-            if (Math.hypot(effectiveMove.x, effectiveMove.y) < 2)
-                return false;
+            if (Math.hypot(move.x, move.y) < 2)
+                return;
             this.isGoingToBeDragged = false;
             this.isDragged = true;
             this.hostComponent.kresmer._allLinksFreezed = true;
         } else if (!this.isDragged) {
-            return false;
+            return;
         }//if
             
-        // this.moveFromStartPos(effectiveMove);
-        return true;
+        const relDelta = (move.x*this.savedRulerVector!.x + move.y*this.savedRulerVector!.y) / this.savedRulerLengthSq!;
+        this.hostComponent.props[this.targetProp] = this.savedTargetPropValue! * (1 + relDelta);
     }//drag
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public endDrag(_event: MouseEvent)
+    {
+        if (this.isDragged) {
+            this.isDragged = false;
+            MouseEventCapture.release();
+            this.hostComponent.updateConnectionPoints();
+            this.hostComponent.kresmer.undoStack.commitOperation();
+            this.hostComponent.kresmer._allLinksFreezed = false;
+            this.hostComponent.controller!.alignConnectedLinks();
+        }//if
+    }//endDrag
 
 }//AdjustmentRuler

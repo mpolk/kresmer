@@ -7,7 +7,7 @@
  * (the word "class" here means a Kresmer class, not a Typescript one)
  ***************************************************************************/
 
-import { Prop } from "vue";
+import { Prop, PropType } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "./Kresmer";
 import { clone } from "./Utils";
@@ -118,10 +118,11 @@ export enum NetworkElementPropCategory {
     Construction, 
 }//NetworkElementPropCategory
 
-export type NetworkElementClassProp = Prop<unknown, unknown> & 
+export type NetworkElementClassProp<T=unknown> = Prop<T> & 
     {
         category?: NetworkElementPropCategory,
         description?: string,
         subtype?: string,
     };
+export type NetworkElementClassPropDef<T=unknown> = Exclude<Prop<T>, PropType<T>>;
 export type NetworkElementClassProps = Record<string, NetworkElementClassProp>;

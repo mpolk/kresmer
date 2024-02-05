@@ -238,7 +238,7 @@ export interface NetworkElementData {
 export class UpdateElementOp extends EditorOperation {
 
     constructor(private readonly element: NetworkElement, 
-                private readonly newData: NetworkElementData, 
+                private newData?: NetworkElementData, 
                 )
     {
         super();
@@ -247,9 +247,16 @@ export class UpdateElementOp extends EditorOperation {
 
     private readonly oldData: NetworkElementData;
 
+    override onCommit(): void 
+    {
+        if (!this.newData)
+            this.newData = this.element.getData();
+    }//onCommit
+
     override exec(): void 
     {
-        this.element.setData(this.newData);
+        if (this.newData)
+            this.element.setData(this.newData);
     }//exec
 
     override undo(): void 

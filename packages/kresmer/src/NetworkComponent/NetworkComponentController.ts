@@ -330,7 +330,7 @@ class _NetworkComponentController {
     }//toXML
 
 
-    private async alignConnectedLinks()
+    public async alignConnectedLinks()
     {
         if (this.kresmer.autoAlignVertices) {
             await nextTick();
