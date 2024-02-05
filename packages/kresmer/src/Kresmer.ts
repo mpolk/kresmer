@@ -241,12 +241,18 @@ export default class Kresmer extends KresmerEventHooks {
      * Undoes the last editor operation 
      * @returns boolean True if an operation was undone, else false
      */
-    public undo(): boolean {return this.undoStack.undo();}
+    public undo(): boolean {
+        this.resetAllComponentMode();
+        return this.undoStack.undo();
+    }//undo
     /**
      * Redoes the last undone editor operation 
      * @returns boolean True if an operation was redone, else false
      */
-    public redo(): boolean {return this.undoStack.redo();}
+    public redo(): boolean {
+        this.resetAllComponentMode();
+        return this.undoStack.redo();
+    }//redo
 
     /** Signals an application error */
     public raiseError(exception: KresmerException): Kresmer

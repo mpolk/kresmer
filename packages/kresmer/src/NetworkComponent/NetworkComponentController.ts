@@ -73,6 +73,8 @@ class _NetworkComponentController {
         } else if (!deselectTheRest) {
             this.component.isSelected = false;
         }//if
+        this.transformMode = undefined;
+        this.isInAdjustmentMode = false;
     }//selectComponent
 
     public startDrag(this: NetworkComponentController, event: MouseEvent)
