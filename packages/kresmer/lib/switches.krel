@@ -58,7 +58,7 @@
             <prop name="width" type="Number" category="Geometry"/>
         </props>
         <computed-props>
-            <computed-prop name="width">props.height * (0.25 + 0.75*props.nPorts)</computed-prop>
+            <computed-prop name="width">props.width ?? props.height * (0.25 + 0.75*props.nPorts)</computed-prop>
         </computed-props>
     </component-class>
 
