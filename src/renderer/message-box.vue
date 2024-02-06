@@ -1,7 +1,7 @@
 /***************************************************************************\
  *                            👑 KresMer 👑
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  *                             MessageBox
  *   an improved replacement for the JS built-ins "alert" and "confirm"

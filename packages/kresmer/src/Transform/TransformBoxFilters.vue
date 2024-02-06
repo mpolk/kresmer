@@ -1,7 +1,7 @@
 <!-- **************************************************************************>
  *                            👑 KresMer 👑
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
  *    Ephemeral box appearing at the time of a component transformation.
  *    SVG filters.

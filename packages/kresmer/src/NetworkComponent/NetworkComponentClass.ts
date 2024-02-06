@@ -1,7 +1,7 @@
 /***************************************************************************\
  *                            👑 KresMer 👑
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2023 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  * Network Component Class - a generic network component class
  * (the word "class" here means a Kresmer class, not a Typescript one)
