@@ -86,7 +86,6 @@
     "bootstrap": "^5.2.3",
     "date-fns": "^3.0.6",
     "kresmer": "^0.0.0",
-    "popper": "^1.0.1",
     "vue": "^3.3.9"
   },
   "devDependencies": {
