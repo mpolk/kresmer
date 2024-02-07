@@ -387,6 +387,7 @@ export default class LibraryParser {
                         case "Geometry":
                         case "Presentation":
                         case "Construction":
+                        case "Location":
                         case "Network":
                         case "Hardware":
                         case "Optics":

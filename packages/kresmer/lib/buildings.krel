@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                          Buildings library
+ *        This library contains building templates for the site plans
+<*************************************************************************** -->
+
+<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+    <import library="stdlib" />
+
+    <component-class name="building" category=".buildings">
+        <props>
+            <prop name="h" type="Number" category="Geometry" default="50" required="true" 
+                  description="Vertical size of the building image (in its own coords)"/>
+            <prop name="w" type="Number" category="Geometry" 
+                  description="Horizontal size of the building image (in its own coords)"/>
+            <prop name="nFloors" type="Number" category="Construction" description="The number of floors" />
+            <prop name="nEntrances" type="Number" category="Construction" description="The number of entrances" />
+            <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
+            <prop name="street" type="String" category="Location"/>
+            <prop name="number" type="String" category="Location" description="The building street number"/>
+        </props>
+    </component-class>
+    
+</kresmer-library>
