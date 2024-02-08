@@ -289,8 +289,8 @@ export default class LibraryParser {
             "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
             "number": {propType: Number, makeDefault: d => d === "none" ? null : Number(d)},
             "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
-            "object": {propType: Object, makeDefault: JSON.parse}, 
-            "array": {propType: Array, makeDefault: JSON.parse},
+            "object": {propType: Object, makeDefault: d => d === "none" ? null : JSON.parse(d)}, 
+            "array": {propType: Array, makeDefault: d => d === "none" ? null : JSON.parse(d)},
         };
 
         const props: NetworkElementClassProps = {};
