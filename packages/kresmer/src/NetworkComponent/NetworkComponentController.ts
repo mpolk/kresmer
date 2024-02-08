@@ -348,7 +348,20 @@ class _NetworkComponentController {
     }//alignConnectedLinks
 }//_NetworkComponentController
 
-export default class NetworkComponentController extends withZOrder(_NetworkComponentController) {}
+export default class NetworkComponentController extends withZOrder(_NetworkComponentController) {
+    constructor(
+        kresmer: Kresmer,
+        component: NetworkComponent,
+        params: {
+            origin: Position,
+            transform?: Transform,
+        }
+    ) {
+        super(kresmer, component, params);
+        component.controller = this;
+    }//ctor
+}//NetworkComponentController
+
 type DragConstraint = "x" | "y" | "unknown";
 
 
