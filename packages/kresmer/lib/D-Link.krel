@@ -23,8 +23,6 @@
             .port-icon.body { stroke: #efeedc; }
         </style>
         <props>
-            <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
-            <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
             <prop name="management-protocol" type="String" category="Network" default="telnet:"
                 description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
         </props>
@@ -48,7 +46,7 @@
             </template>
         </template>
         <props except="interUnitGap">
-            <prop name="width" type="Number" category="Geometry"/>
+            <prop name="width" type="Number" default="none" />
             <prop name="n-ports" type="Number" default="24" category="Hardware" description="The number of ports" />
         </props>
         <computed-props>

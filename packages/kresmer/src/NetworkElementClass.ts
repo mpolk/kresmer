@@ -44,12 +44,25 @@ export default abstract class NetworkElementClass {
         this.propsBaseClasses = params.propsBaseClasses;
         this.props = params.props ?? {};
         if (params.baseClass) {
-            this.props = {
-                ...clone(Object.fromEntries(
+            this.props = clone(Object.fromEntries(
                     Object.entries(params.baseClass.props)
                         .filter(entry => {return !params.exceptProps?.includes(entry[0])})
-                )), 
-                ...clone(this.props)};
+                ));
+            const ownProps = params.props ?? {};
+            for (const propName in ownProps) {
+                if (this.props[propName] === undefined) {
+                    this.props[propName] = clone(ownProps[propName]);
+                } else {
+                    for (const k in ownProps[propName]) {
+                        const key = k as keyof NetworkElementClassProp;
+                        if (ownProps[propName][key] === null)
+                            this.props[propName][key] = undefined;
+                        else
+                            this.props[propName][key] = clone(ownProps[propName][key]) as any;
+                    }//for
+                }//if
+            }//for
+
             // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if

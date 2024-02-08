@@ -109,7 +109,7 @@
             .led.red {stroke: #ad0101; fill: #d50101}
         </style>
         <props except="top-facet-size, top-facet-skew">
-            <prop name="width" type="Number" category="Geometry" />
+            <prop name="width" type="Number" default="none" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="none" category="Presentation" 
                   description="Visual perspective of the device image"/>
             <prop name="interfaces" type="Object" category="Network" default="{}"/>

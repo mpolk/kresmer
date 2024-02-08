@@ -21,10 +21,6 @@
             .port-icon { fill: #520f75; }
             .port-icon.body { stroke: #fde3fd; }
         </style>
-        <props>
-            <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
-            <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
-        </props>
     </component-class>
 
     <component-class name="ExtremeSwitchStack" category=".switch-parts">
@@ -79,7 +75,7 @@
         </template>
         <style extends="StackUnitBadge, ExtremeSwitchStack"/>
         <props>
-            <prop name="width" type="Number" category="Geometry"/>
+            <prop name="width" type="Number" default="none" />
         </props>
         <computed-props>
             <computed-prop name="width">props.width ?? props.unitHeight * 8.6</computed-prop>
@@ -113,7 +109,7 @@
         </template>
         <style extends="StackUnitBadge, ExtremeSwitchStack"/>
         <props>
-            <prop name="width" type="Number" category="Geometry"/>
+            <prop name="width" type="Number" default="none" />
         </props>
         <computed-props>
             <computed-prop name="width">props.width ?? props.unitHeight * 12.51</computed-prop>

@@ -287,7 +287,7 @@ export default class LibraryParser {
             "string": {propType: String, makeDefault: d => d}, 
             "color": {propType: String, makeDefault: d => d, subtype: "color"}, 
             "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
-            "number": {propType: Number, makeDefault: Number},
+            "number": {propType: Number, makeDefault: d => d === "none" ? null : Number(d)},
             "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
             "object": {propType: Object, makeDefault: JSON.parse}, 
             "array": {propType: Array, makeDefault: JSON.parse},

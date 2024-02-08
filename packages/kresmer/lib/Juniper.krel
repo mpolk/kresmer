@@ -74,7 +74,7 @@
         </style>
         <props except="unit-height">
             <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
-            <prop name="width" type="Number" category="Geometry"/>
+            <prop name="width" type="Number" default="none" />
         </props>
         <computed-props>
             <computed-prop name="width">props.width || props.height * 9.1</computed-prop>
