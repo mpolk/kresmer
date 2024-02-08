@@ -12,18 +12,33 @@
 <kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <component-class name="building" category=".buildings">
+    <component-class name="building" category=".Buildings">
         <props>
             <prop name="h" type="Number" category="Geometry" default="50" required="true" 
                   description="Vertical size of the building image (in its own coords)"/>
             <prop name="w" type="Number" category="Geometry" 
                   description="Horizontal size of the building image (in its own coords)"/>
             <prop name="nFloors" type="Number" category="Construction" description="The number of floors" />
-            <prop name="nEntrances" type="Number" category="Construction" description="The number of entrances" />
+            <prop name="nEntrances" type="Number" default="4" category="Construction" description="The number of entrances" />
             <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
             <prop name="street" type="String" category="Location"/>
             <prop name="number" type="String" category="Location" description="The building street number"/>
         </props>
+        <style>
+            .building { stroke: brown; fill: #f4a615; stroke-width: "2px"; }
+            .building.wood { fill: #f9ca48 }
+        </style>
     </component-class>
     
+    <component-class name="I-building" category="Buildings">
+        <extends base="building"/>
+        <template>
+            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material"/>
+        </template>
+        <computed-props>
+            <computed-prop name="w">
+                props.w ?? props.h * props.nEntrances
+            </computed-prop>
+        </computed-props>
+    </component-class>
 </kresmer-library>

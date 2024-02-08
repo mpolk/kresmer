@@ -72,8 +72,11 @@ export default class LibraryParser {
                 case "defs":
                     yield new DefsLibNode(node);
                     break;
-                case "style":
-                    yield new StyleLibNode(this.parseCSS(node.innerHTML));
+                case "style": {
+                        const style = this.parseCSS(node.innerHTML);
+                        if (style)
+                            yield new StyleLibNode(style);
+                    }
                     break;
                 case "import":
                     if (node.hasAttribute("library"))
@@ -449,7 +452,16 @@ export default class LibraryParser {
 
     private parseCSS(css: string, baseClasses?: NetworkElementClass[])
     {
-        const ast = postcss.parse(css, {from: undefined});
+        let ast: postcss.Root|undefined;
+        try {
+            ast = postcss.parse(css, {from: undefined});
+        } catch (exc) {
+            if (exc instanceof postcss.CssSyntaxError)
+                this.kresmer.raiseError(new ParsingException(exc.message, {source: exc.source}));
+            else
+                throw exc;
+        }//catch
+
         if (!baseClasses) {
             return ast;
         }//if
@@ -466,8 +478,11 @@ export default class LibraryParser {
     }//parseCSS
 
 
-    private mergeCSS(ast0: PostCSSRoot, ast1: PostCSSRoot)
+    private mergeCSS(ast0: PostCSSRoot, ast1: PostCSSRoot|undefined)
     {
+        if (!ast1)
+            return ast0;
+
         ast1.walkRules((rule1: PostCSSRule) => {
             let haveSuchRule = false;
             ast0.walkRules(rule1.selector, rule0 => {
