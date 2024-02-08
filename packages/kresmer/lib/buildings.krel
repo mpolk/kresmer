@@ -12,6 +12,7 @@
 <kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
+    <!-- Abstract base building -->
     <component-class name="building" category=".Buildings">
         <props>
             <prop name="h" type="Number" category="Geometry" default="50" required="true" 
@@ -25,20 +26,33 @@
             <prop name="number" type="String" category="Location" description="The building street number"/>
         </props>
         <style>
-            .building { stroke: brown; fill: #f4a615; stroke-width: "2px"; }
-            .building.wood { fill: #f9ca48 }
+            .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }
+            .building.wood { fill: #fad46b }
         </style>
     </component-class>
+
+    <!-- Various building shapes (inspired by Pentamino) -->
     
+    <!-- I-shaped building:  +==========+
+                             |          |
+                             +==========+
+     -->
     <component-class name="I-building" category="Buildings">
         <extends base="building"/>
         <template>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material"/>
+            <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
+            <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
         </template>
+        <props>
+            <prop name="w" type="Number" category="Geometry" default="200"
+                  description="Horizontal size of the building image (in its own coords)"/>
+        </props>
         <computed-props>
             <computed-prop name="w">
-                props.w ?? props.h * props.nEntrances
+                props.w === undefined || props.w === 200 ? props.h * props.nEntrances : props.w
             </computed-prop>
         </computed-props>
     </component-class>
+
 </kresmer-library>
