@@ -31,16 +31,40 @@
         </style>
     </component-class>
 
+    <!-- Building elements -->
+    <component-class name="entrance" category=".Buildings">
+        <template>
+            <rect v-for="i in nStairs" v-bind:x="-w/2" v-bind:y="-h * i" v-bind:width="w" v-bind:height="h" class="entrance"
+                  v-bind:opacity="i/nStairs"/>
+            <text class="number" v-bind:font-size="h*nStairs*0.75">{{number}}</text>
+        </template>
+        <props>
+            <prop name="h" type="Number" />
+            <prop name="w" type="Number" required="true" />
+            <prop name="number" type="[String, Number]" />
+        </props>
+        <computed-props>
+            <computed-prop name="nStairs">4</computed-prop>
+            <computed-prop name="h">props.h ?? props.w/3</computed-prop>
+        </computed-props>
+        <style>
+            .entrance { fill: #bf6731; stroke: none; }
+            .number { fill: white; text-anchor: middle; dominant-baseline: ideographic; }
+        </style>
+    </component-class>
+
     <!-- Various building shapes (inspired by Pentamino) -->
     
-    <!-- I-shaped building:  +==========+
-                             |          |
-                             +==========+
+    <!-- I-shaped building:  
+        +==========+
+        |          |
+        +==========+
      -->
     <component-class name="I-building" category="Buildings">
         <extends base="building"/>
         <template>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material"/>
+            <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (i - 0.5)" v-bind:y="h" v-bind:w="h/4" v-bind:number="i"/>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
             <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
         </template>
