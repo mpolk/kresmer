@@ -386,18 +386,7 @@
                         <xs:attribute name="type" use="required">
                             <xs:simpleType>
                                 <xs:restriction base="xs:string">
-                                    <xs:enumeration value="String"/>
-                                    <xs:enumeration value="string"/>
-                                    <xs:enumeration value="Number"/>
-                                    <xs:enumeration value="number"/>
-                                    <xs:enumeration value="Boolean"/>
-                                    <xs:enumeration value="boolean"/>
-                                    <xs:enumeration value="Object"/>
-                                    <xs:enumeration value="object"/>
-                                    <xs:enumeration value="Color"/>
-                                    <xs:enumeration value="color"/>
-                                    <xs:enumeration value="ImageURL"/>
-                                    <xs:enumeration value="image-url"/>
+                                    <xs:pattern value='[Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject|[Cc]olor|ImageURL|image-url|\[(([Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject), *)*([Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject)\]'></xs:pattern>
                                 </xs:restriction>
                             </xs:simpleType>
                         </xs:attribute>
