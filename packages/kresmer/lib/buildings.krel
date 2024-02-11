@@ -74,6 +74,8 @@
         </template>
         <props>
             <prop name="w" type="Number" default="200"/>
+            <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" 
+                category="Construction" description="The location and the order of the entrances"/>
         </props>
         <computed-props>
             <computed-prop name="w">
