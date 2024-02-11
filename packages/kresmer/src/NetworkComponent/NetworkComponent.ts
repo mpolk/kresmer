@@ -176,6 +176,7 @@ export class ChangeComponentClassOp extends EditorOperation {
 
 /** Network component-related functions for using in templates */
 export const NetworkComponentFunctions = {
+
     /** Makes the full name of the port based on the unit number and the total number of units */
     $portName: function(portName: string, unitNumber?: number, nUnits?: number): string
     {
@@ -184,4 +185,5 @@ export const NetworkComponentFunctions = {
         else
             return `${unitNumber}:${portName}`;
     },//$portName
+
 }//NetworkComponentFunctions

@@ -57,6 +57,7 @@ export default class Kresmer extends KresmerEventHooks {
         animateComponentDragging?: boolean,
         animateLinkBundleDragging?: boolean,
         hrefBase?: string,
+        streetAddressFormat?: StreetAddressFormat,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -79,22 +80,30 @@ export default class Kresmer extends KresmerEventHooks {
             controller: this,
         });
 
+        // register the components used to construct the drawing
         this.appKresmer
-            // register the components used to construct the drawing
             .component("TransformBox", TransformBoxVue)
             .component("NetworkComponentHolder", NetworkComponentHolderVue)
             .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
             .component("ConnectionPoint", ConnectionPointVue)
             .component("AdjustmentRuler", AdjustmentRulerVue)
-            // register the functions that can be used in templates
-            .config.globalProperties = {
-                ...GeneralTemplateFunctions, 
-                ...TransformFunctons,
-                ...NetworkComponentFunctions,
-                $openURL: this.openURL,
-                $href: this.makeHref,
-            }
             ;
+        // register the functions that can be used in templates
+        const templateFunctions = {
+            ...GeneralTemplateFunctions, 
+            ...TransformFunctons,
+            ...NetworkComponentFunctions,
+            $streetAddress: this.streetAddress,
+            $openURL: this.openURL,
+            $href: this.makeHref,
+        }//templateFunctions
+        this.appKresmer.config.globalProperties = templateFunctions;
+        // also make them available from computed props
+        for (const funcName in templateFunctions) {
+            Object.defineProperty(window, funcName, {value: templateFunctions[funcName as keyof typeof templateFunctions]});
+        }//for
+
+        // at last mount the main vue
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
     }//ctor
 
@@ -126,6 +135,19 @@ export default class Kresmer extends KresmerEventHooks {
     animateComponentDragging = false;
     /** Specifies whether link bundle dragging should be animated */
     animateLinkBundleDragging = false;
+
+    /** Specifies the street address representation format */
+    streetAddressFormat = StreetAddressFormat.StreetFirst;
+    /** Makes the street address from the street name and the building number according to globally selected format */
+    readonly streetAddress = (streetName: string|undefined, buildingNumber: string|undefined) =>
+    {
+        if (!buildingNumber)
+            return streetName;
+        if (!streetName)
+            return buildingNumber;
+        
+        return this.streetAddressFormat.replace("{street}", streetName).replace("{building-number}", buildingNumber);
+    }//streetAddress
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
@@ -1241,6 +1263,11 @@ export const GeneralTemplateFunctions = {
     },//$global
 }//GeneralTemplateFunctions
 
+/** Options for the street address representation */
+export const enum StreetAddressFormat {
+    StreetFirst = "{street} {building-number}",
+    BuildingFirst = "{building-number} {street}",
+}//StreetAddressFormat
 
 // Re-export child classes to API
 export {default as NetworkElement } from "./NetworkElement";

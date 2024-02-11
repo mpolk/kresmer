@@ -25,6 +25,9 @@
             <prop name="street" type="String" category="Location"/>
             <prop name="number" type="String" category="Location" description="The building street number"/>
         </props>
+        <computed-props>
+            <computed-prop name="title">$streetAddress(props.street, props.number)</computed-prop>
+        </computed-props>
         <style>
             .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }
             .building.wood { fill: #fad46b }
@@ -35,7 +38,7 @@
     <component-class name="entrance" category=".Buildings">
         <template>
             <rect v-for="i in nStairs" v-bind:x="-w/2" v-bind:y="-h * i" v-bind:width="w" v-bind:height="h" class="entrance"
-                  v-bind:opacity="i/nStairs"/>
+                  v-bind:opacity="i/nStairs" />
             <text class="number" v-bind:font-size="h*nStairs*0.75">{{number}}</text>
         </template>
         <props>
@@ -63,7 +66,8 @@
     <component-class name="I-building" category="Buildings">
         <extends base="building"/>
         <template>
-            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material"/>
+            <title>{{title}}</title>
+            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
             <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (i - 0.5)" v-bind:y="h" v-bind:w="h/4" v-bind:number="i"/>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
             <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
