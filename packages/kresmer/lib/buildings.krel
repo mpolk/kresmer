@@ -26,7 +26,7 @@
             <prop name="number" type="String" category="Location" description="The building street number"/>
         </props>
         <computed-props>
-            <computed-prop name="title">$streetAddress(props.street, props.number)</computed-prop>
+            <computed-prop name="title">$streetAddress({street: props.street, buildingNumber: props.number})</computed-prop>
         </computed-props>
         <style>
             .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }

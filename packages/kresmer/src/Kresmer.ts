@@ -139,14 +139,16 @@ export default class Kresmer extends KresmerEventHooks {
     /** Specifies the street address representation format */
     streetAddressFormat = StreetAddressFormat.StreetFirst;
     /** Makes the street address from the street name and the building number according to globally selected format */
-    readonly streetAddress = (streetName: string|undefined, buildingNumber: string|undefined) =>
+    readonly streetAddress = (addrElems: {street?: string, buildingNumber?: string}) =>
     {
-        if (!buildingNumber)
-            return streetName;
-        if (!streetName)
-            return buildingNumber;
+        if (!addrElems.buildingNumber)
+            return addrElems.street;
+        if (!addrElems.street)
+            return addrElems.buildingNumber;
         
-        return this.streetAddressFormat.replace("{street}", streetName).replace("{building-number}", buildingNumber);
+        return this.streetAddressFormat
+            .replace("{street}", addrElems.street)
+            .replace("{building-number}", addrElems.buildingNumber);
     }//streetAddress
 
     // Drawing geometry parameters
