@@ -11,6 +11,7 @@
     import { Modal, Offcanvas } from 'bootstrap';
     import { updateAppSettings } from './renderer-main';
     import { AppSettings } from '../main/main';
+import { StreetAddressFormat } from 'kresmer';
 
     export default {
         name: "AppSettingsSidebar",
@@ -221,6 +222,15 @@
                             <label class="form-check-label" for="cbAnimateLinkBundleDragging">Animate link bundle dragging</label>
                             <input type="checkbox" id="cbAnimateLinkBundleDragging" class="form-check-input" v-model="appSettings!.animateLinkBundleDragging" />
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-check-label" for="selStreetAddressFormat">Street address format</label>
+                        <select id="selStreetAddressFormat" class="form-select" v-model="appSettings!.streetAddressFormat">
+                            <option>{{StreetAddressFormat.BuildingFirst}}</option>
+                            <option>{{StreetAddressFormat.StreetFirst}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row pt-2">

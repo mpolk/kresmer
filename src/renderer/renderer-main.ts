@@ -416,6 +416,7 @@ export function updateAppSettings(newAppSettings: AppSettings)
     kresmer.autoAlignVertices = statusBarData.autoAlignVertices = newAppSettings.autoAlignVertices;
     kresmer.animateComponentDragging = newAppSettings.animateComponentDragging;
     kresmer.animateLinkBundleDragging = newAppSettings.animateLinkBundleDragging;
+    kresmer.streetAddressFormat = newAppSettings.streetAddressFormat;
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
 

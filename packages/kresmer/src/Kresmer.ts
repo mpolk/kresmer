@@ -75,6 +75,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.animateComponentDragging = Boolean(options?.animateComponentDragging);
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
         options?.hrefBase && (this.hrefBase.value = options.hrefBase);
+        options?.streetAddressFormat && (this.streetAddressFormat = options.streetAddressFormat);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
