@@ -39,16 +39,18 @@
         <template>
             <rect v-for="i in nStairs" v-bind:x="-w/2" v-bind:y="-h * i" v-bind:width="w" v-bind:height="h" class="entrance"
                   v-bind:opacity="i/nStairs" />
-            <text class="number" v-bind:font-size="h*nStairs*0.75">{{number}}</text>
+            <text class="number" v-bind:font-size="fontSize">{{number}}</text>
         </template>
         <props>
             <prop name="h" type="Number" />
             <prop name="w" type="Number" required="true" />
             <prop name="number" type="[String, Number]" />
+            <prop name="align" type="String" choices="top, bottom, left, right" default="bottom"/>
         </props>
         <computed-props>
             <computed-prop name="nStairs">4</computed-prop>
             <computed-prop name="h">props.h ?? props.w/3</computed-prop>
+            <computed-prop name="fontSize">computedProps.h * computedProps.nStairs * 0.75</computed-prop>
         </computed-props>
         <style>
             .entrance { fill: #bf6731; stroke: none; }
@@ -68,7 +70,18 @@
         <template>
             <title>{{title}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
-            <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (i - 0.5)" v-bind:y="h" v-bind:w="h/4" v-bind:number="i"/>
+            <template v-if="entrancesLayout === 'bottom-ccw'">
+                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (i - 0.5)" v-bind:y="h" v-bind:w="h/4" v-bind:number="i"/>
+            </template>
+            <template v-else-if="entrancesLayout === 'bottom-cw'">
+                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="h/4" v-bind:number="i"/>
+            </template>
+            <template v-else-if="entrancesLayout === 'top-ccw'">
+                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (nEntrances - i + 0.5)" v-bind:y="0" v-bind:w="h/4" align="top" v-bind:number="i"/>
+            </template>
+            <template v-else-if="entrancesLayout === 'top-cw'">
+                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (i - 0.5)" v-bind:y="0" v-bind:w="h/4" align="top" v-bind:number="i"/>
+            </template>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
             <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
         </template>
