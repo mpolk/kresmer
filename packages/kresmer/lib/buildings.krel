@@ -33,6 +33,16 @@
         <style>
             .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }
             .building.wood { fill: #fad46b }
+            .building.number { fill: #393432; stroke: none; }
+            .building.number.c  { text-anchor: middle; dominant-baseline: middle; }
+            .building.number.nw { text-anchor: start;  dominant-baseline: text-before-edge; }
+            .building.number.n  { text-anchor: middle; dominant-baseline: text-before-edge; }
+            .building.number.ne { text-anchor: end;    dominant-baseline: text-before-edge; }
+            .building.number.e  { text-anchor: end;    dominant-baseline: middle; }
+            .building.number.se { text-anchor: end;    dominant-baseline: text-after-edge; }
+            .building.number.s  { text-anchor: middle; dominant-baseline: text-after-edge; }
+            .building.number.sw { text-anchor: start;  dominant-baseline: text-after-edge; }
+            .building.number.w  { text-anchor: start;  dominant-baseline: middle; }
         </style>
     </component-class>
 
@@ -91,6 +101,9 @@
             <template v-else-if="entrancesLayout === 'top-cw'">
                 <Kre:entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
             </template>
+            <text v-bind="bldNumbPos" class="building number" v-bind:class="{[buildingNumberPosition]: true}" v-bind:font-size="numberFontSize">
+                {{number}}
+            </text>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
             <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
         </template>
@@ -104,7 +117,21 @@
         <computed-props>
             <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
             <computed-prop name="entrW">computedProps.entrStep/4</computed-prop>
+            <computed-prop name="bldNumbPos">
+                props.buildingNumberPosition === "nw" ? {x: props.w*0.02, y: props.h*0.02} :
+                props.buildingNumberPosition === "n"  ? {x: props.w/2, y: props.h*0.02} :
+                props.buildingNumberPosition === "ne" ? {x: props.w*0.98, y: props.h*0.02} :
+                props.buildingNumberPosition === "e"  ? {x: props.w*0.98, y: props.h/2} :
+                props.buildingNumberPosition === "se" ? {x: props.w*0.98, y: props.h*0.98} :
+                props.buildingNumberPosition === "s"  ? {x: props.w/2,    y: props.h*0.98} :
+                props.buildingNumberPosition === "sw" ? {x: props.w*0.02, y: props.h*0.98} :
+                props.buildingNumberPosition === "w"  ? {x: props.w*0.02, y: props.h/2} :
+                {x: props.w/2, y: props.h/2}
+            </computed-prop>
+            <computed-prop name="numberFontSize">props.h/3</computed-prop>
         </computed-props>
+        <style>
+        </style>
     </component-class>
     
     <!-- L-shaped building:  
