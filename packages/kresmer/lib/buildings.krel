@@ -23,6 +23,9 @@
             <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
             <prop name="street" type="String" category="Location"/>
             <prop name="number" type="String" category="Location" description="The building street number"/>
+            <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
+            <prop name="buildingNumberPosition" type="String" category="Presentation" description="The position of the building number label"/>
+            <prop name="numberOfFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
         </props>
         <computed-props>
             <computed-prop name="title">$streetAddress({street: props.street, buildingNumber: props.number})</computed-prop>
@@ -94,8 +97,9 @@
         <props>
             <prop name="w" type="Number" default="200"/>
             <prop name="nEntrances" type="Number" category="Construction" description="The number of entrances" />
-            <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" 
-                category="Construction" description="The location and the order of the entrances"/>
+            <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
+            <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
+            <prop name="numberOfFloorsPosition" type="String" choices="w, e" default="w"/>
         </props>
         <computed-props>
             <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
