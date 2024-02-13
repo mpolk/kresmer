@@ -108,8 +108,8 @@
     <!-- Various building shapes (inspired by Pentamino) -->
     
     <!-- I-shaped building:  
-        +============+
-        |++++++++++++|
+        +======w=====+
+        |++++++++++++h
         +============+
      -->
     <component-class name="I-Building" category="Buildings">
@@ -167,12 +167,12 @@
     </component-class>
     
     <!-- L-shaped building:  
-        +====+
+        +=w1=+
         |++++|
         |++++|
-        |+++++======+
-        |+++++++++++|
-        +===========+
+        h+++++======+
+        |+++++++++++h2
+        +=====w=====+
      -->
      <component-class name="L-Building" category="Buildings">
         <extends base="Building"/>
@@ -180,29 +180,55 @@
             <title>{{title}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
             <template v-if="entrancesLayout === 'bottom-ccw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (i - 0.5)" v-bind:y="h" v-bind:w="h/4" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
             </template>
             <template v-else-if="entrancesLayout === 'bottom-cw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="h/4" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
             </template>
             <template v-else-if="entrancesLayout === 'top-ccw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (nEntrances - i + 0.5)" v-bind:y="0" v-bind:w="h/4" align="top" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
             </template>
             <template v-else-if="entrancesLayout === 'top-cw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="h * (i - 0.5)" v-bind:y="0" v-bind:w="h/4" align="top" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
             </template>
+            <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" 
+                v-bind:nFloors="nFloors" v-bind:roof-shape="roofShape"/>
+            <text v-bind="bldNumbPos" class="building number" v-bind:class="{[buildingNumberPosition]: true}" v-bind:font-size="numberFontSize">
+                {{buildingNumber}}
+            </text>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
             <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
         </template>
         <props>
+            <prop name="h" type="Number" default="200"/>
             <prop name="w" type="Number" default="200"/>
-            <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" 
-                category="Construction" description="The location and the order of the entrances"/>
+            <prop name="h2" type="Number" default="50" category="Construction" description="Visual height of the horizontal part"/>
+            <prop name="w1" type="Number" default="50" category="Construction" description="Visual width of the vertical part"/>
+            <prop name="nEntrances1" type="Number" category="Construction" description="The number of entrances in the vertical part" />
+            <prop name="nEntrances2" type="Number" category="Construction" description="The number of entrances in the horizontal part" />
+            <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
+            <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
+            <prop name="nFloorsPosition" type="String" choices="w, e" default="w"/>
         </props>
         <computed-props>
-            <computed-prop name="w">
-                props.w === undefined || props.w === 200 ? props.h * props.nEntrances : props.w
+            <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
+            <computed-prop name="entrW">computedProps.entrStep/4</computed-prop>
+            <computed-prop name="bldNumbPos">
+                props.buildingNumberPosition === "nw" ? {x: props.w*0.02, y: props.h*0.02} :
+                props.buildingNumberPosition === "n"  ? {x: props.w/2, y: props.h*0.02} :
+                props.buildingNumberPosition === "ne" ? {x: props.w*0.98, y: props.h*0.02} :
+                props.buildingNumberPosition === "e"  ? {x: props.w*0.98, y: props.h/2} :
+                props.buildingNumberPosition === "se" ? {x: props.w*0.98, y: props.h*0.98} :
+                props.buildingNumberPosition === "s"  ? {x: props.w/2,    y: props.h*0.98} :
+                props.buildingNumberPosition === "sw" ? {x: props.w*0.02, y: props.h*0.98} :
+                props.buildingNumberPosition === "w"  ? {x: props.w*0.02, y: props.h/2} :
+                {x: props.w/2, y: props.h/2}
             </computed-prop>
+            <computed-prop name="nFloorsPos">
+                props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
+                                                       {x: props.w*0.98, y: props.h/2, align: "right"}
+            </computed-prop>
+            <computed-prop name="numberFontSize">props.h/3</computed-prop>
         </computed-props>
     </component-class>
 

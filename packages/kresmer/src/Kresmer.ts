@@ -101,7 +101,8 @@ export default class Kresmer extends KresmerEventHooks {
         this.appKresmer.config.globalProperties = templateFunctions;
         // also make them available from computed props
         for (const funcName in templateFunctions) {
-            Object.defineProperty(window, funcName, {value: templateFunctions[funcName as keyof typeof templateFunctions]});
+            if (!(funcName in window))
+                Object.defineProperty(window, funcName, {value: templateFunctions[funcName as keyof typeof templateFunctions]});
         }//for
 
         // at last mount the main vue
