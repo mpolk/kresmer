@@ -21,11 +21,12 @@
                   description="Horizontal size of the building image (in its own coords)"/>
             <prop name="nFloors" type="Number" category="Construction" description="The number of floors" />
             <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
+            <prop name="roofShape" type="String" choices="flat, pitched" category="Construction" description="The roof shape"/>
             <prop name="street" type="String" category="Location"/>
             <prop name="buildingNumber" type="String" category="Location" description="The building street number"/>
-            <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
             <prop name="buildingNumberPosition" type="String" category="Presentation" description="The position of the building number label"/>
-            <prop name="numberOfFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
+            <prop name="nFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
+            <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
         </props>
         <computed-props>
             <computed-prop name="title">$streetAddress({street: props.street, buildingNumber: props.buildingNumber})</computed-prop>
@@ -80,13 +81,16 @@
     <component-class name="NFloorsLabel" category=".Buildings">
         <template>
             <g class="n-floors-label">
-                <line x1="0" v-bind:y1="-h/2" v-bind:x2="align === 'right' ? -w : w" v-bind:y2="-h/2"/>
+                <polyline v-if="roofShape === 'pitched'" 
+                    v-bind:points="`0,${-h*0.4} ${align === 'right' ? -w/2 : w/2},${-h*0.7} ${align === 'right' ? -w : w},${-h*0.4}`"/>
+                <line v-else="" x1="0" v-bind:y1="-h/2" v-bind:x2="align === 'right' ? -w : w" v-bind:y2="-h/2"/>
                 <line x1="0" v-bind:y1="h/2" v-bind:x2="align === 'right' ? -w : w" v-bind:y2="h/2"/>
                 <text v-bind:x="align === 'right' ? -w/2 : w/2" v-bind:y="0" v-bind:font-size="h*0.75">{{nFloors}}</text>
             </g>
         </template>
         <props>
             <prop name="n-floors" type="Number" required="true"/>
+            <prop name="roofShape" type="String" />
             <prop name="w" type="Number" />
             <prop name="h" type="Number" required="true" />
             <prop name="align" type="String" choices="left, right" default="left"/>
@@ -97,7 +101,7 @@
         <style>
             .n-floors-label { fill: white }
             .n-floors-label text { text-anchor: middle; dominant-baseline: central; }
-            .n-floors-label line { stroke-width: 1px; stroke: white; }
+            .n-floors-label line, .n-floors-label polyline { stroke-width: 1px; stroke: white; fill: none; }
         </style>
     </component-class>
     
@@ -125,7 +129,8 @@
             <template v-else-if="entrancesLayout === 'top-cw'">
                 <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
             </template>
-            <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" v-bind:nFloors="nFloors"/>
+            <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" 
+                v-bind:nFloors="nFloors" v-bind:roof-shape="roofShape"/>
             <text v-bind="bldNumbPos" class="building number" v-bind:class="{[buildingNumberPosition]: true}" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
@@ -137,7 +142,7 @@
             <prop name="nEntrances" type="Number" category="Construction" description="The number of entrances" />
             <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
             <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
-            <prop name="numberOfFloorsPosition" type="String" choices="w, e" default="w"/>
+            <prop name="nFloorsPosition" type="String" choices="w, e" default="w"/>
         </props>
         <computed-props>
             <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
@@ -154,7 +159,7 @@
                 {x: props.w/2, y: props.h/2}
             </computed-prop>
             <computed-prop name="nFloorsPos">
-                props.numberOfFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
+                props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
                                                        {x: props.w*0.98, y: props.h/2, align: "right"}
             </computed-prop>
             <computed-prop name="numberFontSize">props.h/3</computed-prop>
