@@ -60,6 +60,11 @@
                     v-bind:opacity="i/nStairs" />
                 <text class="number" v-bind:y="nStairs * lStair" v-bind:font-size="fontSize">{{number}}</text>
             </template>
+            <template v-else-if="align === 'right'">
+                <rect v-for="i in nStairs" v-bind:y="-w/2" v-bind:x="-lStair * i" v-bind:width="lStair" v-bind:height="w" class="entrance"
+                    v-bind:opacity="i/nStairs" />
+                <text class="number horz" v-bind:x="-lStair*nStairs/2" v-bind:y="0" v-bind:font-size="fontSize">{{number}}</text>
+            </template>
         </template>
         <props>
             <prop name="h" type="Number" />
@@ -75,6 +80,7 @@
         <style>
             .entrance { fill: #bf6731; stroke: none; }
             .number { fill: white; text-anchor: middle; dominant-baseline: ideographic; }
+            .number.horz { dominant-baseline: central; }
         </style>
     </component-class>
 
@@ -178,9 +184,12 @@
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
-            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
-            <template v-if="entrancesLayout === 'bottom-ccw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
+            <polygon v-bind:points="`0,0 0,${-h} ${w1},${-h} ${w1},${-h2} ${w},${-h2} ${w},0`" class="building" v-bind:class="material" />
+            <template v-if="entrancesLayout === 'inside-cw'">
+                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="w1" v-bind:y="-h + entrStep1 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="i" align="right"/>
+                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="-h2" v-bind:x="w1 + entrStep2 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="nEntrances1 + i" align="top"/>
             </template>
             <template v-else-if="entrancesLayout === 'bottom-cw'">
                 <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
@@ -206,13 +215,19 @@
             <prop name="w1" type="Number" default="50" category="Construction" description="Visual width of the vertical part"/>
             <prop name="nEntrances1" type="Number" category="Construction" description="The number of entrances in the vertical part" />
             <prop name="nEntrances2" type="Number" category="Construction" description="The number of entrances in the horizontal part" />
-            <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
+            <prop name="entrancesLayout" type="String" choices="inside-cw, inside-ccw, outside-cw, outside-ccw" default="inside-cw" />
             <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
             <prop name="nFloorsPosition" type="String" choices="w, e" default="w"/>
         </props>
         <computed-props>
-            <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
-            <computed-prop name="entrW">computedProps.entrStep/4</computed-prop>
+            <computed-prop name="nEntrances">props.nEntrances1 + props.nEntrances2</computed-prop>
+            <computed-prop name="entrStep1">
+                props.entrancesLayout.startsWith('outside') ? props.h/props.nEntrances1 : (props.h-props.h2)/props.nEntrances1
+            </computed-prop>
+            <computed-prop name="entrStep2">
+                props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
+            </computed-prop>
+            <computed-prop name="entrW">computedProps.entrStep2/4</computed-prop>
             <computed-prop name="bldNumbPos">
                 props.buildingNumberPosition === "nw" ? {x: props.w*0.02, y: props.h*0.02} :
                 props.buildingNumberPosition === "n"  ? {x: props.w/2, y: props.h*0.02} :
