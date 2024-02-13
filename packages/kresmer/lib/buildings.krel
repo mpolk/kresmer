@@ -13,7 +13,7 @@
     <import library="stdlib" />
 
     <!-- Abstract base building -->
-    <component-class name="building" category=".Buildings">
+    <component-class name="Building" category=".Buildings">
         <props>
             <prop name="h" type="Number" category="Geometry" default="50" required="true" 
                   description="Vertical size of the building image (in its own coords)"/>
@@ -22,32 +22,32 @@
             <prop name="nFloors" type="Number" category="Construction" description="The number of floors" />
             <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
             <prop name="street" type="String" category="Location"/>
-            <prop name="number" type="String" category="Location" description="The building street number"/>
+            <prop name="buildingNumber" type="String" category="Location" description="The building street number"/>
             <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
             <prop name="buildingNumberPosition" type="String" category="Presentation" description="The position of the building number label"/>
             <prop name="numberOfFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
         </props>
         <computed-props>
-            <computed-prop name="title">$streetAddress({street: props.street, buildingNumber: props.number})</computed-prop>
+            <computed-prop name="title">$streetAddress({street: props.street, buildingNumber: props.buildingNumber})</computed-prop>
         </computed-props>
         <style>
             .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }
             .building.wood { fill: #fad46b }
             .building.number { fill: #393432; stroke: none; }
-            .building.number.c  { text-anchor: middle; dominant-baseline: middle; }
+            .building.number.c  { text-anchor: middle; dominant-baseline: central; }
             .building.number.nw { text-anchor: start;  dominant-baseline: text-before-edge; }
             .building.number.n  { text-anchor: middle; dominant-baseline: text-before-edge; }
             .building.number.ne { text-anchor: end;    dominant-baseline: text-before-edge; }
-            .building.number.e  { text-anchor: end;    dominant-baseline: middle; }
+            .building.number.e  { text-anchor: end;    dominant-baseline: central; }
             .building.number.se { text-anchor: end;    dominant-baseline: text-after-edge; }
             .building.number.s  { text-anchor: middle; dominant-baseline: text-after-edge; }
             .building.number.sw { text-anchor: start;  dominant-baseline: text-after-edge; }
-            .building.number.w  { text-anchor: start;  dominant-baseline: middle; }
+            .building.number.w  { text-anchor: start;  dominant-baseline: central; }
         </style>
     </component-class>
 
     <!-- Building elements -->
-    <component-class name="entrance" category=".Buildings">
+    <component-class name="Entrance" category=".Buildings">
         <template>
             <template v-if="align === 'bottom'">
                 <rect v-for="i in nStairs" v-bind:x="-w/2" v-bind:y="-lStair * i" v-bind:width="w" v-bind:height="lStair" class="entrance"
@@ -77,6 +77,30 @@
         </style>
     </component-class>
 
+    <component-class name="NFloorsLabel" category=".Buildings">
+        <template>
+            <g class="n-floors-label">
+                <line x1="0" v-bind:y1="-h/2" v-bind:x2="align === 'right' ? -w : w" v-bind:y2="-h/2"/>
+                <line x1="0" v-bind:y1="h/2" v-bind:x2="align === 'right' ? -w : w" v-bind:y2="h/2"/>
+                <text v-bind:x="align === 'right' ? -w/2 : w/2" v-bind:y="0" v-bind:font-size="h*0.75">{{nFloors}}</text>
+            </g>
+        </template>
+        <props>
+            <prop name="n-floors" type="Number" required="true"/>
+            <prop name="w" type="Number" />
+            <prop name="h" type="Number" required="true" />
+            <prop name="align" type="String" choices="left, right" default="left"/>
+        </props>
+        <computed-props>
+            <computed-prop name="w">props.w ?? props.h/1.5</computed-prop>
+        </computed-props>
+        <style>
+            .n-floors-label { fill: white }
+            .n-floors-label text { text-anchor: middle; dominant-baseline: central; }
+            .n-floors-label line { stroke-width: 1px; stroke: white; }
+        </style>
+    </component-class>
+    
     <!-- Various building shapes (inspired by Pentamino) -->
     
     <!-- I-shaped building:  
@@ -84,25 +108,26 @@
         |++++++++++++|
         +============+
      -->
-    <component-class name="I-building" category="Buildings">
-        <extends base="building"/>
+    <component-class name="I-Building" category="Buildings">
+        <extends base="Building"/>
         <template>
             <title>{{title}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
             <template v-if="entrancesLayout === 'bottom-ccw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
             </template>
             <template v-else-if="entrancesLayout === 'bottom-cw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
             </template>
             <template v-else-if="entrancesLayout === 'top-ccw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
             </template>
             <template v-else-if="entrancesLayout === 'top-cw'">
-                <Kre:entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
+                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
             </template>
+            <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" v-bind:nFloors="nFloors"/>
             <text v-bind="bldNumbPos" class="building number" v-bind:class="{[buildingNumberPosition]: true}" v-bind:font-size="numberFontSize">
-                {{number}}
+                {{buildingNumber}}
             </text>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
             <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
@@ -128,10 +153,12 @@
                 props.buildingNumberPosition === "w"  ? {x: props.w*0.02, y: props.h/2} :
                 {x: props.w/2, y: props.h/2}
             </computed-prop>
+            <computed-prop name="nFloorsPos">
+                props.numberOfFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
+                                                       {x: props.w*0.98, y: props.h/2, align: "right"}
+            </computed-prop>
             <computed-prop name="numberFontSize">props.h/3</computed-prop>
         </computed-props>
-        <style>
-        </style>
     </component-class>
     
     <!-- L-shaped building:  
@@ -142,8 +169,8 @@
         |+++++++++++|
         +===========+
      -->
-     <component-class name="L-building" category="Buildings">
-        <extends base="building"/>
+     <component-class name="L-Building" category="Buildings">
+        <extends base="Building"/>
         <template>
             <title>{{title}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
