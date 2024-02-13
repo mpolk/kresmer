@@ -65,6 +65,11 @@
                     v-bind:opacity="i/nStairs" />
                 <text class="number horz" v-bind:x="-lStair*nStairs/2" v-bind:y="0" v-bind:font-size="fontSize">{{number}}</text>
             </template>
+            <template v-else-if="align === 'left'">
+                <rect v-for="i in nStairs" v-bind:y="-w/2" v-bind:x="lStair * (i - 1)" v-bind:width="lStair" v-bind:height="w" class="entrance"
+                    v-bind:opacity="i/nStairs" />
+                <text class="number horz" v-bind:x="lStair*nStairs/2" v-bind:y="0" v-bind:font-size="fontSize">{{number}}</text>
+            </template>
         </template>
         <props>
             <prop name="h" type="Number" />
@@ -191,14 +196,23 @@
                 <Kre:Entrance v-for="i in nEntrances2" v-bind:y="-h2" v-bind:x="w1 + entrStep2 * (i - 0.5)" v-bind:w="entrW" 
                     v-bind:number="nEntrances1 + i" align="top"/>
             </template>
-            <template v-else-if="entrancesLayout === 'bottom-cw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
+            <template v-else-if="entrancesLayout === 'inside-ccw'">
+                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="-h2" v-bind:x="w - entrStep2 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="i" align="top"/>
+                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="w1" v-bind:y="-h2 - entrStep1 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="nEntrances2 + i" align="right"/>
             </template>
-            <template v-else-if="entrancesLayout === 'top-ccw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
+            <template v-else-if="entrancesLayout === 'outside-cw'">
+                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="0" v-bind:x="w - entrStep2 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="i" align="bottom"/>
+                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="0" v-bind:y="-entrStep1 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="nEntrances2 + i" align="left"/>
             </template>
-            <template v-else-if="entrancesLayout === 'top-cw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
+            <template v-else-if="entrancesLayout === 'outside-ccw'">
+                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="0" v-bind:y="-h + entrStep1 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="i" align="left"/>
+                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="0" v-bind:x="entrStep2 * (i - 0.5)" v-bind:w="entrW" 
+                    v-bind:number="nEntrances1 + i" align="bottom"/>
             </template>
             <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" 
                 v-bind:nFloors="nFloors" v-bind:roof-shape="roofShape"/>
