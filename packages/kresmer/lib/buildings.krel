@@ -236,6 +236,24 @@
             <prop name="buildingNumberPosition" type="String" choices="m, c1, c2, nw, n1, n2, ne1, ne2, e1, e2, se, s, sw, w" default="m"/>
             <prop name="nFloorsPosition" type="String" choices="w, e" default="w"/>
         </props>
+        <functions>
+            <function name="labelPos" params="posCode">
+                return posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, textAnchor: "start"} :
+                       posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, textAnchor: "middle"} :
+                       posCode === "n2"  ? {x: props.w/2,     y: -props.h2*0.98,           textAnchor: "middle"} :
+                       posCode === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02, textAnchor: "end"} :
+                       posCode === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98,           textAnchor: "end"} :
+                       posCode === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2,  textAnchor: "end"} :
+                       posCode === "e2"  ? {x: props.w*0.98,  y: -props.h2/2,              textAnchor: "end"} :
+                       posCode === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02,           textAnchor: "end"} :
+                       posCode === "s"   ? {x: props.w/2,     y: -props.h2*0.02,           textAnchor: "middle"} :
+                       posCode === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02,           textAnchor: "start"} :
+                       posCode === "w"   ? {x: props.w*0.02,  y: -props.h/2,               textAnchor: "start"} :
+                       posCode === "c1"  ? {x: props.w1/2,    y: -props.h/2,               textAnchor: "middle"} :
+                       posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              textAnchor: "middle"} :
+                                           {x: props.w1/2,    y: -props.h2/2,              textAnchor: "middle"};
+            </function>
+        </functions>
         <computed-props>
             <computed-prop name="nEntrances">props.nEntrances1 + props.nEntrances2</computed-prop>
             <computed-prop name="entrStep1">
@@ -245,22 +263,7 @@
                 props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
             </computed-prop>
             <computed-prop name="entrW">Math.min(computedProps.entrStep1, computedProps.entrStep2)/4</computed-prop>
-            <computed-prop name="bldNumbPos">
-                props.buildingNumberPosition === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02} :
-                props.buildingNumberPosition === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02} :
-                props.buildingNumberPosition === "n2"  ? {x: props.w/2,     y: -props.h2*0.98} :
-                props.buildingNumberPosition === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02} :
-                props.buildingNumberPosition === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98} :
-                props.buildingNumberPosition === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2} :
-                props.buildingNumberPosition === "e2"  ? {x: props.w*0.98,  y: -props.h2/2} :
-                props.buildingNumberPosition === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02} :
-                props.buildingNumberPosition === "s"   ? {x: props.w/2,     y: -props.h2*0.02} :
-                props.buildingNumberPosition === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02} :
-                props.buildingNumberPosition === "w"   ? {x: props.w*0.02,  y: -props.h/2} :
-                props.buildingNumberPosition === "c1"  ? {x: props.w1/2,    y: -props.h/2} :
-                props.buildingNumberPosition === "c2"  ? {x: props.w/2,     y: -props.h2/2} :
-                    {x: props.w1/2, y: -props.h2/2}
-            </computed-prop>
+            <computed-prop name="bldNumbPos">f.labelPos(props.buildingNumberPosition)</computed-prop>
             <computed-prop name="nFloorsPos">
                 props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
                                                 {x: props.w*0.98, y: props.h/2, align: "right"}

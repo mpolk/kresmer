@@ -33,6 +33,7 @@ export default abstract class NetworkElementClass {
         exceptProps?: string[],
         baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,
+        functions?: Functions,
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,
@@ -68,6 +69,7 @@ export default abstract class NetworkElementClass {
         }//if
         this.baseClassPropBindings = params.baseClassPropBindings;
         this.computedProps = params.computedProps;
+        this.functions = params.functions;
         this.defs = params.defs;
         this.style = params.style;
         this.category = params.category;
@@ -87,8 +89,10 @@ export default abstract class NetworkElementClass {
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */
     readonly props: NetworkElementClassProps;
-    /** Computed props (aka just computed) definition of the Vue-component for this class */
+    /** Computed props (aka just "computed") definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
+    /** Functions associated with this class (also sometimes called "methods") */
+    readonly functions?: Functions;
     /** SVG Defs for this class */
     readonly defs?: Template;
     /** CSS styles defined in this class */
@@ -120,6 +124,14 @@ export interface ComputedProp {
 
 /** Network Component computed props - translate to the common Vue computed properties */
 export type ComputedProps = Record<string, ComputedProp>;
+
+export type FunctionDescriptor = {
+    name: string,
+    params: string[],
+    body: string
+}//FunctionDescriptor
+
+export type Functions = Record<string, FunctionDescriptor>;
 
 export enum NetworkElementPropCategory {
     Hidden=1,

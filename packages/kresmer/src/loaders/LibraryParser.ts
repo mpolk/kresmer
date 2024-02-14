@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import NetworkElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps } from "../NetworkElementClass";
+import NetworkElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps, Functions } from "../NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElementClass";
@@ -112,10 +112,13 @@ export default class LibraryParser {
         let exceptProps: string[] | undefined;
         let computedProps: ComputedProps = {};
         let exceptCProps: string[] | undefined;
+        let functions: Functions = {};
+        let exceptFunctions: string[] | undefined;
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let propsBaseClasses: NetworkComponentClass[] | undefined;
         let cPropsBaseClasses: NetworkComponentClass[] | undefined;
+        let functionsBaseClasses: NetworkComponentClass[] | undefined;
         let styleBaseClasses: NetworkComponentClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -139,6 +142,14 @@ export default class LibraryParser {
                         cPropsBaseClasses = cPropsBaseClasses ? [baseClass, ...cPropsBaseClasses] : [baseClass];
                     }//if
                     computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
+                    break;
+                case "functions":
+                    functionsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
+                    exceptFunctions = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !functionsBaseClasses?.includes(baseClass)) {
+                        functionsBaseClasses = functionsBaseClasses ? [baseClass, ...functionsBaseClasses] : [baseClass];
+                    }//if
+                    functions = this.parseFunctions(child, functionsBaseClasses, exceptFunctions);
                     break;
                 case "defs":
                     defs = child;
@@ -170,7 +181,7 @@ export default class LibraryParser {
 
         return new NetworkComponentClass(className, {baseClass, baseClassPropBindings, baseClassChildNodes, 
                                                      styleBaseClasses, propsBaseClasses, template, 
-                                                     props, exceptProps, computedProps, defs, 
+                                                     props, exceptProps, computedProps, functions, defs, 
                                                      style, defaultContent, category});
     }//parseComponentClassNode
 
@@ -186,12 +197,15 @@ export default class LibraryParser {
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
         let computedProps: ComputedProps = {};
+        let functions: Functions = {};
+        let exceptFunctions: string[] | undefined;
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let baseClass: NetworkLinkClass | undefined;
         let baseClassPropBindings: NetworkElementProps | undefined;
         let propsBaseClasses: NetworkLinkClass[] | undefined;
         let cPropsBaseClasses: NetworkLinkClass[] | undefined;
+        let functionsBaseClasses: NetworkLinkClass[] | undefined;
         let styleBaseClasses: NetworkLinkClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -212,6 +226,14 @@ export default class LibraryParser {
                     }//if
                     computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
                     break;
+                case "functions":
+                    functionsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
+                    exceptFunctions = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !functionsBaseClasses?.includes(baseClass)) {
+                        functionsBaseClasses = functionsBaseClasses ? [baseClass, ...functionsBaseClasses] : [baseClass];
+                    }//if
+                    functions = this.parseFunctions(child, functionsBaseClasses, exceptFunctions);
+                    break;
                 case "defs":
                     defs = child;
                     break;
@@ -231,7 +253,7 @@ export default class LibraryParser {
 
         const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
         const linkClass = new ctor(className, {baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
-                                               baseClassPropBindings, computedProps, defs, style, category});
+                                               baseClassPropBindings, computedProps, functions, defs, style, category});
         return linkClass;
     }//parseLinkClassNode
 
@@ -448,6 +470,42 @@ export default class LibraryParser {
 
         return computedProps;
     }//parseComputedProps
+
+
+    private parseFunctions(node: Element, baseClasses: NetworkElementClass[]|undefined, except: string[])
+    {
+        const functions: Functions = {};
+        baseClasses?.forEach(baseClass => {
+            if (baseClass.functions) {
+                Object.entries(baseClass.functions).filter(func => !except.includes(func[0]))
+                    .forEach(func => functions[func[0]] = func[1]);
+            }//if
+        });
+
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "function": {
+                    const name = child.getAttribute("name");
+                    if (!name) {
+                        throw new LibraryParsingException("Function without the name",
+                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                    }//if
+                    const body = child.textContent?.trim();
+                    if (!body) {
+                        throw new LibraryParsingException("Function without the body",
+                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                    }//if
+                    const params = (child.getAttribute("params") ?? "").split(/, */);
+                    const func = {name, params, body};
+                    functions[name] = func;
+                    break;
+                }
+            }//switch
+        }//for
+
+        return functions;
+    }//parseFunctions
 
 
     private parseCSS(css: string, baseClasses?: NetworkElementClass[])

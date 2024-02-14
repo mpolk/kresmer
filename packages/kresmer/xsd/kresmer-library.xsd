@@ -27,6 +27,7 @@
                                 <xs:element name="template" minOccurs="0" type="outermost-template"/>
                                 <xs:element ref="props" minOccurs="0"/>
                                 <xs:element ref="computed-props" minOccurs="0"/>
+                                <xs:element ref="functions" minOccurs="0"/>
                                 <xs:element ref="defs" minOccurs="0"/>
                                 <xs:element ref="style" minOccurs="0"/>
                             </xs:all>
@@ -59,6 +60,7 @@
             <xs:element ref="extends" minOccurs="0" />
             <xs:element ref="props" minOccurs="0"/>
             <xs:element ref="computed-props" minOccurs="0"/>
+            <xs:element ref="functions" minOccurs="0"/>
             <xs:element ref="defs" minOccurs="0"/>
             <xs:element ref="style" minOccurs="0"/>
         </xs:all>
@@ -420,7 +422,7 @@
         </xs:complexType>
     </xs:element>
 
-    <!-- Computed component props (translated to Vue component props) -->
+    <!-- Component or link computed props (translated to Vue computed props) -->
     <xs:element name="computed-props">
         <xs:complexType>
             <xs:sequence>
@@ -429,6 +431,26 @@
                         <xs:simpleContent>
                             <xs:extension base="xs:string">
                                 <xs:attribute name="name" use="required" />
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+            <xs:attribute name="extend"/>
+            <xs:attribute name="except"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Functions associated with a component or link class (also sometimes called "methods") -->
+    <xs:element name="functions">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="function" minOccurs="0" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="name" use="required" />
+                                <xs:attribute name="params" />
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>

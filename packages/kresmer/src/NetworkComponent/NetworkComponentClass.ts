@@ -9,7 +9,7 @@
 
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import { ComputedProps, NetworkElementClassProps } from "../NetworkElementClass";
+import { ComputedProps, Functions, NetworkElementClassProps } from "../NetworkElementClass";
 import NetworkElementClass from "../NetworkElementClass";
 import { NetworkElementProps } from "../loaders/DrawingParser";
 
@@ -35,6 +35,7 @@ export default class NetworkComponentClass extends NetworkElementClass {
         baseClassChildNodes?: NodeList,
         baseClassPropBindings?: NetworkElementProps,
         computedProps?: ComputedProps,
+        functions?: Functions,
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,
