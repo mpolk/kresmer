@@ -246,17 +246,17 @@
             </computed-prop>
             <computed-prop name="entrW">Math.min(computedProps.entrStep1, computedProps.entrStep2)/4</computed-prop>
             <computed-prop name="bldNumbPos">
-                props.buildingNumberPosition === "nw"  ? {x: props.w*0.02, y: -props.h*0.98} :
-                props.buildingNumberPosition === "n1"  ? {x: props.w1/2, y: -props.h*0.98} :
+                props.buildingNumberPosition === "nw"  ? {x: props.w*0.02, y: -props.h + props.h2*0.02} :
+                props.buildingNumberPosition === "n1"  ? {x: props.w1/2, y: -props.h + props.h2*0.02} :
                 props.buildingNumberPosition === "n2"  ? {x: props.w/2, y: -props.h2*0.98} :
-                props.buildingNumberPosition === "ne1" ? {x: props.w1*0.98, y: -props.h*0.98} :
+                props.buildingNumberPosition === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02} :
                 props.buildingNumberPosition === "ne2" ? {x: props.w*0.98, y: -props.h2*0.98} :
                 props.buildingNumberPosition === "e1"  ? {x: props.w1*0.98, y: -(props.h+props.h2)/2} :
                 props.buildingNumberPosition === "e2"  ? {x: props.w*0.98, y: -props.h2/2} :
-                props.buildingNumberPosition === "se"  ? {x: props.w*0.98, y: props.h*0.98} :
-                props.buildingNumberPosition === "s"   ? {x: props.w/2,    y: props.h*0.98} :
-                props.buildingNumberPosition === "sw"  ? {x: props.w*0.02, y: props.h*0.98} :
-                props.buildingNumberPosition === "w"   ? {x: props.w*0.02, y: props.h/2} :
+                props.buildingNumberPosition === "se"  ? {x: props.w*0.98, y: -props.h2*0.02} :
+                props.buildingNumberPosition === "s"   ? {x: props.w/2,    y: -props.h2*0.02} :
+                props.buildingNumberPosition === "sw"  ? {x: props.w*0.02, y: -props.h2*0.02} :
+                props.buildingNumberPosition === "w"   ? {x: props.w*0.02, y: -props.h/2} :
                 props.buildingNumberPosition === "c1"  ? {x: props.w1/2, y: -props.h/2} :
                 props.buildingNumberPosition === "c2"  ? {x: props.w/2, y: -props.h2/2} :
                     {x: props.w1/2, y: -props.h2/2}
