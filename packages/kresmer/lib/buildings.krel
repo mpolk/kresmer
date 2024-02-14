@@ -217,7 +217,7 @@
             </template>
             <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" 
                 v-bind:nFloors="nFloors" v-bind:roof-shape="roofShape"/>
-            <text v-bind="bldNumbPos" class="building number" v-bind:class="{[buildingNumberPosition]: true}" v-bind:font-size="numberFontSize">
+            <text v-bind="bldNumbPos" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="-h" fixed-end="1"/>
@@ -238,20 +238,20 @@
         </props>
         <functions>
             <function name="labelPos" params="posCode">
-                return posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, textAnchor: "start",  dominantBaseline: "text-before-edge"} :
-                       posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, textAnchor: "middle", dominantBaseline: "text-before-edge"} :
-                       posCode === "n2"  ? {x: props.w/2,     y: -props.h2*0.98,           textAnchor: "middle", dominantBaseline: "text-before-edge"} :
-                       posCode === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02, textAnchor: "end",    dominantBaseline: "text-before-edge"} :
-                       posCode === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98,           textAnchor: "end",    dominantBaseline: "text-before-edge"} :
-                       posCode === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2,  textAnchor: "end",    dominantBaseline: "central"} :
-                       posCode === "e2"  ? {x: props.w*0.98,  y: -props.h2/2,              textAnchor: "end",    dominantBaseline: "central"} :
-                       posCode === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02,           textAnchor: "end",    dominantBaseline: "text-after-edge"} :
-                       posCode === "s"   ? {x: props.w/2,     y: -props.h2*0.02,           textAnchor: "middle", dominantBaseline: "text-after-edge"} :
-                       posCode === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02,           textAnchor: "start",  dominantBaseline: "text-after-edge"} :
-                       posCode === "w"   ? {x: props.w*0.02,  y: -props.h/2,               textAnchor: "start",  dominantBaseline: "middle"} :
-                       posCode === "c1"  ? {x: props.w1/2,    y: -props.h/2,               textAnchor: "middle", dominantBaseline: "middle"} :
-                       posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              textAnchor: "middle", dominantBaseline: "middle"} :
-                                           {x: props.w1/2,    y: -props.h2/2,              textAnchor: "middle", dominantBaseline: "middle"};
+                return posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, "text-anchor": "start",  "dominant-baseline": "text-before-edge"} :
+                       posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, "text-anchor": "middle", "dominant-baseline": "text-before-edge"} :
+                       posCode === "n2"  ? {x: props.w/2,     y: -props.h2*0.98,           "text-anchor": "middle", "dominant-baseline": "text-before-edge"} :
+                       posCode === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02, "text-anchor": "end",    "dominant-baseline": "text-before-edge"} :
+                       posCode === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98,           "text-anchor": "end",    "dominant-baseline": "text-before-edge"} :
+                       posCode === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2,  "text-anchor": "end",    "dominant-baseline": "central"} :
+                       posCode === "e2"  ? {x: props.w*0.98,  y: -props.h2/2,              "text-anchor": "end",    "dominant-baseline": "central"} :
+                       posCode === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02,           "text-anchor": "end",    "dominant-baseline": "text-after-edge"} :
+                       posCode === "s"   ? {x: props.w/2,     y: -props.h2*0.02,           "text-anchor": "middle", "dominant-baseline": "text-after-edge"} :
+                       posCode === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02,           "text-anchor": "start",  "dominant-baseline": "text-after-edge"} :
+                       posCode === "w"   ? {x: props.w*0.02,  y: -props.h/2,               "text-anchor": "start",  "dominant-baseline": "central"} :
+                       posCode === "c1"  ? {x: props.w1/2,    y: -props.h/2,               "text-anchor": "middle", "dominant-baseline": "central"} :
+                       posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              "text-anchor": "middle", "dominant-baseline": "central"} :
+                                           {x: props.w1/2,    y: -props.h2/2,              "text-anchor": "middle", "dominant-baseline": "central"};
             </function>
         </functions>
         <computed-props>
