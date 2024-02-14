@@ -238,20 +238,20 @@
         </props>
         <functions>
             <function name="labelPos" params="posCode">
-                return posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, textAnchor: "start"} :
-                       posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, textAnchor: "middle"} :
-                       posCode === "n2"  ? {x: props.w/2,     y: -props.h2*0.98,           textAnchor: "middle"} :
-                       posCode === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02, textAnchor: "end"} :
-                       posCode === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98,           textAnchor: "end"} :
-                       posCode === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2,  textAnchor: "end"} :
-                       posCode === "e2"  ? {x: props.w*0.98,  y: -props.h2/2,              textAnchor: "end"} :
-                       posCode === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02,           textAnchor: "end"} :
-                       posCode === "s"   ? {x: props.w/2,     y: -props.h2*0.02,           textAnchor: "middle"} :
-                       posCode === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02,           textAnchor: "start"} :
-                       posCode === "w"   ? {x: props.w*0.02,  y: -props.h/2,               textAnchor: "start"} :
-                       posCode === "c1"  ? {x: props.w1/2,    y: -props.h/2,               textAnchor: "middle"} :
-                       posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              textAnchor: "middle"} :
-                                           {x: props.w1/2,    y: -props.h2/2,              textAnchor: "middle"};
+                return posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, textAnchor: "start",  dominantBaseline: "text-before-edge"} :
+                       posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, textAnchor: "middle", dominantBaseline: "text-before-edge"} :
+                       posCode === "n2"  ? {x: props.w/2,     y: -props.h2*0.98,           textAnchor: "middle", dominantBaseline: "text-before-edge"} :
+                       posCode === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02, textAnchor: "end",    dominantBaseline: "text-before-edge"} :
+                       posCode === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98,           textAnchor: "end",    dominantBaseline: "text-before-edge"} :
+                       posCode === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2,  textAnchor: "end",    dominantBaseline: "central"} :
+                       posCode === "e2"  ? {x: props.w*0.98,  y: -props.h2/2,              textAnchor: "end",    dominantBaseline: "central"} :
+                       posCode === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02,           textAnchor: "end",    dominantBaseline: "text-after-edge"} :
+                       posCode === "s"   ? {x: props.w/2,     y: -props.h2*0.02,           textAnchor: "middle", dominantBaseline: "text-after-edge"} :
+                       posCode === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02,           textAnchor: "start",  dominantBaseline: "text-after-edge"} :
+                       posCode === "w"   ? {x: props.w*0.02,  y: -props.h/2,               textAnchor: "start",  dominantBaseline: "middle"} :
+                       posCode === "c1"  ? {x: props.w1/2,    y: -props.h/2,               textAnchor: "middle", dominantBaseline: "middle"} :
+                       posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              textAnchor: "middle", dominantBaseline: "middle"} :
+                                           {x: props.w1/2,    y: -props.h2/2,              textAnchor: "middle", dominantBaseline: "middle"};
             </function>
         </functions>
         <computed-props>
