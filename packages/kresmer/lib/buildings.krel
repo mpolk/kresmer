@@ -35,11 +35,12 @@
             .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }
             .building.wood { fill: #fad46b }
             .building.number { fill: #393432; stroke: none; }
-            .building.number.c  { text-anchor: middle; dominant-baseline: central; }
+            .building.number.c, .building.number.c1, .building.number.c2, .building.number.m 
+                { text-anchor: middle; dominant-baseline: central; }
             .building.number.nw { text-anchor: start;  dominant-baseline: text-before-edge; }
-            .building.number.n  { text-anchor: middle; dominant-baseline: text-before-edge; }
-            .building.number.ne { text-anchor: end;    dominant-baseline: text-before-edge; }
-            .building.number.e  { text-anchor: end;    dominant-baseline: central; }
+            .building.number.n, .building.number.n1, .building.number.n2 { text-anchor: middle; dominant-baseline: text-before-edge; }
+            .building.number.ne, .building.number.ne1, .building.number.ne2 { text-anchor: end; dominant-baseline: text-before-edge; }
+            .building.number.e, .building.number.e1, .building.number.e2 { text-anchor: end;    dominant-baseline: central; }
             .building.number.se { text-anchor: end;    dominant-baseline: text-after-edge; }
             .building.number.s  { text-anchor: middle; dominant-baseline: text-after-edge; }
             .building.number.sw { text-anchor: start;  dominant-baseline: text-after-edge; }
@@ -167,11 +168,11 @@
                 props.buildingNumberPosition === "s"  ? {x: props.w/2,    y: props.h*0.98} :
                 props.buildingNumberPosition === "sw" ? {x: props.w*0.02, y: props.h*0.98} :
                 props.buildingNumberPosition === "w"  ? {x: props.w*0.02, y: props.h/2} :
-                {x: props.w/2, y: props.h/2}
+                    {x: props.w/2, y: props.h/2}
             </computed-prop>
             <computed-prop name="nFloorsPos">
                 props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
-                                                       {x: props.w*0.98, y: props.h/2, align: "right"}
+                                                {x: props.w*0.98, y: props.h/2, align: "right"}
             </computed-prop>
             <computed-prop name="numberFontSize">props.h/3</computed-prop>
         </computed-props>
@@ -227,12 +228,12 @@
         <props>
             <prop name="h" type="Number" default="200"/>
             <prop name="w" type="Number" default="200"/>
-            <prop name="h2" type="Number" default="50" category="Construction" description="Visual height of the horizontal part"/>
-            <prop name="w1" type="Number" default="50" category="Construction" description="Visual width of the vertical part"/>
+            <prop name="h2" type="Number" default="50" category="Geometry" description="Visual height of the horizontal part"/>
+            <prop name="w1" type="Number" default="50" category="Geometry" description="Visual width of the vertical part"/>
             <prop name="nEntrances1" type="Number" category="Construction" description="The number of entrances in the vertical part" />
             <prop name="nEntrances2" type="Number" category="Construction" description="The number of entrances in the horizontal part" />
             <prop name="entrancesLayout" type="String" choices="inside-cw, inside-ccw, outside-cw, outside-ccw" default="inside-cw" />
-            <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
+            <prop name="buildingNumberPosition" type="String" choices="m, c1, c2, nw, n1, n2, ne1, ne2, e1, e2, se, s, sw, w" default="m"/>
             <prop name="nFloorsPosition" type="String" choices="w, e" default="w"/>
         </props>
         <computed-props>
@@ -243,23 +244,28 @@
             <computed-prop name="entrStep2">
                 props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
             </computed-prop>
-            <computed-prop name="entrW">computedProps.entrStep2/4</computed-prop>
+            <computed-prop name="entrW">Math.min(computedProps.entrStep1, computedProps.entrStep2)/4</computed-prop>
             <computed-prop name="bldNumbPos">
-                props.buildingNumberPosition === "nw" ? {x: props.w*0.02, y: props.h*0.02} :
-                props.buildingNumberPosition === "n"  ? {x: props.w/2, y: props.h*0.02} :
-                props.buildingNumberPosition === "ne" ? {x: props.w*0.98, y: props.h*0.02} :
-                props.buildingNumberPosition === "e"  ? {x: props.w*0.98, y: props.h/2} :
-                props.buildingNumberPosition === "se" ? {x: props.w*0.98, y: props.h*0.98} :
-                props.buildingNumberPosition === "s"  ? {x: props.w/2,    y: props.h*0.98} :
-                props.buildingNumberPosition === "sw" ? {x: props.w*0.02, y: props.h*0.98} :
-                props.buildingNumberPosition === "w"  ? {x: props.w*0.02, y: props.h/2} :
-                {x: props.w/2, y: props.h/2}
+                props.buildingNumberPosition === "nw"  ? {x: props.w*0.02, y: -props.h*0.98} :
+                props.buildingNumberPosition === "n1"  ? {x: props.w1/2, y: -props.h*0.98} :
+                props.buildingNumberPosition === "n2"  ? {x: props.w/2, y: -props.h2*0.98} :
+                props.buildingNumberPosition === "ne1" ? {x: props.w1*0.98, y: -props.h*0.98} :
+                props.buildingNumberPosition === "ne2" ? {x: props.w*0.98, y: -props.h2*0.98} :
+                props.buildingNumberPosition === "e1"  ? {x: props.w1*0.98, y: -(props.h+props.h2)/2} :
+                props.buildingNumberPosition === "e2"  ? {x: props.w*0.98, y: -props.h2/2} :
+                props.buildingNumberPosition === "se"  ? {x: props.w*0.98, y: props.h*0.98} :
+                props.buildingNumberPosition === "s"   ? {x: props.w/2,    y: props.h*0.98} :
+                props.buildingNumberPosition === "sw"  ? {x: props.w*0.02, y: props.h*0.98} :
+                props.buildingNumberPosition === "w"   ? {x: props.w*0.02, y: props.h/2} :
+                props.buildingNumberPosition === "c1"  ? {x: props.w1/2, y: -props.h/2} :
+                props.buildingNumberPosition === "c2"  ? {x: props.w/2, y: -props.h2/2} :
+                    {x: props.w1/2, y: -props.h2/2}
             </computed-prop>
             <computed-prop name="nFloorsPos">
                 props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
-                                                       {x: props.w*0.98, y: props.h/2, align: "right"}
+                                                {x: props.w*0.98, y: props.h/2, align: "right"}
             </computed-prop>
-            <computed-prop name="numberFontSize">props.h/3</computed-prop>
+            <computed-prop name="numberFontSize">props.h2/3</computed-prop>
         </computed-props>
     </component-class>
 

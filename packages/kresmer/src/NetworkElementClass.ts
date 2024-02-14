@@ -124,12 +124,12 @@ export type ComputedProps = Record<string, ComputedProp>;
 export enum NetworkElementPropCategory {
     Hidden=1,
     Hardware, 
+    Location, 
+    Construction, 
     Optics,
     Network, 
     Geometry,  
     Presentation, 
-    Construction, 
-    Location, 
 }//NetworkElementPropCategory
 
 export type NetworkElementClassProp<T=unknown> = Prop<T> & 
