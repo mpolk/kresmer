@@ -350,16 +350,16 @@ export default class Kresmer extends KresmerEventHooks {
                     computedProps[name] = computed(eval(`() => (${body})`));
                 }//for
 
-                const f: Record<string, Function> = {};
+                const functions: Record<string, Function> = {};
+                const fn = functions; // an alias for more convenient usage
                 for (const name in componentClass.functions) {
                     const params = componentClass.functions[name].params;
                     const body = componentClass.functions[name].body
                         .replaceAll(/(computedProps\.\w+)(?!\w*\.value)/g, "$1.value");
-                    eval(`f.${name} = function ${name}(${params.join(",")}) {${body}}`);
+                    eval(`functions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
-                const functions = f;
 
-                return {...computedProps, ...functions};
+                return {...computedProps, ...fn};
             },
             template: componentClass.template,
             props: {
