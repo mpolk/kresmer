@@ -217,7 +217,7 @@
             </template>
             <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" 
                 v-bind:nFloors="nFloors" v-bind:roof-shape="roofShape"/>
-            <text v-bind="bldNumbPos" class="building number" v-bind:font-size="numberFontSize">
+            <text v-bind="labelPos(buildingNumberPosition)" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="-h" fixed-end="1"/>
@@ -263,7 +263,6 @@
                 props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
             </computed-prop>
             <computed-prop name="entrW">Math.min(computedProps.entrStep1, computedProps.entrStep2)/4</computed-prop>
-            <computed-prop name="bldNumbPos">f.labelPos(props.buildingNumberPosition)</computed-prop>
             <computed-prop name="nFloorsPos">
                 props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
                                                 {x: props.w*0.98, y: props.h/2, align: "right"}
