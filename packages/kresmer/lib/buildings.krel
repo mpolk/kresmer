@@ -31,15 +31,15 @@
         <functions>
             <function name="addTextAttrs" params="pos">
                 switch (pos.align) {
-                    case "left": result["text-anchor"] = "start"; break;
-                    case "right": result["text-anchor"] = "end"; break;
-                    case "middle": result["text-anchor"] = "middle"; break;
+                    case "left": pos["text-anchor"] = "start"; break;
+                    case "right": pos["text-anchor"] = "end"; break;
+                    case "middle": pos["text-anchor"] = "middle"; break;
                 }//switch
 
                 switch (pos.valign) {
-                    case "top": result["dominant-baseline"] = "text-before-edge"; break;
-                    case "middle": result["dominant-baseline"] = "central"; break;
-                    case "bottom": result["dominant-baseline"] = "text-after-edge"; break;
+                    case "top": pos["dominant-baseline"] = "text-before-edge"; break;
+                    case "middle": pos["dominant-baseline"] = "central"; break;
+                    case "bottom": pos["dominant-baseline"] = "text-after-edge"; break;
                 }//switch
 
                 return pos;
@@ -291,19 +291,7 @@
                     posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              align: "middle", valign: "middle"} :
                                         {x: props.w1/2,    y: -props.h2/2,              align: "middle", valign: "middle"};
 
-                switch (result.align) {
-                    case "left": result["text-anchor"] = "start"; break;
-                    case "right": result["text-anchor"] = "end"; break;
-                    case "middle": result["text-anchor"] = "middle"; break;
-                }//switch
-
-                switch (result.valign) {
-                    case "top": result["dominant-baseline"] = "text-before-edge"; break;
-                    case "middle": result["dominant-baseline"] = "central"; break;
-                    case "bottom": result["dominant-baseline"] = "text-after-edge"; break;
-                }//switch
-
-                return result;
+                return fn.addTextAttrs(result);
             </function>
         </functions>
         <computed-props>
