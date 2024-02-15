@@ -111,10 +111,10 @@
         <template>
             <g class="n-floors-label">
                 <polyline v-if="roofShape === 'pitched'" 
-                    v-bind:points="`${x1},${y1+h*0.1} ${(x1 + x2)/2},${y1-h*0.2} ${x2},${y1+h*0.1}`"/>
+                    v-bind:points="`${x1},${y1+h*0.1} ${(x1 + x2)/2},${y1-h*0.1} ${x2},${y1+h*0.1}`"/>
                 <line v-else="" v-bind:x1="x1" v-bind:y1="y1" v-bind:x2="x2" v-bind:y2="y1"/>
                 <line v-bind:x1="x1" v-bind:y1="y2" v-bind:x2="x2" v-bind:y2="y2"/>
-                <text v-bind:x="(x1 + x2)/2" v-bind:y="(y1 + y2)/2" v-bind:font-size="h*0.75">{{nFloors}}</text>
+                <text v-bind:x="(x1 + x2)/2" v-bind:y="(y1*0.9 + y2*1.1)/2" v-bind:font-size="h*0.75">{{nFloors}}</text>
             </g>
         </template>
         <props>
@@ -129,8 +129,8 @@
             <computed-prop name="w">props.w ?? props.h/1.5</computed-prop>
             <computed-prop name="x1">props.align === 'middle' ? -computedProps.w/2 : 0</computed-prop>
             <computed-prop name="x2">props.align === 'right' ? -computedProps.w : props.align === 'left' ? computedProps.w : computedProps.w/2</computed-prop>
-            <computed-prop name="y1">props.valign === 'top' ? 0 : props.valign === 'middle' ? -props.h/2 : -props.h</computed-prop>
-            <computed-prop name="y2">props.valign === 'top' ? props.h : props.valign === 'middle' ? props.h/2 : 0</computed-prop>
+            <computed-prop name="y1">props.valign === 'top' ? 0 : props.valign === 'middle' ? -props.h*0.4 : -props.h*0.8</computed-prop>
+            <computed-prop name="y2">props.valign === 'top' ? props.h*0.8 : props.valign === 'middle' ? props.h*0.4 : 0</computed-prop>
         </computed-props>
         <style>
             .n-floors-label { fill: white }
@@ -165,7 +165,7 @@
             </template>
             <Kre:NFloorsLabel v-if="nFloors" v-bind="labelPos(nFloorsPosition)" v-bind:h="h/3" 
                 v-bind:n-floors="nFloors" v-bind:roof-shape="roofShape"/>
-            <text v-bind="bldNumbPos" class="building number" v-bind:class="{[buildingNumberPosition]: true}" v-bind:font-size="numberFontSize">
+            <text v-bind="labelPos(buildingNumberPosition)" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
             <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
@@ -196,21 +196,6 @@
         <computed-props>
             <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
             <computed-prop name="entrW">computedProps.entrStep/4</computed-prop>
-            <computed-prop name="bldNumbPos">
-                props.buildingNumberPosition === "nw" ? {x: props.w*0.02, y: props.h*0.02} :
-                props.buildingNumberPosition === "n"  ? {x: props.w/2, y: props.h*0.02} :
-                props.buildingNumberPosition === "ne" ? {x: props.w*0.98, y: props.h*0.02} :
-                props.buildingNumberPosition === "e"  ? {x: props.w*0.98, y: props.h/2} :
-                props.buildingNumberPosition === "se" ? {x: props.w*0.98, y: props.h*0.98} :
-                props.buildingNumberPosition === "s"  ? {x: props.w/2,    y: props.h*0.98} :
-                props.buildingNumberPosition === "sw" ? {x: props.w*0.02, y: props.h*0.98} :
-                props.buildingNumberPosition === "w"  ? {x: props.w*0.02, y: props.h/2} :
-                    {x: props.w/2, y: props.h/2}
-            </computed-prop>
-            <computed-prop name="nFloorsPos">
-                props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
-                                                {x: props.w*0.98, y: props.h/2, align: "right"}
-            </computed-prop>
             <computed-prop name="numberFontSize">props.h/3</computed-prop>
         </computed-props>
     </component-class>
