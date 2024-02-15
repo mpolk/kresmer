@@ -28,6 +28,23 @@
             <prop name="nFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
             <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
         </props>
+        <functions>
+            <function name="addTextAttrs" params="pos">
+                switch (pos.align) {
+                    case "left": result["text-anchor"] = "start"; break;
+                    case "right": result["text-anchor"] = "end"; break;
+                    case "middle": result["text-anchor"] = "middle"; break;
+                }//switch
+
+                switch (pos.valign) {
+                    case "top": result["dominant-baseline"] = "text-before-edge"; break;
+                    case "middle": result["dominant-baseline"] = "central"; break;
+                    case "bottom": result["dominant-baseline"] = "text-after-edge"; break;
+                }//switch
+
+                return pos;
+            </function>
+        </functions>
         <computed-props>
             <computed-prop name="title">$streetAddress({street: props.street, buildingNumber: props.buildingNumber})</computed-prop>
         </computed-props>
@@ -94,10 +111,10 @@
         <template>
             <g class="n-floors-label">
                 <polyline v-if="roofShape === 'pitched'" 
-                    v-bind:points="`0,${-h*0.4} ${align === 'right' ? -w/2 : w/2},${-h*0.7} ${align === 'right' ? -w : w},${-h*0.4}`"/>
-                <line v-else="" x1="0" v-bind:y1="-h/2" v-bind:x2="align === 'right' ? -w : w" v-bind:y2="-h/2"/>
-                <line x1="0" v-bind:y1="h/2" v-bind:x2="align === 'right' ? -w : w" v-bind:y2="h/2"/>
-                <text v-bind:x="align === 'right' ? -w/2 : w/2" v-bind:y="0" v-bind:font-size="h*0.75">{{nFloors}}</text>
+                    v-bind:points="`${x1},${y1+h*0.1} ${(x1 + x2)/2},${y1-h*0.2} ${x2},${y1+h*0.1}`"/>
+                <line v-else="" v-bind:x1="x1" v-bind:y1="y1" v-bind:x2="x2" v-bind:y2="y1"/>
+                <line v-bind:x1="x1" v-bind:y1="y2" v-bind:x2="x2" v-bind:y2="y2"/>
+                <text v-bind:x="(x1 + x2)/2" v-bind:y="(y1 + y2)/2" v-bind:font-size="h*0.75">{{nFloors}}</text>
             </g>
         </template>
         <props>
@@ -105,10 +122,15 @@
             <prop name="roofShape" type="String" />
             <prop name="w" type="Number" />
             <prop name="h" type="Number" required="true" />
-            <prop name="align" type="String" choices="left, right" default="left"/>
+            <prop name="align" type="String" choices="left, middle, right" default="left" />
+            <prop name="valign" type="String" choices="top, middle, bottom" default="bottom" />
         </props>
         <computed-props>
             <computed-prop name="w">props.w ?? props.h/1.5</computed-prop>
+            <computed-prop name="x1">props.align === 'middle' ? -computedProps.w/2 : 0</computed-prop>
+            <computed-prop name="x2">props.align === 'right' ? -computedProps.w : props.align === 'left' ? computedProps.w : computedProps.w/2</computed-prop>
+            <computed-prop name="y1">props.valign === 'top' ? 0 : props.valign === 'middle' ? -props.h/2 : -props.h</computed-prop>
+            <computed-prop name="y2">props.valign === 'top' ? props.h : props.valign === 'middle' ? props.h/2 : 0</computed-prop>
         </computed-props>
         <style>
             .n-floors-label { fill: white }
@@ -141,8 +163,8 @@
             <template v-else-if="entrancesLayout === 'top-cw'">
                 <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
             </template>
-            <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" 
-                v-bind:nFloors="nFloors" v-bind:roof-shape="roofShape"/>
+            <Kre:NFloorsLabel v-if="nFloors" v-bind="labelPos(nFloorsPosition)" v-bind:h="h/3" 
+                v-bind:n-floors="nFloors" v-bind:roof-shape="roofShape"/>
             <text v-bind="bldNumbPos" class="building number" v-bind:class="{[buildingNumberPosition]: true}" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
@@ -154,8 +176,23 @@
             <prop name="nEntrances" type="Number" category="Construction" description="The number of entrances" />
             <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
             <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
-            <prop name="nFloorsPosition" type="String" choices="w, e" default="w"/>
+            <prop name="nFloorsPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="w"/>
         </props>
+        <functions>
+            <function name="labelPos" params="posCode">
+                const result = 
+                    posCode === "nw" ? {x: props.w*0.02, y: props.h*0.02, align: "left",   valign: "top"} :
+                    posCode === "n"  ? {x: props.w/2,    y: props.h*0.02, align: "middle", valign: "top"} :
+                    posCode === "ne" ? {x: props.w*0.98, y: props.h*0.02, align: "right",  valign: "top"} :
+                    posCode === "e"  ? {x: props.w*0.98, y: props.h/2,    align: "right",  valign: "middle"} :
+                    posCode === "se" ? {x: props.w*0.98, y: props.h*0.98, align: "right",  valign: "bottom"} :
+                    posCode === "s"  ? {x: props.w/2,    y: props.h*0.98, align: "middle", valign: "bottom"} :
+                    posCode === "sw" ? {x: props.w*0.02, y: props.h*0.98, align: "left",   valign: "bottom"} :
+                    posCode === "w"  ? {x: props.w*0.02, y: props.h/2,    align: "left",   valign: "middle"} :
+                                       {x: props.w/2,    y: props.h/2,    align: "middle", valign: "middle"};
+                return fn.addTextAttrs(result);
+            </function>
+        </functions>
         <computed-props>
             <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
             <computed-prop name="entrW">computedProps.entrStep/4</computed-prop>
@@ -215,8 +252,8 @@
                 <Kre:Entrance v-for="i in nEntrances2" v-bind:y="0" v-bind:x="entrStep2 * (i - 0.5)" v-bind:w="entrW" 
                     v-bind:number="nEntrances1 + i" align="bottom"/>
             </template>
-            <Kre:NFloorsLabel v-if="nFloors" v-bind:n-floors="nFloors" v-bind="nFloorsPos" v-bind:h="h/3" 
-                v-bind:nFloors="nFloors" v-bind:roof-shape="roofShape"/>
+            <Kre:NFloorsLabel v-if="nFloors" v-bind="labelPos(nFloorsPosition)" v-bind:h="h2/3" 
+                v-bind:n-floors="nFloors" v-bind:roof-shape="roofShape"/>
             <text v-bind="labelPos(buildingNumberPosition)" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
@@ -234,24 +271,39 @@
             <prop name="nEntrances2" type="Number" category="Construction" description="The number of entrances in the horizontal part" />
             <prop name="entrancesLayout" type="String" choices="inside-cw, inside-ccw, outside-cw, outside-ccw" default="inside-cw" />
             <prop name="buildingNumberPosition" type="String" choices="m, c1, c2, nw, n1, n2, ne1, ne2, e1, e2, se, s, sw, w" default="m"/>
-            <prop name="nFloorsPosition" type="String" choices="w, e" default="w"/>
+            <prop name="nFloorsPosition" type="String" choices="m, c1, c2, nw, n1, n2, ne1, ne2, e1, e2, se, s, sw, w" default="w"/>
         </props>
         <functions>
             <function name="labelPos" params="posCode">
-                return posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, "text-anchor": "start",  "dominant-baseline": "text-before-edge"} :
-                       posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, "text-anchor": "middle", "dominant-baseline": "text-before-edge"} :
-                       posCode === "n2"  ? {x: props.w/2,     y: -props.h2*0.98,           "text-anchor": "middle", "dominant-baseline": "text-before-edge"} :
-                       posCode === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02, "text-anchor": "end",    "dominant-baseline": "text-before-edge"} :
-                       posCode === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98,           "text-anchor": "end",    "dominant-baseline": "text-before-edge"} :
-                       posCode === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2,  "text-anchor": "end",    "dominant-baseline": "central"} :
-                       posCode === "e2"  ? {x: props.w*0.98,  y: -props.h2/2,              "text-anchor": "end",    "dominant-baseline": "central"} :
-                       posCode === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02,           "text-anchor": "end",    "dominant-baseline": "text-after-edge"} :
-                       posCode === "s"   ? {x: props.w/2,     y: -props.h2*0.02,           "text-anchor": "middle", "dominant-baseline": "text-after-edge"} :
-                       posCode === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02,           "text-anchor": "start",  "dominant-baseline": "text-after-edge"} :
-                       posCode === "w"   ? {x: props.w*0.02,  y: -props.h/2,               "text-anchor": "start",  "dominant-baseline": "central"} :
-                       posCode === "c1"  ? {x: props.w1/2,    y: -props.h/2,               "text-anchor": "middle", "dominant-baseline": "central"} :
-                       posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              "text-anchor": "middle", "dominant-baseline": "central"} :
-                                           {x: props.w1/2,    y: -props.h2/2,              "text-anchor": "middle", "dominant-baseline": "central"};
+                const result = 
+                    posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, align: "left",   valign: "top"} :
+                    posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, align: "middle", valign: "top"} :
+                    posCode === "n2"  ? {x: props.w/2,     y: -props.h2*0.98,           align: "middle", valign: "top"} :
+                    posCode === "ne1" ? {x: props.w1*0.98, y: -props.h + props.h2*0.02, align: "right",  valign: "top"} :
+                    posCode === "ne2" ? {x: props.w*0.98,  y: -props.h2*0.98,           align: "right",  valign: "top"} :
+                    posCode === "e1"  ? {x: props.w1*0.98, y: -(props.h + props.h2)/2,  align: "right",  valign: "middle"} :
+                    posCode === "e2"  ? {x: props.w*0.98,  y: -props.h2/2,              align: "right",  valign: "middle"} :
+                    posCode === "se"  ? {x: props.w*0.98,  y: -props.h2*0.02,           align: "right",  valign: "bottom"} :
+                    posCode === "s"   ? {x: props.w/2,     y: -props.h2*0.02,           align: "middle", valign: "bottom"} :
+                    posCode === "sw"  ? {x: props.w*0.02,  y: -props.h2*0.02,           align: "left",   valign: "bottom"} :
+                    posCode === "w"   ? {x: props.w*0.02,  y: -props.h/2,               align: "left",   valign: "middle"} :
+                    posCode === "c1"  ? {x: props.w1/2,    y: -props.h/2,               align: "middle", valign: "middle"} :
+                    posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              align: "middle", valign: "middle"} :
+                                        {x: props.w1/2,    y: -props.h2/2,              align: "middle", valign: "middle"};
+
+                switch (result.align) {
+                    case "left": result["text-anchor"] = "start"; break;
+                    case "right": result["text-anchor"] = "end"; break;
+                    case "middle": result["text-anchor"] = "middle"; break;
+                }//switch
+
+                switch (result.valign) {
+                    case "top": result["dominant-baseline"] = "text-before-edge"; break;
+                    case "middle": result["dominant-baseline"] = "central"; break;
+                    case "bottom": result["dominant-baseline"] = "text-after-edge"; break;
+                }//switch
+
+                return result;
             </function>
         </functions>
         <computed-props>
@@ -263,10 +315,6 @@
                 props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
             </computed-prop>
             <computed-prop name="entrW">Math.min(computedProps.entrStep1, computedProps.entrStep2)/4</computed-prop>
-            <computed-prop name="nFloorsPos">
-                props.nFloorsPosition === "w" ? {x: props.w*0.02, y: props.h/2, align: "left"} :
-                                                {x: props.w*0.98, y: props.h/2, align: "right"}
-            </computed-prop>
             <computed-prop name="numberFontSize">props.h2/3</computed-prop>
         </computed-props>
     </component-class>
