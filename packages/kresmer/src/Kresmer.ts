@@ -338,27 +338,44 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public registerNetworkComponentClass(componentClass: NetworkComponentClass): Kresmer
     {
+
+        function patchBody(body: string) {
+                return body
+                    .replaceAll(/((?:computedProps|cp\$)\.\w+)(?!\w*\.value)/g, "$1.value")
+                    .replaceAll(/(?:super\$)(?!\w*\.value)/g, "super\$.value")
+                    ;
+        }//patchBody
+
         // Register a Vue-component for the class itself
         this.appKresmer.component(componentClass.vueName, 
         {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             setup(props: Record<string, Prop<unknown>>) {
-                const computedPropPattern = /((?:computedProps|\$cp)\.\w+)(?!\w*\.value)/g;
+
                 const computedProps: Record<string, ComputedRef> = {};
                 for (const name in componentClass.computedProps) {
-                    const body = componentClass.computedProps[name].body.replaceAll(computedPropPattern, "$1.value");
+                    const body = patchBody(componentClass.computedProps[name].body);
                     computedProps[name] = computed(eval(`() => (${body})`));
                 }//for
 
                 const functions: Record<string, Function> = {};
                 for (const name in componentClass.functions) {
                     const params = componentClass.functions[name].params;
-                    const body = componentClass.functions[name].body.replaceAll(computedPropPattern, "$1.value");
+                    const body = patchBody(componentClass.functions[name].body);
                     eval(`functions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
-                const $pr = props, $cp = computedProps, $fn = functions; // aliases for more convenient usage outside of tepmlates
 
-                return {...$pr, ...$cp, ...$fn};
+                const superFunctions: Record<string, Function> = {};
+                for (const name in componentClass.baseClass?.functions) {
+                    const params = componentClass.baseClass.functions[name].params;
+                    const body = patchBody(componentClass.baseClass.functions[name].body);
+                    eval(`superFunctions.${name} = function ${name}(${params.join(",")}) {${body}}`);
+                }//for
+
+                const pr$ = props, cp$ = computedProps, fn$ = functions; // aliases for more convenient usage outside of tepmlates
+                const super$ = computed(() => superFunctions);
+
+                return {...pr$, ...cp$, ...fn$, super$};
             },
             template: componentClass.template,
             props: {
