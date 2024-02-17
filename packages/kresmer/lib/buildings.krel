@@ -98,7 +98,7 @@
         <computed-props>
             <computed-prop name="nStairs">4</computed-prop>
             <computed-prop name="lStair">props.h ?? props.w/3</computed-prop>
-            <computed-prop name="fontSize">computedProps.lStair * computedProps.nStairs * 0.75</computed-prop>
+            <computed-prop name="fontSize">$cp.lStair * $cp.nStairs * 0.75</computed-prop>
         </computed-props>
         <style>
             .entrance { fill: #bf6731; stroke: none; }
@@ -127,8 +127,8 @@
         </props>
         <computed-props>
             <computed-prop name="w">props.w ?? props.h/1.5</computed-prop>
-            <computed-prop name="x1">props.align === 'middle' ? -computedProps.w/2 : 0</computed-prop>
-            <computed-prop name="x2">props.align === 'right' ? -computedProps.w : props.align === 'left' ? computedProps.w : computedProps.w/2</computed-prop>
+            <computed-prop name="x1">props.align === 'middle' ? -$cp.w/2 : 0</computed-prop>
+            <computed-prop name="x2">props.align === 'right' ? -$cp.w : props.align === 'left' ? $cp.w : $cp.w/2</computed-prop>
             <computed-prop name="y1">props.valign === 'top' ? 0 : props.valign === 'middle' ? -props.h*0.4 : -props.h*0.8</computed-prop>
             <computed-prop name="y2">props.valign === 'top' ? props.h*0.8 : props.valign === 'middle' ? props.h*0.4 : 0</computed-prop>
         </computed-props>
@@ -190,12 +190,12 @@
                     posCode === "sw" ? {x: props.w*0.02, y: props.h*0.98, align: "left",   valign: "bottom"} :
                     posCode === "w"  ? {x: props.w*0.02, y: props.h/2,    align: "left",   valign: "middle"} :
                                        {x: props.w/2,    y: props.h/2,    align: "middle", valign: "middle"};
-                return fn.addTextAttrs(result);
+                return $fn.addTextAttrs(result);
             </function>
         </functions>
         <computed-props>
             <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
-            <computed-prop name="entrW">computedProps.entrStep/4</computed-prop>
+            <computed-prop name="entrW">$cp.entrStep/4</computed-prop>
             <computed-prop name="numberFontSize">props.h/3</computed-prop>
         </computed-props>
     </component-class>
@@ -276,7 +276,7 @@
                     posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              align: "middle", valign: "middle"} :
                                         {x: props.w1/2,    y: -props.h2/2,              align: "middle", valign: "middle"};
 
-                return fn.addTextAttrs(result);
+                return $fn.addTextAttrs(result);
             </function>
         </functions>
         <computed-props>
@@ -287,7 +287,7 @@
             <computed-prop name="entrStep2">
                 props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
             </computed-prop>
-            <computed-prop name="entrW">Math.min(cp.entrStep1, computedProps.entrStep2)/4</computed-prop>
+            <computed-prop name="entrW">Math.min($cp.entrStep1, $cp.entrStep2)/4</computed-prop>
             <computed-prop name="numberFontSize">props.h2/3</computed-prop>
         </computed-props>
     </component-class>

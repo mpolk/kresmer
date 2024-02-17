@@ -343,24 +343,22 @@ export default class Kresmer extends KresmerEventHooks {
         {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             setup(props: Record<string, Prop<unknown>>) {
+                const computedPropPattern = /((?:computedProps|\$cp)\.\w+)(?!\w*\.value)/g;
                 const computedProps: Record<string, ComputedRef> = {};
                 for (const name in componentClass.computedProps) {
-                    const body = componentClass.computedProps[name].body
-                        .replaceAll(/((?:computedProps|cp)\.\w+)(?!\w*\.value)/g, "$1.value");
+                    const body = componentClass.computedProps[name].body.replaceAll(computedPropPattern, "$1.value");
                     computedProps[name] = computed(eval(`() => (${body})`));
                 }//for
 
                 const functions: Record<string, Function> = {};
-                const fn = functions; // an alias for more convenient usage
                 for (const name in componentClass.functions) {
                     const params = componentClass.functions[name].params;
-                    const body = componentClass.functions[name].body
-                        .replaceAll(/((?:computedProps|cp)\.\w+)(?!\w*\.value)/g, "$1.value");
+                    const body = componentClass.functions[name].body.replaceAll(computedPropPattern, "$1.value");
                     eval(`functions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
-                const cp = computedProps;
+                const $pr = props, $cp = computedProps, $fn = functions; // aliases for more convenient usage outside of tepmlates
 
-                return {...fn, ...cp};
+                return {...$pr, ...$cp, ...$fn};
             },
             template: componentClass.template,
             props: {
