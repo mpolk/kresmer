@@ -287,7 +287,7 @@
             <computed-prop name="entrStep2">
                 props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
             </computed-prop>
-            <computed-prop name="entrW">Math.min(computedProps.entrStep1, computedProps.entrStep2)/4</computed-prop>
+            <computed-prop name="entrW">Math.min(cp.entrStep1, computedProps.entrStep2)/4</computed-prop>
             <computed-prop name="numberFontSize">props.h2/3</computed-prop>
         </computed-props>
     </component-class>

@@ -346,7 +346,7 @@ export default class Kresmer extends KresmerEventHooks {
                 const computedProps: Record<string, ComputedRef> = {};
                 for (const name in componentClass.computedProps) {
                     const body = componentClass.computedProps[name].body
-                        .replaceAll(/(computedProps\.\w+)(?!\w*\.value)/g, "$1.value");
+                        .replaceAll(/((?:computedProps|cp)\.\w+)(?!\w*\.value)/g, "$1.value");
                     computedProps[name] = computed(eval(`() => (${body})`));
                 }//for
 
@@ -355,11 +355,12 @@ export default class Kresmer extends KresmerEventHooks {
                 for (const name in componentClass.functions) {
                     const params = componentClass.functions[name].params;
                     const body = componentClass.functions[name].body
-                        .replaceAll(/(computedProps\.\w+)(?!\w*\.value)/g, "$1.value");
+                        .replaceAll(/((?:computedProps|cp)\.\w+)(?!\w*\.value)/g, "$1.value");
                     eval(`functions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
+                const cp = computedProps;
 
-                return {...computedProps, ...fn};
+                return {...fn, ...cp};
             },
             template: componentClass.template,
             props: {
