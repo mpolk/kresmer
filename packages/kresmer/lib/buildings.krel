@@ -272,10 +272,11 @@
                     posCode === "ne"  ? {x: props.w*0.98,  y: props.h2*0.02,           align: "right",  valign: "top"} :
                     posCode === "n"   ? {x: props.w/2,     y: props.h2*0.02,           align: "middle", valign: "top"} :
                     posCode === "nw"  ? {x: props.w*0.02,  y: props.h2*0.02,           align: "left",   valign: "top"} :
-                    posCode === "w"   ? {x: props.w*0.02,  y: props.h/2,               align: "left",   valign: "middle"} :
+                   /* posCode === "w"   ? {x: props.w*0.02,  y: props.h/2,               align: "left",   valign: "middle"} : */
                     posCode === "c1"  ? {x: props.w1/2,    y: props.h/2,               align: "middle", valign: "middle"} :
                     posCode === "c2"  ? {x: props.w/2,     y: props.h2/2,              align: "middle", valign: "middle"} :
-                                        {x: props.w1/2,    y: props.h2/2,              align: "middle", valign: "middle"};
+                    posCode === "m"   ? {x: props.w1/2,    y: props.h2/2,              align: "middle", valign: "middle"} :
+                        super$.labelPosBase(posCode);
 
                 return result;
             </function>
