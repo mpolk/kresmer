@@ -372,10 +372,10 @@ export default class Kresmer extends KresmerEventHooks {
                     eval(`superFunctions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
 
-                const pr$ = props, cp$ = computedProps, fn$ = functions; // aliases for more convenient usage outside of tepmlates
+                const cp$ = computedProps, fn$ = functions; // aliases for more convenient usage outside of tepmlates
                 const super$ = computed(() => superFunctions);
 
-                return {...pr$, ...cp$, ...fn$, super$};
+                return {...cp$, ...fn$, super$};
             },
             template: componentClass.template,
             props: {
