@@ -29,6 +29,19 @@
             <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
         </props>
         <functions>
+            <function name="labelPosBase" params="posCode">
+                const result = 
+                    posCode === "nw" ? {x: props.w*0.02, y: props.h*0.02, align: "left",   valign: "top"} :
+                    posCode === "n"  ? {x: props.w/2,    y: props.h*0.02, align: "middle", valign: "top"} :
+                    posCode === "ne" ? {x: props.w*0.98, y: props.h*0.02, align: "right",  valign: "top"} :
+                    posCode === "e"  ? {x: props.w*0.98, y: props.h/2,    align: "right",  valign: "middle"} :
+                    posCode === "se" ? {x: props.w*0.98, y: props.h*0.98, align: "right",  valign: "bottom"} :
+                    posCode === "s"  ? {x: props.w/2,    y: props.h*0.98, align: "middle", valign: "bottom"} :
+                    posCode === "sw" ? {x: props.w*0.02, y: props.h*0.98, align: "left",   valign: "bottom"} :
+                    posCode === "w"  ? {x: props.w*0.02, y: props.h/2,    align: "left",   valign: "middle"} :
+                  /*posCode === "s" ?*/{x: props.w/2,    y: props.h/2,    align: "middle", valign: "middle"};
+                return result;
+            </function>
             <function name="addTextAttrs" params="pos">
                 switch (pos.align) {
                     case "left": pos["text-anchor"] = "start"; break;
@@ -43,6 +56,9 @@
                 }//switch
 
                 return pos;
+            </function>
+            <function name="labelPos" params="posCode">
+                return fn$.addTextAttrs(fn$.labelPosBase(posCode));
             </function>
         </functions>
         <computed-props>
@@ -178,21 +194,6 @@
             <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
             <prop name="nFloorsPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="w"/>
         </props>
-        <functions>
-            <function name="labelPos" params="posCode">
-                const result = 
-                    posCode === "nw" ? {x: props.w*0.02, y: props.h*0.02, align: "left",   valign: "top"} :
-                    posCode === "n"  ? {x: props.w/2,    y: props.h*0.02, align: "middle", valign: "top"} :
-                    posCode === "ne" ? {x: props.w*0.98, y: props.h*0.02, align: "right",  valign: "top"} :
-                    posCode === "e"  ? {x: props.w*0.98, y: props.h/2,    align: "right",  valign: "middle"} :
-                    posCode === "se" ? {x: props.w*0.98, y: props.h*0.98, align: "right",  valign: "bottom"} :
-                    posCode === "s"  ? {x: props.w/2,    y: props.h*0.98, align: "middle", valign: "bottom"} :
-                    posCode === "sw" ? {x: props.w*0.02, y: props.h*0.98, align: "left",   valign: "bottom"} :
-                    posCode === "w"  ? {x: props.w*0.02, y: props.h/2,    align: "left",   valign: "middle"} :
-                                       {x: props.w/2,    y: props.h/2,    align: "middle", valign: "middle"};
-                return fn$.addTextAttrs(result);
-            </function>
-        </functions>
         <computed-props>
             <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
             <computed-prop name="entrW">cp$.entrStep/4</computed-prop>
@@ -259,7 +260,7 @@
             <prop name="nFloorsPosition" type="String" choices="m, c1, c2, nw, n1, n2, ne1, ne2, e1, e2, se, s, sw, w" default="w"/>
         </props>
         <functions>
-            <function name="labelPos" params="posCode">
+            <function name="labelPosBase" params="posCode">
                 const result = 
                     posCode === "nw"  ? {x: props.w*0.02,  y: -props.h + props.h2*0.02, align: "left",   valign: "top"} :
                     posCode === "n1"  ? {x: props.w1/2,    y: -props.h + props.h2*0.02, align: "middle", valign: "top"} :
@@ -276,7 +277,7 @@
                     posCode === "c2"  ? {x: props.w/2,     y: -props.h2/2,              align: "middle", valign: "middle"} :
                                         {x: props.w1/2,    y: -props.h2/2,              align: "middle", valign: "middle"};
 
-                return fn$.addTextAttrs(result);
+                return result;
             </function>
         </functions>
         <computed-props>

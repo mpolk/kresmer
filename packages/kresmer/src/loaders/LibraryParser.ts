@@ -110,9 +110,9 @@ export default class LibraryParser {
         let template: Element | undefined;
         let props: NetworkElementClassProps = {};
         let exceptProps: string[] | undefined;
-        let computedProps: ComputedProps = {};
+        let computedProps: ComputedProps|undefined;
         let exceptCProps: string[] | undefined;
-        let functions: Functions = {};
+        let functions: Functions | undefined;
         let exceptFunctions: string[] | undefined;
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
@@ -168,6 +168,14 @@ export default class LibraryParser {
             template = node.ownerDocument.createElement("template");
         }//if
 
+        if (!computedProps && baseClass) {
+            computedProps = this.parseComputedProps(undefined, [baseClass]);
+        }//if
+
+        if (!functions && baseClass) {
+            functions = this.parseFunctions(undefined, [baseClass]);
+        }//if
+
         if (!style && baseClass) {
             style = this.parseCSS("", [baseClass]);
         }//if
@@ -196,8 +204,8 @@ export default class LibraryParser {
         let props: NetworkElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
-        let computedProps: ComputedProps = {};
-        let functions: Functions = {};
+        let computedProps: ComputedProps | undefined;
+        let functions: Functions | undefined;
         let exceptFunctions: string[] | undefined;
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
@@ -246,6 +254,14 @@ export default class LibraryParser {
                     break;
             }//switch
         }//for
+
+        if (!computedProps && baseClass) {
+            computedProps = this.parseComputedProps(undefined, [baseClass]);
+        }//if
+
+        if (!functions && baseClass) {
+            functions = this.parseFunctions(undefined, [baseClass]);
+        }//if
 
         if (!style && baseClass) {
             style = this.parseCSS("", [baseClass]);
@@ -437,29 +453,29 @@ export default class LibraryParser {
     }//parseProps
 
 
-    private parseComputedProps(node: Element, baseClasses: NetworkElementClass[]|undefined, except: string[])
+    private parseComputedProps(node: Element|undefined, baseClasses: NetworkElementClass[]|undefined, except?: string[])
     {
         const computedProps: ComputedProps = {};
         baseClasses?.forEach(baseClass => {
             if (baseClass.computedProps) {
-                Object.entries(baseClass.computedProps).filter(cprop => !except.includes(cprop[0]))
+                Object.entries(baseClass.computedProps).filter(cprop => !except?.includes(cprop[0]))
                     .forEach(cprop => computedProps[cprop[0]] = cprop[1]);
             }//if
         });
 
-        for (let i = 0; i < node.children.length; i++) {
-            const child = node.children[i];
+        for (let i = 0; i < (node?.children.length ?? 0); i++) {
+            const child = node!.children[i];
             switch (child.nodeName) {
                 case "computed-prop": {
                     const name = child.getAttribute("name");
                     if (!name) {
                         throw new LibraryParsingException("ComputedProp without the name",
-                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                            {source: `Component class ${node!.parentElement?.getAttribute("name")}`});
                     }//if
                     const body = child.textContent?.trim();
                     if (!body) {
                         throw new LibraryParsingException("ComputedProp without the body",
-                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                            {source: `Component class ${node!.parentElement?.getAttribute("name")}`});
                     }//if
                     const computedProp = {name, body};
                     computedProps[name] = computedProp;
@@ -472,29 +488,29 @@ export default class LibraryParser {
     }//parseComputedProps
 
 
-    private parseFunctions(node: Element, baseClasses: NetworkElementClass[]|undefined, except: string[])
+    private parseFunctions(node: Element|undefined, baseClasses: NetworkElementClass[]|undefined, except?: string[])
     {
         const functions: Functions = {};
         baseClasses?.forEach(baseClass => {
             if (baseClass.functions) {
-                Object.entries(baseClass.functions).filter(func => !except.includes(func[0]))
+                Object.entries(baseClass.functions).filter(func => !except?.includes(func[0]))
                     .forEach(func => functions[func[0]] = func[1]);
             }//if
         });
 
-        for (let i = 0; i < node.children.length; i++) {
-            const child = node.children[i];
+        for (let i = 0; i < (node?.children.length ?? 0); i++) {
+            const child = node!.children[i];
             switch (child.nodeName) {
                 case "function": {
                     const name = child.getAttribute("name");
                     if (!name) {
                         throw new LibraryParsingException("Function without the name",
-                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                            {source: `Component class ${node!.parentElement?.getAttribute("name")}`});
                     }//if
                     const body = child.textContent?.trim();
                     if (!body) {
                         throw new LibraryParsingException("Function without the body",
-                            {source: `Component class ${node.parentElement?.getAttribute("name")}`});
+                            {source: `Component class ${node!.parentElement?.getAttribute("name")}`});
                     }//if
                     const params = (child.getAttribute("params") ?? "").split(/, */);
                     const func = {name, params, body};
