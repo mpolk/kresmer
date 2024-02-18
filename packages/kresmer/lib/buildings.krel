@@ -202,12 +202,12 @@
     </component-class>
     
     <!-- L-shaped building:  
-        +=w1=+
-        |++++|
-        |++++|
-        h+++++======+
-        |+++++++++++h2
         +=====w=====+
+        |+++++++++++h2
+        h+++++======+
+        |++++|
+        |++++|
+        +=w1=+
      -->
      <component-class name="L-Building" category="Buildings">
         <extends base="Building"/>
