@@ -47,6 +47,7 @@ export default class Kresmer extends KresmerEventHooks {
         mountingHeight?: number | string,
         logicalWidth?: number,
         logicalHeight?: number,
+        backgroundImageURL?: string,
         isEditable?: boolean,
         showRulers?: boolean,
         showGrid?: boolean,
@@ -76,6 +77,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
         options?.hrefBase && (this.hrefBase.value = options.hrefBase);
         options?.streetAddressFormat && (this.streetAddressFormat = options.streetAddressFormat);
+        this.backgroundImageURL = options?.backgroundImageURL;
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -180,6 +182,9 @@ export default class Kresmer extends KresmerEventHooks {
         this.logicalBox.height = newHeight;
         nextTick(this.notifyOfScaleChange);
     }
+
+    /** Sets or returns the drawing background image URL (if exists) */
+    public backgroundImageURL?: string;
 
     /** Drawing scale (visual) */
     get drawingScale() {

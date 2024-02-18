@@ -62,12 +62,14 @@
         return `${Math.round(n * 0.5 * (1 - props.controller.zoomFactor))}${units}`;
     }//zoomedOffset
 
-    const margins = computed(() => {
+    const rootSVGStyle = computed(() => {
         return {
             marginLeft: zoomedOffset(props.controller.mountingWidth), 
-            marginTop: zoomedOffset(props.controller.mountingHeight)
+            marginTop: zoomedOffset(props.controller.mountingHeight),
+            backgroundImage: props.controller.backgroundImageURL ? `url(${props.controller.backgroundImageURL})` : undefined,
         }; 
     });
+
     const mountingDims = computed(() => {
         return {
             width: zoomed(props.controller.mountingWidth),
@@ -78,7 +80,7 @@
 
     const drawingOrigin = {x: 0, y: 0};
     provide(Kresmer.ikDrawingOrigin, drawingOrigin);
-    watch(margins, () => {
+    watch(rootSVGStyle, () => {
         nextTick(() => {
             const styles = getComputedStyle(rootSVG.value!);
             // console.debug(styles);
@@ -161,7 +163,7 @@
 <template>
     <svg xmlns="http://www.w3.org/2000/svg" 
         class="kresmer" ref="rootSVG" 
-        :style="margins" v-bind="mountingDims" :viewBox="viewBox"
+        :style="rootSVGStyle" v-bind="mountingDims" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
         @contextmenu.self="onCanvasRightClick($event)"
         @mousemove.prevent.self="onMouseMove"
