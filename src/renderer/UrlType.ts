@@ -14,3 +14,9 @@ export enum UrlType {
     fileRel = "file: (rel)"
 } //UrlType
 
+export const urlTypeDescriptions = {
+    [UrlType.data]: "Embedded graphics data",
+    [UrlType.href]: "Regular URL (http: or https:)",
+    [UrlType.fileAbs]: "File URL with an absolute path",
+    [UrlType.fileRel]: "File URL with a relative path",
+}//urlTypeDescriptions

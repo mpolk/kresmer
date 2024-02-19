@@ -11,8 +11,8 @@
     import { PropType, computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
-    import { UrlType } from './UrlType';
-import { FileFilter } from 'electron';
+    import { UrlType, urlTypeDescriptions } from './UrlType';
+    import { FileFilter } from 'electron';
 
     export default {
         name: "ElementPropEditor",
@@ -30,13 +30,6 @@ import { FileFilter } from 'electron';
             path.push(subpropName);
         return `inpSubprop[${path.join(".")}]`;
     }//subpropInputID
-
-    const UrlTypeDescriptions = {
-        [UrlType.data]: "Embedded graphics data",
-        [UrlType.href]: "Regular URL (http: or https:)",
-        [UrlType.fileAbs]: "File URL with an absolute path",
-        [UrlType.fileRel]: "File URL with a relative path",
-    }//UrlTypeDescriptions
 </script>
 
 <script setup lang="ts">
@@ -228,12 +221,9 @@ import { FileFilter } from 'electron';
         urlType.value = newType;
     }//setUrlType
 
-    const graphicsFileFilters = [
-        {name: "Graphics files", extensions: ["png", "jpg", "jpeg"]},
-    ];
-
-    async function selectOrLoadFile(filters: FileFilter[])
+    async function selectOrLoadGraphicsFile()
     {
+        const filters = [{name: "Graphics files", extensions: ["png", "jpg", "jpeg"]}];
         const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType.value, filters);
 
         if (!filePath)
@@ -254,7 +244,7 @@ import { FileFilter } from 'electron';
             }//switch
             props.propToEdit.value = `data:${mimeType};base64,${data}`;
         }//if
-    }//selectOrLoadFile
+    }//selectOrLoadGraphicsFile
 </script>
 
 <template>
@@ -331,12 +321,11 @@ import { FileFilter } from 'electron';
                     {{ urlType }}
                 </button>
                 <ul class="dropdown-menu">
-                    <li v-for="ut in UrlType" :key="ut" :title="UrlTypeDescriptions[ut]">
+                    <li v-for="ut in UrlType" :key="ut" :title="urlTypeDescriptions[ut]">
                         <a class="dropdown-item" href="#" @click="setUrlType(ut)">{{ ut }}</a>
                     </li>
                 </ul>
-                <button v-if="urlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" 
-                    @click="selectOrLoadFile(graphicsFileFilters)">
+                <button v-if="urlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" @click="selectOrLoadGraphicsFile">
                     <span class="material-symbols-outlined">file_open</span>
                 </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"

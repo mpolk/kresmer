@@ -16,6 +16,7 @@
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { kresmer, updateWindowTitle } from './renderer-main';
+    import { UrlType, urlTypeDescriptions } from './UrlType';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
@@ -26,12 +27,21 @@
     let drawingName: string|undefined;
     let drawingBox: {width: number, height: number};
     let hrefBase: string|undefined;
+    const backgroundImageURL = ref<string|undefined>();
+
+    const backgroundImageUrlType = ref<UrlType>(
+        !backgroundImageURL.value || backgroundImageURL.value.startsWith("data:") ? UrlType.data :
+        backgroundImageURL.value.startsWith("file:") ? UrlType.href :
+        backgroundImageURL.value.match(/^file:(\/\/)?(\/|\\|[a-zA-Z]:)/) ? UrlType.fileAbs :
+            UrlType.fileRel
+    );
 
     function show()
     {
         drawingName = kresmer.drawingName;
         hrefBase = kresmer.hrefBase.value;
         drawingBox = {width: kresmer.logicalWidth, height: kresmer.logicalHeight};
+        backgroundImageURL.value = kresmer.backgroundImageURL.value;
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
@@ -53,6 +63,7 @@
             logicalWidth: drawingBox.width, 
             logicalHeight: drawingBox.height,
             hrefBase: hrefBase,
+            backgroundImageURL: backgroundImageURL.value,
         });
         updateWindowTitle();
     }//save
@@ -63,11 +74,37 @@
         formEnabled.value = false;
     }//close
 
+    async function selectOrLoadGraphicsFile()
+    {
+        const filters = [{name: "Graphics files", extensions: ["png", "jpg", "jpeg"]}];
+        const {filePath, data} = await window.electronAPI.selectOrLoadFile(backgroundImageUrlType.value, filters);
+
+        if (!filePath)
+            return;
+
+        if (backgroundImageUrlType.value !== UrlType.data) {
+            backgroundImageURL.value = `file:${filePath}`;
+        } else {
+            const ext = filePath.slice(filePath.lastIndexOf('.')+1).toLowerCase();
+            let mimeType = "";
+            switch (ext) {
+                case "jpeg": case "jpg":
+                    mimeType = "image/jpeg";
+                    break;
+                case "png":
+                    mimeType = "image/png";
+                    break;
+            }//switch
+            backgroundImageURL.value = `data:${mimeType};base64,${data}`;
+        }//if
+    }//selectOrLoadGraphicsFile
+
+
     defineExpose({show});
 </script>
 
 <template>
-    <div ref="rootDiv" class="offcanvas offcanvas-end" tabindex="-1">
+    <div ref="rootDiv" class="offcanvas offcanvas-end w-50" tabindex="-1">
         <div class="offcanvas-header align-items-baseline">
             <h5 class="offcanvas-title">Drawing "{{drawingName}}"</h5>
             <button type="button" class="btn-close" @click="close"></button>
@@ -100,6 +137,28 @@
                             <td class="p-1">
                                 <input type="number" class="form-control form-control-sm text-end border-0" 
                                     id="inpDrawingHeight" v-model="drawingBox.height"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-1 align-middle">
+                                <label class="form-label text-secondary mb-0" for="inpBackgroundImage">background image</label>
+                            </td>
+                            <td class="p-1">
+                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                    {{ backgroundImageUrlType }}
+                                </button>
+                                <ul class="dropdown-menu">
+                                    <li v-for="ut in UrlType" :key="ut" :title="urlTypeDescriptions[ut]">
+                                        <a class="dropdown-item" href="#" @click="backgroundImageUrlType = ut">{{ ut }}</a>
+                                    </li>
+                                </ul>
+                                <button v-if="backgroundImageUrlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" 
+                                    @click="selectOrLoadGraphicsFile()">
+                                    <span class="material-symbols-outlined">file_open</span>
+                                </button>
+                                <input ref="propInputs" id="inpBackgroundImage"
+                                    class="form-control form-control-sm" :readonly="backgroundImageUrlType === UrlType.data" 
+                                    v-model="backgroundImageURL"/>
                             </td>
                         </tr>
                         <tr>

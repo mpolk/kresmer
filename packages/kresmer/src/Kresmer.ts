@@ -77,7 +77,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
         options?.hrefBase && (this.hrefBase.value = options.hrefBase);
         options?.streetAddressFormat && (this.streetAddressFormat = options.streetAddressFormat);
-        this.backgroundImageURL = options?.backgroundImageURL;
+        options?.backgroundImageURL && (this.backgroundImageURL.value = options.backgroundImageURL);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -184,7 +184,7 @@ export default class Kresmer extends KresmerEventHooks {
     }
 
     /** Sets or returns the drawing background image URL (if exists) */
-    public backgroundImageURL?: string;
+    readonly backgroundImageURL = ref("");
 
     /** Drawing scale (visual) */
     get drawingScale() {
@@ -644,6 +644,7 @@ ${svg.outerHTML}
     {
         this.drawingName = UNNAMED_DRAWING;
         this.hrefBase.value = "";
+        this.backgroundImageURL.value = "";
         this.undoStack.reset();
         this.linksByName.clear();
         this.links.clear();
@@ -1239,6 +1240,8 @@ export type DrawingProps = {
     logicalHeight?: number|undefined;
     /** A common base prefix for all hrefs on the drawing */
     hrefBase?: string;
+    /** An URL of the background image (if any) */
+    backgroundImageURL?: string;
 }//DrawingProps
 
 
@@ -1252,6 +1255,7 @@ class UpdateDrawingPropsOp extends EditorOperation
             logicalWidth: kresmer.logicalWidth,
             logicalHeight: kresmer.logicalHeight,
             hrefBase: kresmer.hrefBase.value,
+            backgroundImageURL: kresmer.backgroundImageURL.value,
         }//oldProps
     }//ctor
 
@@ -1263,6 +1267,7 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.newProps.logicalWidth && (this.kresmer.logicalWidth = this.newProps.logicalWidth);
         this.newProps.logicalHeight && (this.kresmer.logicalHeight = this.newProps.logicalHeight);
         this.newProps.hrefBase && (this.kresmer.hrefBase.value = this.newProps.hrefBase);
+        this.newProps.backgroundImageURL && (this.kresmer.backgroundImageURL.value = this.newProps.backgroundImageURL);
     }//exec
 
     override undo(): void
@@ -1273,7 +1278,9 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.oldProps.logicalHeight != this.kresmer.logicalHeight && 
             (this.kresmer.logicalHeight = this.oldProps.logicalHeight);
         this.oldProps.hrefBase != this.kresmer.hrefBase.value && (this.kresmer.hrefBase.value = this.oldProps.hrefBase);
-        }//undo
+        this.oldProps.backgroundImageURL != this.kresmer.backgroundImageURL.value && 
+            (this.kresmer.backgroundImageURL.value = this.oldProps.backgroundImageURL);
+    }//undo
 }//UpdateDrawingPropsOp
 
 

@@ -66,7 +66,7 @@
         return {
             marginLeft: zoomedOffset(props.controller.mountingWidth), 
             marginTop: zoomedOffset(props.controller.mountingHeight),
-            backgroundImage: props.controller.backgroundImageURL ? `url(${props.controller.backgroundImageURL})` : undefined,
+            backgroundImage: props.controller.backgroundImageURL.value ? `url(${props.controller.backgroundImageURL.value})` : undefined,
         }; 
     });
 
