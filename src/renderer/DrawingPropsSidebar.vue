@@ -16,7 +16,7 @@
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { kresmer, updateWindowTitle } from './renderer-main';
-    import { UrlType, getURLType, urlTypeDescriptions } from './UrlType';
+    import { URLType, getURLType, urlTypeDescriptions } from './URLType';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
@@ -77,7 +77,7 @@
         if (!filePath)
             return;
 
-        if (backgroundImageUrlType.value !== UrlType.data) {
+        if (backgroundImageUrlType.value !== URLType.data) {
             backgroundImageURL.value = `file:${filePath}`;
         } else {
             const ext = filePath.slice(filePath.lastIndexOf('.')+1).toLowerCase();
@@ -143,7 +143,7 @@
                                     {{ backgroundImageUrlType }}
                                 </button>
                                 <ul class="dropdown-menu">
-                                    <li v-for="ut in UrlType" :key="ut" :title="urlTypeDescriptions[ut]">
+                                    <li v-for="ut in URLType" :key="ut" :title="urlTypeDescriptions[ut]">
                                         <a class="dropdown-item" href="#" @click="backgroundImageUrlType = ut">{{ ut }}</a>
                                     </li>
                                 </ul>
@@ -152,7 +152,7 @@
                                     <span class="material-symbols-outlined">file_open</span>
                                 </button>
                                 <input ref="propInputs" id="inpBackgroundImage"
-                                    class="form-control form-control-sm" :readonly="backgroundImageUrlType === UrlType.data" 
+                                    class="form-control form-control-sm" :readonly="backgroundImageUrlType === URLType.data" 
                                     v-model="backgroundImageURL"/>
                             </td>
                         </tr>
@@ -173,4 +173,4 @@
             </form>
         </div>
     </div>
-</template>
+</template>./URLType

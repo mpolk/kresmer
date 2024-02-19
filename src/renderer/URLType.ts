@@ -7,24 +7,24 @@
  *             data:, file: and regular hrefs (http(s):)
  ***************************************************************************/
 
-export enum UrlType {
+export enum URLType {
     data = "data:",
     href = "href",
     fileAbs = "file: (abs)",
     fileRel = "file: (rel)"
-} //UrlType
+} //URLType
 
 export const urlTypeDescriptions = {
-    [UrlType.data]: "Embedded graphics data",
-    [UrlType.href]: "Regular URL (http: or https:)",
-    [UrlType.fileAbs]: "File URL with an absolute path",
-    [UrlType.fileRel]: "File URL with a relative path",
+    [URLType.data]: "Embedded graphics data",
+    [URLType.href]: "Regular URL (http: or https:)",
+    [URLType.fileAbs]: "File URL with an absolute path",
+    [URLType.fileRel]: "File URL with a relative path",
 }//urlTypeDescriptions
 
 export function getURLType(url: string|undefined)
 {
-    return !url || url.startsWith("data:") ? UrlType.data :
-           url.startsWith("file:") ? UrlType.href :
-           url.match(/^file:(\/\/)?(\/|\\|[a-zA-Z]:)/) ? UrlType.fileAbs :
-               UrlType.fileRel
+    return !url || url.startsWith("data:") ? URLType.data :
+           url.startsWith("file:") ? URLType.href :
+           url.match(/^file:(\/\/)?(\/|\\|[a-zA-Z]:)/) ? URLType.fileAbs :
+               URLType.fileRel
 }//getURLType

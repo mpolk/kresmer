@@ -11,7 +11,7 @@ import { ContextMenuID } from './main/Menus';
 import { AppInitStage, ElectronAPI } from './renderer/ElectronAPI';
 import { IpcMainChannel, IpcMainChannels } from './main/IpcMainHooks';
 import { AppSettings } from './main/main';
-import { type UrlType } from './renderer/UrlType';
+import { type UrlType } from './renderer/URLType';
 
 function sendToMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): void;
 function sendToMain(channel: IpcMainChannel, ...args: unknown[])

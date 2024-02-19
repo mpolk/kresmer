@@ -9,7 +9,7 @@ import { FileFilter, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron"
 import { AppInitStage } from "../renderer/ElectronAPI";
 import { ContextMenuID } from "./Menus";
 import { AppSettings } from "./main";
-import type { UrlType } from '../renderer/UrlType';
+import type { UrlType } from '../renderer/URLType';
 import type { fileSelectOrLoadResult } from '../renderer/renderer-main';
 
 export interface IpcMainChannels {

@@ -11,7 +11,7 @@
     import { PropType, computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
-    import { UrlType, getURLType, urlTypeDescriptions } from './UrlType';
+    import { URLType, getURLType, urlTypeDescriptions } from './URLType';
     import { FileFilter } from 'electron';
 
     export default {
@@ -208,7 +208,7 @@
 
     const urlType = ref(getURLType(props.propToEdit.subtype === "url" ? props.propToEdit.value as string: undefined));
 
-    function setUrlType(newType: UrlType)
+    function setUrlType(newType: URLType)
     {
         urlType.value = newType;
     }//setUrlType
@@ -221,7 +221,7 @@
         if (!filePath)
             return;
 
-        if (urlType.value !== UrlType.data) {
+        if (urlType.value !== URLType.data) {
             props.propToEdit.value = `file:${filePath}`;
         } else {
             const ext = filePath.slice(filePath.lastIndexOf('.')+1).toLowerCase();
@@ -313,7 +313,7 @@
                     {{ urlType }}
                 </button>
                 <ul class="dropdown-menu">
-                    <li v-for="ut in UrlType" :key="ut" :title="urlTypeDescriptions[ut]">
+                    <li v-for="ut in URLType" :key="ut" :title="urlTypeDescriptions[ut]">
                         <a class="dropdown-item" href="#" @click="setUrlType(ut)">{{ ut }}</a>
                     </li>
                 </ul>
@@ -321,7 +321,7 @@
                     <span class="material-symbols-outlined">file_open</span>
                 </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                    class="form-control form-control-sm" :readonly="urlType === UrlType.data" 
+                    class="form-control form-control-sm" :readonly="urlType === URLType.data" 
                     :placeholder="propToEdit.default" v-model="subpropModel"/>
             </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">
@@ -358,3 +358,4 @@
             @add-subprop="onDescendantAddSubprop"/>
     </template>
 </template>
+./URLType

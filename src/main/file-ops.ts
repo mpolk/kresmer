@@ -12,7 +12,7 @@ import fs from 'fs';
 import { mainWindow, sendAppCommand, libDirs, localSettings, menus, recentDrawings } from './main';
 import { defaultDrawingFileName, setDefaultDrawingFileName } from './init-funcs';
 import { IpcMainHooks } from './IpcMainHooks';
-import { UrlType } from '../renderer/UrlType';
+import { UrlType } from '../renderer/URLType';
 
 export class RecentDrawings
 {
