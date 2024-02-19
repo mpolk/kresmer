@@ -13,10 +13,11 @@
 </script>
 
 <script setup lang="ts">
-    import { ref } from 'vue';
+    import { ref, reactive } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
+import { BackgroundImageData } from 'kresmer';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
@@ -27,16 +28,18 @@
     let drawingName: string|undefined;
     let drawingBox: {width: number, height: number};
     let hrefBase: string|undefined;
-    const backgroundImageURL = ref<string|undefined>();
+    const backgroundImage = reactive<BackgroundImageData>({url: ""});
 
-    const backgroundImageUrlType = ref(getURLType(backgroundImageURL.value));
+    const backgroundImageUrlType = ref(getURLType(backgroundImage.url));
 
     function show()
     {
         drawingName = kresmer.drawingName;
         hrefBase = kresmer.hrefBase.value;
         drawingBox = {width: kresmer.logicalWidth, height: kresmer.logicalHeight};
-        backgroundImageURL.value = kresmer.backgroundImageURL.value;
+        for (const key in kresmer.backgroundImage) {
+            backgroundImage[key as keyof BackgroundImageData] = kresmer.backgroundImage[key as keyof BackgroundImageData];
+        }//for
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
@@ -58,7 +61,7 @@
             logicalWidth: drawingBox.width, 
             logicalHeight: drawingBox.height,
             hrefBase: hrefBase,
-            backgroundImageURL: backgroundImageURL.value,
+            backgroundImageURL: backgroundImage.url,
         });
         updateWindowTitle();
     }//save
@@ -71,12 +74,14 @@
 
     async function selectBackgroundImage()
     {
-        backgroundImageURL.value = await selectOrLoadGraphicsFile(backgroundImageUrlType.value);
+        const newURL = await selectOrLoadGraphicsFile(backgroundImageUrlType.value)
+        if (newURL !== undefined)
+            backgroundImage.url = newURL;
     }//selectBackgroundImage
 
     function clearBackgroundImage()
     {
-        backgroundImageURL.value = "";
+        backgroundImage.url = "";
     }//clearBackgroundImage
 
     defineExpose({show});
@@ -141,7 +146,7 @@
                                 </button>
                                 <input ref="propInputs" id="inpBackgroundImage"
                                     class="form-control form-control-sm" :disabled="backgroundImageUrlType !== URLType.href" 
-                                    v-model="backgroundImageURL"/>
+                                    v-model="backgroundImage.url"/>
                             </td>
                         </tr>
                         <tr>

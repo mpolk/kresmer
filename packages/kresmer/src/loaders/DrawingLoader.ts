@@ -115,7 +115,7 @@ export default class DrawingLoader {
                 drawingHeaderData.width && (this.kresmer.logicalWidth = drawingHeaderData.width);
                 drawingHeaderData.height && (this.kresmer.logicalHeight = drawingHeaderData.height);
                 drawingHeaderData.hrefBase && (this.kresmer.hrefBase.value = drawingHeaderData.hrefBase);
-                drawingHeaderData.backgroundImage && (this.kresmer.backgroundImageURL.value = drawingHeaderData.backgroundImage);
+                drawingHeaderData.backgroundImage && (this.kresmer.backgroundImage.url = drawingHeaderData.backgroundImage);
                 this.kresmer.isDirty = false;
                 break;
             default:
@@ -138,7 +138,7 @@ export default class DrawingLoader {
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}"\
  ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}\
- ${this.kresmer.backgroundImageURL.value ? `background-image="${this.kresmer.backgroundImageURL.value}"` : ''}>
+ ${this.kresmer.backgroundImage.url ? `background-image="${this.kresmer.backgroundImage.url}"` : ''}>
 `;
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
