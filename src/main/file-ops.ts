@@ -12,7 +12,7 @@ import fs from 'fs';
 import { mainWindow, sendAppCommand, libDirs, localSettings, menus, recentDrawings } from './main';
 import { defaultDrawingFileName, setDefaultDrawingFileName } from './init-funcs';
 import { IpcMainHooks } from './IpcMainHooks';
-import { UrlType } from '../renderer/URLType';
+import { URLType } from '../renderer/URLType';
 
 export class RecentDrawings
 {
@@ -208,7 +208,7 @@ export function loadLibraryFile(libName: string, fileName?: string)
 }//loadLibraryFile
 
 
-export function selectOrLoadFile(requiredResultType: UrlType, filters: FileFilter[]) 
+export function selectOrLoadFile(requiredResultType: URLType, filters: FileFilter[]) 
 {
     const filePaths = dialog.showOpenDialogSync(mainWindow, {
         title: "Open file...",
@@ -220,10 +220,10 @@ export function selectOrLoadFile(requiredResultType: UrlType, filters: FileFilte
 
     if (filePath) {
         switch (requiredResultType) {
-            case UrlType.data: 
+            case URLType.data: 
                 data = fs.readFileSync(filePath).toString("base64");
                 break;
-            case UrlType.fileRel:
+            case URLType.fileRel:
                 filePath = path.relative(filePath, ".");
         }//switch
     }//if

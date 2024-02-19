@@ -9,7 +9,7 @@ import { FileFilter, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron"
 import { AppInitStage } from "../renderer/ElectronAPI";
 import { ContextMenuID } from "./Menus";
 import { AppSettings } from "./main";
-import type { UrlType } from '../renderer/URLType';
+import type { URLType } from '../renderer/URLType';
 import type { fileSelectOrLoadResult } from '../renderer/renderer-main';
 
 export interface IpcMainChannels {
@@ -34,7 +34,7 @@ export interface IpcMainChannels {
     "load-library-file": (libName: string, fileName?: string) => string|undefined;
     "check-reload-status": () => void;
     "reload-content": () => void;
-    "select-or-load-file": (requiredResultType: UrlType, filters: FileFilter[]) => fileSelectOrLoadResult;
+    "select-or-load-file": (requiredResultType: URLType, filters: FileFilter[]) => fileSelectOrLoadResult;
 }//IpcMainChannels
 
 export type IpcMainChannel = keyof IpcMainChannels;
