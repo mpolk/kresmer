@@ -33,6 +33,7 @@ import { AppInitStage } from './ElectronAPI.d';
 import { AppSettings } from '../main/main';
 import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
 import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
+import { URLType } from './URLType';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -89,6 +90,31 @@ export type fileSelectOrLoadResult = {
     filePath: string|undefined;
     data?: string|undefined;
 }; //fileSelectOrLoadResult
+
+export async function selectOrLoadGraphicsFile(urlType: URLType)
+{
+    const filters = [{name: "Graphics files", extensions: ["png", "jpg", "jpeg"]}];
+    const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType, filters);
+
+    if (!filePath)
+        return;
+
+    if (urlType !== URLType.data) {
+        return `file:${filePath}`;
+    } else {
+        const ext = filePath.slice(filePath.lastIndexOf('.')+1).toLowerCase();
+        let mimeType = "";
+        switch (ext) {
+            case "jpeg": case "jpg":
+                mimeType = "image/jpeg";
+                break;
+            case "png":
+                mimeType = "image/png";
+                break;
+        }//switch
+        return `data:${mimeType};base64,${data}`;
+    }//if
+}//selectOrLoadGraphicsFile
 
 const vueMessageBox = createApp(MessageBox).mount("#dlgMessageBox") as InstanceType<typeof MessageBox>;
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 

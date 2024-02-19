@@ -13,6 +13,7 @@
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
     import { FileFilter } from 'electron';
+import { selectOrLoadGraphicsFile } from './renderer-main';
 
     export default {
         name: "ElementPropEditor",
@@ -213,30 +214,10 @@
         urlType.value = newType;
     }//setUrlType
 
-    async function selectOrLoadGraphicsFile()
+    async function setGraphicsURL()
     {
-        const filters = [{name: "Graphics files", extensions: ["png", "jpg", "jpeg"]}];
-        const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType.value, filters);
-
-        if (!filePath)
-            return;
-
-        if (urlType.value !== URLType.data) {
-            props.propToEdit.value = `file:${filePath}`;
-        } else {
-            const ext = filePath.slice(filePath.lastIndexOf('.')+1).toLowerCase();
-            let mimeType = "";
-            switch (ext) {
-                case "jpeg": case "jpg":
-                    mimeType = "image/jpeg";
-                    break;
-                case "png":
-                    mimeType = "image/png";
-                    break;
-            }//switch
-            props.propToEdit.value = `data:${mimeType};base64,${data}`;
-        }//if
-    }//selectOrLoadGraphicsFile
+        props.propToEdit.value = await selectOrLoadGraphicsFile(urlType.value);
+    }//setGraphicsURL
 </script>
 
 <template>
@@ -317,11 +298,11 @@
                         <a class="dropdown-item" href="#" @click="setUrlType(ut)">{{ ut }}</a>
                     </li>
                 </ul>
-                <button v-if="urlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" @click="selectOrLoadGraphicsFile">
+                <button v-if="urlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" @click="setGraphicsURL">
                     <span class="material-symbols-outlined">file_open</span>
                 </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                    class="form-control form-control-sm" :readonly="urlType === URLType.data" 
+                    class="form-control form-control-sm"  :disabled="urlType !== URLType.href" 
                     :placeholder="propToEdit.default" v-model="subpropModel"/>
             </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">

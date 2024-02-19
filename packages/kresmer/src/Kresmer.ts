@@ -1239,9 +1239,9 @@ export type DrawingProps = {
     /** The drawing logical height */
     logicalHeight?: number|undefined;
     /** A common base prefix for all hrefs on the drawing */
-    hrefBase?: string;
+    hrefBase?: string|undefined;
     /** An URL of the background image (if any) */
-    backgroundImageURL?: string;
+    backgroundImageURL?: string|undefined;
 }//DrawingProps
 
 
@@ -1266,8 +1266,8 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.newProps.name && (this.kresmer.drawingName = this.newProps.name);
         this.newProps.logicalWidth && (this.kresmer.logicalWidth = this.newProps.logicalWidth);
         this.newProps.logicalHeight && (this.kresmer.logicalHeight = this.newProps.logicalHeight);
-        this.newProps.hrefBase && (this.kresmer.hrefBase.value = this.newProps.hrefBase);
-        this.newProps.backgroundImageURL && (this.kresmer.backgroundImageURL.value = this.newProps.backgroundImageURL);
+        this.newProps.hrefBase !== undefined && (this.kresmer.hrefBase.value = this.newProps.hrefBase);
+        this.newProps.backgroundImageURL !== undefined && (this.kresmer.backgroundImageURL.value = this.newProps.backgroundImageURL);
     }//exec
 
     override undo(): void

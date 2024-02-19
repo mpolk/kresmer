@@ -15,7 +15,7 @@
 <script setup lang="ts">
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
-    import { kresmer, updateWindowTitle } from './renderer-main';
+    import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
 
     let offCanvas: Offcanvas | undefined;
@@ -69,31 +69,15 @@
         formEnabled.value = false;
     }//close
 
-    async function selectOrLoadGraphicsFile()
+    async function selectBackgroundImage()
     {
-        const filters = [{name: "Graphics files", extensions: ["png", "jpg", "jpeg"]}];
-        const {filePath, data} = await window.electronAPI.selectOrLoadFile(backgroundImageUrlType.value, filters);
+        backgroundImageURL.value = await selectOrLoadGraphicsFile(backgroundImageUrlType.value);
+    }//selectBackgroundImage
 
-        if (!filePath)
-            return;
-
-        if (backgroundImageUrlType.value !== URLType.data) {
-            backgroundImageURL.value = `file:${filePath}`;
-        } else {
-            const ext = filePath.slice(filePath.lastIndexOf('.')+1).toLowerCase();
-            let mimeType = "";
-            switch (ext) {
-                case "jpeg": case "jpg":
-                    mimeType = "image/jpeg";
-                    break;
-                case "png":
-                    mimeType = "image/png";
-                    break;
-            }//switch
-            backgroundImageURL.value = `data:${mimeType};base64,${data}`;
-        }//if
-    }//selectOrLoadGraphicsFile
-
+    function clearBackgroundImage()
+    {
+        backgroundImageURL.value = "";
+    }//clearBackgroundImage
 
     defineExpose({show});
 </script>
@@ -138,7 +122,7 @@
                             <td class="p-1 align-middle">
                                 <label class="form-label text-secondary mb-0" for="inpBackgroundImage">background image</label>
                             </td>
-                            <td class="p-1">
+                            <td class="p-1 input-group">
                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                     {{ backgroundImageUrlType }}
                                 </button>
@@ -148,11 +132,15 @@
                                     </li>
                                 </ul>
                                 <button v-if="backgroundImageUrlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" 
-                                    @click="selectOrLoadGraphicsFile()">
+                                    @click="selectBackgroundImage()">
                                     <span class="material-symbols-outlined">file_open</span>
                                 </button>
+                                <button class="btn btn-outline-secondary btn-sm" type="button" 
+                                    @click="clearBackgroundImage()">
+                                    <span class="material-symbols-outlined">close</span>
+                                </button>
                                 <input ref="propInputs" id="inpBackgroundImage"
-                                    class="form-control form-control-sm" :readonly="backgroundImageUrlType === URLType.data" 
+                                    class="form-control form-control-sm" :disabled="backgroundImageUrlType !== URLType.href" 
                                     v-model="backgroundImageURL"/>
                             </td>
                         </tr>

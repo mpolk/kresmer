@@ -115,6 +115,7 @@ export default class DrawingLoader {
                 drawingHeaderData.width && (this.kresmer.logicalWidth = drawingHeaderData.width);
                 drawingHeaderData.height && (this.kresmer.logicalHeight = drawingHeaderData.height);
                 drawingHeaderData.hrefBase && (this.kresmer.hrefBase.value = drawingHeaderData.hrefBase);
+                drawingHeaderData.backgroundImage && (this.kresmer.backgroundImageURL.value = drawingHeaderData.backgroundImage);
                 this.kresmer.isDirty = false;
                 break;
             default:

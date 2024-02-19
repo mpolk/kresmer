@@ -51,10 +51,12 @@ export default class DrawingParser {
         }//if
 
         yield new DrawingHeaderData(root.getAttribute("name")!, 
-                                    root.getAttribute("width"),
-                                    root.getAttribute("height"),
-                                    root.getAttribute("href-base"),
-                                    );
+                                    {
+                                        width: root.getAttribute("width") ?? undefined,
+                                        height: root.getAttribute("height") ?? undefined,
+                                        hrefBase: root.getAttribute("href-base") ?? undefined,
+                                        backgroundImage: root.getAttribute("background-image") ?? undefined,
+                                    });
 
         for (let i = 0; i < root.children.length; i++) {
             const node = root.children[i];
@@ -450,20 +452,25 @@ export default class DrawingParser {
 }//DrawingParser
 
 export class DrawingHeaderData {
-    constructor(public readonly name: string,
-                width: string|null,
-                height: string|null,
-                hrefBase: string|null,
-                ) 
-    {
-        width && (this.width = parseFloat(width));
-        height && (this.height = parseFloat(height));
-        hrefBase && (this.hrefBase = hrefBase);
+    constructor(
+        public readonly name: string,
+        options: {
+            width?: string,
+            height?: string,
+            hrefBase?: string,
+            backgroundImage?: string,
+        }
+    ) {
+        options.width && (this.width = parseFloat(options.width));
+        options.height && (this.height = parseFloat(options.height));
+        options.hrefBase && (this.hrefBase = options.hrefBase);
+        options.backgroundImage && (this.backgroundImage = options.backgroundImage);
     }//ctor
 
     readonly width?: number;
     readonly height?: number;
     readonly hrefBase?: string;
+    readonly backgroundImage?: string;
 }//DrawingHeaderData
 
 export type ParsedNode = 
