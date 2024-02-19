@@ -16,7 +16,7 @@
     import { ref } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { kresmer, updateWindowTitle } from './renderer-main';
-    import { UrlType, urlTypeDescriptions } from './UrlType';
+    import { UrlType, getURLType, urlTypeDescriptions } from './UrlType';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
@@ -29,12 +29,7 @@
     let hrefBase: string|undefined;
     const backgroundImageURL = ref<string|undefined>();
 
-    const backgroundImageUrlType = ref<UrlType>(
-        !backgroundImageURL.value || backgroundImageURL.value.startsWith("data:") ? UrlType.data :
-        backgroundImageURL.value.startsWith("file:") ? UrlType.href :
-        backgroundImageURL.value.match(/^file:(\/\/)?(\/|\\|[a-zA-Z]:)/) ? UrlType.fileAbs :
-            UrlType.fileRel
-    );
+    const backgroundImageUrlType = ref(getURLType(backgroundImageURL.value));
 
     function show()
     {

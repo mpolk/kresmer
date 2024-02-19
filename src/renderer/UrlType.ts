@@ -20,3 +20,11 @@ export const urlTypeDescriptions = {
     [UrlType.fileAbs]: "File URL with an absolute path",
     [UrlType.fileRel]: "File URL with a relative path",
 }//urlTypeDescriptions
+
+export function getURLType(url: string|undefined)
+{
+    return !url || url.startsWith("data:") ? UrlType.data :
+           url.startsWith("file:") ? UrlType.href :
+           url.match(/^file:(\/\/)?(\/|\\|[a-zA-Z]:)/) ? UrlType.fileAbs :
+               UrlType.fileRel
+}//getURLType

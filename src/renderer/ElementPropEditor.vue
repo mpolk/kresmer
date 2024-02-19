@@ -11,7 +11,7 @@
     import { PropType, computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
-    import { UrlType, urlTypeDescriptions } from './UrlType';
+    import { UrlType, getURLType, urlTypeDescriptions } from './UrlType';
     import { FileFilter } from 'electron';
 
     export default {
@@ -206,15 +206,7 @@
         return {"text-center": props.propToEdit.type === Boolean};
     })//valueCellClass
 
-    const urlType = ref<UrlType>(
-        props.propToEdit.subtype !== "url" || 
-            !props.propToEdit.value || 
-            typeof props.propToEdit.value !== "string" || 
-            props.propToEdit.value.startsWith("data:") ? UrlType.data :
-        !props.propToEdit.value.startsWith("file:") ? UrlType.href :
-        props.propToEdit.value.match(/^file:(\/\/)?(\/|\\|[a-zA-Z]:)/) ? UrlType.fileAbs :
-        UrlType.fileRel
-    );
+    const urlType = ref(getURLType(props.propToEdit.subtype === "url" ? props.propToEdit.value as string: undefined));
 
     function setUrlType(newType: UrlType)
     {
