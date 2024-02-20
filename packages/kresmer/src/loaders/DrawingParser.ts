@@ -6,7 +6,7 @@
  *                          Drawing file parser
 \**************************************************************************/
 
-import Kresmer from "../Kresmer";
+import Kresmer, { BackgroundImageData } from "../Kresmer";
 import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
@@ -55,7 +55,7 @@ export default class DrawingParser {
                                         width: root.getAttribute("width") ?? undefined,
                                         height: root.getAttribute("height") ?? undefined,
                                         hrefBase: root.getAttribute("href-base") ?? undefined,
-                                        backgroundImage: root.getAttribute("background-image") ?? undefined,
+                                        backgroundImage: {url: root.getAttribute("background-image") ?? ""},
                                     });
 
         for (let i = 0; i < root.children.length; i++) {
@@ -458,7 +458,7 @@ export class DrawingHeaderData {
             width?: string,
             height?: string,
             hrefBase?: string,
-            backgroundImage?: string,
+            backgroundImage?: BackgroundImageData,
         }
     ) {
         options.width && (this.width = parseFloat(options.width));
@@ -470,7 +470,7 @@ export class DrawingHeaderData {
     readonly width?: number;
     readonly height?: number;
     readonly hrefBase?: string;
-    readonly backgroundImage?: string;
+    readonly backgroundImage?: BackgroundImageData;
 }//DrawingHeaderData
 
 export type ParsedNode = 

@@ -61,7 +61,7 @@ import { BackgroundImageData } from 'kresmer';
             logicalWidth: drawingBox.width, 
             logicalHeight: drawingBox.height,
             hrefBase: hrefBase,
-            backgroundImageURL: backgroundImage.url,
+            backgroundImage: backgroundImage,
         });
         updateWindowTitle();
     }//save

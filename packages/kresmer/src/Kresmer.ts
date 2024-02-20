@@ -1243,7 +1243,7 @@ export type DrawingProps = {
     /** A common base prefix for all hrefs on the drawing */
     hrefBase?: string|undefined;
     /** An URL of the background image (if any) */
-    backgroundImageURL?: string|undefined;
+    backgroundImage?: BackgroundImageData;
 }//DrawingProps
 
 export type BackgroundImageData = {
@@ -1260,7 +1260,7 @@ class UpdateDrawingPropsOp extends EditorOperation
             logicalWidth: kresmer.logicalWidth,
             logicalHeight: kresmer.logicalHeight,
             hrefBase: kresmer.hrefBase.value,
-            backgroundImageURL: kresmer.backgroundImage.url,
+            backgroundImage: {...kresmer.backgroundImage},
         }//oldProps
     }//ctor
 
@@ -1272,7 +1272,11 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.newProps.logicalWidth && (this.kresmer.logicalWidth = this.newProps.logicalWidth);
         this.newProps.logicalHeight && (this.kresmer.logicalHeight = this.newProps.logicalHeight);
         this.newProps.hrefBase !== undefined && (this.kresmer.hrefBase.value = this.newProps.hrefBase);
-        this.newProps.backgroundImageURL !== undefined && (this.kresmer.backgroundImage.url = this.newProps.backgroundImageURL);
+        if (this.newProps.backgroundImage) {
+            for (const key in this.kresmer.backgroundImage) {
+                this.kresmer.backgroundImage[key as keyof BackgroundImageData] = this.newProps.backgroundImage[key as keyof BackgroundImageData];
+            }//for
+        }//if
     }//exec
 
     override undo(): void
@@ -1283,8 +1287,11 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.oldProps.logicalHeight != this.kresmer.logicalHeight && 
             (this.kresmer.logicalHeight = this.oldProps.logicalHeight);
         this.oldProps.hrefBase != this.kresmer.hrefBase.value && (this.kresmer.hrefBase.value = this.oldProps.hrefBase);
-        this.oldProps.backgroundImageURL != this.kresmer.backgroundImage.url && 
-            (this.kresmer.backgroundImage.url = this.oldProps.backgroundImageURL);
+        if (this.oldProps.backgroundImage) {
+            for (const key in this.kresmer.backgroundImage) {
+                this.kresmer.backgroundImage[key as keyof BackgroundImageData] = this.oldProps.backgroundImage[key as keyof BackgroundImageData];
+            }//for
+        }//if
     }//undo
 }//UpdateDrawingPropsOp
 
