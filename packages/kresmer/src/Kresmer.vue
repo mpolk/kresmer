@@ -63,13 +63,13 @@
     }//zoomedOffset
 
     const rootSVGStyle = computed(() => {
-        const style: Record<string, unknown> = {
+        let style: Record<string, unknown> = {
             marginLeft: zoomedOffset(props.controller.mountingWidth), 
             marginTop: zoomedOffset(props.controller.mountingHeight),
         }; 
 
         if (props.controller.backgroundImage.nonEmpty) {
-            style.backgroundImage = `url(${props.controller.backgroundImage.url})`;
+            style = {...style, ...props.controller.backgroundImage.cssAttr()};
         }//if
 
         return style;

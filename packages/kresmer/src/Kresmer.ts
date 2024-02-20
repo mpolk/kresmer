@@ -1244,7 +1244,7 @@ export type DrawingProps = {
     backgroundImage?: BackgroundImageData;
 }//DrawingProps
 
-type BackgroundImageView = "stretch"|"scale"|"center"|"tile";
+type BackgroundImageView = "stretch"|"cover"|"scale"|"center"|"tile";
 
 export class BackgroundImageData {
     url: string = "";
@@ -1266,6 +1266,22 @@ export class BackgroundImageData {
 
     get isEmpty() {return !this.url}
     get nonEmpty() {return Boolean(this.url)}
+
+    cssAttr()
+    {
+        if (!this.url)
+            return {};
+
+        const backgroundImage = `url(${this.url})`;
+        const {backgroundSize, backroundPosition, backgroundRepeat} =
+            this.view === "tile" ? {backgroundSize: "auto", backroundPosition: undefined, backgroundRepeat: "repeat"} :
+            this.view === "center" ? {backgroundSize: "auto", backroundPosition: "center", backgroundRepeat: "no-repeat"} :
+            this.view === "scale" ? {backgroundSize: "contain", backroundPosition: undefined, backgroundRepeat: "no-repeat"} :
+            this.view === "cover" ? {backgroundSize: "cover", backroundPosition: undefined, backgroundRepeat: "no-repeat"} :
+                {backgroundSize: "100% 100%", backroundPosition: undefined, backgroundRepeat: "no-repeat"};
+        return {backgroundImage, backgroundSize, backroundPosition, backgroundRepeat};
+    }//cssAttrs
+
 }//BackgroundImageData
 
 class UpdateDrawingPropsOp extends EditorOperation
