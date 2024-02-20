@@ -63,11 +63,16 @@
     }//zoomedOffset
 
     const rootSVGStyle = computed(() => {
-        return {
+        const style: Record<string, unknown> = {
             marginLeft: zoomedOffset(props.controller.mountingWidth), 
             marginTop: zoomedOffset(props.controller.mountingHeight),
-            backgroundImage: props.controller.backgroundImage.url ? `url(${props.controller.backgroundImage.url})` : undefined,
         }; 
+
+        if (props.controller.backgroundImage.nonEmpty) {
+            style.backgroundImage = `url(${props.controller.backgroundImage.url})`;
+        }//if
+
+        return style;
     });
 
     const mountingDims = computed(() => {

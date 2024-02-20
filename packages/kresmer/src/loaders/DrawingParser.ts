@@ -55,7 +55,7 @@ export default class DrawingParser {
                                         width: root.getAttribute("width") ?? undefined,
                                         height: root.getAttribute("height") ?? undefined,
                                         hrefBase: root.getAttribute("href-base") ?? undefined,
-                                        backgroundImage: {url: root.getAttribute("background-image") ?? ""},
+                                        backgroundImage: new BackgroundImageData({url: root.getAttribute("background-image")}),
                                     });
 
         for (let i = 0; i < root.children.length; i++) {

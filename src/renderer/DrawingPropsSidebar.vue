@@ -17,7 +17,7 @@
     import { Offcanvas } from 'bootstrap';
     import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
-import { BackgroundImageData } from 'kresmer';
+    import { BackgroundImageData } from 'kresmer';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
@@ -28,7 +28,7 @@ import { BackgroundImageData } from 'kresmer';
     let drawingName: string|undefined;
     let drawingBox: {width: number, height: number};
     let hrefBase: string|undefined;
-    const backgroundImage = reactive<BackgroundImageData>({url: ""});
+    const backgroundImage = reactive(new BackgroundImageData);
 
     const backgroundImageUrlType = ref(getURLType(backgroundImage.url));
 
@@ -37,9 +37,7 @@ import { BackgroundImageData } from 'kresmer';
         drawingName = kresmer.drawingName;
         hrefBase = kresmer.hrefBase.value;
         drawingBox = {width: kresmer.logicalWidth, height: kresmer.logicalHeight};
-        for (const key in kresmer.backgroundImage) {
-            backgroundImage[key as keyof BackgroundImageData] = kresmer.backgroundImage[key as keyof BackgroundImageData];
-        }//for
+        backgroundImage.copy(kresmer.backgroundImage);
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if

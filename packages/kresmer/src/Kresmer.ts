@@ -184,9 +184,7 @@ export default class Kresmer extends KresmerEventHooks {
     }
 
     /** Sets or returns the drawing background image URL (if exists) */
-    readonly backgroundImage = reactive<BackgroundImageData>({
-        url: "",
-    });
+    readonly backgroundImage = reactive(new BackgroundImageData);
 
     /** Drawing scale (visual) */
     get drawingScale() {
@@ -1246,13 +1244,33 @@ export type DrawingProps = {
     backgroundImage?: BackgroundImageData;
 }//DrawingProps
 
-export type BackgroundImageData = {
-    url: string,
+type BackgroundImageView = "stretch"|"scale"|"center"|"tile";
+
+export class BackgroundImageData {
+    url: string = "";
+    view: BackgroundImageView = "stretch";
+
+    constructor(anotherImage?: BackgroundImageData | {url?: string|null, view?: BackgroundImageView|null})
+    {
+        if (anotherImage) {
+            this.url = anotherImage.url ?? "";
+            this.view = anotherImage.view ?? "stretch";
+        }//if
+    }//ctor
+
+    copy(anotherImage: BackgroundImageData)
+    {
+        this.url = anotherImage.url;
+        this.view = anotherImage.view;
+    }//copy
+
+    get isEmpty() {return !this.url}
+    get nonEmpty() {return Boolean(this.url)}
 }//BackgroundImageData
 
 class UpdateDrawingPropsOp extends EditorOperation
 {
-    constructor(private readonly kresmer: Kresmer, private readonly newProps: DrawingProps)
+    constructor(private readonly kresmer: Kresmer, newProps: DrawingProps)
     {
         super();
         this.oldProps = {
@@ -1260,11 +1278,19 @@ class UpdateDrawingPropsOp extends EditorOperation
             logicalWidth: kresmer.logicalWidth,
             logicalHeight: kresmer.logicalHeight,
             hrefBase: kresmer.hrefBase.value,
-            backgroundImage: {...kresmer.backgroundImage},
+            backgroundImage: new BackgroundImageData(kresmer.backgroundImage),
+        }//oldProps
+        this.newProps = {
+            name: newProps.name,
+            logicalWidth: newProps.logicalWidth,
+            logicalHeight: newProps.logicalHeight,
+            hrefBase: newProps.hrefBase,
+            backgroundImage: new BackgroundImageData(newProps.backgroundImage),
         }//oldProps
     }//ctor
 
     private readonly oldProps: Required<DrawingProps>;
+    private readonly newProps: DrawingProps;
 
     override exec(): void
     {
@@ -1272,11 +1298,7 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.newProps.logicalWidth && (this.kresmer.logicalWidth = this.newProps.logicalWidth);
         this.newProps.logicalHeight && (this.kresmer.logicalHeight = this.newProps.logicalHeight);
         this.newProps.hrefBase !== undefined && (this.kresmer.hrefBase.value = this.newProps.hrefBase);
-        if (this.newProps.backgroundImage) {
-            for (const key in this.kresmer.backgroundImage) {
-                this.kresmer.backgroundImage[key as keyof BackgroundImageData] = this.newProps.backgroundImage[key as keyof BackgroundImageData];
-            }//for
-        }//if
+        this.newProps.backgroundImage && this.kresmer.backgroundImage.copy(this.newProps.backgroundImage);
     }//exec
 
     override undo(): void
@@ -1287,11 +1309,7 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.oldProps.logicalHeight != this.kresmer.logicalHeight && 
             (this.kresmer.logicalHeight = this.oldProps.logicalHeight);
         this.oldProps.hrefBase != this.kresmer.hrefBase.value && (this.kresmer.hrefBase.value = this.oldProps.hrefBase);
-        if (this.oldProps.backgroundImage) {
-            for (const key in this.kresmer.backgroundImage) {
-                this.kresmer.backgroundImage[key as keyof BackgroundImageData] = this.oldProps.backgroundImage[key as keyof BackgroundImageData];
-            }//for
-        }//if
+        this.oldProps.backgroundImage && this.kresmer.backgroundImage.copy(this.oldProps.backgroundImage);
     }//undo
 }//UpdateDrawingPropsOp
 
