@@ -1250,6 +1250,7 @@ export type DrawingProps = {
     hrefBase?: string|undefined;
     /** An URL of the background image (if any) */
     backgroundImage?: BackgroundImageData;
+    /** The drawing background color */
     backgroundColor?: string|undefined;
 }//DrawingProps
 

@@ -51,18 +51,14 @@ export default class DrawingParser {
             throw new DrawingParsingException("The root element does not define drawing name");
         }//if
 
-        const backgroundImageAlignment = root.getAttribute("background-image-alignment");
         yield new DrawingHeaderData(root.getAttribute("name")!, 
                                     {
                                         width: root.getAttribute("width") ?? undefined,
                                         height: root.getAttribute("height") ?? undefined,
                                         hrefBase: root.getAttribute("href-base") ?? undefined,
-                                        backgroundImage: new BackgroundImageData({
-                                            url: root.getAttribute("background-image") ?? undefined,
-                                            alignment: Object.values(BackgroundImageAlignment).includes(backgroundImageAlignment as BackgroundImageAlignment) ? 
-                                                backgroundImageAlignment as BackgroundImageAlignment : undefined,
-                                            visibility: Number(root.getAttribute("background-image-visibility")),
-                                        }),
+                                        backgroundImage: root.getAttribute("background-image") ?? undefined,
+                                        backgroundImageAlignment: root.getAttribute("background-image-alignment") ?? undefined,
+                                        backgroundImageVisibility: Number(root.getAttribute("background-image-visibility")),
                                         backgroundColor: root.getAttribute("background-color") ?? undefined,
                                     });
 
@@ -466,14 +462,22 @@ export class DrawingHeaderData {
             width?: string,
             height?: string,
             hrefBase?: string,
-            backgroundImage?: BackgroundImageData,
+            backgroundImage?: string,
+            backgroundImageAlignment?: string,
+            backgroundImageVisibility?: number,
             backgroundColor?: string,
         }
     ) {
         options.width && (this.width = parseFloat(options.width));
         options.height && (this.height = parseFloat(options.height));
         options.hrefBase && (this.hrefBase = options.hrefBase);
-        options.backgroundImage && (this.backgroundImage = options.backgroundImage);
+        options.backgroundImage && (
+            this.backgroundImage = new BackgroundImageData({
+                url: options.backgroundImage,
+                alignment: Object.values(BackgroundImageAlignment).includes(options.backgroundImageAlignment as BackgroundImageAlignment) ? 
+                    options.backgroundImageAlignment as BackgroundImageAlignment : undefined,
+                visibility: options.backgroundImageVisibility,
+            }));
         options.backgroundColor && (this.backgroundColor = options.backgroundColor);
     }//ctor
 
