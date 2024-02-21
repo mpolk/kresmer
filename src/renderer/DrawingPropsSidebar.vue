@@ -17,7 +17,7 @@
     import { Offcanvas } from 'bootstrap';
     import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
-    import { BackgroundImageData } from 'kresmer';
+    import { BackgroundImageData, BackgroundImageView } from 'kresmer';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
@@ -58,8 +58,8 @@
             name: drawingName, 
             logicalWidth: drawingBox.width, 
             logicalHeight: drawingBox.height,
-            hrefBase: hrefBase,
-            backgroundImage: backgroundImage,
+            hrefBase,
+            backgroundImage,
         });
         updateWindowTitle();
     }//save
@@ -125,26 +125,31 @@
                             <td class="p-1 align-middle">
                                 <label class="form-label text-secondary mb-0" for="inpBackgroundImage">background image</label>
                             </td>
-                            <td class="p-1 input-group">
-                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                    {{ backgroundImageUrlType }}
-                                </button>
-                                <ul class="dropdown-menu">
-                                    <li v-for="ut in URLType" :key="ut" :title="urlTypeDescriptions[ut]">
-                                        <a class="dropdown-item" href="#" @click="backgroundImageUrlType = ut">{{ ut }}</a>
-                                    </li>
-                                </ul>
-                                <button v-if="backgroundImageUrlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" 
-                                    @click="selectBackgroundImage()">
-                                    <span class="material-symbols-outlined">file_open</span>
-                                </button>
-                                <button class="btn btn-outline-secondary btn-sm" type="button" 
-                                    @click="clearBackgroundImage()">
-                                    <span class="material-symbols-outlined">close</span>
-                                </button>
-                                <input ref="propInputs" id="inpBackgroundImage"
-                                    class="form-control form-control-sm" :disabled="backgroundImageUrlType !== URLType.href" 
-                                    v-model="backgroundImage.url"/>
+                            <td class="p-1">
+                                <div class="input-group">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        {{ backgroundImageUrlType }}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li v-for="ut in URLType" :key="ut" :title="urlTypeDescriptions[ut]">
+                                            <a class="dropdown-item" href="#" @click="backgroundImageUrlType = ut">{{ ut }}</a>
+                                        </li>
+                                    </ul>
+                                    <button v-if="backgroundImageUrlType !== 'href'" class="btn btn-outline-secondary btn-sm" type="button" 
+                                        @click="selectBackgroundImage()">
+                                        <span class="material-symbols-outlined">file_open</span>
+                                    </button>
+                                    <button class="btn btn-outline-secondary btn-sm" type="button" 
+                                        @click="clearBackgroundImage()">
+                                        <span class="material-symbols-outlined">close</span>
+                                    </button>
+                                    <input ref="propInputs" id="inpBackgroundImage"
+                                        class="form-control form-control-sm" :disabled="backgroundImageUrlType !== URLType.href" 
+                                        v-model="backgroundImage.url"/>
+                                </div>
+                                <select class="form-select" v-model="backgroundImage.view">
+                                    <option v-for="view in BackgroundImageView">{{ view }}</option>
+                                </select>
                             </td>
                         </tr>
                         <tr>

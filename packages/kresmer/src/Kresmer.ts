@@ -34,6 +34,7 @@ import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./NetworkLink/LinkVertex";
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
+import { BackgroundImageData } from "./BackgroundImageData";
 
 
 /**
@@ -1244,46 +1245,6 @@ export type DrawingProps = {
     backgroundImage?: BackgroundImageData;
 }//DrawingProps
 
-type BackgroundImageView = "stretch"|"cover"|"scale"|"center"|"tile";
-
-export class BackgroundImageData {
-    url: string = "";
-    view: BackgroundImageView = "stretch";
-
-    constructor(anotherImage?: BackgroundImageData | {url?: string|null, view?: BackgroundImageView|null})
-    {
-        if (anotherImage) {
-            this.url = anotherImage.url ?? "";
-            this.view = anotherImage.view ?? "stretch";
-        }//if
-    }//ctor
-
-    copy(anotherImage: BackgroundImageData)
-    {
-        this.url = anotherImage.url;
-        this.view = anotherImage.view;
-    }//copy
-
-    get isEmpty() {return !this.url}
-    get nonEmpty() {return Boolean(this.url)}
-
-    cssAttr()
-    {
-        if (!this.url)
-            return {};
-
-        const backgroundImage = `url(${this.url})`;
-        const {backgroundSize, backroundPosition, backgroundRepeat} =
-            this.view === "tile" ? {backgroundSize: "auto", backroundPosition: undefined, backgroundRepeat: "repeat"} :
-            this.view === "center" ? {backgroundSize: "auto", backroundPosition: "center", backgroundRepeat: "no-repeat"} :
-            this.view === "scale" ? {backgroundSize: "contain", backroundPosition: undefined, backgroundRepeat: "no-repeat"} :
-            this.view === "cover" ? {backgroundSize: "cover", backroundPosition: undefined, backgroundRepeat: "no-repeat"} :
-                {backgroundSize: "100% 100%", backroundPosition: undefined, backgroundRepeat: "no-repeat"};
-        return {backgroundImage, backgroundSize, backroundPosition, backgroundRepeat};
-    }//cssAttrs
-
-}//BackgroundImageData
-
 class UpdateDrawingPropsOp extends EditorOperation
 {
     constructor(private readonly kresmer: Kresmer, newProps: DrawingProps)
@@ -1375,3 +1336,4 @@ export {default as KresmerException, LibraryImportException} from "./KresmerExce
 export {default as KresmerParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPoint";
 export type {DrawingMergeOptions} from "./loaders/DrawingLoader";
+export {BackgroundImageData, BackgroundImageView} from "./BackgroundImageData";

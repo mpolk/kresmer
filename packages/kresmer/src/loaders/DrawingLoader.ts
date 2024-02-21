@@ -6,7 +6,7 @@
  *                  A loader for the drawing files
 \**************************************************************************/
 
-import Kresmer, { BackgroundImageData } from "../Kresmer";
+import Kresmer from "../Kresmer";
 import DrawingParser, { DrawingHeaderData } from "./DrawingParser";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
 import NetworkLink from "../NetworkLink/NetworkLink";
@@ -138,7 +138,7 @@ export default class DrawingLoader {
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}"\
  ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}\
- ${this.kresmer.backgroundImage.url ? `background-image="${this.kresmer.backgroundImage.url}"` : ''}>
+ ${this.kresmer.backgroundImage.toXML()}>
 `;
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {

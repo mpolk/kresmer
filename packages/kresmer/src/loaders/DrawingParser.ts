@@ -6,7 +6,8 @@
  *                          Drawing file parser
 \**************************************************************************/
 
-import Kresmer, { BackgroundImageData } from "../Kresmer";
+import Kresmer from "../Kresmer";
+import { BackgroundImageData, BackgroundImageView } from "../BackgroundImageData";
 import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
@@ -50,12 +51,17 @@ export default class DrawingParser {
             throw new DrawingParsingException("The root element does not define drawing name");
         }//if
 
+        const backgroundImageView = root.getAttribute("background-image-view");
         yield new DrawingHeaderData(root.getAttribute("name")!, 
                                     {
                                         width: root.getAttribute("width") ?? undefined,
                                         height: root.getAttribute("height") ?? undefined,
                                         hrefBase: root.getAttribute("href-base") ?? undefined,
-                                        backgroundImage: new BackgroundImageData({url: root.getAttribute("background-image")}),
+                                        backgroundImage: new BackgroundImageData({
+                                            url: root.getAttribute("background-image"),
+                                            view: Object.values(BackgroundImageView).includes(backgroundImageView as BackgroundImageView) ? 
+                                                backgroundImageView as BackgroundImageView : undefined,
+                                        }),
                                     });
 
         for (let i = 0; i < root.children.length; i++) {
