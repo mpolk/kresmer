@@ -9,17 +9,26 @@
 export class BackgroundImageData {
     url: string = "";
     view = BackgroundImageView.STRECH;
+    opacity = 1.0;
 
-    constructor(anotherImage?: BackgroundImageData | { url?: string | null; view?: BackgroundImageView | null; }) {
+    constructor(anotherImage?: BackgroundImageData | 
+                               {
+                                   url?: string | null,
+                                   view?: BackgroundImageView | null,
+                                   opacity?: number | null,
+                               }
+    ) {
         if (anotherImage) {
             this.url = anotherImage.url ?? "";
             this.view = anotherImage.view ?? BackgroundImageView.STRECH;
+            this.opacity = anotherImage.opacity ?? 1;
         } //if
     } //ctor
 
     copy(anotherImage: BackgroundImageData) {
         this.url = anotherImage.url;
         this.view = anotherImage.view;
+        this.opacity = anotherImage.opacity;
     } //copy
 
     get isEmpty() { return !this.url; }
@@ -44,7 +53,7 @@ export class BackgroundImageData {
         if (!this.url)
             return "";
 
-        return `background-image="${this.url}" background-image-view="${this.view}"`;
+        return `background-image="${this.url}" background-image-view="${this.view}" background-image-opacity="${this.opacity}"`;
     }//toXML
 
 } //BackgroundImageData

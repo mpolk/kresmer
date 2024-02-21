@@ -190,6 +190,9 @@
         </defs>
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 
+        <!-- Background mask -->
+        <rect v-if="rootSVG" v-bind="rulerBox" style="pointer-events: none;" fill="white" :opacity="1 - controller.backgroundImage.opacity" />
+
         <template v-if="controller.showGrid">
             <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10)" :key="`x-grid${x}`">
                 <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"
