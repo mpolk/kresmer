@@ -9,26 +9,26 @@
 export class BackgroundImageData {
     url: string = "";
     view = BackgroundImageView.STRECH;
-    opacity = 1.0;
+    visibility = 1.0;
 
     constructor(anotherImage?: BackgroundImageData | 
                                {
                                    url?: string | null,
                                    view?: BackgroundImageView | null,
-                                   opacity?: number | null,
+                                   visibility?: number | null,
                                }
     ) {
         if (anotherImage) {
             this.url = anotherImage.url ?? "";
             this.view = anotherImage.view ?? BackgroundImageView.STRECH;
-            this.opacity = anotherImage.opacity ?? 1;
+            this.visibility = anotherImage.visibility ?? 1;
         } //if
     } //ctor
 
     copy(anotherImage: BackgroundImageData) {
         this.url = anotherImage.url;
         this.view = anotherImage.view;
-        this.opacity = anotherImage.opacity;
+        this.visibility = anotherImage.visibility;
     } //copy
 
     get isEmpty() { return !this.url; }
@@ -53,7 +53,7 @@ export class BackgroundImageData {
         if (!this.url)
             return "";
 
-        return `background-image="${this.url}" background-image-view="${this.view}" background-image-opacity="${this.opacity}"`;
+        return `background-image="${this.url}" background-image-view="${this.view}" background-image-visibility="${this.visibility}"`;
     }//toXML
 
 } //BackgroundImageData

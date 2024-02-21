@@ -61,7 +61,7 @@ export default class DrawingParser {
                                             url: root.getAttribute("background-image"),
                                             view: Object.values(BackgroundImageView).includes(backgroundImageView as BackgroundImageView) ? 
                                                 backgroundImageView as BackgroundImageView : undefined,
-                                            opacity: Number(root.getAttribute("background-image-opacity")),
+                                            visibility: Number(root.getAttribute("background-image-visibility")),
                                         }),
                                     });
 

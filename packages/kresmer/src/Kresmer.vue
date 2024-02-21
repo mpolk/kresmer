@@ -117,7 +117,7 @@
         return xs;
     }//rulerMarkings
 
-    const tensMarkingsLength = 5, fiftiesMarkingsLength = 8, hundredsMarkingsLength = 12;
+    const tensMarkingLength = 5, fiftiesMarkingLength = 8, hundredsMarkingLength = 12;
 
     const styles = computed(() => {
         return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
@@ -176,14 +176,18 @@
         @mouseenter.self="onMouseEnter"
         @mouseleave.self="onMouseLeave"
         >
+        <!-- Definitions-->
         <defs>
+            <!-- ...global -->
             <TransformBoxFilters />
             <NetworkLinkFilters />
             <ConnectionPointFilters />
             <component v-for="(_, i) in controller.defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
+            <!-- ...component-specific -->
             <template v-for="_class of controller.registeredComponentClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
+            <!-- ...link-specific -->
             <template v-for="_class of controller.registeredLinkClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
@@ -191,8 +195,9 @@
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 
         <!-- Background mask -->
-        <rect v-if="rootSVG" v-bind="rulerBox" style="pointer-events: none;" fill="white" :opacity="1 - controller.backgroundImage.opacity" />
+        <rect v-if="rootSVG" v-bind="rulerBox" style="pointer-events: none;" fill="white" :opacity="1 - controller.backgroundImage.visibility" />
 
+        <!-- Grid -->
         <template v-if="controller.showGrid">
             <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10)" :key="`x-grid${x}`">
                 <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"
@@ -209,6 +214,7 @@
                     />
             </template>
         </template>
+        <!-- Rulers -->
         <template v-if="controller.showRulers">
             <g class="rulers">
                 <rect class="axis" v-bind="rulerBox"/>
@@ -216,47 +222,48 @@
                       x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
                 <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10, 50)" :key="`tx-marking${x}`">
                     <line class="marking" :x1="x" :y1="rulerBox.y" 
-                                          :x2="x" :y2="rulerBox.y + tensMarkingsLength"/>
+                                          :x2="x" :y2="rulerBox.y + tensMarkingLength"/>
                     <line class="marking" :x1="x" :y1="rulerBox.y + rulerBox.height" 
-                                          :x2="x" :y2="rulerBox.y + rulerBox.height - tensMarkingsLength"/>
+                                          :x2="x" :y2="rulerBox.y + rulerBox.height - tensMarkingLength"/>
                 </template>
                 <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 50, 100)" :key="`fx-marking${x}`">
                     <line class="marking" :x1="x" :y1="rulerBox.y" 
-                                          :x2="x" :y2="rulerBox.y + fiftiesMarkingsLength"/>
+                                          :x2="x" :y2="rulerBox.y + fiftiesMarkingLength"/>
                     <line class="marking" :x1="x" :y1="rulerBox.y + rulerBox.height" 
-                                          :x2="x" :y2="rulerBox.y + rulerBox.height - fiftiesMarkingsLength"/>
+                                          :x2="x" :y2="rulerBox.y + rulerBox.height - fiftiesMarkingLength"/>
                 </template>
                 <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 100)" :key="`hx-marking${x}`">
                     <line class="marking" :x1="x" :y1="rulerBox.y" 
-                                          :x2="x" :y2="rulerBox.y + hundredsMarkingsLength"/>
-                    <text class="marking-text top" :x="x" :y="rulerBox.y + hundredsMarkingsLength * 1.2">{{ x }}</text>
+                                          :x2="x" :y2="rulerBox.y + hundredsMarkingLength"/>
+                    <text class="marking-text top" :x="x" :y="rulerBox.y + hundredsMarkingLength * 1.2">{{ x }}</text>
                     <line class="marking" :x1="x" :y1="rulerBox.y + rulerBox.height" 
-                                          :x2="x" :y2="rulerBox.y + rulerBox.height - hundredsMarkingsLength"/>
-                    <text class="marking-text bottom" :x="x" :y="rulerBox.y + rulerBox.height - hundredsMarkingsLength * 1.2">{{ x }}</text>
+                                          :x2="x" :y2="rulerBox.y + rulerBox.height - hundredsMarkingLength"/>
+                    <text class="marking-text bottom" :x="x" :y="rulerBox.y + rulerBox.height - hundredsMarkingLength * 1.2">{{ x }}</text>
                 </template>
                 <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 10, 50)" :key="`ty-marking${y}`">
                     <line class="marking" :x1="rulerBox.x" :y1="y" 
-                                          :x2="rulerBox.x + tensMarkingsLength" :y2="y"/>
+                                          :x2="rulerBox.x + tensMarkingLength" :y2="y"/>
                     <line class="marking" :x1="rulerBox.x + rulerBox.width" :y1="y" 
-                                          :x2="rulerBox.x + rulerBox.width - tensMarkingsLength" :y2="y"/>
+                                          :x2="rulerBox.x + rulerBox.width - tensMarkingLength" :y2="y"/>
                 </template>
                 <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 50, 100)" :key="`fy-marking${y}`">
                     <line class="marking" :x1="rulerBox.x" :y1="y" 
-                                          :x2="rulerBox.x + fiftiesMarkingsLength" :y2="y"/>
+                                          :x2="rulerBox.x + fiftiesMarkingLength" :y2="y"/>
                     <line class="marking" :x1="rulerBox.x + rulerBox.width" :y1="y" 
-                                          :x2="rulerBox.x + rulerBox.width - fiftiesMarkingsLength" :y2="y"/>
+                                          :x2="rulerBox.x + rulerBox.width - fiftiesMarkingLength" :y2="y"/>
                 </template>
                 <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, 100)" :key="`hy-marking${y}`">
                     <line class="marking" :x1="rulerBox.x" :y1="y" 
-                                          :x2="rulerBox.x + hundredsMarkingsLength" :y2="y"/>
-                    <text class="marking-text left" :x="rulerBox.x + hundredsMarkingsLength * 1.2" :y="y">{{ y }}</text>
+                                          :x2="rulerBox.x + hundredsMarkingLength" :y2="y"/>
+                    <text class="marking-text left" :x="rulerBox.x + hundredsMarkingLength * 1.2" :y="y">{{ y }}</text>
                     <line class="marking" :x1="rulerBox.x + rulerBox.width" :y1="y" 
-                                          :x2="rulerBox.x + rulerBox.width - hundredsMarkingsLength" :y2="y"/>
-                    <text class="marking-text right" :x="rulerBox.x + rulerBox.width - hundredsMarkingsLength * 1.2" :y="y">{{ y }}</text>
+                                          :x2="rulerBox.x + rulerBox.width - hundredsMarkingLength" :y2="y"/>
+                    <text class="marking-text right" :x="rulerBox.x + rulerBox.width - hundredsMarkingLength * 1.2" :y="y">{{ y }}</text>
                 </template>
             </g>
         </template>
 
+        <!-- Components -->
         <NetworkComponentHolder 
             v-for="componentController in controller.networkComponents.sorted" 
             :key="`networkComponent${componentController.component.id}`" :controller="componentController"
@@ -268,6 +275,7 @@
             </component>
         </NetworkComponentHolder>
 
+        <!-- Links -->
         <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.props" :key="`link${link.id}`" :model="link" />
         <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
     </svg>

@@ -147,10 +147,13 @@
                                         class="form-control form-control-sm" :disabled="backgroundImageUrlType !== URLType.href" 
                                         v-model="backgroundImage.url"/>
                                 </div>
-                                <select class="form-select form-select-inline" v-model="backgroundImage.view">
-                                    <option v-for="view in BackgroundImageView">{{ view }}</option>
-                                </select>
-                                <input type="range" min="0" max="1" step="0.1" class="form-input form-input-inline" v-model="backgroundImage.opacity" />
+                                <div class="input-group">
+                                    <select class="form-select" v-model="backgroundImage.view" title="Background image alignment">
+                                        <option v-for="view in BackgroundImageView">{{ view }}</option>
+                                    </select>
+                                    <input type="range" min="0" max="1" step="0.05" class="form-input ms-2" title="Background image visibility"
+                                        v-model="backgroundImage.visibility" />
+                                </div>
                             </td>
                         </tr>
                         <tr>
