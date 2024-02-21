@@ -29,6 +29,7 @@
     let drawingBox: {width: number, height: number};
     let hrefBase: string|undefined;
     const backgroundImage = reactive(new BackgroundImageData);
+    let backgroundColor: string|undefined;
 
     const backgroundImageUrlType = ref(getURLType(backgroundImage.url));
 
@@ -38,6 +39,8 @@
         hrefBase = kresmer.hrefBase.value;
         drawingBox = {width: kresmer.logicalWidth, height: kresmer.logicalHeight};
         backgroundImage.copy(kresmer.backgroundImage);
+        backgroundColor = kresmer.backgroundColor;
+
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
         }//if
@@ -60,6 +63,7 @@
             logicalHeight: drawingBox.height,
             hrefBase,
             backgroundImage,
+            backgroundColor
         });
         updateWindowTitle();
     }//save
@@ -159,6 +163,15 @@
                                     <input type="range" min="0" max="1" step="0.05" class="form-range ms-2" title="Background image visibility"
                                         v-model="backgroundImage.visibility" />
                                 </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="p-1 align-middle">
+                                <label class="form-label text-secondary mb-0" for="inpBackgroundColor">background color</label>
+                            </td>
+                            <td class="p-1">
+                                <input type="color" id="inpBackgroundColor" class="form-control form-control-sm border-0"
+                                    v-model="backgroundColor"/>
                             </td>
                         </tr>
                         <tr>

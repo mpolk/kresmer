@@ -289,7 +289,7 @@ import { selectOrLoadGraphicsFile } from './renderer-main';
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-control form-control-sm text-secondary border-0" readonly
                 :value="JSON.stringify(propToEdit.value)"/>
-            <div v-else-if="propToEdit.subtype === 'image-url'" class="input-group">
+            <div v-else-if="propToEdit.subtype === 'image-url'" class="input-group input-group-sm">
                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                     {{ urlType }}
                 </button>

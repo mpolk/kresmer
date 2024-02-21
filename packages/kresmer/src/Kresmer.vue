@@ -66,6 +66,7 @@
         let style: Record<string, unknown> = {
             marginLeft: zoomedOffset(props.controller.mountingWidth), 
             marginTop: zoomedOffset(props.controller.mountingHeight),
+            backgroundColor: props.controller.backgroundColor,
         }; 
 
         if (props.controller.backgroundImage.nonEmpty) {
@@ -195,7 +196,8 @@
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 
         <!-- Background mask -->
-        <rect v-if="rootSVG" v-bind="rulerBox" style="pointer-events: none;" fill="white" :opacity="1 - controller.backgroundImage.visibility" />
+        <rect v-if="rootSVG" v-bind="rulerBox" style="pointer-events: none;" :fill="controller.backgroundColor" 
+            :opacity="1 - controller.backgroundImage.visibility" />
 
         <!-- Grid -->
         <template v-if="controller.showGrid">
