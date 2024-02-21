@@ -167,17 +167,9 @@
         <template>
             <title>{{title}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
-            <template v-if="entrancesLayout === 'bottom-ccw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
-            </template>
-            <template v-else-if="entrancesLayout === 'bottom-cw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="h" v-bind:w="entrW" v-bind:number="i"/>
-            </template>
-            <template v-else-if="entrancesLayout === 'top-ccw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (nEntrances - i + 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
-            </template>
-            <template v-else-if="entrancesLayout === 'top-cw'">
-                <Kre:Entrance v-for="i in nEntrances" v-bind:x="entrStep * (i - 0.5)" v-bind:y="0" v-bind:w="entrW" align="top" v-bind:number="i"/>
+            <template v-for="i in nEntrances">
+                <Kre:Entrance v-bind="entrancePos(i)" v-bind:w="entrW" v-bind:number="i"/>
+                <connection-point v-bind:name="i" v-bind:x="entrancePos(i).x" v-bind:y="h/2"/>
             </template>
             <Kre:NFloorsLabel v-if="nFloors" v-bind="labelPos(nFloorsPosition)" v-bind:h="h/3" 
                 v-bind:n-floors="nFloors" v-bind:roof-shape="roofShape"/>
@@ -199,6 +191,17 @@
             <computed-prop name="entrW">cp$.entrStep/4</computed-prop>
             <computed-prop name="numberFontSize">props.h/3</computed-prop>
         </computed-props>
+        <functions>
+            <function name="entrancePos" params="i">
+                switch (props.entrancesLayout) {
+                    case "bottom-ccw": return {x: cp$.entrStep * (i - 0.5), y: props.h, align: "bottom"};
+                    case "bottom-cw": return {x: cp$.entrStep * (props.nEntrances - i + 0.5), y: props.h, align: "bottom"};
+                    case "top-ccw": return {x: cp$.entrStep * (props.nEntrances - i + 0.5), y: 0, align: "top"};
+                    case "top-cw": return {x: cp$.entrStep * (i - 0.5), y: 0, align: "top"};
+                }//switch
+                return undefined;
+            </function>
+        </functions>
     </component-class>
     
     <!-- L-shaped building:  
