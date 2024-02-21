@@ -11,13 +11,8 @@ export class BackgroundImageData {
     alignment = BackgroundImageAlignment.STRECH;
     visibility = 1.0;
 
-    constructor(anotherImage?: BackgroundImageData | 
-                               {
-                                   url?: string | null,
-                                   alignment?: BackgroundImageAlignment | null,
-                                   visibility?: number | null,
-                               }
-    ) {
+    constructor(anotherImage?: BackgroundImageData | BackgroundImageRawData) 
+    {
         if (anotherImage) {
             this.url = anotherImage.url ?? "";
             this.alignment = anotherImage.alignment ?? BackgroundImageAlignment.STRECH;
@@ -57,6 +52,9 @@ export class BackgroundImageData {
     }//toXML
 
 } //BackgroundImageData
+
+interface IBackgroundImageRawData extends BackgroundImageData {}
+export type BackgroundImageRawData = Partial<IBackgroundImageRawData>;
 
 export enum BackgroundImageAlignment {
     STRECH = "stretch",

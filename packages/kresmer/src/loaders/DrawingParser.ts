@@ -58,7 +58,7 @@ export default class DrawingParser {
                                         height: root.getAttribute("height") ?? undefined,
                                         hrefBase: root.getAttribute("href-base") ?? undefined,
                                         backgroundImage: new BackgroundImageData({
-                                            url: root.getAttribute("background-image"),
+                                            url: root.getAttribute("background-image") ?? undefined,
                                             alignment: Object.values(BackgroundImageAlignment).includes(backgroundImageAlignment as BackgroundImageAlignment) ? 
                                                 backgroundImageAlignment as BackgroundImageAlignment : undefined,
                                             visibility: Number(root.getAttribute("background-image-visibility")),
