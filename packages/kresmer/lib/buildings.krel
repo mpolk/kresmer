@@ -218,29 +218,13 @@
         <template>
             <title>{{title}}</title>
             <polygon v-bind:points="`0,0 0,${h} ${w1},${h} ${w1},${h2} ${w},${h2} ${w},0`" class="building" v-bind:class="material" />
-            <template v-if="entrancesLayout === 'inside-ccw'">
-                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="w1" v-bind:y="h - entrStep1 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="i" align="right"/>
-                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="h2" v-bind:x="w1 + entrStep2 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="nEntrances1 + i" align="bottom"/>
-            </template>
-            <template v-else-if="entrancesLayout === 'inside-cw'">
-                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="h2" v-bind:x="w - entrStep2 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="i" align="bottom"/>
-                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="w1" v-bind:y="h2 + entrStep1 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="nEntrances2 + i" align="right"/>
-            </template>
-            <template v-else-if="entrancesLayout === 'outside-ccw'">
-                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="0" v-bind:x="w - entrStep2 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="i" align="top"/>
-                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="0" v-bind:y="entrStep1 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="nEntrances2 + i" align="left"/>
-            </template>
-            <template v-else-if="entrancesLayout === 'outside-cw'">
-                <Kre:Entrance v-for="i in nEntrances1" v-bind:x="0" v-bind:y="h - entrStep1 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="i" align="left"/>
-                <Kre:Entrance v-for="i in nEntrances2" v-bind:y="0" v-bind:x="entrStep2 * (i - 0.5)" v-bind:w="entrW" 
-                    v-bind:number="nEntrances1 + i" align="top"/>
+            <template  v-for="i in nEntrances">
+                <Kre:Entrance v-bind="entrancePos(i)" v-bind:w="entrW" v-bind:number="i"/>
+                <connection-point 
+                    v-if="(entrancesLayout==='outside-cw' || entrancesLayout==='inside-ccw') &amp;&amp; (i &lt;= nEntrances1) ||
+                          (entrancesLayout==='outside-ccw' || entrancesLayout==='inside-cw') &amp;&amp; (i &gt; nEntrances2)"
+                    v-bind:x="w1/2" v-bind:y="entrancePos(i).y" v-bind:name="i"/>
+                <connection-point v-else="" v-bind:x="entrancePos(i).x" v-bind:y="h2/2" v-bind:name="i"/>
             </template>
             <Kre:NFloorsLabel v-if="nFloors" v-bind="labelPos(nFloorsPosition)" v-bind:h="h2/3" 
                 v-bind:n-floors="nFloors" v-bind:roof-shape="roofShape"/>
@@ -264,6 +248,27 @@
             <prop name="nFloorsPosition" type="String" choices="m, c1, c2, nw, n, ne, e1, e2, se1, se2, s1, s2, sw, w" default="w"/>
         </props>
         <functions>
+            <function name="entrancePos" params="i">
+                switch (props.entrancesLayout) {
+                    case "inside-ccw": if (i &lt;= props.nEntrances1)
+                            return {x: props.w1, y: props.h - cp$.entrStep1 * (i-0.5), align: "right"};
+                        else 
+                            return {x: props.w1 + cp$.entrStep2 * (i-props.nEntrances1-0.5), y: props.h2, align: "bottom"};
+                    case "inside-cw": if (i &lt;= props.nEntrances2)
+                            return {x: props.w - cp$.entrStep2 * (i-0.5), y: props.h2, align: "bottom"};
+                        else 
+                            return {x: props.w1, y: props.h2 + cp$.entrStep1 * (i-props.nEntrances2-0.5), align: "right"};
+                    case "outside-ccw": if (i &lt;= props.nEntrances2)
+                            return {x: props.w - cp$.entrStep2 * (i-0.5), y: 0, align: "top"};
+                        else 
+                            return {x: 0, y: cp$.entrStep1 * (i-props.nEntrances2-0.5), align: "left"};
+                    case "outside-cw": if (i &lt;= props.nEntrances1)
+                            return {x: 0, y: props.h - cp$.entrStep1 * (i-0.5), align: "left"};
+                        else 
+                            return {x: cp$.entrStep2 * (i-props.nEntrances1-0.5), y: 0, align: "top"};
+                }//switch
+                return undefined;
+            </function>
             <function name="labelPosBase" params="posCode">
                 const result = 
                     posCode === "sw"  ? {x: props.w*0.02,  y: props.h - props.h2*0.02, align: "left",   valign: "bottom"} :
