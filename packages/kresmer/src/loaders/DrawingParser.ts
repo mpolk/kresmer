@@ -474,7 +474,7 @@ export class DrawingHeaderData {
         options.backgroundImage && (
             this.backgroundImage = new BackgroundImageData({
                 url: options.backgroundImage,
-                alignment: Object.values(BackgroundImageAlignment).includes(options.backgroundImageAlignment as BackgroundImageAlignment) ? 
+                alignment: Object.values(BackgroundImageAlignment).includes(options.backgroundImageAlignment as any) ? 
                     options.backgroundImageAlignment as BackgroundImageAlignment : undefined,
                 visibility: options.backgroundImageVisibility,
             }));
