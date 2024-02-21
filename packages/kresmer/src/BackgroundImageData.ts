@@ -8,26 +8,26 @@
 
 export class BackgroundImageData {
     url: string = "";
-    view = BackgroundImageView.STRECH;
+    alignment = BackgroundImageAlignment.STRECH;
     visibility = 1.0;
 
     constructor(anotherImage?: BackgroundImageData | 
                                {
                                    url?: string | null,
-                                   view?: BackgroundImageView | null,
+                                   alignment?: BackgroundImageAlignment | null,
                                    visibility?: number | null,
                                }
     ) {
         if (anotherImage) {
             this.url = anotherImage.url ?? "";
-            this.view = anotherImage.view ?? BackgroundImageView.STRECH;
+            this.alignment = anotherImage.alignment ?? BackgroundImageAlignment.STRECH;
             this.visibility = anotherImage.visibility ?? 1;
         } //if
     } //ctor
 
     copy(anotherImage: BackgroundImageData) {
         this.url = anotherImage.url;
-        this.view = anotherImage.view;
+        this.alignment = anotherImage.alignment;
         this.visibility = anotherImage.visibility;
     } //copy
 
@@ -40,10 +40,10 @@ export class BackgroundImageData {
 
         const backgroundImage = `url(${this.url})`;
         const { backgroundSize, backgroundPosition, backgroundRepeat } = 
-            this.view === "tile" ?   { backgroundSize: "auto",      backgroundPosition: undefined, backgroundRepeat: "repeat" } :
-            this.view === "center" ? { backgroundSize: "auto",      backgroundPosition: "center",  backgroundRepeat: "no-repeat" } :
-            this.view === "scale" ?  { backgroundSize: "contain",   backgroundPosition: "center",  backgroundRepeat: "no-repeat" } :
-            this.view === "cover" ?  { backgroundSize: "cover",     backgroundPosition: undefined, backgroundRepeat: "no-repeat" } :
+            this.alignment === "tile" ?   { backgroundSize: "auto",      backgroundPosition: undefined, backgroundRepeat: "repeat" } :
+            this.alignment === "center" ? { backgroundSize: "auto",      backgroundPosition: "center",  backgroundRepeat: "no-repeat" } :
+            this.alignment === "scale" ?  { backgroundSize: "contain",   backgroundPosition: "center",  backgroundRepeat: "no-repeat" } :
+            this.alignment === "cover" ?  { backgroundSize: "cover",     backgroundPosition: undefined, backgroundRepeat: "no-repeat" } :
                                      { backgroundSize: "100% 100%", backgroundPosition: undefined, backgroundRepeat: "no-repeat" };
         return { backgroundImage, backgroundSize, backgroundPosition, backgroundRepeat };
     } //cssAttrs
@@ -53,15 +53,15 @@ export class BackgroundImageData {
         if (!this.url)
             return "";
 
-        return `background-image="${this.url}" background-image-view="${this.view}" background-image-visibility="${this.visibility}"`;
+        return `background-image="${this.url}" background-image-alignment="${this.alignment}" background-image-visibility="${this.visibility}"`;
     }//toXML
 
 } //BackgroundImageData
 
-export enum BackgroundImageView {
+export enum BackgroundImageAlignment {
     STRECH = "stretch",
     COVER = "cover",
     SCALE = "scale",
     CENTER = "center",
     TILE = "tile"
-} //BackgroundImageView
+} //BackgroundImageAlignment

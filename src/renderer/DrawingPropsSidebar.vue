@@ -17,7 +17,7 @@
     import { Offcanvas } from 'bootstrap';
     import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
-    import { BackgroundImageData, BackgroundImageView } from 'kresmer';
+    import { BackgroundImageData, BackgroundImageAlignment } from 'kresmer';
 
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
@@ -126,7 +126,7 @@
                                 <label class="form-label text-secondary mb-0" for="inpBackgroundImage">background image</label>
                             </td>
                             <td class="p-1">
-                                <div class="input-group">
+                                <div class="input-group input-group-sm">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                         {{ backgroundImageUrlType }}
                                     </button>
@@ -147,11 +147,16 @@
                                         class="form-control form-control-sm" :disabled="backgroundImageUrlType !== URLType.href" 
                                         v-model="backgroundImage.url"/>
                                 </div>
-                                <div class="input-group">
-                                    <select class="form-select" v-model="backgroundImage.view" title="Background image alignment">
-                                        <option v-for="view in BackgroundImageView">{{ view }}</option>
-                                    </select>
-                                    <input type="range" min="0" max="1" step="0.05" class="form-input ms-2" title="Background image visibility"
+                                <div class="input-group input-group-sm flex-nowrap">
+                                    <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                        {{ backgroundImage.alignment }}
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li v-for="alignment in BackgroundImageAlignment" :key="alignment">
+                                            <a class="dropdown-item" href="#" @click="backgroundImage.alignment = alignment">{{ alignment }}</a>
+                                        </li>
+                                    </ul>
+                                    <input type="range" min="0" max="1" step="0.05" class="form-range ms-2" title="Background image visibility"
                                         v-model="backgroundImage.visibility" />
                                 </div>
                             </td>

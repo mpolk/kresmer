@@ -64,7 +64,9 @@
             <xs:attribute name="height" type="xs:float" />
             <xs:attribute name="href-base"/>
             <xs:attribute name="background-image"/>
-            <xs:attribute name="background-image-view"/>
+            <xs:attribute name="background-image-alignment"/>
+            <xs:attribute name="background-image-visibility"/>
+            <xs:attribute name="background-color"/>
         </xs:complexType>
     </xs:element>
 

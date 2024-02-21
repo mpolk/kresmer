@@ -138,8 +138,8 @@ export default class DrawingLoader {
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}"\
  ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}\
- ${this.kresmer.backgroundImage.toXML()}>
-`;
+ ${this.kresmer.backgroundImage.toXML()} ${`background-color="${this.kresmer.backgroundColor}"`}\
+ >`;
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
             xml += controller.toXML(1) + "\n\n";

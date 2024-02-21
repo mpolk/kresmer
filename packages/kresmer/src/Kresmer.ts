@@ -48,7 +48,8 @@ export default class Kresmer extends KresmerEventHooks {
         mountingHeight?: number | string,
         logicalWidth?: number,
         logicalHeight?: number,
-        backgroundImageURL?: string,
+        backgroundImage?: BackgroundImageData,
+        backgroundColor?: string,
         isEditable?: boolean,
         showRulers?: boolean,
         showGrid?: boolean,
@@ -78,7 +79,8 @@ export default class Kresmer extends KresmerEventHooks {
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
         options?.hrefBase && (this.hrefBase.value = options.hrefBase);
         options?.streetAddressFormat && (this.streetAddressFormat = options.streetAddressFormat);
-        options?.backgroundImageURL && (this.backgroundImage.url = options.backgroundImageURL);
+        options?.backgroundImage && (this.backgroundImage.copy(options.backgroundImage));
+        options?.backgroundColor && (this.backgroundColor = options.backgroundColor);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -184,8 +186,13 @@ export default class Kresmer extends KresmerEventHooks {
         nextTick(this.notifyOfScaleChange);
     }
 
-    /** Sets or returns the drawing background image URL (if exists) */
+    /** Sets or returns the drawing background image (if exists) */
     readonly backgroundImage = reactive(new BackgroundImageData);
+
+    private readonly _backgroundColor = ref("#ffffff");
+    /** Sets or returns the drawing background color */
+    get backgroundColor() {return this._backgroundColor.value}
+    set backgroundColor(newColor: string) {this._backgroundColor.value = newColor}
 
     /** Drawing scale (visual) */
     get drawingScale() {
@@ -1243,6 +1250,7 @@ export type DrawingProps = {
     hrefBase?: string|undefined;
     /** An URL of the background image (if any) */
     backgroundImage?: BackgroundImageData;
+    backgroundColor?: string|undefined;
 }//DrawingProps
 
 class UpdateDrawingPropsOp extends EditorOperation
@@ -1256,6 +1264,7 @@ class UpdateDrawingPropsOp extends EditorOperation
             logicalHeight: kresmer.logicalHeight,
             hrefBase: kresmer.hrefBase.value,
             backgroundImage: new BackgroundImageData(kresmer.backgroundImage),
+            backgroundColor: kresmer.backgroundColor,
         }//oldProps
         this.newProps = {
             name: newProps.name,
@@ -1263,6 +1272,7 @@ class UpdateDrawingPropsOp extends EditorOperation
             logicalHeight: newProps.logicalHeight,
             hrefBase: newProps.hrefBase,
             backgroundImage: new BackgroundImageData(newProps.backgroundImage),
+            backgroundColor: newProps.backgroundColor,
         }//oldProps
     }//ctor
 
@@ -1276,6 +1286,7 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.newProps.logicalHeight && (this.kresmer.logicalHeight = this.newProps.logicalHeight);
         this.newProps.hrefBase !== undefined && (this.kresmer.hrefBase.value = this.newProps.hrefBase);
         this.newProps.backgroundImage && this.kresmer.backgroundImage.copy(this.newProps.backgroundImage);
+        this.newProps.backgroundColor && (this.kresmer.backgroundColor = this.newProps.backgroundColor);
     }//exec
 
     override undo(): void
@@ -1286,7 +1297,8 @@ class UpdateDrawingPropsOp extends EditorOperation
         this.oldProps.logicalHeight != this.kresmer.logicalHeight && 
             (this.kresmer.logicalHeight = this.oldProps.logicalHeight);
         this.oldProps.hrefBase != this.kresmer.hrefBase.value && (this.kresmer.hrefBase.value = this.oldProps.hrefBase);
-        this.oldProps.backgroundImage && this.kresmer.backgroundImage.copy(this.oldProps.backgroundImage);
+        this.kresmer.backgroundImage.copy(this.oldProps.backgroundImage);
+        this.oldProps.backgroundColor != this.kresmer.backgroundColor && (this.kresmer.backgroundColor = this.oldProps.backgroundColor);
     }//undo
 }//UpdateDrawingPropsOp
 
@@ -1336,4 +1348,4 @@ export {default as KresmerException, LibraryImportException} from "./KresmerExce
 export {default as KresmerParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPoint";
 export type {DrawingMergeOptions} from "./loaders/DrawingLoader";
-export {BackgroundImageData, BackgroundImageView} from "./BackgroundImageData";
+export {BackgroundImageData, BackgroundImageAlignment} from "./BackgroundImageData";

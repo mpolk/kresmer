@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import Kresmer from "../Kresmer";
-import { BackgroundImageData, BackgroundImageView } from "../BackgroundImageData";
+import { BackgroundImageData, BackgroundImageAlignment } from "../BackgroundImageData";
 import NetworkElementClass from "../NetworkElementClass";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
@@ -51,7 +51,7 @@ export default class DrawingParser {
             throw new DrawingParsingException("The root element does not define drawing name");
         }//if
 
-        const backgroundImageView = root.getAttribute("background-image-view");
+        const backgroundImageAlignment = root.getAttribute("background-image-alignment");
         yield new DrawingHeaderData(root.getAttribute("name")!, 
                                     {
                                         width: root.getAttribute("width") ?? undefined,
@@ -59,10 +59,11 @@ export default class DrawingParser {
                                         hrefBase: root.getAttribute("href-base") ?? undefined,
                                         backgroundImage: new BackgroundImageData({
                                             url: root.getAttribute("background-image"),
-                                            view: Object.values(BackgroundImageView).includes(backgroundImageView as BackgroundImageView) ? 
-                                                backgroundImageView as BackgroundImageView : undefined,
+                                            alignment: Object.values(BackgroundImageAlignment).includes(backgroundImageAlignment as BackgroundImageAlignment) ? 
+                                                backgroundImageAlignment as BackgroundImageAlignment : undefined,
                                             visibility: Number(root.getAttribute("background-image-visibility")),
                                         }),
+                                        backgroundColor: root.getAttribute("background-color") ?? undefined,
                                     });
 
         for (let i = 0; i < root.children.length; i++) {
@@ -466,18 +467,21 @@ export class DrawingHeaderData {
             height?: string,
             hrefBase?: string,
             backgroundImage?: BackgroundImageData,
+            backgroundColor?: string,
         }
     ) {
         options.width && (this.width = parseFloat(options.width));
         options.height && (this.height = parseFloat(options.height));
         options.hrefBase && (this.hrefBase = options.hrefBase);
         options.backgroundImage && (this.backgroundImage = options.backgroundImage);
+        options.backgroundColor && (this.backgroundColor = options.backgroundColor);
     }//ctor
 
     readonly width?: number;
     readonly height?: number;
     readonly hrefBase?: string;
     readonly backgroundImage?: BackgroundImageData;
+    readonly backgroundColor?: string;
 }//DrawingHeaderData
 
 export type ParsedNode = 
