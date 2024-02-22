@@ -89,25 +89,9 @@
         <computed-props>
             <computed-prop name="width">props.width ?? props.unitHeight * ((props.nCopperPorts + 4) * 0.25 + 1.46)</computed-prop>
             <computed-prop name="firstComboMedia">props.firstComboMedia ?? props.portsInfo[props.nCopperPorts+1]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="firstComboCopperPortName">computedProps.firstComboMedia === "copper" ? `${props.nCopperPorts+1}` : `${props.nCopperPorts+1}(c)`</computed-prop>
-            <computed-prop name="firstComboCopperPortInfo">computedProps.firstComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+1] : undefined</computed-prop>
-            <computed-prop name="firstComboFiberPortName">computedProps.firstComboMedia === "copper" ? `${props.nCopperPorts+1}(f)` : `${props.nCopperPorts+1}`</computed-prop>
-            <computed-prop name="firstComboFiberPortInfo">computedProps.firstComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+1] : undefined</computed-prop>
             <computed-prop name="secondComboMedia">props.secondComboMedia ?? props.portsInfo[props.nCopperPorts+2]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="secondComboCopperPortName">computedProps.secondComboMedia === "copper" ? `${props.nCopperPorts+2}` : `${props.nCopperPorts+2}(c)`</computed-prop>
-            <computed-prop name="secondComboFiberPortName">computedProps.secondComboMedia === "copper" ? `${props.nCopperPorts+2}(f)` : `${props.nCopperPorts+2}`</computed-prop>
-            <computed-prop name="secondComboCopperPortInfo">computedProps.secondComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+2] : undefined</computed-prop>
-            <computed-prop name="secondComboFiberPortInfo">computedProps.secondComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+2] : undefined</computed-prop>
             <computed-prop name="thirdComboMedia">props.thirdComboMedia ?? props.portsInfo[props.nCopperPorts+3]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="thirdComboCopperPortName">computedProps.thirdComboMedia === "copper" ? `${props.nCopperPorts+3}` : `${props.nCopperPorts+3}(c)`</computed-prop>
-            <computed-prop name="thirdComboFiberPortName">computedProps.thirdComboMedia === "copper" ? `${props.nCopperPorts+3}(f)` : `${props.nCopperPorts+3}`</computed-prop>
-            <computed-prop name="thirdComboCopperPortInfo">computedProps.thirdComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+3] : undefined</computed-prop>
-            <computed-prop name="thirdComboFiberPortInfo">computedProps.thirdComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+3] : undefined</computed-prop>
             <computed-prop name="fourthComboMedia">props.fourthComboMedia ?? props.portsInfo[props.nCopperPorts+4]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="fourthComboCopperPortName">computedProps.fourthComboMedia === "copper" ? `${props.nCopperPorts+4}` : `${props.nCopperPorts+4}(c)`</computed-prop>
-            <computed-prop name="fourthComboFiberPortName">computedProps.fourthComboMedia === "copper" ? `${props.nCopperPorts+4}(f)` : `${props.nCopperPorts+4}`</computed-prop>
-            <computed-prop name="fourthComboCopperPortInfo">computedProps.fourthComboMedia === "copper" ? props.portsInfo[props.nCopperPorts+4] : undefined</computed-prop>
-            <computed-prop name="fourthComboFiberPortInfo">computedProps.fourthComboMedia !== "copper" ? props.portsInfo[props.nCopperPorts+4] : undefined</computed-prop>
             <computed-prop name="modelNameLines">props.modelName?.split(" ")</computed-prop>
         </computed-props>
         <functions>
