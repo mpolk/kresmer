@@ -18,7 +18,7 @@
             .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
             .model-name { fill: #383838; font-family: sans-serif; }
             .facet { --facet-color: #bfbfbf;  }
-            .facet.front { stroke: #808689; stroke-width: 3; }
+            .facet.front { stroke: #808689; stroke-width: 3; fill: #e7e7e7; }
             .port-icon { fill: #303030; }
             .port-icon.body { stroke: #efeedc; }
         </style>
@@ -54,7 +54,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="DLink4ComboPortsSwitch" category="Switches/DLink">
+    <component-class name="DLink4ComboPortsSwitch" category=".Switches/DLink">
         <extends base="DLinkSwitch" v-bind:n-ports="nCopperPorts" />
         <template>
             <text v-for="(line, i) in modelNameLines" v-bind:x="width - unitHeight*2.15" 
@@ -113,15 +113,27 @@
     </component-class>
 
     <component-class name="DLink-DES-3028" category="Switches/DLink">
-        <extends base="DLink4ComboPortsSwitch" model-name="DES 3028" v-bind:n-copper-ports="24" />
+        <extends base="DLink4ComboPortsSwitch"/>
+        <props>
+            <prop name="model-name" type="String" default="DES 3028" category="Hidden"/>
+            <prop name="n-copper-ports" type="Number" default="24" category="Hidden"/>
+        </props>
     </component-class>
 
     <component-class name="DLink-DES-3052" category="Switches/DLink">
-        <extends base="DLink4ComboPortsSwitch" model-name="DES 3052" v-bind:n-copper-ports="48" />
+        <extends base="DLink4ComboPortsSwitch"/>
+        <props>
+            <prop name="model-name" type="String" default="DES 3052" category="Hidden"/>
+            <prop name="n-copper-ports" type="Number" default="48" category="Hidden"/>
+        </props>
     </component-class>
 
     <component-class name="DLink-DES-3200-28" category="Switches/DLink">
-        <extends base="DLink4ComboPortsSwitch" model-name="DES 3200 28" v-bind:n-copper-ports="24" />
+        <extends base="DLink4ComboPortsSwitch"/>
+        <props>
+            <prop name="model-name" type="String" default="DES 3200 28" category="Hidden"/>
+            <prop name="n-copper-ports" type="Number" default="24" category="Hidden"/>
+        </props>
     </component-class>
 
 
