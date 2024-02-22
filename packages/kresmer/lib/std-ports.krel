@@ -27,10 +27,10 @@
                 v-bind:y="labelY" text-anchor="middle" v-bind:font-size="fontSize*h"
                 class="port-name" v-bind:class="{disabled: !(portInfo?.adminStatus ?? true)}">{{label}}</text>
             <title>{{title}}</title>
-            <connection-point v-if="nFibers == 1"
+            <connection-point v-if="isActive &amp;&amp; nFibers == 1"
                 v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
                 v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir}" />
-            <connection-point v-else=""
+            <connection-point v-else-if="isActive"
                 v-for="({x, y}, dir) in {
                     up1: {x: w*0.4, y: 0}, up2: {x: w*0.6, y: 0}, 
                     right1: {x: w, y: h*0.4}, right2: {x: w, y: h*0.6}, 
@@ -55,6 +55,7 @@
             <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
             <prop name="fiber-info" type="object" description="Various fiber optical parameters"/>
             <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
+            <prop name="is-active" type="Boolean" default="true" category="Network" description="Indicates whether this part (media) of the combo port is active" />
         </props>
         <computed-props extend="MultiFiberPort">
             <computed-prop name="label0">props.combo ? String(props.name ?? "").replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name ?? "")</computed-prop>
