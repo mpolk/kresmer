@@ -50,7 +50,7 @@ export default class NetworkComponent extends NetworkElement {
         return this._class;
     }//getClass
 
-    override onSelection(willBeSelected: boolean): true {
+    override _onSelection(willBeSelected: boolean): true {
         this.kresmer.emit("component-selected", this, willBeSelected);
         return true;
     }//onSelection
@@ -78,6 +78,10 @@ export default class NetworkComponent extends NetworkElement {
         super.setData(data);
         this.updateConnectionPoints();
     }//setData
+
+    override get _byNameIndex(): Map<string, number> {
+        return this.kresmer.componentsByName;
+    }//_byNameIndex
 
     /** A collection of this component connection points indexed by their names */
     private readonly connectionPoints = new Map<string, ConnectionPoint>();

@@ -795,7 +795,7 @@ ${svg.outerHTML}
             return;
         }//if
 
-        newSelectedElement?.onSelection(true) || this._selectedElement?.onSelection(false);
+        newSelectedElement?._onSelection(true) || this._selectedElement?._onSelection(false);
         this._selectedElement = newSelectedElement;
         this.resetAllComponentMode();
     }//set selectedElement
@@ -870,13 +870,8 @@ ${svg.outerHTML}
     public _onElementRename(element: NetworkElement, oldName: string)
     {
         if (element.name != oldName) {
-            if (element instanceof NetworkComponent) {
-                this.componentsByName.delete(oldName);
-                this.componentsByName.set(element.name, element.id);
-            } else if (element instanceof NetworkLink) {
-                this.linksByName.delete(oldName);
-                this.linksByName.set(element.name, element.id);
-            }//if
+            element._byNameIndex.delete(oldName);
+            element._byNameIndex.set(element.name, element.id);
         }//if
     }//onElementRename
 

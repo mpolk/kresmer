@@ -189,7 +189,7 @@ export default abstract class NetworkElement {
     /** A counter, which increment indicates that some props were changed and which may trigger some derived data updates*/
     propsUpdateIndicator = 0;
 
-    /** Returns the element "mutable" data, i.e. the data meant to updatable by the host process */
+    /** Returns the element "mutable" data, i.e. the data meant to updatable from outside of Kresmer */
     public getData(): NetworkElementData
     {
         return {
@@ -199,7 +199,7 @@ export default abstract class NetworkElement {
         }
     }//getData
 
-    /** Sets the element "mutable" data, i.e. the data meant to updatable by the host process */
+    /** Sets the element "mutable" data, i.e. the data meant to updatable from outside of Kresmer */
     public setData(data: NetworkElementData)
     {
         for (const propName in data.props) {
@@ -228,8 +228,11 @@ export default abstract class NetworkElement {
         this._isSelected = reallyIs;
         this.kresmer.selectedElement = reallyIs ? this : undefined;
     }//isSelected
+    /** Overridable handler for the (un)selection event (for internal use)*/
+    abstract _onSelection(willBeSelected: boolean): true;
 
-    abstract onSelection(willBeSelected: boolean): true;
+    /** References to the central collections of this type of elements (for internal use)*/
+    abstract get _byNameIndex(): Map<string, number>;
 }//NetworkElement
 
 

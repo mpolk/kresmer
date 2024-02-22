@@ -202,10 +202,14 @@ class _NetworkLink extends NetworkElement {
         }//if
     }//selectComponent
 
-    override onSelection(willBeSelected: boolean): true {
+    override _onSelection(willBeSelected: boolean): true {
         this.kresmer.emit("link-selected", this as unknown as NetworkLink, willBeSelected);
         return true;
     }//onSelection
+
+    override get _byNameIndex(): Map<string, number> {
+        return this.kresmer.linksByName;
+    }//_byNameIndex
 
     public absPosToRel(absPos: Position): Position
     {
