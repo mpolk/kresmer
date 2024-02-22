@@ -12,6 +12,7 @@ import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "./Kresmer";
 import { clone } from "./Utils";
 import { NetworkElementProps } from "./loaders/DrawingParser";
+import { toCamelCase } from "./Utils";
 
 /**
  * Network Component Class - a generic network element class
@@ -73,6 +74,12 @@ export default abstract class NetworkElementClass {
         this.defs = params.defs;
         this.style = params.style;
         this.category = params.category;
+
+        for (const propName in params.baseClassPropBindings) {
+            const prop = this.props[toCamelCase(propName)] as {default: unknown}|undefined;
+            if (prop)
+                prop.default = params.baseClassPropBindings[propName];
+        }//for
     }//ctor
 
     /** Class name */
