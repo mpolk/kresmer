@@ -795,20 +795,7 @@ ${svg.outerHTML}
             return;
         }//if
 
-        if (newSelectedElement) {
-            if (newSelectedElement instanceof NetworkComponent) {
-                this.emit("component-selected", newSelectedElement, true);
-            } else if (newSelectedElement instanceof NetworkLink) {
-                this.emit("link-selected", newSelectedElement, true);
-            }//if
-        } else {
-            if (this._selectedElement instanceof NetworkComponent) {
-                this.emit("component-selected", this._selectedElement, false);
-            } else if (this._selectedElement instanceof NetworkLink) {
-                this.emit("link-selected", this._selectedElement, false);
-            }//if
-        }//if
-
+        newSelectedElement?.onSelection(true) || this._selectedElement?.onSelection(false);
         this._selectedElement = newSelectedElement;
         this.resetAllComponentMode();
     }//set selectedElement

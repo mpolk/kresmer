@@ -50,6 +50,11 @@ export default class NetworkComponent extends NetworkElement {
         return this._class;
     }//getClass
 
+    override onSelection(willBeSelected: boolean): true {
+        this.kresmer.emit("component-selected", this, willBeSelected);
+        return true;
+    }//onSelection
+
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkComponent>;
 
