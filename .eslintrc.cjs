@@ -14,9 +14,6 @@ module.exports = {
         "**/__tests__/*.{cy,spec}.{js,ts,jsx,tsx}",
         "cypress/e2e/**.{cy,spec}.{js,ts,jsx,tsx}"
       ],
-      "extends": [
-        "plugin:cypress/recommended"
-      ]
     }
   ],
   "rules": {
