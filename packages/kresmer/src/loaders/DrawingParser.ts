@@ -474,6 +474,7 @@ export class DrawingHeaderData {
         options.backgroundImage && (
             this.backgroundImage = new BackgroundImageData({
                 url: options.backgroundImage,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 alignment: Object.values(BackgroundImageAlignment).includes(options.backgroundImageAlignment as any) ? 
                     options.backgroundImageAlignment as BackgroundImageAlignment : undefined,
                 visibility: options.backgroundImageVisibility,

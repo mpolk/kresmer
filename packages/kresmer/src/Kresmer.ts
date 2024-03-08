@@ -355,7 +355,7 @@ export default class Kresmer extends KresmerEventHooks {
         function patchBody(body: string) {
                 return body
                     .replaceAll(/((?:computedProps|cp\$)\.\w+)(?!\w*\.value)/g, "$1.value")
-                    .replaceAll(/(?:super\$)(?!\w*\.value)/g, "super\$.value")
+                    .replaceAll(/(?:super\$)(?!\w*\.value)/g, "super$.value")
                     ;
         }//patchBody
 
@@ -371,6 +371,7 @@ export default class Kresmer extends KresmerEventHooks {
                     computedProps[name] = computed(eval(`() => (${body})`));
                 }//for
 
+                // eslint-disable-next-line @typescript-eslint/ban-types
                 const functions: Record<string, Function> = {};
                 for (const name in componentClass.functions) {
                     const params = componentClass.functions[name].params;
@@ -378,6 +379,7 @@ export default class Kresmer extends KresmerEventHooks {
                     eval(`functions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
 
+                // eslint-disable-next-line @typescript-eslint/ban-types
                 const superFunctions: Record<string, Function> = {};
                 for (const name in componentClass.baseClass?.functions) {
                     const params = componentClass.baseClass.functions[name].params;
