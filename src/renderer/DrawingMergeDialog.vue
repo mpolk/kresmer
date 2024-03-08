@@ -28,8 +28,11 @@
     const result: DrawingMergeDialogResult = reactive({drawingMergeOption: null, saveChanges: false});
 
     const haveUnsavedChanges = ref(false);
-    // eslint-disable-next-line prefer-const
     let cbSaveChangesClicked = false;
+    function onSaveChanges()
+    {
+        cbSaveChangesClicked = true;
+    }//onSaveChanges
 
     onMounted(() =>
     {
@@ -122,7 +125,7 @@
                         <div style="display: inline-block; width: 2rem;"/>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="cbSaveChanges" name="saveChanges"
-                                v-model="result.saveChanges" @click="cbSaveChangesClicked = true">
+                                v-model="result.saveChanges" @click="onSaveChanges">
                             <label class="form-check-label" for="cbSaveChanges">
                                 ...and save the drawing before opening the new one
                             </label>
