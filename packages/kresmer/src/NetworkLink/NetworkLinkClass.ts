@@ -11,7 +11,6 @@ import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
 import NetworkElementClass, { ComputedProps, Functions, NetworkElementClassProps } from "../NetworkElementClass";
 import { NetworkElementProps } from "../loaders/DrawingParser";
-import { toCamelCase } from '../Utils';
  
 /**
  * Network Link Class - a generic network link class

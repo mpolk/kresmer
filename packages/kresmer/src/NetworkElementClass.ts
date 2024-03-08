@@ -60,6 +60,7 @@ export default abstract class NetworkElementClass {
                         if (ownProps[propName][key] === null)
                             this.props[propName][key] = undefined;
                         else
+                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
                             this.props[propName][key] = clone(ownProps[propName][key]) as any;
                     }//for
                 }//if
