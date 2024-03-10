@@ -8,7 +8,7 @@
 
 import { ContextMenuCommands } from "../main/Menus";
 import { DrawingMergeOptions } from "kresmer";
-import { AppInitStage } from "./ElectronAPI";
+import { AppInitStage } from "./renderer-main";
 import { AppSettings } from "../main/main";
 
 export interface LoadLibraryOptions {

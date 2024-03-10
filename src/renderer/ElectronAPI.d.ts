@@ -9,7 +9,7 @@
 import {FileFilter, IpcRendererEvent} from 'electron';
 import { ContextMenus, ContextMenuID } from './main/menus';
 import { AppSettings } from '../main/main';
-import { fileSelectOrLoadResult, UrlType } from './renderer-main';
+import { AppInitStage, fileSelectOrLoadResult, UrlType } from './renderer-main';
 
 export interface ElectronAPI {
     signalReadiness: (stage: AppInitStage) => void,
@@ -37,14 +37,6 @@ export interface ElectronAPI {
     reloadContent: () => void,
     selectOrLoadFile: (requiredResultType: UrlType, filters: FileFilter[]) => Promise<fileSelectOrLoadResult>,
 }//IElectronAPI
-
-
-export const enum AppInitStage {
-    HANDLERS_INITIALIZED = 0,
-    CONNECTED_TO_BACKEND = 1,
-    LIBS_LOADED = 2,
-    DRAWING_LOADED = 3,
-}//AppInitStage
 
 declare global {
     interface Window {

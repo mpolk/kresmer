@@ -11,7 +11,7 @@
     import { Modal, Offcanvas } from 'bootstrap';
     import { updateAppSettings } from './renderer-main';
     import { AppSettings } from '../main/main';
-import { StreetAddressFormat } from 'kresmer';
+    import { StreetAddressFormat } from 'kresmer';
 
     export default {
         name: "AppSettingsSidebar",

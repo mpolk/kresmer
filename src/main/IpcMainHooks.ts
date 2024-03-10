@@ -6,11 +6,10 @@
  *             An IPC interface to Electron node.js main script
  ***************************************************************************/
 import { FileFilter, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron";
-import { AppInitStage } from "../renderer/ElectronAPI";
 import { ContextMenuID } from "./Menus";
 import { AppSettings } from "./main";
 import type { URLType } from '../renderer/URLType';
-import type { fileSelectOrLoadResult } from '../renderer/renderer-main';
+import type { AppInitStage, fileSelectOrLoadResult } from '../renderer/renderer-main';
 
 export interface IpcMainChannels {
     "update-app-settings": (newAppSettings: AppSettings) => void;
