@@ -29,7 +29,6 @@ import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue
 import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import AboutDialog from './AboutDialog.vue';
-import { AppInitStage } from './ElectronAPI.d';
 import { AppSettings } from '../main/main';
 import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
 import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
@@ -38,6 +37,13 @@ import { URLType } from './URLType';
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
 // }//if
+
+export const enum AppInitStage {
+    HANDLERS_INITIALIZED = 0,
+    CONNECTED_TO_BACKEND = 1,
+    LIBS_LOADED = 2,
+    DRAWING_LOADED = 3,
+}//AppInitStage
   
 
 export const hints = new Hints;

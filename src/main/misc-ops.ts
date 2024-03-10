@@ -8,7 +8,7 @@
 
 import { shell } from 'electron';
 import { sendAppCommand, localSettings } from './main';
-import { AppInitStage } from '../renderer/ElectronAPI';
+import { AppInitStage } from '../renderer/renderer-main';
 
 
 /**

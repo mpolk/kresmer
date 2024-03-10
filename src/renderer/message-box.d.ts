@@ -7,19 +7,19 @@
  *   an improved replacement for the JS built-ins "alert" and "confirm"
  ***************************************************************************/
 
-export const enum MessageBoxSeverity {
+export enum MessageBoxSeverity {
     INFO,
     WARNING,
     CRITICAL,
 }//MessageBoxSeverity
 
-export const enum MessageBoxButtons {
+export enum MessageBoxButtons {
     YES_NO,
     OK_CANCEL,
     YES_NO_CANCEL,
 }//MessageBoxButtons
 
-export const enum MessageBoxResult {
+export enum MessageBoxResult {
     YES, NO,
     OK, CANCEL,
 }//MessageBoxResult

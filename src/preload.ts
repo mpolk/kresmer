@@ -8,7 +8,8 @@
 
 import { contextBridge, FileFilter, ipcRenderer, IpcRendererEvent } from 'electron';
 import { ContextMenuID } from './main/Menus';
-import { AppInitStage, ElectronAPI } from './renderer/ElectronAPI';
+import { AppInitStage } from './renderer/renderer-main';
+import { ElectronAPI } from './renderer/ElectronAPI';
 import { IpcMainChannel, IpcMainChannels } from './main/IpcMainHooks';
 import { AppSettings } from './main/main';
 import { type URLType } from './renderer/URLType';
