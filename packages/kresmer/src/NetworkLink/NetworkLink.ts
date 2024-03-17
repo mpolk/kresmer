@@ -7,15 +7,15 @@
  ***************************************************************************/
 
 import { InjectionKey, nextTick } from "vue";
-import Kresmer from "../Kresmer";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
+import Kresmer from "Kresmer";
+import ConnectionPointProxy from "ConnectionPoint/ConnectionPoint";
 import type LinkBundle from "./LinkBundle";
 import { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import NetworkElement from '../NetworkElement';
 import { EditorOperation } from "../UndoStack";
-import { Position } from "../Transform/Transform";
+import { Position } from "Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
 
