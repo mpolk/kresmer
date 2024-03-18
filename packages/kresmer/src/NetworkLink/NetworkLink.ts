@@ -22,7 +22,7 @@ import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
 /**
  * Network Link 
  */
-class _NetworkLink extends NetworkElement {
+export default class NetworkLink extends withZOrder(NetworkElement) {
     /**
      * 
      * @param _class The class this Link should belong 
@@ -58,6 +58,13 @@ class _NetworkLink extends NetworkElement {
     override getClass(): NetworkLinkClass {
         return this._class;
     }//getClass
+
+    vertices: LinkVertex[] = [];
+    private verticesInitialized = false;
+    nextVertexKey = 0;
+
+    /** A symbolic key for the component instance injection */
+    static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
 
     override get isSelected() {return super.isSelected}
     override set isSelected(reallyIs: boolean)
@@ -107,10 +114,6 @@ class _NetworkLink extends NetworkElement {
         return false;
     }//hasHighlightedUplinks
 
-    private verticesInitialized = false;
-    vertices: LinkVertex[] = [];
-    nextVertexKey = 0;
-
     readonly initVertices = () => {
         if (!this.verticesInitialized) {
             this.vertices.forEach(vertex => vertex.init());
@@ -130,9 +133,6 @@ class _NetworkLink extends NetworkElement {
             }//if
         });
     }//toggleVertexPositioningMode
-
-    /** A symbolic key for the component instance injection */
-    static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
 
     override checkNameUniqueness(name: string): boolean {
         return name == this.name || !this.kresmer.linksByName.has(name);
@@ -193,7 +193,7 @@ class _NetworkLink extends NetworkElement {
             this.vertices[0].anchor.conn!.hostElement === this.vertices[n].anchor.conn!.hostElement;
     }//isLoopback
 
-    public selectLink(this: NetworkLink)
+    public selectLink()
     {
         if (!this.isSelected) {
             this.kresmer.deselectAllElements(this);
@@ -227,7 +227,7 @@ class _NetworkLink extends NetworkElement {
         }
     }//relPosToAbs
 
-    public addVertex(this: NetworkLink, segmentNumber: number, mousePos: Position)
+    public addVertex(segmentNumber: number, mousePos: Position)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
         const vertexNumber = segmentNumber + 1;
@@ -297,7 +297,7 @@ class _NetworkLink extends NetworkElement {
         }//if
     }//onMouseLeave
 
-    public onClick(this: NetworkLink, segmentNumber: number, event: MouseEvent)
+    public onClick(segmentNumber: number, event: MouseEvent)
     {
         if (event.ctrlKey) {
             this.kresmer.edAPI.addLinkVertex(this.id, segmentNumber, event);
@@ -307,22 +307,20 @@ class _NetworkLink extends NetworkElement {
     }//onClick
 
 
-    public onRightClick(this: NetworkLink, segmentNumber: number, event: MouseEvent)
+    public onRightClick(segmentNumber: number, event: MouseEvent)
     {
         this.selectLink();
         this.kresmer.emit("link-right-click", this, segmentNumber, event);
     }//onRightClick
 
 
-    public onDoubleClick(this: NetworkLink, segmentNumber: number, event: MouseEvent)
+    public onDoubleClick(segmentNumber: number, event: MouseEvent)
     {
         this.selectLink();
         this.kresmer.emit("link-double-click", this, segmentNumber, event);
     }//onDoubleClick
 
-}//_NetworkLink
-
-export default class NetworkLink extends withZOrder(_NetworkLink) {}
+}//NetworkLink
 
 export class NetworkLinkMap extends MapWithZOrder<number, NetworkLink>
 {

@@ -22,7 +22,8 @@ import NetworkLink from "../NetworkLink/NetworkLink";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
-class _NetworkComponentController {
+
+export default class NetworkComponentController extends withZOrder(class {}) {
     readonly kresmer: Kresmer;
     public component: NetworkComponent;
     origin: Position;
@@ -45,8 +46,10 @@ class _NetworkComponentController {
             transform?: Transform,
         }
     ) {
+        super();
         this.kresmer = kresmer;
         this.component = component;
+        this.component.controller = this;
         this.origin = params.origin;
         this.transform = params.transform ? params.transform : new Transform;
     }//ctor
@@ -346,20 +349,6 @@ class _NetworkComponentController {
             }//for
         }//if
     }//alignConnectedLinks
-}//_NetworkComponentController
-
-export default class NetworkComponentController extends withZOrder(_NetworkComponentController) {
-    constructor(
-        kresmer: Kresmer,
-        component: NetworkComponent,
-        params: {
-            origin: Position,
-            transform?: Transform,
-        }
-    ) {
-        super(kresmer, component, params);
-        component.controller = this;
-    }//ctor
 }//NetworkComponentController
 
 type DragConstraint = "x" | "y" | "unknown";
