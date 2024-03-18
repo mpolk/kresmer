@@ -146,9 +146,9 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
  * @returns An augmented class
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function withZOrder<TBase extends new(...args: any[]) => object>(Base: TBase)
+export function withZOrder<TBase extends abstract new(...args: any[]) => object>(Base: TBase)
 {
-    return class extends Base {
+    abstract class BaseWithZOrder extends Base {
         zIndex = -1;
         _savedZIndex = -1;
 
@@ -167,4 +167,6 @@ export function withZOrder<TBase extends new(...args: any[]) => object>(Base: TB
             }//if
         }//returnFromTop
     }//class
+
+    return BaseWithZOrder;
 }//withZOrder
