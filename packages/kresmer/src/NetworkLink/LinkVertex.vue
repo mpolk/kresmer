@@ -31,7 +31,7 @@
         props.model._setMouseCaptureTarget(padding.value!);
     });
     onUpdated(() => {
-        if ((!props.model.isDragged || props.model.link.kresmer.animateLinkBundleDragging) && props.model.link.isBundle)
+        if ((!props.model.isDragged || props.model.parentElement.kresmer.animateLinkBundleDragging) && props.model.parentElement.isBundle)
             props.model.updateSegmentVector();
     });
 
@@ -60,18 +60,18 @@
         const nextNeighbourIsBundled = nextNeighbour.bundleAttachedTo === bundle;
         if (prevNeighbourIsBundled === nextNeighbourIsBundled)
             return undefined;
-        if (thisVertex.link.head.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo ||
-            thisVertex.link.tail.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo)
+        if (thisVertex.parentElement.head.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo ||
+            thisVertex.parentElement.tail.bundleAttachedTo == thisVertex.bundleDefinitelyAttachedTo)
             return undefined;
 
         let avoidThisDirection: number|undefined;
         for (const v of thisVertex.anchor.bundle!.baseVertex.attachedVertices) {
             if (v === thisVertex)
                 continue;
-            if (!thisVertex.link.isHighlighted && areAttachedNear(v, thisVertex) && (
-                (prevNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
+            if (!thisVertex.parentElement.isHighlighted && areAttachedNear(v, thisVertex) && (
+                (prevNeighbour.anchor.bundle?.baseVertex.parentElement !== bundle &&
                     (areAttachedNear(v.prevNeighbour, prevNeighbour) || areAttachedNear(v.nextNeighbour, prevNeighbour))) || 
-                (nextNeighbour.anchor.bundle?.baseVertex.link !== bundle &&
+                (nextNeighbour.anchor.bundle?.baseVertex.parentElement !== bundle &&
                     (areAttachedNear(v.nextNeighbour, nextNeighbour) || areAttachedNear(v.prevNeighbour, nextNeighbour)))
                 ))
                 return undefined;
@@ -81,7 +81,7 @@
             }//if
         }//for
         
-        const number = bundle.getLinkNumber(thisVertex.link);
+        const number = bundle.getLinkNumber(thisVertex.parentElement);
         if (!number)
             return undefined;
 
@@ -150,7 +150,7 @@ class=${JSON.stringify(clazz)}`;
     }//areAttachedNotSoNear
 
     const draggingCursor =  computed(() => {
-        if (!props.model.link.kresmer.isEditable)
+        if (!props.model.parentElement.kresmer.isEditable)
             return "cursor: default";
         switch (props.model.dragConstraint) {
             case "x": return "cursor: ew-resize";
@@ -195,7 +195,7 @@ class=${JSON.stringify(clazz)}`;
 
     function onClick()
     {
-        props.model.link.selectLink();
+        props.model.parentElement.selectThis();
     }//onClick
 
     function onDoubleClick()
@@ -206,7 +206,7 @@ class=${JSON.stringify(clazz)}`;
 </script>
 
 <template>
-    <circle v-if="!model.link.isSelected && dataLinkBundleVertex"
+    <circle v-if="!model.parentElement.isSelected && dataLinkBundleVertex"
         :cx="model.coords.x" :cy="model.coords.y" 
         class="vertex" :class="{connected: model.isConnected}"
         style="fill: transparent; stroke: transparent;"
@@ -218,7 +218,7 @@ class=${JSON.stringify(clazz)}`;
         @contextmenu="onRightClick($event)"
         @dblclick="onDoubleClick()"
         />
-    <ConnectionPointVue v-if="!model.link.isBundle && model.link.kresmer.isEditable" :name="model.vertexNumber" 
+    <ConnectionPointVue v-if="!model.parentElement.isBundle && model.parentElement.kresmer.isEditable" :name="model.vertexNumber" 
         :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
         @click="onClick" class="vertex-connection-point"
         />
@@ -226,11 +226,11 @@ class=${JSON.stringify(clazz)}`;
         {{ linkNumber.number }}
         <title>{{ linkNumber.debugInfo }}</title>
     </text>
-    <template v-if="model.link.isSelected && model.isDragged">
-        <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.link.kresmer.drawingRect.height" class="crosshair" />
-        <line x1="0" :y1="model.coords.y" :x2="model.link.kresmer.drawingRect.width" :y2="model.coords.y" class="crosshair" />
+    <template v-if="model.parentElement.isSelected && model.isDragged">
+        <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.parentElement.kresmer.drawingRect.height" class="crosshair" />
+        <line x1="0" :y1="model.coords.y" :x2="model.parentElement.kresmer.drawingRect.width" :y2="model.coords.y" class="crosshair" />
     </template>
-    <circle v-show="model.link.isSelected && (model.isDragged || model.isGoingToBeDragged)" 
+    <circle v-show="model.parentElement.isSelected && (model.isDragged || model.isGoingToBeDragged)" 
         ref="padding"
         :cx="model.coords.x" :cy="model.coords.y" 
         class="link vertex padding"
@@ -240,7 +240,7 @@ class=${JSON.stringify(clazz)}`;
         @mousemove.stop="onMouseMove($event)"
         @mouseleave.stop="onMouseLeave($event)"
         />
-    <circle v-if="model.link.isSelected" ref="circle"
+    <circle v-if="model.parentElement.isSelected" ref="circle"
         :cx="model.coords.x" :cy="model.coords.y" 
         class="link vertex" :class="{connected: model.isConnected}"
         :style="draggingCursor"

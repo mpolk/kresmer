@@ -18,7 +18,7 @@ import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
     Position, KresmerException, KresmerParsingException, LibraryImportException,
     NetworkComponentController, NetworkComponent,
-    NetworkLink, NetworkElement, LinkVertex,
+    NetworkLink, NetworkElement, Vertex,
     TransformMode, ConnectionPointProxy,
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
@@ -203,7 +203,7 @@ kresmer
     .on("component-transformed", () => hints.pop())
     .on("component-exited-transform-mode", () => hints.pop())
     .on("component-exited-adjustment-mode", () => hints.pop())
-    .on("link-vertex-moved", () => hints.pop())
+    .on("vertex-moved", () => hints.pop())
     .on("link-vertex-connected", () => hints.pop())
     .on("link-vertex-disconnected", () => hints.pop())
     ;
@@ -280,12 +280,12 @@ kresmer.on("link-double-click", (link: NetworkLink, /* segmentNumber: number,  m
     vueComponentPropsSidebar.show(link);
 });//onLinkDoubleClick
 
-kresmer.on("link-vertex-right-click", (vertex: LinkVertex, /* _mouseEvent: MouseEvent */) =>
+kresmer.on("vertex-right-click", (vertex: Vertex, /* _mouseEvent: MouseEvent */) =>
 {
-    window.electronAPI.showContextMenu("link-vertex", vertex.link.id, vertex.vertexNumber);
+    window.electronAPI.showContextMenu("link-vertex", vertex.parentElement.id, vertex.vertexNumber);
 });//onLinkVertexRightClick
 
-kresmer.on("link-vertex-being-moved", (vertex: LinkVertex) =>
+kresmer.on("vertex-being-moved", (vertex: Vertex) =>
 {
     const {x, y} = vertex.coords;
     const hint = `x:${x.toFixed(0)} y:${y.toFixed(0)}`;
@@ -540,9 +540,9 @@ appCommandExecutor.on("delete-vertex", (linkID: number, vertexNumber: number) =>
     kresmer.edAPI.deleteLinkVertex({linkID, vertexNumber});
 });//deleteLinkVertex
 
-appCommandExecutor.on("align-vertex", (linkID: number, vertexNumber: number) =>
+appCommandExecutor.on("align-vertex", (parentID: number, vertexNumber: number) =>
 {
-    kresmer.edAPI.alignLinkVertex({linkID, vertexNumber});
+    kresmer.edAPI.alignVertex({parentID, vertexNumber});
 });//alignLinkVertex
 
 appCommandExecutor.on("align-vertices", (linkID?: number) =>

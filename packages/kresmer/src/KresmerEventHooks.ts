@@ -13,6 +13,7 @@ import KresmerException from "./KresmerException";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
 import LinkVertex from "./NetworkLink/LinkVertex";
+import Vertex from "./Vertex/Vertex";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import {toCamelCase} from "./Utils";
 
@@ -55,14 +56,14 @@ class KresmerEventFormats  {
     "link-selected":                    (link: NetworkLink, isSelected: boolean) => void;
     "link-right-click":                 (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
     "link-double-click":                (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
-    "link-vertex-added":                (vertex: LinkVertex) => void;
-    "link-vertex-deleted":              (vertex: LinkVertex) => void;
-    "link-vertex-move-started":         (vertex: LinkVertex) => void;
-    "link-vertex-being-moved":          (vertex: LinkVertex) => void;
-    "link-vertex-moved":                (vertex: LinkVertex) => void;
+    "vertex-added":                     (vertex: Vertex) => void;
+    "vertex-deleted":                   (vertex: Vertex) => void;
+    "vertex-move-started":              (vertex: Vertex) => void;
+    "vertex-being-moved":               (vertex: Vertex) => void;
+    "vertex-moved":                     (vertex: Vertex) => void;
+    "vertex-right-click":               (vertex: Vertex, mouseEvent: MouseEvent) => void;
     "link-vertex-connected":            (vertex: LinkVertex) => void;
     "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPoint) => void;
-    "link-vertex-right-click":          (vertex: LinkVertex, mouseEvent: MouseEvent) => void;
     "connection-point-right-click":     (connectionPoint: ConnectionPoint) => void;
 }//KresmerEventFormats
 
@@ -359,42 +360,42 @@ export default class KresmerEventHooks {
     protected onLinkDoubleClick(link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) {}
  
     /**
-     * Is called when a network link vertex had been added
+     * Is called when a vertex had been added
      * @param controller The vertex been added
      */
-    @overridableHandler("link-vertex-added")
-    protected onLinkVertexAdded(vertex: LinkVertex) {}
+    @overridableHandler("vertex-added")
+    protected onVertexAdded(vertex: Vertex) {}
  
     /**
-     * Is called when a network link vertex had been deleted
+     * Is called when a vertex had been deleted
      * @param controller The vertex been deleted
      */
-    @overridableHandler("link-vertex-deleted")
-    protected onLinkVertexDeleted(vertex: LinkVertex) {}
+    @overridableHandler("vertex-deleted")
+    protected onVertexDeleted(vertex: Vertex) {}
   
     /**
-     * Is called when a network link vertex move starts
+     * Is called when a vertex move starts
      * @param controller The controller of the component starting to move
      */
-    @overridableHandler("link-vertex-move-started")
-    protected onLinkVertexMoveStarted(vertex: LinkVertex) {}
+    @overridableHandler("vertex-move-started")
+    protected onVertexMoveStarted(vertex: Vertex) {}
  
     /**
-     * Is called when a network link vertex is being moved (dragged)
+     * Is called when a vertex is being moved (dragged)
      * @param controller The vertex is being moved
      */
-    @overridableHandler("link-vertex-being-moved")
-    protected onLinkVertexBeingMoved(vertex: LinkVertex) {}
+    @overridableHandler("vertex-being-moved")
+    protected onVertexBeingMoved(vertex: Vertex) {}
  
     /**
-     * Is called when a network link vertex had been moved (dragged)
+     * Is called when a vertex had been moved (dragged)
      * @param controller The vertex been moved
      */
-    @overridableHandler("link-vertex-moved")
-    protected onLinkVertexMoved(vertex: LinkVertex) {}
+    @overridableHandler("vertex-moved")
+    protected onVertexMoved(vertex: Vertex) {}
  
     /**
-     * Is called when a network link vertex had been connected to some connection point
+     * Is called when a vertex had been connected to some connection point
      * @param controller The vertex been moved
      */
     @overridableHandler("link-vertex-connected")
@@ -408,11 +409,11 @@ export default class KresmerEventHooks {
     protected onLinkVertexDisconnected(vertex: LinkVertex, connectionPoint: ConnectionPoint) {}
 
     /**
-     * Is called upon right mouse click on the network link vertex
+     * Is called upon right mouse click on the vertex
      * @param vertex The vertex been clicked
      */
-    @overridableHandler("link-vertex-right-click")
-    protected onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent) {}
+    @overridableHandler("vertex-right-click")
+    protected onVertexRightClick(vertex: Vertex, mouseEvent: MouseEvent) {}
 
     /**
      * Is called upon right mouse click on the connection point

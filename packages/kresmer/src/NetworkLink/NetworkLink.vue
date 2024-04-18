@@ -102,8 +102,8 @@
             prefix = "L";
             const bv1 = v.anchor.bundle?.baseVertex;
             const bv2 = v.nextNeighbour?.anchor.bundle?.baseVertex;
-            const bundle = bv1?.link;
-            if (bundle && bundle === bv2?.link) {
+            const bundle = bv1?.parentElement;
+            if (bundle && bundle === bv2?.parentElement) {
                 const n1 = bv1.vertexNumber;
                 const n2 = bv2.vertexNumber;
                 if (n1 < n2) {
@@ -134,7 +134,7 @@
     {
         return !props.model.vertices[i-1].isAttachedToBundle || 
                !props.model.vertices[i-1].isAttachedToBundle || 
-               props.model.vertices[i-1].anchor.bundle?.baseVertex.link !== props.model.vertices[i].anchor.bundle?.baseVertex.link;
+               props.model.vertices[i-1].anchor.bundle?.baseVertex.parentElement !== props.model.vertices[i].anchor.bundle?.baseVertex.parentElement;
     }//segmentHasPadding
 
     function segMarkPathData(i: number)

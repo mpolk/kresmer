@@ -13,16 +13,16 @@ import type LinkBundle from "./LinkBundle";
 import { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
-import NetworkElement from '../NetworkElement';
 import { EditorOperation } from "../UndoStack";
 import { Position } from "Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
+import { NetworkElementWithVertices } from "../Vertex/Vertex";
 
 /**
  * Network Link 
  */
-export default class NetworkLink extends withZOrder(NetworkElement) {
+export default class NetworkLink extends withZOrder(NetworkElementWithVertices) {
     /**
      * 
      * @param _class The class this Link should belong 
@@ -59,9 +59,8 @@ export default class NetworkLink extends withZOrder(NetworkElement) {
         return this._class;
     }//getClass
 
-    vertices: LinkVertex[] = [];
-    private verticesInitialized = false;
-    nextVertexKey = 0;
+    declare vertices: LinkVertex[];
+    override readonly isClosed: boolean = false;
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
@@ -113,13 +112,6 @@ export default class NetworkLink extends withZOrder(NetworkElement) {
         }//for
         return false;
     }//hasHighlightedUplinks
-
-    readonly initVertices = () => {
-        if (!this.verticesInitialized) {
-            this.vertices.forEach(vertex => vertex.init());
-            this.verticesInitialized = true;
-        }//if
-    }//initVertices
 
     get head() {return this.vertices[0];}
     get tail() {return this.vertices[this.vertices.length-1];}
@@ -193,17 +185,17 @@ export default class NetworkLink extends withZOrder(NetworkElement) {
             this.vertices[0].anchor.conn!.hostElement === this.vertices[n].anchor.conn!.hostElement;
     }//isLoopback
 
-    public selectLink()
+    override selectThis()
     {
         if (!this.isSelected) {
             this.kresmer.deselectAllElements(this);
             this.isSelected = true;
             this.bringToTop();
         }//if
-    }//selectComponent
+    }//selectThis
 
     override _onSelection(willBeSelected: boolean): true {
-        this.kresmer.emit("link-selected", this as unknown as NetworkLink, willBeSelected);
+        this.kresmer.emit("link-selected", this, willBeSelected);
         return true;
     }//onSelection
 
@@ -302,21 +294,21 @@ export default class NetworkLink extends withZOrder(NetworkElement) {
         if (event.ctrlKey) {
             this.kresmer.edAPI.addLinkVertex(this.id, segmentNumber, event);
         } else {
-            this.selectLink();
+            this.selectThis();
         }//if
     }//onClick
 
 
     public onRightClick(segmentNumber: number, event: MouseEvent)
     {
-        this.selectLink();
+        this.selectThis();
         this.kresmer.emit("link-right-click", this, segmentNumber, event);
     }//onRightClick
 
 
     public onDoubleClick(segmentNumber: number, event: MouseEvent)
     {
-        this.selectLink();
+        this.selectThis();
         this.kresmer.emit("link-double-click", this, segmentNumber, event);
     }//onDoubleClick
 
@@ -417,7 +409,7 @@ export class AddVertexOp extends EditorOperation {
     }//ctor
 
     exec() {
-        const link = this.vertex.link;
+        const link = this.vertex.parentElement;
         const vertexNumber = this.vertex.vertexNumber;
         link.vertices.splice(vertexNumber, 0, this.vertex);
         for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
@@ -429,7 +421,7 @@ export class AddVertexOp extends EditorOperation {
     }//exec
 
     undo() {
-        const link = this.vertex.link;
+        const link = this.vertex.parentElement;
         const vertexNumber = this.vertex.vertexNumber;
         link.vertices.splice(vertexNumber, 1);
         for (let i = vertexNumber; i < link.vertices.length; i++) {

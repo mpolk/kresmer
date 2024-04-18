@@ -228,6 +228,8 @@ export default abstract class NetworkElement {
         this._isSelected = reallyIs;
         this.kresmer.selectedElement = reallyIs ? this : undefined;
     }//isSelected
+
+    selectThis() {this.isSelected = true}
     /** Overridable handler for the (un)selection event (for internal use)*/
     abstract _onSelection(willBeSelected: boolean): true;
 

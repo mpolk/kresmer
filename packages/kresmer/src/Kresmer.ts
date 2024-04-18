@@ -31,7 +31,8 @@ import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection, { BackendConnectionTestResult } from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
-import LinkVertex, { LinkVertexAnchor, LinkVertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./NetworkLink/LinkVertex";
+import LinkVertex, { LinkVertexAnchor, LinkVertexSpec } from "./NetworkLink/LinkVertex";
+import Vertex, { VertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp, NetworkElementWithVertices } from "./Vertex/Vertex";
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
@@ -689,6 +690,17 @@ ${svg.outerHTML}
     {
         return this.networkComponents.get(id)?.component;
     }//getComponentById
+ 
+
+    /**
+     * Searches for the NetworkComponentController with the specified ID
+     * @param id An ID of the component to search for
+     * @returns The component controller if found or "undefined" otherwise
+     */
+    public getComponentControllerById(id: number): NetworkComponentController|undefined
+    {
+        return this.networkComponents.get(id);
+    }//getComponentControllerById
 
 
     /**
@@ -743,17 +755,6 @@ ${svg.outerHTML}
         else
             return this.getComponentByName(name);
     }//getElementByName
- 
-
-    /**
-     * Searches for the NetworkComponentController with the specified ID
-     * @param id An ID of the component to search for
-     * @returns The component controller if found or "undefined" otherwise
-     */
-    public getComponentControllerById(id: number): NetworkComponentController|undefined
-    {
-        return this.networkComponents.get(id);
-    }//getComponentControllerById
   
 
     /** Returns the root SVG element */
@@ -804,7 +805,7 @@ ${svg.outerHTML}
 
 
     /** Deselects all components (probably except the one specified) */
-    public deselectAllElements(except?: NetworkComponentController | NetworkLink | NetworkLinkBlank)
+    public deselectAllElements(except?: unknown)
     {
         this.networkComponents.forEach(controller => {
             if (controller !== except) {
@@ -1114,41 +1115,40 @@ ${svg.outerHTML}
                 throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
             }//if
             const vertex = link.addVertex(segmentNumber, mousePos);
-            this.emit("link-vertex-added", vertex);
+            this.emit("vertex-added", vertex);
             return vertex;
         },//addLinkVertex
 
         /**
          * Aligns (or at least tries to) a link vertex to its neighbours
-         * @param vertexSpec The specifier of the vertex to align (either direct ref or (linkID, vertexNumber) pair)
+         * @param vertexSpec The specifier of the vertex to align (either direct ref or (parentID, vertexNumber) pair)
          */
-        alignLinkVertex: (vertexSpec: LinkVertexSpec, mode: VertexAlignmentMode = "normal") =>
+        alignVertex: (vertexSpec: VertexSpec, mode: VertexAlignmentMode = "normal") =>
         {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let vertex: LinkVertex = (vertexSpec as any).vertex;
+            let vertex: Vertex = (vertexSpec as any).vertex;
             if (!vertex) {
-                const {linkID, vertexNumber} = vertexSpec as {linkID: number, vertexNumber: number};
-                const link = this.getLinkById(linkID);
-                if (!link) 
-                    throw new UndefinedLinkException({message: `Attempt to align a vertex of the non-existent link (id=${linkID})`});
-                vertex = link.vertices[vertexNumber];
-                if (!vertex) 
-                    throw new UndefinedVertexException({message: `Attempt to align a non-existent vertex (id=${linkID})`});
+                const {parentID, vertexNumber} = vertexSpec as {parentID: number, vertexNumber: number};
+                const parentElement = this.getElementById(parentID);
+                if (parentElement instanceof NetworkElementWithVertices && vertexNumber in parentElement.vertices)
+                    vertex = parentElement.vertices[vertexNumber];
+                else
+                    throw new UndefinedVertexException({message: `Attempt to align a non-existent vertex (${parentID},${vertexNumber})`});
             }//if
             this.undoStack.startOperation(new VertexMoveOp(vertex));
             if (vertex.align(mode)) {
                 this.undoStack.commitOperation();
-                this.emit("link-vertex-moved", vertex);
+                this.emit("vertex-moved", vertex);
                 return true;
             } else {
                 this.undoStack.cancelOperation();
                 return false;
             }//if
-        },//alignLinkVertex
+        },//alignVertex
 
         /**
          * Aligns (or at least tries to) all link vertices to their neighbours
-         * @param vertexSpec The specifier of the link (either direct ref or linkID)
+         * @param linkSpec The specifier of the link (either direct ref or linkID)
          */
         alignLinkVertices: (linkSpec: LinkSpec) =>
         {
@@ -1163,7 +1163,7 @@ ${svg.outerHTML}
             }//if
             const op = new VerticesMoveOp(link.wouldAlignVertices);
             this.undoStack.startOperation(op);
-            const verticesAligned = link.alignVertices();
+            const verticesAligned = link.alignVertices() as Set<Vertex>;
             if (verticesAligned.size) {
                 for (const vertex of op.vertices) {
                     if (!verticesAligned.has(vertex))
@@ -1171,7 +1171,7 @@ ${svg.outerHTML}
                 }//for
                 this.undoStack.commitOperation();
                 for (const vertex of op.vertices) {
-                    this.emit("link-vertex-moved", vertex);
+                    this.emit("vertex-moved", vertex);
                 }//for
                 return true;
             } else {
@@ -1198,7 +1198,7 @@ ${svg.outerHTML}
                     throw new UndefinedVertexException({message: `Attempt to delete a non-existent vertex (id=${linkID})`});
             }//if
             this.undoStack.execAndCommit(new DeleteVertexOp(vertex));
-            this.emit("link-vertex-deleted", vertex);
+            this.emit("vertex-deleted", vertex);
         },//deleteLinkVertex
 
         /**
@@ -1315,6 +1315,10 @@ export const enum StreetAddressFormat {
     BuildingFirst = "{building-number} {street}",
 }//StreetAddressFormat
 
+/** Class type of the generic network element */
+export type NetworkElementClassType = typeof NetworkComponentClass | typeof NetworkLinkClass;
+export type NetworkElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
+
 // Re-export child classes to API
 export {default as NetworkElement } from "./NetworkElement";
 export {default as NetworkElementClass, NetworkElementPropCategory } from "./NetworkElementClass";
@@ -1327,6 +1331,7 @@ export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
 export {default as LinkBundle} from "./NetworkLink/LinkBundle";
 export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
+export {default as Vertex} from "./Vertex/Vertex";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
 export type {LinkVertexAnchor} from "./NetworkLink/LinkVertex";
 export {default as KresmerException, LibraryImportException} from "./KresmerException";

@@ -12,66 +12,79 @@ import KresmerException, { UndefinedBundleException, UndefinedVertexException, U
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPoint";
 import { EditorOperation } from "../UndoStack";
-import { type RequireAtLeastOne } from "../Utils";
 import MouseEventCapture from "../MouseEventCapture";
 import type LinkBundle from "./LinkBundle";
+import Vertex, { VertexAnchor } from "../Vertex/Vertex";
 
 /** Link Vertex (either connected or free) */
 
-export default class LinkVertex {
+export default class LinkVertex extends Vertex {
 
     /**
      * Constructs a new vertex
-     * @param link The link this vertex belongs to
+     * @param parentElement The link this vertex belongs to
      * @param vertexNumber An index of the vertex within the link
      * @param initParams A set of the initialization params used in the delayed initialization
      */
-    constructor(public link: NetworkLink, vertexNumber: number, public initParams?: LinkVertexInitParams) {
-        this.ownConnectionPoint = new ConnectionPointProxy(this.link, this.vertexNumber, 0);
-        this._vertexNumber = vertexNumber;
-        this.ownConnectionPoint.name = String(vertexNumber);
-        this._key = link.nextVertexKey++;
+    constructor(parentElement: NetworkLink, vertexNumber: number, initParams?: LinkVertexInitParams) {
+        super(parentElement, vertexNumber, initParams);
     }//ctor
+
+    declare parentElement: NetworkLink;
+    declare initParams: LinkVertexInitParams|undefined;
+    
+    /** An object representing the logical position of the vertex. 
+     * It may contain either a position as such (.pos), a reference to some connection point (.conn) or 
+     * to the point within some link bundle (.bundle). */
+    get anchor() {return this._anchor;}
+    set anchor(newPos: LinkVertexAnchor)
+    {
+        this._anchor.pos = newPos.pos;
+        this.setConn(newPos.conn);
+        this.setBundle(newPos.bundle);
+    }//set anchor
+    declare protected _anchor: LinkVertexAnchor;
+    declare protected savedAnchor?: LinkVertexAnchor;
 
 
     /** Postponned part of the initialization delayed until all components are mounted.
      *  It takes internally saved "initParams" and converts it to the "real" anchor data.
     */
-    init(): LinkVertex
+    override init()
     {
         if (this.initParams?.pos) {
             this.pinUp(this.initParams.pos);
         } else if (this.initParams?.cpData) {
-            const cpHostElement = this.link.kresmer.getElementByName(this.initParams.cpData.cpHostElement);
+            const cpHostElement = this.parentElement.kresmer.getElementByName(this.initParams.cpData.cpHostElement);
             if (!cpHostElement) {
-                this.link.kresmer.raiseError(new KresmerException(
+                this.parentElement.kresmer.raiseError(new KresmerException(
                     `Attempt to connect to the non-existing component "${this.initParams.cpData.cpHostElement}"`,
-                    {source: `Link "${this.link.name}"`}));
+                    {source: `Link "${this.parentElement.name}"`}));
                 return this;
             }//if
             const connectionPoint = cpHostElement.getConnectionPoint(this.initParams.cpData.connectionPoint);
             if (!connectionPoint) {
-                this.link.kresmer.raiseError(new KresmerException(
+                this.parentElement.kresmer.raiseError(new KresmerException(
                     `Attempt to connect to non-existing connection point \
                     "${this.initParams.cpData.cpHostElement}:${this.initParams.cpData.connectionPoint}"`,
-                    {source: `Link "${this.link.name}"`}))
+                    {source: `Link "${this.parentElement.name}"`}))
                 return this;
             }//if
             this.connect(connectionPoint);
         } else if (this.initParams?.bundleData) {
-            const bundle = this.link.kresmer.getLinkByName(this.initParams.bundleData.bundleName);
+            const bundle = this.parentElement.kresmer.getLinkByName(this.initParams.bundleData.bundleName);
             if (!bundle) {
-                this.link.kresmer.raiseError(new UndefinedBundleException({
+                this.parentElement.kresmer.raiseError(new UndefinedBundleException({
                     message:`Attempt to connect to the non-existing bundle "${this.initParams.bundleData.bundleName}"`,
-                    source: `Link "${this.link.name}"`}));
+                    source: `Link "${this.parentElement.name}"`}));
                 return this;
             }//if
             const afterVertex = bundle.vertices[this.initParams.bundleData.baseVertex];
             if (!afterVertex) {
-                this.link.kresmer.raiseError(new UndefinedVertexException(
+                this.parentElement.kresmer.raiseError(new UndefinedVertexException(
                     {message: `Attempt to connect to non-existing connection point \
                     "${this.initParams.bundleData.bundleName}:${this.initParams.bundleData.baseVertex}"`,
-                    source: `Link "${this.link.name}"`}))
+                    source: `Link "${this.parentElement.name}"`}))
                 return this;
             }//if
             this.attachToBundle({baseVertex: afterVertex, distance: this.initParams.bundleData.distance});
@@ -84,29 +97,7 @@ export default class LinkVertex {
         return this;
     }//init
 
-    /** An index of the vertex within the link */
-    get vertexNumber() {return this._vertexNumber}
-    set vertexNumber(n: number)
-    {
-        this._vertexNumber = n;
-        this.ownConnectionPoint.name = String(n);
-    }//set vertexNumber
-    private _vertexNumber: number;
-
-    /** An object representing the logical position of the vertex. 
-     * It may contain either a position as such (.pos), a reference to some connection point (.conn) or 
-     * to the point within some link bundle (.bundle). */
-    get anchor() {return this._anchor;}
-    set anchor(newPos: LinkVertexAnchor)
-    {
-        this._anchor.pos = newPos.pos;
-        this.setConn(newPos.conn);
-        this.setBundle(newPos.bundle);
-    }//set anchor
-    private _anchor: LinkVertexAnchor = {pos: {x: 0, y: 0}};
-    anchorCopy() {return {...this._anchor};}
-
-    pinUp(pos: Position)
+    override pinUp(pos: Position)
     {
         this._anchor.pos = {...pos};
         this.setConn(undefined);
@@ -143,17 +134,17 @@ export default class LinkVertex {
             if (!this.isHead && !this.isTail || this.initParams) {
                 this._anchor.conn = newValue;
             } else {
-                const wasLoopback = this.link.isLoopback;
+                const wasLoopback = this.parentElement.isLoopback;
                 this._anchor.conn = newValue;
-                if (wasLoopback !== this.link.isLoopback) {
-                    this.link.toggleVertexPositioningMode(this);
+                if (wasLoopback !== this.parentElement.isLoopback) {
+                    this.parentElement.toggleVertexPositioningMode(this);
                 }//if
             }//if
             if (this._anchor.conn) {
-                this._anchor.conn.hostElement.registerConnectedLink(this.link);
+                this._anchor.conn.hostElement.registerConnectedLink(this.parentElement);
                 this._anchor.conn.connectedVertices.add(this);
             } else if (oldConn) {
-                oldConn.hostElement.unregisterConnectedLink(this.link);
+                oldConn.hostElement.unregisterConnectedLink(this.parentElement);
                 oldConn.connectedVertices.delete(this);
             }//if
             this.ownConnectionPoint.isActive = !this._anchor.conn && !this._anchor.bundle;
@@ -166,10 +157,10 @@ export default class LinkVertex {
             const oldBundle = this._anchor.bundle;
             this._anchor.bundle = newValue;
             if (this._anchor.bundle) {
-                (this._anchor.bundle.baseVertex.link as LinkBundle).registerAttachedLink(this.link);
+                (this._anchor.bundle.baseVertex.parentElement as LinkBundle).registerAttachedLink(this.parentElement);
                 this._anchor.bundle.baseVertex.attachedVertices.add(this);
             } else if (oldBundle) {
-                (oldBundle.baseVertex.link as LinkBundle).unregisterAttachedLink(this.link);
+                (oldBundle.baseVertex.parentElement as LinkBundle).unregisterAttachedLink(this.parentElement);
                 oldBundle.baseVertex.attachedVertices.delete(this);
             }//if
             this.ownConnectionPoint.isActive = !this._anchor.conn && !this._anchor.bundle;
@@ -215,22 +206,22 @@ export default class LinkVertex {
             if (d == 0)
                 return afterVertex.coords;
             const n = afterVertex.vertexNumber;
-            const beforeVertex = afterVertex.link.vertices[n+1];
+            const beforeVertex = afterVertex.parentElement.vertices[n+1];
             if (!afterVertex.isInitialized || !beforeVertex.isInitialized)
-                return this.link.kresmer.drawingCenter;
+                return this.parentElement.kresmer.drawingCenter;
             const {x0, y0, length: h, sinFi, cosFi} = afterVertex.segmentVector!;
             if (d > h)
                 d = h;
             const x = x0 + d * cosFi;
             const y = y0 + d * sinFi;
             return {x, y};
-        } else if (this._anchor.pos && this.link.isLoopback) {
-            const headCoords = this.link.head.coords;
+        } else if (this._anchor.pos && this.parentElement.isLoopback) {
+            const headCoords = this.parentElement.head.coords;
             return {x: headCoords.x + this._anchor.pos.x, y: headCoords.y + this._anchor.pos.y};
         } else if (this._anchor.pos) {
             return this._anchor.pos;
         } else {
-            return this.link.kresmer.drawingCenter;
+            return this.parentElement.kresmer.drawingCenter;
         }//if
     }//coords
 
@@ -253,7 +244,7 @@ export default class LinkVertex {
 
     _updateSegmentVector()
     {
-        if (this.link.isBundle) {
+        if (this.parentElement.isBundle) {
             const vector = this._segmentVector;
             if (vector)
                 this.segmentVector = vector;
@@ -269,53 +260,27 @@ export default class LinkVertex {
     /** A collection of the vertices attached to the adjacent segment*/
     attachedVertices = new Set<LinkVertex>();
 
-    private readonly _key: number;
-    private revision = 0;
-    get key() {return `${this._key}.${this.revision}`}
-    public updateVue()
-    {
-        this.revision++;
-    }//updateVue
-
-    public ownConnectionPoint: ConnectionPointProxy;
-
-    isGoingToBeDragged = false;
-    isDragged = false;
-    dragConstraint: DragConstraint|undefined;
-    isBlinking = false;
-    private savedConn?: ConnectionPointProxy;
-    private dragStartPos?: Position;
-    private savedMousePos?: Position;
     private dragGuide?: {radiusVector: Position, length: number, originalDistance: number};
 
     get isConnected() {return Boolean(this._anchor.conn);}
     get isAttachedToBundle() {return Boolean(this._anchor.bundle);}
-    get bundleAttachedTo() {return this._anchor.bundle?.baseVertex.link as LinkBundle;}
-    get bundleDefinitelyAttachedTo() {return this._anchor.bundle!.baseVertex.link as LinkBundle;}
+    get bundleAttachedTo() {return this._anchor.bundle?.baseVertex.parentElement as LinkBundle;}
+    get bundleDefinitelyAttachedTo() {return this._anchor.bundle!.baseVertex.parentElement as LinkBundle;}
     get isPinnedUp() {return Boolean(this._anchor.pos);}
-    get isHead() {return this.vertexNumber === 0;}
-    get isTail() {return this.vertexNumber === this.link.vertices.length - 1;}
-    get isEndpoint() {return this.vertexNumber === 0 || this.vertexNumber >= this.link.vertices.length - 1;}
-    get isInitialized() {return !this.initParams;}
-    get prevNeighbour(): LinkVertex|undefined {return this._vertexNumber ? this.link.vertices[this._vertexNumber-1] : undefined}
-    get nextNeighbour(): LinkVertex|undefined {return this._vertexNumber < this.link.vertices.length ? this.link.vertices[this._vertexNumber+1] : undefined}
+    override get snapToGrid() {return this.parentElement.kresmer.snapToGrid && this.isPinnedUp}
+    override get prevNeighbour(): LinkVertex|undefined {return this._vertexNumber ? this.parentElement.vertices[this._vertexNumber-1] : undefined}
+    override get nextNeighbour(): LinkVertex|undefined {return this._vertexNumber < this.parentElement.vertices.length ? this.parentElement.vertices[this._vertexNumber+1] : undefined}
     get isEnteringBundle() {return Boolean(this.isAttachedToBundle && (!this.prevNeighbour?.isAttachedToBundle || 
                                            this.prevNeighbour.bundleAttachedTo !== this.bundleDefinitelyAttachedTo));}
     get isLeavingBundle() {return Boolean(this.isAttachedToBundle && (!this.nextNeighbour?.isAttachedToBundle ||
                                           this.nextNeighbour.bundleAttachedTo !== this.bundleDefinitelyAttachedTo));}
 
-    private mouseCaptureTarget?: SVGElement;
-    _setMouseCaptureTarget(el: SVGElement)
-    {
-        this.mouseCaptureTarget = el;
-    }//_setMouseCaptureTarget
-
-    toString()
+    override toString()
     {
         if (this._anchor.conn) {
             return this._anchor.conn.toString();
         } else if (this._anchor.bundle) {
-            return `@${this._anchor.bundle.baseVertex.link.name}:${this._anchor.bundle.baseVertex.vertexNumber}:${this._anchor.bundle.distance.toFixed()}`
+            return `@${this._anchor.bundle.baseVertex.parentElement.name}:${this._anchor.bundle.baseVertex.vertexNumber}:${this._anchor.bundle.distance.toFixed()}`
         } else if (this._anchor.pos) {
             return `(${this._anchor.pos.x.toFixed()}, ${this._anchor.pos.y.toFixed()})`
         } else {
@@ -323,19 +288,19 @@ export default class LinkVertex {
         }//if
     }//toString
 
-    get displayString()
+    override get displayString()
     {
         return this._anchor.conn?.displayString ?? this.toString();
     }//displayString
 
-    public toXML()
+    override toXML()
     {
         if (this._anchor.conn) {
             const elementName =  this._anchor.conn.hostElement instanceof NetworkLink ? 
                 `-${this._anchor.conn.hostElement.name}`: this._anchor.conn.hostElement.name;
             return `<vertex connect="${elementName}:${this._anchor.conn.name}"/>`;
         } else if (this._anchor.bundle) {
-            return `<vertex bundle="${this._anchor.bundle.baseVertex.link.name}" after="${this._anchor.bundle.baseVertex.vertexNumber}" distance="${this._anchor.bundle.distance}"/>`;
+            return `<vertex bundle="${this._anchor.bundle.baseVertex.parentElement.name}" after="${this._anchor.bundle.baseVertex.vertexNumber}" distance="${this._anchor.bundle.distance}"/>`;
         } else if (this._anchor.pos) {
             return `<vertex x="${this._anchor.pos.x}" y="${this._anchor.pos.y}"/>`;
         } else {
@@ -343,31 +308,27 @@ export default class LinkVertex {
         }//if
     }//toXML
 
-    private getMousePosition(event: MouseEvent) {
-        return this.link.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
-    }//getMousePosition
 
-
-    public startDrag(event: MouseEvent)
+    override startDrag(event: MouseEvent)
     {
         this.dragStartPos = {...this.coords};
-        if (this.link.isLoopback && !this.isConnected) {
-            this.dragStartPos = this.link.absPosToRel(this.dragStartPos);
+        if (this.parentElement.isLoopback && !this.isConnected) {
+            this.dragStartPos = this.parentElement.absPosToRel(this.dragStartPos);
         }//if
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
         if (event.shiftKey)
             this.dragConstraint = this._anchor.bundle?.baseVertex.nextNeighbour ? "bundle" : "unknown";
-        this.link.kresmer.deselectAllElements(this.link);
-        this.link.selectLink();
+        this.parentElement.kresmer.deselectAllElements(this.parentElement);
+        this.parentElement.selectThis();
         MouseEventCapture.start(this.mouseCaptureTarget!);
-        this.link.kresmer._showAllConnectionPoints.value = true;
-        this.link.kresmer.emit("link-vertex-move-started", this);
-        this.link.kresmer.undoStack.startOperation(new VertexMoveOp(this));
+        this.parentElement.kresmer._showAllConnectionPoints.value = true;
+        this.parentElement.kresmer.emit("vertex-move-started", this);
+        this.parentElement.kresmer.undoStack.startOperation(new VertexMoveOp(this));
     }//startDrag
 
 
-    public drag(event: MouseEvent)
+    override drag(event: MouseEvent)
     {
         if (!this.isDragged && !this.isGoingToBeDragged)
             return false;
@@ -376,7 +337,7 @@ export default class LinkVertex {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
-            this.savedConn = this._anchor.conn;
+            this.savedAnchor = this.anchorCopy();
             if (this.dragConstraint === "bundle") {
                 const baseVertex = this._anchor.bundle!.baseVertex;
                 const originalDistance = this._anchor.bundle!.distance;
@@ -429,15 +390,15 @@ export default class LinkVertex {
                     y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
                 }
         }//switch
-        this.link.kresmer.emit("link-vertex-being-moved", this);
+        this.parentElement.kresmer.emit("vertex-being-moved", this);
         this.ownConnectionPoint.updatePos();
         return true;
     }//drag
 
 
-    public endDrag(event: MouseEvent)
+    override endDrag(event: MouseEvent)
     {
-        this.link.kresmer._showAllConnectionPoints.value = false;
+        this.parentElement.kresmer._showAllConnectionPoints.value = false;
         this.isGoingToBeDragged = false;
         if (!this.isDragged) {
             return false;
@@ -449,7 +410,7 @@ export default class LinkVertex {
         if (this.dragConstraint !== "bundle") {
             const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
             const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
-            const stickToBundles = !this.link.isBundle;
+            const stickToBundles = !this.parentElement.isBundle;
 
             for (const element of elementsUnderCursor) {
                 if (stickToConnectionPoints) {
@@ -480,26 +441,26 @@ export default class LinkVertex {
             }//for
         }//if
 
-        if (this.link.kresmer.snapToGrid && this.isPinnedUp) {
+        if (this.parentElement.kresmer.snapToGrid && this.isPinnedUp) {
             this._anchor.pos = {
-                x: Math.round(this._anchor.pos!.x / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity,
-                y: Math.round(this._anchor.pos!.y / this.link.kresmer.snappingGranularity) * this.link.kresmer.snappingGranularity
+                x: Math.round(this._anchor.pos!.x / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity,
+                y: Math.round(this._anchor.pos!.y / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity
             };
         }//if
 
-        this.link.kresmer.undoStack.commitOperation();
-        if (this.savedConn && this._anchor.conn !== this.savedConn) 
-            this.link.kresmer.emit("link-vertex-disconnected", this, this._anchor.conn!);
-        this.link.kresmer.emit("link-vertex-moved", this);
-        if (this.isConnected && this._anchor.conn !== this.savedConn) 
-            this.link.kresmer.emit("link-vertex-connected", this);
+        this.parentElement.kresmer.undoStack.commitOperation();
+        if (this.savedAnchor?.conn && this._anchor.conn !== this.savedAnchor.conn) 
+            this.parentElement.kresmer.emit("link-vertex-disconnected", this, this._anchor.conn!);
+        this.parentElement.kresmer.emit("vertex-moved", this);
+        if (this.isConnected && this._anchor.conn !== this.savedAnchor?.conn) 
+            this.parentElement.kresmer.emit("link-vertex-connected", this);
 
         const postActionMode: VertexAlignmentMode = this.dragConstraint === "bundle" ? "post-align" : "post-move";
         this.dragConstraint = undefined;
         this.dragGuide = undefined;
-        this.savedConn = undefined;
+        this.savedAnchor = undefined;
         this.ownConnectionPoint.updatePos();
-        if (this.link.kresmer.autoAlignVertices)
+        if (this.parentElement.kresmer.autoAlignVertices)
             this.performPostMoveActions(postActionMode);
         return true;
     }//endDrag
@@ -511,11 +472,11 @@ export default class LinkVertex {
         let connectionPoint: ConnectionPointProxy | undefined;
         switch (elementType) {
             case "component": {
-                const component = this.link.kresmer.getComponentByName(elementName);
+                const component = this.parentElement.kresmer.getComponentByName(elementName);
                 connectionPoint = component?.getConnectionPoint(connectionPointName);
             } break;
             case "link": {
-                const linkToConnectTo = this.link.kresmer.getLinkByName(elementName);
+                const linkToConnectTo = this.parentElement.kresmer.getLinkByName(elementName);
                 const vertexToConnectTo = linkToConnectTo?.vertices[connectionPointName as number];
                 if (vertexToConnectTo === this)
                     return false;
@@ -529,7 +490,7 @@ export default class LinkVertex {
                 return false;
             this.connect(connectionPoint);
         } else {
-            this.link.kresmer.raiseError(new KresmerException(
+            this.parentElement.kresmer.raiseError(new KresmerException(
                 `Reference to undefined connection point "${connectionPointData}"`));
         }//if
         return true;
@@ -539,13 +500,13 @@ export default class LinkVertex {
     private tryToAttachToBundle(bundleData: string, event?: MouseEvent): boolean
     {
         const [bundleName, vertexNumber] = bundleData.split(":", 2);
-        const bundle = this.link.kresmer.getLinkByName(bundleName);
+        const bundle = this.parentElement.kresmer.getLinkByName(bundleName);
         if (!bundle) {
-            this.link.kresmer.raiseError(new UndefinedBundleException({message: `Attempt to connect to the undefined bundle "${bundleName}"`}));
+            this.parentElement.kresmer.raiseError(new UndefinedBundleException({message: `Attempt to connect to the undefined bundle "${bundleName}"`}));
             return true;
         }//if
         if (!bundle.isBundle) {
-            this.link.kresmer.raiseError(new UndefinedBundleException({message: `Attempt to connect to the non-bundle link "${bundleName}"`}));
+            this.parentElement.kresmer.raiseError(new UndefinedBundleException({message: `Attempt to connect to the non-bundle link "${bundleName}"`}));
             return true;
         }//if
 
@@ -554,7 +515,7 @@ export default class LinkVertex {
 
         const vertex = bundle.vertices[Number(vertexNumber)];
         if (!vertex) {
-            this.link.kresmer.raiseError(new UndefinedVertexException({message: `Attempt to connect to the undefined vertex "${bundleData}"`}));
+            this.parentElement.kresmer.raiseError(new UndefinedVertexException({message: `Attempt to connect to the undefined vertex "${bundleData}"`}));
             return true;
         }//if
 
@@ -563,7 +524,7 @@ export default class LinkVertex {
         if (!event) {
             d = 0;
         } else {
-            const p = this.link.kresmer.applyScreenCTM(event);
+            const p = this.parentElement.kresmer.applyScreenCTM(event);
             d = Math.hypot(p.x-v.x, p.y-v.y);
         }//if
         this.attachToBundle({baseVertex: vertex, distance: d});
@@ -571,16 +532,10 @@ export default class LinkVertex {
     }//tryToAttachToBundle
 
 
-    public onRightClick(event: MouseEvent)
-    {
-        this.link.kresmer.emit("link-vertex-right-click", this, event);
-    }//onRightClick
-
-
     public onDoubleClick()
     {
-        this.link.kresmer._showAllConnectionPoints.value = false;
-        this.link.kresmer.edAPI.alignLinkVertex({vertex: this});
+        this.parentElement.kresmer._showAllConnectionPoints.value = false;
+        super.onDoubleClick();
     }//onDoubleClick
 
 
@@ -595,8 +550,8 @@ export default class LinkVertex {
         let newAnchor: LinkVertexAnchor|null = null;
         if (this.isConnected) {
             if (mode === "normal")
-                this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
-                    {message: `Cannot align the connected vertex (${this.link.name}:${this.vertexNumber})`, severity: "warning"}));
+                this.parentElement.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+                    {message: `Cannot align the connected vertex (${this.parentElement.name}:${this.vertexNumber})`, severity: "warning"}));
             newAnchor = null;
         } else if (!predecessor && !successor) {
             newAnchor = null;
@@ -624,11 +579,11 @@ export default class LinkVertex {
 
         let shouldMove = Boolean(newAnchor);
         const outOfLimits = newAnchor?.pos && (
-            newAnchor.pos.x <= 0 || newAnchor.pos.x >= this.link.kresmer.logicalWidth ||
-            newAnchor.pos.y <= 0 || newAnchor.pos.y >= this.link.kresmer.logicalHeight);
+            newAnchor.pos.x <= 0 || newAnchor.pos.x >= this.parentElement.kresmer.logicalWidth ||
+            newAnchor.pos.y <= 0 || newAnchor.pos.y >= this.parentElement.kresmer.logicalHeight);
         if (outOfLimits) {
             if (mode === "normal") 
-                this.link.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+                this.parentElement.kresmer.raiseError(new UnrealizableVertexAlignmentException(
                     {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
             shouldMove = false;
             this.blink();
@@ -643,66 +598,58 @@ export default class LinkVertex {
         }//if
 
         if (shouldMove) {
-            if (this.link.isLoopback && newAnchor?.pos)
-                newAnchor = {pos: this.link.absPosToRel(newAnchor.pos)};
+            if (this.parentElement.isLoopback && newAnchor?.pos)
+                newAnchor = {pos: this.parentElement.absPosToRel(newAnchor.pos)};
             this.anchor = newAnchor!;
             this.ownConnectionPoint.updatePos();
-            if (this.link.kresmer.autoAlignVertices && mode == "normal")
+            if (this.parentElement.kresmer.autoAlignVertices && mode == "normal")
                 this.performPostMoveActions("post-align");
         }//if
 
         return shouldMove;
     }//align
 
-    private performPostMoveActions(mode: VertexAlignmentMode)
+    override performPostMoveActions(mode: VertexAlignmentMode)
     {
         nextTick(() => {
             if (this.prevNeighbour)
-                this.link.kresmer.edAPI.alignLinkVertex({vertex: this.prevNeighbour}, mode);
+                this.parentElement.kresmer.edAPI.alignVertex({vertex: this.prevNeighbour}, mode);
 
             if (this.nextNeighbour)
-                this.link.kresmer.edAPI.alignLinkVertex({vertex: this.nextNeighbour}, mode);
+                this.parentElement.kresmer.edAPI.alignVertex({vertex: this.nextNeighbour}, mode);
 
-            if (this.link.isBundle && !this.isTail) {
-                for (const attachedLink of (this.link as LinkBundle).getAttachedLinks()) {
+            if (this.parentElement.isBundle && !this.isTail) {
+                for (const attachedLink of (this.parentElement as LinkBundle).getAttachedLinks()) {
                     for (const attachedVertex of attachedLink.vertices) {
                         if (attachedVertex._anchor.bundle?.baseVertex === this)
-                            this.link.kresmer.edAPI.alignLinkVertex({vertex: attachedVertex}, mode);
+                            this.parentElement.kresmer.edAPI.alignVertex({vertex: attachedVertex}, mode);
                     }//for
                 }//for
             }//if
 
             if (mode !== "post-align") {
-                this.link.kresmer.edAPI.alignLinkVertex({vertex: this}, mode);
+                this.parentElement.kresmer.edAPI.alignVertex({vertex: this}, mode);
             }//if
         });
     }//performPostMoveActions
 
-    private alignEndpoint(neighbor: LinkVertex, mode: VertexAlignmentMode): LinkVertexAnchor|null
+    override alignEndpoint(neighbor: LinkVertex, mode: VertexAlignmentMode): LinkVertexAnchor|null
     {
         if (this.isAttachedToBundle)
             return null;
 
-        if (this.link.isBundle) {
+        if (this.parentElement.isBundle) {
             const newAnchor = this.alignBundleEndpoint(mode);
             if (newAnchor)
                 return newAnchor;
         }//if
 
-        const threshold = 0.2;
-        const {x: x0, y: y0} = this.coords;
-        const {x: x1, y: y1} = neighbor.coords;
-        if (Math.abs(x1 - x0) < Math.abs(y1 - y0)*threshold)
-            return {pos: {x: x1, y: y0}};
-        else if (Math.abs(y1 - y0) < Math.abs(x1 - x0)*threshold)
-            return {pos: {x: x0, y: y1}};
-        else
-            return null;
+        return super.alignEndpoint(neighbor, mode);
     }//alignEndpoint
 
     private alignBundleEndpoint(mode: VertexAlignmentMode): LinkVertexAnchor|null
     {
-        const bundle = this.link as LinkBundle;
+        const bundle = this.parentElement as LinkBundle;
         let haveAttachedLinks = false;
         const verticesAttachedHere: LinkVertex[] = [];
         for (const attachedLink of bundle.getAttachedLinks()) {
@@ -762,8 +709,8 @@ export default class LinkVertex {
         if (d0 === 0)
             return null;
         if (baseVertex.isTail) {
-            if ((baseVertex.link as LinkBundle).getAttachedLinks().length == 1)
-                nextTick(() => this.link.kresmer.edAPI.alignLinkVertex({vertex: baseVertex}));
+            if ((baseVertex.parentElement as LinkBundle).getAttachedLinks().length == 1)
+                nextTick(() => this.parentElement.kresmer.edAPI.alignVertex({vertex: baseVertex}));
             return null;
         }//if
 
@@ -797,19 +744,6 @@ export default class LinkVertex {
         else
             return null;
     }//alignOnBundle
-
-    private alignBetweenTwoPositions(predecessor: LinkVertex, successor: LinkVertex): LinkVertexAnchor|null
-    {
-        const l1 = Math.hypot(this.coords.x - predecessor.coords.x, this.coords.y - successor.coords.y);
-        const l2 = Math.hypot(this.coords.y - predecessor.coords.y, this.coords.x - successor.coords.x);
-        let x: number; let y: number;
-        if (l1 < l2) {
-            x = predecessor.coords.x; y = successor.coords.y;
-        } else {
-            x = successor.coords.x; y = predecessor.coords.y;
-        }//if
-        return {pos: {x, y}};
-    }//alignBetweenTwoPositions
 
     private alignBetweenConnectionAndPosition(connected: LinkVertex, positioned: LinkVertex): LinkVertexAnchor|null
     {
@@ -870,18 +804,12 @@ export default class LinkVertex {
         }//if
         return newPos ? {pos: newPos} : null;
     }//alignBetweenConnectionAndPosition
-
-    public blink()
-    {
-        this.isBlinking = true;
-        setTimeout(() => {this.isBlinking = false}, 500);
-    }//blink
 }//LinkVertex
 
 
 // Auxiliary interfaces for initialization and position saving
 
-export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
+export type LinkVertexInitParams = (LinkVertexAnchor & {
     cpData?: {
         cpHostElement: string, 
         connectionPoint: string
@@ -891,14 +819,13 @@ export type LinkVertexInitParams = RequireAtLeastOne<LinkVertexAnchor & {
         baseVertex: number,
         distance: number
     },
-}> | Record<string, never>;
+}) | Record<string, never>;
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
-export type LinkVertexAnchor = RequireAtLeastOne<{
-    pos?: Position,
+export type LinkVertexAnchor = VertexAnchor & {
     conn?: ConnectionPointProxy,
     bundle?: BundleAttachmentDescriptor,
-}>//LinkVertexExtAnchor
+}
 
 export type BundleAttachmentDescriptor = {
     baseVertex: LinkVertex,
@@ -908,7 +835,6 @@ export type BundleAttachmentDescriptor = {
 export type LinkVertexSpec = {vertex: LinkVertex}|{linkID: number, vertexNumber: number};
 export type VertexAlignmentMode = "normal" | "post-align" | "post-move";
 type SegmentVector = {x0: number, y0: number, length: number, cosFi: number, sinFi: number};
-type DragConstraint = "x" | "y" | "bundle" | "unknown";
 
 // Editor operations
 export class VertexMoveOp extends EditorOperation {
