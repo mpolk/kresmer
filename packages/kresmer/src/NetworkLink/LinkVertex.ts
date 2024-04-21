@@ -323,10 +323,9 @@ export default class LinkVertex extends Vertex {
         this.parentElement.selectThis();
         MouseEventCapture.start(this.mouseCaptureTarget!);
         this.parentElement.kresmer._showAllConnectionPoints.value = true;
-        this.parentElement.kresmer.emit("vertex-move-started", this);
+        this.notifyOnVertexMoveStart();
         this.parentElement.kresmer.undoStack.startOperation(new VertexMoveOp(this));
     }//startDrag
-
 
     override drag(event: MouseEvent)
     {
@@ -390,7 +389,7 @@ export default class LinkVertex extends Vertex {
                     y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
                 }
         }//switch
-        this.parentElement.kresmer.emit("vertex-being-moved", this);
+        this.notifyOnVertexMove();
         this.ownConnectionPoint.updatePos();
         return true;
     }//drag
@@ -451,7 +450,7 @@ export default class LinkVertex extends Vertex {
         this.parentElement.kresmer.undoStack.commitOperation();
         if (this.savedAnchor?.conn && this._anchor.conn !== this.savedAnchor.conn) 
             this.parentElement.kresmer.emit("link-vertex-disconnected", this, this._anchor.conn!);
-        this.parentElement.kresmer.emit("vertex-moved", this);
+        this.notifyOnVertexMove();
         if (this.isConnected && this._anchor.conn !== this.savedAnchor?.conn) 
             this.parentElement.kresmer.emit("link-vertex-connected", this);
 
@@ -464,6 +463,21 @@ export default class LinkVertex extends Vertex {
             this.performPostMoveActions(postActionMode);
         return true;
     }//endDrag
+
+    override notifyOnVertexMoveStart(): void
+    {
+        this.parentElement.kresmer.emit("link-vertex-move-started", this);
+    }//notifyOnVertexMoveStart
+
+    override notifyOnVertexBeingMoved(): void
+    {
+        this.parentElement.kresmer.emit("link-vertex-being-moved", this);
+    }//notifyOnVertexBeingMoved
+
+    override notifyOnVertexMove(): void
+    {
+        this.parentElement.kresmer.emit("link-vertex-moved", this);
+    }//notifyOnVertexMove
 
 
     private tryToConnectToConnectionPoint(connectionPointData: string): boolean
@@ -530,6 +544,12 @@ export default class LinkVertex extends Vertex {
         this.attachToBundle({baseVertex: vertex, distance: d});
         return true;
     }//tryToAttachToBundle
+
+
+    override onRightClick(event: MouseEvent)
+    {
+        this.parentElement.kresmer.emit("link-vertex-right-click", this, event);
+    }//onRightClick
 
 
     public onDoubleClick()

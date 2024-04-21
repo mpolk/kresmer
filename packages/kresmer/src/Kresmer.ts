@@ -1115,7 +1115,7 @@ ${svg.outerHTML}
                 throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
             }//if
             const vertex = link.addVertex(segmentNumber, mousePos);
-            this.emit("vertex-added", vertex);
+            this.emit("link-vertex-added", vertex);
             return vertex;
         },//addLinkVertex
 
@@ -1138,7 +1138,7 @@ ${svg.outerHTML}
             this.undoStack.startOperation(new VertexMoveOp(vertex));
             if (vertex.align(mode)) {
                 this.undoStack.commitOperation();
-                this.emit("vertex-moved", vertex);
+                vertex.notifyOnVertexMove();
                 return true;
             } else {
                 this.undoStack.cancelOperation();
@@ -1171,7 +1171,7 @@ ${svg.outerHTML}
                 }//for
                 this.undoStack.commitOperation();
                 for (const vertex of op.vertices) {
-                    this.emit("vertex-moved", vertex);
+                    vertex.notifyOnVertexMove();
                 }//for
                 return true;
             } else {
@@ -1198,7 +1198,7 @@ ${svg.outerHTML}
                     throw new UndefinedVertexException({message: `Attempt to delete a non-existent vertex (id=${linkID})`});
             }//if
             this.undoStack.execAndCommit(new DeleteVertexOp(vertex));
-            this.emit("vertex-deleted", vertex);
+            this.emit("link-vertex-deleted", vertex);
         },//deleteLinkVertex
 
         /**

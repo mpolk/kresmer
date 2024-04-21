@@ -18,7 +18,7 @@ import MouseEventCapture from "../MouseEventCapture";
 
 /** Generic Vertex (may belong to an Area) */
 
-export default class Vertex {
+export default abstract class Vertex {
 
     /**
      * Constructs a new vertex
@@ -158,7 +158,7 @@ export default class Vertex {
         this.parentElement.kresmer.deselectAllElements(this.parentElement);
         this.parentElement.selectThis();
         MouseEventCapture.start(this.mouseCaptureTarget!);
-        this.parentElement.kresmer.emit("vertex-move-started", this);
+        this.notifyOnVertexMoveStart();
         this.parentElement.kresmer.undoStack.startOperation(new VertexMoveOp(this));
     }//startDrag
 
@@ -205,7 +205,7 @@ export default class Vertex {
                     y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
                 }
         }//switch
-        this.parentElement.kresmer.emit("vertex-being-moved", this);
+        this.notifyOnVertexBeingMoved();
         this.ownConnectionPoint.updatePos();
         return true;
     }//drag
@@ -231,6 +231,7 @@ export default class Vertex {
         }//if
 
         this.parentElement.kresmer.undoStack.commitOperation();
+        this.notifyOnVertexMove();
 
         const postActionMode: VertexAlignmentMode = this.dragConstraint === "bundle" ? "post-align" : "post-move";
         this.dragConstraint = undefined;
@@ -242,10 +243,10 @@ export default class Vertex {
     }//endDrag
 
 
-    public onRightClick(event: MouseEvent)
-    {
-        this.parentElement.kresmer.emit("vertex-right-click", this, event);
-    }//onRightClick
+    protected abstract notifyOnVertexMoveStart(): void;
+    abstract notifyOnVertexBeingMoved(): void;
+    abstract notifyOnVertexMove(): void;
+    abstract onRightClick(event: MouseEvent): void;
 
 
     public onDoubleClick()

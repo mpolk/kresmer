@@ -203,7 +203,7 @@ kresmer
     .on("component-transformed", () => hints.pop())
     .on("component-exited-transform-mode", () => hints.pop())
     .on("component-exited-adjustment-mode", () => hints.pop())
-    .on("vertex-moved", () => hints.pop())
+    .on("link-vertex-moved", () => hints.pop())
     .on("link-vertex-connected", () => hints.pop())
     .on("link-vertex-disconnected", () => hints.pop())
     ;
@@ -280,12 +280,12 @@ kresmer.on("link-double-click", (link: NetworkLink, /* segmentNumber: number,  m
     vueComponentPropsSidebar.show(link);
 });//onLinkDoubleClick
 
-kresmer.on("vertex-right-click", (vertex: Vertex, /* _mouseEvent: MouseEvent */) =>
+kresmer.on("link-vertex-right-click", (vertex: Vertex, /* _mouseEvent: MouseEvent */) =>
 {
     window.electronAPI.showContextMenu("link-vertex", vertex.parentElement.id, vertex.vertexNumber);
 });//onLinkVertexRightClick
 
-kresmer.on("vertex-being-moved", (vertex: Vertex) =>
+kresmer.on("link-vertex-being-moved", (vertex: Vertex) =>
 {
     const {x, y} = vertex.coords;
     const hint = `x:${x.toFixed(0)} y:${y.toFixed(0)}`;
