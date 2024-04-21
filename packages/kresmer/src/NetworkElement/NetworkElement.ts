@@ -9,13 +9,13 @@
 
 import {v4 as uuidV4} from "uuid";
 import { InjectionKey } from "vue";
-import Kresmer from "./Kresmer";
+import Kresmer from "../Kresmer";
 import NetworkElementClass from "./NetworkElementClass";
-import NetworkLink from "./NetworkLink/NetworkLink";
-import { EditorOperation } from "./UndoStack";
-import KresmerException from "./KresmerException";
-import { encodeHtmlEntities, indent, toKebabCase } from "./Utils";
-import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
+import NetworkLink from "../NetworkLink/NetworkLink";
+import { EditorOperation } from "../UndoStack";
+import KresmerException from "../KresmerException";
+import { encodeHtmlEntities, indent, toKebabCase } from "../Utils";
+import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 
 export default abstract class NetworkElement {
     /**

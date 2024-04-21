@@ -9,10 +9,10 @@
 
 import { Prop, PropType } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
-import { Template } from "./Kresmer";
-import { clone } from "./Utils";
-import { NetworkElementProps } from "./loaders/DrawingParser";
-import { toCamelCase } from "./Utils";
+import { Template } from "../Kresmer";
+import { clone } from "../Utils";
+import { NetworkElementProps } from "../loaders/DrawingParser";
+import { toCamelCase } from "../Utils";
 
 /**
  * Network Component Class - a generic network element class

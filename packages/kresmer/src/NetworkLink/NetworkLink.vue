@@ -9,7 +9,7 @@
 <script lang="ts">
     import { computed, onBeforeMount, PropType, provide, onMounted, CSSProperties } from 'vue';
     import NetworkLink from './NetworkLink';
-    import NetworkElement from '../NetworkElement';
+    import NetworkElement from '../NetworkElement/NetworkElement';
     import LinkVertexVue from './LinkVertex.vue';
     import LinkBundle from './LinkBundle';
     

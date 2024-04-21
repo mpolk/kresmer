@@ -8,10 +8,9 @@
  ***************************************************************************/
 
 import { nextTick } from "vue";
-import NetworkElement from "../NetworkElement";
+import NetworkElementWithVertices from "NetworkElement/NetworkElementWithVertices";
 import { Position } from "../Transform/Transform";
 import { UnrealizableVertexAlignmentException } from "../KresmerException";
-import withVertices from "./withVertices";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
 import { EditorOperation } from "../UndoStack";
 import MouseEventCapture from "../MouseEventCapture";
@@ -352,8 +351,6 @@ export default abstract class Vertex {
         setTimeout(() => {this.isBlinking = false}, 500);
     }//blink
 }//Vertex
-
-export abstract class NetworkElementWithVertices extends withVertices(NetworkElement) {}
 
 
 // Auxiliary interfaces for initialization and position saving

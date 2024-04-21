@@ -13,9 +13,10 @@ import KresmerException from "./KresmerException";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkComponentController, { TransformMode } from "./NetworkComponent/NetworkComponentController";
 import LinkVertex from "./NetworkLink/LinkVertex";
-import Vertex from "./Vertex/Vertex";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import {toCamelCase} from "./Utils";
+import DrawingArea from "DrawingArea/DrawingArea";
+import AreaVertex from "DrawingArea/AreaVertex";
 
 /** A list of Kresmer events along with correponding handler definitions */
 class KresmerEventFormats  {
@@ -50,20 +51,34 @@ class KresmerEventFormats  {
                                          target: "component"|"transform-box", 
                                          nativeEvent: MouseEvent) => void;
     "mode-reset":                       () => void;
-    "link-loaded":                      (component: NetworkLink) => boolean;
+    "link-loaded":                      (link: NetworkLink) => boolean;
     "link-added":                       (link: NetworkLink) => void;
     "link-deleted":                     (link: NetworkLink) => void;
     "link-selected":                    (link: NetworkLink, isSelected: boolean) => void;
     "link-right-click":                 (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
     "link-double-click":                (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) => void;
-    "link-vertex-added":                (vertex: Vertex) => void;
-    "link-vertex-deleted":              (vertex: Vertex) => void;
-    "link-vertex-move-started":         (vertex: Vertex) => void;
-    "link-vertex-being-moved":          (vertex: Vertex) => void;
-    "link-vertex-moved":                (vertex: Vertex) => void;
-    "link-vertex-right-click":          (vertex: Vertex, mouseEvent: MouseEvent) => void;
+    "link-vertex-added":                (vertex: LinkVertex) => void;
+    "link-vertex-deleted":              (vertex: LinkVertex) => void;
+    "link-vertex-move-started":         (vertex: LinkVertex) => void;
+    "link-vertex-being-moved":          (vertex: LinkVertex) => void;
+    "link-vertex-moved":                (vertex: LinkVertex) => void;
+    "link-vertex-right-click":          (vertex: LinkVertex, mouseEvent: MouseEvent) => void;
     "link-vertex-connected":            (vertex: LinkVertex) => void;
     "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPoint) => void;
+    "area-loaded":                      (component: NetworkLink) => boolean;
+    "area-added":                       (area: DrawingArea) => void;
+    "area-deleted":                     (area: DrawingArea) => void;
+    "area-selected":                    (area: DrawingArea, isSelected: boolean) => void;
+    "area-right-click":                 (area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) => void;
+    "area-double-click":                (area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) => void;
+    "area-vertex-added":                (vertex: AreaVertex) => void;
+    "area-vertex-deleted":              (vertex: AreaVertex) => void;
+    "area-vertex-move-started":         (vertex: AreaVertex) => void;
+    "area-vertex-being-moved":          (vertex: AreaVertex) => void;
+    "area-vertex-moved":                (vertex: AreaVertex) => void;
+    "area-vertex-right-click":          (vertex: AreaVertex, mouseEvent: MouseEvent) => void;
+    "area-vertex-connected":            (vertex: AreaVertex) => void;
+    "area-vertex-disconnected":         (vertex: AreaVertex, connectionPoint: ConnectionPoint) => void;
     "connection-point-right-click":     (connectionPoint: ConnectionPoint) => void;
 }//KresmerEventFormats
 
@@ -325,21 +340,21 @@ export default class KresmerEventHooks {
     protected onLinkLoaded(link: NetworkLink) {}
 
     /**
-     * Is called when a network component is added
+     * Is called when a network link is added
      * @param link The link been added
      */
     @overridableHandler("link-added")
     protected onLinkAdded(link: NetworkLink) {}
 
     /**
-     * Is called when a network component is deleted
+     * Is called when a network link is deleted
      * @param link The link been deleted
      */
     @overridableHandler("link-deleted")
     protected onLinkDeleted(link: NetworkLink) {}
 
     /**
-     * Is called when a network component is selected or deselected
+     * Is called when a network link is selected or deselected
      * @param link The link been selected
      */
     @overridableHandler("link-selected")
@@ -364,35 +379,35 @@ export default class KresmerEventHooks {
      * @param controller The vertex been added
      */
     @overridableHandler("link-vertex-added")
-    protected onLinkVertexAdded(vertex: Vertex) {}
+    protected onLinkVertexAdded(vertex: LinkVertex) {}
  
     /**
      * Is called when a vertex had been deleted
      * @param controller The vertex been deleted
      */
     @overridableHandler("link-vertex-deleted")
-    protected onLinkVertexDeleted(vertex: Vertex) {}
+    protected onLinkVertexDeleted(vertex: LinkVertex) {}
   
     /**
      * Is called when a vertex move starts
      * @param controller The controller of the component starting to move
      */
     @overridableHandler("link-vertex-move-started")
-    protected onLinkVertexMoveStarted(vertex: Vertex) {}
+    protected onLinkVertexMoveStarted(vertex: LinkVertex) {}
  
     /**
      * Is called when a vertex is being moved (dragged)
      * @param controller The vertex is being moved
      */
     @overridableHandler("link-vertex-being-moved")
-    protected onLinkVertexBeingMoved(vertex: Vertex) {}
+    protected onLinkVertexBeingMoved(vertex: LinkVertex) {}
  
     /**
      * Is called when a vertex had been moved (dragged)
      * @param controller The vertex been moved
      */
     @overridableHandler("link-vertex-moved")
-    protected onLinkVertexMoved(vertex: Vertex) {}
+    protected onLinkVertexMoved(vertex: LinkVertex) {}
  
     /**
      * Is called when a vertex had been connected to some connection point
@@ -413,7 +428,105 @@ export default class KresmerEventHooks {
      * @param vertex The vertex been clicked
      */
     @overridableHandler("link-vertex-right-click")
-    protected onLinkVertexRightClick(vertex: Vertex, mouseEvent: MouseEvent) {}
+    protected onLinkVertexRightClick(vertex: LinkVertex, mouseEvent: MouseEvent) {}
+
+    /**
+     * Is called when a drawing area is loaded from the drawing file
+     * @param controller The area been loaded
+     */
+    @overridableHandler("area-loaded")
+    protected onAreaLoaded(area: DrawingArea) {}
+
+    /**
+     * Is called when a drawing area is added
+     * @param area The area been added
+     */
+    @overridableHandler("area-added")
+    protected onAreaAdded(area: DrawingArea) {}
+
+    /**
+     * Is called when a drawing area is deleted
+     * @param area The area been deleted
+     */
+    @overridableHandler("area-deleted")
+    protected onAreaDeleted(area: DrawingArea) {}
+
+    /**
+     * Is called when a drawing area is selected or deselected
+     * @param area The area been selected
+     */
+    @overridableHandler("area-selected")
+    protected onAreaSelected(area: DrawingArea, isSelected: boolean) {}
+
+    /**
+     * Is called upon right mouse click on the drawing area
+     * @param area The area been clicked
+     */
+    @overridableHandler("area-right-click")
+    protected onAreaRightClick(area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) {}
+
+    /**
+     * Is called upon double mouse click on the drawing area
+     * @param area The area been clicked
+     */
+    @overridableHandler("area-double-click")
+    protected onAreaDoubleClick(area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) {}
+ 
+    /**
+     * Is called when a vertex had been added
+     * @param controller The vertex been added
+     */
+    @overridableHandler("area-vertex-added")
+    protected onAreaVertexAdded(vertex: AreaVertex) {}
+ 
+    /**
+     * Is called when a vertex had been deleted
+     * @param controller The vertex been deleted
+     */
+    @overridableHandler("area-vertex-deleted")
+    protected onAreaVertexDeleted(vertex: AreaVertex) {}
+  
+    /**
+     * Is called when a vertex move starts
+     * @param controller The controller of the component starting to move
+     */
+    @overridableHandler("area-vertex-move-started")
+    protected onAreaVertexMoveStarted(vertex: AreaVertex) {}
+ 
+    /**
+     * Is called when a vertex is being moved (dragged)
+     * @param controller The vertex is being moved
+     */
+    @overridableHandler("area-vertex-being-moved")
+    protected onAreaVertexBeingMoved(vertex: AreaVertex) {}
+ 
+    /**
+     * Is called when a vertex had been moved (dragged)
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("area-vertex-moved")
+    protected onAreaVertexMoved(vertex: AreaVertex) {}
+ 
+    /**
+     * Is called when a vertex had been connected to some connection point
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("area-vertex-connected")
+    protected onAreaVertexConnected(vertex: AreaVertex) {}
+ 
+    /**
+     * Is called when a drawing area vertex had been disconnected from the connection point
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("area-vertex-disconnected")
+    protected onAreaVertexDisconnected(vertex: AreaVertex, connectionPoint: ConnectionPoint) {}
+
+    /**
+     * Is called upon right mouse click on the vertex
+     * @param vertex The vertex been clicked
+     */
+    @overridableHandler("area-vertex-right-click")
+    protected onAreaVertexRightClick(vertex: AreaVertex, mouseEvent: MouseEvent) {}
 
     /**
      * Is called upon right mouse click on the connection point

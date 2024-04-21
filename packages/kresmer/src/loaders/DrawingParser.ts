@@ -8,7 +8,7 @@
 
 import Kresmer from "../Kresmer";
 import { BackgroundImageData, BackgroundImageAlignment } from "../BackgroundImageData";
-import NetworkElementClass from "../NetworkElementClass";
+import NetworkElementClass from "../NetworkElement/NetworkElementClass";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";

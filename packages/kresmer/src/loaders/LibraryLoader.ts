@@ -9,7 +9,7 @@
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import LibraryParser, { DefsLibNode, ImportStatement, LibParams, StyleLibNode } from "./LibraryParser";
-import NetworkElementClass from "../NetworkElementClass";
+import NetworkElementClass from "../NetworkElement/NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import { LibraryImportException } from "../KresmerException";

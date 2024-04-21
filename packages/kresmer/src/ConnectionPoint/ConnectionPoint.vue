@@ -10,7 +10,7 @@
 <script setup lang="ts">
     import { inject, onMounted, ref, watch, nextTick, computed, PropType, onBeforeUnmount } from 'vue';
     import Kresmer from '../Kresmer';
-    import NetworkElement from '../NetworkElement';
+    import NetworkElement from '../NetworkElement/NetworkElement';
     import NetworkLink from '../NetworkLink/NetworkLink';
     import ConnectionPoint from './ConnectionPoint';
 

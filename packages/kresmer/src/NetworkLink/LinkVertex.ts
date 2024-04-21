@@ -50,7 +50,7 @@ export default class LinkVertex extends Vertex {
     /** Postponned part of the initialization delayed until all components are mounted.
      *  It takes internally saved "initParams" and converts it to the "real" anchor data.
     */
-    override init()
+    override init(): LinkVertex
     {
         if (this.initParams?.pos) {
             this.pinUp(this.initParams.pos);

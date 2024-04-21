@@ -16,5 +16,4 @@
     "allowSyntheticDefaultImports": true,
   },
   "include": ["src/**/*"],
-  "exclude": ["src/DrawingArea/**"],
 }

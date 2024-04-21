@@ -8,7 +8,6 @@
 
 import { InjectionKey, nextTick } from "vue";
 import Kresmer from "Kresmer";
-import ConnectionPointProxy from "ConnectionPoint/ConnectionPoint";
 import type LinkBundle from "./LinkBundle";
 import { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
@@ -17,7 +16,7 @@ import { EditorOperation } from "../UndoStack";
 import { Position } from "Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
-import { NetworkElementWithVertices } from "../Vertex/Vertex";
+import NetworkElementWithVertices from "../NetworkElement/NetworkElementWithVertices";
 
 /**
  * Network Link 
@@ -219,7 +218,7 @@ export default class NetworkLink extends withZOrder(NetworkElementWithVertices) 
         }
     }//relPosToAbs
 
-    public addVertex(segmentNumber: number, mousePos: Position)
+    override addVertex(segmentNumber: number, mousePos: Position)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
         const vertexNumber = segmentNumber + 1;
@@ -246,33 +245,6 @@ export default class NetworkLink extends withZOrder(NetworkElementWithVertices) 
         }//if
         return vs;
     }//wouldAlignVertices
-
-    public alignVertices()
-    {
-        const verticesAligned = this.wouldAlignVertices;
-        for (const vertex of verticesAligned) {
-            if (!vertex.align())
-                verticesAligned.delete(vertex);
-        }//for
-        return verticesAligned;
-    }//alignVertices
-
-    override getConnectionPoint(name: string | number): ConnectionPointProxy | undefined {
-        const i = Number(name);
-        if (i >= 0 && i < this.vertices.length)
-            return this.vertices[i].ownConnectionPoint;
-        else
-            return undefined;
-    }//getConnectionPoint
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    override addConnectionPoint(name: string | number, connectionPoint: ConnectionPointProxy): void {
-        console.error(`"addConnectionPoint(${connectionPoint.name})" called for the link`, this);
-    }//addConnectionPoint
-
-    public override updateConnectionPoints(): void {
-        this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos());
-    }//updateConnectionPoints()
 
     public onMouseEnter()
     {

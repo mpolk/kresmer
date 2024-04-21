@@ -8,20 +8,22 @@
 
 import { InjectionKey, nextTick } from "vue";
 import Kresmer from "../Kresmer";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
 import { UndefinedLinkClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
-import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
-import NetworkElement from '../NetworkElement';
+import AreaVertex from "./AreaVertex";
+import { VertexInitParams } from "../Vertex/Vertex";
+import NetworkElementWithVertices from "../NetworkElement/NetworkElementWithVertices";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
-import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
+import { MapWithZOrder, withZOrder } from "../ZOrdering";
+import LinkVertex from "../NetworkLink/LinkVertex";
 
 /**
  * Drawing Area 
  */
-class _DrawingArea extends NetworkElement {
+
+export default class DrawingArea extends withZOrder(NetworkElementWithVertices) {
     /**
      * 
      * @param _class The class this Link should belong 
@@ -36,7 +38,7 @@ class _DrawingArea extends NetworkElement {
             name?: string,
             dbID?: number|string|null,
             props?: Record<string, unknown>,
-            vertices?: LinkVertexInitParams[],
+            vertices?: VertexInitParams[],
         }
     ) {
         const clazz = _class instanceof DrawingAreaClass ? _class : DrawingAreaClass.getClass(_class);
@@ -44,66 +46,33 @@ class _DrawingArea extends NetworkElement {
             throw new UndefinedLinkClassException({className: _class as string});
         }//if
         super(kresmer, clazz, args);
-        const _this = this as unknown as DrawingArea;
         let i = 0;
-        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(_this, i++, initParams)));
+        args?.vertices?.forEach(initParams => this.vertices.push(new AreaVertex(this, i++, initParams)));
     }//ctor
 
     declare protected _class: DrawingAreaClass;
     override getClass(): DrawingAreaClass {
         return this._class;
     }//getClass
-
-    private verticesInitialized = false;
-    vertices: LinkVertex[] = [];
-    nextVertexKey = 0;
-
-    readonly initVertices = () => {
-        if (!this.verticesInitialized) {
-            this.vertices.forEach(vertex => vertex.init());
-            this.verticesInitialized = true;
-        }//if
-    }//initVertices
-
-    get head() {return this.vertices[0];}
-    get tail() {return this.vertices[this.vertices.length-1];}
-
-    public toggleVertexPositioningMode(except: LinkVertex)
-    {
-        const conversion = (this.isLoopback ? this.absPosToRel : this.relPosToAbs).bind(this);
-        this.vertices.forEach(vertex => {
-            if (!vertex.isConnected && vertex !== except) {
-                vertex.pinUp(conversion(vertex.anchor.pos!));
-            }//if
-        });
-    }//toggleVertexPositioningMode
+    override isClosed = true;
+    declare vertices: AreaVertex[];
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<DrawingArea>;
 
     override checkNameUniqueness(name: string): boolean {
-        return name == this.name || !this.kresmer.linksByName.has(name);
+        return name == this.name || !this.kresmer.areasByName.has(name);
     }//checkNameUniqueness
 
     toString()
     {
-        let str = `${this.name}: ${this.getClass().name}`;
-        if (this.verticesInitialized) {
-            str += ` (${this.vertices[0]} => ${this.vertices[this.vertices.length - 1]})`;
-        }//if
-        return str;
+        return `${this.name}: ${this.getClass().name}`;
     }//toString
 
     get displayString()
     {
-        let str = `${this.name}: ${this.getClass().name}`;
-        if (this.verticesInitialized) {
-            str += ` (${this.vertices[0].displayString} => ${this.vertices[this.vertices.length - 1].displayString})`;
-        }//if
-        return str;
+        return this.toString();
     }//displayString
-
-    protected readonly outerXMLTag: string = "link";
 
     public toXML(indentLevel: number): string 
     {
@@ -111,191 +80,100 @@ class _DrawingArea extends NetworkElement {
         attrs.set("class", this.getClass().name);
         attrs.set("name", this.name);
         this.dbID && attrs.set("db-id", this.dbID.toString());
-        (this.head.isConnected || this.head.isAttachedToBundle || this.head.anchor.pos) && 
-            attrs.set("from", this.vertices[0].toString());
-        const n = this.vertices.length - 1;
-        (this.tail.isConnected || this.tail.isAttachedToBundle || this.tail.anchor.pos) && 
-            attrs.set("to", this.vertices[n].toString());
 
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
-        if (this.vertices.length <= 2 && this.propCount == 0) {
-            return `${indent(indentLevel)}<${this.outerXMLTag} ${attrStr}/>`;
-        } else {
-            const xml = [`${indent(indentLevel)}<${this.outerXMLTag} ${attrStr}>`];
+        const xml = [`${indent(indentLevel)}<area ${attrStr}>`];
 
-            xml.push(...this.propsToXML(indentLevel));
-    
-            for (let i = 1; i <= n - 1; i++) {
-                xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
-            }//for
+        xml.push(...this.propsToXML(indentLevel));
 
-            xml.push(`${indent(indentLevel)}</${this.outerXMLTag}>`);
-            return xml.join("\n");
-        }//if
+        for (let i = 1; i <= this.vertices.length - 1; i++) {
+            xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
+        }//for
+
+        xml.push(`${indent(indentLevel)}</area>`);
+        return xml.join("\n");
     }//toXML
 
-    public get isLoopback() {
-        const n = this.vertices.length - 1;
-        return this.vertices[0].isConnected && this.vertices[n].isConnected && 
-            this.vertices[0].anchor.conn!.hostElement === this.vertices[n].anchor.conn!.hostElement;
-    }//isLoopback
-
-    public selectLink(this: DrawingArea)
+    override selectThis()
     {
         if (!this.isSelected) {
             this.kresmer.deselectAllElements(this);
             this.isSelected = true;
             this.bringToTop();
         }//if
-    }//selectComponent
+    }//selectThis
 
     override _onSelection(willBeSelected: boolean): true {
-        this.kresmer.emit("link-selected", this as unknown as DrawingArea, willBeSelected);
+        this.kresmer.emit("area-selected", this, willBeSelected);
         return true;
     }//onSelection
 
     override get _byNameIndex(): Map<string, number> {
-        return this.kresmer.linksByName;
+        return this.kresmer.areasByName;
     }//_byNameIndex
 
-    public absPosToRel(absPos: Position): Position
-    {
-        return {
-            x: absPos.x - this.head.coords.x,
-            y: absPos.y - this.head.coords.y,
-        }
-    }//absPosToRel
-
-    public relPosToAbs(absPos: Position): Position
-    {
-        return {
-            x: absPos.x + this.head.coords.x,
-            y: absPos.y + this.head.coords.y,
-        }
-    }//relPosToAbs
-
-    public addVertex(this: DrawingArea, segmentNumber: number, mousePos: Position)
+    override addVertex(segmentNumber: number, mousePos: Position)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
         const vertexNumber = segmentNumber + 1;
-        let pos = this.kresmer.applyScreenCTM(mousePos);
-        if (this.isLoopback) {
-            pos = this.absPosToRel(pos);
-        }//if
-        const vertex = new LinkVertex(this, vertexNumber, {pos}).init();
+        const pos = this.kresmer.applyScreenCTM(mousePos);
+        const vertex: AreaVertex = new AreaVertex(this, vertexNumber, {pos}).init();
         this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
         return vertex;
     }//addVertex
 
-    public get wouldAlignVertices()
-    {
-        const vs = new Set(this.vertices.filter(v => !v.isConnected));
-        if (this.isBundle) {
-            const thisBundle = this as unknown as LinkBundle;
-            for (const attachedLink of thisBundle.getAttachedLinks()) {
-                for (const vertex of attachedLink.vertices) {
-                    if (vertex.bundleAttachedTo === thisBundle)
-                        vs.add(vertex);
-                }//for
-            }//for
-        }//if
-        return vs;
-    }//wouldAlignVertices
-
-    public alignVertices()
-    {
-        const verticesAligned = this.wouldAlignVertices;
-        for (const vertex of verticesAligned) {
-            if (!vertex.align())
-                verticesAligned.delete(vertex);
-        }//for
-        return verticesAligned;
-    }//alignVertices
-
-    override getConnectionPoint(name: string | number): ConnectionPointProxy | undefined {
-        const i = Number(name);
-        if (i >= 0 && i < this.vertices.length)
-            return this.vertices[i].ownConnectionPoint;
-        else
-            return undefined;
-    }//getConnectionPoint
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    override addConnectionPoint(name: string | number, connectionPoint: ConnectionPointProxy): void {
-        console.error(`"addConnectionPoint(${connectionPoint.name})" called for the link`, this);
-    }//addConnectionPoint
-
-    public override updateConnectionPoints(): void {
-        this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos());
-    }//updateConnectionPoints()
-
-    public onMouseEnter()
-    {
-        this.kresmer.highlightedLinks.forEach(link => link.onMouseLeave());
-        this.isHighlighted = true;
-        (this as unknown as DrawingArea).bringToTop();
-    }//onMouseEnter
-
-    public onMouseLeave()
-    {
-        if (this.isHighlighted && !this.isSelected) {
-            (this as unknown as DrawingArea).returnFromTop();
-            this.isHighlighted = false;
-        }//if
-    }//onMouseLeave
+    public get wouldAlignVertices() {return new Set(this.vertices);}
 
     public onClick(this: DrawingArea, segmentNumber: number, event: MouseEvent)
     {
         if (event.ctrlKey) {
-            this.kresmer.edAPI.addLinkVertex(this.id, segmentNumber, event);
+            this.kresmer.edAPI.addAreaVertex(this.id, segmentNumber, event);
         } else {
-            this.selectLink();
+            this.selectThis();
         }//if
     }//onClick
 
 
     public onRightClick(this: DrawingArea, segmentNumber: number, event: MouseEvent)
     {
-        this.selectLink();
-        this.kresmer.emit("link-right-click", this, segmentNumber, event);
+        this.selectThis();
+        this.kresmer.emit("area-right-click", this, segmentNumber, event);
     }//onRightClick
 
 
     public onDoubleClick(this: DrawingArea, segmentNumber: number, event: MouseEvent)
     {
-        this.selectLink();
-        this.kresmer.emit("link-double-click", this, segmentNumber, event);
+        this.selectThis();
+        this.kresmer.emit("area-double-click", this, segmentNumber, event);
     }//onDoubleClick
 
 }//_DrawingArea
 
-export default class DrawingArea extends withZOrder(_DrawingArea) {}
-
-export class DrawingAreaMap extends MapWithZOrder<number, DrawingArea> {};
-export type AreaSpec = {link: DrawingArea}|{linkID: number};
+export class DrawingAreaMap extends MapWithZOrder<number, DrawingArea> {}
+export type AreaSpec = {area: DrawingArea}|{areaID: number};
 
 
 // Editor operations
 
-export class AddLinkOp extends EditorOperation {
+export class AddAreaOp extends EditorOperation {
 
-    constructor (protected link: DrawingArea)
+    constructor (protected area: DrawingArea)
     {
         super();
     }//ctor
 
     override exec(): void {
-        this.link.kresmer.addLink(this.link);
+        this.area.kresmer.addArea(this.area);
     }//exec
 
     override undo(): void {
-        this.link.kresmer.deleteLink(this.link);
+        this.area.kresmer.deleteArea(this.area);
     }//undo
-}//AddLinkOp
+}//AddAreaOp
 
-export class DeleteLinkOp extends EditorOperation {
+export class DeleteAreaOp extends EditorOperation {
 
-    constructor (protected link: DrawingArea)
+    constructor (protected area: DrawingArea)
     {
         super();
     }//ctor
@@ -303,61 +181,61 @@ export class DeleteLinkOp extends EditorOperation {
     private detachedVertices = new Map<LinkVertex, string|number>();
 
     override exec(): void {
-        this.link.kresmer.links.forEach(link => {
+        this.area.kresmer.links.forEach(link => {
             link.vertices.forEach(vertex => {
-                if (vertex.isConnected && vertex.anchor.conn!.hostElement === this.link) {
+                if (vertex.isConnected && vertex.anchor.conn!.hostElement === this.area) {
                     this.detachedVertices.set(vertex, vertex.anchor.conn!.name);
                     vertex.detach();
                 }//if
             })//vertices
         })//links
 
-        this.link.kresmer.deleteLink(this.link);
+        this.area.kresmer.deleteArea(this.area);
     }//exec
 
     override undo(): void {
-        this.link.kresmer.addLink(this.link);
+        this.area.kresmer.addArea(this.area);
         nextTick(() => {
-            this.link.updateConnectionPoints();
+            this.area.updateConnectionPoints();
             this.detachedVertices.forEach((connectionPointName, vertex) => {
-                vertex.connect(this.link.getConnectionPoint(connectionPointName)!);
+                vertex.connect(this.area.getConnectionPoint(connectionPointName)!);
             });
         });
     }//undo
-}//DeleteLinkOp
+}//DeleteAreaOp
 
-export class ChangeLinkClassOp extends EditorOperation {
+export class ChangeAreaClassOp extends EditorOperation {
 
-    constructor(private link: DrawingArea, private newClass: DrawingAreaClass)
+    constructor(private area: DrawingArea, private newClass: DrawingAreaClass)
     {
         super();
-        this.oldClass = link.getClass();
+        this.oldClass = area.getClass();
     }//ctor
 
     private readonly oldClass: DrawingAreaClass;
 
     override exec(): void {
-        this.link.changeClass(this.newClass);
+        this.area.changeClass(this.newClass);
     }//exec
 
     override undo(): void {
-        this.link.changeClass(this.oldClass);
+        this.area.changeClass(this.oldClass);
     }//undo
-}//ChangeLinkClassOp
+}//ChangeAreaClassOp
 
 export class AddVertexOp extends EditorOperation {
 
-    constructor(protected vertex: LinkVertex)
+    constructor(protected vertex: AreaVertex)
     {
         super();
     }//ctor
 
     exec() {
-        const link = this.vertex.link;
+        const area = this.vertex.parentElement;
         const vertexNumber = this.vertex.vertexNumber;
-        link.vertices.splice(vertexNumber, 0, this.vertex);
-        for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber = i;
+        area.vertices.splice(vertexNumber, 0, this.vertex);
+        for (let i = vertexNumber + 1; i < area.vertices.length; i++) {
+            area.vertices[i].vertexNumber = i;
         }//for
         nextTick(() => {
             this.vertex.ownConnectionPoint.updatePos();
@@ -365,11 +243,11 @@ export class AddVertexOp extends EditorOperation {
     }//exec
 
     undo() {
-        const link = this.vertex.link;
+        const area = this.vertex.parentElement;
         const vertexNumber = this.vertex.vertexNumber;
-        link.vertices.splice(vertexNumber, 1);
-        for (let i = vertexNumber; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber = i;
+        area.vertices.splice(vertexNumber, 1);
+        for (let i = vertexNumber; i < area.vertices.length; i++) {
+            area.vertices[i].vertexNumber = i;
         }//for
     }//undo
 }//AddVertexOp

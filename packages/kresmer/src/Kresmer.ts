@@ -25,17 +25,19 @@ import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
 import KresmerException, { UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
-import NetworkElement, { UpdateElementOp } from "./NetworkElement";
+import NetworkElement, { UpdateElementOp } from "./NetworkElement/NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection, { BackendConnectionTestResult } from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexAnchor, LinkVertexSpec } from "./NetworkLink/LinkVertex";
-import Vertex, { VertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp, NetworkElementWithVertices } from "./Vertex/Vertex";
+import Vertex, { VertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./Vertex/Vertex";
+import NetworkElementWithVertices from "./NetworkElement/NetworkElementWithVertices";
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
+import DrawingArea, { DrawingAreaMap } from "./DrawingArea/DrawingArea";
 
 
 /**
@@ -577,6 +579,36 @@ export default class Kresmer extends KresmerEventHooks {
     }//deleteComponent
  
     /**
+     * Drawing areas
+     */
+    readonly areas = reactive(new DrawingAreaMap()) as unknown as DrawingAreaMap; // !!! workaround for some Vue "reactive" typing anomaly
+    readonly areasByName = new Map<string, number>();
+
+    /**
+     * Adds a new Area to the drawing
+     * @param area An Area to add
+     */
+    public addArea(area: DrawingArea): Kresmer
+    {
+        this.areas.add(area);
+        this.areasByName.set(area.name, area.id);
+        this.emit("area-added", area);
+        return this;
+    }//addArea
+
+    /**
+     * Deletes a Area from the content of the drawing
+     * @param area An Area to delete
+     */
+    public deleteArea(area: DrawingArea): Kresmer
+    {
+        this.areas.delete(area.id);
+        this.areasByName.delete(area.name);
+        this.emit("area-deleted", area);
+        return this;
+    }//deleteArea
+ 
+    /**
      * Links currently placed to the drawing
      */
     readonly links = reactive(new NetworkLinkMap()) as unknown as NetworkLinkMap; // !!! workaround for some Vue "reactive" typing anomaly
@@ -740,6 +772,31 @@ ${svg.outerHTML}
             return undefined;
         return this.links.get(id);
     }//getLinkByName
+
+
+    /**
+     * Searches for the NetworkArea with the specified ID
+     * @param id An ID of the area to search for
+     * @returns The area if found or "undefined" otherwise
+     */
+    public getAreaById(id: number): DrawingArea|undefined
+    {
+        return this.areas.get(id);
+    }//getAreaById
+
+
+    /**
+     * Searches for the NetworkArea with the specified name
+     * @param name A name of the area to search for
+     * @returns The area if found or "undefined" otherwise
+     */
+    public getAreaByName(name: string): DrawingArea|undefined
+    {
+        const id = this.areasByName.get(name);
+        if (id === undefined)
+            return undefined;
+        return this.areas.get(id);
+    }//getAreaByName
 
 
     /**
@@ -1202,6 +1259,24 @@ ${svg.outerHTML}
         },//deleteLinkVertex
 
         /**
+         * Adds an area vertex
+         * @param areaID The area this vertexs belongs
+         * @param segmentNumber The seq number of the segment where tne vertex should be added
+         * @param mousePos The mouse click position
+         * @returns True if the vertex was added or false otherwise
+         */
+        addAreaVertex: (areaID: number, segmentNumber: number, mousePos: Position) =>
+        {
+            const area = this.getAreaById(areaID);
+            if (!area) {
+                throw new KresmerException(`Attempt to add a vertex to the non-existent area (id=${areaID})`);
+            }//if
+            const vertex = area.addVertex(segmentNumber, mousePos);
+            this.emit("area-vertex-added", vertex);
+            return vertex;
+        },//addAreaVertex
+    
+        /**
          * Update the specified network element props and name (if required)
          * @param element The element to update
          * @param newProps The new prop values
@@ -1320,9 +1395,9 @@ export type NetworkElementClassType = typeof NetworkComponentClass | typeof Netw
 export type NetworkElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
 
 // Re-export child classes to API
-export {default as NetworkElement } from "./NetworkElement";
-export {default as NetworkElementClass, NetworkElementPropCategory } from "./NetworkElementClass";
-export type {NetworkElementData} from "./NetworkElement";
+export {default as NetworkElement } from "./NetworkElement/NetworkElement";
+export {default as NetworkElementClass, NetworkElementPropCategory } from "./NetworkElement/NetworkElementClass";
+export type {NetworkElementData} from "./NetworkElement/NetworkElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
 export {default as NetworkComponentController, type TransformMode} from "./NetworkComponent/NetworkComponentController";

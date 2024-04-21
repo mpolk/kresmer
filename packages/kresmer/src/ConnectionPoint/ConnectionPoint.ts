@@ -9,7 +9,7 @@
 \****************************************************************************/
 
 import { reactive } from "vue";
-import NetworkElement from "../NetworkElement";
+import NetworkElement from "../NetworkElement/NetworkElement";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import { Position } from "../Transform/Transform";
 import LinkVertex from "../NetworkLink/LinkVertex";

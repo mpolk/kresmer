@@ -8,7 +8,7 @@
 
 import { InjectionKey, nextTick } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
-import NetworkElement, {NetworkElementData} from '../NetworkElement';
+import NetworkElement, {NetworkElementData} from '../NetworkElement/NetworkElement';
 import Kresmer from "../Kresmer";
 import NetworkComponentController from "./NetworkComponentController";
 import { EditorOperation } from "../UndoStack";

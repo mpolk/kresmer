@@ -13,7 +13,7 @@
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponentController from "./NetworkComponentController";
     import NetworkComponent from "./NetworkComponent";
-    import NetworkElement from "../NetworkElement";
+    import NetworkElement from "../NetworkElement/NetworkElement";
     import { Transform } from '../Transform/Transform';
     import Kresmer from '../Kresmer';
     import { toCamelCase } from '../Utils';
