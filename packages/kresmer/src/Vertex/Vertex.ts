@@ -3,8 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *                           Generic Vertex 
- * ("as is" it may be used in Areas, and its descendants are used in Links)
+ *   Generic Vertex - the base class for vertices used in Links and Areas
  ***************************************************************************/
 
 import { nextTick } from "vue";
@@ -15,7 +14,7 @@ import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
 import { EditorOperation } from "../UndoStack";
 import MouseEventCapture from "../MouseEventCapture";
 
-/** Generic Vertex (may belong to an Area) */
+/** Generic Vertex - the base class for vertices used in Links and Areas */
 
 export default abstract class Vertex {
 

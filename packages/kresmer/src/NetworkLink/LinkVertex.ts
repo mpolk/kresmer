@@ -11,10 +11,9 @@ import { Position } from "../Transform/Transform";
 import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPoint";
-import { EditorOperation } from "../UndoStack";
 import MouseEventCapture from "../MouseEventCapture";
 import type LinkBundle from "./LinkBundle";
-import Vertex, { VertexAnchor } from "../Vertex/Vertex";
+import Vertex, { VertexAnchor, VertexMoveOp } from "../Vertex/Vertex";
 
 /** Link Vertex (either connected or free) */
 
@@ -855,65 +854,3 @@ export type BundleAttachmentDescriptor = {
 export type LinkVertexSpec = {vertex: LinkVertex}|{linkID: number, vertexNumber: number};
 export type VertexAlignmentMode = "normal" | "post-align" | "post-move";
 type SegmentVector = {x0: number, y0: number, length: number, cosFi: number, sinFi: number};
-
-// Editor operations
-export class VertexMoveOp extends EditorOperation {
-    constructor(private vertex: LinkVertex)
-    {
-        super();
-        this.oldAnchor = vertex.anchorCopy();
-    }//ctor
-
-    private oldAnchor: LinkVertexAnchor;
-    private newAnchor?: LinkVertexAnchor;
-
-    override onCommit()
-    {
-        this.newAnchor = this.vertex.anchorCopy();
-    }//onCommit
-
-    override undo(): void {
-        this.vertex.anchor = this.oldAnchor;
-        this.vertex.ownConnectionPoint?.updatePos();
-    }//undo
-
-    override exec(): void {
-        this.vertex.anchor = this.newAnchor!;
-        this.vertex.ownConnectionPoint?.updatePos();
-    }//exec
-}//VertexMoveOp
-
-
-export class VerticesMoveOp extends EditorOperation {
-    constructor(readonly vertices: Set<LinkVertex>)
-    {
-        super();
-        for (const vertex of this.vertices) {
-            this.oldAnchors.set(vertex, vertex.anchorCopy());
-        }//for
-    }//ctor
-
-    private oldAnchors = new Map<LinkVertex, LinkVertexAnchor>();
-    private newAnchors = new Map<LinkVertex, LinkVertexAnchor>();
-
-    override onCommit()
-    {
-        for (const vertex of this.vertices) {
-            this.newAnchors.set(vertex, vertex.anchorCopy());
-        }//for
-    }//onCommit
-
-    override undo(): void {
-        for (const vertex of this.vertices) {
-            vertex.anchor = this.oldAnchors.get(vertex)!;
-            vertex.ownConnectionPoint?.updatePos();
-        }//for
-    }//undo
-
-    override exec(): void {
-        for (const vertex of this.vertices) {
-            vertex.anchor = this.newAnchors.get(vertex)!;
-            vertex.ownConnectionPoint?.updatePos();
-        }//for
-    }//exec
-}//VerticesMoveOp
