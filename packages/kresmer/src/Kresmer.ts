@@ -1408,7 +1408,7 @@ export {default as LinkBundle} from "./NetworkLink/LinkBundle";
 export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
 export {default as Vertex} from "./Vertex/Vertex";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
-export type {LinkVertexAnchor} from "./NetworkLink/LinkVertex";
+export {LinkVertexAnchor} from "./NetworkLink/LinkVertex";
 export {default as KresmerException, LibraryImportException} from "./KresmerException";
 export {default as KresmerParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPoint";

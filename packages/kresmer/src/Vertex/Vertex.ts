@@ -60,8 +60,7 @@ export default abstract class Vertex {
     {
         this._anchor.pos = newPos.pos;
     }//set anchor
-    protected _anchor: VertexAnchor = {pos: {x: 0, y: 0}};
-    anchorCopy() {return {...this._anchor};}
+    protected _anchor = new VertexAnchor();
 
     pinUp(pos: Position)
     {
@@ -170,7 +169,7 @@ export default abstract class Vertex {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
-            this.savedAnchor = this.anchorCopy();
+            this.savedAnchor = this.anchor.copy();
             this.pinUp(this.coords);
         }//if
 
@@ -324,9 +323,9 @@ export default abstract class Vertex {
         const {x: x0, y: y0} = this.coords;
         const {x: x1, y: y1} = neighbor.coords;
         if (Math.abs(x1 - x0) < Math.abs(y1 - y0)*threshold)
-            return {pos: {x: x1, y: y0}};
+            return new VertexAnchor({pos: {x: x1, y: y0}});
         else if (Math.abs(y1 - y0) < Math.abs(x1 - x0)*threshold)
-            return {pos: {x: x0, y: y1}};
+            return new VertexAnchor({pos: {x: x0, y: y1}});
         else
             return null;
     }//alignEndpoint
@@ -341,7 +340,7 @@ export default abstract class Vertex {
         } else {
             x = successor.coords.x; y = predecessor.coords.y;
         }//if
-        return {pos: {x, y}};
+        return new VertexAnchor({pos: {x, y}});
     }//alignBetweenTwoPositions
 
     public blink()
@@ -354,11 +353,23 @@ export default abstract class Vertex {
 
 // Auxiliary interfaces for initialization and position saving
 
-export type VertexInitParams = VertexAnchor | Record<string, never>;
+export type VertexInitParams = {
+    pos?: Position
+} | Record<string, never>;
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
-export type VertexAnchor = {
-    pos?: Position,
+export class VertexAnchor {
+    protected _pos?: Position;
+    get pos(): Position {return this._pos ?? {x: 0, y: 0}}
+    set pos(newPos: Position|undefined) {this._pos = newPos}
+
+    constructor(init?: {pos?: Position})
+    {
+        this._pos = init?.pos ? {...init.pos} : undefined;
+    }//ctor
+
+    copy() {return new VertexAnchor({pos: this._pos})}
+
 }//VertexAnchor
 
 export type VertexSpec = {vertex: Vertex}|{parentID: number, vertexNumber: number};
@@ -370,7 +381,7 @@ export class VertexMoveOp extends EditorOperation {
     constructor(private vertex: Vertex)
     {
         super();
-        this.oldAnchor = vertex.anchorCopy();
+        this.oldAnchor = vertex.anchor.copy();
     }//ctor
 
     private oldAnchor: VertexAnchor;
@@ -378,7 +389,7 @@ export class VertexMoveOp extends EditorOperation {
 
     override onCommit()
     {
-        this.newAnchor = this.vertex.anchorCopy();
+        this.newAnchor = this.vertex.anchor.copy();
     }//onCommit
 
     override undo(): void {
@@ -398,7 +409,7 @@ export class VerticesMoveOp extends EditorOperation {
     {
         super();
         for (const vertex of this.vertices) {
-            this.oldAnchors.set(vertex, vertex.anchorCopy());
+            this.oldAnchors.set(vertex, vertex.anchor.copy());
         }//for
     }//ctor
 
@@ -408,7 +419,7 @@ export class VerticesMoveOp extends EditorOperation {
     override onCommit()
     {
         for (const vertex of this.vertices) {
-            this.newAnchors.set(vertex, vertex.anchorCopy());
+            this.newAnchors.set(vertex, vertex.anchor.copy());
         }//for
     }//onCommit
 

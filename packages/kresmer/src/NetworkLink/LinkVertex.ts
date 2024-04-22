@@ -335,7 +335,7 @@ export default class LinkVertex extends Vertex {
         if (this.isGoingToBeDragged) {
             this.isGoingToBeDragged = false;
             this.isDragged = true;
-            this.savedAnchor = this.anchorCopy();
+            this.savedAnchor = this.anchor.copy();
             if (this.dragConstraint === "bundle") {
                 const baseVertex = this._anchor.bundle!.baseVertex;
                 const originalDistance = this._anchor.bundle!.distance;
@@ -593,7 +593,7 @@ export default class LinkVertex extends Vertex {
         } else if (successor.isConnected && successor.isEndpoint && (!predecessor.isConnected || !predecessor.isEndpoint)) {
             newAnchor = this.alignBetweenConnectionAndPosition(successor, predecessor);
         } else {
-            newAnchor = this.alignBetweenTwoPositions(predecessor, successor);
+            newAnchor = new LinkVertexAnchor(this.alignBetweenTwoPositions(predecessor, successor));
         }//if
 
         let shouldMove = Boolean(newAnchor);
@@ -618,7 +618,7 @@ export default class LinkVertex extends Vertex {
 
         if (shouldMove) {
             if (this.parentElement.isLoopback && newAnchor?.pos)
-                newAnchor = {pos: this.parentElement.absPosToRel(newAnchor.pos)};
+                newAnchor = new LinkVertexAnchor({pos: this.parentElement.absPosToRel(newAnchor.pos)});
             this.anchor = newAnchor!;
             this.ownConnectionPoint.updatePos();
             if (this.parentElement.kresmer.autoAlignVertices && mode == "normal")
@@ -663,7 +663,7 @@ export default class LinkVertex extends Vertex {
                 return newAnchor;
         }//if
 
-        return super.alignEndpoint(neighbor, mode);
+        return new LinkVertexAnchor(super.alignEndpoint(neighbor, mode));
     }//alignEndpoint
 
     private alignBundleEndpoint(mode: VertexAlignmentMode): LinkVertexAnchor|null
@@ -696,7 +696,7 @@ export default class LinkVertex extends Vertex {
                  }//for
             }//for
             if (nearest) {
-                return {pos: nearest.coords};
+                return new LinkVertexAnchor({pos: nearest.coords});
             }//if
         }//if
 
@@ -714,7 +714,7 @@ export default class LinkVertex extends Vertex {
                     if (vertexToAlignTo.isConnected)
                         return this.alignBetweenConnectionAndPosition(vertexToAlignTo, nearestNeighbour);
                     else
-                        return this.alignBetweenTwoPositions(vertexToAlignTo, nearestNeighbour);
+                        return new LinkVertexAnchor(this.alignBetweenTwoPositions(vertexToAlignTo, nearestNeighbour));
                 }//if
             }//if
         }//if
@@ -759,7 +759,7 @@ export default class LinkVertex extends Vertex {
         }//if
 
         if (d1 !== undefined)
-            return {bundle: {baseVertex, distance: d1}};
+            return new LinkVertexAnchor({bundle: {baseVertex, distance: d1}});
         else
             return null;
     }//alignOnBundle
@@ -821,14 +821,17 @@ export default class LinkVertex extends Vertex {
             connected.blink();
             positioned.blink();
         }//if
-        return newPos ? {pos: newPos} : null;
+        return newPos ? new LinkVertexAnchor({pos: newPos}) : null;
     }//alignBetweenConnectionAndPosition
 }//LinkVertex
 
 
 // Auxiliary interfaces for initialization and position saving
 
-export type LinkVertexInitParams = (LinkVertexAnchor & {
+export type LinkVertexInitParams = {
+    pos?: Position;
+    conn?: ConnectionPointProxy;
+    bundle?: BundleAttachmentDescriptor;
     cpData?: {
         cpHostElement: string, 
         connectionPoint: string
@@ -838,13 +841,47 @@ export type LinkVertexInitParams = (LinkVertexAnchor & {
         baseVertex: number,
         distance: number
     },
-}) | Record<string, never>;
+} | Record<string, never>;
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
-export type LinkVertexAnchor = VertexAnchor & {
-    conn?: ConnectionPointProxy,
-    bundle?: BundleAttachmentDescriptor,
-}
+export class LinkVertexAnchor extends VertexAnchor  {
+    private _conn?: ConnectionPointProxy;
+    get conn() {return this._conn}
+    set conn(newConn: ConnectionPointProxy|undefined)
+    {
+        this._conn = newConn;
+        this._pos = undefined;
+        this._bundle = undefined;
+    }//set conn
+
+    private _bundle?: BundleAttachmentDescriptor;
+    get bundle() {return this._bundle}
+    set bundle(newBundle: BundleAttachmentDescriptor|undefined)
+    {
+        this._bundle = newBundle;
+        this._pos = undefined;
+        this._conn = undefined;
+    }//set bundle
+
+    constructor(init?: {pos: Position} | {conn: ConnectionPointProxy} | {bundle: BundleAttachmentDescriptor} | null)
+    {
+        super(init && "pos" in init ? {pos: init.pos} : undefined);
+        if (init) {
+            if ("conn" in init)
+                this.conn = init.conn;
+            if ("bundle" in init)
+                this.bundle = init.bundle;
+        }//if
+    }//ctor
+
+    override copy() {
+        return new LinkVertexAnchor(
+            this._conn ? {conn: this._conn} :
+            this._bundle ? {bundle: this._bundle} :
+            {pos: this.pos}
+        );
+    }//copy
+}//LinkVertexAnchor
 
 export type BundleAttachmentDescriptor = {
     baseVertex: LinkVertex,
