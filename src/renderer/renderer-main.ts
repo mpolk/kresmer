@@ -20,7 +20,6 @@ import Kresmer, {
     NetworkComponentController, NetworkComponent,
     NetworkLink, NetworkElement, Vertex,
     TransformMode, ConnectionPointProxy,
-    LinkVertexAnchor,
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
 import MessageBox from './message-box.vue';
@@ -559,7 +558,7 @@ appCommandExecutor.on("connect-connection-point", async (fromElementID: number, 
     if (linkClass) {
         const hostElement = kresmer.getElementById(fromElementID)!;
         const conn = hostElement.getConnectionPoint(fromConnectionPointName)!;
-        kresmer.edAPI.startLinkCreation(linkClass, new LinkVertexAnchor({conn}));
+        kresmer.edAPI.startLinkCreation(linkClass, {conn});
     }//if
 });//startLinkCreation
 
@@ -568,7 +567,7 @@ appCommandExecutor.on("create-link", async (mousePos?: Position) =>
     const linkClass = await vueLinkClassSelectionDialog.show(false);
     if (linkClass) {
         const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
-        kresmer.edAPI.startLinkCreation(linkClass, new LinkVertexAnchor({pos}));
+        kresmer.edAPI.startLinkCreation(linkClass, {pos});
     }//if
 });//startLinkCreation
 
@@ -577,7 +576,7 @@ appCommandExecutor.on("create-link-bundle", async (mousePos?: Position) =>
     const linkClass = await vueLinkClassSelectionDialog.show(true);
     if (linkClass) {
         const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
-        kresmer.edAPI.startLinkCreation(linkClass, new LinkVertexAnchor({pos}));
+        kresmer.edAPI.startLinkCreation(linkClass, {pos});
     }//if
 });//startLinkCreation
 

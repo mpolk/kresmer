@@ -11,7 +11,7 @@ import Kresmer, { KresmerException } from "../Kresmer";
 import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoint/ConnectionPoint";
 import NetworkLinkClass, { LinkBundleClass } from "./NetworkLinkClass";
 import { Position } from "../Transform/Transform";
-import { LinkVertexAnchor } from "./LinkVertex";
+import { LinkVertexInitParams } from "./LinkVertex";
 
 /**
  * Network Link Blank (temporary object for a link creation)
@@ -24,7 +24,7 @@ export default class NetworkLinkBlank {
     public constructor(
         protected readonly kresmer: Kresmer,
         readonly _class: NetworkLinkClass,
-        readonly start: LinkVertexAnchor,
+        readonly start: LinkVertexInitParams,
     ) {
         ({x: this.end.x, y: this.end.y} = start.conn ? start.conn.coords : {...start.pos!});
     }//ctor

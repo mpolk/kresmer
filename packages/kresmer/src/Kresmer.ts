@@ -31,7 +31,7 @@ import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 import { MapWithZOrder } from "./ZOrdering";
 import BackendConnection, { BackendConnectionTestResult } from "./BackendConnection";
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
-import LinkVertex, { LinkVertexAnchor, LinkVertexSpec } from "./NetworkLink/LinkVertex";
+import LinkVertex, { LinkVertexInitParams, LinkVertexSpec } from "./NetworkLink/LinkVertex";
 import Vertex, { VertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./Vertex/Vertex";
 import NetworkElementWithVertices from "./NetworkElement/NetworkElementWithVertices";
 import { clone } from "./Utils";
@@ -1126,7 +1126,7 @@ ${svg.outerHTML}
          * @param linkClass A class of the new link
          * @param from An anchor from which the link is started
          */
-        startLinkCreation: (linkClass: NetworkLinkClass, from: LinkVertexAnchor) =>
+        startLinkCreation: (linkClass: NetworkLinkClass, from: LinkVertexInitParams) =>
         {
             this.newLinkBlank = new NetworkLinkBlank(this, linkClass, from);
             this.vueKresmer.$forceUpdate();
