@@ -103,7 +103,7 @@ export default class LinkVertex extends Vertex {
 
     attachToBundle(bundle: BundleAttachmentDescriptor)
     {
-        this._anchor.bundle = {...bundle};
+        this._anchor.bundle = bundle;
     }//attachToBundle
 
     public detach()
@@ -836,9 +836,12 @@ export class LinkVertexAnchor extends VertexAnchor  {
     get bundle() {return this._bundle}
     set bundle(newValue: BundleAttachmentDescriptor|undefined)
     {
-        if (this._bundle !== newValue) {
+        const shouldChange = this._bundle !== newValue && 
+            (this._bundle?.baseVertex != newValue?.baseVertex || 
+             this._bundle?.distance != newValue?.distance);
+        if (shouldChange) {
             const oldBundle = this._bundle;
-            this._bundle = newValue;
+            this._bundle = newValue ? {...newValue} : undefined;
             if (this._bundle) {
                 (this._bundle.baseVertex.parentElement as LinkBundle).registerAttachedLink(this.vertex.parentElement);
                 this._bundle.baseVertex.attachedVertices.add(this.vertex);
