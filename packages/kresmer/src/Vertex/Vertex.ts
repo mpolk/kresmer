@@ -357,7 +357,9 @@ export type VertexInitParams = {
     pos?: Position
 } | Record<string, never>;
 
-/** Extended Link Vertex position (includes its connection if it is connected) */
+/** Vertex position holder. 
+ * The base class is nothing more than a simple position, but its descendants may implement smarter positioning logic. 
+ * */
 export class VertexAnchor {
     protected _pos?: Position;
     get pos(): Position {return this._pos ?? {x: 0, y: 0}}

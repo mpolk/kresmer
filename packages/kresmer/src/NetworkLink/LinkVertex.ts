@@ -42,7 +42,7 @@ export default class LinkVertex extends Vertex {
         this._anchor.conn = newAnchor.conn;
         this._anchor.bundle = newAnchor.bundle;
     }//set anchor
-    declare protected _anchor: LinkVertexAnchor;
+    override _anchor = new LinkVertexAnchor(this);
     declare protected savedAnchor?: LinkVertexAnchor;
 
 
@@ -96,25 +96,14 @@ export default class LinkVertex extends Vertex {
         return this;
     }//init
 
-    override pinUp(pos: Position)
-    {
-        this._anchor.pos = {...pos};
-        this._anchor.conn = undefined;
-        this._anchor.bundle = undefined;
-    }//pinUp
-
     connect(connectionPoint: ConnectionPointProxy)
     {
         this._anchor.conn = connectionPoint;
-        this._anchor.pos = undefined;
-        this._anchor.bundle = undefined;
     }//connect
 
     attachToBundle(bundle: BundleAttachmentDescriptor)
     {
         this._anchor.bundle = {...bundle};
-        this._anchor.conn = undefined;
-        this._anchor.pos = undefined;
     }//attachToBundle
 
     public detach()
@@ -223,7 +212,7 @@ export default class LinkVertex extends Vertex {
     get isAttachedToBundle() {return Boolean(this._anchor.bundle);}
     get bundleAttachedTo() {return this._anchor.bundle?.baseVertex.parentElement as LinkBundle;}
     get bundleDefinitelyAttachedTo() {return this._anchor.bundle!.baseVertex.parentElement as LinkBundle;}
-    get isPinnedUp() {return Boolean(this._anchor.pos);}
+    get isPinnedUp() {return Boolean(this._anchor.isPinnedUp);}
     override get snapToGrid() {return this.parentElement.kresmer.snapToGrid && this.isPinnedUp}
     override get prevNeighbour(): LinkVertex|undefined {return this._vertexNumber ? this.parentElement.vertices[this._vertexNumber-1] : undefined}
     override get nextNeighbour(): LinkVertex|undefined {return this._vertexNumber < this.parentElement.vertices.length ? this.parentElement.vertices[this._vertexNumber+1] : undefined}
@@ -803,54 +792,66 @@ export type LinkVertexInitParams = {
 
 /** Extended Link Vertex position (includes its connection if it is connected) */
 export class LinkVertexAnchor extends VertexAnchor  {
+    get pos(): Position {return super.pos}
+    override set pos(newValue: Position|undefined)
+    {
+        this._pos = newValue ? {...newValue} : undefined;
+        if (this._pos) {
+            this._conn = undefined;
+            this._bundle = undefined;
+        }//if
+    }//set pos
+
     private _conn?: ConnectionPointProxy;
     get conn() {return this._conn}
-    set conn(newConn: ConnectionPointProxy|undefined)
+    set conn(newValue: ConnectionPointProxy|undefined)
     {
-        this._conn = newConn;
-        this._pos = undefined;
-        this._bundle = undefined;
-        if (this.conn !== newConn) {
-            const oldConn = this.conn;
+        if (this._conn !== newValue) {
+            const oldConn = this._conn;
             if (!this.vertex.isHead && !this.vertex.isTail || this.vertex.initParams) {
-                this.conn = newConn;
+                this._conn = newValue;
             } else {
                 const wasLoopback = this.vertex.parentElement.isLoopback;
-                this.conn = newConn;
+                this._conn = newValue;
                 if (wasLoopback !== this.vertex.parentElement.isLoopback) {
                     this.vertex.parentElement.toggleVertexPositioningMode(this.vertex);
                 }//if
             }//if
-            if (this.conn) {
-                this.conn.hostElement.registerConnectedLink(this.vertex.parentElement);
-                this.conn.connectedVertices.add(this.vertex);
+            if (this._conn) {
+                this._conn.hostElement.registerConnectedLink(this.vertex.parentElement);
+                this._conn.connectedVertices.add(this.vertex);
             } else if (oldConn) {
                 oldConn.hostElement.unregisterConnectedLink(this.vertex.parentElement);
                 oldConn.connectedVertices.delete(this.vertex);
             }//if
-            this.vertex.ownConnectionPoint.isActive = !this.conn && !this.bundle;
+            this.vertex.ownConnectionPoint.isActive = !this._conn && !this.bundle;
+        }//if
+        if (this._conn) {
+            this._pos = undefined;
+            this._bundle = undefined;
         }//if
     }//set conn
 
     private _bundle?: BundleAttachmentDescriptor;
     get bundle() {return this._bundle}
-    set bundle(newBundle: BundleAttachmentDescriptor|undefined)
+    set bundle(newValue: BundleAttachmentDescriptor|undefined)
     {
-        this._bundle = newBundle;
-        this._pos = undefined;
-        this._conn = undefined;
-        if (this.bundle !== newBundle) {
-            const oldBundle = this.bundle;
-            this.bundle = newBundle;
-            if (this.bundle) {
-                (this.bundle.baseVertex.parentElement as LinkBundle).registerAttachedLink(this.vertex.parentElement);
-                this.bundle.baseVertex.attachedVertices.add(this.vertex);
+        if (this._bundle !== newValue) {
+            const oldBundle = this._bundle;
+            this._bundle = newValue;
+            if (this._bundle) {
+                (this._bundle.baseVertex.parentElement as LinkBundle).registerAttachedLink(this.vertex.parentElement);
+                this._bundle.baseVertex.attachedVertices.add(this.vertex);
             } else if (oldBundle) {
                 (oldBundle.baseVertex.parentElement as LinkBundle).unregisterAttachedLink(this.vertex.parentElement);
                 oldBundle.baseVertex.attachedVertices.delete(this.vertex);
             }//if
-            this.vertex.ownConnectionPoint.isActive = !this.conn && !this.bundle;
+            this.vertex.ownConnectionPoint.isActive = !this.conn && !this._bundle;
             nextTick(() => this.vertex.updateVue());
+        }//if
+        if (this._bundle) {
+            this._conn = undefined;
+            this._pos = undefined;
         }//if
     }//set bundle
 
@@ -873,6 +874,8 @@ export class LinkVertexAnchor extends VertexAnchor  {
             {pos: this.pos}
         );
     }//copy
+
+    get isPinnedUp() {return Boolean(this._pos)}
 }//LinkVertexAnchor
 
 export type BundleAttachmentDescriptor = {
