@@ -20,20 +20,27 @@ import './commands'
 // require('./commands')
 
 import { mount } from 'cypress/vue'
+import Kresmer from "../../src/Kresmer";
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
 // Alternatively, can be defined in cypress/support/component.d.ts
 // with a <reference path="./component" /> at the top of your spec.
 declare global {
-  namespace Cypress {
-    interface Chainable {
-      mount: typeof mount,
+    namespace Cypress {
+        interface Chainable {
+            mount: (kresmer?: Kresmer) => Chainable<Kresmer>,
+        }
     }
-  }
 }
 
-Cypress.Commands.add('mount', mount)
+Cypress.Commands.add('mount', (kresmer) => {
+    const _kresmer = kresmer ??  new Kresmer("[data-cy-root]", {});
+    return mount(_kresmer).task("loadLibraries").then(libs => {
+        _kresmer.loadLibraries(libs);
+        return _kresmer;
+    });
+});
 
 // Example use:
 // cy.mount(MyComponent)

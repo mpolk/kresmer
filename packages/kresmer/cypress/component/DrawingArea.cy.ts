@@ -11,13 +11,8 @@ import Kresmer from "../../src/Kresmer";
 describe('DrawingArea.cy.ts', () => {
     it('playground', () => {
         const kresmer = new Kresmer("[data-cy-root]", {});
-        cy.mount(kresmer).then((componentInstance) => {
+        cy.mount(kresmer).then((kresmer) => {
             console.debug(kresmer.drawingName);
-
-            cy.task("loadLibraries").then(libs => {
-                kresmer.loadLibraries(libs);
-                return kresmer;
-            });
         });
     });
 });
