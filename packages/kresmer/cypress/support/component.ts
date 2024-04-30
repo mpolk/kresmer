@@ -27,12 +27,15 @@ declare global {
             mount: (kresmer?: Kresmer) => Chainable<Kresmer>,
         }
     }
+    // let $kresmer: Kresmer;
 }
 
+export let $kresmer: Kresmer;
+
 Cypress.Commands.add('mount', (kresmer) => {
-    const _kresmer = kresmer ?? new Kresmer("[data-cy-root]", {});
-    return CypressVue.mount(_kresmer).task("loadLibraries").then(libs => {
-        _kresmer.loadLibraries(libs);
-        return _kresmer;
+    $kresmer = kresmer ?? new Kresmer("[data-cy-root]", {});
+    return CypressVue.mount($kresmer).task("loadLibraries").then(libs => {
+        $kresmer.loadLibraries(libs);
+        return $kresmer;
     });
 });
