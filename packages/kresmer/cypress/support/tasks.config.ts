@@ -8,7 +8,14 @@
 
 import * as fs from "node:fs";
 import * as path from "node:path";
-
+declare global {
+    namespace Cypress {
+        interface Chainable {
+        task(event: "loadLibraries"): Chainable<Record<string, string>>,
+        }
+    }
+}
+  
 export default {
     loadLibraries() {
         const libDir = "./lib";
