@@ -7,7 +7,7 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide, watch, nextTick } from 'vue';
+    import { PropType, ref, computed, provide, watch, nextTick, StyleValue } from 'vue';
     import Kresmer from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
@@ -67,21 +67,21 @@
             marginLeft: zoomedOffset(props.controller.mountingWidth), 
             marginTop: zoomedOffset(props.controller.mountingHeight),
             backgroundColor: props.controller.backgroundColor,
+            width: zoomed(props.controller.mountingWidth),
+            height: zoomed(props.controller.mountingHeight),
         }; 
 
         if (props.controller.backgroundImage.nonEmpty) {
             style = {...style, ...props.controller.backgroundImage.cssAttr()};
         }//if
 
-        return style;
+        return style as StyleValue;
     });
 
-    const mountingDims = computed(() => {
-        return {
-            width: zoomed(props.controller.mountingWidth),
-            height: zoomed(props.controller.mountingHeight)
-        }
+    const backgroundMaskStyle = computed(() => {
+        return {...rulerBox.value, pointerEvents: "none"} as StyleValue;
     });
+
     const viewBox = computed(() => `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`);
 
     const drawingOrigin = {x: 0, y: 0};
@@ -169,7 +169,7 @@
 <template>
     <svg xmlns="http://www.w3.org/2000/svg" 
         class="kresmer" ref="rootSVG" 
-        :style="rootSVGStyle" v-bind="mountingDims" :viewBox="viewBox"
+        :style="rootSVGStyle" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
         @contextmenu.self="onCanvasRightClick($event)"
         @mousemove.prevent.self="onMouseMove"
@@ -196,7 +196,7 @@
         <defs v-if="controller.styles.length" v-html="styles"></defs>
 
         <!-- Background mask -->
-        <rect v-if="rootSVG" v-bind="rulerBox" style="pointer-events: none;" :fill="controller.backgroundColor" 
+        <rect v-if="rootSVG" :style="backgroundMaskStyle" :fill="controller.backgroundColor" 
             :opacity="1 - controller.backgroundImage.visibility" />
 
         <!-- Grid -->
