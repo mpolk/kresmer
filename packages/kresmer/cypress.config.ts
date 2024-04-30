@@ -8,6 +8,9 @@ export default defineConfig({
             bundler: "vite",
         }, //devServer
 
+        viewportWidth: 1000,
+        viewportHeight: 1000,
+
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         setupNodeEvents(on, config) {
             on('task', tasks);

@@ -8,7 +8,7 @@
             <prop name="fill">lightgreen</prop>
             <prop name="text">Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</prop>
         </props>
-        <origin x="30" y="530"/>
+        <origin x="30" y="90"/>
     </component>
 
     <component class="PatrioticKresmer">
@@ -19,7 +19,7 @@
             <prop name="font-size">24</prop>
             <prop name="font-family">sans-serif</prop>
         </props>
-        <origin x="30" y="590"/>
+        <origin x="30" y="150"/>
     </component>
 
     <component class="BorderedKresmer">
@@ -28,7 +28,7 @@
             <prop name="height">50</prop>
             <prop name="text">Ще один Кресмер</prop>
         </props>
-        <origin x="50" y="650"/>
+        <origin x="50" y="290"/>
         <transform>
             <scale x="2"/>
             <rotate angle="45"/>
@@ -36,7 +36,7 @@
     </component>
 
     <component class="Text">
-        <origin x="30" y="750" />
+        <origin x="30" y="450" />
         <props>
             <prop name="font-size">32</prop>
             <prop name="color">darkgreen</prop>
@@ -49,7 +49,7 @@
     </component>
 
     <component class="SilverKresmer">
-        <origin x="30" y="880" />
+        <origin x="30" y="500" />
         <props>
             <prop name="width">400</prop>
             <prop name="height">50</prop>
