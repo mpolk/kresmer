@@ -8,6 +8,6 @@
       "rootDir": "../",
       "noEmit": false,
       "sourceMap": false,
-      "types": ["cypress"]
+      "types": ["cypress", "node"]
     }
 }
