@@ -11,12 +11,16 @@ import * as path from "node:path";
 declare global {
     namespace Cypress {
         interface Chainable {
-        task(event: "loadLibraries"): Chainable<Record<string, string>>,
+            task(event: "loadLibraries"): Chainable<Record<string, string>>,
         }
     }
 }
   
 export default {
+    /** 
+     * Loads all Kresmer libraries from the hardcoded directory 
+     * @returns The libs loaded in the form {libName: libData, ...}
+     */
     loadLibraries() {
         const libDir = "./lib";
         const libs: Record<string, string> = {};

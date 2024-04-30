@@ -1,5 +1,5 @@
 import { defineConfig } from "cypress";
-import tasks from "./cypress/support/tasks.config";
+import tasks from "./cypress/tasks.config";
 
 export default defineConfig({
     component: {
