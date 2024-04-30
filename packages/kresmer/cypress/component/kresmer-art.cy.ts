@@ -17,11 +17,24 @@ describe('Kresmer Art', () => {
         });
     });
 
+    it('contains a root SVG', () => {
+        cy.get("svg.kresmer").should("exist");
+    });
+
+    it('loads a "Kresmer Art" drawing', () => {
+        cy.readFile("../../kresmer-art.kre").then(drawingData => {
+            kresmer.loadDrawing(drawingData);
+        })
+    });
+
     it('shows a grid', function() {
         kresmer.showGrid = true;
+        cy.get("line.grid").should("exist");
     });
 
     it('shows rulers', function() {
         kresmer.showRulers = true;
+        cy.get("rect.axis").should("exist");
+        cy.get("line.marking").should("exist");
     });
 });
