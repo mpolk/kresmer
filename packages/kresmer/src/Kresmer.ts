@@ -115,6 +115,8 @@ export default class Kresmer extends KresmerEventHooks {
 
         // at last mount the main vue
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
+        // and somehow awake its scaling mechanism (workaround for something beyond understanding)
+        this.zoomFactor = 1;
     }//ctor
 
 
@@ -199,10 +201,12 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Drawing scale (visual) */
     get drawingScale() {
-        return this.baseScale * this._zoomFactor.value;
+        return this.baseScale * this.zoomFactor;
     }//drawingScale
 
-    private _zoomFactor = ref(1);
+    private _zoomFactor = ref(0.999999999); 
+    // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
+    // it somehow helps to initialize the drawing dimensions (who knows why?)
     get zoomFactor() {return this._zoomFactor.value}
     set zoomFactor(newScale) {
         this._zoomFactor.value = newScale;
@@ -213,9 +217,11 @@ export default class Kresmer extends KresmerEventHooks {
         this.emit("drawing-scale", this.drawingScale);
     }//notifyOfScaleChange
 
-    get baseXScale() {return this.rootSVG.width.baseVal.value / this.logicalWidth / this._zoomFactor.value}
-    get baseYScale() {return this.rootSVG.height.baseVal.value / this.logicalHeight / this._zoomFactor.value}
-    get baseScale() {return Math.min(this.baseXScale, this.baseYScale)}
+    get baseScale() {
+        const baseXScale = this.rootSVG.width.baseVal.value / this.logicalWidth / this.zoomFactor;
+        const baseYScale = this.rootSVG.height.baseVal.value / this.logicalHeight / this.zoomFactor;
+        return Math.min(baseXScale, baseYScale)
+    }//baseScale
 
     public _onMouseWheel(event: WheelEvent)
     {
