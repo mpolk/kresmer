@@ -27,7 +27,9 @@
     "app:build": "electron-builder -lw",
     "preapp:preview": "run-s build-component vite:build ts",
     "app:preview": "electron . ${npm_package_config_args}",
-    "wdio": "wdio run ./wdio.conf.ts"
+    "wdio": "wdio run ./wdio.conf.ts",
+    "cypress:run": "npm run cypress:run -w kresmer",
+    "cypress:open": "npm run cypress:open -w kresmer"
   },
   "build": {
     "appId": "kresmer",

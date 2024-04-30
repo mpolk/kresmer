@@ -29,7 +29,7 @@
     "vite:build": "run-p type-check build-only",
     "vite:preview": "vite preview --port ${npm_package_config_port}",
     "cypress:open": "cypress open >/dev/null 2>&1 &",
-    "cypress:run": "cypress run"
+    "cypress:run": "cypress run --component"
   },
   "build": {
     "appId": "kresmer",

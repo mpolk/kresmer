@@ -17,7 +17,7 @@ import { LibraryImportException } from "../KresmerException";
 /**A loader for network element class libraries */
 export default class LibraryLoader
 {
-    constructor(private kresmer: Kresmer) {}
+    constructor(private kresmer: Kresmer, private depth = 0) {}
 
     /**
      * Loads a component class library from the raw XML data
@@ -27,12 +27,15 @@ export default class LibraryLoader
     public async loadLibrary(libData: string): Promise<number>
     {
         return this._loadLibrary(
-            libData, (libName, fileName) => this.kresmer.emit("library-import-requested", libName, fileName));
+            libData, 
+            (libName, fileName) => this.kresmer.emit("library-import-requested", libName, fileName)
+        );
     }//loadLibrary
 
 
     private async _loadLibrary(libData: string, 
-                               importHandler: (libName: string, fileName?: string) => Promise<string|undefined>): Promise<number>
+                               importHandler: (libName: string, fileName?: string) => Promise<string|undefined>,
+                            ): Promise<number>
     {
         // console.debug("Loading library...");
         const parser = new LibraryParser(this.kresmer);
@@ -67,11 +70,11 @@ export default class LibraryLoader
                     if (!importedLibData)
                         this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
                     else {
-                        const childLoader = new LibraryLoader(this.kresmer);
+                        const childLoader = new LibraryLoader(this.kresmer, this.depth+1);
                         const nImportErrors = await childLoader.loadLibrary(importedLibData);
                         if (nImportErrors > 0)
                             nErrors += nImportErrors;
-                        console.debug(`Library "${element.libName}" - imported`);
+                        console.debug(`${"  ".repeat(this.depth+1)}Library "${element.libName}" - imported`);
                     }//if
                 }//if
 
@@ -81,7 +84,7 @@ export default class LibraryLoader
             }//if
         }//for
 
-        console.debug(`Library "${libName}" - loaded (${nErrors} errors)`);
+        console.debug(`${"  ".repeat(this.depth)}Library "${libName}" - loaded (${nErrors} errors)`);
         return nErrors;
     }//_loadLibrary
 

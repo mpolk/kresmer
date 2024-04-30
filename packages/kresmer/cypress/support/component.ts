@@ -28,7 +28,8 @@ import { mount } from 'cypress/vue'
 declare global {
   namespace Cypress {
     interface Chainable {
-      mount: typeof mount
+      mount: typeof mount,
+      task(event: "loadLibraries"): Chainable<Record<string, string>>,
     }
   }
 }
