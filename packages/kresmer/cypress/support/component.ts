@@ -13,13 +13,8 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
-// Import commands.js using ES2015 syntax:
 import './commands'
-
-// Alternatively you can use CommonJS syntax:
-// require('./commands')
-
-import { mount } from 'cypress/vue'
+import * as CypressVue from 'cypress/vue'
 import Kresmer from "../../src/Kresmer";
 
 // Augment the Cypress namespace to include type definitions for
@@ -35,12 +30,9 @@ declare global {
 }
 
 Cypress.Commands.add('mount', (kresmer) => {
-    const _kresmer = kresmer ??  new Kresmer("[data-cy-root]", {});
-    return mount(_kresmer).task("loadLibraries").then(libs => {
+    const _kresmer = kresmer ?? new Kresmer("[data-cy-root]", {});
+    return CypressVue.mount(_kresmer).task("loadLibraries").then(libs => {
         _kresmer.loadLibraries(libs);
         return _kresmer;
     });
 });
-
-// Example use:
-// cy.mount(MyComponent)
