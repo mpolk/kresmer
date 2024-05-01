@@ -13,6 +13,7 @@ import NetworkElementClass from "../NetworkElement/NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import { LibraryImportException } from "../KresmerException";
+import DrawingAreaClass from "../DrawingArea/DrawingAreaClass";
 
 /**A loader for network element class libraries */
 export default class LibraryLoader
@@ -56,6 +57,9 @@ export default class LibraryLoader
 
             } else if (element instanceof NetworkLinkClass) {
                 this.kresmer.registerLinkClass(element);
+
+            } else if (element instanceof DrawingAreaClass) {
+                this.kresmer.registerAreaClass(element);
 
             } else if (element instanceof DefsLibNode) {
                 this.kresmer.defs.push(element.data);

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                            Areas library
+ *                This library contains area style
+<*************************************************************************** -->
+
+<kresmer-library name="areas" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+    <import library="stdlib" />
+
+    <area-class name="Swamp">
+        
+    </area-class>
+
+</kresmer-library>

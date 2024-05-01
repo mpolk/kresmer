@@ -23,7 +23,7 @@ export default class DrawingAreaClass extends NetworkElementClass {
      *               template: Template for the Vue-component for this class
      *               props: Props definition of the Vue-component for this class
      */
-    public constructor(name: string, params: {
+    public constructor(name: string, params?: {
         baseClass?: DrawingAreaClass,
         propsBaseClasses?: DrawingAreaClass[],
         computedPropsBaseClasses?: DrawingAreaClass[],

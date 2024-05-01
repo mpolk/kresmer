@@ -23,7 +23,7 @@ import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
-import KresmerException, { UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
+import KresmerException, { DuplicateAreaClassException, UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import NetworkElement, { UpdateElementOp } from "./NetworkElement/NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
@@ -38,6 +38,7 @@ import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
 import DrawingArea, { DrawingAreaMap } from "./DrawingArea/DrawingArea";
+import DrawingAreaClass from "DrawingArea/DrawingAreaClass";
 
 
 /**
@@ -207,6 +208,8 @@ export default class Kresmer extends KresmerEventHooks {
     private _zoomFactor = ref(0.999999999); 
     // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
     // it somehow helps to initialize the drawing dimensions (who knows why?)
+
+    /** A zoom factor for visual scaling*/
     get zoomFactor() {return this._zoomFactor.value}
     set zoomFactor(newScale) {
         this._zoomFactor.value = newScale;
@@ -217,11 +220,19 @@ export default class Kresmer extends KresmerEventHooks {
         this.emit("drawing-scale", this.drawingScale);
     }//notifyOfScaleChange
 
+    /** Base drawing scale (not taking into account the zoom factor) */
     get baseScale() {
         const baseXScale = this.rootSVG.width.baseVal.value / this.logicalWidth / this.zoomFactor;
         const baseYScale = this.rootSVG.height.baseVal.value / this.logicalHeight / this.zoomFactor;
         return Math.min(baseXScale, baseYScale)
     }//baseScale
+
+    /** Raised error counter */
+    get errorCount() {return this._errorCount}
+    /** Resets the error count */
+    resetErrors() {this._errorCount = 0; return this;}
+    protected _errorCount = 0;
+
 
     public _onMouseWheel(event: WheelEvent)
     {
@@ -306,6 +317,7 @@ export default class Kresmer extends KresmerEventHooks {
     public raiseError(exception: KresmerException): Kresmer
     {
         this.emit("error", exception);
+        this._errorCount++;
         return this;
     }//raiseError
 
@@ -488,6 +500,45 @@ export default class Kresmer extends KresmerEventHooks {
     {
         return this.registeredLinkClasses.entries();
     }//getRegisteredLinkClasses
+
+    /**
+     * Register a Area Class in Kresmer
+     * @param areaClass A class to register
+     * @returns Kresmer itself
+     */
+    public registerAreaClass(areaClass: DrawingAreaClass): Kresmer
+    {
+        if (this.registeredAreaClasses.has(areaClass.name)) {
+            this.raiseError(new DuplicateAreaClassException({className: areaClass.name}));
+            return this;
+        }//if
+
+        // Register class's svg-definitions
+        if (areaClass.defs) {
+            this.appKresmer.component(areaClass.defsVueName, 
+            {
+                template: areaClass.defs,
+            })
+        }//if
+
+        // ...and its css-styles
+        if (areaClass.style) {
+            this.styles.push(this.libraryLoader.scopeStyles(areaClass.style, areaClass, false));
+        }//if
+
+        this.registeredAreaClasses.set(areaClass.name, areaClass);
+        return this;
+    }//registerAreaClass
+
+    /**
+     * A list of all Area Classes, registered by Kresmer
+     */
+    public readonly registeredAreaClasses = new Map<string, DrawingAreaClass>();
+    /** Returns a list of all Area Classes, registered by Kresmer */
+    public getRegisteredAreaClasses(): IterableIterator<[string, DrawingAreaClass]>
+    {
+        return this.registeredAreaClasses.entries();
+    }//getRegisteredAreaClasses
 
 
     private readonly libraryLoader = new LibraryLoader(this);

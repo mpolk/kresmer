@@ -12,10 +12,11 @@ import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../NetworkElement/NetworkElementClass";
 import ParsingException from "./ParsingException";
-import { KresmerExceptionSeverity, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
+import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";
 import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
 import { clone, toCamelCase } from "../Utils";
+import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
 
 /**
  * Component library parser
@@ -62,6 +63,16 @@ export default class LibraryParser {
                 case "link-class": case "link-bundle-class":
                     try {
                         yield this.parseLinkClassNode(node);
+                    } catch (exc) {
+                        if (exc instanceof ParsingException)
+                            yield exc;
+                        else
+                            throw exc;
+                    }//catch
+                    break;
+                case "area-class":
+                    try {
+                        yield this.parseAreaClassNode(node);
                     } catch (exc) {
                         if (exc instanceof ParsingException)
                             yield exc;
@@ -274,16 +285,96 @@ export default class LibraryParser {
     }//parseLinkClassNode
 
 
-    private parseClassList<T extends typeof NetworkComponentClass|typeof NetworkLinkClass>(
+    private parseAreaClassNode(node: Element)
+    {
+        const className = node.getAttribute("name");
+        const category = node.getAttribute("category") ?? undefined;
+        if (!className) 
+            throw new LibraryParsingException("Area class without the name");
+
+        let props: NetworkElementClassProps = {};
+        let exceptProps: string[] | undefined;
+        let exceptCProps: string[] | undefined;
+        let computedProps: ComputedProps | undefined;
+        let functions: Functions | undefined;
+        let exceptFunctions: string[] | undefined;
+        let defs: Element | undefined;
+        let style: PostCSSRoot | undefined;
+        let baseClass: DrawingAreaClass | undefined;
+        let baseClassPropBindings: NetworkElementProps | undefined;
+        let propsBaseClasses: DrawingAreaClass[] | undefined;
+        let cPropsBaseClasses: DrawingAreaClass[] | undefined;
+        let functionsBaseClasses: DrawingAreaClass[] | undefined;
+        let styleBaseClasses: DrawingAreaClass[] | undefined;
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "extends":
+                    ({baseClass, baseClassPropBindings} = this.parseClassInheritance(child, DrawingAreaClass) ?? {});
+                    break
+                case "props":
+                    propsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
+                    exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
+                    props = this.parseProps(child, propsBaseClasses, exceptProps);
+                    break;
+                case "computed-props":
+                    cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
+                    exceptCProps = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !cPropsBaseClasses?.includes(baseClass)) {
+                        cPropsBaseClasses = cPropsBaseClasses ? [baseClass, ...cPropsBaseClasses] : [baseClass];
+                    }//if
+                    computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
+                    break;
+                case "functions":
+                    functionsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
+                    exceptFunctions = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !functionsBaseClasses?.includes(baseClass)) {
+                        functionsBaseClasses = functionsBaseClasses ? [baseClass, ...functionsBaseClasses] : [baseClass];
+                    }//if
+                    functions = this.parseFunctions(child, functionsBaseClasses, exceptFunctions);
+                    break;
+                case "defs":
+                    defs = child;
+                    break;
+                case "style":
+                    styleBaseClasses = this.parseClassList(child.getAttribute("extends"), DrawingAreaClass);
+                    if (baseClass && !styleBaseClasses?.includes(baseClass)) {
+                        styleBaseClasses = styleBaseClasses ? [baseClass, ...styleBaseClasses] : [baseClass];
+                    }//if
+                    style = this.parseCSS(child.innerHTML, styleBaseClasses);
+                    break;
+            }//switch
+        }//for
+
+        if (!computedProps && baseClass) {
+            computedProps = this.parseComputedProps(undefined, [baseClass]);
+        }//if
+
+        if (!functions && baseClass) {
+            functions = this.parseFunctions(undefined, [baseClass]);
+        }//if
+
+        if (!style && baseClass) {
+            style = this.parseCSS("", [baseClass]);
+        }//if
+
+        const areaClass = new DrawingAreaClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
+                                               baseClassPropBindings, computedProps, functions, defs, style, category});
+        return areaClass;
+    }//parseAreaClassNode
+
+
+    private parseClassList<T extends NetworkElementClassType>(
         rawList: string|null, listElemClass: T): InstanceType<T>[]|undefined
     {
         return rawList?.split(/ *, */)
             .map(className => {
                 const clazz =  listElemClass.getClass(className);
                 if (!clazz) {
-                    const exceptionClass = listElemClass === NetworkComponentClass ?
-                        UndefinedComponentClassException :
-                        UndefinedLinkClassException;
+                    const exceptionClass = 
+                        listElemClass === NetworkComponentClass ? UndefinedComponentClassException :
+                        listElemClass === NetworkLinkClass ? UndefinedLinkClassException :
+                        UndefinedAreaClassException;
                     this.kresmer.raiseError(new exceptionClass({className}));
                 }//if
                 return clazz as InstanceType<T>;
@@ -291,7 +382,7 @@ export default class LibraryParser {
     }//parseClassList
 
 
-    private parseClassInheritance<T extends typeof NetworkComponentClass|typeof NetworkLinkClass>(node: Element, baseClassCtor: T)
+    private parseClassInheritance<T extends NetworkElementClassType>(node: Element, baseClassCtor: T)
     {
         const baseClassName = node.getAttribute("base");
         if (!baseClassName) {
@@ -615,15 +706,21 @@ export class StyleLibNode {
     }//ctor
 }//StyleLibNode
 
+type ParsedNode = 
+    LibParams |
+    ImportStatement |
+    NetworkComponentClass | 
+    NetworkLinkClass |
+    DrawingAreaClass |
+    DefsLibNode | 
+    StyleLibNode |
+    ParsingException;
 
-type ParsedNode = LibParams |
-                  ImportStatement |
-                  NetworkComponentClass | 
-                  NetworkLinkClass |
-                  DefsLibNode | 
-                  StyleLibNode |
-                  ParsingException;
-
+type NetworkElementClassType = 
+    | typeof NetworkComponentClass
+    | typeof NetworkLinkClass
+    | typeof DrawingAreaClass
+    ;
 export class LibraryParsingException extends ParsingException {
     constructor(message: string, options?: {
         severity?: KresmerExceptionSeverity,

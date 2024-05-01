@@ -25,7 +25,7 @@ export default abstract class NetworkElementClass {
      *               template: Template for the Vue-component for this class
      *               props: Props definition of the Vue-component for this class
      */
-    public constructor(name: string, params: {
+    public constructor(name: string, params?: {
         baseClass?: NetworkElementClass,
         styleBaseClasses?: NetworkElementClass[],
         computedPropsBaseClasses?: NetworkElementClass[],
@@ -41,11 +41,11 @@ export default abstract class NetworkElementClass {
     })
     {
         this.name = name;
-        this.baseClass = params.baseClass;
-        this.styleBaseClasses = params.styleBaseClasses;
-        this.propsBaseClasses = params.propsBaseClasses;
-        this.props = params.props ?? {};
-        if (params.baseClass) {
+        this.baseClass = params?.baseClass;
+        this.styleBaseClasses = params?.styleBaseClasses;
+        this.propsBaseClasses = params?.propsBaseClasses;
+        this.props = params?.props ?? {};
+        if (params?.baseClass) {
             this.props = clone(Object.fromEntries(
                     Object.entries(params.baseClass.props)
                         .filter(entry => {return !params.exceptProps?.includes(entry[0])})
@@ -69,14 +69,14 @@ export default abstract class NetworkElementClass {
             // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if
-        this.baseClassPropBindings = params.baseClassPropBindings;
-        this.computedProps = params.computedProps;
-        this.functions = params.functions;
-        this.defs = params.defs;
-        this.style = params.style;
-        this.category = params.category;
+        this.baseClassPropBindings = params?.baseClassPropBindings;
+        this.computedProps = params?.computedProps;
+        this.functions = params?.functions;
+        this.defs = params?.defs;
+        this.style = params?.style;
+        this.category = params?.category;
 
-        for (const propName in params.baseClassPropBindings) {
+        for (const propName in params?.baseClassPropBindings) {
             const prop = this.props[toCamelCase(propName)] as {default: unknown}|undefined;
             if (prop)
                 prop.default = params.baseClassPropBindings[propName];

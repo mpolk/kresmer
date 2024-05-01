@@ -76,11 +76,18 @@ export class UndefinedComponentClassException extends KresmerException {
     }//ctor
 }//UndefinedComponentClassException
 
+export class DuplicateComponentClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Duplicate component class "${options.className}"`, options);
+    }//ctor
+}//DuplicateComponentClassException
+
 export class UndefinedLinkException extends KresmerException {
     constructor(options: KresmerExceptionOptions & RequireOnlyOne<{link?: string|number, message?: string}>)
     {
         const link = typeof options.link === "string" ? `"${options.link}"` : `(id=${options.link})`;
-        super(options.message ?? `Undefined component "${link}`, options);
+        super(options.message ?? `Undefined link "${link}`, options);
     }//ctor
 }//UndefinedLinkException
 
@@ -90,6 +97,13 @@ export class UndefinedLinkClassException extends KresmerException {
         super(options.message ?? `Undefined link class "${options.className}"`, options);
     }//ctor
 }//UndefinedLinkClassException
+
+export class DuplicateLinkClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Duplicate link class "${options.className}"`, options);
+    }//ctor
+}//DuplicateLinkClassException
 
 export class UndefinedBundleException extends KresmerException {
     constructor(options: KresmerExceptionOptions & RequireOnlyOne<{bundleName?: string, message?: string}>)
@@ -104,6 +118,35 @@ export class UndefinedBundleClassException extends KresmerException {
         super(options.message ?? `Undefined bundle class "${options.className}"`, options);
     }//ctor
 }//UndefinedBundleClassException
+
+export class DuplicateBundleClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Duplicate bundle class "${options.className}"`, options);
+    }//ctor
+}//DuplicateBundleClassException
+
+export class UndefinedAreaException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{area?: string|number, message?: string}>)
+    {
+        const area = typeof options.area === "string" ? `"${options.area}"` : `(id=${options.area})`;
+        super(options.message ?? `Undefined area "${area}`, options);
+    }//ctor
+}//UndefinedAreaException
+
+export class UndefinedAreaClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Undefined area class "${options.className}"`, options);
+    }//ctor
+}//UndefinedAreaClassException
+
+export class DuplicateAreaClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Duplicate area class "${options.className}"`, options);
+    }//ctor
+}//DuplicateAreaClassException
 
 export class UndefinedVertexException extends KresmerException {
     constructor(options: KresmerExceptionOptions & {linkName?: string, vertexNumber?: number, message?: string})
