@@ -14,7 +14,6 @@ describe('Kresmer Art', () => {
     let kresmer: Kresmer;
     before(() => {
         cy.mount().then((_kresmer) => {
-            console.debug(_kresmer.drawingName);
             kresmer = _kresmer;
         });
     });
