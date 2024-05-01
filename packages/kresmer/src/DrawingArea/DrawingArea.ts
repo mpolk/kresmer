@@ -8,7 +8,7 @@
 
 import { InjectionKey, nextTick } from "vue";
 import Kresmer from "../Kresmer";
-import { UndefinedLinkClassException } from "../KresmerException";
+import { UndefinedAreaClassException, UndefinedLinkClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
 import AreaVertex from "./AreaVertex";
 import { VertexInitParams } from "../Vertex/Vertex";
@@ -43,7 +43,7 @@ export default class DrawingArea extends withZOrder(NetworkElementWithVertices) 
     ) {
         const clazz = _class instanceof DrawingAreaClass ? _class : DrawingAreaClass.getClass(_class);
         if (!clazz) {
-            throw new UndefinedLinkClassException({className: _class as string});
+            throw new UndefinedAreaClassException({className: _class as string});
         }//if
         super(kresmer, clazz, args);
         let i = 0;

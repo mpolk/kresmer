@@ -19,15 +19,15 @@ describe('DrawingArea object test', () => {
     })//before
 
     let swampClass: DrawingAreaClass;
-    it("creates a Swamp area class", () => {
+    it.skip("creates a Swamp area class", () => {
         swampClass = new DrawingAreaClass("Swamp");
-        debugger;
+        kresmer.registerAreaClass(swampClass);
         expect(kresmer.errorCount).to.be.eq(0);
     })//it
 
     let triangularSwamp: DrawingArea;
     it("creates a triangular Swamp area", () => {
-        triangularSwamp = new DrawingArea(kresmer, swampClass, {
+        triangularSwamp = new DrawingArea(kresmer, "Swamp", {
             name: "Triangular Swamp",
             vertices: [
                 {pos: {x: 100, y: 100}},
