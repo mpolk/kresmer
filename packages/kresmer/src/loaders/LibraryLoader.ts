@@ -75,7 +75,7 @@ export default class LibraryLoader
                         this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
                     else {
                         const childLoader = new LibraryLoader(this.kresmer, this.depth+1);
-                        const nImportErrors = await childLoader.loadLibrary(importedLibData);
+                        const nImportErrors = await childLoader._loadLibrary(importedLibData, importHandler);
                         if (nImportErrors > 0)
                             nErrors += nImportErrors;
                         console.debug(`${"  ".repeat(this.depth+1)}Library "${element.libName}" - imported`);
@@ -101,10 +101,10 @@ export default class LibraryLoader
         let nErrors = 0;
         for (const libName in libs) {
             const libData = libs[libName];
-            const rc = await this._loadLibrary(libData, (libName: string) => {
-                const libData = libs[libName];
-                return libData ? Promise.resolve(libData) : 
-                    this.kresmer.emit("library-import-requested", libName );
+            const rc = await this._loadLibrary(libData, (libToImportName: string) => {
+                const libToImportData = libs[libToImportName];
+                return libToImportData ? Promise.resolve(libToImportData) : 
+                    this.kresmer.emit("library-import-requested", libToImportName );
             });
             if (rc > 0)
                 nErrors += rc;
