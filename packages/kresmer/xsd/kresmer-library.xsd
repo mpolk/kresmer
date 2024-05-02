@@ -381,7 +381,7 @@
         </xs:complexType>
     </xs:element>
     
-    <!-- Network element base class clause -->
+    <!-- Drawing element base class clause -->
     <xs:element name="extends">
         <xs:complexType>
             <xs:complexContent mixed="true">

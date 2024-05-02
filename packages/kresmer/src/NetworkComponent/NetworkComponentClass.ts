@@ -14,7 +14,7 @@ import DrawingElementClass from "../DrawingElement/DrawingElementClass";
 import { DrawingElementProps } from "../loaders/DrawingParser";
 
 /**
- * Network Component Class - a generic network element class
+ * Network Component Class - a generic network component class
  * (the word "class" here means a runtime class, not a Typescript one)
  */
 export default class NetworkComponentClass extends DrawingElementClass {

@@ -17,7 +17,7 @@ import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 import AdjustmentHandle from "../AdjustmentHandles/AdjustmentHandle";
 
 /**
- * Network Component - a generic network element instance 
+ * Network Component - a generic network component instance 
  */
 export default class NetworkComponent extends DrawingElement {
     /**
