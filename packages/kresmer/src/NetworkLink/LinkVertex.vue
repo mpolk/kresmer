@@ -8,12 +8,12 @@
 <script lang="ts">
     import { PropType, computed, onUpdated, onBeforeMount, onMounted, toRef } from 'vue';
     import LinkVertex from './LinkVertex';
-    import ConnectionPointVue from '../ConnectionPoint/ConnectionPoint.vue';
     import {Position} from '../Transform/Transform';
     import useVertex from '../Vertex/useVertex';
+    import BaseVertexVue from '../Vertex/BaseVertex.vue';
 
     export default {
-        components: {ConnectionPointVue},
+        components: {BaseVertexVue},
     }
 </script>
 
@@ -26,18 +26,14 @@
     });
 
     const {
-        isEditable,
         padding,
-        circle,
-        draggingCursor,
         onMouseDown,
         onMouseUp,
         onMouseMove,
         onMouseLeave,
         onRightClick,
-        onClick,
         onDoubleClick
-     } = useVertex(toRef(props, "model"));
+    } = useVertex(toRef(props, "model"));
 
     onBeforeMount(() => props.model._updateSegmentVector());
     onMounted(() => {
@@ -173,51 +169,18 @@ class=${JSON.stringify(clazz)}`;
         @contextmenu="onRightClick($event)"
         @dblclick="onDoubleClick()"
         />
-    <ConnectionPointVue v-if="!model.parentElement.isBundle && model.parentElement.kresmer.isEditable" :name="model.vertexNumber" 
-        :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
-        @click="onClick" class="vertex-connection-point"
-        />
-    <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
-        {{ linkNumber.number }}
-        <title>{{ linkNumber.debugInfo }}</title>
-    </text>
-    <template v-if="model.parentElement.isSelected && model.isDragged">
-        <line :x1="model.coords.x" y1="0" :x2="model.coords.x" :y2="model.parentElement.kresmer.drawingRect.height" class="crosshair" />
-        <line x1="0" :y1="model.coords.y" :x2="model.parentElement.kresmer.drawingRect.width" :y2="model.coords.y" class="crosshair" />
-    </template>
-    <circle v-show="model.parentElement.isSelected && (model.isDragged || model.isGoingToBeDragged)" 
-        ref="padding"
-        :cx="model.coords.x" :cy="model.coords.y" 
-        class="link vertex padding"
-        :style="draggingCursor" style="stroke: none;"
-        :is-editable="isEditable"
-        @mouseup.stop="onMouseUp($event)"
-        @mousemove.stop="onMouseMove($event)"
-        @mouseleave.stop="onMouseLeave($event)"
-        />
-    <circle v-if="model.parentElement.isSelected" ref="circle"
-        :cx="model.coords.x" :cy="model.coords.y" 
-        class="link vertex" :class="{connected: model.isConnected}"
-        :style="draggingCursor"
-        :is-editable="isEditable"
-        :data-link-bundle-vertex="dataLinkBundleVertex"
-        @mousedown.stop="onMouseDown($event)"
-        @mouseup.stop="onMouseUp($event)"
-        @mousemove.stop="onMouseMove($event)"
-        @mouseleave.stop="onMouseLeave($event)"
-        @contextmenu="onRightClick($event)"
-        @dblclick="onDoubleClick()"
-        />
-    <Transition>
-        <circle v-if="model.isBlinking" ref="blinker"
-            :cx="model.coords.x" :cy="model.coords.y" 
-            class="vertex blinker"
-            />
-    </Transition>
+    <BaseVertexVue :model="model" :has-connection-point="!model.parentElement.isBundle" 
+                   :additional-classes="{connected: model.isConnected}"
+                   :additional-attrs="{'data-link-bundle-vertex': props.dataLinkBundleVertex}"
+                   >
+        <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
+            {{ linkNumber.number }}
+            <title>{{ linkNumber.debugInfo }}</title>
+        </text>
+    </BaseVertexVue>
 </template>
 
 <style lang="scss">
-    .vertex, .vertex-connection-point {cursor: pointer;}
     .connected {
         opacity: 0.8;
         &:hover {
@@ -231,21 +194,5 @@ class=${JSON.stringify(clazz)}`;
         // &.bottom-aligned { dominant-baseline: ideographic;}
         &.right-aligned { text-anchor: end;}
         &.left-aligned { text-anchor: start;}
-    }
-
-    .v-enter-active {
-        transition: opacity 0.3s ease;
-    }
-    .v-leave-active {
-        transition: opacity 2s ease;
-    }
-    .v-enter-from, .v-leave-to {
-        opacity: 0;
-    }
-
-    .crosshair {
-        stroke: #5b5b5b;
-        stroke-width: 1;
-        // stroke-dasharray: 5, 5;
     }
 </style>
