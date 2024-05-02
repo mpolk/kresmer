@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Network Element - a base class for all things that can be placed 
+ * Drawing Element - a base class for all things that can be placed 
  * on the drawing 
  ***************************************************************************/
 
@@ -19,7 +19,7 @@ import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 
 export default abstract class DrawingElement {
     /**
-     * Creates a new Network Element
+     * Creates a new Drawing Element
      * @param kresmer The Kresmer instance this element belongs to
      * @param _class The class this Element should belong 
      *               (either Element class instance or its name)

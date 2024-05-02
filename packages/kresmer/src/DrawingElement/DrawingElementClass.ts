@@ -124,7 +124,7 @@ export default abstract class DrawingElementClass {
     abstract get defsVueName(): string;
 }//DrawingElementClass
 
-/** Network Element computed prop - translate to the common Vue computed property */
+/** Drawing Element computed prop - translate to the common Vue computed property */
 export interface ComputedProp {
     name: string,
     body: string,
