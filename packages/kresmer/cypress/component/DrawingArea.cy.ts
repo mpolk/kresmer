@@ -8,7 +8,9 @@
 
 import Kresmer from "../../src/Kresmer";
 import DrawingArea from "../../src/DrawingArea/DrawingArea";
-import DrawingAreaClass from "../../src/DrawingArea/DrawingAreaClass";
+// import DrawingAreaClass from "../../src/DrawingArea/DrawingAreaClass";
+import chaiColors from 'chai-colors';
+chai.use(chaiColors);
 
 describe('DrawingArea object test', () => {
     let kresmer: Kresmer;
@@ -18,15 +20,19 @@ describe('DrawingArea object test', () => {
         });
     })//before
 
-    let swampClass: DrawingAreaClass;
-    it.skip("creates a Swamp area class", () => {
-        swampClass = new DrawingAreaClass("Swamp");
-        kresmer.registerAreaClass(swampClass);
-        expect(kresmer.errorCount).to.be.eq(0);
-    })//it
+    // let swampClass: DrawingAreaClass;
+    // it("creates a Swamp area class", () => {
+    //     swampClass = new DrawingAreaClass("Swamp");
+    //     kresmer.registerAreaClass(swampClass);
+    //     expect(kresmer.errorCount).to.be.eq(0);
+    // })//it
+
+    specify("First we should make sure that there are not any triangular Swamp areas in our world.", () => {
+        expect(kresmer.getAreaByName("Triangular Swamp")).to.be.undefined;
+    })
 
     let triangularSwamp: DrawingArea;
-    it("creates a triangular Swamp area", () => {
+    it("Then we create a triangular Swamp area", () => {
         triangularSwamp = new DrawingArea(kresmer, "Swamp", {
             name: "Triangular Swamp",
             vertices: [
@@ -36,8 +42,21 @@ describe('DrawingArea object test', () => {
             ]
         });
         
-        expect(kresmer.getAreaByName("Triangular Swamp")).to.be.undefined;
         kresmer.addArea(triangularSwamp);
-        expect(kresmer.getAreaByName("Triangular Swamp")).to.be.not.undefined;
     })//it
+
+    specify("...and now we have one triangular swamp", () => {
+        expect(kresmer.getAreaByName("Triangular Swamp")).to.be.not.undefined;
+    })
+    specify("...and it's light-blue with a blue border", () => {
+        cy.get("path.Swamp.area").should("have.css", "fill").and("be.colored", "lightblue");
+        cy.get("path.Swamp.area").should("have.css", "stroke").and("be.colored", "blue");
+    })
+    specify("...and naturally a triangular swamp has exactly 3 vertices", () => {
+        cy.get(".vertex").should("have.length", 3);
+    })
+    specify("...but they are invisible yet", () => {
+        cy.get(".vertex").should("not.be.visible");
+    })
+
 })//describe
