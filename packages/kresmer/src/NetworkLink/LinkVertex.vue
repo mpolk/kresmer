@@ -6,7 +6,7 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, onUpdated, onBeforeMount, onMounted, toRef } from 'vue';
+    import { PropType, computed, onUpdated, onBeforeMount, onMounted, toRef } from 'vue';
     import LinkVertex from './LinkVertex';
     import ConnectionPointVue from '../ConnectionPoint/ConnectionPoint.vue';
     import {Position} from '../Transform/Transform';
@@ -27,6 +27,8 @@
 
     const {
         isEditable,
+        padding,
+        circle,
         draggingCursor,
         onMouseDown,
         onMouseUp,
@@ -47,9 +49,6 @@
             props.model.updateSegmentVector();
     });
 
-    const circle = ref<SVGElement>()!;
-    const padding = ref<SVGElement>()!;
-
     type LinkNumber = {
         number: number,
         pos: Position,
@@ -58,7 +57,6 @@
     }//LinkNumber
 
     type LinkNumberCSSClass = Partial<Record<"top-aligned"|"bottom-aligned"|"left-aligned"|"right-aligned", boolean>>;
-
 
     const linkNumber = computed((): LinkNumber|undefined => {
         const thisVertex = props.model;

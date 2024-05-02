@@ -5,13 +5,15 @@
  * ------------------------------------------------------------------------
  *                   Abstract base Vertex composable
 \***************************************************************************/
-import { Ref, inject, computed } from 'vue';
+import { Ref, ref, inject, computed } from 'vue';
 import Kresmer from '../Kresmer';
 import Vertex from './Vertex';
 
 export default function useVertex(model: Ref<Vertex>) {
 
     const isEditable = inject(Kresmer.ikIsEditable);
+    const circle = ref<SVGElement>()!;
+    const padding = ref<SVGElement>()!;
 
     const draggingCursor =  computed(() => {
         if (!model.value.parentElement.kresmer.isEditable)
@@ -69,7 +71,7 @@ export default function useVertex(model: Ref<Vertex>) {
     }//onDoubleClick
         
     return {
-        isEditable, draggingCursor, 
+        isEditable, padding, circle, draggingCursor, 
         onMouseDown, onMouseUp, onMouseMove, onMouseLeave, onRightClick, onClick, onDoubleClick,
     }
 }//useVertex
