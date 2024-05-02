@@ -107,14 +107,14 @@ export default class DrawingParser {
         if (!componentClass) 
             throw new DrawingParsingException(`Unknown component class "${className}"`);
 
-        const propsFromAttributes: NetworkElementRawProps = {};
+        const propsFromAttributes: DrawingElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
             if (attrName !== "class" && attrName !== "db-id") {
                 propsFromAttributes[attrName] = node.getAttribute(attrName)!;
             }//if
         }//for
 
-        let propsFromChildNodes: NetworkElementRawProps = {};
+        let propsFromChildNodes: DrawingElementRawProps = {};
         let content: string | undefined;
         let transform = new Transform;
         const origin: {x?: number, y?: number} = {};
@@ -186,7 +186,7 @@ export default class DrawingParser {
         if (!linkClass) 
             throw new DrawingParsingException(`Unknown link class "${className}"`);
 
-        const propsFromAttributes: NetworkElementRawProps = {};
+        const propsFromAttributes: DrawingElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
             switch (attrName) {
                 case "class": case "db-id": case "from": case "to":
@@ -196,7 +196,7 @@ export default class DrawingParser {
             }//switch
         }//for
 
-        let propsFromChildNodes: NetworkElementRawProps = {};
+        let propsFromChildNodes: DrawingElementRawProps = {};
         const vertices: LinkVertexInitParams[] = [];
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
@@ -298,9 +298,9 @@ export default class DrawingParser {
     }//parseLinkVertex
 
 
-    private parseProps(node: Element): NetworkElementRawProps
+    private parseProps(node: Element): DrawingElementRawProps
     {
-        const rawProps: NetworkElementRawProps = {};
+        const rawProps: DrawingElementRawProps = {};
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -323,7 +323,7 @@ export default class DrawingParser {
     }//parseProps
 
 
-    private _normalizeProps(rawProps: NetworkElementRawProps, node: Element, elementClass: DrawingElementClass): NetworkElementProps
+    private _normalizeProps(rawProps: DrawingElementRawProps, node: Element, elementClass: DrawingElementClass): DrawingElementProps
     {
         try {
             return DrawingParser.normalizeProps(rawProps, elementClass, this.kresmer);
@@ -338,9 +338,9 @@ export default class DrawingParser {
     }//_normalizeProps
 
 
-    static normalizeProps(rawProps: NetworkElementRawProps, elementClass: DrawingElementClass, kresmer: Kresmer): NetworkElementProps
+    static normalizeProps(rawProps: DrawingElementRawProps, elementClass: DrawingElementClass, kresmer: Kresmer): DrawingElementProps
     {
-        const props: NetworkElementProps = {};
+        const props: DrawingElementProps = {};
         if (Object.keys(rawProps).length  === 0) {
             return props;
         }//if
@@ -497,8 +497,8 @@ export type ParsedNode =
     ;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export type NetworkElementProps = Record<string, string|number|object|boolean|any[]>;
-export type NetworkElementRawProps = Record<string, string>;
+export type DrawingElementProps = Record<string, string|number|object|boolean|any[]>;
+export type DrawingElementRawProps = Record<string, string>;
 
 export class DrawingParsingException extends ParsingException {
     constructor(message: string, options?: {

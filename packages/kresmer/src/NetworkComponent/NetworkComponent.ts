@@ -8,7 +8,7 @@
 
 import { InjectionKey, nextTick } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
-import DrawingElement, {NetworkElementData} from '../DrawingElement/DrawingElement';
+import DrawingElement, {DrawingElementData} from '../DrawingElement/DrawingElement';
 import Kresmer from "../Kresmer";
 import NetworkComponentController from "./NetworkComponentController";
 import { EditorOperation } from "../UndoStack";
@@ -73,7 +73,7 @@ export default class NetworkComponent extends DrawingElement {
         return name == this.name || !this.kresmer.componentsByName.has(name);
     }//checkNameUniqueness
 
-    override setData(data: NetworkElementData)
+    override setData(data: DrawingElementData)
     {
         super.setData(data);
         this.updateConnectionPoints();

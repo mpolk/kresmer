@@ -760,7 +760,7 @@ ${svg.outerHTML}
 
 
     /**
-     * Searches for the NetworkElement with the specified ID
+     * Searches for the DrawingElement with the specified ID
      * @param id An ID of the element to search for
      * @returns The element if found or "undefined" otherwise
      */
@@ -1448,13 +1448,13 @@ export const enum StreetAddressFormat {
 }//StreetAddressFormat
 
 /** Class type of the generic network element */
-export type NetworkElementClassType = typeof NetworkComponentClass | typeof NetworkLinkClass;
-export type NetworkElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
+export type DrawingElementClassType = typeof NetworkComponentClass | typeof NetworkLinkClass;
+export type DrawingElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
 
 // Re-export child classes to API
-export {default as NetworkElement } from "./DrawingElement/DrawingElement";
-export {default as NetworkElementClass, NetworkElementPropCategory } from "./DrawingElement/DrawingElementClass";
-export type {NetworkElementData} from "./DrawingElement/DrawingElement";
+export {default as DrawingElement } from "./DrawingElement/DrawingElement";
+export {default as DrawingElementClass, DrawingElementPropCategory } from "./DrawingElement/DrawingElementClass";
+export type {DrawingElementData} from "./DrawingElement/DrawingElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
 export {default as NetworkComponentController, type TransformMode} from "./NetworkComponent/NetworkComponentController";

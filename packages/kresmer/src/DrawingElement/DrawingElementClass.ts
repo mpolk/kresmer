@@ -11,7 +11,7 @@ import { Prop, PropType } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
 import { clone } from "../Utils";
-import { NetworkElementProps } from "../loaders/DrawingParser";
+import { DrawingElementProps } from "../loaders/DrawingParser";
 import { toCamelCase } from "../Utils";
 
 /**
@@ -30,9 +30,9 @@ export default abstract class DrawingElementClass {
         styleBaseClasses?: DrawingElementClass[],
         computedPropsBaseClasses?: DrawingElementClass[],
         propsBaseClasses?: DrawingElementClass[],
-        props?: NetworkElementClassProps,
+        props?: DrawingElementClassProps,
         exceptProps?: string[],
-        baseClassPropBindings?: NetworkElementProps,
+        baseClassPropBindings?: DrawingElementProps,
         computedProps?: ComputedProps,
         functions?: Functions,
         defs?: Template,
@@ -56,7 +56,7 @@ export default abstract class DrawingElementClass {
                     this.props[propName] = clone(ownProps[propName]);
                 } else {
                     for (const k in ownProps[propName]) {
-                        const key = k as keyof NetworkElementClassProp;
+                        const key = k as keyof DrawingElementClassProp;
                         if (ownProps[propName][key] === null)
                             this.props[propName][key] = undefined;
                         else
@@ -88,7 +88,7 @@ export default abstract class DrawingElementClass {
     /** Base class (for the element as a whole) */
     readonly baseClass?: DrawingElementClass;
     /** Base class prop values set from the "extends" clause */
-    readonly baseClassPropBindings?: NetworkElementProps;
+    readonly baseClassPropBindings?: DrawingElementProps;
     /** A list of the base classes for this class CSS */
     readonly styleBaseClasses?: DrawingElementClass[];
     /** A list of the base classes for this class props set */
@@ -96,7 +96,7 @@ export default abstract class DrawingElementClass {
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */
-    readonly props: NetworkElementClassProps;
+    readonly props: DrawingElementClassProps;
     /** Computed props (aka just "computed") definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
     /** Functions associated with this class (also sometimes called "methods") */
@@ -122,7 +122,7 @@ export default abstract class DrawingElementClass {
      * @returns The vue-component name defs
      */
     abstract get defsVueName(): string;
-}//NetworkElementClass
+}//DrawingElementClass
 
 /** Network Element computed prop - translate to the common Vue computed property */
 export interface ComputedProp {
@@ -141,7 +141,7 @@ export type FunctionDescriptor = {
 
 export type Functions = Record<string, FunctionDescriptor>;
 
-export enum NetworkElementPropCategory {
+export enum DrawingElementPropCategory {
     Hidden=1,
     Hardware, 
     Location, 
@@ -150,13 +150,13 @@ export enum NetworkElementPropCategory {
     Network, 
     Geometry,  
     Presentation, 
-}//NetworkElementPropCategory
+}//DrawingElementPropCategory
 
-export type NetworkElementClassProp<T=unknown> = Prop<T> & 
+export type DrawingElementClassProp<T=unknown> = Prop<T> & 
     {
-        category?: NetworkElementPropCategory,
+        category?: DrawingElementPropCategory,
         description?: string,
         subtype?: string,
     };
-export type NetworkElementClassPropDef<T=unknown> = Exclude<Prop<T>, PropType<T>>;
-export type NetworkElementClassProps = Record<string, NetworkElementClassProp>;
+export type DrawingElementClassPropDef<T=unknown> = Exclude<Prop<T>, PropType<T>>;
+export type DrawingElementClassProps = Record<string, DrawingElementClassProp>;

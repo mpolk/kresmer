@@ -9,9 +9,9 @@
 
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import { ComputedProps, Functions, NetworkElementClassProps } from "../DrawingElement/DrawingElementClass";
+import { ComputedProps, Functions, DrawingElementClassProps } from "../DrawingElement/DrawingElementClass";
 import DrawingElementClass from "../DrawingElement/DrawingElementClass";
-import { NetworkElementProps } from "../loaders/DrawingParser";
+import { DrawingElementProps } from "../loaders/DrawingParser";
 
 /**
  * Network Component Class - a generic network element class
@@ -30,10 +30,10 @@ export default class NetworkComponentClass extends DrawingElementClass {
         computedPropsBaseClasses?: NetworkComponentClass[],
         styleBaseClasses?: NetworkComponentClass[],
         template: Template,
-        props?: NetworkElementClassProps,
+        props?: DrawingElementClassProps,
         exceptProps?: string[],
         baseClassChildNodes?: NodeList,
-        baseClassPropBindings?: NetworkElementProps,
+        baseClassPropBindings?: DrawingElementProps,
         computedProps?: ComputedProps,
         functions?: Functions,
         defs?: Template,

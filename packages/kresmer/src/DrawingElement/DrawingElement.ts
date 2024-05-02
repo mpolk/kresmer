@@ -190,7 +190,7 @@ export default abstract class DrawingElement {
     propsUpdateIndicator = 0;
 
     /** Returns the element "mutable" data, i.e. the data meant to updatable from outside of Kresmer */
-    public getData(): NetworkElementData
+    public getData(): DrawingElementData
     {
         return {
             name: this._name,
@@ -200,7 +200,7 @@ export default abstract class DrawingElement {
     }//getData
 
     /** Sets the element "mutable" data, i.e. the data meant to updatable from outside of Kresmer */
-    public setData(data: NetworkElementData)
+    public setData(data: DrawingElementData)
     {
         for (const propName in data.props) {
             this.props[propName] = data.props[propName];
@@ -235,28 +235,28 @@ export default abstract class DrawingElement {
 
     /** References to the central collections of this type of elements (for internal use)*/
     abstract get _byNameIndex(): Map<string, number>;
-}//NetworkElement
+}//DrawingElement
 
 
 /** Element's mutable data, i.e. the data meant to updatable by the host process */
-export interface NetworkElementData {
+export interface DrawingElementData {
     name?: string,
     dbID?: number|string,
     props?: Record<string, unknown>, 
-}//NetworkElementData
+}//DrawingElementData
 
 
 export class UpdateElementOp extends EditorOperation {
 
     constructor(private readonly element: DrawingElement, 
-                private newData?: NetworkElementData, 
+                private newData?: DrawingElementData, 
                 )
     {
         super();
         this.oldData = element.getData();
     }//ctor
 
-    private readonly oldData: NetworkElementData;
+    private readonly oldData: DrawingElementData;
 
     override onCommit(): void 
     {

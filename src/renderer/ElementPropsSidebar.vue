@@ -9,7 +9,7 @@
 <script lang="ts">
     import { InjectionKey, Ref, nextTick, provide, ref, watch } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
-    import { NetworkElement, NetworkElementClass, NetworkElementPropCategory,
+    import { DrawingElement, DrawingElementClass, DrawingElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
              NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
@@ -19,7 +19,7 @@
         // eslint-disable-next-line @typescript-eslint/ban-types
         name: string, value: unknown, type: Function, subtype?: string, required: boolean, 
         min?: number, max?: number, validValues?: string[], pattern?: string, 
-        category?: NetworkElementPropCategory, default?: string, description?: string,
+        category?: DrawingElementPropCategory, default?: string, description?: string,
         parentPropDescriptor?: ElementPropDescriptor,
     };
 
@@ -38,7 +38,7 @@
     const formEnabled = ref(false);
     const formValidated = ref(false);
 
-    let elementToEdit: NetworkElement;
+    let elementToEdit: DrawingElement;
     const elementName = ref<string>("");
     const inpElementName = ref<HTMLInputElement>()!;
     watch(elementName, () => {
@@ -59,7 +59,7 @@
      * @param element An element to edit
      */
      
-    function show(element: NetworkElement)
+    function show(element: DrawingElement)
     {
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
@@ -91,8 +91,8 @@
         offCanvas.show();
     }//show
 
-    const elementClass = ref<NetworkElementClass>();
-    const allClasses = ref<{name: string, _class: NetworkElementClass}[]>([]);
+    const elementClass = ref<DrawingElementClass>();
+    const allClasses = ref<{name: string, _class: DrawingElementClass}[]>([]);
     
     function changeClass() {
         const newClass = elementClass.value!;
@@ -127,7 +127,7 @@ Continue?`)) {
      * based on element's class  and the values taken from the dialog inputs
      * @param _class An element class
      */
-    function buildElementPropDescriptors(_class: NetworkElementClass): ElementPropDescriptor[]
+    function buildElementPropDescriptors(_class: DrawingElementClass): ElementPropDescriptor[]
     {
         function clone(x: unknown): unknown
         {
@@ -144,7 +144,7 @@ Continue?`)) {
         }//clone
 
         const descriptors = Object.keys(_class.props)
-            .filter(name => _class.props[name].category !== NetworkElementPropCategory.Hidden)
+            .filter(name => _class.props[name].category !== DrawingElementPropCategory.Hidden)
             .map(name => 
                 {
                     const validValues = _class.props[name].validator?.validValues;
@@ -376,7 +376,7 @@ Continue?`)) {
                     <template v-for="(prop, i) in elementPropDescriptors" :key="`prop[${prop.name}]`">
                         <tr v-if="prop.category && (i === 0 || prop.category !== elementPropDescriptors[i-1].category)">
                             <td colspan="2" class="border-0 text-primary text-opacity-75">
-                                {{ NetworkElementPropCategory[prop.category] }}
+                                {{ DrawingElementPropCategory[prop.category] }}
                             </td>
                         </tr>
                         <ElementPropEditor :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" @add-subprop="addSubprop"/>

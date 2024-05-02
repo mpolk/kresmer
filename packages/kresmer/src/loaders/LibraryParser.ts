@@ -7,14 +7,14 @@
 \**************************************************************************/
 
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import DrawingElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps, Functions } from "../DrawingElement/DrawingElementClass";
+import DrawingElementClass, { DrawingElementPropCategory, DrawingElementClassProp, DrawingElementClassProps, Functions } from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../DrawingElement/DrawingElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";
-import DrawingParser, { NetworkElementProps, NetworkElementRawProps } from "./DrawingParser";
+import DrawingParser, { DrawingElementProps, DrawingElementRawProps } from "./DrawingParser";
 import { clone, toCamelCase } from "../Utils";
 import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
 
@@ -116,10 +116,10 @@ export default class LibraryParser {
             throw new LibraryParsingException("Component class without the name");
 
         let baseClass: NetworkComponentClass | undefined;
-        let baseClassPropBindings: NetworkElementProps | undefined;
+        let baseClassPropBindings: DrawingElementProps | undefined;
         let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
         let template: Element | undefined;
-        let props: NetworkElementClassProps = {};
+        let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let computedProps: ComputedProps|undefined;
         let exceptCProps: string[] | undefined;
@@ -212,7 +212,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 
-        let props: NetworkElementClassProps = {};
+        let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
         let computedProps: ComputedProps | undefined;
@@ -221,7 +221,7 @@ export default class LibraryParser {
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let baseClass: NetworkLinkClass | undefined;
-        let baseClassPropBindings: NetworkElementProps | undefined;
+        let baseClassPropBindings: DrawingElementProps | undefined;
         let propsBaseClasses: NetworkLinkClass[] | undefined;
         let cPropsBaseClasses: NetworkLinkClass[] | undefined;
         let functionsBaseClasses: NetworkLinkClass[] | undefined;
@@ -292,7 +292,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Area class without the name");
 
-        let props: NetworkElementClassProps = {};
+        let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
         let computedProps: ComputedProps | undefined;
@@ -301,7 +301,7 @@ export default class LibraryParser {
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let baseClass: DrawingAreaClass | undefined;
-        let baseClassPropBindings: NetworkElementProps | undefined;
+        let baseClassPropBindings: DrawingElementProps | undefined;
         let propsBaseClasses: DrawingAreaClass[] | undefined;
         let cPropsBaseClasses: DrawingAreaClass[] | undefined;
         let functionsBaseClasses: DrawingAreaClass[] | undefined;
@@ -364,7 +364,7 @@ export default class LibraryParser {
     }//parseAreaClassNode
 
 
-    private parseClassList<T extends NetworkElementClassType>(
+    private parseClassList<T extends DrawingElementClassType>(
         rawList: string|null, listElemClass: T): InstanceType<T>[]|undefined
     {
         return rawList?.split(/ *, */)
@@ -382,7 +382,7 @@ export default class LibraryParser {
     }//parseClassList
 
 
-    private parseClassInheritance<T extends NetworkElementClassType>(node: Element, baseClassCtor: T)
+    private parseClassInheritance<T extends DrawingElementClassType>(node: Element, baseClassCtor: T)
     {
         const baseClassName = node.getAttribute("base");
         if (!baseClassName) {
@@ -398,7 +398,7 @@ export default class LibraryParser {
             return undefined;
         }//if
 
-        const baseClassRawProps: NetworkElementRawProps = {};
+        const baseClassRawProps: DrawingElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
             if (attrName !== "base") {
                 baseClassRawProps[attrName] = node.getAttribute(attrName)!;
@@ -422,7 +422,7 @@ export default class LibraryParser {
             "array": {propType: Array, makeDefault: d => d === "none" ? null : JSON.parse(d)},
         };
 
-        const props: NetworkElementClassProps = {};
+        const props: DrawingElementClassProps = {};
         propsBaseClasses?.forEach(baseClass => {
             for (const propName in baseClass.props) {
                 if (!exceptProps || exceptProps.findIndex(exc => exc === propName) < 0)
@@ -434,7 +434,7 @@ export default class LibraryParser {
             switch (child.nodeName) {
                 case "prop": {
                     const propName = toCamelCase(child.getAttribute("name"));
-                    const prop: NetworkElementClassProp = {};
+                    const prop: DrawingElementClassProp = {};
                     const type = child.getAttribute("type");
                     const required = child.getAttribute("required"),
                         _default = child.getAttribute("default"),
@@ -523,7 +523,7 @@ export default class LibraryParser {
                         case "Network":
                         case "Hardware":
                         case "Optics":
-                            prop.category = NetworkElementPropCategory[category];
+                            prop.category = DrawingElementPropCategory[category];
                         // eslint-disable-next-line no-fallthrough
                         case null:
                             break;
@@ -716,7 +716,7 @@ type ParsedNode =
     StyleLibNode |
     ParsingException;
 
-type NetworkElementClassType = 
+type DrawingElementClassType = 
     | typeof NetworkComponentClass
     | typeof NetworkLinkClass
     | typeof DrawingAreaClass

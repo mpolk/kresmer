@@ -18,7 +18,7 @@ import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
     Position, KresmerException, KresmerParsingException, LibraryImportException,
     NetworkComponentController, NetworkComponent,
-    NetworkLink, NetworkElement, Vertex,
+    NetworkLink, DrawingElement, Vertex,
     TransformMode, ConnectionPointProxy,
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
@@ -49,7 +49,7 @@ export const enum AppInitStage {
 export const hints = new Hints;
 
 export type StatusBarDisplayData = {
-    selectedElement: NetworkElement | null,
+    selectedElement: DrawingElement | null,
     hint: string,
     serverURL: string,
     drawingScale: number,

@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import KresmerException from "./KresmerException";
-import DrawingElement, {NetworkElementData} from "./DrawingElement/DrawingElement";
+import DrawingElement, {DrawingElementData} from "./DrawingElement/DrawingElement";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
 
@@ -56,7 +56,7 @@ export default class BackendConnection {
     }//testConnection
 
 
-    private async onNetworkElementLoaded(element: DrawingElement, type: "component"|"link")
+    private async onDrawingElementLoaded(element: DrawingElement, type: "component"|"link")
     {
         const headers = BackendConnection.makeHeaders(this.password);
         const data = JSON.stringify(element.getData());
@@ -70,7 +70,7 @@ export default class BackendConnection {
                 throw new KresmerException(`Error while sending a request to the backend server: ${response.statusText}`);
             }//if
             let result = false;
-            const newData = await response.json() as NetworkElementData;
+            const newData = await response.json() as DrawingElementData;
             if (!newData) return result;
 
             if (newData.name) {
@@ -89,18 +89,18 @@ export default class BackendConnection {
         } catch (error) {
             throw new KresmerException(`Error while sending a request to the backend server: ${error}`);
         }//catch
-    }//onNetworkElementLoaded
+    }//onDrawingElementLoaded
 
 
     async onNetworkComponentLoaded(component: NetworkComponent)
     {
-        return this.onNetworkElementLoaded(component, "component");
+        return this.onDrawingElementLoaded(component, "component");
     }//onNetworkComponentLoaded
 
 
     async onNetworkLinkLoaded(link: NetworkLink)
     {
-        return this.onNetworkElementLoaded(link, "link");
+        return this.onDrawingElementLoaded(link, "link");
     }//onNetworkLinkLoaded
 
 }//BackendConnection

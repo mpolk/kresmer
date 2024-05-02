@@ -9,8 +9,8 @@
 
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import DrawingElementClass, { ComputedProps, Functions, NetworkElementClassProps } from "../DrawingElement/DrawingElementClass";
-import { NetworkElementProps } from "../loaders/DrawingParser";
+import DrawingElementClass, { ComputedProps, Functions, DrawingElementClassProps } from "../DrawingElement/DrawingElementClass";
+import { DrawingElementProps } from "../loaders/DrawingParser";
  
 /**
  * Drawing Area Class - a generic drawing area class
@@ -28,9 +28,9 @@ export default class DrawingAreaClass extends DrawingElementClass {
         propsBaseClasses?: DrawingAreaClass[],
         computedPropsBaseClasses?: DrawingAreaClass[],
         styleBaseClasses?: DrawingAreaClass[],
-        props?: NetworkElementClassProps,
+        props?: DrawingElementClassProps,
         exceptProps?: string[],
-        baseClassPropBindings?: NetworkElementProps,
+        baseClassPropBindings?: DrawingElementProps,
         computedProps?: ComputedProps,
         functions?: Functions,
         defs?: Template,
