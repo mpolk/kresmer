@@ -177,7 +177,7 @@
             </template>
         </template>
         <template v-for="(vertex, i) in model.vertices" :key="`vertex${vertex.key}`">
-            <link-vertex-vue :model="vertex" :data-link-bundle-vertex="segmentDataAttr(i)"/>
+            <link-vertex-vue :model="vertex" :bundle-vertex-data-attr="segmentDataAttr(i)"/>
         </template>
     </g>
 </template>

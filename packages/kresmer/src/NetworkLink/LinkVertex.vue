@@ -22,7 +22,7 @@
 
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
-        dataLinkBundleVertex: {type: String},
+        bundleVertexDataAttr: {type: String},
     });
 
     const {
@@ -157,11 +157,11 @@ class=${JSON.stringify(clazz)}`;
 </script>
 
 <template>
-    <circle v-if="!model.parentElement.isSelected && dataLinkBundleVertex"
+    <circle v-if="!model.parentElement.isSelected && bundleVertexDataAttr"
         :cx="model.coords.x" :cy="model.coords.y" 
         class="vertex" :class="{connected: model.isConnected}"
         style="fill: transparent; stroke: transparent;"
-        :data-link-bundle-vertex="dataLinkBundleVertex"
+        :data-link-bundle-vertex="bundleVertexDataAttr"
         @mousedown.stop="onMouseDown($event)"
         @mouseup.stop="onMouseUp($event)"
         @mousemove.stop="onMouseMove($event)"
@@ -171,7 +171,7 @@ class=${JSON.stringify(clazz)}`;
         />
     <BaseVertexVue :model="model" :has-connection-point="!model.parentElement.isBundle" 
                    :additional-classes="{link: true, connected: model.isConnected}"
-                   :additional-attrs="{'data-link-bundle-vertex': props.dataLinkBundleVertex}"
+                   :additional-attrs="{'data-link-bundle-vertex': props.bundleVertexDataAttr}"
                    >
         <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
             {{ linkNumber.number }}
