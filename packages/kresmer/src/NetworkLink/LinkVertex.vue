@@ -170,7 +170,7 @@ class=${JSON.stringify(clazz)}`;
         @dblclick="onDoubleClick()"
         />
     <BaseVertexVue :model="model" :has-connection-point="!model.parentElement.isBundle" 
-                   :additional-classes="{connected: model.isConnected}"
+                   :additional-classes="{link: true, connected: model.isConnected}"
                    :additional-attrs="{'data-link-bundle-vertex': props.dataLinkBundleVertex}"
                    >
         <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
