@@ -15,11 +15,12 @@
     import NetworkLinkVue from './NetworkLink/NetworkLink.vue';
     import NetworkLinkFilters from './NetworkLink/NetworkLinkFilters.vue';
     import NetworkLinkBlankVue from './NetworkLink/NetworkLinkBlank.vue';
+    import DrawingAreaVue from './DrawingArea/DrawingArea.vue';
 
     export default {
         name: "Kresmer",
         components: { NetworkComponentHolder, NetworkLinkFilters, TransformBoxFilters, ConnectionPointFilters, 
-                      NetworkLinkVue, NetworkLinkBlankVue },
+                      NetworkLinkVue, NetworkLinkBlankVue, DrawingAreaVue },
     }
 </script>
 
@@ -264,6 +265,9 @@
                 </template>
             </g>
         </template>
+
+        <!-- Areas -->
+        <DrawingAreaVue v-for="area in controller.areas.sorted" v-bind="area.props" :key="`area${area.id}`" :model="area" />
 
         <!-- Components -->
         <NetworkComponentHolder 

@@ -124,9 +124,9 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
 
     public get wouldAlignVertices() {return new Set(this.vertices);}
 
-    public onClick(this: DrawingArea, segmentNumber: number, event: MouseEvent)
+    public onClick(event: MouseEvent, segmentNumber?: number)
     {
-        if (event.ctrlKey) {
+        if (event.ctrlKey && segmentNumber) {
             this.kresmer.edAPI.addAreaVertex(this.id, segmentNumber, event);
         } else {
             this.selectThis();
@@ -134,17 +134,17 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
     }//onClick
 
 
-    public onRightClick(this: DrawingArea, segmentNumber: number, event: MouseEvent)
+    public onRightClick(event: MouseEvent, segmentNumber?: number)
     {
         this.selectThis();
-        this.kresmer.emit("area-right-click", this, segmentNumber, event);
+        this.kresmer.emit("area-right-click", this, event, segmentNumber);
     }//onRightClick
 
 
-    public onDoubleClick(this: DrawingArea, segmentNumber: number, event: MouseEvent)
+    public onDoubleClick(event: MouseEvent, segmentNumber?: number)
     {
         this.selectThis();
-        this.kresmer.emit("area-double-click", this, segmentNumber, event);
+        this.kresmer.emit("area-double-click", this, event, segmentNumber);
     }//onDoubleClick
 
 }//_DrawingArea

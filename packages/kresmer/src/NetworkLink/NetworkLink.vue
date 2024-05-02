@@ -140,7 +140,7 @@
     function segMarkPathData(i: number)
     {
         const p1 = props.model.vertices[i-1].coords, p2 = props.model.vertices[i].coords;
-        return (p2.x < p1.x) ? `M${p2.x},${p2.y} ${p1.x},${p1.y}` : `M${p1.x},${p1.y} ${p2.x},${p2.y}`;
+        return (p2.x < p1.x) ? `M${p2.x},${p2.y} L${p1.x},${p1.y}` : `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
     }//segMarkPathData
 </script>
 

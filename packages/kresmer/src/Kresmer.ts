@@ -921,18 +921,12 @@ ${svg.outerHTML}
     /** Deselects all components (probably except the one specified) */
     public deselectAllElements(except?: unknown)
     {
-        this.networkComponents.forEach(controller => {
-            if (controller !== except) {
-                controller.component.isSelected = false;
-                controller.returnFromTop();
+        [this.networkComponents, this.links, this.areas].forEach(map => map.forEach(element => {
+            if (element !== except) {
+                element.isSelected = false;
+                element.returnFromTop();
             }//if
-        });
-        this.links.forEach(link => {
-            if (link !== except) {
-                link.isSelected = false;
-                link.returnFromTop();
-            }//if
-        });
+        }));
 
         if (!(except instanceof NetworkLinkBlank)) {
             this._abortLinkCreation();

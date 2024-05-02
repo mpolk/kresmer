@@ -69,8 +69,8 @@ class KresmerEventFormats  {
     "area-added":                       (area: DrawingArea) => void;
     "area-deleted":                     (area: DrawingArea) => void;
     "area-selected":                    (area: DrawingArea, isSelected: boolean) => void;
-    "area-right-click":                 (area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) => void;
-    "area-double-click":                (area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) => void;
+    "area-right-click":                 (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) => void;
+    "area-double-click":                (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) => void;
     "area-vertex-added":                (vertex: AreaVertex) => void;
     "area-vertex-deleted":              (vertex: AreaVertex) => void;
     "area-vertex-move-started":         (vertex: AreaVertex) => void;
@@ -463,14 +463,14 @@ export default class KresmerEventHooks {
      * @param area The area been clicked
      */
     @overridableHandler("area-right-click")
-    protected onAreaRightClick(area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) {}
+    protected onAreaRightClick(area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) {}
 
     /**
      * Is called upon double mouse click on the drawing area
      * @param area The area been clicked
      */
     @overridableHandler("area-double-click")
-    protected onAreaDoubleClick(area: DrawingArea, segmentNumber: number, mouseEvent: MouseEvent) {}
+    protected onAreaDoubleClick(area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) {}
  
     /**
      * Is called when a vertex had been added

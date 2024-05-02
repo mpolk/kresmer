@@ -24,5 +24,5 @@
 </script>
 
 <template>
-    <BaseVertexVue :model="model" />
+    <BaseVertexVue :model="model" :additional-classes="{area: true}"/>
 </template>

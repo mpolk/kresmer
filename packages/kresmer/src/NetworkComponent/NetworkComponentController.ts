@@ -66,6 +66,9 @@ export default class NetworkComponentController extends withZOrder(class {}) {
         return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
+    get isSelected() {return this.component.isSelected}
+    set isSelected(newValue: boolean) {this.component.isSelected = newValue}
+
     public selectComponent(this: NetworkComponentController, deselectTheRest: boolean): void
     {
         if (!this.component.isSelected) {

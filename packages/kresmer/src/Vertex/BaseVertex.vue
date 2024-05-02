@@ -52,7 +52,7 @@
     <circle v-show="model.parentElement.isSelected && (model.isDragged || model.isGoingToBeDragged)" 
         ref="padding"
         :cx="model.coords.x" :cy="model.coords.y" 
-        class="link vertex padding"
+        class="vertex padding"
         :style="draggingCursor" style="stroke: none;"
         :is-editable="isEditable"
         @mouseup.stop="onMouseUp($event)"
@@ -61,7 +61,7 @@
         />
     <circle v-if="model.parentElement.isSelected" ref="circle"
         :cx="model.coords.x" :cy="model.coords.y" 
-        class="link vertex" :class="additionalClasses"
+        class="vertex" :class="additionalClasses"
         :style="draggingCursor"
         :is-editable="isEditable"
         v-bind="additionalAttrs"
