@@ -7,10 +7,10 @@
 \**************************************************************************/
 
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import NetworkElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps, Functions } from "../NetworkElement/NetworkElementClass";
+import NetworkElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps, Functions } from "../DrawingElement/NetworkElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
-import {ComputedProps} from "../NetworkElement/NetworkElementClass";
+import {ComputedProps} from "../DrawingElement/NetworkElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";

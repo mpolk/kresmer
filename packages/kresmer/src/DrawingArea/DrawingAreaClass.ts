@@ -9,7 +9,7 @@
 
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import NetworkElementClass, { ComputedProps, Functions, NetworkElementClassProps } from "../NetworkElement/NetworkElementClass";
+import NetworkElementClass, { ComputedProps, Functions, NetworkElementClassProps } from "../DrawingElement/NetworkElementClass";
 import { NetworkElementProps } from "../loaders/DrawingParser";
  
 /**

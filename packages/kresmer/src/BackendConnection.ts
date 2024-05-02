@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import KresmerException from "./KresmerException";
-import NetworkElement, {NetworkElementData} from "./NetworkElement/NetworkElement";
+import NetworkElement, {NetworkElementData} from "./DrawingElement/NetworkElement";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
 

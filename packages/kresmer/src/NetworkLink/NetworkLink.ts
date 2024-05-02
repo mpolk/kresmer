@@ -16,7 +16,7 @@ import { EditorOperation } from "../UndoStack";
 import { Position } from "Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
-import NetworkElementWithVertices from "../NetworkElement/NetworkElementWithVertices";
+import NetworkElementWithVertices from "../DrawingElement/NetworkElementWithVertices";
 
 /**
  * Network Link 

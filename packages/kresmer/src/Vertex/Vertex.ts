@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { nextTick } from "vue";
-import NetworkElementWithVertices from "NetworkElement/NetworkElementWithVertices";
+import NetworkElementWithVertices from "DrawingElement/NetworkElementWithVertices";
 import { Position } from "../Transform/Transform";
 import { UnrealizableVertexAlignmentException } from "../KresmerException";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";

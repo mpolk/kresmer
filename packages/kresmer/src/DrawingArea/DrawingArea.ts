@@ -13,7 +13,7 @@ import DrawingAreaClass from "./DrawingAreaClass";
 import AreaVertex from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { VertexInitParams } from "../Vertex/Vertex";
-import NetworkElementWithVertices from "../NetworkElement/NetworkElementWithVertices";
+import NetworkElementWithVertices from "../DrawingElement/NetworkElementWithVertices";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";

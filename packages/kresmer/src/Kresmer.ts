@@ -25,7 +25,7 @@ import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
 import KresmerException, { DuplicateAreaClassException, UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
-import NetworkElement, { UpdateElementOp } from "./NetworkElement/NetworkElement";
+import NetworkElement, { UpdateElementOp } from "./DrawingElement/NetworkElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 import { MapWithZOrder } from "./ZOrdering";
@@ -33,7 +33,7 @@ import BackendConnection, { BackendConnectionTestResult } from "./BackendConnect
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexInitParams, LinkVertexSpec } from "./NetworkLink/LinkVertex";
 import Vertex, { VertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./Vertex/Vertex";
-import NetworkElementWithVertices from "./NetworkElement/NetworkElementWithVertices";
+import NetworkElementWithVertices from "./DrawingElement/NetworkElementWithVertices";
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
@@ -1452,9 +1452,9 @@ export type NetworkElementClassType = typeof NetworkComponentClass | typeof Netw
 export type NetworkElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
 
 // Re-export child classes to API
-export {default as NetworkElement } from "./NetworkElement/NetworkElement";
-export {default as NetworkElementClass, NetworkElementPropCategory } from "./NetworkElement/NetworkElementClass";
-export type {NetworkElementData} from "./NetworkElement/NetworkElement";
+export {default as NetworkElement } from "./DrawingElement/NetworkElement";
+export {default as NetworkElementClass, NetworkElementPropCategory } from "./DrawingElement/NetworkElementClass";
+export type {NetworkElementData} from "./DrawingElement/NetworkElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
 export {default as NetworkComponentController, type TransformMode} from "./NetworkComponent/NetworkComponentController";
