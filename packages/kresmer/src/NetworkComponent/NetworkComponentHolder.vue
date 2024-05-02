@@ -13,7 +13,7 @@
     import { TransformBoxZone } from '../Transform/TransformBox';
     import NetworkComponentController from "./NetworkComponentController";
     import NetworkComponent from "./NetworkComponent";
-    import NetworkElement from "../DrawingElement/NetworkElement";
+    import DrawingElement from "../DrawingElement/DrawingElement";
     import { Transform } from '../Transform/Transform';
     import Kresmer from '../Kresmer';
     import { toCamelCase } from '../Utils';
@@ -36,7 +36,7 @@
     // eslint-disable-next-line vue/no-setup-props-destructure
     provide(NetworkComponent.injectionKey, props.controller.component);
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(NetworkElement.ikHostElement, props.controller.component);
+    provide(DrawingElement.ikHostElement, props.controller.component);
 
     const applyTransform = ref(false);
     const bBox = ref<SVGRect>();

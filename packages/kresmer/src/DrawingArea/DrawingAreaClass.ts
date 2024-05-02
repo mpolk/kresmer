@@ -9,14 +9,14 @@
 
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import NetworkElementClass, { ComputedProps, Functions, NetworkElementClassProps } from "../DrawingElement/NetworkElementClass";
+import DrawingElementClass, { ComputedProps, Functions, NetworkElementClassProps } from "../DrawingElement/DrawingElementClass";
 import { NetworkElementProps } from "../loaders/DrawingParser";
  
 /**
  * Drawing Area Class - a generic drawing area class
  * (the word "class" here means a runtime class, not a Typescript one)
  */
-export default class DrawingAreaClass extends NetworkElementClass {
+export default class DrawingAreaClass extends DrawingElementClass {
     /**
      * @param name Class name
      * @param params Class creation parameters:

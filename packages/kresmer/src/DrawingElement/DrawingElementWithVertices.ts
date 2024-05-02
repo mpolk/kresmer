@@ -3,14 +3,14 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * NetworkElementWithVertices - a generic element, which host vertices
+ * DrawingElementWithVertices - a generic element, which host vertices
  ***************************************************************************/
 
-import NetworkElement from "./NetworkElement";
+import DrawingElement from "./DrawingElement";
 import withVertices from "../Vertex/withVertices";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
 
-export default abstract class NetworkElementWithVertices extends withVertices(NetworkElement) {
+export default abstract class DrawingElementWithVertices extends withVertices(DrawingElement) {
 
     override getConnectionPoint(name: string | number): ConnectionPointProxy | undefined {
         const i = Number(name);
@@ -29,5 +29,5 @@ export default abstract class NetworkElementWithVertices extends withVertices(Ne
         this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos());
     }//updateConnectionPoints()
 
-}//NetworkElementWithVertices
+}//DrawingElementWithVertices
 

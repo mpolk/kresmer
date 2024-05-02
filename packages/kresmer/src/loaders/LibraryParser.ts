@@ -7,10 +7,10 @@
 \**************************************************************************/
 
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import NetworkElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps, Functions } from "../DrawingElement/NetworkElementClass";
+import DrawingElementClass, { NetworkElementPropCategory, NetworkElementClassProp, NetworkElementClassProps, Functions } from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
-import {ComputedProps} from "../DrawingElement/NetworkElementClass";
+import {ComputedProps} from "../DrawingElement/DrawingElementClass";
 import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";
@@ -410,7 +410,7 @@ export default class LibraryParser {
     }//parseClassInheritance
 
 
-    private parseProps(node: Element, propsBaseClasses?: NetworkElementClass[], exceptProps?: string[])
+    private parseProps(node: Element, propsBaseClasses?: DrawingElementClass[], exceptProps?: string[])
     {
         const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown, subtype?: string}> = {
             "string": {propType: String, makeDefault: d => d}, 
@@ -544,7 +544,7 @@ export default class LibraryParser {
     }//parseProps
 
 
-    private parseComputedProps(node: Element|undefined, baseClasses: NetworkElementClass[]|undefined, except?: string[])
+    private parseComputedProps(node: Element|undefined, baseClasses: DrawingElementClass[]|undefined, except?: string[])
     {
         const computedProps: ComputedProps = {};
         baseClasses?.forEach(baseClass => {
@@ -579,7 +579,7 @@ export default class LibraryParser {
     }//parseComputedProps
 
 
-    private parseFunctions(node: Element|undefined, baseClasses: NetworkElementClass[]|undefined, except?: string[])
+    private parseFunctions(node: Element|undefined, baseClasses: DrawingElementClass[]|undefined, except?: string[])
     {
         const functions: Functions = {};
         baseClasses?.forEach(baseClass => {
@@ -615,7 +615,7 @@ export default class LibraryParser {
     }//parseFunctions
 
 
-    private parseCSS(css: string, baseClasses?: NetworkElementClass[])
+    private parseCSS(css: string, baseClasses?: DrawingElementClass[])
     {
         let ast: postcss.Root|undefined;
         try {

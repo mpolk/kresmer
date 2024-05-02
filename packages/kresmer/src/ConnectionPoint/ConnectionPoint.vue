@@ -10,7 +10,7 @@
 <script setup lang="ts">
     import { inject, onMounted, ref, watch, nextTick, computed, PropType, onBeforeUnmount } from 'vue';
     import Kresmer from '../Kresmer';
-    import NetworkElement from '../DrawingElement/NetworkElement';
+    import DrawingElement from '../DrawingElement/DrawingElement';
     import NetworkLink from '../NetworkLink/NetworkLink';
     import ConnectionPoint from './ConnectionPoint';
 
@@ -23,7 +23,7 @@
         proxy: {type: Object as PropType<ConnectionPoint>},
     });
 
-    const hostElement = inject(NetworkElement.ikHostElement)!;
+    const hostElement = inject(DrawingElement.ikHostElement)!;
     const hostIsLink = hostElement instanceof NetworkLink;
     const proxy = props.proxy ?? new ConnectionPoint(hostElement, props.name, props.dir);
     if (!props.proxy)

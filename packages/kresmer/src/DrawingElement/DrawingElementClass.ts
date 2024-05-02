@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- * Network Component Class - a generic network element class
+ * DrawingElement Class - a generic drawing element class
  * (the word "class" here means a Kresmer class, not a Typescript one)
  ***************************************************************************/
 
@@ -15,10 +15,10 @@ import { NetworkElementProps } from "../loaders/DrawingParser";
 import { toCamelCase } from "../Utils";
 
 /**
- * Network Component Class - a generic network element class
+ * DrawingElement Class - a generic drawing element class
  * (the word "class" here means a runtime class, not a Typescript one)
  */
-export default abstract class NetworkElementClass {
+export default abstract class DrawingElementClass {
     /**
      * @param name Class name
      * @param params Class creation parameters:
@@ -26,10 +26,10 @@ export default abstract class NetworkElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params?: {
-        baseClass?: NetworkElementClass,
-        styleBaseClasses?: NetworkElementClass[],
-        computedPropsBaseClasses?: NetworkElementClass[],
-        propsBaseClasses?: NetworkElementClass[],
+        baseClass?: DrawingElementClass,
+        styleBaseClasses?: DrawingElementClass[],
+        computedPropsBaseClasses?: DrawingElementClass[],
+        propsBaseClasses?: DrawingElementClass[],
         props?: NetworkElementClassProps,
         exceptProps?: string[],
         baseClassPropBindings?: NetworkElementProps,
@@ -86,13 +86,13 @@ export default abstract class NetworkElementClass {
     /** Class name */
     readonly name: string;
     /** Base class (for the element as a whole) */
-    readonly baseClass?: NetworkElementClass;
+    readonly baseClass?: DrawingElementClass;
     /** Base class prop values set from the "extends" clause */
     readonly baseClassPropBindings?: NetworkElementProps;
     /** A list of the base classes for this class CSS */
-    readonly styleBaseClasses?: NetworkElementClass[];
+    readonly styleBaseClasses?: DrawingElementClass[];
     /** A list of the base classes for this class props set */
-    readonly propsBaseClasses?: NetworkElementClass[];
+    readonly propsBaseClasses?: DrawingElementClass[];
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */

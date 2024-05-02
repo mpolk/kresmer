@@ -9,7 +9,7 @@
 <script lang="ts">
     import { computed, onBeforeMount, PropType, provide, onMounted, CSSProperties } from 'vue';
     import NetworkLink from './NetworkLink';
-    import NetworkElement from '../DrawingElement/NetworkElement';
+    import DrawingElement from '../DrawingElement/DrawingElement';
     import LinkVertexVue from './LinkVertex.vue';
     import LinkBundle from './LinkBundle';
     
@@ -33,7 +33,7 @@
     });
 
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(NetworkElement.ikHostElement, props.model);
+    provide(DrawingElement.ikHostElement, props.model);
 
     // eslint-disable-next-line vue/no-setup-props-destructure
     onBeforeMount(props.model.initVertices);

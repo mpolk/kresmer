@@ -9,7 +9,7 @@
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import LibraryParser, { DefsLibNode, ImportStatement, LibParams, StyleLibNode } from "./LibraryParser";
-import NetworkElementClass from "../DrawingElement/NetworkElementClass";
+import DrawingElementClass from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import { LibraryImportException } from "../KresmerException";
@@ -118,7 +118,7 @@ export default class LibraryLoader
      * @param classScope An element class to apply as a scope
      * @returns Modified AST
      */
-    public scopeStyles(ast: PostCSSRoot, classScope: NetworkElementClass|undefined, recurse: boolean)
+    public scopeStyles(ast: PostCSSRoot, classScope: DrawingElementClass|undefined, recurse: boolean)
     {
         const ast1 = ast.clone() as PostCSSRoot;
 
@@ -127,7 +127,7 @@ export default class LibraryLoader
             let firstScope = ".kresmer";
             if (classScope) {
                 firstScope += ` .${classScope.name}`;
-                const baseClasses: NetworkElementClass[] = [];
+                const baseClasses: DrawingElementClass[] = [];
                 if (classScope.baseClass) {
                     baseClasses.push(classScope.baseClass);
                 }//if
@@ -160,13 +160,13 @@ export default class LibraryLoader
         return ast1;
     }//scopeStyles
 
-    private makeBaseClassScopes(scopes: string[], prefix: string, baseClasses: NetworkElementClass[], recurse: boolean)
+    private makeBaseClassScopes(scopes: string[], prefix: string, baseClasses: DrawingElementClass[], recurse: boolean)
     {
         baseClasses.forEach(baseClass => {
             const baseScope = baseClass.usesEmbedding ? `${prefix} .${baseClass.name}` : prefix;
             scopes.push(baseScope);
             if (recurse) {
-                const grandBaseClasses: NetworkElementClass[] = [];
+                const grandBaseClasses: DrawingElementClass[] = [];
                 if (baseClass.baseClass) {
                     grandBaseClasses.push(baseClass.baseClass);
                 }//if

@@ -10,14 +10,14 @@
 import {v4 as uuidV4} from "uuid";
 import { InjectionKey } from "vue";
 import Kresmer from "../Kresmer";
-import NetworkElementClass from "./NetworkElementClass";
+import DrawingElementClass from "./DrawingElementClass";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import { EditorOperation } from "../UndoStack";
 import KresmerException from "../KresmerException";
 import { encodeHtmlEntities, indent, toKebabCase } from "../Utils";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 
-export default abstract class NetworkElement {
+export default abstract class DrawingElement {
     /**
      * Creates a new Network Element
      * @param kresmer The Kresmer instance this element belongs to
@@ -30,7 +30,7 @@ export default abstract class NetworkElement {
      */
      public constructor(
         kresmer: Kresmer,
-        _class: NetworkElementClass,
+        _class: DrawingElementClass,
         args?: {
             name?: string,
             dbID?: number|string|null,
@@ -40,7 +40,7 @@ export default abstract class NetworkElement {
         this.kresmer = kresmer;
         this._class = _class;
         this.props = args?.props ?? {};
-        this.id = NetworkElement.nextID++;
+        this.id = DrawingElement.nextID++;
         this._name = args?.name ? 
             this.assertNameUniqueness(args.name) : 
             `${this._class.name}-${uuidV4()}`;
@@ -49,11 +49,11 @@ export default abstract class NetworkElement {
 
     readonly kresmer: Kresmer;
     /** Element's class */
-    protected _class: NetworkElementClass;
+    protected _class: DrawingElementClass;
     /** Return the element's class */
     getClass() {return this._class}
     /** Change the element's class */
-    public changeClass(newClass: NetworkElementClass)
+    public changeClass(newClass: DrawingElementClass)
     {
         if (newClass.constructor !== this._class.constructor) {
             throw new IncompatibleElementClassException(this, newClass);
@@ -98,7 +98,7 @@ export default abstract class NetworkElement {
     }//set name
 
     /** A symbolic key for the component instance injection */
-    static readonly ikHostElement = Symbol() as InjectionKey<NetworkElement>;
+    static readonly ikHostElement = Symbol() as InjectionKey<DrawingElement>;
 
     /** Returns the connection with the given name */
     abstract getConnectionPoint(name: string|number): ConnectionPoint|undefined;
@@ -248,7 +248,7 @@ export interface NetworkElementData {
 
 export class UpdateElementOp extends EditorOperation {
 
-    constructor(private readonly element: NetworkElement, 
+    constructor(private readonly element: DrawingElement, 
                 private newData?: NetworkElementData, 
                 )
     {
@@ -292,7 +292,7 @@ export class DuplicateElementNameException extends KresmerException {
 }//DuplicateElementNameException
 
 export class IncompatibleElementClassException extends KresmerException {
-    constructor(element: NetworkElement, newClass: NetworkElementClass) {
+    constructor(element: DrawingElement, newClass: DrawingElementClass) {
         super(`Trying to change the element'class to the incompatible one (${newClass.name})!`,
             {source: `Element ${element.name} (${element.getClass().name})`});
     }//ctor

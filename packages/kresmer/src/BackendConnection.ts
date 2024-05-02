@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import KresmerException from "./KresmerException";
-import NetworkElement, {NetworkElementData} from "./DrawingElement/NetworkElement";
+import DrawingElement, {NetworkElementData} from "./DrawingElement/DrawingElement";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
 
@@ -56,7 +56,7 @@ export default class BackendConnection {
     }//testConnection
 
 
-    private async onNetworkElementLoaded(element: NetworkElement, type: "component"|"link")
+    private async onNetworkElementLoaded(element: DrawingElement, type: "component"|"link")
     {
         const headers = BackendConnection.makeHeaders(this.password);
         const data = JSON.stringify(element.getData());

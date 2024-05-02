@@ -16,12 +16,12 @@ import { EditorOperation } from "../UndoStack";
 import { Position } from "Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
-import NetworkElementWithVertices from "../DrawingElement/NetworkElementWithVertices";
+import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 
 /**
  * Network Link 
  */
-export default class NetworkLink extends withZOrder(NetworkElementWithVertices) {
+export default class NetworkLink extends withZOrder(DrawingElementWithVertices) {
     /**
      * 
      * @param _class The class this Link should belong 

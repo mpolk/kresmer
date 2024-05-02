@@ -11,8 +11,8 @@ import AdjustmentHandle from "./AdjustmentHandle";
 import { Position, Shift } from "../Transform/Transform";
 import MouseEventCapture from "../MouseEventCapture";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
-import { NetworkElementClassPropDef } from "../DrawingElement/NetworkElementClass";
-import { UpdateElementOp } from "../DrawingElement/NetworkElement";
+import { NetworkElementClassPropDef } from "../DrawingElement/DrawingElementClass";
+import { UpdateElementOp } from "../DrawingElement/DrawingElement";
 
 export default class AdjustmentRuler extends AdjustmentHandle {
 

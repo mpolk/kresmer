@@ -13,7 +13,7 @@ import DrawingAreaClass from "./DrawingAreaClass";
 import AreaVertex from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { VertexInitParams } from "../Vertex/Vertex";
-import NetworkElementWithVertices from "../DrawingElement/NetworkElementWithVertices";
+import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
@@ -23,7 +23,7 @@ import { MapWithZOrder, withZOrder } from "../ZOrdering";
  * Drawing Area 
  */
 
-export default class DrawingArea extends withZOrder(NetworkElementWithVertices) {
+export default class DrawingArea extends withZOrder(DrawingElementWithVertices) {
     /**
      * 
      * @param _class The class this Area should belong 

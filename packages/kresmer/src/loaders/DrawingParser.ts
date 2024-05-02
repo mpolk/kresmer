@@ -8,7 +8,7 @@
 
 import Kresmer from "../Kresmer";
 import { BackgroundImageData, BackgroundImageAlignment } from "../BackgroundImageData";
-import NetworkElementClass from "../DrawingElement/NetworkElementClass";
+import DrawingElementClass from "../DrawingElement/DrawingElementClass";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
@@ -323,7 +323,7 @@ export default class DrawingParser {
     }//parseProps
 
 
-    private _normalizeProps(rawProps: NetworkElementRawProps, node: Element, elementClass: NetworkElementClass): NetworkElementProps
+    private _normalizeProps(rawProps: NetworkElementRawProps, node: Element, elementClass: DrawingElementClass): NetworkElementProps
     {
         try {
             return DrawingParser.normalizeProps(rawProps, elementClass, this.kresmer);
@@ -338,7 +338,7 @@ export default class DrawingParser {
     }//_normalizeProps
 
 
-    static normalizeProps(rawProps: NetworkElementRawProps, elementClass: NetworkElementClass, kresmer: Kresmer): NetworkElementProps
+    static normalizeProps(rawProps: NetworkElementRawProps, elementClass: DrawingElementClass, kresmer: Kresmer): NetworkElementProps
     {
         const props: NetworkElementProps = {};
         if (Object.keys(rawProps).length  === 0) {

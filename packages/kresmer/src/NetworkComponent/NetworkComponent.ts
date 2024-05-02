@@ -8,7 +8,7 @@
 
 import { InjectionKey, nextTick } from "vue";
 import NetworkComponentClass from "./NetworkComponentClass";
-import NetworkElement, {NetworkElementData} from '../DrawingElement/NetworkElement';
+import DrawingElement, {NetworkElementData} from '../DrawingElement/DrawingElement';
 import Kresmer from "../Kresmer";
 import NetworkComponentController from "./NetworkComponentController";
 import { EditorOperation } from "../UndoStack";
@@ -19,7 +19,7 @@ import AdjustmentHandle from "../AdjustmentHandles/AdjustmentHandle";
 /**
  * Network Component - a generic network element instance 
  */
-export default class NetworkComponent extends NetworkElement {
+export default class NetworkComponent extends DrawingElement {
     /**
      * 
      * @param _class The class this component should belong 

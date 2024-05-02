@@ -9,15 +9,15 @@
 
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
-import { ComputedProps, Functions, NetworkElementClassProps } from "../DrawingElement/NetworkElementClass";
-import NetworkElementClass from "../DrawingElement/NetworkElementClass";
+import { ComputedProps, Functions, NetworkElementClassProps } from "../DrawingElement/DrawingElementClass";
+import DrawingElementClass from "../DrawingElement/DrawingElementClass";
 import { NetworkElementProps } from "../loaders/DrawingParser";
 
 /**
  * Network Component Class - a generic network element class
  * (the word "class" here means a runtime class, not a Typescript one)
  */
-export default class NetworkComponentClass extends NetworkElementClass {
+export default class NetworkComponentClass extends DrawingElementClass {
     /**
      * @param name Class name
      * @param params Class creation parameters:

@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import { nextTick } from "vue";
-import NetworkElementWithVertices from "DrawingElement/NetworkElementWithVertices";
+import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import { Position } from "../Transform/Transform";
 import { UnrealizableVertexAlignmentException } from "../KresmerException";
 import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
@@ -24,7 +24,7 @@ export default abstract class Vertex {
      * @param vertexNumber An index of the vertex within the parent element
      * @param initParams A set of the initialization params used in the delayed initialization
      */
-    constructor(public parentElement: NetworkElementWithVertices, vertexNumber: number, public initParams?: VertexInitParams) 
+    constructor(public parentElement: DrawingElementWithVertices, vertexNumber: number, public initParams?: VertexInitParams) 
     {
         this.ownConnectionPoint = new ConnectionPointProxy(this.parentElement, this.vertexNumber, 0);
         this._vertexNumber = vertexNumber;

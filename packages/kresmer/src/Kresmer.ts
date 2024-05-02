@@ -25,7 +25,7 @@ import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
 import KresmerException, { DuplicateAreaClassException, UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
-import NetworkElement, { UpdateElementOp } from "./DrawingElement/NetworkElement";
+import DrawingElement, { UpdateElementOp } from "./DrawingElement/DrawingElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
 import ConnectionPoint from "./ConnectionPoint/ConnectionPoint";
 import { MapWithZOrder } from "./ZOrdering";
@@ -33,7 +33,7 @@ import BackendConnection, { BackendConnectionTestResult } from "./BackendConnect
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexInitParams, LinkVertexSpec } from "./NetworkLink/LinkVertex";
 import Vertex, { VertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./Vertex/Vertex";
-import NetworkElementWithVertices from "./DrawingElement/NetworkElementWithVertices";
+import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVertices";
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
@@ -764,7 +764,7 @@ ${svg.outerHTML}
      * @param id An ID of the element to search for
      * @returns The element if found or "undefined" otherwise
      */
-    public getElementById(id: number): NetworkElement|undefined
+    public getElementById(id: number): DrawingElement|undefined
     {
         return this.networkComponents.get(id)?.component ?? this.links.get(id);
     }//getElementById
@@ -862,7 +862,7 @@ ${svg.outerHTML}
      * @param name A name of the element to search for
      * @returns The element if found or "undefined" otherwise
      */
-    public getElementByName(name: string): NetworkElement|undefined
+    public getElementByName(name: string): DrawingElement|undefined
     {
         if (name.startsWith("-"))
             return this.getLinkByName(name.slice(1));
@@ -904,9 +904,9 @@ ${svg.outerHTML}
 
 
     /** Currently selected network element */
-    private _selectedElement?: NetworkElement;
+    private _selectedElement?: DrawingElement;
     public get selectedElement() {return this._selectedElement}
-    public set selectedElement(newSelectedElement: NetworkElement | undefined) 
+    public set selectedElement(newSelectedElement: DrawingElement | undefined) 
     {
         if (newSelectedElement === this._selectedElement) {
             return;
@@ -984,7 +984,7 @@ ${svg.outerHTML}
     }//unapplyScreenCTM
 
     // For internal use: reacts on some network element rename refreshing corresponding map
-    public _onElementRename(element: NetworkElement, oldName: string)
+    public _onElementRename(element: DrawingElement, oldName: string)
     {
         if (element.name != oldName) {
             element._byNameIndex.delete(oldName);
@@ -1244,7 +1244,7 @@ ${svg.outerHTML}
             if (!vertex) {
                 const {parentID, vertexNumber} = vertexSpec as {parentID: number, vertexNumber: number};
                 const parentElement = this.getElementById(parentID);
-                if (parentElement instanceof NetworkElementWithVertices && vertexNumber in parentElement.vertices)
+                if (parentElement instanceof DrawingElementWithVertices && vertexNumber in parentElement.vertices)
                     vertex = parentElement.vertices[vertexNumber];
                 else
                     throw new UndefinedVertexException({message: `Attempt to align a non-existent vertex (${parentID},${vertexNumber})`});
@@ -1339,7 +1339,7 @@ ${svg.outerHTML}
          * @param newProps The new prop values
          * @param newName The new element name
          */
-        updateElement: (element: NetworkElement, 
+        updateElement: (element: DrawingElement, 
                         newProps: {name: string, value: unknown}[], 
                         newName: string|undefined,
                         newDbID: number|string|undefined,
@@ -1452,9 +1452,9 @@ export type NetworkElementClassType = typeof NetworkComponentClass | typeof Netw
 export type NetworkElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
 
 // Re-export child classes to API
-export {default as NetworkElement } from "./DrawingElement/NetworkElement";
-export {default as NetworkElementClass, NetworkElementPropCategory } from "./DrawingElement/NetworkElementClass";
-export type {NetworkElementData} from "./DrawingElement/NetworkElement";
+export {default as NetworkElement } from "./DrawingElement/DrawingElement";
+export {default as NetworkElementClass, NetworkElementPropCategory } from "./DrawingElement/DrawingElementClass";
+export type {NetworkElementData} from "./DrawingElement/DrawingElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
 export {default as NetworkComponentController, type TransformMode} from "./NetworkComponent/NetworkComponentController";
