@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *  An element of the sidebar for editing a single network element property
+ *  An element of the sidebar for editing a single drawing element property
 <*************************************************************************** -->
 
 <script lang="ts">

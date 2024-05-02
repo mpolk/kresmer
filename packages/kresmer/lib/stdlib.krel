@@ -6,7 +6,7 @@
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * ___________________________________________________________________________
  *                        The standard library
- * This library contains general graphics and network elements, such as ports,
+ * This library contains general graphics and drawing elements, such as ports,
  * links, device bodies etc. More specific network units (servers, 
  * vendor-specific equipment etc.) are included in other libraries.
 <*************************************************************************** -->

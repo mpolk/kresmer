@@ -903,7 +903,7 @@ ${svg.outerHTML}
     }//resetAllComponentMode
 
 
-    /** Currently selected network element */
+    /** Currently selected drawing element */
     private _selectedElement?: DrawingElement;
     public get selectedElement() {return this._selectedElement}
     public set selectedElement(newSelectedElement: DrawingElement | undefined) 
@@ -983,7 +983,7 @@ ${svg.outerHTML}
         };
     }//unapplyScreenCTM
 
-    // For internal use: reacts on some network element rename refreshing corresponding map
+    // For internal use: reacts on some drawing element rename refreshing corresponding map
     public _onElementRename(element: DrawingElement, oldName: string)
     {
         if (element.name != oldName) {
@@ -1334,7 +1334,7 @@ ${svg.outerHTML}
         },//addAreaVertex
     
         /**
-         * Update the specified network element props and name (if required)
+         * Update the specified drawing element props and name (if required)
          * @param element The element to update
          * @param newProps The new prop values
          * @param newName The new element name
@@ -1447,7 +1447,7 @@ export const enum StreetAddressFormat {
     BuildingFirst = "{building-number} {street}",
 }//StreetAddressFormat
 
-/** Class type of the generic network element */
+/** Class type of the generic drawing element */
 export type DrawingElementClassType = typeof NetworkComponentClass | typeof NetworkLinkClass;
 export type DrawingElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
 

@@ -107,7 +107,7 @@ export default abstract class DrawingElement {
     /** Update component's connection points position to the actual values */
     abstract updateConnectionPoints(): void;
 
-    /** A collection of links connected to this network element */
+    /** A collection of links connected to this drawing element */
     readonly connectedLinks = new Set<NetworkLink>();
     public registerConnectedLink(link: NetworkLink) { this.connectedLinks.add(link);}
     public unregisterConnectedLink(link: NetworkLink) { this.connectedLinks.delete(link);}
@@ -147,7 +147,7 @@ export default abstract class DrawingElement {
             default:
                 if (!Number.isInteger(newDbID)) {
                     throw new KresmerException(
-                        `DatabaseID of the network element must be string or integer, but got ${newDbID}!`);
+                        `DatabaseID of the drawing element must be string or integer, but got ${newDbID}!`);
                 }//if
         }//switch
 

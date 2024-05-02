@@ -13,7 +13,7 @@ export interface ZOrderable<ID> {
 
 export const Z_INDEX_INF = Number.MAX_SAFE_INTEGER;
 
-/** A specialized map for storing network elements */
+/** A specialized map for storing drawing elements */
 export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
     public add(item: T) {
         if (item.zIndex < 0) {

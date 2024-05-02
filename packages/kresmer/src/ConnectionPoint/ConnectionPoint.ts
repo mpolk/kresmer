@@ -18,7 +18,7 @@ import { NetworkComponent } from "../Kresmer";
 export default class ConnectionPoint {
     /**
      * Constructs a connection point
-     * @param hostElement The network element this connection point belongs to
+     * @param hostElement The drawing element this connection point belongs to
      * @param name The name of the connection point
      * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
      */

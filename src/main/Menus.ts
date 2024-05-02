@@ -95,7 +95,7 @@ export default class Menus {
                 { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
                 { type: 'separator' },
                 {
-                    label: 'Delete network element', accelerator: "delete", enabled: false,
+                    label: 'Delete drawing element', accelerator: "delete", enabled: false,
                     id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")
                 },
                 { type: 'separator' },

@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * ------------------------------------------------------------------------
- *        A loader for network element class libraries
+ *        A loader for drawing element class libraries
 \**************************************************************************/
 
 import Kresmer from "../Kresmer";
@@ -15,7 +15,7 @@ import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import { LibraryImportException } from "../KresmerException";
 import DrawingAreaClass from "../DrawingArea/DrawingAreaClass";
 
-/**A loader for network element class libraries */
+/**A loader for drawing element class libraries */
 export default class LibraryLoader
 {
     constructor(private kresmer: Kresmer, private depth = 0) {}
