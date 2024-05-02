@@ -8,16 +8,16 @@
 
 import { InjectionKey, nextTick } from "vue";
 import Kresmer from "../Kresmer";
-import { UndefinedAreaClassException, UndefinedLinkClassException } from "../KresmerException";
+import { UndefinedAreaClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
 import AreaVertex from "./AreaVertex";
+import LinkVertex from "../NetworkLink/LinkVertex";
 import { VertexInitParams } from "../Vertex/Vertex";
 import NetworkElementWithVertices from "../NetworkElement/NetworkElementWithVertices";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, withZOrder } from "../ZOrdering";
-import LinkVertex from "../NetworkLink/LinkVertex";
 
 /**
  * Drawing Area 
@@ -26,8 +26,8 @@ import LinkVertex from "../NetworkLink/LinkVertex";
 export default class DrawingArea extends withZOrder(NetworkElementWithVertices) {
     /**
      * 
-     * @param _class The class this Link should belong 
-     *               (either Link class instance or its name)
+     * @param _class The class this Area should belong 
+     *               (either Area class instance or its name)
      * @param args Instance creation arguments:
      *             props: translates to the vue-component props
      */
@@ -188,7 +188,7 @@ export class DeleteAreaOp extends EditorOperation {
                     vertex.detach();
                 }//if
             })//vertices
-        })//links
+        })//areas
 
         this.area.kresmer.deleteArea(this.area);
     }//exec

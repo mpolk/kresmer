@@ -6,11 +6,11 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, inject, computed, onUpdated, onBeforeMount, onMounted } from 'vue';
-    import Kresmer from '../Kresmer';
+    import { PropType, ref, computed, onUpdated, onBeforeMount, onMounted, toRef } from 'vue';
     import LinkVertex from './LinkVertex';
     import ConnectionPointVue from '../ConnectionPoint/ConnectionPoint.vue';
     import {Position} from '../Transform/Transform';
+    import useVertex from '../Vertex/useVertex';
 
     export default {
         components: {ConnectionPointVue},
@@ -23,7 +23,19 @@
     const props = defineProps({
         model: {type: Object as PropType<LinkVertex>, required: true},
         dataLinkBundleVertex: {type: String},
-    })
+    });
+
+    const {
+        isEditable,
+        draggingCursor,
+        onMouseDown,
+        onMouseUp,
+        onMouseMove,
+        onMouseLeave,
+        onRightClick,
+        onClick,
+        onDoubleClick
+     } = useVertex(toRef(props, "model"));
 
     onBeforeMount(() => props.model._updateSegmentVector());
     onMounted(() => {
@@ -35,7 +47,6 @@
             props.model.updateSegmentVector();
     });
 
-    const isEditable = inject(Kresmer.ikIsEditable);
     const circle = ref<SVGElement>()!;
     const padding = ref<SVGElement>()!;
 
@@ -148,60 +159,6 @@ class=${JSON.stringify(clazz)}`;
         const b2 = v2?.anchor.bundle;
         return b1 && b2 && b1.baseVertex === b2.baseVertex && Math.abs(b1.distance - b2.distance) <= linkNumberOffset*2.5;
     }//areAttachedNotSoNear
-
-    const draggingCursor =  computed(() => {
-        if (!props.model.parentElement.kresmer.isEditable)
-            return "cursor: default";
-        switch (props.model.dragConstraint) {
-            case "x": return "cursor: ew-resize";
-            case "y": return "cursor: ns-resize";
-            default: return "cursor: move";
-        }//switch
-    });
-
-    function onMouseDown(event: MouseEvent)
-    {
-        if (event.buttons === 1 && isEditable) {
-            event.preventDefault();
-            props.model.startDrag(event);
-        }//if
-    }//onMouseDown
-
-    function onMouseUp(event: MouseEvent)
-    {
-        isEditable && props.model.endDrag(event);
-    }//onMouseUp
-
-    function onMouseMove(event: MouseEvent)
-    {
-        if (event.buttons & 1 && isEditable) {
-            props.model.drag(event);
-        }//if
-    }//onMouseMove
-
-    function onMouseLeave(event: MouseEvent)
-    {
-        // event.relatedTarget !== circle.value &&
-        // event.relatedTarget !== padding.value &&
-        // isEditable &&
-        // props.model.endDrag(event) && 
-        // props.model.link.restoreZPosition();
-    }//onMouseLeave
-
-    function onRightClick(event: MouseEvent)
-    {
-        props.model.onRightClick(event);
-    }//onRightClick
-
-    function onClick()
-    {
-        props.model.parentElement.selectThis();
-    }//onClick
-
-    function onDoubleClick()
-    {
-        props.model.onDoubleClick();
-    }//onDoubleClick
     
 </script>
 

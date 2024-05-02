@@ -2,6 +2,7 @@ import { defineConfig } from "cypress";
 import tasks from "./cypress/tasks.config";
 
 export default defineConfig({
+    projectId: "Kresmer",
     component: {
         devServer: {
             framework: "vue",

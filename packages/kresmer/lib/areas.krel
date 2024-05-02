@@ -13,7 +13,9 @@
     <import library="stdlib" />
 
     <area-class name="Swamp">
-        
+        <style>
+            .area { fill: lightblue; stroke: blue; }
+        </style>
     </area-class>
 
 </kresmer-library>
