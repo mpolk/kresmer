@@ -33,3 +33,9 @@ xxx.kre
 
 # Exported files
 network-core.svg
+
+# Cypress stuff
+**/cypress/screenshots/**
+**/cypress/videos/**
+**/cypress/snapshots/**
+

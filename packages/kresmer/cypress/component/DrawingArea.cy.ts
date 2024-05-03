@@ -59,4 +59,19 @@ describe('DrawingArea object test', () => {
         cy.get(".vertex").should("not.be.visible");
     })
 
+    it("But then we click on the swamp surface...", () => {
+        cy.get("path.Swamp.area").click();
+    })
+    specify("...and the vertices become visible", () => {
+        cy.get(".vertex.area").should("be.visible");
+    })
+
+    it("Now we drag the right corner a little lower", () => {
+        kresmer.autoAlignVertices = false;
+        cy.get(".vertex.area").eq(1).as("v")
+            .trigger("mousedown", {buttons: 1})
+            .trigger("mousemove", {buttons: 1, clientX: 0, clientY: 100})
+            .trigger("mouseup", {buttons: 1, "force": true})
+            ;
+    })
 })//describe
