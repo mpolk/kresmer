@@ -32,14 +32,15 @@ describe('DrawingArea object test', () => {
     })
 
     let triangularSwamp: DrawingArea;
+    const vertexCoords = [
+      {x: 100, y: 100},
+      {x: 900, y: 100},
+      {x: 500, y: 900},
+    ];
     it("Then we create a triangular Swamp area", () => {
         triangularSwamp = new DrawingArea(kresmer, "Swamp", {
             name: "Triangular Swamp",
-            vertices: [
-                {pos: {x: 100, y: 100}},
-                {pos: {x: 900, y: 100}},
-                {pos: {x: 500, y: 900}},
-            ]
+            vertices: vertexCoords.map(pos => {return {pos}}),
         });
         
         kresmer.addArea(triangularSwamp);
@@ -66,12 +67,23 @@ describe('DrawingArea object test', () => {
         cy.get(".vertex.area").should("be.visible").and("have.length", 3);
     })
 
-    it("Now we drag the right corner a little lower", () => {
+    const [deltaX, deltaY] = [-50, 100];
+    const secondVertexNewCoords = { x: vertexCoords[1].x + deltaX, y: vertexCoords[1].y + deltaY}
+    it("Now we drag the right corner a little", () => {
         kresmer.autoAlignVertices = false;
-        cy.get(".vertex.area").eq(1).as("v")
-            .trigger("mousedown", {buttons: 1})
-            .trigger("mousemove", {buttons: 1, clientX: 0, clientY: 100})
-            .trigger("mouseup", {buttons: 1, "force": true})
+        cy.get(".vertex.area").eq(1)
+            .trigger("mousedown", {buttons: 1, clientX: 0, clientY: 0})
+            .trigger("mousemove", {buttons: 1, clientX: deltaX, clientY: deltaY})
+            .trigger("mouseup", {buttons: 1})
             ;
+    })
+
+    specify(`...and now its position is close to ${JSON.stringify(secondVertexNewCoords)}`, () => {
+        cy.get(".vertex.area").eq(1).as("v").should("have.attr", "cx").then(cx => {
+            expect(Number(cx)).to.be.approximately(secondVertexNewCoords.x, 10);
+        });
+        cy.get("@v").should("have.attr", "cy").then(cy => {
+            expect(Number(cy)).to.be.approximately(secondVertexNewCoords.y, 10);
+        });
     })
 })//describe
