@@ -62,8 +62,8 @@ describe('DrawingArea object test', () => {
     it("But then we click on the swamp surface...", () => {
         cy.get("path.Swamp.area").click();
     })
-    specify("...and the vertices become visible", () => {
-        cy.get(".vertex.area").should("be.visible");
+    specify("...and the vertices become visible and they are still 3", () => {
+        cy.get(".vertex.area").should("be.visible").and("have.length", 3);
     })
 
     it("Now we drag the right corner a little lower", () => {
