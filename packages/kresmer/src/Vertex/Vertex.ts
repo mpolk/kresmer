@@ -24,16 +24,13 @@ export default abstract class Vertex {
      * @param vertexNumber An index of the vertex within the parent element
      * @param initParams A set of the initialization params used in the delayed initialization
      */
-    constructor(public parentElement: DrawingElementWithVertices, vertexNumber: number, initParams?: VertexInitParams) 
+    constructor(public parentElement: DrawingElementWithVertices, vertexNumber: number, public initParams?: VertexInitParams) 
     {
-        initParams?.pos && (this.initParams = {pos: {...initParams.pos}});
         this.ownConnectionPoint = new ConnectionPointProxy(this.parentElement, this.vertexNumber, 0);
         this._vertexNumber = vertexNumber;
         this.ownConnectionPoint.name = String(vertexNumber);
         this._key = parentElement.nextVertexKey++;
     }//ctor
-
-    initParams?: VertexInitParams;
 
 
     /** Postponned part of the initialization delayed until all components are mounted.
