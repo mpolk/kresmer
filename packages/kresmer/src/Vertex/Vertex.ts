@@ -24,7 +24,7 @@ export default abstract class Vertex {
      * @param vertexNumber An index of the vertex within the parent element
      * @param initParams A set of the initialization params used in the delayed initialization
      */
-    constructor(public parentElement: DrawingElementWithVertices, vertexNumber: number, public initParams?: VertexInitParams) 
+    constructor(public parentElement: DrawingElementWithVertices, vertexNumber: number, protected initParams?: VertexInitParams) 
     {
         this.ownConnectionPoint = new ConnectionPointProxy(this.parentElement, this.vertexNumber, 0);
         this._vertexNumber = vertexNumber;

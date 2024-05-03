@@ -96,6 +96,22 @@ export default class LinkVertex extends Vertex {
         return this;
     }//init
 
+    get uninitializedConnectionTargetCPName()
+    {
+        return this.initParams?.cpData?.connectionPoint;
+    }//uninitializedConnectionTargetCPName
+
+    get uninitializedConnectionTargetHostName(): string|undefined
+    {
+        return this.initParams?.cpData?.cpHostElement;
+    }//uninitializedConnectionTargetHostName
+
+    set uninitializedConnectionTargetHostName(newTargetName: string)
+    {
+        if (this.initParams?.cpData)
+            this.initParams.cpData.cpHostElement = newTargetName;
+    }//uninitializedConnectionTargetHostName
+
     connect(connectionPoint: ConnectionPointProxy)
     {
         this._anchor.conn = connectionPoint;

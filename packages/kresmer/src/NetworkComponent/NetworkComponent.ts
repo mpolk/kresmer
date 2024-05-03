@@ -139,7 +139,7 @@ export default class NetworkComponent extends DrawingElement {
     restoreDisconnectedVertices(connectionPoint: ConnectionPoint)
     {
         for (const vertex of this.disconnectedVertices) {
-            if (vertex.initParams?.cpData?.connectionPoint == connectionPoint.name) {
+            if (vertex.uninitializedConnectionTargetCPName == connectionPoint.name) {
                 vertex.restore();
                 this.disconnectedVertices.delete(vertex);
             }//if
