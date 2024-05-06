@@ -41,9 +41,7 @@ export default abstract class DrawingElement {
         this._class = _class;
         this.props = args?.props ?? {};
         this.id = DrawingElement.nextID++;
-        this._name = args?.name ? 
-            this.assertNameUniqueness(args.name) : 
-            `${this._class.name}-${uuidV4()}`;
+        this._name = args?.name ? args.name : `${this._class.name}-${uuidV4()}`;
         this.dbID = (args?.dbID !== null) ? args?.dbID : undefined;
     }//ctor
 

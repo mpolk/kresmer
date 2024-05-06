@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-drawing.xsd"?>
+<kresmer-drawing name="drawing-merge-test" width="1500" height="1000"   background-color="#ffffff" >
+ 
+     <component class="BorderedKresmer">
+        <origin x="30" y="90"/>
+        <props>
+            <prop name="width">450</prop>
+            <prop name="height">50</prop>
+            <prop name="fill">lightgreen</prop>
+            <prop name="text">Ось такий от Кресмер... (але чомусь зелений, а не жовтий)</prop>
+        </props>
+    </component>
+
+    <component class="PatrioticKresmer" name="PatrioticKresmer">
+        <origin x="30" y="150"/>
+        <props>
+            <prop name="width">450</prop>
+            <prop name="height">50</prop>
+            <prop name="text">А це справжний Кресмер (named)</prop>
+            <prop name="font-size">24</prop>
+            <prop name="font-family">sans-serif</prop>
+        </props>
+    </component>
+
+    <component class="BorderedKresmer">
+        <origin x="50" y="290"/>
+        <transform>
+            <scale x="2" y="2"/>
+            <rotate angle="45" x="0" y="0"/>
+        </transform>
+        <props>
+            <prop name="width">200</prop>
+            <prop name="height">50</prop>
+            <prop name="text">Ще один Кресмер</prop>
+        </props>
+    </component>
+
+    <component class="Text">
+        <origin x="30" y="450"/>
+        <transform>
+            <rotate angle="-10" x="0" y="0"/>
+        </transform>
+        <content>А это просто текст, как на заборе</content>
+        <props>
+            <prop name="font-size">32</prop>
+            <prop name="color">darkgreen</prop>
+            <prop name="font-family">sans-serif</prop>
+        </props>
+    </component>
+
+    <component class="SilverKresmer">
+        <origin x="30" y="500"/>
+        <props>
+            <prop name="width">400</prop>
+            <prop name="height">50</prop>
+            <prop name="text">Silver Kresmer (anon)</prop>
+            <prop name="font-size">32</prop>
+        </props>
+    </component>
+
+</kresmer-drawing>
