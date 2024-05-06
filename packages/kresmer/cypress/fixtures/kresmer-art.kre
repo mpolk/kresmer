@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing name="kresmer-art">
-    <component class="BorderedKresmer">
+    <component class="BorderedKresmer" name="Bordered-1">
         <props>
             <prop name="width">450</prop>
             <prop name="height">50</prop>
