@@ -36,25 +36,25 @@
     </component>
 
     <component class="Text" name="Text on the fence">
-        <origin x="30" y="450" />
         <props>
             <prop name="font-size">32</prop>
             <prop name="color">darkgreen</prop>
             <prop name="font-family">sans-serif</prop>
         </props>
         <content>А это просто текст, как на заборе</content>
+        <origin x="30" y="450" />
         <transform>
             <rotate angle="-10" />
         </transform>
     </component>
 
     <component class="SilverKresmer" name="SilverKresmer">
-        <origin x="30" y="500" />
         <props>
             <prop name="width">400</prop>
             <prop name="height">50</prop>
             <prop name="text">Silver Kresmer</prop>
             <prop name="font-size">32</prop>
         </props>
+        <origin x="30" y="500" />
     </component>
 </kresmer-drawing>
