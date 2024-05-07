@@ -104,10 +104,13 @@ import { indent } from "../Utils";
     {
         let xml = `${indent(indentLevel)}<transform>\n`;
         if (this.scale.x !== 1 || this.scale.y !== 1) {
-            xml += `${indent(indentLevel+1)}<scale x="${this.scale.x}" y="${this.scale.y}"/>\n`
+            xml += `${indent(indentLevel+1)}<scale x="${this.scale.x}" y="${this.scale.y}"/>\n`;
         }//if
         if (this.rotation.angle) {
-            xml += `${indent(indentLevel+1)}<rotate angle="${this.rotation.angle}" x="${this.rotation.x}" y="${this.rotation.y}"/>\n`
+            if (this.rotation.x || this.rotation.y)
+                xml += `${indent(indentLevel+1)}<rotate angle="${this.rotation.angle}" x="${this.rotation.x}" y="${this.rotation.y}"/>\n`;
+            else
+            xml += `${indent(indentLevel+1)}<rotate angle="${this.rotation.angle}"/>\n`;
         }//if
         xml += `${indent(indentLevel)}</transform>`;
         return xml;

@@ -156,8 +156,9 @@ export default class DrawingParser {
             for (let i = 0; i < node.childNodes.length; i++) {
                 const child = node.childNodes[i];
                 if (child.nodeType === node.TEXT_NODE)
-                    content += child.textContent;
+                    content += child.textContent?.trim();
             }//for
+            content || (content = undefined);
         }//if
 
         const props = this._normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, componentClass);
