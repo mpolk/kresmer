@@ -11,7 +11,7 @@
         <origin x="30" y="90"/>
     </component>
 
-    <component class="PatrioticKresmer">
+    <component class="PatrioticKresmer" name="PatrioticKresmer">
         <props>
             <prop name="width">450</prop>
             <prop name="height">50</prop>
