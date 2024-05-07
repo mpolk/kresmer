@@ -369,7 +369,7 @@ export default class LinkVertex extends Vertex {
         MouseEventCapture.release();
 
         if (this.dragConstraint !== "bundle") {
-            const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
+            const elementsUnderCursor = document.elementsFromPoint(event.x ?? event.clientX, event.y ?? event.clientY);
             const stickToConnectionPoints = (this.isEndpoint && !event.ctrlKey) || (!this.isEndpoint && event.ctrlKey);
             const stickToBundles = !this.parentElement.isBundle;
 

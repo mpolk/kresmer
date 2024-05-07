@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *         Testing DrawingArea creation and basic functionality
+ *                   Testing drawing saving accuracy
  ***************************************************************************/
 
 import { diffAsXml } from "diff-js-xml";

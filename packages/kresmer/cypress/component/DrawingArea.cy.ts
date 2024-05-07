@@ -64,7 +64,7 @@ describe('DrawingArea object test', () => {
         cy.get("path.Swamp.area").click();
     })
     specify("...and the vertices become visible and they are still 3", () => {
-        cy.get(".vertex.area").should("be.visible").and("have.length", 3);
+        cy.get(".area.vertex").should("be.visible").and("have.length", 3);
     })
 
     const [deltaX, deltaY] = [-50, 100];
