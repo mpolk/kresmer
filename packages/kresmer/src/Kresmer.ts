@@ -922,7 +922,7 @@ ${svg.outerHTML}
     public deselectAllElements(except?: unknown)
     {
         [this.networkComponents, this.links, this.areas].forEach(map => map.forEach(element => {
-            if (element !== except) {
+            if (element !== except && element.isSelected) {
                 element.isSelected = false;
                 element.returnFromTop();
             }//if
