@@ -16,47 +16,103 @@ describe('Kresmer Art', () => {
         });
     });
 
-    it('Load a test drawing', () => {
+    it('Load a test drawing and turn the bundle dragging animation on', () => {
         cy.fixture("bundle.kre").then((dwgData) => {
             kresmer.loadDrawing(dwgData);
             kresmer.autoAlignVertices = false;
             kresmer.showGrid = true;
             kresmer.showRulers = true;
-            kresmer.animateLinkBundleDragging = false;
+            kresmer.animateLinkBundleDragging = true;
         })
     })
 
-    const [deltaX, deltaY] = [0, 50];
-    it("Drag the end of the link bundle a little lower", function() {
+    it("Select the bundle", () => {
         cy.get(".link-bundle line.padding").click();
+    })
+
+    const [deltaX, deltaY] = [0, 50];
+    it("Start to drag the end of the link bundle a little lower", function() {
         cy.get(".link-bundle .link.vertex").eq(1)
             .trigger("mousedown", {buttons: 1, clientX: 0, clientY: 0})
             .trigger("mousemove", {buttons: 1, clientX: deltaX, clientY: deltaY})
+            ;
+    })
+
+    specify("...and both the second and the third twisted-pair vertices still lie on the bundle", () => {
+        cy.get(".link-bundle .link.vertex").then(bundleVertices => {
+            cy.get(".link circle.vertex-connection-point").then(linkVertices => {
+                [0, 1].forEach(i => {checkVertexOnBundlePosition(linkVertices.eq(i), bundleVertices, true);});
+            })
+        })
+    })
+
+    it("...complete the dragging", function() {
+        cy.get(".link-bundle .link.vertex").eq(1)
             .trigger("mouseup", {buttons: 1, force: true})
             ;
     })
 
     specify("...and both the second and the third twisted-pair vertices still lie on the bundle", () => {
-        let bsX: number, bsY: number, beX: number, beY: number;
-        let v1x: number, v1y: number, v2x: number, v2y: number;
+        cy.get(".link-bundle .link.vertex").then(bundleVertices => {
+            cy.get(".link circle.vertex-connection-point").then(linkVertices => {
+                [0, 1].forEach(i => {checkVertexOnBundlePosition(linkVertices.eq(i), bundleVertices, true);});
+            })
+        })
+    })
 
-        cy.get(".link-bundle .link.vertex").eq(0).as("bundleStart").should("have.attr", "cx")
-            .then(cx => {bsX = Number(cx);});
-        cy.get("@bundleStart").should("have.attr", "cy").then(cy => {bsY = Number(cy);});
-        cy.get(".link-bundle .link.vertex").eq(1).as("bundleEnd").should("have.attr", "cx")
-            .then(cx => {beX = Number(cx);});
-        cy.get("@bundleEnd").should("have.attr", "cy").then(cy => {beY = Number(cy);});
+    it('Turn the bundle dragging animation off', () => {
+        kresmer.animateLinkBundleDragging = false;
+    })
 
-        cy.get(".link circle.vertex-connection-point").eq(0).as("v1").should("have.attr", "cx")
-            .then(cx => {v1x = Number(cx);});
-        cy.get("@v1").should("have.attr", "cy").then(cy => {v1y = Number(cy);});
-        cy.get(".link circle.vertex-connection-point").eq(1).as("v2").should("have.attr", "cx")
-            .then(cx => {v2x = Number(cx);});
-        cy.get("@v2").should("have.attr", "cy").then(cy => {v2y = Number(cy);});
-        
-        cy.then(() => {
-            expect(v1y).to.be.closeTo(bsY + (beY - bsY)/(beX - bsX)*(v1x - bsX), 1);
-            expect(v2y).to.be.closeTo(bsY + (beY - bsY)/(beX - bsX)*(v2x - bsX), 1);
+    it("Start to drag the start of the link bundle a little lower", function() {
+        cy.get(".link-bundle .link.vertex").eq(0)
+            .trigger("mousedown", {buttons: 1, clientX: 0, clientY: 0})
+            .trigger("mousemove", {buttons: 1, clientX: deltaX, clientY: deltaY})
+            ;
+    })
+
+    specify("...and now the second and the third twisted-pair vertices don't lie on the bundle yet", () => {
+        cy.get(".link-bundle .link.vertex").then(bundleVertices => {
+            cy.get(".link circle.vertex-connection-point").then(linkVertices => {
+                [0, 1].forEach(i => {checkVertexOnBundlePosition(linkVertices.eq(i), bundleVertices, false);});
+            })
+        })
+    })
+
+    it("...complete the dragging", function() {
+        cy.get(".link-bundle .link.vertex").eq(0)
+            .trigger("mouseup", {buttons: 1, force: true})
+            ;
+    })
+
+    specify("...and now they do lie", () => {
+        cy.get(".link-bundle .link.vertex").then(bundleVertices => {
+            cy.get(".link circle.vertex-connection-point").then(linkVertices => {
+                [0, 1].forEach(i => {checkVertexOnBundlePosition(linkVertices.eq(i), bundleVertices, true);});
+            })
         })
     })
 });
+
+
+function checkVertexOnBundlePosition(vertex: JQuery<HTMLElement>, bundleVertices: JQuery<HTMLElement>, shouldBelong: boolean)
+{
+    let bsX: number, bsY: number, beX: number, beY: number;
+    let vx: number, vy: number;
+
+    cy.wrap(bundleVertices).eq(0).should("have.attr", "cx").then(cx => {bsX = Number(cx);});
+    cy.wrap(bundleVertices).eq(0).should("have.attr", "cy").then(cy => {bsY = Number(cy);});
+    cy.wrap(bundleVertices).eq(1).should("have.attr", "cx").then(cx => {beX = Number(cx);});
+    cy.wrap(bundleVertices).eq(1).should("have.attr", "cy").then(cy => {beY = Number(cy);});
+
+    cy.wrap(vertex).should("have.attr", "cx").then(cx => {vx = Number(cx);});
+    cy.wrap(vertex).should("have.attr", "cy").then(cy => {vy = Number(cy);});
+
+    cy.then(() => {
+        const expectedY = bsY + (beY - bsY)/(beX - bsX)*(vx - bsX);
+        if (shouldBelong)
+            expect(vy).to.be.closeTo(expectedY, 1);
+        else
+            expect(vy).to.be.not.closeTo(expectedY, 1);
+    });
+}//checkVertexOnBundlePosition
