@@ -6,7 +6,7 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, computed, onUpdated, onBeforeMount, onMounted, toRef, watch } from 'vue';
+    import { PropType, computed, onUpdated, onBeforeMount, onMounted, toRef } from 'vue';
     import LinkVertex from './LinkVertex';
     import {Position} from '../Transform/Transform';
     import useVertex from '../Vertex/useVertex';
@@ -25,16 +25,11 @@
         bundleVertexDataAttr: {type: String},
     });
 
-
+    const base = useVertex(toRef(props, "model"));
     const {
-        padding,
-        onMouseDown,
-        onMouseUp,
-        onMouseMove,
-        onMouseLeave,
-        onRightClick,
-        onDoubleClick
-    } = useVertex(toRef(props, "model"));
+        padding, circle, 
+        onMouseDown, onMouseUp, onMouseMove, onMouseLeave, onRightClick, onDoubleClick,
+    } = base;
 
     onBeforeMount(() => props.model._updateSegmentVector());
     onMounted(() => {
@@ -42,13 +37,15 @@
         props.model._setMouseCaptureTarget(padding.value!);
     });
     onUpdated(trackMoving);
-    watch(props.model._draggingTracker, trackMoving);
 
     function trackMoving()
     {
         if ((!props.model.isDragged || props.model.parentElement.kresmer.animateLinkBundleDragging) && props.model.parentElement.isBundle)
             props.model.updateSegmentVector();
     }//trackMoving
+
+    const baseVertexAttrs = computed(() => {return {'data-link-bundle-vertex': props.bundleVertexDataAttr}});
+    const baseVertexClasses = computed(() => {return {link: true, connected: props.model.isConnected}});
 
     type LinkNumber = {
         number: number,
@@ -174,9 +171,11 @@ class=${JSON.stringify(clazz)}`;
         @contextmenu="onRightClick($event)"
         @dblclick="onDoubleClick()"
         />
-    <BaseVertexVue :model="model" :has-connection-point="!model.parentElement.isBundle" 
-                   :additional-classes="{link: true, connected: model.isConnected}"
-                   :additional-attrs="{'data-link-bundle-vertex': props.bundleVertexDataAttr}"
+    <BaseVertexVue v-if="true" :model="model" :base="base"
+                   :has-connection-point="!model.parentElement.isBundle" 
+                   :additional-classes="baseVertexClasses"
+                   :additional-attrs="baseVertexAttrs"
+                   @updated="trackMoving"
                    >
         <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
             {{ linkNumber.number }}

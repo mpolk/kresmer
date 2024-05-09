@@ -6,7 +6,7 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, toRef } from 'vue';
+    import { PropType, onUpdated, toRef } from 'vue';
     import Vertex from './Vertex';
     import ConnectionPointVue from '../ConnectionPoint/ConnectionPoint.vue';
     import useVertex from '../Vertex/useVertex';
@@ -22,6 +22,7 @@
         hasConnectionPoint: {type: Boolean, default: true},
         additionalClasses: {type: Object as PropType<Record<string, boolean>>},
         additionalAttrs: {type: Object as PropType<Record<string, string|undefined>>},
+        base: {type: Object as PropType<ReturnType<typeof useVertex>>},
     });
 
     const {
@@ -36,7 +37,15 @@
         onRightClick,
         onClick,
         onDoubleClick
-     } = useVertex(toRef(props, "model"));
+     } = props.base ?? useVertex(toRef(props, "model"));
+
+     const emit = defineEmits<{
+        (event: "updated"): void
+     }>();
+
+     onUpdated(() => {
+        emit("updated");
+    });
 </script>
 
 <template>
