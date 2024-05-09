@@ -219,7 +219,8 @@ export default class LinkVertex extends Vertex {
         this.prevNeighbour?._updateSegmentVector();
     }//updateSegmentVector
 
-    updateIndicator = reactive({value: 0});
+    /** A trigger for the vertex dragging tracking (for internal use as Vue reactivity problem workaround) */
+    _draggingTracker = reactive({value: 0});
     
     /** A collection of the vertices attached to the adjacent segment*/
     attachedVertices = new Set<LinkVertex>();
@@ -355,7 +356,7 @@ export default class LinkVertex extends Vertex {
         }//switch
         this.notifyOnVertexMove();
         this.ownConnectionPoint.updatePos();
-        this.updateIndicator.value++;
+        this._draggingTracker.value++;
         return true;
     }//drag
 
@@ -426,7 +427,7 @@ export default class LinkVertex extends Vertex {
         this.ownConnectionPoint.updatePos();
         if (this.parentElement.kresmer.autoAlignVertices)
             this.performPostMoveActions(postActionMode);
-        this.updateIndicator.value++;
+        this._draggingTracker.value++;
         return true;
     }//endDrag
 

@@ -41,14 +41,14 @@
         props.model._updateSegmentVector();
         props.model._setMouseCaptureTarget(padding.value!);
     });
-    onUpdated(() => {
+    onUpdated(trackMoving);
+    watch(props.model._draggingTracker, trackMoving);
+
+    function trackMoving()
+    {
         if ((!props.model.isDragged || props.model.parentElement.kresmer.animateLinkBundleDragging) && props.model.parentElement.isBundle)
             props.model.updateSegmentVector();
-    });
-    watch(props.model.updateIndicator, () => {
-        if ((!props.model.isDragged || props.model.parentElement.kresmer.animateLinkBundleDragging) && props.model.parentElement.isBundle)
-            props.model.updateSegmentVector();
-    })
+    }//trackMoving
 
     type LinkNumber = {
         number: number,
