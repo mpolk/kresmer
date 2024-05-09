@@ -6,7 +6,7 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
-import { nextTick } from "vue";
+import { nextTick, reactive } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";
@@ -218,6 +218,8 @@ export default class LinkVertex extends Vertex {
         this._updateSegmentVector();
         this.prevNeighbour?._updateSegmentVector();
     }//updateSegmentVector
+
+    updateIndicator = reactive({value: 0});
     
     /** A collection of the vertices attached to the adjacent segment*/
     attachedVertices = new Set<LinkVertex>();
@@ -353,6 +355,7 @@ export default class LinkVertex extends Vertex {
         }//switch
         this.notifyOnVertexMove();
         this.ownConnectionPoint.updatePos();
+        this.updateIndicator.value++;
         return true;
     }//drag
 
@@ -423,6 +426,7 @@ export default class LinkVertex extends Vertex {
         this.ownConnectionPoint.updatePos();
         if (this.parentElement.kresmer.autoAlignVertices)
             this.performPostMoveActions(postActionMode);
+        this.updateIndicator.value++;
         return true;
     }//endDrag
 

@@ -6,7 +6,7 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, computed, onUpdated, onBeforeMount, onMounted, toRef } from 'vue';
+    import { PropType, computed, onUpdated, onBeforeMount, onMounted, toRef, watch } from 'vue';
     import LinkVertex from './LinkVertex';
     import {Position} from '../Transform/Transform';
     import useVertex from '../Vertex/useVertex';
@@ -24,6 +24,7 @@
         model: {type: Object as PropType<LinkVertex>, required: true},
         bundleVertexDataAttr: {type: String},
     });
+
 
     const {
         padding,
@@ -44,6 +45,10 @@
         if ((!props.model.isDragged || props.model.parentElement.kresmer.animateLinkBundleDragging) && props.model.parentElement.isBundle)
             props.model.updateSegmentVector();
     });
+    watch(props.model.updateIndicator, () => {
+        if ((!props.model.isDragged || props.model.parentElement.kresmer.animateLinkBundleDragging) && props.model.parentElement.isBundle)
+            props.model.updateSegmentVector();
+    })
 
     type LinkNumber = {
         number: number,
