@@ -49,8 +49,8 @@ describe('DrawingArea object test', () => {
     specify("...and now we have one triangular swamp", () => {
         expect(kresmer.getAreaByName("Triangular Swamp")).to.be.not.undefined;
     })
-    specify("...and it's light-blue with a blue border", () => {
-        cy.get("path.Swamp.area").should("have.css", "fill").and("be.colored", "lightblue");
+    specify("...and it's painted with a Swamp pattern and has a blue border", () => {
+        cy.get("path.Swamp.area").should("have.css", "fill").then(fill => {expect(fill).match(/kre:std:Swamp/);});
         cy.get("path.Swamp.area").should("have.css", "stroke").and("be.colored", "blue");
     })
     specify("...and naturally a triangular swamp has exactly 3 vertices", () => {
@@ -71,11 +71,8 @@ describe('DrawingArea object test', () => {
     const secondVertexNewCoords = { x: vertexCoords[1].x + deltaX, y: vertexCoords[1].y + deltaY}
     it("Now we drag the right corner a little", () => {
         kresmer.autoAlignVertices = false;
-        cy.get(".vertex.area").eq(1)
-            .trigger("mousedown", {buttons: 1, clientX: 0, clientY: 0})
-            .trigger("mousemove", {buttons: 1, clientX: deltaX, clientY: deltaY})
-            .trigger("mouseup", {buttons: 1})
-            ;
+        
+        cy.get(".vertex.area").eq(1).drag(deltaX, deltaY);
     })
 
     specify(`...and now its position is close to ${JSON.stringify(secondVertexNewCoords)}`, () => {

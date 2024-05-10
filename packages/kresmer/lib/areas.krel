@@ -31,13 +31,29 @@
         </style>
     </area-class>
 
+    <defs>
+        <pattern id="kre:std:Swamp" patternUnits="userSpaceOnUse" width="20" height="20" viewBox="0 0 20 20" >
+            <rect x="0" y="0" width="100%" height="100%" fill="lightcyan"/>
+            <!-- <circle cx="0" cy="0" r="1" fill="red"/> -->
+            <line class="strokes" x1="8" y1="10" x2="13" y2="10"/>
+            <line class="strokes" x1="13" y1="15" x2="18" y2="15"/>
+            <line class="strokes" x1="5" y1="5" x2="10" y2="5"/>
+            <line class="strokes" x1="0" y1="7" x2="2" y2="7"/>
+            <line class="strokes" x1="17" y1="7" x2="20" y2="7"/>
+            <line class="strokes" x1="1" y1="17" x2="6" y2="17"/>
+            <line class="strokes" x1="11" y1="1" x2="16" y2="1"/>
+        </pattern>
+    </defs>
+    <style>
+        #kre\:std\:Swamp .strokes {stroke: blue; stroke-width: 1}
+    </style>
 
     <area-class name="Swamp">
         <extends base="_abstract-area"></extends>
         <style>
             .area {
                 --border-color: blue; --highlighted-border-color: darkblue; 
-                fill: lightblue; 
+                fill: url(#kre:std:Swamp); 
                 stroke: var(--border-color); 
             }
             .area.selected { 

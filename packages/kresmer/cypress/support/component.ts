@@ -16,6 +16,7 @@
 import './commands'
 import * as CypressVue from 'cypress/vue'
 import Kresmer from "../../src/Kresmer";
+import { wrap } from 'module';
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.
@@ -25,6 +26,9 @@ declare global {
     namespace Cypress {
         interface Chainable {
             mount: (kresmer?: Kresmer) => Chainable<Kresmer>,
+            drag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
+            startDrag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
+            endDrag: () => Chainable<JQuery<HTMLElement>>,
         }
     }
     // let $kresmer: Kresmer;
@@ -32,10 +36,31 @@ declare global {
 
 export let $kresmer: Kresmer;
 
+// Mounting tested Kresmer component
 Cypress.Commands.add('mount', (kresmer) => {
     $kresmer = kresmer ?? new Kresmer("[data-cy-root]", {});
     return CypressVue.mount($kresmer).task("loadLibraries").then(libs => {
         $kresmer.loadLibraries(libs);
         return $kresmer;
     });
+});
+
+// Dragging some HTML element
+Cypress.Commands.add('drag', {prevSubject: true}, function(elem, deltaX, deltaY) {
+    return cy.wrap(elem).startDrag(deltaX, deltaY).endDrag();
+});
+Cypress.Commands.add('startDrag', {prevSubject: true}, function(elem, deltaX, deltaY) {
+    const wrappedElem = cy.wrap(elem);
+    wrappedElem
+        .trigger("mousedown", {buttons: 1, clientX: 0, clientY: 0})
+        .trigger("mousemove", {buttons: 1, clientX: deltaX, clientY: deltaY})
+        ;
+    return wrappedElem;
+});
+Cypress.Commands.add('endDrag', {prevSubject: true}, function(elem) {
+    const wrappedElem = cy.wrap(elem);
+    wrappedElem
+        .trigger("mouseup", {buttons: 1})
+        ;
+    return wrappedElem;
 });

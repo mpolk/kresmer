@@ -32,10 +32,7 @@ describe('Kresmer Art', () => {
 
     const [deltaX, deltaY] = [0, 50];
     it("Start to drag the end of the link bundle a little lower", function() {
-        cy.get(".link-bundle .link.vertex").eq(1)
-            .trigger("mousedown", {buttons: 1, clientX: 0, clientY: 0})
-            .trigger("mousemove", {buttons: 1, clientX: deltaX, clientY: deltaY})
-            ;
+        cy.get(".link-bundle .link.vertex").eq(1).startDrag(deltaX, deltaY);
     })
 
     specify("...and both the second and the third twisted-pair vertices still lie on the bundle", () => {
@@ -47,9 +44,7 @@ describe('Kresmer Art', () => {
     })
 
     it("...complete the dragging", function() {
-        cy.get(".link-bundle .link.vertex").eq(1)
-            .trigger("mouseup", {buttons: 1, force: true})
-            ;
+        cy.get(".link-bundle .link.vertex").eq(1).endDrag();
     })
 
     specify("...and both the second and the third twisted-pair vertices still lie on the bundle", () => {
@@ -65,10 +60,7 @@ describe('Kresmer Art', () => {
     })
 
     it("Start to drag the start of the link bundle a little lower", function() {
-        cy.get(".link-bundle .link.vertex").eq(0)
-            .trigger("mousedown", {buttons: 1, clientX: 0, clientY: 0})
-            .trigger("mousemove", {buttons: 1, clientX: deltaX, clientY: deltaY})
-            ;
+        cy.get(".link-bundle .link.vertex").eq(0).startDrag(deltaX, deltaY);
     })
 
     specify("...and now the second and the third twisted-pair vertices don't lie on the bundle yet", () => {
@@ -80,9 +72,7 @@ describe('Kresmer Art', () => {
     })
 
     it("...complete the dragging", function() {
-        cy.get(".link-bundle .link.vertex").eq(0)
-            .trigger("mouseup", {buttons: 1, force: true})
-            ;
+        cy.get(".link-bundle .link.vertex").eq(0).endDrag();
     })
 
     specify("...and now they do lie", () => {
