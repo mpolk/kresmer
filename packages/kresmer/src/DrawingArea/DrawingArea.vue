@@ -63,12 +63,30 @@
 
     const path = computed(() => {
         const chunks: string[] = [];
-        let prefix = "M";
-        props.model.vertices.forEach(v => {
-            chunks.push(`${prefix}${v.coords.x},${v.coords.y}`)
-            prefix = "L";
-        });
-        chunks.push("Z");
+        chunks.push(`M${props.model.vertices[0].coords.x},${props.model.vertices[0].coords.y}`);
+
+        const n = props.model.vertices.length;
+        for (let i = 1; i <= n; i++) {
+            const v = props.model.vertices[i%n];
+            const i0 = i > 0 ? i-1 : n;
+            const v0 = props.model.vertices[i0];
+            const v1 = props.model.vertices[(i+1)%n];
+            switch(v.vertexType) {
+                case "L":
+                    chunks.push(`L${v.coords.x},${v.coords.y}`);
+                    break;
+                case "Q":
+                    switch (v0.vertexType) {
+                        case "L":
+                            chunks.push(`Q${v.coords.x},${v.coords.y} ${v1.coords.x},${v1.coords.y}`);
+                            break;
+                        case "Q":
+                            chunks.push(`T${v1.coords.x},${v1.coords.y}`);
+                            break;
+                    }//switch
+                    break;
+            }//switch
+        }//for
         return chunks.join(" ");
     })//path
 
@@ -77,7 +95,7 @@
     function segMarkPathData(i: number)
     {
         const p1 = props.model.vertices[i].coords, p2 = props.model.vertices[(i+1)%props.model.vertices.length].coords;
-        return (p2.x < p1.x) ? `M${p2.x},${p2.y} L${p1.x},${p1.y}` : `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
+        return `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
     }//segMarkPathData
 </script>
 

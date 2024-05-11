@@ -355,7 +355,7 @@ export default abstract class Vertex {
 
 export type VertexInitParams = {
     pos?: Position
-} | Record<string, never>;
+}
 
 /** Vertex position holder. 
  * The base class is nothing more than a simple position, but its descendants may implement smarter positioning logic. 

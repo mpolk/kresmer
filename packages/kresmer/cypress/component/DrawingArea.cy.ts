@@ -31,14 +31,13 @@ describe('DrawingArea object test', () => {
         expect(kresmer.getAreaByName("Triangular Swamp")).to.be.undefined;
     })
 
-    let triangularSwamp: DrawingArea;
     const vertexCoords = [
       {x: 100, y: 100},
       {x: 900, y: 100},
       {x: 500, y: 900},
     ];
     it("Then we create a triangular Swamp area", () => {
-        triangularSwamp = new DrawingArea(kresmer, "Swamp", {
+        const triangularSwamp = new DrawingArea(kresmer, "Swamp", {
             name: "Triangular Swamp",
             vertices: vertexCoords.map(pos => {return {pos}}),
         });
@@ -46,8 +45,10 @@ describe('DrawingArea object test', () => {
         kresmer.addArea(triangularSwamp);
     })//it
 
+    let swamp: DrawingArea;
     specify("...and now we have one triangular swamp", () => {
-        expect(kresmer.getAreaByName("Triangular Swamp")).to.be.not.undefined;
+        swamp = kresmer.getAreaByName("Triangular Swamp")!;
+        expect(swamp).to.be.not.undefined;
     })
     specify("...and it's painted with a Swamp pattern and has a blue border", () => {
         cy.get("path.Swamp.area").should("have.css", "fill").then(fill => {expect(fill).match(/kre:std:Swamp/);});
@@ -83,4 +84,22 @@ describe('DrawingArea object test', () => {
             expect(Number(cy)).to.be.approximately(secondVertexNewCoords.y, 10);
         });
     })
+
+    it("Add one more vertex", () => {
+        swamp.addVertex(1, {x: 800, y: 800});
+    })
+    specify("...and now the triangular swamp is actually quadrangular and has 4 vertices", () => {
+        cy.get(".area.vertex").should("have.length", 4);
+    })
+
+    it("Give the second vertex a Q-type", () => {
+        swamp.vertices[1].vertexType = "Q";
+        cy.debug();
+    })
+
+    it("Give the third vertex a Q-type", () => {
+        swamp.vertices[2].vertexType = "Q";
+        cy.debug();
+    })
+
 })//describe

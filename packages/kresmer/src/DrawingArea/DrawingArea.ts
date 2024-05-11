@@ -10,9 +10,8 @@ import { InjectionKey, nextTick } from "vue";
 import Kresmer from "../Kresmer";
 import { UndefinedAreaClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
-import AreaVertex from "./AreaVertex";
+import AreaVertex, { AreaVertexInitParams } from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
-import { VertexInitParams } from "../Vertex/Vertex";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
@@ -38,7 +37,7 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
             name?: string,
             dbID?: number|string|null,
             props?: Record<string, unknown>,
-            vertices?: VertexInitParams[],
+            vertices?: AreaVertexInitParams[],
         }
     ) {
         const clazz = _class instanceof DrawingAreaClass ? _class : DrawingAreaClass.getClass(_class);

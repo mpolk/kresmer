@@ -7,10 +7,26 @@
  ***************************************************************************/
 
 import Vertex from "../Vertex/Vertex";
+import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
+import { VertexInitParams } from "../Vertex/Vertex";
 
 /** Drawing Area Vertex */
 
 export default class AreaVertex extends Vertex {
+
+    /**
+     * Constructs a new vertex
+     * @param parentElement The element this vertex belongs to
+     * @param vertexNumber An index of the vertex within the parent element
+     * @param initParams A set of the initialization params used in the delayed initialization
+     */
+    constructor(parentElement: DrawingElementWithVertices, vertexNumber: number, initParams?: AreaVertexInitParams) 
+    {
+        super(parentElement, vertexNumber, initParams);
+        this.vertexType = initParams?.type ?? "L";
+    }//ctor
+
+    vertexType: AreaVertexType;
 
     override init() {return super.init() as AreaVertex}
 
@@ -34,3 +50,6 @@ export default class AreaVertex extends Vertex {
         this.parentElement.kresmer.emit("area-vertex-right-click", this, event);
     }//onRightClick
 }//AreaVertex
+
+export type AreaVertexType = "L" | "Q";
+export type AreaVertexInitParams = VertexInitParams & {type?: AreaVertexType};

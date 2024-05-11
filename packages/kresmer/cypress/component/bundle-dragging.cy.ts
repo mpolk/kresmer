@@ -82,7 +82,7 @@ describe('Kresmer Art', () => {
             })
         })
     })
-});
+})//describe
 
 
 function checkVertexOnBundlePosition(vertex: JQuery<HTMLElement>, bundleVertices: JQuery<HTMLElement>, shouldBelong: boolean)
