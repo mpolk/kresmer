@@ -17,6 +17,8 @@ describe('DrawingArea object test', () => {
     before(() => {
         cy.mount().then((_kresmer) => {
             kresmer = _kresmer;
+            kresmer.showGrid = true;
+            kresmer.showRulers = true;
         });
     })//before
 
@@ -93,13 +95,7 @@ describe('DrawingArea object test', () => {
     })
 
     it("Give the second vertex a Q-type", () => {
-        swamp.vertices[1].vertexType = "Q";
-        cy.debug();
-    })
-
-    it("Give the third vertex a Q-type", () => {
-        swamp.vertices[2].vertexType = "Q";
-        cy.debug();
+        swamp.vertices[1].geometry = {type: "Q", cp: {x: 500, y: 50}};
     })
 
 })//describe
