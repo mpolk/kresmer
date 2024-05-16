@@ -6,7 +6,7 @@
  *         Testing DrawingArea creation and basic functionality
  ***************************************************************************/
 
-import Kresmer from "../../src/Kresmer";
+import Kresmer, { Position } from "../../src/Kresmer";
 import DrawingArea from "../../src/DrawingArea/DrawingArea";
 // import DrawingAreaClass from "../../src/DrawingArea/DrawingAreaClass";
 import chaiColors from 'chai-colors';
@@ -71,14 +71,14 @@ describe('DrawingArea object test', () => {
     })
 
     const [deltaX, deltaY] = [-50, 100];
-    const secondVertexNewCoords = { x: vertexCoords[1].x + deltaX, y: vertexCoords[1].y + deltaY}
-    it("Now we drag the right corner a little", () => {
+    const secondVertexNewCoords = {x: vertexCoords[1].x + deltaX, y: vertexCoords[1].y + deltaY}
+    it(`Now we drag the right corner from ${JSON.stringify(vertexCoords[1])} by (${deltaX},${deltaY})`, () => {
         kresmer.autoAlignVertices = false;
         
         cy.get(".vertex.area").eq(1).drag(deltaX, deltaY);
     })
 
-    specify(`...and now its position is close to ${JSON.stringify(secondVertexNewCoords)}`, () => {
+    specify(`...and now its position is somewhere near to ${JSON.stringify(secondVertexNewCoords)}`, () => {
         cy.get(".vertex.area").eq(1).as("v").should("have.attr", "cx").then(cx => {
             expect(Number(cx)).to.be.approximately(secondVertexNewCoords.x, 10);
         });
@@ -94,8 +94,27 @@ describe('DrawingArea object test', () => {
         cy.get(".area.vertex").should("have.length", 4);
     })
 
+    const p = {x: 500, y: 120};
+    function isInTheSwamp(p: Position)
+    {
+        return cy.get("svg.kresmer").then(rootSvg => {
+            const CTM = (rootSvg[0] as unknown as SVGSVGElement).getScreenCTM()!;
+            const x = p.x * CTM.a + CTM.e;
+            const y = p.y * CTM.d + CTM.f;
+            return document.elementsFromPoint(x, y).some(el => {
+                    return el.nodeName === 'path' && el.classList.contains('area');
+            })
+        })//then
+    }//isInTheSwamp
+
+    specify(`The point ${JSON.stringify(p)} lies outside the swamp`, () => {
+        isInTheSwamp(p).should("be.false");
+    })//specify
     it("Give the second vertex a Q-type", () => {
         swamp.vertices[1].geometry = {type: "Q", cp: {x: 500, y: 50}};
     })
+    specify(`...and now the same point already lies inside the swamp`, () => {
+        isInTheSwamp(p).should("be.true");
+    })//specify
 
 })//describe

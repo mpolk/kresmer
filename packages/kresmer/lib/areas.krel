@@ -6,7 +6,7 @@
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * ___________________________________________________________________________
  *                            Areas library
- *                This library contains area style
+ *                This library contains area styles
 <*************************************************************************** -->
 
 <kresmer-library name="areas" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
