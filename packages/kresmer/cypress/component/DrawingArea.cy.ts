@@ -7,6 +7,7 @@
  ***************************************************************************/
 
 import Kresmer, { Position } from "../../src/Kresmer";
+import { kresmerCoordsToGlobal } from "../support/component";
 import DrawingArea from "../../src/DrawingArea/DrawingArea";
 // import DrawingAreaClass from "../../src/DrawingArea/DrawingAreaClass";
 import chaiColors from 'chai-colors';
@@ -88,7 +89,7 @@ describe('DrawingArea object test', () => {
     })
 
     it("Add one more vertex", () => {
-        swamp.addVertex(1, {x: 800, y: 800});
+        swamp.addVertex(1, kresmerCoordsToGlobal({x: 800, y: 800}));
     })
     specify("...and now the triangular swamp is actually quadrangular and has 4 vertices", () => {
         cy.get(".area.vertex").should("have.length", 4);
@@ -97,24 +98,24 @@ describe('DrawingArea object test', () => {
     const p = {x: 500, y: 120};
     function isInTheSwamp(p: Position)
     {
-        return cy.get("svg.kresmer").then(rootSvg => {
-            const CTM = (rootSvg[0] as unknown as SVGSVGElement).getScreenCTM()!;
-            const x = p.x * CTM.a + CTM.e;
-            const y = p.y * CTM.d + CTM.f;
-            return document.elementsFromPoint(x, y).some(el => {
-                    return el.nodeName === 'path' && el.classList.contains('area');
-            })
-        })//then
+        const {x, y} = kresmerCoordsToGlobal(p);
+        return document.elementsFromPoint(x, y).some(el => {
+                return el.nodeName === 'path' && el.classList.contains('area');
+        })
     }//isInTheSwamp
 
     specify(`The point ${JSON.stringify(p)} lies outside the swamp`, () => {
-        isInTheSwamp(p).should("be.false");
+        expect(isInTheSwamp(p)).to.be.false;
     })//specify
     it("Give the second vertex a Q-type", () => {
         swamp.vertices[1].geometry = {type: "Q", cp: {x: 500, y: 50}};
     })
     specify(`...and now the same point already lies inside the swamp`, () => {
-        isInTheSwamp(p).should("be.true");
+        expect(isInTheSwamp(p)).to.be.true;
     })//specify
+
+    it("Give the third vertex a C-type", () => {
+        swamp.vertices[2].geometry = {type: "C", cp1: {x: 700, y: 300}, cp2: {x: 950, y:750}};
+    })
 
 })//describe

@@ -15,7 +15,7 @@
 
 import './commands'
 import * as CypressVue from 'cypress/vue'
-import Kresmer from "../../src/Kresmer";
+import Kresmer, { Position } from "../../src/Kresmer";
 import { wrap } from 'module';
 
 // Augment the Cypress namespace to include type definitions for
@@ -64,3 +64,15 @@ Cypress.Commands.add('endDrag', {prevSubject: true}, function(elem) {
         ;
     return wrappedElem;
 });
+
+export function kresmerCoordsToGlobal(p: Position)
+{
+    const rootSvg = Cypress.$("svg.kresmer");
+    const CTM = (rootSvg[0] as unknown as SVGSVGElement).getScreenCTM()!;
+    return {
+        x: p.x * CTM.a + CTM.e,
+        y: p.y * CTM.d + CTM.f,
+    }
+}//kresmerCoordsToGlobal
+
+
