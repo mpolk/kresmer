@@ -95,7 +95,7 @@ describe('DrawingArea object test', () => {
         cy.get(".area.vertex").should("have.length", 4);
     })
 
-    const p = {x: 500, y: 120};
+    const p1 = {x: 500, y: 120};
     function isInTheSwamp(p: Position)
     {
         const {x, y} = kresmerCoordsToGlobal(p);
@@ -104,18 +104,37 @@ describe('DrawingArea object test', () => {
         })
     }//isInTheSwamp
 
-    specify(`The point ${JSON.stringify(p)} lies outside the swamp`, () => {
-        expect(isInTheSwamp(p)).to.be.false;
+    specify(`The point ${JSON.stringify(p1)} lies outside the swamp`, () => {
+        expect(isInTheSwamp(p1)).to.be.false;
     })//specify
     it("Give the second vertex a Q-type", () => {
         swamp.vertices[1].geometry = {type: "Q", cp: {x: 500, y: 50}};
     })
     specify(`...and now the same point already lies inside the swamp`, () => {
-        expect(isInTheSwamp(p)).to.be.true;
+        expect(isInTheSwamp(p1)).to.be.true;
     })//specify
 
+    const p2 = {x: 820, y: 300};
+    const p3 = {x: 810, y: 750};
+
+    specify(`The point ${JSON.stringify(p2)} is in the swamp and ${JSON.stringify(p3)} is outside`, () => {
+        expect(isInTheSwamp(p2)).to.be.true;
+        expect(isInTheSwamp(p3)).to.be.false;
+    })//specify
     it("Give the third vertex a C-type", () => {
         swamp.vertices[2].geometry = {type: "C", cp1: {x: 700, y: 300}, cp2: {x: 950, y:750}};
+    })
+    specify(`...now point ${JSON.stringify(p2)} is outside the swamp and ${JSON.stringify(p3)} is in`, () => {
+        expect(isInTheSwamp(p2)).to.be.false;
+        expect(isInTheSwamp(p3)).to.be.true;
+    })//specify
+
+    it("Give the fourth vertex a S-type", () => {
+        swamp.vertices[3].geometry = {type: "S", cp2: {x: 550, y:980}};
+    })
+
+    it("Give the first vertex a T-type", () => {
+        swamp.vertices[0].geometry = {type: "T"};
     })
 
 })//describe
