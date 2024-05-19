@@ -6,7 +6,7 @@
  * Link Vertex (either connected or free)
  ***************************************************************************/
 
-import { nextTick, reactive } from "vue";
+import { nextTick } from "vue";
 import { Position } from "../Transform/Transform";
 import KresmerException, { UndefinedBundleException, UndefinedVertexException, UnrealizableVertexAlignmentException } from "../KresmerException";
 import NetworkLink from "./NetworkLink";

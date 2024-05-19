@@ -13,6 +13,7 @@
 
     defineProps({
         vertex: {type: Object as PropType<AreaVertex>, required: true},
+        eventTarget: {type: Object as PropType<AreaVertex>},
         pos: {type: Object as PropType<Position>, required: true},
     });
     
@@ -25,7 +26,7 @@
 
 <style lang="scss">
     circle.vertex-handle {
-        r: 4px;
+        r: 5px;
         stroke: darkred; stroke-width: 2px;
         fill: wheat;
     }

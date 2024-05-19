@@ -31,7 +31,7 @@
 
 <template>
     <template v-if="nextVertex.geometry.type === 'C'">
-        <AreaVertexHandleVue :vertex="model" :pos="nextVertex.geometry.cp1!"/>
+        <AreaVertexHandleVue :vertex="model" :pos="nextVertex.geometry.cp1!" :event-target="nextVertex"/>
     </template>
     <template v-if="model.geometry.type === 'C'">
         <AreaVertexHandleVue :vertex="model" :pos="model.geometry.cp2!"/>
