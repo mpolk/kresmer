@@ -78,7 +78,7 @@
     function segMarkPathData(i: number)
     {
         const v1 = props.model.vertices[i], v2 = props.model.vertices[(i+1)%props.model.vertices.length];
-        return `M${v1.coords.x},${v1.coords.y} ${v1.toPath()} ${v2.toPath()}`;
+        return `M${v1.coords.x},${v1.coords.y} ${v2.toPath()}`;
     }//segMarkPathData
 </script>
 
@@ -92,7 +92,8 @@
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
             <line 
                 :x1="vertex.coords.x" :y1="vertex.coords.y" 
-                :x2="model.vertices[(i+1)%model.vertices.length].coords.x" :y2="model.vertices[(i+1)%model.vertices.length].coords.y" 
+                :x2="model.vertices[(i+1)%model.vertices.length].coords.x" 
+                :y2="model.vertices[(i+1)%model.vertices.length].coords.y" 
                 class="padding" style="stroke: transparent; fill: none;" 
                 @click.self="model.onClick($event, i)"
                 @contextmenu.self="model.onRightClick($event, i)"
