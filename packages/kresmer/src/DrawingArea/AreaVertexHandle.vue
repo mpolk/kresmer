@@ -73,6 +73,7 @@
         @mouseleave.stop="onMouseLeave($event)"
         />
     <circle :cx="pos.x" :cy="pos.y" class="vertex-handle" ref="mouseCaptureTarget"
+        :style="draggingCursor"
         @mousedown.stop="onMouseDown($event)"
         @mouseup.stop="onMouseUp($event)"
         @mousemove.stop="onMouseMove($event)"
@@ -85,7 +86,6 @@
         r: 5px;
         stroke: darkred; stroke-width: 2px;
         fill: wheat;
-        cursor: move;
     }
     line.vertex-handle {
         stroke: darkred; stroke-width: 1px;
