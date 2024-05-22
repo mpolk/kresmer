@@ -48,8 +48,8 @@ export default class AreaVertex extends Vertex {
     set geometry(newValue: AreaVertexGeometry|Geometry) {this._geometry = new Geometry(newValue)}
 
     readonly handleCaptureTargets: SVGElement[] = [];
-    private isGoingToDragHandle = false;
-    private isHandleDragged = false;
+    isGoingToDragHandle?: 1|2;
+    handleDragged?: 1|2;
 
     override init() {return super.init() as AreaVertex}
 
@@ -64,7 +64,7 @@ export default class AreaVertex extends Vertex {
     {
         this.dragStartPos = {...this._geometry.controlPoints[handleNumber]!};
         this.savedMousePos = this.getMousePosition(event);
-        this.isGoingToDragHandle= true;
+        this.isGoingToDragHandle= handleNumber;
         if (event.shiftKey)
             this.dragConstraint = "unknown";
         MouseEventCapture.start(this.handleCaptureTargets[handleNumber]);
@@ -75,13 +75,13 @@ export default class AreaVertex extends Vertex {
 
     public dragHandle(event: MouseEvent, handleNumber: 1|2)
     {
-        if (!this.isHandleDragged && !this.isGoingToDragHandle)
+        if (!this.handleDragged && !this.isGoingToDragHandle)
             return false;
 
         const mousePos = this.getMousePosition(event);
         if (this.isGoingToDragHandle) {
-            this.isGoingToDragHandle = false;
-            this.isHandleDragged = true;
+            this.isGoingToDragHandle = undefined;
+            this.handleDragged = handleNumber;
         }//if
 
         if (this.dragConstraint === "unknown") {
@@ -121,12 +121,12 @@ export default class AreaVertex extends Vertex {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endHandleDrag(_event: MouseEvent, handleNumber: 1|2)
     {
-        this.isGoingToDragHandle = false;
-        if (!this.isHandleDragged) {
+        this.isGoingToDragHandle = undefined;
+        if (!this.handleDragged) {
             return false;
         }//if
 
-        this.isHandleDragged = false;
+        this.handleDragged = undefined;
         MouseEventCapture.release();
 
         if (this.snapToGrid) {
