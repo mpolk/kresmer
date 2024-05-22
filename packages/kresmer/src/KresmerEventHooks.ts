@@ -76,6 +76,9 @@ class KresmerEventFormats  {
     "area-vertex-move-started":         (vertex: AreaVertex) => void;
     "area-vertex-being-moved":          (vertex: AreaVertex) => void;
     "area-vertex-moved":                (vertex: AreaVertex) => void;
+    "area-vertex-handle-move-started":  (vertex: AreaVertex, handleNumber: number) => void;
+    "area-vertex-handle-being-moved":   (vertex: AreaVertex, handleNumber: number) => void;
+    "area-vertex-handle-moved":         (vertex: AreaVertex, handleNumber: number) => void;
     "area-vertex-right-click":          (vertex: AreaVertex, mouseEvent: MouseEvent) => void;
     "area-vertex-connected":            (vertex: AreaVertex) => void;
     "area-vertex-disconnected":         (vertex: AreaVertex, connectionPoint: ConnectionPoint) => void;
@@ -506,6 +509,27 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("area-vertex-moved")
     protected onAreaVertexMoved(vertex: AreaVertex) {}
+  
+    /**
+     * Is called when a vertex handle move starts
+     * @param controller The controller of the component starting to move
+     */
+    @overridableHandler("area-vertex-handle-move-started")
+    protected onAreaVertexHandleMoveStarted(vertex: AreaVertex, handleNumber: number) {}
+ 
+    /**
+     * Is called when a vertex handle is being moved (dragged)
+     * @param controller The vertex is being moved
+     */
+    @overridableHandler("area-vertex-handle-being-moved")
+    protected onAreaVertexHandleBeingMoved(vertex: AreaVertex, handleNumber: number) {}
+ 
+    /**
+     * Is called when a vertex handle had been moved (dragged)
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("area-vertex-handle-moved")
+    protected onAreaVertexHandleMoved(vertex: AreaVertex, handleNumber: number) {}
  
     /**
      * Is called when a vertex had been connected to some connection point

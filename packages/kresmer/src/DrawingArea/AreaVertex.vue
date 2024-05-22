@@ -43,10 +43,10 @@
 
 <template>
     <template v-if="showNextVertexHandles && nextVertex.geometry.type === 'C'">
-        <AreaVertexHandleVue :vertex="model" :pos="nextVertex.geometry.cp1!" :event-target="nextVertex"/>
+        <AreaVertexHandleVue :vertex="model" :handle-number="1" :pos="nextVertex.geometry.controlPoints[1]!" :event-target="nextVertex"/>
     </template>
     <template v-if="showThisVertexHandles && model.geometry.type === 'C'">
-        <AreaVertexHandleVue :vertex="model" :pos="model.geometry.cp2!"/>
+        <AreaVertexHandleVue :vertex="model" :handle-number="2" :pos="model.geometry.controlPoints[2]!"/>
     </template>
     <BaseVertexVue :model="model" :additional-classes="{area: true}"/>
 </template>

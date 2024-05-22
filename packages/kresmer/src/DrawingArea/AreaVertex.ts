@@ -11,7 +11,7 @@ import { VertexInitParams } from "../Vertex/Vertex";
 import { Position } from "../Transform/Transform";
 import DrawingArea from "./DrawingArea";
 import MouseEventCapture from "../MouseEventCapture";
-import { VertexMoveOp } from "../Vertex/Vertex";
+import { EditorOperation } from "../UndoStack";
 
 /** Drawing Area Vertex */
 
@@ -45,7 +45,11 @@ export default class AreaVertex extends Vertex {
 
     private _geometry: Geometry;
     get geometry(): Geometry {return this._geometry}
-    set geometry(newValue: AreaVertexGeometry) {this._geometry = new Geometry(newValue)}
+    set geometry(newValue: AreaVertexGeometry|Geometry) {this._geometry = new Geometry(newValue)}
+
+    readonly handleCaptureTargets: SVGElement[] = [];
+    private isGoingToDragHandle = false;
+    private isHandleDragged = false;
 
     override init() {return super.init() as AreaVertex}
 
@@ -56,32 +60,28 @@ export default class AreaVertex extends Vertex {
     }//startDrag
 
 
-    public startHandleDrag(event: MouseEvent, handleNumber: 1|2|undefined)
+    public startHandleDrag(event: MouseEvent, handleNumber: 1|2)
     {
-        this.dragStartPos = {...this.coords};
+        this.dragStartPos = {...this._geometry.controlPoints[handleNumber]!};
         this.savedMousePos = this.getMousePosition(event);
-        this.isGoingToBeDragged = true;
+        this.isGoingToDragHandle= true;
         if (event.shiftKey)
             this.dragConstraint = "unknown";
-        this.parentElement.kresmer.deselectAllElements(this.parentElement);
-        this.parentElement.selectThis();
-        MouseEventCapture.start(this.mouseCaptureTarget!);
-        this.notifyOnVertexMoveStart();
-        this.parentElement.kresmer.undoStack.startOperation(new VertexMoveOp(this));
+        MouseEventCapture.start(this.handleCaptureTargets[handleNumber]);
+        this.parentElement.kresmer.emit("area-vertex-handle-move-started", this, handleNumber);
+        this.parentElement.kresmer.undoStack.startOperation(new VertexGeomChangeOp(this));
     }//startHandleDrag
 
 
-    public dragHandle(event: MouseEvent, handleNumber: 1|2|undefined)
+    public dragHandle(event: MouseEvent, handleNumber: 1|2)
     {
-        if (!this.isDragged && !this.isGoingToBeDragged)
+        if (!this.isHandleDragged && !this.isGoingToDragHandle)
             return false;
 
         const mousePos = this.getMousePosition(event);
-        if (this.isGoingToBeDragged) {
-            this.isGoingToBeDragged = false;
-            this.isDragged = true;
-            this.savedAnchor = this.anchor.copy();
-            this.pinUp(this.coords);
+        if (this.isGoingToDragHandle) {
+            this.isGoingToDragHandle = false;
+            this.isHandleDragged = true;
         }//if
 
         if (this.dragConstraint === "unknown") {
@@ -96,53 +96,50 @@ export default class AreaVertex extends Vertex {
 
         switch (this.dragConstraint) {
             case "x":
-                this._anchor.pos = {
+                this._geometry.controlPoints[handleNumber] = {
                     x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
                     y: this.dragStartPos!.y,
                 }
                 break;
             case "y":
-                this._anchor.pos = {
+                this._geometry.controlPoints[handleNumber] = {
                     x: this.dragStartPos!.x,
                     y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
                 }
                 break;
             default:
-                this._anchor.pos = {
+                this._geometry.controlPoints[handleNumber] = {
                     x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
                     y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
                 }
         }//switch
-        this.notifyOnVertexBeingMoved();
-        this.ownConnectionPoint.updatePos();
+        this.parentElement.kresmer.emit("area-vertex-handle-being-moved", this, handleNumber);
         return true;
     }//dragHandle
 
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endHandleDrag(_event: MouseEvent, handleNumber: 1|2|undefined)
+    public endHandleDrag(_event: MouseEvent, handleNumber: 1|2)
     {
-        this.parentElement.kresmer._showAllConnectionPoints.value = false;
-        this.isGoingToBeDragged = false;
-        if (!this.isDragged) {
+        this.isGoingToDragHandle = false;
+        if (!this.isHandleDragged) {
             return false;
         }//if
 
-        this.isDragged = false;
+        this.isHandleDragged = false;
         MouseEventCapture.release();
 
         if (this.snapToGrid) {
-            this._anchor.pos = {
-                x: Math.round(this._anchor.pos!.x / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity,
-                y: Math.round(this._anchor.pos!.y / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity
+            this._geometry.controlPoints[handleNumber] = {
+                x: Math.round(this._geometry.controlPoints[handleNumber]!.x / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity,
+                y: Math.round(this._geometry.controlPoints[handleNumber]!.y / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity
             };
         }//if
 
         this.parentElement.kresmer.undoStack.commitOperation();
-        this.notifyOnVertexMove();
+        this.parentElement.kresmer.emit("area-vertex-handle-moved", this, handleNumber);
 
         this.dragConstraint = undefined;
-        this.savedAnchor = undefined;
         return true;
     }//endHandleDrag
 
@@ -186,31 +183,60 @@ export type AreaVertexGeometry =
     | {type: "T"}
     ;
 class Geometry {
-    constructor(init?: AreaVertexGeometry)
+    constructor(init?: AreaVertexGeometry|Geometry)
     {
-        if (init) {
+        if (init instanceof Geometry) {
             this.type = init.type;
-            this.cp1 = "cp1" in init ? init.cp1 : "cp" in init ? init.cp : undefined;
-            this.cp2 = "cp2" in init ? init.cp2 : undefined;
+            this.controlPoints = [...init.controlPoints];
+        } else if (init) {
+            this.type = init.type;
+            this.controlPoints[1] = "cp1" in init ? init.cp1 : "cp" in init ? init.cp : undefined;
+            this.controlPoints[2] = "cp2" in init ? init.cp2 : undefined;
         } else {
             this.type = "L";
         }//if
     }//ctor
 
     readonly type: AreaVertexGeometry["type"];
-    cp1?: Position;
-    cp2?: Position;
+    readonly controlPoints: (Position|undefined)[] = [];
 
     toPath(pos: Position)
     {
         const chunks: string[] = [this.type];
-        if (this.cp1)
-            chunks.push(`${this.cp1.x},${this.cp1.y}`);
-        if (this.cp2)
-            chunks.push(`${this.cp2.x},${this.cp2.y}`);
+        if (this.controlPoints[1])
+            chunks.push(`${this.controlPoints[1].x},${this.controlPoints[1].y}`);
+        if (this.controlPoints[2])
+            chunks.push(`${this.controlPoints[2].x},${this.controlPoints[2].y}`);
         chunks.push(`${pos.x},${pos.y}`);
         return chunks.join(" ");
     }//toPath
+
+    copy() {return new Geometry(this)}
 }//Geometry
 
 export type AreaVertexInitParams = VertexInitParams & {geometry?: AreaVertexGeometry};
+
+// Editor operations
+export class VertexGeomChangeOp extends EditorOperation {
+    constructor(private vertex: AreaVertex)
+    {
+        super();
+        this.oldGeometry = vertex.geometry.copy();
+    }//ctor
+
+    private oldGeometry: Geometry;
+    private newGeometry?: Geometry;
+
+    override onCommit()
+    {
+        this.newGeometry = this.vertex.geometry.copy();
+    }//onCommit
+
+    override undo(): void {
+        this.vertex.geometry = this.oldGeometry;
+    }//undo
+
+    override exec(): void {
+        this.vertex.geometry = this.newGeometry!;
+    }//exec
+}//VertexGeomChangeOp
