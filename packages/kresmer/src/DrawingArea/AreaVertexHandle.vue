@@ -29,19 +29,19 @@
     {
         if (event.buttons === 1) {
             event.preventDefault();
-            props.vertex.startHandleDrag(event, props.handleNumber);
+            eventTarget.startHandleDrag(event, props.handleNumber);
         }//if
     }//onMouseDown
 
     function onMouseUp(event: MouseEvent)
     {
-        props.vertex.endHandleDrag(event, props.handleNumber);
+        eventTarget.endHandleDrag(event, props.handleNumber);
     }//onMouseUp
 
     function onMouseMove(event: MouseEvent)
     {
         if (event.buttons & 1) {
-            props.vertex.dragHandle(event, props.handleNumber);
+            eventTarget.dragHandle(event, props.handleNumber);
         }//if
     }//onMouseMove
 
