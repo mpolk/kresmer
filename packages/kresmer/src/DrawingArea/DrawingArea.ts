@@ -63,6 +63,17 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
         return name == this.name || !this.kresmer.areasByName.has(name);
     }//checkNameUniqueness
 
+    override get isSelected() {return super.isSelected}
+    override set isSelected(newValue: boolean)
+    {
+        super.isSelected = newValue;
+        if (!newValue) {
+            for (const v of this.vertices) {
+                v.isSelected = false;
+            }//for
+        }//if
+    }//isSelected
+
     toString()
     {
         return `${this.name}: ${this.getClass().name}`;

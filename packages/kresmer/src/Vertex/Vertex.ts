@@ -245,12 +245,15 @@ export default abstract class Vertex {
     abstract notifyOnVertexMove(): void;
     abstract onRightClick(event: MouseEvent): void;
 
+    public onClick()
+    {
+        this.parentElement.selectThis();
+    }//onClick
 
     public onDoubleClick()
     {
         this.parentElement.kresmer.edAPI.alignVertex({vertex: this});
     }//onDoubleClick
-
 
     public align(mode: VertexAlignmentMode = "normal")
     {

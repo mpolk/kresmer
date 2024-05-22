@@ -62,7 +62,7 @@ export default function useVertex(model: Ref<Vertex>) {
 
     function onClick()
     {
-        model.value.parentElement.selectThis();
+        model.value.onClick();
     }//onClick
 
     function onDoubleClick()

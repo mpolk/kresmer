@@ -26,14 +26,26 @@
         const nextVertexNumber = (props.model.vertexNumber + 1) % props.model.parentElement.vertices.length;
         return props.model.parentElement.vertices[nextVertexNumber] as AreaVertex;        
     });
+
+    const showThisVertexHandles = computed(() => {
+        return props.model.parentElement.kresmer.isEditable && 
+               props.model.isSelected && 
+               props.model.parentElement.isSelected;
+    })//showThisVertexHandles
+
+    const showNextVertexHandles = computed(() => {
+        return props.model.parentElement.kresmer.isEditable && 
+               nextVertex.value.isSelected && 
+               nextVertex.value.parentElement.isSelected;
+    })//showNextVertexHandles
     
 </script>
 
 <template>
-    <template v-if="nextVertex.geometry.type === 'C'">
+    <template v-if="showNextVertexHandles && nextVertex.geometry.type === 'C'">
         <AreaVertexHandleVue :vertex="model" :pos="nextVertex.geometry.cp1!" :event-target="nextVertex"/>
     </template>
-    <template v-if="model.geometry.type === 'C'">
+    <template v-if="showThisVertexHandles && model.geometry.type === 'C'">
         <AreaVertexHandleVue :vertex="model" :pos="model.geometry.cp2!"/>
     </template>
     <BaseVertexVue :model="model" :additional-classes="{area: true}"/>
