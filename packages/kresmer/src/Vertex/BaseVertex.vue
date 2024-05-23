@@ -90,7 +90,13 @@
 </template>
 
 <style lang="scss">
-    .vertex, .vertex-connection-point {cursor: pointer;}
+    .vertex, .vertex-connection-point {
+        cursor: pointer;
+    }
+
+    .vertex.selected-vertex {
+        fill: wheat!important;
+    }
 
     .v-enter-active {
         transition: opacity 0.3s ease;
