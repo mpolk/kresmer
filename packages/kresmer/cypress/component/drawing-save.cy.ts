@@ -64,7 +64,6 @@ describe('Kresmer Art', () => {
                 return true;
             });
         });
-        debugger;
         expect(diffs.length).to.be.equal(0);
     })
 });

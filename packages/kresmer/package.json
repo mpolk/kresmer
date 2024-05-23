@@ -21,7 +21,7 @@
     "port": 5173
   },
   "scripts": {
-    "lint": "eslint -c .eslintrc.cjs --ext .ts ./src",
+    "lint": "eslint -c .eslintrc.cjs --ext .ts,.vue ./src",
     "build-only": "vite build",
     "build-watch": "vite build --watch",
     "type-check": "vue-tsc --noEmit",

@@ -12,8 +12,7 @@
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
-    import { FileFilter } from 'electron';
-import { selectOrLoadGraphicsFile } from './renderer-main';
+    import { selectOrLoadGraphicsFile } from './renderer-main';
 
     export default {
         name: "ElementPropEditor",

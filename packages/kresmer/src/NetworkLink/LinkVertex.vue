@@ -27,7 +27,7 @@
 
     const base = useVertex(toRef(props, "model"));
     const {
-        padding, circle, 
+        padding, 
         onMouseDown, onMouseUp, onMouseMove, onMouseLeave, onRightClick, onDoubleClick,
     } = base;
 

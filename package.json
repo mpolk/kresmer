@@ -18,7 +18,7 @@
     "vite:preview": "vite preview --port ${npm_package_config_port}",
     "ts": "tsc",
     "watch": "tsc -w",
-    "lint": "eslint -c .eslintrc.cjs --ext .ts ./src",
+    "lint": "eslint -c .eslintrc.cjs --ext .ts,.vue ./src",
     "preapp:dev0": "run-s build-component ts",
     "app:dev0": "concurrently vite 'electron . ${npm_package_config_args}' npm:watch",
     "preapp:dev": "run-s build-component ts",
