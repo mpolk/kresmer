@@ -29,7 +29,7 @@ export default class AreaVertex extends Vertex {
         this._geometry = new Geometry(initParams?.geometry);
     }//ctor
 
-    declare parentElement: DrawingArea;
+    get parentElement() {return super.parentElement as DrawingArea};
     private _isSelected = false;
     get isSelected() { return this._isSelected }
     set isSelected(newValue: boolean)

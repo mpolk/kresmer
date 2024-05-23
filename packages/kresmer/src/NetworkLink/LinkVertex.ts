@@ -29,7 +29,7 @@ export default class LinkVertex extends Vertex {
         super(parentElement, vertexNumber, initParams);
     }//ctor
 
-    declare parentElement: NetworkLink;
+    get parentElement() {return super.parentElement as NetworkLink}
     declare initParams: LinkVertexInitParams|undefined;
     
     /** An object representing the logical position of the vertex. 
