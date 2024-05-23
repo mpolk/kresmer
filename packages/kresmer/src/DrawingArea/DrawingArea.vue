@@ -73,7 +73,20 @@
         return chunks.join(" ");
     })//path
 
-    function segmentPathID(i: number) { return `kre:area${props.model.id}seg${i}path`; }
+    function segmentPathID(i: number) 
+    { 
+        return `kre:area${props.model.id}seg${i}path`; 
+    }//segmentPathID
+
+    function segmentPathClass(i: number) 
+    {
+        const i1 = (i+1) % props.model.vertices.length;
+        const v = props.model.vertices[i1];
+        return {
+            segment: true, 
+            selected: v.isSelected && v.geometry.type !== "S" && v.geometry.type !== "T",
+        };
+    }//segmentPathClass
 
     function segMarkPathData(i: number)
     {
@@ -102,7 +115,7 @@
                 >
                 <title>{{model.displayString}}</title>
             </line>
-            <path :id="segmentPathID(i)" :d="segMarkPathData(i)" fill="none" stroke="none"/>
+            <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
             <text class="area seg-mark" :style="segMarkStyle">
                 <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
             </text>
@@ -123,5 +136,13 @@
     .seg-mark {
         dominant-baseline: ideographic; text-anchor: middle;
         cursor: default;
+    }
+
+    .segment {
+        fill: none; stroke: none;
+        &.selected {
+            stroke: darkred !important;
+            // stroke-width: 4px !important;
+        }
     }
 </style>

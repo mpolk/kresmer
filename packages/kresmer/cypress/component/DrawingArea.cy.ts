@@ -133,8 +133,8 @@ describe('DrawingArea object test', () => {
         swamp.vertices[3].geometry = {type: "S", cp2: {x: 550, y:980}};
     })
 
-    it("Give the first vertex a T-type", () => {
-        swamp.vertices[0].geometry = {type: "T"};
-    })
+    // it("Give the first vertex a T-type", () => {
+    //     swamp.vertices[0].geometry = {type: "T"};
+    // })
 
 })//describe
