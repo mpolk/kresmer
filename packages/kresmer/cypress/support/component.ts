@@ -29,16 +29,31 @@ declare global {
             drag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
             startDrag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
             endDrag: () => Chainable<JQuery<HTMLElement>>,
-        }
+        }//Chainable
     }
     // let $kresmer: Kresmer;
 }
 
 export let $kresmer: Kresmer;
+let lastException: any;
+export function getLastException()
+{
+    const exc = lastException;
+    lastException = undefined;
+    return exc;
+}//getLastException
 
 // Mounting tested Kresmer component
 Cypress.Commands.add('mount', (kresmer) => {
     $kresmer = kresmer ?? new Kresmer("[data-cy-root]", {});
+
+    const onVueError = (error: any, vm: any, info: string) => {
+        console.debug("Vue error catched!");
+        lastException = error;
+    };
+    $kresmer.appKresmer.config.warnHandler = onVueError;
+    $kresmer.appKresmer.config.errorHandler = onVueError;
+    
     return CypressVue.mount($kresmer).task("loadLibraries").then(libs => {
         $kresmer.loadLibraries(libs);
         return $kresmer;

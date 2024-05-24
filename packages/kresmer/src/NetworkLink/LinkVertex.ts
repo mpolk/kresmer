@@ -144,6 +144,7 @@ export default class LinkVertex extends Vertex {
                 cpHostElement: this._anchor.conn!.hostElement.name, 
                 connectionPoint: this._anchor.conn!.name.toString()
             }};
+        // this.detach();
         this._anchor.conn = undefined;
     }//suspend
     /**
