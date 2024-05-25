@@ -24,7 +24,24 @@ export type TransformMode = undefined | "scaling" | "rotation";
 
 
 export default class NetworkComponentController extends withZOrder(class {}) {
-    readonly kresmer: Kresmer;
+    constructor(
+        kresmer: Kresmer,
+        component: NetworkComponent,
+        params: {
+            origin: Position,
+            transform?: Transform,
+        }
+    ) {
+        super();
+        this._kresmer = new WeakRef(kresmer);
+        this.component = component;
+        this.component.controller = this;
+        this.origin = params.origin;
+        this.transform = params.transform ? params.transform : new Transform;
+    }//ctor
+
+    private readonly _kresmer: WeakRef<Kresmer>;
+    get kresmer() { return this._kresmer.deref()! }
     public component: NetworkComponent;
     origin: Position;
     transform: Transform;
@@ -37,22 +54,6 @@ export default class NetworkComponentController extends withZOrder(class {}) {
 
     private dragStartPos?: Position;
     private savedMousePos?: Position;
-
-    constructor(
-        kresmer: Kresmer,
-        component: NetworkComponent,
-        params: {
-            origin: Position,
-            transform?: Transform,
-        }
-    ) {
-        super();
-        this.kresmer = kresmer;
-        this.component = component;
-        this.component.controller = this;
-        this.origin = params.origin;
-        this.transform = params.transform ? params.transform : new Transform;
-    }//ctor
 
     get id() {return this.component.id}
 
