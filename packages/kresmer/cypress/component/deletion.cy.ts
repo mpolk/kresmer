@@ -28,17 +28,27 @@ describe('Deletion test', () => {
 
     it("Delete the first switch", () => {
         kresmer.deleteComponent(kresmer.getComponentByName("Switch1")!.controller!);
-        expect(kresmer.getComponentByName("Switch1")).to.be.undefined;
     });
+
+    specify("...and there is not 'Switch1' no more", () => {
+        expect(kresmer.getComponentByName("Switch1")).to.be.undefined;
+    })
 
     it("Delete the second switch using the edAPI command", () => {
         kresmer.edAPI.deleteComponent(kresmer.getComponentByName("Switch2")!.id);
         expect(kresmer.getComponentByName("Switch1")).to.be.undefined;
     });
 
-    it("...and undelete it", () => {
+    specify("...and there is not 'Switch2' no more", () => {
+        expect(kresmer.getComponentByName("Switch2")).to.be.undefined;
+    })
+
+    it("...then undelete it", () => {
         kresmer.undo();
-        expect(kresmer.getComponentByName("Switch2")).to.not.be.undefined;
     });
+
+    specify("...and 'Switch2' is here again", () => {
+        expect(kresmer.getComponentByName("Switch2")).to.not.be.undefined;
+    })
 
 });

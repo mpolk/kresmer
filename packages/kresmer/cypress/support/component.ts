@@ -31,9 +31,10 @@ declare global {
             endDrag: () => Chainable<JQuery<HTMLElement>>,
         }//Chainable
     }
-    // let $kresmer: Kresmer;
-}
+}//global
 
+// Expose exceptions throw from within Vue-applications to Cypress
+// (without this Vue catches exceptions and hides them from Cypress)
 export let $kresmer: Kresmer;
 let lastException: any;
 
