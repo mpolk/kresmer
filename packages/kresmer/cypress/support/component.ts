@@ -29,16 +29,39 @@ declare global {
             drag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
             startDrag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
             endDrag: () => Chainable<JQuery<HTMLElement>>,
-        }
+        }//Chainable
     }
-    // let $kresmer: Kresmer;
-}
+}//global
 
+// Expose exceptions throw from within Vue-applications to Cypress
+// (without this Vue catches exceptions and hides them from Cypress)
 export let $kresmer: Kresmer;
+let lastException: any;
+
+export function getLastException()
+{
+    const exc = lastException;
+    lastException = undefined;
+    return exc;
+}//getLastException
+
+export function assertNoExceptions()
+{
+    const exc = getLastException();
+    assert(exc === undefined, exc?.message);
+}//assertNoExceptions
 
 // Mounting tested Kresmer component
 Cypress.Commands.add('mount', (kresmer) => {
     $kresmer = kresmer ?? new Kresmer("[data-cy-root]", {});
+
+    const onVueError = (error: any, vm: any, info: string) => {
+        console.debug("Vue error catched!");
+        lastException = error;
+    };
+    $kresmer.appKresmer.config.warnHandler = onVueError;
+    $kresmer.appKresmer.config.errorHandler = onVueError;
+    
     return CypressVue.mount($kresmer).task("loadLibraries").then(libs => {
         $kresmer.loadLibraries(libs);
         return $kresmer;

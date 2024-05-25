@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-drawing.xsd"?>
+<kresmer-drawing name="Deletion test" width="1500" height="1000"   background-color="#ffffff">
+
+    <component class="Switch" name="Switch1">
+        <origin x="630" y="330"/>
+    </component>
+
+    <component class="Switch" name="Switch2">
+        <origin x="630" y="540"/>
+    </component>
+
+    <link class="twisted-pair" name="twisted-pair-0a54bd9c-4838-443e-a3b9-2c602ef9f956" from="Switch2:1@u" to="Switch1:1@d"/>
+
+</kresmer-drawing>
