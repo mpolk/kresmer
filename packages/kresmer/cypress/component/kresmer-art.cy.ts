@@ -9,6 +9,7 @@
 import Kresmer from "Kresmer";
 import NetworkComponentClass from "../../src/NetworkComponent/NetworkComponentClass";
 import NetworkComponent from "../../src/NetworkComponent/NetworkComponent";
+import { assertNoExceptions } from "../support/component";
 
 describe('Kresmer Art', () => {
     let kresmer: Kresmer;
@@ -17,6 +18,7 @@ describe('Kresmer Art', () => {
             kresmer = _kresmer;
         });
     });
+    afterEach(assertNoExceptions);
 
     it('Load an additional "Kresmer Art" library', () => {
         cy.fixture("kresmer-art.krel").then(libData => {

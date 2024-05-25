@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import Kresmer, { Position } from "../../src/Kresmer";
-import { kresmerCoordsToGlobal } from "../support/component";
+import { kresmerCoordsToGlobal, assertNoExceptions } from "../support/component";
 import DrawingArea from "../../src/DrawingArea/DrawingArea";
 // import DrawingAreaClass from "../../src/DrawingArea/DrawingAreaClass";
 import chaiColors from 'chai-colors';
@@ -22,6 +22,7 @@ describe('DrawingArea object test', () => {
             kresmer.showRulers = true;
         });
     })//before
+    afterEach(assertNoExceptions);
 
     // let swampClass: DrawingAreaClass;
     // it("creates a Swamp area class", () => {

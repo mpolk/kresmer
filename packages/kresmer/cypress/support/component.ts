@@ -16,7 +16,6 @@
 import './commands'
 import * as CypressVue from 'cypress/vue'
 import Kresmer, { Position } from "../../src/Kresmer";
-import { wrap } from 'module';
 
 // Augment the Cypress namespace to include type definitions for
 // your custom command.

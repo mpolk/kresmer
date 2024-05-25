@@ -8,6 +8,7 @@
 
 import { diffAsXml } from "diff-js-xml";
 import Kresmer from "Kresmer";
+import { assertNoExceptions } from "../support/component";
 
 describe('Kresmer Art', () => {
     let kresmer: Kresmer;
@@ -16,6 +17,7 @@ describe('Kresmer Art', () => {
             kresmer = _kresmer;
         });
     });
+    afterEach(assertNoExceptions);
 
     it('Load an additional "Kresmer Art" library', () => {
         cy.fixture("kresmer-art.krel").then(libData => {

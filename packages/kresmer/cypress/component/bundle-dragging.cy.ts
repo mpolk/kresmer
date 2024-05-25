@@ -7,6 +7,7 @@
  ***************************************************************************/
 
 import Kresmer from "Kresmer";
+import { assertNoExceptions } from "../support/component";
 
 describe('Kresmer Art', () => {
     let kresmer: Kresmer;
@@ -15,6 +16,7 @@ describe('Kresmer Art', () => {
             kresmer = _kresmer;
         });
     });
+    afterEach(assertNoExceptions);
 
     it('Load a test drawing and turn the bundle dragging animation on', () => {
         cy.fixture("bundle.kre").then((dwgData) => {
