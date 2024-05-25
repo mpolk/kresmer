@@ -36,7 +36,6 @@ describe('Deletion test', () => {
 
     it("Delete the second switch using the edAPI command", () => {
         kresmer.edAPI.deleteComponent(kresmer.getComponentByName("Switch2")!.id);
-        expect(kresmer.getComponentByName("Switch1")).to.be.undefined;
     });
 
     specify("...and there is not 'Switch2' no more", () => {

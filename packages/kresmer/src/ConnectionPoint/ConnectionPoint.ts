@@ -22,8 +22,9 @@ export default class ConnectionPoint {
      * @param name The name of the connection point
      * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
      */
-    constructor(readonly hostElement: DrawingElement, public name: string|number, dir0: number|string)
+    constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string)
     {
+        this._hostElement = new WeakRef(hostElement);
         switch (dir0) {
             case 'right': this.dir0 = 0; break;
             case 'bottom': case 'down': this.dir0 = 90; break;
@@ -34,6 +35,9 @@ export default class ConnectionPoint {
         }//switch
         this.dir = this.dir0;
     }//ctor
+
+    private readonly _hostElement: WeakRef<DrawingElement>;
+    get hostElement() { return this._hostElement.deref()! }
 
     toString() { 
         const prefix = this.hostElement instanceof NetworkLink ? "-" : "";
