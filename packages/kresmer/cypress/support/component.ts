@@ -36,12 +36,19 @@ declare global {
 
 export let $kresmer: Kresmer;
 let lastException: any;
+
 export function getLastException()
 {
     const exc = lastException;
     lastException = undefined;
     return exc;
 }//getLastException
+
+export function assertNoExceptions()
+{
+        const exc = getLastException();
+        expect(exc, exc?.message).to.be.undefined;
+}//assertNoExceptions
 
 // Mounting tested Kresmer component
 Cypress.Commands.add('mount', (kresmer) => {

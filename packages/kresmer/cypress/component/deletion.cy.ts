@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import Kresmer from "Kresmer";
-import { getLastException } from "../support/component";
+import { assertNoExceptions } from "../support/component";
 
 describe('Deletion test', () => {
     let kresmer: Kresmer;
@@ -16,10 +16,7 @@ describe('Deletion test', () => {
             kresmer = _kresmer;
         });
     });
-    afterEach(() => {
-        const exc = getLastException();
-        expect(exc, exc?.message).to.be.undefined;
-    });
+    afterEach(assertNoExceptions);
 
     let drawingData: string;
     it('Load a test drawing', () => {
@@ -32,6 +29,16 @@ describe('Deletion test', () => {
     it("Delete the first switch", () => {
         kresmer.deleteComponent(kresmer.getComponentByName("Switch1")!.controller!);
         expect(kresmer.getComponentByName("Switch1")).to.be.undefined;
+    });
+
+    it("Delete the second switch using the edAPI command", () => {
+        kresmer.edAPI.deleteComponent(kresmer.getComponentByName("Switch2")!.id);
+        expect(kresmer.getComponentByName("Switch1")).to.be.undefined;
+    });
+
+    it("...and undelete it", () => {
+        kresmer.undo();
+        expect(kresmer.getComponentByName("Switch2")).to.not.be.undefined;
     });
 
 });
