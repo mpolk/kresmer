@@ -37,7 +37,7 @@ export default abstract class DrawingElement {
             props?: Record<string, unknown>,
         }
     ) {
-        this.kresmer = kresmer;
+        this._kresmer = new WeakRef(kresmer);
         this._class = _class;
         this.props = args?.props ?? {};
         this.id = DrawingElement.nextID++;
@@ -45,7 +45,9 @@ export default abstract class DrawingElement {
         this.dbID = (args?.dbID !== null) ? args?.dbID : undefined;
     }//ctor
 
-    readonly kresmer: Kresmer;
+    readonly _kresmer: WeakRef<Kresmer>;
+    get kresmer() { return this._kresmer.deref()! }
+
     /** Element's class */
     protected _class: DrawingElementClass;
     /** Return the element's class */
