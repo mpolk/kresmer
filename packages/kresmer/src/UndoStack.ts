@@ -11,7 +11,12 @@ import KresmerException from "./KresmerException";
 
 export default class UndoStack {
 
-    constructor (private kresmer: Kresmer) {}
+    constructor (kresmer: Kresmer) {
+        this._kresmer = new WeakRef(kresmer);
+    }//ctor
+
+    private readonly _kresmer: WeakRef<Kresmer>;
+    private get kresmer() { return this._kresmer.deref()!; }
 
     private stack: EditorOperation[] = [];
     private stackPointer = -1;
