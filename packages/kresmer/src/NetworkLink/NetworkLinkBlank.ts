@@ -21,14 +21,15 @@ export default class NetworkLinkBlank {
      * @param _class The class this Link should belong 
      *               (either Link class instance or its name)
      */
-    public constructor(
-        protected readonly kresmer: Kresmer,
-        readonly _class: NetworkLinkClass,
-        readonly start: LinkVertexInitParams,
+    public constructor(kresmer: Kresmer, readonly _class: NetworkLinkClass, readonly start: LinkVertexInitParams,
     ) {
+        this._kresmer = new WeakRef(kresmer);
         ({x: this.end.x, y: this.end.y} = start.conn ? start.conn.coords : {...start.pos!});
     }//ctor
 
+    protected readonly _kresmer: WeakRef<Kresmer>;
+    get kresmer() { return this._kresmer.deref()! }
+    
     readonly end = reactive<Position>({x: 0, y: 0});
 
     public extrude(event: MouseEvent)
