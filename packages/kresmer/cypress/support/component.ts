@@ -46,8 +46,8 @@ export function getLastException()
 
 export function assertNoExceptions()
 {
-        const exc = getLastException();
-        expect(exc, exc?.message).to.be.undefined;
+    const exc = getLastException();
+    assert(exc === undefined, exc?.message);
 }//assertNoExceptions
 
 // Mounting tested Kresmer component
