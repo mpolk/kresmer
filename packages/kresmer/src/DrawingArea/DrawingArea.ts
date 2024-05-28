@@ -38,6 +38,7 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
             dbID?: number|string|null,
             props?: Record<string, unknown>,
             vertices?: AreaVertexInitParams[],
+            borders?: AreaBorder[],
         }
     ) {
         const clazz = _class instanceof DrawingAreaClass ? _class : DrawingAreaClass.getClass(_class);
@@ -47,6 +48,7 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
         super(kresmer, clazz, args);
         let i = 0;
         args?.vertices?.forEach(initParams => this.vertices.push(new AreaVertex(this, i++, initParams)));
+        args?.borders?.forEach(this.setBorder);
     }//ctor
 
     declare protected _class: DrawingAreaClass;
@@ -55,6 +57,13 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
     }//getClass
     override isClosed = true;
     declare vertices: AreaVertex[];
+
+    readonly borders: AreaBorder[] = [];
+
+    setBorder(border: AreaBorder)
+    {
+        this.borders.push(border);
+    }//setBorder
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<DrawingArea>;
@@ -157,14 +166,19 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
         this.kresmer.emit("area-double-click", this, event, segmentNumber);
     }//onDoubleClick
 
-}//_DrawingArea
+}//DrawingArea
 
 export class DrawingAreaMap extends MapWithZOrder<number, DrawingArea> {}
 export type AreaSpec = {area: DrawingArea}|{areaID: number};
 
+export interface AreaBorder {
+    from: number,
+    to: number,
+    clazz: string,
+}//AreaBorder
+
 
 // Editor operations
-
 export class AddAreaOp extends EditorOperation {
 
     constructor (protected area: DrawingArea)

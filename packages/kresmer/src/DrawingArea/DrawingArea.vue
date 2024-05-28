@@ -8,7 +8,7 @@
 
 <script lang="ts">
     import { computed, onBeforeMount, PropType, provide, onMounted } from 'vue';
-    import DrawingArea from './DrawingArea';
+    import DrawingArea, { AreaBorder } from './DrawingArea';
     import DrawingElement from '../DrawingElement/DrawingElement';
     import DrawingVertexVue from './AreaVertex.vue';
     
@@ -93,6 +93,20 @@
         const v1 = props.model.vertices[i], v2 = props.model.vertices[(i+1)%props.model.vertices.length];
         return `M${v1.coords.x},${v1.coords.y} ${v2.toPath()}`;
     }//segMarkPathData
+
+    function borderPathData(border: AreaBorder)
+    {
+        const chunks: string[] = [];
+        let i = border.from;
+        chunks.push(`M${props.model.vertices[i].coords.x},${props.model.vertices[i].coords.y}`);
+
+        const n = border.to > border.from ? border.to : border.to + props.model.vertices.length;
+        for (i++; i <= n; i++) {
+            const v = props.model.vertices[i % props.model.vertices.length];
+            chunks.push(v.toPath());
+        }//for
+        return chunks.join(" ");
+    }//borderPathData
 </script>
 
 <template>
@@ -102,6 +116,8 @@
             @contextmenu.self="model.onRightClick($event)"
             @dblclick.self="model.onDoubleClick($event)"
             />
+        <path v-for="(border, i) in model.borders" :key="`border${i}`" 
+            :d="borderPathData(border)" :class="border.clazz" style="fill: none;" />
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
             <line 
                 :x1="vertex.coords.x" :y1="vertex.coords.y" 

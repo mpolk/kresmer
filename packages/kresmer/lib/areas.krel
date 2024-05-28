@@ -54,11 +54,13 @@
             .area {
                 --border-color: blue; --highlighted-border-color: darkblue; 
                 fill: url(#kre:std:Swamp); 
-                stroke: var(--border-color); 
             }
             .area.selected { 
                 stroke: var(--highlighted-border-color); 
                 stroke-width: 2px; 
+            }
+            .coast {
+                stroke: blue; 
             }
         </style>
     </area-class>
