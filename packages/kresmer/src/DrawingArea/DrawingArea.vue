@@ -71,6 +71,8 @@
             const v = props.model.vertices[i%n];
             chunks.push(v.toPath());
         }//for
+        // chunks.push(props.model.vertices[0].toPath());
+        chunks.push("Z");
         return chunks.join(" ");
     })//path
 

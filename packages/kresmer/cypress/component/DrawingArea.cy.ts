@@ -137,9 +137,9 @@ describe('DrawingArea object test', () => {
     //     swamp.vertices[0].geometry = {type: "T"};
     // })
 
-    it("Put a coastline between the 2nd and 3rd vertices", () => {
+    it("Put a coastline between the 2nd and 4th vertices", () => {
         kresmer.deselectAllElements();
-        swamp.setBorder({clazz: "coast", from: 0, to: 3});
+        swamp.setBorder({clazz: "coast", from: 1, to: 3});
     })
 
 })//describe
