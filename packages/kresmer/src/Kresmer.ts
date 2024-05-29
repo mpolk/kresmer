@@ -1222,7 +1222,7 @@ ${svg.outerHTML}
             if (!link) {
                 throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
             }//if
-            const vertex = link.addVertex(segmentNumber, mousePos);
+            const vertex = link.addVertex(segmentNumber, this.applyScreenCTM(mousePos));
             this.emit("link-vertex-added", vertex);
             return vertex;
         },//addLinkVertex

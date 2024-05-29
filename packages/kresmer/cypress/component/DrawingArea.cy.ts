@@ -122,7 +122,7 @@ describe('DrawingArea object test', () => {
     const p2 = {x: 820, y: 300};
     const p3 = {x: 810, y: 750};
 
-    specify(`The point ${JSON.stringify(p2)} is in the swamp and ${JSON.stringify(p3)} is outside`, () => {
+    specify(`The point ${JSON.stringify(p2)} is in the swamp and ${JSON.stringify(p3)} is on the dry land`, () => {
         expect(isInTheSwamp(p2)).to.be.true;
         expect(isInTheSwamp(p3)).to.be.false;
     })//specify

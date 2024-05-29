@@ -218,11 +218,10 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         }
     }//relPosToAbs
 
-    override addVertex(segmentNumber: number, mousePos: Position)
+    override addVertex(segmentNumber: number, pos: Position)
     {
-        console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
+        console.debug(`Add vertex: ${this.name}:${segmentNumber} (${pos.x}, ${pos.y})`);
         const vertexNumber = segmentNumber + 1;
-        let pos = this.kresmer.applyScreenCTM(mousePos);
         if (this.isLoopback) {
             pos = this.absPosToRel(pos);
         }//if
