@@ -1322,7 +1322,7 @@ ${svg.outerHTML}
             if (!area) {
                 throw new KresmerException(`Attempt to add a vertex to the non-existent area (id=${areaID})`);
             }//if
-            const vertex = area.addVertex(segmentNumber, mousePos);
+            const vertex = area.addVertex(segmentNumber, this.applyScreenCTM(mousePos));
             this.emit("area-vertex-added", vertex);
             return vertex;
         },//addAreaVertex

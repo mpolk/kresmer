@@ -10,7 +10,7 @@ import { InjectionKey, nextTick } from "vue";
 import Kresmer from "../Kresmer";
 import { UndefinedAreaClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
-import AreaVertex, { AreaVertexInitParams } from "./AreaVertex";
+import AreaVertex, { AreaVertexGeometry, AreaVertexInitParams } from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import { EditorOperation } from "../UndoStack";
@@ -131,12 +131,11 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
         return this.kresmer.areasByName;
     }//_byNameIndex
 
-    override addVertex(segmentNumber: number, mousePos: Position)
+    override addVertex(segmentNumber: number, pos: Position, geometry?: AreaVertexGeometry)
     {
-        console.debug(`Add vertex: ${this.name}:${segmentNumber} (${mousePos.x}, ${mousePos.y})`);
+        console.debug(`Add vertex: ${this.name}:${segmentNumber} (${pos.x}, ${pos.y})`);
         const vertexNumber = segmentNumber + 1;
-        const pos = this.kresmer.applyScreenCTM(mousePos);
-        const vertex: AreaVertex = new AreaVertex(this, vertexNumber, {pos}).init();
+        const vertex: AreaVertex = new AreaVertex(this, vertexNumber, {pos, geometry}).init();
         this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
         return vertex;
     }//addVertex

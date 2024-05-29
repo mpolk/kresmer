@@ -11,6 +11,7 @@ import { kresmerCoordsToGlobal, assertNoExceptions } from "../support/component"
 import DrawingArea from "../../src/DrawingArea/DrawingArea";
 // import DrawingAreaClass from "../../src/DrawingArea/DrawingAreaClass";
 import chaiColors from 'chai-colors';
+import { AreaVertexInitParams } from "DrawingArea/AreaVertex";
 chai.use(chaiColors);
 
 describe('DrawingArea object test', () => {
@@ -35,15 +36,15 @@ describe('DrawingArea object test', () => {
         expect(kresmer.getAreaByName("Triangular Swamp")).to.be.undefined;
     })
 
-    const vertexCoords = [
-      {x: 100, y: 100},
-      {x: 900, y: 100},
-      {x: 500, y: 900},
+    const vertexData = [
+      {pos: {x: 100, y: 100}},
+      {pos: {x: 900, y: 100}},
+      {pos: {x: 500, y: 900}, geometry: {type: "S" as const, cp2: {x: 550, y:980}}},
     ];
     it("Then we create a triangular Swamp area", () => {
         const triangularSwamp = new DrawingArea(kresmer, "Swamp", {
             name: "Triangular Swamp",
-            vertices: vertexCoords.map(pos => {return {pos}}),
+            vertices: vertexData,
         });
         
         kresmer.addArea(triangularSwamp);
@@ -56,7 +57,6 @@ describe('DrawingArea object test', () => {
     })
     specify("...and it's painted with a Swamp pattern", () => {
         cy.get("path.Swamp.area").should("have.css", "fill").then(fill => {expect(fill).match(/kre:std:Swamp/);});
-        // cy.get("path.Swamp.area").should("have.css", "stroke").and("be.colored", "blue");
     })
     specify("...and naturally a triangular swamp has exactly 3 vertices", () => {
         cy.get(".vertex").should("have.length", 3);
@@ -73,8 +73,8 @@ describe('DrawingArea object test', () => {
     })
 
     const [deltaX, deltaY] = [-50, 100];
-    const secondVertexNewCoords = {x: vertexCoords[1].x + deltaX, y: vertexCoords[1].y + deltaY}
-    it(`Now we drag the right corner from ${JSON.stringify(vertexCoords[1])} by (${deltaX},${deltaY})`, () => {
+    const secondVertexNewCoords = {x: vertexData[1].pos.x + deltaX, y: vertexData[1].pos.y + deltaY}
+    it(`Now we drag the right corner from ${JSON.stringify(vertexData[1])} by (${deltaX},${deltaY})`, () => {
         kresmer.autoAlignVertices = false;
         cy.get(".vertex.area").eq(1).drag(deltaX, deltaY);
     })
@@ -89,10 +89,15 @@ describe('DrawingArea object test', () => {
     })
 
     it("Add one more vertex", () => {
-        swamp.addVertex(1, kresmerCoordsToGlobal({x: 800, y: 800}));
+        swamp.addVertex(1, {x: 800, y: 800});
     })
     specify("...and now the triangular swamp is actually quadrangular and has 4 vertices", () => {
         cy.get(".area.vertex").should("have.length", 4);
+    })
+
+    specify("...and even pentagular after adding yet one more vertex", () => {
+        swamp.addVertex(3, {x: 150, y: 400});
+        cy.get(".area.vertex").should("have.length", 5);
     })
 
     const p1 = {x: 500, y: 120};
@@ -129,17 +134,20 @@ describe('DrawingArea object test', () => {
         expect(isInTheSwamp(p3)).to.be.true;
     })//specify
 
-    it("Give the fourth vertex a S-type", () => {
-        swamp.vertices[3].geometry = {type: "S", cp2: {x: 550, y:980}};
-    })
-
-    // it("Give the first vertex a T-type", () => {
-    //     swamp.vertices[0].geometry = {type: "T"};
+    // it("Give the fourth vertex a S-type", () => {
+    //     swamp.vertices[3].geometry = {type: "S", cp2: {x: 550, y:980}};
     // })
+
+    it("Give the 5th vertex a T-type", () => {
+        swamp.vertices[4].geometry = {type: "T"};
+    })
 
     it("Put a coastline between the 2nd and 4th vertices", () => {
         kresmer.deselectAllElements();
         swamp.setBorder({clazz: "coast", from: 1, to: 3});
+    })
+    specify("...now we have a blue coastline", () => {
+        cy.get(".Swamp.area path.coast").should("have.css", "stroke").and("be.colored", "blue");
     })
 
 })//describe
