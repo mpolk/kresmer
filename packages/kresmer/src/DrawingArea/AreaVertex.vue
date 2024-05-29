@@ -50,12 +50,14 @@
 
 <template>
     <AreaVertexHandleVue v-if="showNextVertexHandles && nextVertex.geometry.type === 'C'" 
-        :vertex="model" :handle-number="1" :pos="nextVertex.geometry.controlPoints[1]!" :event-target="nextVertex"/>
+        :vertex="model" :handle-number="1" :pos="nextVertex.geometry.controlPoints[0]!" :event-target="nextVertex"/>
     <template v-if="showThisVertexHandles">
-        <AreaVertexHandleVue v-if="model.geometry.type === 'C' || model.geometry.type === 'S'" 
-            :vertex="model" :handle-number="2" :pos="model.geometry.controlPoints[2]!"/>
+        <AreaVertexHandleVue v-if="model.geometry.type === 'C'" 
+            :vertex="model" :handle-number="2" :pos="model.geometry.controlPoints[1]!"/>
+        <AreaVertexHandleVue v-if="model.geometry.type === 'S'" 
+            :vertex="model" :handle-number="1" :pos="model.geometry.controlPoints[0]!"/>
         <AreaVertexHandleVue v-else-if="model.geometry.type === 'Q'" 
-            :vertex="model" :handle-number="1" :pos="model.geometry.controlPoints[1]!" :vertex2="prevVertex"/>
+            :vertex="model" :handle-number="1" :pos="model.geometry.controlPoints[0]!" :vertex2="prevVertex"/>
     </template>
     <BaseVertexVue :model="model" :additional-classes="{area: true, 'selected-vertex': model.isSelected}"/>
 </template>

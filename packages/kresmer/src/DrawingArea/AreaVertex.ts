@@ -62,7 +62,7 @@ export default class AreaVertex extends Vertex {
 
     public startHandleDrag(event: MouseEvent, handleNumber: 1|2)
     {
-        this.dragStartPos = {...this._geometry.controlPoints[handleNumber]!};
+        this.dragStartPos = {...this._geometry.controlPoints[handleNumber-1]!};
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToDragHandle= handleNumber;
         if (event.shiftKey)
@@ -96,19 +96,19 @@ export default class AreaVertex extends Vertex {
 
         switch (this.dragConstraint) {
             case "x":
-                this._geometry.controlPoints[handleNumber] = {
+                this._geometry.controlPoints[handleNumber-1] = {
                     x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
                     y: this.dragStartPos!.y,
                 }
                 break;
             case "y":
-                this._geometry.controlPoints[handleNumber] = {
+                this._geometry.controlPoints[handleNumber-1] = {
                     x: this.dragStartPos!.x,
                     y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
                 }
                 break;
             default:
-                this._geometry.controlPoints[handleNumber] = {
+                this._geometry.controlPoints[handleNumber-1] = {
                     x: mousePos.x - this.savedMousePos!.x + this.dragStartPos!.x,
                     y: mousePos.y - this.savedMousePos!.y + this.dragStartPos!.y,
                 }
@@ -130,9 +130,9 @@ export default class AreaVertex extends Vertex {
         MouseEventCapture.release();
 
         if (this.snapToGrid) {
-            this._geometry.controlPoints[handleNumber] = {
-                x: Math.round(this._geometry.controlPoints[handleNumber]!.x / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity,
-                y: Math.round(this._geometry.controlPoints[handleNumber]!.y / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity
+            this._geometry.controlPoints[handleNumber-1] = {
+                x: Math.round(this._geometry.controlPoints[handleNumber-1]!.x / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity,
+                y: Math.round(this._geometry.controlPoints[handleNumber-1]!.y / this.parentElement.kresmer.snappingGranularity) * this.parentElement.kresmer.snappingGranularity
             };
         }//if
 
@@ -169,10 +169,26 @@ export default class AreaVertex extends Vertex {
         this.parentElement.kresmer.emit("area-vertex-right-click", this, event);
     }//onRightClick
 
-    toPath()
+
+    toPath(prevVertex?: AreaVertex)
     {
-        return this._geometry.toPath(this.coords);
+        let g = this._geometry;
+        if (prevVertex?._geometry.controlPoints.length) {
+            const cp0 = prevVertex._geometry.controlPoints[prevVertex._geometry.controlPoints.length - 1];
+            const cp1 = {x: 2 * prevVertex.coords.x - cp0.x, y: 2 * prevVertex.coords.y - cp0.y};
+            switch (this._geometry.type) {
+                case "S": 
+                    g = new Geometry({type:"C", cp1, cp2: this._geometry.controlPoints[0]!});
+                    break;
+                case "T": 
+                    g = new Geometry({type:"Q", cp: cp1});
+                    break;
+            }//switch
+        }//if
+
+        return g.toPath(this.coords);
     }//toPath
+
 }//AreaVertex
 
 export type AreaVertexGeometry =
@@ -187,26 +203,29 @@ class Geometry {
     {
         if (init instanceof Geometry) {
             this.type = init.type;
-            this.controlPoints = [...init.controlPoints];
+            init.controlPoints.forEach(cp => {this.controlPoints.push({...cp})});
         } else if (init) {
             this.type = init.type;
-            this.controlPoints[1] = "cp1" in init ? init.cp1 : "cp" in init ? init.cp : undefined;
-            this.controlPoints[2] = "cp2" in init ? init.cp2 : undefined;
+            if ("cp" in init)
+                this.controlPoints.push({...init.cp});
+            if ("cp1" in init)
+                this.controlPoints.push({...init.cp1});
+            if ("cp2" in init)
+                this.controlPoints.push({...init.cp2});
         } else {
             this.type = "L";
         }//if
     }//ctor
 
     readonly type: AreaVertexGeometry["type"];
-    readonly controlPoints: (Position|undefined)[] = [];
+    readonly controlPoints: Position[] = [];
 
     toPath(pos: Position)
     {
         const chunks: string[] = [this.type];
-        if (this.controlPoints[1])
-            chunks.push(`${this.controlPoints[1].x},${this.controlPoints[1].y}`);
-        if (this.controlPoints[2])
-            chunks.push(`${this.controlPoints[2].x},${this.controlPoints[2].y}`);
+        for (const cp of this.controlPoints) {
+            chunks.push(`${cp.x},${cp.y}`);
+        }//for
         chunks.push(`${pos.x},${pos.y}`);
         return chunks.join(" ");
     }//toPath

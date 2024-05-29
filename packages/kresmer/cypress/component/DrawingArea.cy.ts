@@ -138,6 +138,7 @@ describe('DrawingArea object test', () => {
     // })
 
     it("Put a coastline between the 2nd and 3rd vertices", () => {
+        kresmer.deselectAllElements();
         swamp.setBorder({clazz: "coast", from: 0, to: 3});
     })
 

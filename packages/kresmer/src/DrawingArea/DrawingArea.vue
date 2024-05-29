@@ -11,6 +11,7 @@
     import DrawingArea, { AreaBorder } from './DrawingArea';
     import DrawingElement from '../DrawingElement/DrawingElement';
     import DrawingVertexVue from './AreaVertex.vue';
+    import AreaVertex from './AreaVertex';
     
     export default {
         components: { DrawingVertexVue }
@@ -91,19 +92,21 @@
     function segMarkPathData(i: number)
     {
         const v1 = props.model.vertices[i], v2 = props.model.vertices[(i+1)%props.model.vertices.length];
-        return `M${v1.coords.x},${v1.coords.y} ${v2.toPath()}`;
+        return `M${v1.coords.x},${v1.coords.y} ${v2.toPath(v1)}`;
     }//segMarkPathData
 
     function borderPathData(border: AreaBorder)
     {
         const chunks: string[] = [];
         let i = border.from;
-        chunks.push(`M${props.model.vertices[i].coords.x},${props.model.vertices[i].coords.y}`);
+        let v0: AreaVertex|undefined = props.model.vertices[i];
+        chunks.push(`M${v0.coords.x},${v0.coords.y}`);
 
         const n = border.to > border.from ? border.to : border.to + props.model.vertices.length;
         for (i++; i <= n; i++) {
             const v = props.model.vertices[i % props.model.vertices.length];
-            chunks.push(v.toPath());
+            chunks.push(v.toPath(v0));
+            v0 = undefined;
         }//for
         return chunks.join(" ");
     }//borderPathData
@@ -119,18 +122,6 @@
         <path v-for="(border, i) in model.borders" :key="`border${i}`" 
             :d="borderPathData(border)" :class="border.clazz" style="fill: none;" />
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
-            <line 
-                :x1="vertex.coords.x" :y1="vertex.coords.y" 
-                :x2="model.vertices[(i+1)%model.vertices.length].coords.x" 
-                :y2="model.vertices[(i+1)%model.vertices.length].coords.y" 
-                class="padding" style="stroke: transparent; fill: none;" 
-                @click.self="model.onClick($event, i)"
-                @contextmenu.self="model.onRightClick($event, i)"
-                @dblclick.self="model.onDoubleClick($event, i)"
-                :style="cursorStyle"
-                >
-                <title>{{model.displayString}}</title>
-            </line>
             <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
             <text class="area seg-mark" :style="segMarkStyle">
                 <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
