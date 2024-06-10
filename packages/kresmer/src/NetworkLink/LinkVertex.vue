@@ -177,7 +177,8 @@ class=${JSON.stringify(clazz)}`;
                    :additional-attrs="baseVertexAttrs"
                    @updated="trackMoving"
                    >
-        <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y">
+        <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y"
+            @mousedown.stop="onMouseDown($event)">
             {{ linkNumber.number }}
             <title>{{ linkNumber.debugInfo }}</title>
         </text>

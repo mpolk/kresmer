@@ -27,9 +27,13 @@ export default function useVertex(model: Ref<Vertex>) {
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1 && isEditable) {
-            event.preventDefault();
-            model.value.startDrag(event);
+        if (event.buttons === 1) {
+            if (isEditable) {
+                event.preventDefault();
+                model.value.startDrag(event);
+            } else {
+                model.value.parentElement.selectThis()
+            }//if
         }//if
     }//onMouseDown
 
