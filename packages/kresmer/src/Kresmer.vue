@@ -68,8 +68,6 @@
             marginLeft: zoomedOffset(props.controller.mountingWidth), 
             marginTop: zoomedOffset(props.controller.mountingHeight),
             backgroundColor: props.controller.backgroundColor,
-            width: zoomed(props.controller.mountingWidth),
-            height: zoomed(props.controller.mountingHeight),
         }; 
 
         if (props.controller.backgroundImage.nonEmpty) {
@@ -81,6 +79,13 @@
 
     const backgroundMaskStyle = computed(() => {
         return {...rulerBox.value, pointerEvents: "none"} as StyleValue;
+    });
+
+    const mountingDims = computed(() => {
+        return {
+            width: zoomed(props.controller.mountingWidth),
+            height: zoomed(props.controller.mountingHeight)
+        }
     });
 
     const viewBox = computed(() => `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`);
@@ -170,7 +175,7 @@
 <template>
     <svg xmlns="http://www.w3.org/2000/svg" 
         class="kresmer" ref="rootSVG" 
-        :style="rootSVGStyle" :viewBox="viewBox"
+        :style="rootSVGStyle" v-bind="mountingDims" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
         @contextmenu.self="onCanvasRightClick($event)"
         @mousemove.prevent.self="onMouseMove"
