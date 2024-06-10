@@ -32,7 +32,7 @@ export default function useVertex(model: Ref<Vertex>) {
                 event.preventDefault();
                 model.value.startDrag(event);
             } else {
-                model.value.parentElement.selectThis()
+                model.value.parentElement.selectThis();
             }//if
         }//if
     }//onMouseDown

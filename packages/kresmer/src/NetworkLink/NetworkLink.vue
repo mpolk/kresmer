@@ -171,7 +171,11 @@
                 <template v-if="nFibers && (!startLabel || i > 1) && (!endLabel || i < model.vertices.length-1)">
                     <path :id="segmentPathID(i)" :d="segMarkPathData(i)" fill="none" stroke="none"/>
                     <text class="seg-mark" :style="segMarkStyle">
-                        <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ `/${nFibers}` }}</textPath>
+                        <textPath :href="`#${segmentPathID(i)}`" startOffset="50%"
+                            @click.self.prevent="model.onClick(i - 1, $event)"
+                            @contextmenu.self="model.onRightClick(i - 1, $event)"
+                            @dblclick.self.prevent.stop="model.onDoubleClick(i - 1, $event)"
+                            >{{ `/${nFibers}` }}</textPath>
                     </text>
                 </template>
             </template>
