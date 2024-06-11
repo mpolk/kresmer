@@ -91,6 +91,7 @@
     const segMarkStyle = computed(() => {
         return {
             fill: props.model.isHighlighted || props.model.isSelected ? props.highlightColor : props.color,
+            cursor: "pointer",
         }
     })//segMarkStyle
 
@@ -163,7 +164,7 @@
                     class="padding" style="stroke: transparent; fill: none;" 
                     @click.self="model.onClick(i - 1, $event)"
                     @contextmenu.self="model.onRightClick(i - 1, $event)"
-                    @dblclick.self="model.onDoubleClick(i - 1, $event)"
+                    @dblclick.self.prevent="model.onDoubleClick(i - 1, $event)"
                     :style="cursorStyle"
                     :data-link-bundle="segmentDataAttr(i-1)"
                     ><title>{{model.displayString}}</title>
@@ -172,9 +173,9 @@
                     <path :id="segmentPathID(i)" :d="segMarkPathData(i)" fill="none" stroke="none"/>
                     <text class="seg-mark" :style="segMarkStyle">
                         <textPath :href="`#${segmentPathID(i)}`" startOffset="50%"
-                            @click.self.prevent="model.onClick(i - 1, $event)"
+                            @click.self="model.onClick(i - 1, $event)"
                             @contextmenu.self="model.onRightClick(i - 1, $event)"
-                            @dblclick.self.prevent.stop="model.onDoubleClick(i - 1, $event)"
+                            @dblclick.self.prevent="model.onDoubleClick(i - 1, $event)"
                             >{{ `/${nFibers}` }}</textPath>
                     </text>
                 </template>
