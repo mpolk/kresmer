@@ -10,7 +10,7 @@
     /* eslint-disable vue/no-mutating-props */
     import { PropType, computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
-    import { ElementPropDescriptor, ikExpansionTrigger } from './ElementPropsSidebar.vue';
+    import { ElementPropDescriptor, ikClipboardContent, ikExpansionTrigger } from './ElementPropsSidebar.vue';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
     import { selectOrLoadGraphicsFile } from './renderer-main';
 
@@ -63,6 +63,7 @@
 
     const emit = defineEmits<{
         (e: "add-subprop", parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"|"object"): void,
+        (e: "copy-to-clipboard", data: string): void,
     }>();
 
     /** A callback for sorting subproperties. 
@@ -217,6 +218,32 @@
     {
         props.propToEdit.value = await selectOrLoadGraphicsFile(urlType.value);
     }//setGraphicsURL
+
+
+    const clipboardContent = inject(ikClipboardContent);
+
+    function copyColorToClipboard()
+    {
+        const color = String(props.propToEdit.value);
+        navigator.clipboard.writeText(color);
+        emit("copy-to-clipboard", color)
+    }//copyColorToClipboard
+
+    async function pasteColorFromClipboard()
+    {
+        const color = await navigator.clipboard.readText()
+        if (color.match(/#[0-9a-fA-F]{6}/))
+            props.propToEdit.value = color;
+    }//pasteColorFromClipboard
+
+    const pasteColorButtonStyle = computed(() => {
+        if (clipboardContent?.value.match(/#[0-9a-fA-F]{6}/)) {
+            return {
+                border: `${clipboardContent.value} solid 3px`
+            }
+        }//if
+        return undefined;
+    })//pasteColorButtonStyle
 </script>
 
 <template>
@@ -312,10 +339,18 @@
                     </div>
                 </div>
                 <div class="col">
-                    <input v-show="propToEdit.value" type="color"
-                        ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                        class="form-control form-control-sm border-0"
-                        v-model="subpropModel"/>
+                    <div v-show="propToEdit.value" class="input-group input-group-sm">
+                        <button class="btn btn-outline-secondary" type="button" @click="copyColorToClipboard" title="Copy color">
+                            <div class="material-symbols-outlined">content_copy</div>
+                        </button>
+                        <button class="btn btn-outline-secondary" type="button" @click="pasteColorFromClipboard" :style="pasteColorButtonStyle" title="Paste color">
+                            <div class="material-symbols-outlined">content_paste</div>
+                        </button>
+                        <input v-show="propToEdit.value" type="color"
+                            ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
+                            class="form-control form-control-sm"
+                            v-model="subpropModel"/>
+                    </div>
                 </div>
             </div>
             <input v-else 

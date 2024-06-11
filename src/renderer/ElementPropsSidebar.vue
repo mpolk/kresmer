@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { InjectionKey, Ref, nextTick, provide, ref, watch } from 'vue';
+    import { InjectionKey, Ref, nextTick, provide, ref, watch, onMounted } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
     import { DrawingElement, DrawingElementClass, DrawingElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
@@ -24,6 +24,7 @@
     };
 
     export const ikExpansionTrigger = Symbol() as InjectionKey<Ref<ElementPropDescriptor|undefined>>;
+    export const ikClipboardContent = Symbol() as InjectionKey<Ref<string>>;
 
     export default {
         name: "ElementPropsSidebar",
@@ -48,6 +49,15 @@
 
     const expansionTrigger = ref<ElementPropDescriptor|undefined>();
     provide(ikExpansionTrigger, expansionTrigger);
+
+    const clipboardContent = ref("");
+    provide(ikClipboardContent, clipboardContent);
+
+    onMounted(() => {
+        navigator.clipboard.readText().then(content => {
+            clipboardContent.value = content;
+        })
+    })//onMounted
 
     /**
      * An array of the element props (with values)
@@ -379,7 +389,9 @@ Continue?`)) {
                                 {{ DrawingElementPropCategory[prop.category] }}
                             </td>
                         </tr>
-                        <ElementPropEditor :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" @add-subprop="addSubprop"/>
+                        <ElementPropEditor :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" 
+                            @add-subprop="addSubprop" 
+                            @copy-to-clipboard="data => clipboardContent = data"/>
                     </template>
                 </tbody></table>
                 <div class="d-flex justify-content-end">
