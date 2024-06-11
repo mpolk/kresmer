@@ -52,12 +52,22 @@
 
     const clipboardContent = ref("");
     provide(ikClipboardContent, clipboardContent);
+    const clipboardTrigger = ref(0);
 
-    onMounted(() => {
+    function loadClipboardContent()
+    {
         navigator.clipboard.readText().then(content => {
             clipboardContent.value = content;
-        })
-    })//onMounted
+        })//then
+    }//loadClipboardContent
+
+    function triggerClipboardLoading()
+    {
+        nextTick(loadClipboardContent);
+    }//triggerClipboardLoading
+
+    onMounted(loadClipboardContent);
+    watch(clipboardTrigger, loadClipboardContent);
 
     /**
      * An array of the element props (with values)
@@ -347,7 +357,8 @@ Continue?`)) {
 </script>
 
 <template>
-    <div ref="rootDiv" class="offcanvas offcanvas-end w-50" style="max-width: 600px;" tabindex="-1">
+    <div ref="rootDiv" class="offcanvas offcanvas-end w-50" style="max-width: 600px;" tabindex="-1"
+        @copy="triggerClipboardLoading" @cut="triggerClipboardLoading">
         <!-- Sidebar header -->
         <div class="offcanvas-header align-items-baseline">
             <div>
