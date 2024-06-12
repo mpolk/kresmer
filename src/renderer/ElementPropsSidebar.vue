@@ -52,7 +52,6 @@
 
     const clipboardContent = ref("");
     provide(ikClipboardContent, clipboardContent);
-    const clipboardTrigger = ref(0);
 
     function loadClipboardContent()
     {
@@ -67,7 +66,6 @@
     }//triggerClipboardLoading
 
     onMounted(loadClipboardContent);
-    watch(clipboardTrigger, loadClipboardContent);
 
     /**
      * An array of the element props (with values)
