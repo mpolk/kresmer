@@ -20,6 +20,9 @@
 
 <script setup lang="ts">
 
+    // Tunable parameters
+    const minPlaceForSegmentLabel = 30;
+
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
         startLabel: {type: String, required: false},
@@ -143,6 +146,12 @@
         const p1 = props.model.vertices[i-1].coords, p2 = props.model.vertices[i].coords;
         return (p2.x < p1.x) ? `M${p2.x},${p2.y} L${p1.x},${p1.y}` : `M${p1.x},${p1.y} L${p2.x},${p2.y}`;
     }//segMarkPathData
+
+    function segmentLength(i: number)
+    {
+        const p1 = props.model.vertices[i-1].coords, p2 = props.model.vertices[i].coords;
+        return Math.hypot(p2.x - p1.x, p2.y - p1.y);
+    }//segmentLength
 </script>
 
 <template>
@@ -169,14 +178,14 @@
                     :data-link-bundle="segmentDataAttr(i-1)"
                     ><title>{{model.displayString}}</title>
                 </line>
-                <template v-if="nFibers && (!startLabel || i > 1) && (!endLabel || i < model.vertices.length-1)">
+                <template v-if="nFibers && (!startLabel || i > 1) && (!endLabel || i < model.vertices.length-1) && segmentLength(i) > minPlaceForSegmentLabel">
                     <path :id="segmentPathID(i)" :d="segMarkPathData(i)" fill="none" stroke="none"/>
                     <text class="seg-mark" :style="segMarkStyle">
                         <textPath :href="`#${segmentPathID(i)}`" startOffset="50%"
                             @click.self="model.onClick(i - 1, $event)"
                             @contextmenu.self="model.onRightClick(i - 1, $event)"
                             @dblclick.self.prevent="model.onDoubleClick(i - 1, $event)"
-                            >{{ `/${nFibers}` }}</textPath>
+                            >{{ `＊${nFibers}` }}</textPath>
                     </text>
                 </template>
             </template>
