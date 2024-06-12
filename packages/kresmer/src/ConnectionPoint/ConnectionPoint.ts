@@ -69,9 +69,13 @@ export default class ConnectionPoint {
     readonly posUpdateTrigger = reactive({value: 0});
     /** A method to activate the coord update trigger. We have to use lambda-function to have
      *  access to the proper "this". */
-    readonly updatePos = () =>
+    readonly updatePos = (newPos?: Position) =>
     {
-        this.posUpdateTrigger.value++;
+        if (newPos) {
+            ({x: this.coords.x, y: this.coords.y} = newPos);
+        } else {
+            this.posUpdateTrigger.value++;
+        }//if
     }//updatePos
 
     /** A collection of link vertices currently connected to this connection point */

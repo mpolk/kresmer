@@ -26,7 +26,7 @@ export default abstract class DrawingElementWithVertices extends withVertices(Dr
     }//addConnectionPoint
 
     override updateConnectionPoints(): void {
-        this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos());
+        this.vertices.forEach(vertex => vertex.ownConnectionPoint.updatePos(vertex.coords));
     }//updateConnectionPoints()
 
 }//DrawingElementWithVertices
