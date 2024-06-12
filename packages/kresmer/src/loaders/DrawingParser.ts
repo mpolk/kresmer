@@ -238,13 +238,13 @@ export default class DrawingParser {
                 }}
             },
             {
-                pattern: /^([-A-Za-z0-9_]+):([-A-Za-z0-9_:/]+(?:@[a-z0-9]+)?)$/, 
+                pattern: /^((?:[-0-9_]|\p{L})+):((?:[-0-9_:/]|\p{L})+(?:@[a-z0-9]+)?)$/u, 
                 handler: (matches: string[]) => {
                     return {cpData: {cpHostElement: matches[1], connectionPoint: matches[2]}}
                 }
             },
             {
-                pattern: /^@([-A-Za-z0-9_]+):([0-9]+):([0-9]+(?:\.[0-9]*)?)$/, 
+                pattern: /^@((?:[-0-9_]|\p{L})+):([0-9]+):([0-9]+(?:\.[0-9]*)?)$/u, 
                 handler: (matches: string[]) => {
                     return {bundleData: {bundleName: matches[1], baseVertex: parseInt(matches[2]), distance: parseFloat(matches[3])}}
                 }
