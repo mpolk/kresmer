@@ -9,7 +9,8 @@
  *       This sub-library contains various network link classes
 <*************************************************************************** -->
 
-<kresmer-library name="std-links" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="std-links" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot"
+    xmlns:ua="ua">
 
     <!-- *********************************************** Links ********************************************************* -->
 
@@ -57,6 +58,9 @@
             <prop name="endMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
             <prop name="color" type="Color" category="Presentation"/>
             <prop name="highlightColor" type="Color" category="Presentation"/>
+            <prop name="thickness" type="string" choices="thin,normal,thick" category="Presentation"
+                ua:description="товщина" ua:choices="тонкий,нормальний,товстий"
+                />
         </props>
         <style>
             .padding {stroke-width: 8px;}
@@ -145,7 +149,9 @@
             .padding {stroke-width: 10px;}
             .vertex.padding {fill: #ff873d;}
             .segment {stroke-width: 2px; stroke-linejoin: round;}
-            .segment.highlighted, .segment.selected {stroke-width: 3px}
+            .segment.thin {stroke-width: 1.5px;}
+            .segment.highlighted, .segment.selected, .segment.thick {stroke-width: 3px}
+            .segment.highlighted.thick, .segment.selected.thick {stroke-width: 3.5px}
             .vertex {stroke-width: 4px; r: 6px}
             .blank.header {fill-opacity: 0.3;}
         </style>

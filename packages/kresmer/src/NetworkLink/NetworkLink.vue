@@ -33,6 +33,7 @@
         highlightColor: {type: String, required: false},
         layingMethod: {type: String, required: false},
         nFibers: {type: Number, required: false},
+        thickness: {type: String, required: false},
     });
 
     // eslint-disable-next-line vue/no-setup-props-destructure
@@ -67,6 +68,8 @@
             segment: true,
             selected: props.model.isSelected,
             highlighted: props.model.isHighlighted,
+            thick: props.thickness === "thick",
+            thin: props.thickness === "thin",
         }
     })//segmentClass
 
