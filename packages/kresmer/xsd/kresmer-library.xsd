@@ -7,10 +7,12 @@
  *            Schema  for the Kresmer libraries validation
  *************************************************************************** -->
 <xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-           xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre">
+           xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre"
+           xmlns:ua="ua">
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:import namespace="v-slot" schemaLocation="v-slot.xsd"/>
     <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
+    <xs:import namespace="ua" schemaLocation="ua.xsd"/>
 
     <!-- Library itself (the root element) -->
     <xs:element name="kresmer-library">
@@ -34,6 +36,9 @@
 
                             <xs:attribute name="name" use="required" />
                             <xs:attribute name="category" />
+
+                            <xs:attribute ref="ua:name" />
+                            <xs:attribute ref="ua:category" />
                         </xs:complexType>
                     </xs:element>
 
@@ -53,6 +58,9 @@
                     
                             <xs:attribute name="name" use="required" />
                             <xs:attribute name="category" />
+
+                            <xs:attribute ref="ua:name" />
+                            <xs:attribute ref="ua:category" />
                         </xs:complexType>
                     </xs:element>
 
@@ -83,6 +91,9 @@
 
         <xs:attribute name="name" use="required" />
         <xs:attribute name="category" />
+
+        <xs:attribute ref="ua:name" />
+        <xs:attribute ref="ua:category" />
     </xs:complexType>
 
     <!-- SVG content (used mostly in templates) -->
@@ -415,6 +426,9 @@
                         <xs:attribute name="range" />
                         <xs:attribute name="pattern" />
                         <xs:attribute name="description"/>
+
+                        <xs:attribute ref="ua:choices" />
+                        <xs:attribute ref="ua:description" />
 
                         <xs:attribute name="category">
                             <xs:simpleType>
