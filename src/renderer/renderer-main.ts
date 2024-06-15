@@ -8,7 +8,7 @@
 
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive, toRaw } from 'vue';
-// import vueDevtools from '@vue/devtools';
+import vueDevtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
 import ToastPane from './ToastPane.vue';
@@ -34,9 +34,9 @@ import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
 import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 import { URLType } from './URLType';
 
-// if (process.env.NODE_ENV === 'development') {
-//     vueDevtools.connect(/* host, port */)
-// }//if
+if (process.env.NODE_ENV === 'development') {
+    vueDevtools.connect(/* host, port */)
+}//if
 
 export const enum AppInitStage {
     HANDLERS_INITIALIZED = 0,
