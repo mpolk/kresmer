@@ -818,6 +818,7 @@ export class LinkVertexAnchor extends VertexAnchor  {
         if (this._pos) {
             this._conn = undefined;
             this._bundle = undefined;
+            this.vertex.ownConnectionPoint.isActive = true;
         }//if
     }//set pos
 
