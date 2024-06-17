@@ -41,7 +41,9 @@ export default class NetworkLinkClass extends DrawingElementClass {
     {
         super(name, params);
 
-        NetworkLinkClass.allClasses[name] = this;
+        const existingClass = NetworkLinkClass.allClasses[name];
+        if (!existingClass || existingClass.version < this.version)
+            NetworkLinkClass.allClasses[name] = this;
     }//ctor
 
     override readonly usesEmbedding = false;
@@ -64,6 +66,16 @@ export default class NetworkLinkClass extends DrawingElementClass {
      * @returns The vue-component name defs
      */
      get defsVueName() {return "_Kre:link:" + this.name + ".defs"}
+
+
+     override selfToXML(indent: number): string 
+     {
+         let xml = "";
+         xml += `${"\t".repeat(indent)}<link-class name="${this.name}">\n`;
+ 
+         xml += `${"\t".repeat(indent)}</link-class>\n`;
+         return xml;
+     }//selfToXML
 }//LinkClass
 
 /** Class specialized for the link bundles */

@@ -7,16 +7,19 @@
  *              Schema  for the Kresmer drawings validation
  *************************************************************************** -->
  <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:include schemaLocation="kresmer-library.xsd"/>
+
     <xs:element name="kresmer-drawing">
         <xs:complexType>
             <xs:sequence>
+                <xs:element name="library" type="library" minOccurs="0"/>
                 <xs:choice maxOccurs="unbounded">
 
                     <xs:element name="component">
                         <xs:complexType>
                             <xs:all>
 
-                                <xs:element ref="props" minOccurs="0"/>                        
+                                <xs:element name="props" type="drawing-element-props" minOccurs="0"/>                        
 
                                 <xs:element name="origin">
                                     <xs:complexType>
@@ -72,7 +75,7 @@
 
     <xs:complexType name="link-base">
         <xs:sequence>
-            <xs:element ref="props" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="props" type="drawing-element-props" minOccurs="0" maxOccurs="unbounded"/>
 
             <xs:element name="vertex" minOccurs="0" maxOccurs="unbounded">
                 <xs:complexType>
@@ -97,20 +100,18 @@
         </xs:complexContent>
     </xs:complexType>
 
-    <xs:element name="props">
-        <xs:complexType>
-            <xs:sequence>
-                <xs:element name="prop" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:simpleContent>
-                            <xs:extension base="xs:string">
-                                <xs:attribute name="name" use="required" />
-                            </xs:extension>
-                        </xs:simpleContent>
-                    </xs:complexType>
-                </xs:element>
-            </xs:sequence>
-        </xs:complexType>
-    </xs:element>
+    <xs:complexType name="drawing-element-props">
+        <xs:sequence>
+            <xs:element name="prop" maxOccurs="unbounded">
+                <xs:complexType>
+                    <xs:simpleContent>
+                        <xs:extension base="xs:string">
+                            <xs:attribute name="name" use="required" />
+                        </xs:extension>
+                    </xs:simpleContent>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>

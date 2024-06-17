@@ -41,7 +41,9 @@ export default class DrawingAreaClass extends DrawingElementClass {
     {
         super(name, params);
 
-        DrawingAreaClass.allClasses[name] = this;
+        const existingClass = DrawingAreaClass.allClasses[name];
+        if (!existingClass || existingClass.version < this.version)
+            DrawingAreaClass.allClasses[name] = this;
     }//ctor
 
     override readonly usesEmbedding = false;
@@ -64,4 +66,14 @@ export default class DrawingAreaClass extends DrawingElementClass {
      * @returns The vue-component name defs
      */
      get defsVueName() {return "_Kre:area:" + this.name + ".defs"}
+
+
+    override selfToXML(indent: number): string 
+    {
+        let xml = "";
+        xml += `${"\t".repeat(indent)}<area-class name="${this.name}">\n`;
+
+        xml += `${"\t".repeat(indent)}</area-class>\n`;
+        return xml;
+    }//selfToXML
 }//DrawingAreaClass

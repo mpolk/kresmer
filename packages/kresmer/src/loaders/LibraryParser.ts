@@ -48,64 +48,83 @@ export default class LibraryParser {
             yield new LibParams(libName);
 
         for (let i = 0; i < root.children.length; i++) {
-            const node = root.children[i];
-            switch (node.nodeName) {
-                case "component-class":
-                    try {
-                        yield this.parseComponentClassNode(node);
-                    } catch (exc) {
-                        if (exc instanceof ParsingException)
-                            yield exc;
-                        else
-                            throw exc;
-                    }//catch
-                    break;
-                case "link-class": case "link-bundle-class":
-                    try {
-                        yield this.parseLinkClassNode(node);
-                    } catch (exc) {
-                        if (exc instanceof ParsingException)
-                            yield exc;
-                        else
-                            throw exc;
-                    }//catch
-                    break;
-                case "area-class":
-                    try {
-                        yield this.parseAreaClassNode(node);
-                    } catch (exc) {
-                        if (exc instanceof ParsingException)
-                            yield exc;
-                        else
-                            throw exc;
-                    }//catch
-                    break;
-                case "defs":
-                    yield new DefsLibNode(node);
-                    break;
-                case "style": {
-                        const style = this.parseCSS(node.innerHTML);
-                        if (style)
-                            yield new StyleLibNode(style);
-                    }
-                    break;
-                case "import":
-                    if (node.hasAttribute("library"))
-                        yield new ImportStatement(node.getAttribute("library")!, node.getAttribute("file-name") ?? undefined);
-                    else
-                        yield new LibraryParsingException(
-                            `Import statement without a "library" attribute`);
-                    break;
-                case "parsererror":
-                    yield new LibraryParsingException(
-                        `Syntax error: "${(node as HTMLElement).innerText}"`);
-                    break;
-                default:
-                    yield new LibraryParsingException(
-                        `Invalid top-level node in library: "${node.nodeName}"`);
-            }//switch
+            const parsedNode = this.parseLibrarySubnode(root.children[i]);
+            parsedNode && (yield parsedNode);
         }//for
     }//parseXML
+
+    /**
+     * Parses a library XML-node and yields the sequence 
+     * of the parsed library elements
+     * @param root library root node to parse
+     */
+    public *parseLibraryNode(root: Element): Generator<ParsedNode>
+    {
+        for (let i = 0; i < root.children.length; i++) {
+            const parsedNode = this.parseLibrarySubnode(root.children[i]);
+            parsedNode && (yield parsedNode);
+        }//for
+    }//parseLibraryNode
+
+
+    private parseLibrarySubnode(node: Element)
+    {
+        switch (node.nodeName) {
+            case "component-class":
+                try {
+                    return this.parseComponentClassNode(node);
+                } catch (exc) {
+                    if (exc instanceof ParsingException)
+                        return exc;
+                    else
+                        throw exc;
+                }//catch
+                break;
+            case "link-class": case "link-bundle-class":
+                try {
+                    return this.parseLinkClassNode(node);
+                } catch (exc) {
+                    if (exc instanceof ParsingException)
+                        return exc;
+                    else
+                        throw exc;
+                }//catch
+                break;
+            case "area-class":
+                try {
+                    return this.parseAreaClassNode(node);
+                } catch (exc) {
+                    if (exc instanceof ParsingException)
+                        return exc;
+                    else
+                        throw exc;
+                }//catch
+                break;
+            case "defs":
+                return new DefsLibNode(node);
+                break;
+            case "style": {
+                    const style = this.parseCSS(node.innerHTML);
+                    if (style)
+                        return new StyleLibNode(style);
+                }
+                break;
+            case "import":
+                if (node.hasAttribute("library"))
+                    return new ImportStatement(node.getAttribute("library")!, node.getAttribute("file-name") ?? undefined);
+                else
+                    return new LibraryParsingException(
+                        `Import statement without a "library" attribute`);
+                break;
+            case "parsererror":
+                return new LibraryParsingException(
+                    `Syntax error: "${(node as HTMLElement).innerText}"`);
+                break;
+            default:
+                return new LibraryParsingException(
+                    `Invalid top-level node in library: "${node.nodeName}"`);
+        }//switch
+    }//parseLibraryNode
 
 
     private parseComponentClassNode(node: Element)

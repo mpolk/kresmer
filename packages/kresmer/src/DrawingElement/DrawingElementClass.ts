@@ -128,6 +128,34 @@ export default abstract class DrawingElementClass {
      * @returns The vue-component name defs
      */
     abstract get defsVueName(): string;
+
+    /** Makes XML-representation  of the class */
+    toXML(indent: number, alreadySerialized: Set<DrawingElementClass>): string
+    {
+        if (alreadySerialized.has(this))
+            return "";
+        
+        let xml = "";
+        if (this.baseClass)
+            xml += this.baseClass.toXML(indent, alreadySerialized);
+        if (this.styleBaseClasses) {
+            for (const base of this.styleBaseClasses) {
+                xml += base.toXML(indent, alreadySerialized) + "\n";
+            }//for
+        }//if
+        if (this.propsBaseClasses) {
+            for (const base of this.propsBaseClasses) {
+                xml += base.toXML(indent, alreadySerialized) + "\n";
+            }//for
+        }//if
+
+        xml += this.selfToXML(indent) + "\n";
+        alreadySerialized.add(this);
+        return xml;
+    }//toXML
+
+    abstract selfToXML(indent: number): string;
+
 }//DrawingElementClass
 
 /** Drawing Element computed prop - translate to the common Vue computed property */

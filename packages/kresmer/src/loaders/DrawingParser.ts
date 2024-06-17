@@ -20,6 +20,7 @@ import ParsingException from "./ParsingException";
 import KresmerException, { KresmerExceptionSeverity } from "../KresmerException";
 import {toCamelCase} from "../Utils";
 import LinkBundle from "../NetworkLink/LinkBundle";
+import LibraryLoader from "./LibraryLoader";
 
 /**
  * Drawing file parser
@@ -65,6 +66,11 @@ export default class DrawingParser {
         for (let i = 0; i < root.children.length; i++) {
             const node = root.children[i];
             switch (node.nodeName) {
+                case "library": {
+                        const libraryLoader = new LibraryLoader(this.kresmer);
+                        libraryLoader.loadEmbeddedLibrary(node);
+                    }
+                    break;
                 case "component":
                     try {
                         yield this.parseComponentNode(node);

@@ -17,67 +17,74 @@
     <!-- Library itself (the root element) -->
     <xs:element name="kresmer-library">
         <xs:complexType>
-            <xs:sequence>
-
-                <xs:choice minOccurs="0" maxOccurs="unbounded">
-                    <xs:element ref="defs" minOccurs="0"/>
-                    
-                    <xs:element name="component-class">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element ref="extends" minOccurs="0" />
-                                <xs:element name="template" minOccurs="0" type="outermost-template"/>
-                                <xs:element ref="props" minOccurs="0"/>
-                                <xs:element ref="computed-props" minOccurs="0"/>
-                                <xs:element ref="functions" minOccurs="0"/>
-                                <xs:element ref="defs" minOccurs="0"/>
-                                <xs:element ref="style" minOccurs="0"/>
-                            </xs:all>
-
-                            <xs:attribute name="name" use="required" />
-                            <xs:attribute name="category" />
-
-                            <xs:attribute ref="ua:name" />
-                            <xs:attribute ref="ua:category" />
-                        </xs:complexType>
-                    </xs:element>
-
-                    <xs:element name="link-class" type="link-class"/>
-                    <xs:element name="link-bundle-class" type="link-class"/>
-
-                    <xs:element name="area-class">
-                        <xs:complexType>
-                            <xs:all>
-                                <xs:element ref="extends" minOccurs="0" />
-                                <xs:element ref="props" minOccurs="0"/>
-                                <xs:element ref="computed-props" minOccurs="0"/>
-                                <xs:element ref="functions" minOccurs="0"/>
-                                <xs:element ref="defs" minOccurs="0"/>
-                                <xs:element ref="style" minOccurs="0"/>
-                            </xs:all>
-                    
-                            <xs:attribute name="name" use="required" />
-                            <xs:attribute name="category" />
-
-                            <xs:attribute ref="ua:name" />
-                            <xs:attribute ref="ua:category" />
-                        </xs:complexType>
-                    </xs:element>
-
-                    <xs:element ref="style"/>
-    
-                    <xs:element name="import">
-                        <xs:complexType>
-                            <xs:attribute name="library" use="required"/>
-                            <xs:attribute name="file-name"/>
-                        </xs:complexType>
-                    </xs:element>
-                    
-                </xs:choice>
-            </xs:sequence>
-            <xs:attribute name="name" use="required"/>
+            <xs:complexContent>
+                <xs:extension base="library">
+                    <xs:attribute name="name" use="required"/>
+                </xs:extension>
+            </xs:complexContent>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="library">
+        <xs:sequence>
+
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:element ref="defs" minOccurs="0"/>
+                
+                <xs:element name="component-class">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element ref="extends" minOccurs="0" />
+                            <xs:element name="template" minOccurs="0" type="outermost-template"/>
+                            <xs:element ref="props" minOccurs="0"/>
+                            <xs:element ref="computed-props" minOccurs="0"/>
+                            <xs:element ref="functions" minOccurs="0"/>
+                            <xs:element ref="defs" minOccurs="0"/>
+                            <xs:element ref="style" minOccurs="0"/>
+                        </xs:all>
+
+                        <xs:attribute name="name" use="required" />
+                        <xs:attribute name="category" />
+
+                        <xs:attribute ref="ua:name" />
+                        <xs:attribute ref="ua:category" />
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element name="link-class" type="link-class"/>
+                <xs:element name="link-bundle-class" type="link-class"/>
+
+                <xs:element name="area-class">
+                    <xs:complexType>
+                        <xs:all>
+                            <xs:element ref="extends" minOccurs="0" />
+                            <xs:element ref="props" minOccurs="0"/>
+                            <xs:element ref="computed-props" minOccurs="0"/>
+                            <xs:element ref="functions" minOccurs="0"/>
+                            <xs:element ref="defs" minOccurs="0"/>
+                            <xs:element ref="style" minOccurs="0"/>
+                        </xs:all>
+                
+                        <xs:attribute name="name" use="required" />
+                        <xs:attribute name="category" />
+
+                        <xs:attribute ref="ua:name" />
+                        <xs:attribute ref="ua:category" />
+                    </xs:complexType>
+                </xs:element>
+
+                <xs:element ref="style"/>
+
+                <xs:element name="import">
+                    <xs:complexType>
+                        <xs:attribute name="library" use="required"/>
+                        <xs:attribute name="file-name"/>
+                    </xs:complexType>
+                </xs:element>
+                
+            </xs:choice>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="link-class">
         <xs:all>

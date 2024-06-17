@@ -144,6 +144,20 @@ export default class DrawingLoader {
 
 `;
 
+        if (this.kresmer.embedLibDataInDrawing) {
+            xml += "<library>\n";
+
+            for (const controller of this.kresmer.networkComponents.sorted.values()) {
+                xml += controller.component.getClass().toXML(2, new Set) + "\n\n";
+            }//for
+
+            for (const link of this.kresmer.links.sorted.values()) {
+                xml += link.getClass().toXML(2, new Set) + "\n\n";
+            }//for
+
+            xml += "</library>\n";
+        }//if
+
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
             xml += controller.toXML(1) + "\n\n";
         }//for

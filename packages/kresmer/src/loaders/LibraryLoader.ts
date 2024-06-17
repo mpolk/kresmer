@@ -8,7 +8,7 @@
 
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
-import LibraryParser, { DefsLibNode, ImportStatement, LibParams, StyleLibNode } from "./LibraryParser";
+import LibraryParser, { DefsLibNode, ImportStatement, LibParams, LibraryParsingException, StyleLibNode } from "./LibraryParser";
 import DrawingElementClass from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
@@ -111,6 +111,39 @@ export default class LibraryLoader
         }//for
         return nErrors;
     }//loadLibraries
+
+
+    /**
+     * Loads a library embedded into the drawing
+     * @param root library root node
+     */
+    public loadEmbeddedLibrary(root: Element)
+    {
+        // console.debug("Loading library...");
+        const parser = new LibraryParser(this.kresmer);
+        for (const element of parser.parseLibraryNode(root)) {
+            //console.debug(element);
+            if (element instanceof NetworkComponentClass) {
+                this.kresmer.registerNetworkComponentClass(element);
+
+            } else if (element instanceof NetworkLinkClass) {
+                this.kresmer.registerLinkClass(element);
+
+            } else if (element instanceof DrawingAreaClass) {
+                this.kresmer.registerAreaClass(element);
+
+            } else if (element instanceof DefsLibNode) {
+                this.kresmer.defs.push(element.data);
+                this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
+
+            } else if (element instanceof StyleLibNode) {
+                this.kresmer.styles.push(this.scopeStyles(element.data, undefined, false));
+
+            } else {
+                this.kresmer.raiseError(new LibraryParsingException(`Invalid embedded library content: ${element}`));
+            }//if
+        }//for
+    }//loadEmbeddedLibrary
 
     /**
      * Adds global and (optionally) component class scopes to the CSS style definition

@@ -730,6 +730,8 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Determines whether "dynamic" element prop values should be saved with the drawing */
     saveDynamicPropValuesWithDrawing = false;
+    /** Determines whether library elements (classes) should be saved with the drawing */
+    embedLibDataInDrawing = true;
 
 
     public exportDrawingToSVG(styles: string): string
