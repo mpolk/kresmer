@@ -73,7 +73,7 @@ export default class DrawingAreaClass extends DrawingElementClass {
         let xml = "";
         xml += `${"\t".repeat(indent)}<area-class name="${this.name}">\n`;
 
-        xml += `${"\t".repeat(indent)}</area-class>\n`;
+        xml += `${"\t".repeat(indent)}</area-class>\n\n`;
         return xml;
     }//selfToXML
 }//DrawingAreaClass

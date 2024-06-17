@@ -113,7 +113,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
          let xml = "";
          xml += `${"\t".repeat(indent)}<component-class name="${this.name}">\n`;
  
-         xml += `${"\t".repeat(indent)}</component-class>\n`;
+         xml += `${"\t".repeat(indent)}</component-class>\n\n`;
          return xml;
      }//selfToXML
  }//NetworkComponentClass

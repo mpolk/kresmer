@@ -140,16 +140,16 @@ export default abstract class DrawingElementClass {
             xml += this.baseClass.toXML(indent, alreadySerialized);
         if (this.styleBaseClasses) {
             for (const base of this.styleBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized) + "\n";
+                xml += base.toXML(indent, alreadySerialized);
             }//for
         }//if
         if (this.propsBaseClasses) {
             for (const base of this.propsBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized) + "\n";
+                xml += base.toXML(indent, alreadySerialized);
             }//for
         }//if
 
-        xml += this.selfToXML(indent) + "\n";
+        xml += this.selfToXML(indent);
         alreadySerialized.add(this);
         return xml;
     }//toXML

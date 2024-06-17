@@ -6,7 +6,7 @@
  *                  A loader for the drawing files
 \**************************************************************************/
 
-import Kresmer from "../Kresmer";
+import Kresmer, { DrawingElementClass } from "../Kresmer";
 import DrawingParser, { DrawingHeaderData } from "./DrawingParser";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
 import NetworkLink from "../NetworkLink/NetworkLink";
@@ -145,14 +145,15 @@ export default class DrawingLoader {
 `;
 
         if (this.kresmer.embedLibDataInDrawing) {
+            const alreadySerialized = new Set<DrawingElementClass>();
             xml += "<library>\n";
 
             for (const controller of this.kresmer.networkComponents.sorted.values()) {
-                xml += controller.component.getClass().toXML(2, new Set) + "\n\n";
+                xml += controller.component.getClass().toXML(2, alreadySerialized);
             }//for
 
             for (const link of this.kresmer.links.sorted.values()) {
-                xml += link.getClass().toXML(2, new Set) + "\n\n";
+                xml += link.getClass().toXML(2, alreadySerialized);
             }//for
 
             xml += "</library>\n";

@@ -73,7 +73,7 @@ export default class NetworkLinkClass extends DrawingElementClass {
          let xml = "";
          xml += `${"\t".repeat(indent)}<link-class name="${this.name}">\n`;
  
-         xml += `${"\t".repeat(indent)}</link-class>\n`;
+         xml += `${"\t".repeat(indent)}</link-class>\n\n`;
          return xml;
      }//selfToXML
 }//LinkClass
