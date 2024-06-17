@@ -45,6 +45,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
     {
         super(name, params);
         this.template = params.template;
+        this.baseClassChildNodes = params.baseClassChildNodes;
 
         if (this.baseClass  && this.template instanceof Element) {
             const baseClass = this.baseClass as NetworkComponentClass;
@@ -52,7 +53,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
             if (params.baseClassChildNodes) {
                 const n = params.baseClassChildNodes.length;
                 for (let i = 0; i < n; i++) {
-                    baseInstanceNode.append(params.baseClassChildNodes[0]);
+                    baseInstanceNode.append(params.baseClassChildNodes[i].cloneNode(true));
                 }//for
             }//if
             baseInstanceNode.setAttribute("v-bind:name", "name");
@@ -73,6 +74,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
             NetworkComponentClass.allClasses[name] = this;
     }//ctor
 
+    private readonly baseClassChildNodes?: NodeList;
     override readonly usesEmbedding = true;
     
     private static allClasses: Record<string, NetworkComponentClass> = {};
@@ -110,10 +112,34 @@ export default class NetworkComponentClass extends DrawingElementClass {
 
      override selfToXML(indent: number): string 
      {
-         let xml = "";
-         xml += `${"\t".repeat(indent)}<component-class name="${this.name}">\n`;
- 
-         xml += `${"\t".repeat(indent)}</component-class>\n\n`;
-         return xml;
+        let xml = "";
+        const categoryAttr = this.category ? `category="${this.category}"` : "";
+        xml += `${"\t".repeat(indent)}<component-class name="${this.name}" version="${this.version}" ${categoryAttr}>\n`;
+        xml += this.baseToXML(indent+1);
+
+        if (typeof this.template === "string") {
+            xml += `${"\t".repeat(indent+1)}<template>\n`;
+            xml += `${"\t".repeat(indent+2)}${this.template.trim()}\n`;
+            xml += `${"\t".repeat(indent+1)}</template>\n`;
+        } else {
+            const serializer = new XMLSerializer();
+            xml += `${"\t".repeat(indent+1)}${serializer.serializeToString(this.template)}\n`;
+        }//if
+
+        xml += `${"\t".repeat(indent)}</component-class>\n\n`;
+        return xml;
      }//selfToXML
+
+    override baseTemplatesToXML(indent: number): string
+    {
+        if (!this.baseClassChildNodes)
+            return "";
+
+        const serializer = new XMLSerializer();
+        let xml = "";
+        for (const node of this.baseClassChildNodes) {
+            xml += `${"\t".repeat(indent)}${serializer.serializeToString(node).trim()}\n`;
+        }//for
+        return xml;
+    }//baseTemplateToXML
  }//NetworkComponentClass

@@ -156,6 +156,24 @@ export default abstract class DrawingElementClass {
 
     abstract selfToXML(indent: number): string;
 
+    protected baseToXML(indent: number): string
+    {
+        if (!this.baseClass)
+            return "";
+        let propBindAttrs = "";
+        for (const prop in this.baseClassPropBindings) {
+            propBindAttrs += ` ${prop}="${this.baseClassPropBindings[prop]}"`;
+        }//for
+
+        let xml = `${"\t".repeat(indent)}<extends base="${this.baseClass.name}" ${propBindAttrs}>\n`;
+        xml += this.baseTemplatesToXML(indent+1);
+        xml += `${"\t".repeat(indent)}</extends>\n`;
+        return xml;
+    }//baseToXML
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    protected baseTemplatesToXML(indent: number) {return ""}
+
 }//DrawingElementClass
 
 /** Drawing Element computed prop - translate to the common Vue computed property */

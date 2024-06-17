@@ -137,16 +137,17 @@ export default class DrawingLoader {
         let xml = `\
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}"\
- ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}\
- ${this.kresmer.backgroundImage.toXML()} ${`background-color="${this.kresmer.backgroundColor}"`}\
+<kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}"
+    ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}
+    ${this.kresmer.backgroundImage.toXML()} ${`background-color="${this.kresmer.backgroundColor}"`}
+    xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot"
 >
 
 `;
 
         if (this.kresmer.embedLibDataInDrawing) {
             const alreadySerialized = new Set<DrawingElementClass>();
-            xml += "<library>\n";
+            xml += "\t<library>\n";
 
             for (const controller of this.kresmer.networkComponents.sorted.values()) {
                 xml += controller.component.getClass().toXML(2, alreadySerialized);
@@ -156,7 +157,7 @@ export default class DrawingLoader {
                 xml += link.getClass().toXML(2, alreadySerialized);
             }//for
 
-            xml += "</library>\n";
+            xml += "\t</library>\n\n";
         }//if
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
