@@ -165,8 +165,12 @@ export default abstract class DrawingElementClass {
             propBindAttrs += ` ${prop}="${this.baseClassPropBindings[prop]}"`;
         }//for
 
+        const baseTemplatesXML = this.baseTemplatesToXML(indent+1)
+        if (!baseTemplatesXML)
+            return `${"\t".repeat(indent)}<extends base="${this.baseClass.name}" ${propBindAttrs}/>\n`;
+
         let xml = `${"\t".repeat(indent)}<extends base="${this.baseClass.name}" ${propBindAttrs}>\n`;
-        xml += this.baseTemplatesToXML(indent+1);
+        xml += baseTemplatesXML;
         xml += `${"\t".repeat(indent)}</extends>\n`;
         return xml;
     }//baseToXML

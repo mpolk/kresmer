@@ -65,6 +65,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
                 baseInstanceNode.setAttribute(propName, String(params.baseClassPropBindings[propName]));
             }//for
 
+            this.originalTemplate = this.template.cloneNode(true) as Element;
             this.template.prepend(baseInstanceNode);
         }//if
 
@@ -88,6 +89,8 @@ export default class NetworkComponentClass extends DrawingElementClass {
      * Template for the Vue-component for this class
      */
     public template: Template;
+    // its copy untouched
+    private readonly originalTemplate?: Element;
     /** The default content for the component (i.e. its slot) */
     readonly defaultContent?: string;
 
@@ -123,7 +126,12 @@ export default class NetworkComponentClass extends DrawingElementClass {
             xml += `${"\t".repeat(indent+1)}</template>\n`;
         } else {
             const serializer = new XMLSerializer();
-            xml += `${"\t".repeat(indent+1)}${serializer.serializeToString(this.template)}\n`;
+            const t = serializer.serializeToString(this.originalTemplate ?? this.template).trim();
+            let i = indent + 1;
+            for (const line of t.split("\n")) {
+                xml += `${"\t".repeat(i)}${line}\n`;
+                i = 1;
+            }//for
         }//if
 
         xml += `${"\t".repeat(indent)}</component-class>\n\n`;
@@ -138,7 +146,14 @@ export default class NetworkComponentClass extends DrawingElementClass {
         const serializer = new XMLSerializer();
         let xml = "";
         for (const node of this.baseClassChildNodes) {
-            xml += `${"\t".repeat(indent)}${serializer.serializeToString(node).trim()}\n`;
+            if (node.nodeType === node.TEXT_NODE)
+                continue;
+            const t = serializer.serializeToString(node).trim();
+            let i = indent;
+            for (const line of t.split("\n")) {
+                xml += `${"\t".repeat(i)}${line}\n`;
+                i = 1;
+            }//for
         }//for
         return xml;
     }//baseTemplateToXML
