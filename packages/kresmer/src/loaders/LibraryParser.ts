@@ -115,6 +115,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
+        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : undefined;
         let baseClass: NetworkComponentClass | undefined;
         let baseClassPropBindings: DrawingElementProps | undefined;
         let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
@@ -198,7 +199,7 @@ export default class LibraryParser {
         }//if
 
 
-        return new NetworkComponentClass(className, {baseClass, baseClassPropBindings, baseClassChildNodes, 
+        return new NetworkComponentClass(className, {version, baseClass, baseClassPropBindings, baseClassChildNodes, 
                                                      styleBaseClasses, propsBaseClasses, template, 
                                                      props, exceptProps, computedProps, functions, defs, 
                                                      style, defaultContent, category});
@@ -212,6 +213,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 
+        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : undefined;
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
@@ -279,7 +281,7 @@ export default class LibraryParser {
         }//if
 
         const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
-        const linkClass = new ctor(className, {baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
+        const linkClass = new ctor(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
                                                baseClassPropBindings, computedProps, functions, defs, style, category});
         return linkClass;
     }//parseLinkClassNode
@@ -292,6 +294,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Area class without the name");
 
+        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : undefined;
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
@@ -358,7 +361,7 @@ export default class LibraryParser {
             style = this.parseCSS("", [baseClass]);
         }//if
 
-        const areaClass = new DrawingAreaClass(className, {baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
+        const areaClass = new DrawingAreaClass(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
                                                baseClassPropBindings, computedProps, functions, defs, style, category});
         return areaClass;
     }//parseAreaClassNode

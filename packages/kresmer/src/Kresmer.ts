@@ -23,7 +23,7 @@ import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
-import KresmerException, { DuplicateAreaClassException, UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
+import KresmerException, { UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import DrawingElement, { UpdateElementOp } from "./DrawingElement/DrawingElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
@@ -372,6 +372,10 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public registerNetworkComponentClass(componentClass: NetworkComponentClass): Kresmer
     {
+        const existingClass = this.registeredComponentClasses.get(componentClass.name);
+        if (existingClass && existingClass.version >= componentClass.version) {
+            return this;
+        }//if
 
         function patchBody(body: string) {
                 return body
@@ -474,6 +478,11 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public registerLinkClass(linkClass: NetworkLinkClass): Kresmer
     {
+        const existingClass = this.registeredLinkClasses.get(linkClass.name);
+        if (existingClass && existingClass.version >= linkClass.version) {
+            return this;
+        }//if
+
         // Register class's svg-definitions
         if (linkClass.defs) {
             this.appKresmer.component(linkClass.defsVueName, 
@@ -508,8 +517,8 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public registerAreaClass(areaClass: DrawingAreaClass): Kresmer
     {
-        if (this.registeredAreaClasses.has(areaClass.name)) {
-            this.raiseError(new DuplicateAreaClassException({className: areaClass.name}));
+        const existingClass = this.registeredAreaClasses.get(areaClass.name);
+        if (existingClass && existingClass.version >= areaClass.version) {
             return this;
         }//if
 
@@ -575,7 +584,7 @@ export default class Kresmer extends KresmerEventHooks {
  
     /**
      * Tries to register a library with the given name (for the private use)
-     * @param libName The name of th library to register
+     * @param libName The name of the library to register
      */
     public _registerLibrary(libName: string): boolean
     {

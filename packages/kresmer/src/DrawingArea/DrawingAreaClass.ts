@@ -24,6 +24,7 @@ export default class DrawingAreaClass extends DrawingElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params?: {
+        version?: number,
         baseClass?: DrawingAreaClass,
         propsBaseClasses?: DrawingAreaClass[],
         computedPropsBaseClasses?: DrawingAreaClass[],

@@ -24,6 +24,7 @@ export default class NetworkLinkClass extends DrawingElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params: {
+        version?: number,
         baseClass?: NetworkLinkClass,
         propsBaseClasses?: NetworkLinkClass[],
         computedPropsBaseClasses?: NetworkLinkClass[],

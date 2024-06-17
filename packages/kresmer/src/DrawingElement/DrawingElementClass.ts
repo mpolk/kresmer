@@ -26,6 +26,7 @@ export default abstract class DrawingElementClass {
      *               props: Props definition of the Vue-component for this class
      */
     public constructor(name: string, params?: {
+        version?: number,
         baseClass?: DrawingElementClass,
         styleBaseClasses?: DrawingElementClass[],
         computedPropsBaseClasses?: DrawingElementClass[],
@@ -41,10 +42,12 @@ export default abstract class DrawingElementClass {
     })
     {
         this.name = name;
+        this.version = params?.version ?? 1;
         this.baseClass = params?.baseClass;
         this.styleBaseClasses = params?.styleBaseClasses;
         this.propsBaseClasses = params?.propsBaseClasses;
         this.props = params?.props ?? {};
+
         if (params?.baseClass) {
             this.props = clone(Object.fromEntries(
                     Object.entries(params.baseClass.props)
@@ -69,6 +72,7 @@ export default abstract class DrawingElementClass {
             // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if
+
         this.baseClassPropBindings = params?.baseClassPropBindings;
         this.computedProps = params?.computedProps;
         this.functions = params?.functions;
@@ -85,6 +89,8 @@ export default abstract class DrawingElementClass {
 
     /** Class name */
     readonly name: string;
+    /** Class code version */
+    readonly version: number;
     /** Base class (for the element as a whole) */
     readonly baseClass?: DrawingElementClass;
     /** Base class prop values set from the "extends" clause */
