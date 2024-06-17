@@ -156,7 +156,7 @@ export default abstract class DrawingElementClass {
 
     abstract selfToXML(indent: number): string;
 
-    baseToXML(indent: number): string
+    protected baseToXML(indent: number): string
     {
         if (!this.baseClass)
             return "";
@@ -176,9 +176,9 @@ export default abstract class DrawingElementClass {
     }//baseToXML
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    baseTemplatesToXML(indent: number) {return ""}
+    protected baseTemplatesToXML(indent: number) {return ""}
 
-    propsToXML(indent: number): string
+    protected propsToXML(indent: number): string
     {
         if (!this.props)
             return "";
@@ -188,9 +188,37 @@ export default abstract class DrawingElementClass {
 
         for (const propName in this.props) {
             const prop = this.props[propName];
-            const typeStr = Array.isArray(prop.type) ? `[${prop.type.map(t => t.name).join(',')}]` : prop.type!.name;
-            const defaultAttr = prop.default !== undefined ? `default="${JSON.stringify(prop.default)}"` : "";
-            xml += `${"\t".repeat(indent+1)}<prop name="${propName}" type="${typeStr}" ${defaultAttr}/>\n`;
+
+            const attrs: Record<string, string> = {};
+            if (Array.isArray(prop.type)) {
+                attrs.type = `${prop.type.map(t => t.name).join(',')}`;
+            } else if (prop.type) {
+                attrs.type = prop.type.name;
+            }//if
+
+            switch (typeof prop.default) {
+                case "number": case "string":
+                    attrs.default = String(prop.default);
+                    break;
+                case "undefined":
+                    break;
+                default:
+                    attrs.default = JSON.stringify(prop.default);
+            }//switch
+
+            attrs.required !== undefined && (attrs.required = String(prop.required));
+            prop.category && (attrs.category = DrawingElementPropCategory[prop.category]);
+            prop.description && (attrs.description = prop.description);
+
+            if (prop.validator?.validValues) {
+                attrs.choices = prop.validator.validValues.join(",");
+            } else if (prop.validator?.min) {
+                attrs.range = `${prop.validator.min}..${prop.validator.max}`;
+            } else if (prop.validator?.pattern) {
+                attrs.pattern = prop.validator.pattern;
+            }//if
+
+            xml += `${"\t".repeat(indent+1)}<prop name="${propName}" ${Object.entries(attrs).map(([attr, value]) => `${attr}="${value}"`).join(" ")}/>\n`;
         }//for
 
         xml += `${"\t".repeat(indent)}</props>\n`;
