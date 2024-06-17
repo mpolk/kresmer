@@ -134,6 +134,8 @@ export default class NetworkComponentClass extends DrawingElementClass {
             }//for
         }//if
 
+        xml += this.propsToXML(indent+1);
+
         xml += `${"\t".repeat(indent)}</component-class>\n\n`;
         return xml;
      }//selfToXML

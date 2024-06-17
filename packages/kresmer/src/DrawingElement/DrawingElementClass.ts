@@ -7,7 +7,7 @@
  * (the word "class" here means a Kresmer class, not a Typescript one)
  ***************************************************************************/
 
-import { Prop, PropType } from "vue";
+import { PropType } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import { Template } from "../Kresmer";
 import { clone } from "../Utils";
@@ -102,7 +102,7 @@ export default abstract class DrawingElementClass {
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */
-    readonly props: DrawingElementClassProps;
+    readonly props: Record<string,DrawingElementClassProp>;
     /** Computed props (aka just "computed") definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
     /** Functions associated with this class (also sometimes called "methods") */
@@ -156,7 +156,7 @@ export default abstract class DrawingElementClass {
 
     abstract selfToXML(indent: number): string;
 
-    protected baseToXML(indent: number): string
+    baseToXML(indent: number): string
     {
         if (!this.baseClass)
             return "";
@@ -176,7 +176,26 @@ export default abstract class DrawingElementClass {
     }//baseToXML
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected baseTemplatesToXML(indent: number) {return ""}
+    baseTemplatesToXML(indent: number) {return ""}
+
+    propsToXML(indent: number): string
+    {
+        if (!this.props)
+            return "";
+
+        const baseClasseAttr = this.propsBaseClasses ? ` extend="${this.propsBaseClasses.map(clazz => clazz.name).join(',')}"` : "";
+        let xml = `${"\t".repeat(indent)}<props${baseClasseAttr}>\n`;
+
+        for (const propName in this.props) {
+            const prop = this.props[propName];
+            const typeStr = Array.isArray(prop.type) ? `[${prop.type.map(t => t.name).join(',')}]` : prop.type!.name;
+            const defaultAttr = prop.default !== undefined ? `default="${JSON.stringify(prop.default)}"` : "";
+            xml += `${"\t".repeat(indent+1)}<prop name="${propName}" type="${typeStr}" ${defaultAttr}/>\n`;
+        }//for
+
+        xml += `${"\t".repeat(indent)}</props>\n`;
+        return xml;
+    }//propsToXML
 
 }//DrawingElementClass
 
@@ -208,11 +227,22 @@ export enum DrawingElementPropCategory {
     Presentation, 
 }//DrawingElementPropCategory
 
-export type DrawingElementClassProp<T=unknown> = Prop<T> & 
-    {
-        category?: DrawingElementPropCategory,
-        description?: string,
-        subtype?: string,
-    };
-export type DrawingElementClassPropDef<T=unknown> = Exclude<Prop<T>, PropType<T>>;
+type Validator = ((value: unknown, props: Record<string, unknown>) => boolean) & {
+    min?: number,
+    max?: number,
+    pattern?: string,
+    validValues?: string[],
+};
+
+export type DrawingElementClassProp = 
+{
+    type?: PropType<unknown>,
+    required?: boolean,
+    default?: unknown,
+    validator?: Validator,
+    category?: DrawingElementPropCategory,
+    description?: string,
+    subtype?: string,
+};
+
 export type DrawingElementClassProps = Record<string, DrawingElementClassProp>;

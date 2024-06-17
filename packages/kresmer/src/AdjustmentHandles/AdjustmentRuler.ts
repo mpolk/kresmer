@@ -11,7 +11,6 @@ import AdjustmentHandle from "./AdjustmentHandle";
 import { Position, Shift } from "../Transform/Transform";
 import MouseEventCapture from "../MouseEventCapture";
 import NetworkComponent from "../NetworkComponent/NetworkComponent";
-import { DrawingElementClassPropDef } from "../DrawingElement/DrawingElementClass";
 import { UpdateElementOp } from "../DrawingElement/DrawingElement";
 
 export default class AdjustmentRuler extends AdjustmentHandle {
@@ -36,7 +35,7 @@ export default class AdjustmentRuler extends AdjustmentHandle {
         this.savedMousePos = this.getMousePosition(event);
         this.isGoingToBeDragged = true;
         this.savedTargetPropValue = (this.hostComponent.props[this.targetProp] as number|undefined) ?? 
-            (this.hostComponent.getClass().props[this.targetProp] as DrawingElementClassPropDef).default as number;
+        this.hostComponent.getClass().props[this.targetProp].default as number;
         this.savedRulerVector = {x: ends[1].x - ends[0].x, y: ends[1].y - ends[0].y};
         this.savedRulerLengthSq = this.savedRulerVector!.x*this.savedRulerVector!.x + this.savedRulerVector!.y*this.savedRulerVector!.y;
         this.hostComponent.kresmer.undoStack.startOperation(new UpdateElementOp(this.hostComponent));

@@ -173,12 +173,12 @@ Continue?`)) {
                         name, 
                         value: clone(elementToEdit.props[name]), 
                         type: _class.props[name].type,
-                        required: _class.props[name].required,
+                        required: _class.props[name].required ?? false,
                         category: _class.props[name].category,
                         min, max,
                         validValues,
                         pattern,
-                        default: _class.props[name].default,
+                        default: _class.props[name].default !== undefined ? String(_class.props[name].default) : undefined,
                         description: _class.props[name].description,
                         subtype: _class.props[name].subtype,
                         isExpanded: false,
@@ -186,9 +186,9 @@ Continue?`)) {
                 })
             .sort((p1, p2) => 
                 {
-                    if (!p1.category && p2.category || p1.category < p2.category)
+                    if (!p1.category && p2.category || (p1.category ?? "") < (p2.category ?? ""))
                         return -1;
-                    if (p1.category && !p2.category || p1.category > p2.category)
+                    if (p1.category && !p2.category || (p1.category ?? "") > (p2.category ?? ""))
                         return 1;
                     if (p1.name < p2.name)
                         return -1;
