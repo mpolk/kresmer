@@ -46,7 +46,7 @@ export default abstract class DrawingElementClass {
         this.baseClass = params?.baseClass;
         this.styleBaseClasses = params?.styleBaseClasses;
         this.propsBaseClasses = params?.propsBaseClasses;
-        this.props = params?.props ?? {};
+        this.props = this.ownProps = params?.props ?? {};
 
         if (params?.baseClass) {
             this.props = clone(Object.fromEntries(
@@ -102,7 +102,9 @@ export default abstract class DrawingElementClass {
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */
-    readonly props: Record<string,DrawingElementClassProp>;
+    readonly props: Record<string, DrawingElementClassProp>;
+    /** Own props definition for this class (not including basem class props) */
+    readonly ownProps: Record<string, DrawingElementClassProp>;
     /** Computed props (aka just "computed") definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
     /** Functions associated with this class (also sometimes called "methods") */
@@ -180,14 +182,14 @@ export default abstract class DrawingElementClass {
 
     protected propsToXML(indent: number): string
     {
-        if (!this.props)
+        if (!this.ownProps)
             return "";
 
         const baseClasseAttr = this.propsBaseClasses ? ` extend="${this.propsBaseClasses.map(clazz => clazz.name).join(',')}"` : "";
         let xml = `${"\t".repeat(indent)}<props${baseClasseAttr}>\n`;
 
-        for (const propName in this.props) {
-            const prop = this.props[propName];
+        for (const propName in this.ownProps) {
+            const prop = this.ownProps[propName];
 
             const attrs: Record<string, string> = {};
             if (Array.isArray(prop.type)) {

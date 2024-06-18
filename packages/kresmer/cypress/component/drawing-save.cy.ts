@@ -34,6 +34,7 @@ describe('Kresmer Art', () => {
     })
 
     specify("Its immediately saved copy is identical to the source drawing", () => {
+        kresmer.embedLibDataInDrawing = false;
         const savedDrawing = kresmer.saveDrawing();
         type Diff = {path: string, resultType: string, message: string};
         let diffs: Diff[] = [];
@@ -53,7 +54,13 @@ describe('Kresmer Art', () => {
                     diff.resultType === "missing element" && 
                     parseInt(kresmer.backgroundColor.replace(/^#/, "0x"), 16) === 0xFFFFFF)
                     return false;
-
+                if (diff.path.startsWith("kresmer-drawing._attributes.xmlns:") && 
+                    diff.resultType === "missing element")
+                    return false;
+                if (diff.path === "kresmer-drawing.library" && 
+                    diff.resultType === "missing element")
+                    return false;
+        
                 const matches = diff.path.match(/kresmer-drawing\.component\[([0-9]+)\]\.transform\.scale\._attributes\.y/);
                 if (matches) {
                     const n = Number(matches[1]);

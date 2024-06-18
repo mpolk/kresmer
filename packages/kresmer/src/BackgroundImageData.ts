@@ -43,13 +43,17 @@ export class BackgroundImageData {
         return { backgroundImage, backgroundSize, backgroundPosition, backgroundRepeat };
     } //cssAttrs
 
-    toXML()
+    toMarkupAttrs(): Record<string, unknown>
     {
-        if (!this.url)
-            return "";
+        if (this.isEmpty)
+            return {};
 
-        return `background-image="${this.url}" background-image-alignment="${this.alignment}" background-image-visibility="${this.visibility}"`;
-    }//toXML
+        return {
+            "background-image": this.url, 
+            "background-image-alignment": this.alignment,
+            "background-image-visibility": this.visibility,
+        }
+    }//toMarkupAttrs
 
 } //BackgroundImageData
 

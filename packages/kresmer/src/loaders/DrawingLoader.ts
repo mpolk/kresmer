@@ -134,14 +134,34 @@ export default class DrawingLoader {
     public saveDrawing(): string
     {
         this.kresmer.deselectAllElements();
+
+        const attrs: Record<string, unknown> = {
+            name: this.kresmer.drawingName,
+            width: this.kresmer.logicalWidth, 
+            height: this.kresmer.logicalHeight,
+            "background-color": this.kresmer.backgroundColor,
+        };
+
+        if (this.kresmer.hrefBase.value) 
+            attrs["href-base"] = this.kresmer.hrefBase.value;
+        if (this.kresmer.backgroundImage.nonEmpty) {
+            Object.entries(this.kresmer.backgroundImage.toMarkupAttrs()).forEach(([key, value]) => {
+                attrs[key] = value;
+            })
+        }//if
+
+        if (this.kresmer.embedLibDataInDrawing) {
+            attrs["xmlns:Kre"] = "Kre"; 
+            attrs["xmlns:v-bind"] = "v-bind"; 
+            attrs["xmlns:v-on"] = "v-on"; 
+            attrs["xmlns:v-slot"] = "v-slot";
+        }//if
+
         let xml = `\
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing name="${this.kresmer.drawingName}" width="${this.kresmer.logicalWidth}" height="${this.kresmer.logicalHeight}"
-    ${this.kresmer.hrefBase.value ? `href-base="${this.kresmer.hrefBase.value}"` : ''}
-    ${this.kresmer.backgroundImage.toXML()} ${`background-color="${this.kresmer.backgroundColor}"`}
-    xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot"
->
+<kresmer-drawing 
+    ${Object.entries(attrs).map(([key, value]) => `${key}="${value}"`).join("\n\t")}>
 
 `;
 
