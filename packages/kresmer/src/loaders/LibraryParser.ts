@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import DrawingElementClass, { DrawingElementPropCategory, DrawingElementClassProp, DrawingElementClassProps, Functions } from "../DrawingElement/DrawingElementClass";
+import DrawingElementClass, { DrawingElementPropCategory, DrawingElementClassProp, DrawingElementClassProps, Functions, DrawingElementClassPropSubtype } from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../DrawingElement/DrawingElementClass";
@@ -15,7 +15,7 @@ import ParsingException from "./ParsingException";
 import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
 import Kresmer from "../Kresmer";
 import DrawingParser, { DrawingElementProps, DrawingElementRawProps } from "./DrawingParser";
-import { clone, toCamelCase } from "../Utils";
+import { toCamelCase } from "../Utils";
 import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
 
 /**
@@ -164,7 +164,7 @@ export default class LibraryParser {
                 case "props":
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
-                    props = this.parseProps(child, propsBaseClasses, exceptProps);
+                    props = this.parseProps(child);
                     break;
                 case "computed-props":
                     cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
@@ -256,7 +256,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    props = this.parseProps(child, propsBaseClasses, exceptProps);
+                    props = this.parseProps(child);
                     break;
                 case "computed-props":
                     cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
@@ -337,7 +337,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    props = this.parseProps(child, propsBaseClasses, exceptProps);
+                    props = this.parseProps(child);
                     break;
                 case "computed-props":
                     cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
@@ -432,9 +432,9 @@ export default class LibraryParser {
     }//parseClassInheritance
 
 
-    private parseProps(node: Element, propsBaseClasses?: DrawingElementClass[], exceptProps?: string[])
+    private parseProps(node: Element)
     {
-        const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown, subtype?: string}> = {
+        const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown, subtype?: DrawingElementClassPropSubtype}> = {
             "string": {propType: String, makeDefault: d => d}, 
             "color": {propType: String, makeDefault: d => d, subtype: "color"}, 
             "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
@@ -445,12 +445,6 @@ export default class LibraryParser {
         };
 
         const props: DrawingElementClassProps = {};
-        propsBaseClasses?.forEach(baseClass => {
-            for (const propName in baseClass.props) {
-                if (!exceptProps || exceptProps.findIndex(exc => exc === propName) < 0)
-                    props[propName] = clone(baseClass.props[propName]);
-            }//for
-        });
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {

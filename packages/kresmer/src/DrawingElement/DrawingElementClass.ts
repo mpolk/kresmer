@@ -47,6 +47,7 @@ export default abstract class DrawingElementClass {
         this.styleBaseClasses = params?.styleBaseClasses;
         this.propsBaseClasses = params?.propsBaseClasses;
         this.props = this.ownProps = params?.props ?? {};
+        this.exceptProps = params?.exceptProps;
 
         if (params?.baseClass) {
             this.props = clone(Object.fromEntries(
@@ -71,6 +72,13 @@ export default abstract class DrawingElementClass {
             // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if
+
+        this.propsBaseClasses?.forEach(baseClass => {
+            for (const propName in baseClass.props) {
+                if (!this.exceptProps || this.exceptProps.findIndex(except => except === propName) < 0)
+                    this.props[propName] = clone(baseClass.props[propName]);
+            }//for
+        });
 
         this.baseClassPropBindings = params?.baseClassPropBindings;
         this.computedProps = params?.computedProps;
@@ -98,6 +106,8 @@ export default abstract class DrawingElementClass {
     readonly styleBaseClasses?: DrawingElementClass[];
     /** A list of the base classes for this class props set */
     readonly propsBaseClasses?: DrawingElementClass[];
+    /** Then ames of the props that should be exluded from prop inheritance */
+    readonly exceptProps?: string[];
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */
@@ -193,6 +203,10 @@ export default abstract class DrawingElementClass {
             const attrs: Record<string, string> = {};
             if (Array.isArray(prop.type)) {
                 attrs.type = `${prop.type.map(t => t.name).join(',')}`;
+            } else if (prop.subtype === "image-url") {
+                attrs.type = "ImageURL"
+            } else if (prop.subtype === "color") {
+                attrs.type = "Color"
             } else if (prop.type) {
                 attrs.type = prop.type.name;
             }//if
@@ -271,7 +285,8 @@ export type DrawingElementClassProp =
     validator?: Validator,
     category?: DrawingElementPropCategory,
     description?: string,
-    subtype?: string,
+    subtype?: DrawingElementClassPropSubtype,
 };
+export type DrawingElementClassPropSubtype = "image-url" | "color";
 
 export type DrawingElementClassProps = Record<string, DrawingElementClassProp>;
