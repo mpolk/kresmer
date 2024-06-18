@@ -34,7 +34,6 @@ describe('Kresmer Art', () => {
     })
 
     specify("Its immediately saved copy is identical to the source drawing", () => {
-        kresmer.embedLibDataInDrawing = false;
         const savedDrawing = kresmer.saveDrawing();
         type Diff = {path: string, resultType: string, message: string};
         let diffs: Diff[] = [];

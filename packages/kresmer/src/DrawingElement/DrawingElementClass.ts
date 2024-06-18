@@ -53,18 +53,17 @@ export default abstract class DrawingElementClass {
                     Object.entries(params.baseClass.props)
                         .filter(entry => {return !params.exceptProps?.includes(entry[0])})
                 ));
-            const ownProps = params.props ?? {};
-            for (const propName in ownProps) {
-                if (this.props[propName] === undefined) {
-                    this.props[propName] = clone(ownProps[propName]);
+            for (const propName in this.ownProps) {
+                if (!(propName in this.props)) {
+                    this.props[propName] = clone(this.ownProps[propName]);
                 } else {
-                    for (const k in ownProps[propName]) {
+                    for (const k in this.ownProps[propName]) {
                         const key = k as keyof DrawingElementClassProp;
-                        if (ownProps[propName][key] === null)
+                        if (this.ownProps[propName][key] === null)
                             this.props[propName][key] = undefined;
                         else
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            this.props[propName][key] = clone(ownProps[propName][key]) as any;
+                            this.props[propName][key] = clone(this.ownProps[propName][key]) as any;
                     }//for
                 }//if
             }//for
