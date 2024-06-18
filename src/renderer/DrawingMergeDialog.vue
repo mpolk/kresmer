@@ -25,7 +25,7 @@
     let resolvePromise!: (result: DrawingMergeDialogResult|null) => void;
     const showWarning = ref(false);
 
-    const result: DrawingMergeDialogResult = reactive({drawingMergeOption: null, saveChanges: false});
+    const data: DrawingMergeDialogResult = reactive({drawingMergeOption: null, saveChanges: false});
 
     const haveUnsavedChanges = ref(false);
     let cbSaveChangesClicked = false;
@@ -62,17 +62,17 @@
     {
         showWarning.value = false;
         if (!cbSaveChangesClicked) {
-            result.saveChanges = (value === "erase-previous-content");
+            data.saveChanges = haveUnsavedChanges.value && (value === "erase-previous-content");
         }//if
-        result.drawingMergeOption = value;
+        data.drawingMergeOption = value;
     }//setMergeOption
 
     function submit()
     {
-        if (!result.drawingMergeOption) {
+        if (!data.drawingMergeOption) {
             showWarning.value = true;
         } else {
-            close(result);
+            close(data);
         }//if
     }//submit
 
@@ -125,7 +125,7 @@
                         <div style="display: inline-block; width: 2rem;"/>
                         <div class="form-check form-check-inline">
                             <input class="form-check-input" type="checkbox" id="cbSaveChanges" name="saveChanges"
-                                v-model="result.saveChanges" @click="onSaveChanges">
+                                v-model="data.saveChanges" @click="onSaveChanges">
                             <label class="form-check-label" for="cbSaveChanges">
                                 ...and save the drawing before opening the new one
                             </label>
