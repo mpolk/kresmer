@@ -131,7 +131,7 @@ export default class DrawingLoader {
 
 
     /** Serializes the drawing data to the string and returns this string */
-    public saveDrawing()
+    public saveDrawing(): string
     {
         this.kresmer.deselectAllElements();
         let xml = `\
@@ -145,20 +145,8 @@ export default class DrawingLoader {
 
 `;
 
-        if (this.kresmer.embedLibDataInDrawing) {
-            const alreadySerialized = new Set<DrawingElementClass>();
-            xml += "\t<library>\n";
-
-            for (const controller of this.kresmer.networkComponents.sorted.values()) {
-                xml += controller.component.getClass().toXML(2, alreadySerialized);
-            }//for
-
-            for (const link of this.kresmer.links.sorted.values()) {
-                xml += link.getClass().toXML(2, alreadySerialized);
-            }//for
-
-            xml += "\t</library>\n\n";
-        }//if
+        if (this.kresmer.embedLibDataInDrawing)
+            xml += this.saveLibraryData(1) + "\n";
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
             xml += controller.toXML(1) + "\n\n";
@@ -172,6 +160,25 @@ export default class DrawingLoader {
         this.kresmer.isDirty = false;
         return xml;
     }//saveDrawing
+
+
+    public saveLibraryData(indentLevel: number): string
+    {
+        let xml = ""
+        const alreadySerialized = new Set<DrawingElementClass>();
+        xml += `${"\t".repeat(indentLevel)}<library>\n`;
+
+        for (const controller of this.kresmer.networkComponents.sorted.values()) {
+            xml += controller.component.getClass().toXML(indentLevel+1, alreadySerialized);
+        }//for
+
+        for (const link of this.kresmer.links.sorted.values()) {
+            xml += link.getClass().toXML(indentLevel+1, alreadySerialized);
+        }//for
+
+        xml += `${"\t".repeat(indentLevel)}</library>\n`;
+        return xml;
+}//saveLibraryData
 
 }//DrawingLoader
 

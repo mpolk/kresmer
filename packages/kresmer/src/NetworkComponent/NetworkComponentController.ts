@@ -330,13 +330,13 @@ export default class NetworkComponentController extends withZOrder(class {}) {
         const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
         const xml = [`${indent(indentLevel)}<component ${attrStr}>`];
 
+        xml.push(`${indent(indentLevel+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
+
         if (this.component.propCount)
             xml.push(...this.component.propsToXML(indentLevel));
 
         if (this.component.content)
             xml.push(`${indent(indentLevel+1)}<content>${this.component.content}</content>`)
-
-        xml.push(`${indent(indentLevel+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
 
         if (this.transform.nonEmpty)
             xml.push(this.transform.toXML(indentLevel+1));
