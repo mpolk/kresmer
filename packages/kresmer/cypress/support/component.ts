@@ -24,7 +24,7 @@ import Kresmer, { Position } from "../../src/Kresmer";
 declare global {
     namespace Cypress {
         interface Chainable {
-            mount: (kresmer?: Kresmer) => Chainable<Kresmer>,
+            mount: (params?: {kresmer?: Kresmer, loadLibraries: boolean}) => Chainable<Kresmer>,
             drag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
             startDrag: (deltaX: number, deltaY: number) => Chainable<JQuery<HTMLElement>>,
             endDrag: () => Chainable<JQuery<HTMLElement>>,
@@ -51,8 +51,8 @@ export function assertNoExceptions()
 }//assertNoExceptions
 
 // Mounting tested Kresmer component
-Cypress.Commands.add('mount', (kresmer) => {
-    $kresmer = kresmer ?? new Kresmer("[data-cy-root]", {});
+Cypress.Commands.add('mount', (params) => {
+    $kresmer = params?.kresmer ?? new Kresmer("[data-cy-root]", {});
 
     const onVueError = (error: any, vm: any, info: string) => {
         console.debug("Vue error catched!");
@@ -60,11 +60,18 @@ Cypress.Commands.add('mount', (kresmer) => {
     };
     $kresmer.appKresmer.config.warnHandler = onVueError;
     $kresmer.appKresmer.config.errorHandler = onVueError;
-    
-    return CypressVue.mount($kresmer).task("loadLibraries").then(libs => {
-        $kresmer.loadLibraries(libs);
-        return $kresmer;
-    });
+
+    const mountedKresmer = CypressVue.mount($kresmer);
+    if (params?.loadLibraries ?? true) {
+        return mountedKresmer.task("loadLibraries").then(libs => {
+            $kresmer.loadLibraries(libs);
+            return $kresmer;
+        });
+    } else {
+        return mountedKresmer.then(() => {
+            return $kresmer;
+        });
+    }//if
 });
 
 // Dragging some HTML element
