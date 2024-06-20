@@ -17,6 +17,7 @@ import NetworkLink from "./NetworkLink/NetworkLink";
 import {toCamelCase} from "./Utils";
 import DrawingArea from "DrawingArea/DrawingArea";
 import AreaVertex from "DrawingArea/AreaVertex";
+import { ParsedNode } from "./loaders/LibraryParser";
 
 /** A list of Kresmer events along with correponding handler definitions */
 class KresmerEventFormats  {
@@ -24,6 +25,7 @@ class KresmerEventFormats  {
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
     "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
+    "library-element-loaded":           (libName: string, element: ParsedNode, sourceCode: string) => void;
     "drawing-scale":                    (newScaleFactor: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
@@ -172,6 +174,15 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("library-import-requested")
     protected onLibraryImportRequested(libName: string, fileName?: string): string|undefined { return undefined; }
+
+    /**
+     * Is called when a library element is parsed during a library load process
+     * @param element An element just parsed
+     * @param libName A name of the library being processed
+     * @param sourceCode The XML-text this element was created from
+     */
+    @overridableHandler("library-element-loaded")
+    protected onLibraryElementLoaded(libName: string, element: ParsedNode, sourceCode: string): void {}
 
     /**
      * Is called when the global drawing scale change occurs

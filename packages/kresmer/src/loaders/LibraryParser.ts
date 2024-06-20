@@ -47,10 +47,7 @@ export default class LibraryParser {
         else
             yield new LibParams(libName);
 
-        for (let i = 0; i < root.children.length; i++) {
-            const parsedNode = this.parseLibrarySubnode(root.children[i]);
-            parsedNode && (yield parsedNode);
-        }//for
+        yield* this.parseLibraryNode(root, libName);
     }//parseXML
 
     /**
@@ -58,16 +55,20 @@ export default class LibraryParser {
      * of the parsed library elements
      * @param root library root node to parse
      */
-    public *parseLibraryNode(root: Element): Generator<ParsedNode>
+    public *parseLibraryNode(root: Element, libName?: string|null): Generator<ParsedNode>
     {
         for (let i = 0; i < root.children.length; i++) {
-            const parsedNode = this.parseLibrarySubnode(root.children[i]);
-            parsedNode && (yield parsedNode);
+            const rawNode = root.children[i]
+            const parsedNode = this.parseLibrarySubnode(rawNode);
+            if (parsedNode) {
+                this.kresmer.emit("library-element-loaded", libName ?? "", parsedNode, rawNode.outerHTML)
+                yield parsedNode
+            }//if
         }//for
     }//parseLibraryNode
 
 
-    private parseLibrarySubnode(node: Element)
+    private parseLibrarySubnode(node: Element): ParsedNode
     {
         switch (node.nodeName) {
             case "component-class":
@@ -120,11 +121,11 @@ export default class LibraryParser {
                 return new LibraryParsingException(
                     `Syntax error: "${(node as HTMLElement).innerText}"`);
                 break;
-            default:
-                return new LibraryParsingException(
-                    `Invalid top-level node in library: "${node.nodeName}"`);
         }//switch
-    }//parseLibraryNode
+
+        return new LibraryParsingException(
+            `Invalid top-level node in library: "${node.nodeName}"`);
+}//parseLibraryNode
 
 
     private parseComponentClassNode(node: Element)
@@ -722,15 +723,16 @@ export class StyleLibNode {
     }//ctor
 }//StyleLibNode
 
-type ParsedNode = 
-    LibParams |
-    ImportStatement |
-    NetworkComponentClass | 
-    NetworkLinkClass |
-    DrawingAreaClass |
-    DefsLibNode | 
-    StyleLibNode |
-    ParsingException;
+export type ParsedNode =
+    | LibParams
+    | ImportStatement
+    | NetworkComponentClass
+    | NetworkLinkClass
+    | DrawingAreaClass
+    | DefsLibNode 
+    | StyleLibNode
+    | ParsingException
+    ;
 
 type DrawingElementClassType = 
     | typeof NetworkComponentClass

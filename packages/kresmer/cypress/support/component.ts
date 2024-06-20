@@ -32,9 +32,11 @@ declare global {
     }
 }//global
 
+export let $kresmer: Kresmer;
+export let $libs: Record<string, string>;
+
 // Expose exceptions throw from within Vue-applications to Cypress
 // (without this Vue catches exceptions and hides them from Cypress)
-export let $kresmer: Kresmer;
 let lastException: any;
 
 export function getLastException()
@@ -62,16 +64,12 @@ Cypress.Commands.add('mount', (params) => {
     $kresmer.appKresmer.config.errorHandler = onVueError;
 
     const mountedKresmer = CypressVue.mount($kresmer);
-    if (params?.loadLibraries ?? true) {
-        return mountedKresmer.task("loadLibraries").then(libs => {
+    return mountedKresmer.task("loadLibraries").then(libs => {
+        $libs = libs;
+        if (params?.loadLibraries ?? true)
             $kresmer.loadLibraries(libs);
-            return $kresmer;
-        });
-    } else {
-        return mountedKresmer.then(() => {
-            return $kresmer;
-        });
-    }//if
+        return $kresmer;
+    });
 });
 
 // Dragging some HTML element
