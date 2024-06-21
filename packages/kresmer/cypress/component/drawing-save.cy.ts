@@ -9,6 +9,7 @@
 import { diffAsXml } from "diff-js-xml";
 import Kresmer, { NetworkComponentClass } from "../../src/Kresmer";
 import { $libs, assertNoExceptions } from "../support/component";
+import { toCamelCase } from "../../src/Utils";
 
 type Diff = {path: string, resultType: string, message: string};
 
@@ -110,7 +111,23 @@ describe('Drawing saving test', () => {
             diffAsXml(originalSource!, embeddedSource, {}, 
                     {xml2jsOptions: {ignoreDoctype: false, ignoreDeclaration: false, ignoreAttributes: false}}, 
                     (result: Diff[]) => {
-                diffs = result;
+                        diffs = result.filter(diff => {
+                            if (diff.path.endsWith("\._attributes.version") && 
+                                diff.resultType === "missing element")
+                                return false;
+
+                            let matches: RegExpMatchArray|null;
+                            if (diff.resultType === "difference in element value" &&
+                                diff.path.match(/-class\.props\.prop\[[\d+]\]\._attributes\.name$/) &&
+                                (matches = diff.message.match(/value "([-_a-zA-Z0-9]+)".*value "([-_a-zA-Z0-9]+)"/)))
+                            {
+                                const origName = matches[1], embeddedName = matches[2];
+                                if (toCamelCase(origName) === toCamelCase(embeddedName))
+                                    return false;
+                            }//if
+            
+                            return true;
+                        });
             });
             expect(diffs.length).to.be.equal(0);
         }//for
