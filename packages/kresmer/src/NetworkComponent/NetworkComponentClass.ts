@@ -161,7 +161,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
         } else {
             const serializer = new XMLSerializer();
             const t = serializer.serializeToString(this.originalTemplate ?? this.template).trim();
-            let i = indent + 1;
+            let i = indent;
             for (const line of t.split("\n")) {
                 xml += `${"\t".repeat(i)}${line}\n`;
                 i = 1;

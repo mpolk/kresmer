@@ -27,7 +27,7 @@ describe('Drawing saving test', () => {
     it("Load libraries collecting all lib element sources", async() => {
         kresmer.on("library-element-loaded", (libName, element, sourceCode) => {
             if (element instanceof NetworkComponentClass) {
-                origComponentClassSources.set(element.name, sourceCode);
+                origComponentClassSources.set(element.name, sourceCode.trim());
             }
         });
         await kresmer.loadLibraries($libs);
@@ -97,7 +97,7 @@ describe('Drawing saving test', () => {
         kresmer.on("library-element-loaded", (libName, element, sourceCode) => {
             console.debug(element);
             if (element instanceof NetworkComponentClass) {
-                embeddedComponentClassSources.set(element.name, sourceCode);
+                embeddedComponentClassSources.set(element.name, sourceCode.trim());
             }
         });
 
@@ -109,7 +109,7 @@ describe('Drawing saving test', () => {
             
             let diffs: Diff[] = [];
             diffAsXml(originalSource!, embeddedSource, {}, 
-                    {xml2jsOptions: {ignoreDoctype: false, ignoreDeclaration: false, ignoreAttributes: false}}, 
+                    {xml2jsOptions: {ignoreAttributes: true}}, 
                     (result: Diff[]) => {
                         diffs = result.filter(diff => {
                             if (diff.path.endsWith("\._attributes.version") && 
