@@ -167,7 +167,7 @@ export default abstract class DrawingElementClass {
 
     abstract selfToXML(indent: number): string;
 
-    protected baseToXML(indent: number): string
+    baseToXML(indent: number): string
     {
         if (!this.baseClass)
             return "";
@@ -187,9 +187,9 @@ export default abstract class DrawingElementClass {
     }//baseToXML
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    protected baseTemplatesToXML(indent: number) {return ""}
+    baseTemplatesToXML(indent: number) {return ""}
 
-    protected propsToXML(indent: number): string
+    propsToXML(indent: number): string
     {
         if (!this.ownProps)
             return "";
