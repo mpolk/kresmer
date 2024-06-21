@@ -17,7 +17,7 @@ export interface IpcMainChannels {
     "renderer-ready": (stage: AppInitStage) => void;
     "set-default-drawing-filename": (fileName: string) => void;
     "complete-drawing-saving": (dwgData: string) => void;
-    "save-drawing": (dwgData: string) => boolean;
+    "save-drawing": (dwgData: string) => Promise<boolean>;
     "complete-drawing-export-to-SVG": (svgData: string) => void;
     "enable-delete-selected-element-menu-item": (enable: boolean) => void;
     "enable-component-op-menu-items": (enable: boolean) => void;

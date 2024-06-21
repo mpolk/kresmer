@@ -70,10 +70,10 @@ export function openDrawingFromPath(path: string)
 }//openDrawingFromPath
 
 
-export function saveDrawing(dwgData?: string): boolean
+export async function saveDrawing(dwgData?: string): Promise<boolean>
 {
     if (!defaultDrawingFileName) {
-        return saveDrawingAs(dwgData);
+        return await saveDrawingAs(dwgData);
     } else if (dwgData) {
         fs.writeFileSync(defaultDrawingFileName, dwgData);
         return true;
@@ -88,7 +88,7 @@ export function saveDrawing(dwgData?: string): boolean
 }//saveDrawing
 
 
-export function saveDrawingAs(dwgData?: string): boolean
+export async function saveDrawingAs(dwgData?: string): Promise<boolean>
 {
     const options: Record<string, unknown> = {
         title: "Save drawing",
@@ -100,7 +100,8 @@ export function saveDrawingAs(dwgData?: string): boolean
     if (defaultDrawingFileName) {
         options.defaultPath = defaultDrawingFileName;
     }//if
-    let filePath = dialog.showSaveDialogSync(mainWindow, options);
+    
+    let {filePath} = await dialog.showSaveDialog(mainWindow, options);
 
     if (!filePath)
         return false;
