@@ -8,6 +8,7 @@
  ***************************************************************************/
 
 import {Root as PostCSSRoot} from 'postcss';
+import _ from "lodash";
 import { Template } from "../Kresmer";
 import { ComputedProps, Functions, DrawingElementClassProps } from "../DrawingElement/DrawingElementClass";
 import DrawingElementClass from "../DrawingElement/DrawingElementClass";
@@ -120,20 +121,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
         xml += `${"\t".repeat(indent)}<component-class name="${this.name}" version="${this.version}" ${categoryAttr}>\n`;
         xml += this.baseToXML(indent+1);
 
-        if (typeof this.template === "string") {
-            xml += `${"\t".repeat(indent+1)}<template>\n`;
-            xml += `${"\t".repeat(indent+2)}${this.template.trim()}\n`;
-            xml += `${"\t".repeat(indent+1)}</template>\n`;
-        } else {
-            const serializer = new XMLSerializer();
-            const t = serializer.serializeToString(this.originalTemplate ?? this.template).trim();
-            let i = indent + 1;
-            for (const line of t.split("\n")) {
-                xml += `${"\t".repeat(i)}${line}\n`;
-                i = 1;
-            }//for
-        }//if
-
+        xml += this.templateToXML(indent+1);
         xml += this.propsToXML(indent+1);
 
         xml += `${"\t".repeat(indent)}</component-class>\n\n`;
@@ -159,4 +147,28 @@ export default class NetworkComponentClass extends DrawingElementClass {
         }//for
         return xml;
     }//baseTemplateToXML
- }//NetworkComponentClass
+
+    templateToXML(indent: number): string
+    {
+        if (this.template === "" || this.template instanceof Element && this.template.childElementCount === 0)
+            return "";
+
+        let xml = "";
+        if (typeof this.template === "string") {
+                xml += `${"\t".repeat(indent+1)}<template>\n`;
+                xml += `${"\t".repeat(indent+2)}${_.escape(this.template.trim())}\n`;
+                xml += `${"\t".repeat(indent+1)}</template>\n`;
+        } else {
+            const serializer = new XMLSerializer();
+            const t = serializer.serializeToString(this.originalTemplate ?? this.template).trim();
+            let i = indent + 1;
+            for (const line of t.split("\n")) {
+                xml += `${"\t".repeat(i)}${line}\n`;
+                i = 1;
+            }//for
+        }//if
+
+        return xml;
+    }//templateToXML
+
+}//NetworkComponentClass

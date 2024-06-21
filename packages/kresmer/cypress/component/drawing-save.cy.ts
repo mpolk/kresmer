@@ -105,7 +105,7 @@ describe('Drawing saving test', () => {
 
         for (const [name, embeddedSource] of embeddedComponentClassSources) {
             const originalSource = origComponentClassSources.get(name);
-            assert(originalSource, `No original source found for the component "${name}"`);
+            assert(originalSource, `Original source presents for the component "${name}"`);
             
             let diffs: Diff[] = [];
             diffAsXml(originalSource!, embeddedSource, {}, 
