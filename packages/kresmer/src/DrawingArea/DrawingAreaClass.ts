@@ -34,6 +34,7 @@ export default class DrawingAreaClass extends DrawingElementClass {
         baseClassPropBindings?: DrawingElementProps,
         computedProps?: ComputedProps,
         functions?: Functions,
+        functionsBaseClasses?: DrawingAreaClass[],
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,

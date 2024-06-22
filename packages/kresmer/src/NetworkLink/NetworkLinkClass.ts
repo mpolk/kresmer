@@ -34,6 +34,7 @@ export default class NetworkLinkClass extends DrawingElementClass {
         baseClassPropBindings?: DrawingElementProps,
         computedProps?: ComputedProps,
         functions?: Functions,
+        functionsBaseClasses?: NetworkLinkClass[],
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,

@@ -36,6 +36,7 @@ export default abstract class DrawingElementClass {
         baseClassPropBindings?: DrawingElementProps,
         computedProps?: ComputedProps,
         functions?: Functions,
+        functionsBaseClasses?: DrawingElementClass[],
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,
@@ -47,6 +48,8 @@ export default abstract class DrawingElementClass {
         this.baseClass = params?.baseClass;
         this.styleBaseClasses = params?.styleBaseClasses;
         this.propsBaseClasses = params?.propsBaseClasses;
+        this.computedPropsBaseClasses = params?.computedPropsBaseClasses;
+        this.functionsBaseClasses = params?.functionsBaseClasses;
         this.props = params?.props ?? {};
         this.exceptProps = params?.exceptProps;
 
@@ -117,8 +120,12 @@ export default abstract class DrawingElementClass {
     readonly props: Record<string, DrawingElementClassProp>;
     /** Computed props (aka just "computed") definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
+    /** A list of the base classes for this class computed props set */
+    readonly computedPropsBaseClasses?: DrawingElementClass[];
     /** Functions associated with this class (also sometimes called "methods") */
     readonly functions?: Functions;
+    /** A list of the base classes for this class functions set */
+    readonly functionsBaseClasses?: DrawingElementClass[];
     /** SVG Defs for this class */
     readonly defs?: Template;
     /** CSS styles defined in this class */
@@ -163,6 +170,16 @@ export default abstract class DrawingElementClass {
         }//if
         if (this.propsBaseClasses) {
             for (const base of this.propsBaseClasses) {
+                xml += base.toXML(indent, alreadySerialized);
+            }//for
+        }//if
+        if (this.computedPropsBaseClasses) {
+            for (const base of this.computedPropsBaseClasses) {
+                xml += base.toXML(indent, alreadySerialized);
+            }//for
+        }//if
+        if (this.functionsBaseClasses) {
+            for (const base of this.functionsBaseClasses) {
                 xml += base.toXML(indent, alreadySerialized);
             }//for
         }//if

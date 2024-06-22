@@ -157,13 +157,13 @@ export default class LibraryParser {
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let computedProps: ComputedProps|undefined;
-        let exceptCProps: string[] | undefined;
+        let exceptComputedProps: string[] | undefined;
         let functions: Functions | undefined;
         let exceptFunctions: string[] | undefined;
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let propsBaseClasses: NetworkComponentClass[] | undefined;
-        let cPropsBaseClasses: NetworkComponentClass[] | undefined;
+        let computedPropsBaseClasses: NetworkComponentClass[] | undefined;
         let functionsBaseClasses: NetworkComponentClass[] | undefined;
         let styleBaseClasses: NetworkComponentClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
@@ -182,12 +182,12 @@ export default class LibraryParser {
                     props = this.parseProps(child);
                     break;
                 case "computed-props":
-                    cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
-                    exceptCProps = child.getAttribute("except")?.split(/ *, */) ?? [];
-                    if (baseClass && !cPropsBaseClasses?.includes(baseClass)) {
-                        cPropsBaseClasses = cPropsBaseClasses ? [baseClass, ...cPropsBaseClasses] : [baseClass];
+                    computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
+                    exceptComputedProps = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !computedPropsBaseClasses?.includes(baseClass)) {
+                        computedPropsBaseClasses = computedPropsBaseClasses ? [baseClass, ...computedPropsBaseClasses] : [baseClass];
                     }//if
-                    computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
+                    computedProps = this.parseComputedProps(child, computedPropsBaseClasses, exceptComputedProps);
                     break;
                 case "functions":
                     functionsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
@@ -235,7 +235,8 @@ export default class LibraryParser {
 
         return new NetworkComponentClass(className, {version, baseClass, baseClassPropBindings, baseClassChildNodes, 
                                                      styleBaseClasses, propsBaseClasses, template, 
-                                                     props, exceptProps, computedProps, functions, defs, 
+                                                     props, exceptProps, computedProps, computedPropsBaseClasses, 
+                                                     functions, functionsBaseClasses, defs, 
                                                      style, defaultContent, category, sourceCode: node.outerHTML});
     }//parseComponentClassNode
 
@@ -250,7 +251,7 @@ export default class LibraryParser {
         const version = this.getVersion(node);
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
-        let exceptCProps: string[] | undefined;
+        let exceptComputedProps: string[] | undefined;
         let computedProps: ComputedProps | undefined;
         let functions: Functions | undefined;
         let exceptFunctions: string[] | undefined;
@@ -259,7 +260,7 @@ export default class LibraryParser {
         let baseClass: NetworkLinkClass | undefined;
         let baseClassPropBindings: DrawingElementProps | undefined;
         let propsBaseClasses: NetworkLinkClass[] | undefined;
-        let cPropsBaseClasses: NetworkLinkClass[] | undefined;
+        let computedPropsBaseClasses: NetworkLinkClass[] | undefined;
         let functionsBaseClasses: NetworkLinkClass[] | undefined;
         let styleBaseClasses: NetworkLinkClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
@@ -274,12 +275,12 @@ export default class LibraryParser {
                     props = this.parseProps(child);
                     break;
                 case "computed-props":
-                    cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
-                    exceptCProps = child.getAttribute("except")?.split(/ *, */) ?? [];
-                    if (baseClass && !cPropsBaseClasses?.includes(baseClass)) {
-                        cPropsBaseClasses = cPropsBaseClasses ? [baseClass, ...cPropsBaseClasses] : [baseClass];
+                    computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
+                    exceptComputedProps = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !computedPropsBaseClasses?.includes(baseClass)) {
+                        computedPropsBaseClasses = computedPropsBaseClasses ? [baseClass, ...computedPropsBaseClasses] : [baseClass];
                     }//if
-                    computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
+                    computedProps = this.parseComputedProps(child, computedPropsBaseClasses, exceptComputedProps);
                     break;
                 case "functions":
                     functionsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
@@ -316,7 +317,8 @@ export default class LibraryParser {
 
         const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
         const linkClass = new ctor(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
-                                               baseClassPropBindings, computedProps, functions, defs, style, category, 
+                                               baseClassPropBindings, computedProps, computedPropsBaseClasses, 
+                                               functions, functionsBaseClasses, defs, style, category, 
                                                sourceCode: node.outerHTML});
         return linkClass;
     }//parseLinkClassNode
@@ -332,7 +334,7 @@ export default class LibraryParser {
         const version = this.getVersion(node);
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
-        let exceptCProps: string[] | undefined;
+        let exceptComputedProps: string[] | undefined;
         let computedProps: ComputedProps | undefined;
         let functions: Functions | undefined;
         let exceptFunctions: string[] | undefined;
@@ -341,7 +343,7 @@ export default class LibraryParser {
         let baseClass: DrawingAreaClass | undefined;
         let baseClassPropBindings: DrawingElementProps | undefined;
         let propsBaseClasses: DrawingAreaClass[] | undefined;
-        let cPropsBaseClasses: DrawingAreaClass[] | undefined;
+        let computedPropsBaseClasses: DrawingAreaClass[] | undefined;
         let functionsBaseClasses: DrawingAreaClass[] | undefined;
         let styleBaseClasses: DrawingAreaClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
@@ -356,12 +358,12 @@ export default class LibraryParser {
                     props = this.parseProps(child);
                     break;
                 case "computed-props":
-                    cPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
-                    exceptCProps = child.getAttribute("except")?.split(/ *, */) ?? [];
-                    if (baseClass && !cPropsBaseClasses?.includes(baseClass)) {
-                        cPropsBaseClasses = cPropsBaseClasses ? [baseClass, ...cPropsBaseClasses] : [baseClass];
+                    computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
+                    exceptComputedProps = child.getAttribute("except")?.split(/ *, */) ?? [];
+                    if (baseClass && !computedPropsBaseClasses?.includes(baseClass)) {
+                        computedPropsBaseClasses = computedPropsBaseClasses ? [baseClass, ...computedPropsBaseClasses] : [baseClass];
                     }//if
-                    computedProps = this.parseComputedProps(child, cPropsBaseClasses, exceptCProps);
+                    computedProps = this.parseComputedProps(child, computedPropsBaseClasses, exceptComputedProps);
                     break;
                 case "functions":
                     functionsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
@@ -396,9 +398,12 @@ export default class LibraryParser {
             style = this.parseCSS("", [baseClass]);
         }//if
 
-        const areaClass = new DrawingAreaClass(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
-                                               baseClassPropBindings, computedProps, functions, defs, style, category, 
-                                               sourceCode: node.outerHTML});
+        const areaClass = new DrawingAreaClass(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, 
+                                                           exceptProps,
+                                                           baseClassPropBindings, computedProps, computedPropsBaseClasses,
+                                                           functions, functionsBaseClasses,
+                                                           defs, style, category, 
+                                                           sourceCode: node.outerHTML});
         return areaClass;
     }//parseAreaClassNode
 
