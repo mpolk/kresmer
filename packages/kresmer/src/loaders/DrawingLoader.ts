@@ -181,6 +181,22 @@ export default class DrawingLoader {
         const alreadySerialized = new Set<DrawingElementClass>();
         xml += `${"\t".repeat(indentLevel)}<library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:ua="ua">\n`;
 
+        for (const def of this.kresmer.globalDefs.values()) {
+            let i = indentLevel+1;
+            for (const line of def.sourceCode.split("\n")) {
+                xml += `${"\t".repeat(i)}${line}\n`;
+                i = 1;
+            }//for
+        }//for
+
+        for (const style of this.kresmer.globalStyles.values()) {
+            let i = indentLevel+1;
+            for (const line of style.sourceCode.split("\n")) {
+                xml += `${"\t".repeat(i)}${line}\n`;
+                i = 1;
+            }//for
+        }//for
+
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
             xml += controller.component.getClass().toXML(indentLevel+1, alreadySerialized);
         }//for

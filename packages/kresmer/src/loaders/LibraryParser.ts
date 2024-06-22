@@ -139,7 +139,7 @@ export default class LibraryParser {
 
     private getVersion(node: Element)
     {
-        return node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
+        return node.hasAttribute("version") ? Number(node.getAttribute("version")) : 1;
     }//getVersion
 
     private parseComponentClassNode(node: Element)
