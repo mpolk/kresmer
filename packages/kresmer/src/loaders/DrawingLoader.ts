@@ -150,13 +150,6 @@ export default class DrawingLoader {
             })
         }//if
 
-        if (this.kresmer.embedLibDataInDrawing) {
-            attrs["xmlns:Kre"] = "Kre"; 
-            attrs["xmlns:v-bind"] = "v-bind"; 
-            attrs["xmlns:v-on"] = "v-on"; 
-            attrs["xmlns:v-slot"] = "v-slot";
-        }//if
-
         let xml = `\
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
@@ -186,7 +179,7 @@ export default class DrawingLoader {
     {
         let xml = ""
         const alreadySerialized = new Set<DrawingElementClass>();
-        xml += `${"\t".repeat(indentLevel)}<library>\n`;
+        xml += `${"\t".repeat(indentLevel)}<library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:ua="ua">\n`;
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
             xml += controller.component.getClass().toXML(indentLevel+1, alreadySerialized);
@@ -194,6 +187,10 @@ export default class DrawingLoader {
 
         for (const link of this.kresmer.links.sorted.values()) {
             xml += link.getClass().toXML(indentLevel+1, alreadySerialized);
+        }//for
+
+        for (const area of this.kresmer.areas.sorted.values()) {
+            xml += area.getClass().toXML(indentLevel+1, alreadySerialized);
         }//for
 
         xml += `${"\t".repeat(indentLevel)}</library>\n`;

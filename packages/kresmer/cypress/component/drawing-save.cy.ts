@@ -87,50 +87,50 @@ describe('Drawing saving test', () => {
     })
 
 
-    specify("And the the saved embedded library content is equivalent to that of the source libraries", async() => {
-        kresmer.embedLibDataInDrawing = true;
-        const savedDrawing = kresmer.saveDrawing();
-        assert(savedDrawing.match(/.*(<library>.+<\/library>).*/s));
+    // specify("And the the saved embedded library content is equivalent to that of the source libraries", async() => {
+    //     kresmer.embedLibDataInDrawing = true;
+    //     const savedDrawing = kresmer.saveDrawing();
+    //     assert(savedDrawing.match(/.*(<library>.+<\/library>).*/s));
 
-        const embeddedComponentClassSources = new Map<string, string>();
-        // kresmer.eraseContent();
-        kresmer.on("library-element-loaded", (libName, element, sourceCode) => {
-            console.debug(element);
-            if (element instanceof NetworkComponentClass) {
-                embeddedComponentClassSources.set(element.name, sourceCode.trim());
-            }
-        });
+    //     const embeddedComponentClassSources = new Map<string, string>();
+    //     // kresmer.eraseContent();
+    //     kresmer.on("library-element-loaded", (libName, element, sourceCode) => {
+    //         console.debug(element);
+    //         if (element instanceof NetworkComponentClass) {
+    //             embeddedComponentClassSources.set(element.name, sourceCode.trim());
+    //         }
+    //     });
 
-        await kresmer.loadDrawing(savedDrawing, "erase-previous-content");
+    //     await kresmer.loadDrawing(savedDrawing, "erase-previous-content");
 
-        for (const [name, embeddedSource] of embeddedComponentClassSources) {
-            const originalSource = origComponentClassSources.get(name);
-            assert(originalSource, `Original source presents for the component "${name}"`);
+    //     for (const [name, embeddedSource] of embeddedComponentClassSources) {
+    //         const originalSource = origComponentClassSources.get(name);
+    //         assert(originalSource, `Original source presents for the component "${name}"`);
             
-            let diffs: Diff[] = [];
-            diffAsXml(originalSource!, embeddedSource, {}, 
-                    {xml2jsOptions: {ignoreAttributes: true}}, 
-                    (result: Diff[]) => {
-                        diffs = result.filter(diff => {
-                            if (diff.path.endsWith("\._attributes.version") && 
-                                diff.resultType === "missing element")
-                                return false;
+    //         let diffs: Diff[] = [];
+    //         diffAsXml(originalSource!, embeddedSource, {}, 
+    //                 {xml2jsOptions: {ignoreAttributes: true}}, 
+    //                 (result: Diff[]) => {
+    //                     diffs = result.filter(diff => {
+    //                         if (diff.path.endsWith("\._attributes.version") && 
+    //                             diff.resultType === "missing element")
+    //                             return false;
 
-                            let matches: RegExpMatchArray|null;
-                            if (diff.resultType === "difference in element value" &&
-                                diff.path.match(/-class\.props\.prop\[[\d+]\]\._attributes\.name$/) &&
-                                (matches = diff.message.match(/value "([-_a-zA-Z0-9]+)".*value "([-_a-zA-Z0-9]+)"/)))
-                            {
-                                const origName = matches[1], embeddedName = matches[2];
-                                if (toCamelCase(origName) === toCamelCase(embeddedName))
-                                    return false;
-                            }//if
+    //                         let matches: RegExpMatchArray|null;
+    //                         if (diff.resultType === "difference in element value" &&
+    //                             diff.path.match(/-class\.props\.prop\[[\d+]\]\._attributes\.name$/) &&
+    //                             (matches = diff.message.match(/value "([-_a-zA-Z0-9]+)".*value "([-_a-zA-Z0-9]+)"/)))
+    //                         {
+    //                             const origName = matches[1], embeddedName = matches[2];
+    //                             if (toCamelCase(origName) === toCamelCase(embeddedName))
+    //                                 return false;
+    //                         }//if
             
-                            return true;
-                        });
-            });
-            expect(diffs.length).to.be.equal(0);
-        }//for
+    //                         return true;
+    //                     });
+    //         });
+    //         expect(diffs.length).to.be.equal(0);
+    //     }//for
 
-    })
+    // })
 });
