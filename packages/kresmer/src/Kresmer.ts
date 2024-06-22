@@ -128,9 +128,13 @@ export default class Kresmer extends KresmerEventHooks {
     /** A symbolic key for the Kresmer instance injection */
     static readonly ikKresmer = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
-    public readonly defs: Template[] = [];
-    /** CSS styles collected component libraries */
-    public styles: PostCSSRoot[] = reactive([]);
+    public readonly globalDefs = reactive(new Map<string, {data: Template, version: number, sourceCode: string}>());
+    // /** SVG Defs collected from drawing element classes */
+    // public readonly classDefs: Template[] = [];
+    /** CSS styles collected from drawing element classes */
+    public globalStyles = reactive(new Map<string, {data: PostCSSRoot, version: number, sourceCode: string}>());
+    /** CSS styles collected from drawing element classes */
+    public classStyles: PostCSSRoot[] = reactive([]);
 
     /** Drawing name */
     public drawingName = UNNAMED_DRAWING;
@@ -464,7 +468,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (componentClass.style) {
-            this.styles.push(this.libraryLoader.scopeStyles(componentClass.style, componentClass, true));
+            this.classStyles.push(this.libraryLoader.scopeStyles(componentClass.style, componentClass, true));
         }//if
 
         this.registeredComponentClasses.set(componentClass.name, componentClass);
@@ -493,7 +497,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (linkClass.style) {
-            this.styles.push(this.libraryLoader.scopeStyles(linkClass.style, linkClass, false));
+            this.classStyles.push(this.libraryLoader.scopeStyles(linkClass.style, linkClass, false));
         }//if
 
         this.registeredLinkClasses.set(linkClass.name, linkClass);
@@ -532,7 +536,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // ...and its css-styles
         if (areaClass.style) {
-            this.styles.push(this.libraryLoader.scopeStyles(areaClass.style, areaClass, false));
+            this.classStyles.push(this.libraryLoader.scopeStyles(areaClass.style, areaClass, false));
         }//if
 
         this.registeredAreaClasses.set(areaClass.name, areaClass);

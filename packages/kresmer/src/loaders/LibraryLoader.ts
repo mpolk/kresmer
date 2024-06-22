@@ -62,11 +62,16 @@ export default class LibraryLoader
                 this.kresmer.registerAreaClass(element);
 
             } else if (element instanceof DefsLibNode) {
-                this.kresmer.defs.push(element.data);
-                this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
+                if (!this.kresmer.globalDefs.has(element.name) || this.kresmer.globalDefs.get(element.name)!.version < element.version) {
+                    this.kresmer.globalDefs.set(element.name, element);
+                    this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.globalDefs.size - 1}`, {template: element.data});
+                }//if
 
             } else if (element instanceof StyleLibNode) {
-                this.kresmer.styles.push(this.scopeStyles(element.data, undefined, false));
+                if (!this.kresmer.globalStyles.has(element.name) || this.kresmer.globalStyles.get(element.name)!.version < element.version) {
+                    this.kresmer.globalStyles.set(element.name, 
+                        {data: this.scopeStyles(element.data, undefined, false), version: element.version, sourceCode: element.sourceCode});
+                }//if
 
             } else if (element instanceof ImportStatement) {
                 if (!this.kresmer.isLibraryLoaded(element.libName)) {
@@ -133,11 +138,16 @@ export default class LibraryLoader
                 this.kresmer.registerAreaClass(element);
 
             } else if (element instanceof DefsLibNode) {
-                this.kresmer.defs.push(element.data);
-                this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.defs.length - 1}`, {template: element.data});
+                if (!this.kresmer.globalDefs.has(element.name) || this.kresmer.globalDefs.get(element.name)!.version < element.version) {
+                    this.kresmer.globalDefs.set(element.name, element);
+                    this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.globalDefs.size - 1}`, {template: element.data});
+                }//if
 
             } else if (element instanceof StyleLibNode) {
-                this.kresmer.styles.push(this.scopeStyles(element.data, undefined, false));
+                if (!this.kresmer.globalStyles.has(element.name) || this.kresmer.globalStyles.get(element.name)!.version < element.version) {
+                    this.kresmer.globalStyles.set(element.name, 
+                        {data: this.scopeStyles(element.data, undefined, false), version: element.version, sourceCode: element.sourceCode});
+                }//if
 
             } else {
                 this.kresmer.raiseError(new LibraryParsingException(`Invalid embedded library content: ${element}`));

@@ -127,7 +127,12 @@
     const tensMarkingLength = 5, fiftiesMarkingLength = 8, hundredsMarkingLength = 12;
 
     const styles = computed(() => {
-        return `<style>${props.controller.styles.map(style => style.toResult().css).join(" ")}</style>`;
+        const styles = [...Array.from(props.controller.globalStyles.values()).map(({data}) => data), ...props.controller.classStyles];
+        return `<style>${styles.map(style => style.toResult().css).join(" ")}</style>`;
+    });
+
+    const defs = computed(() => {
+        return Array.from(props.controller.globalDefs.values()).map(({data}) => data);
     });
 
 
@@ -189,7 +194,7 @@
             <TransformBoxFilters />
             <NetworkLinkFilters />
             <ConnectionPointFilters />
-            <component v-for="(_, i) in controller.defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
+            <component v-for="(_, i) in defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
             <!-- ...component-specific -->
             <template v-for="_class of controller.registeredComponentClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
@@ -199,7 +204,7 @@
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
         </defs>
-        <defs v-if="controller.styles.length" v-html="styles"></defs>
+        <defs v-if="controller.globalStyles.size || controller.classStyles.length" v-html="styles"></defs>
 
         <!-- Background mask -->
         <rect v-if="rootSVG" :style="backgroundMaskStyle" :fill="controller.backgroundColor" 

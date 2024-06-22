@@ -107,7 +107,7 @@ export default class LibraryParser {
                     const name = node.getAttribute("name");
                     if (!name)
                         return new LibraryParsingException("Defs should have name");
-                    return new DefsLibNode(node, name, this.getVersion(node));
+                    return new DefsLibNode(node, name, this.getVersion(node), node.outerHTML);
                 }
                 break;
             case "style": {
@@ -116,7 +116,7 @@ export default class LibraryParser {
                         return new LibraryParsingException("Defs should have name");
                     const style = this.parseCSS(node.innerHTML);
                     if (style)
-                        return new StyleLibNode(style, name, this.getVersion(node));
+                        return new StyleLibNode(style, name, this.getVersion(node), node.outerHTML);
                 }
                 break;
             case "import":
@@ -724,11 +724,11 @@ export class ImportStatement {
 }//importStatement
 
 export class DefsLibNode {
-    constructor(readonly data: Element, readonly name: string, readonly version: number) {}
+    constructor(readonly data: Element, readonly name: string, readonly version: number, readonly sourceCode: string) {}
 }//DefsLibNode
 
 export class StyleLibNode {
-    constructor(readonly data: PostCSSRoot, readonly name: string, readonly version: number) {}
+    constructor(readonly data: PostCSSRoot, readonly name: string, readonly version: number, readonly sourceCode: string) {}
 }//StyleLibNode
 
 export type ParsedNode =
