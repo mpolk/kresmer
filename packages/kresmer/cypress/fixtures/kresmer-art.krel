@@ -2,7 +2,7 @@
 <?xml-model href="xsd/kresmer-library.xsd"?>
 <!-- Library for the tests -->
 <kresmer-library name="kresmer-art" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
-    <defs>
+    <defs name="Crown">
         <text id="kre:std:Crown">👑</text>
     </defs>
 

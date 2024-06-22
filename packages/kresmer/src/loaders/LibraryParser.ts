@@ -103,13 +103,20 @@ export default class LibraryParser {
                         throw exc;
                 }//catch
                 break;
-            case "defs":
-                return new DefsLibNode(node);
+            case "defs": {
+                    const name = node.getAttribute("name");
+                    if (!name)
+                        return new LibraryParsingException("Defs should have name");
+                    return new DefsLibNode(node, name, this.getVersion(node));
+                }
                 break;
             case "style": {
+                    const name = node.getAttribute("name");
+                    if (!name)
+                        return new LibraryParsingException("Defs should have name");
                     const style = this.parseCSS(node.innerHTML);
                     if (style)
-                        return new StyleLibNode(style);
+                        return new StyleLibNode(style, name, this.getVersion(node));
                 }
                 break;
             case "import":
@@ -130,6 +137,11 @@ export default class LibraryParser {
     }//parseLibraryNode
 
 
+    private getVersion(node: Element)
+    {
+        return node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
+    }//getVersion
+
     private parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
@@ -137,7 +149,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
-        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
+        const version = this.getVersion(node);
         let baseClass: NetworkComponentClass | undefined;
         let baseClassPropBindings: DrawingElementProps | undefined;
         let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
@@ -235,7 +247,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 
-        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
+        const version = this.getVersion(node);
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
@@ -317,7 +329,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Area class without the name");
 
-        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
+        const version = this.getVersion(node);
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
@@ -712,19 +724,11 @@ export class ImportStatement {
 }//importStatement
 
 export class DefsLibNode {
-    data: Element;
-    constructor(data: Element)
-    {
-        this.data = data;
-    }//ctor
+    constructor(readonly data: Element, readonly name: string, readonly version: number) {}
 }//DefsLibNode
 
 export class StyleLibNode {
-    data: PostCSSRoot;
-    constructor(data: PostCSSRoot)
-    {
-        this.data = data;
-    }//ctor
+    constructor(readonly data: PostCSSRoot, readonly name: string, readonly version: number) {}
 }//StyleLibNode
 
 export type ParsedNode =

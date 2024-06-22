@@ -31,7 +31,7 @@
         </style>
     </area-class>
 
-    <defs>
+    <defs name="Swamp">
         <pattern id="kre:std:Swamp" patternUnits="userSpaceOnUse" width="20" height="20" viewBox="0 0 20 20" >
             <rect x="0" y="0" width="100%" height="100%" fill="lightcyan"/>
             <!-- <circle cx="0" cy="0" r="1" fill="red"/> -->
@@ -44,7 +44,7 @@
             <line class="strokes" x1="11" y1="1" x2="16" y2="1"/>
         </pattern>
     </defs>
-    <style>
+    <style name="Swamp">
         #kre\:std\:Swamp .strokes {stroke: blue; stroke-width: 1}
     </style>
 
