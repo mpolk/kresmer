@@ -127,6 +127,7 @@ export default abstract class DrawingElementClass {
     readonly category?: string;
     /** Source XML-code of this class */
     readonly sourceCode?: string;
+    protected readonly embeddedElementClasses = new Set<DrawingElementClass>();
 
     /** Limits this class usage for embedding or inheritance */
     get isAbstract(): boolean {return Boolean(this.category?.startsWith('.'))}
@@ -148,8 +149,27 @@ export default abstract class DrawingElementClass {
     {
         if (alreadySerialized.has(this) || !this.sourceCode)
             return "";
+
+        let xml = "";
+        for (const embedded of this.embeddedElementClasses) {
+            xml += embedded.toXML(indent, alreadySerialized);
+        }//for
+        if (this.baseClass)
+            xml += this.baseClass.toXML(indent, alreadySerialized);
+        if (this.styleBaseClasses) {
+            for (const base of this.styleBaseClasses) {
+                xml += base.toXML(indent, alreadySerialized);
+            }//for
+        }//if
+        if (this.propsBaseClasses) {
+            for (const base of this.propsBaseClasses) {
+                xml += base.toXML(indent, alreadySerialized);
+            }//for
+        }//if
+
+        xml += "\t" + this.sourceCode.split("\n").map(line => `\t${line}`).join("\n") + "\n";
         alreadySerialized.add(this);
-        return "\t" + this.sourceCode.split("\n").map(line => `\t${line}`).join("\n") + "\n";
+        return xml;
     }//toXML
 
 }//DrawingElementClass

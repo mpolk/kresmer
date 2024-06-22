@@ -90,18 +90,17 @@ export default class NetworkComponentClass extends DrawingElementClass {
 
     private readonly baseClassChildNodes?: NodeList;
     override readonly usesEmbedding = true;
-    private readonly embeddedComponentClasses = new Set<NetworkComponentClass>();
 
     private findEmbeddedComponentClasses(node: Element)
     {
         for (const className in NetworkComponentClass.allClasses) {
             if (NetworkComponentClass.allClasses[className].adapterVueName === node.nodeName) {
-                this.embeddedComponentClasses.add(NetworkComponentClass.allClasses[className]);
+                this.embeddedElementClasses.add(NetworkComponentClass.allClasses[className]);
                 break;
             }//if
         }//for
 
-        for (let i = 0; i <= node.childElementCount; i++) {
+        for (let i = 0; i < node.childElementCount; i++) {
             this.findEmbeddedComponentClasses(node.children[i]);
         }//for
     }//findEmbeddedComponentClasses
