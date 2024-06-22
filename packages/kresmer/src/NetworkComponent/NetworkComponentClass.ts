@@ -71,6 +71,18 @@ export default class NetworkComponentClass extends DrawingElementClass {
         }//if
 
         this.defaultContent = params.defaultContent;
+
+        let templateRoot: Element|null;
+        if (this.template instanceof Element)
+            templateRoot = this.template;
+        else {
+            const parser = new DOMParser;
+            templateRoot = parser.parseFromString(this.template, "text/xml").firstElementChild;
+        }//if
+        if (templateRoot)
+            this.findEmbeddedComponentClasses(templateRoot);
+
+
         const existingClass = NetworkComponentClass.allClasses[name];
         if (!existingClass || existingClass.version < this.version)
             NetworkComponentClass.allClasses[name] = this;
@@ -78,6 +90,21 @@ export default class NetworkComponentClass extends DrawingElementClass {
 
     private readonly baseClassChildNodes?: NodeList;
     override readonly usesEmbedding = true;
+    private readonly embeddedComponentClasses = new Set<NetworkComponentClass>();
+
+    private findEmbeddedComponentClasses(node: Element)
+    {
+        for (const className in NetworkComponentClass.allClasses) {
+            if (NetworkComponentClass.allClasses[className].adapterVueName === node.nodeName) {
+                this.embeddedComponentClasses.add(NetworkComponentClass.allClasses[className]);
+                break;
+            }//if
+        }//for
+
+        for (let i = 0; i <= node.childElementCount; i++) {
+            this.findEmbeddedComponentClasses(node.children[i]);
+        }//for
+    }//findEmbeddedComponentClasses
     
     private static allClasses: Record<string, NetworkComponentClass> = {};
     /**
