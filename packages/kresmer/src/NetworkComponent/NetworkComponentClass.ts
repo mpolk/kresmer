@@ -8,7 +8,6 @@
  ***************************************************************************/
 
 import {Root as PostCSSRoot} from 'postcss';
-import _ from "lodash";
 import { Template } from "../Kresmer";
 import { ComputedProps, Functions, DrawingElementClassProps } from "../DrawingElement/DrawingElementClass";
 import DrawingElementClass from "../DrawingElement/DrawingElementClass";
@@ -42,6 +41,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
         style?: PostCSSRoot,
         category?: string,
         defaultContent?: string,
+        sourceCode?: string,
     })
     {
         super(name, params);
@@ -112,63 +112,5 @@ export default class NetworkComponentClass extends DrawingElementClass {
      * @returns The vue-component name defs
      */
      get defsVueName() {return "_Kre:" + this.name + ".defs"}
-
-
-     override selfToXML(indent: number): string 
-     {
-        let xml = "";
-        const categoryAttr = this.category ? `category="${this.category}"` : "";
-        xml += `${"\t".repeat(indent)}<component-class name="${this.name}" version="${this.version}" ${categoryAttr}>\n`;
-        xml += this.baseToXML(indent+1);
-
-        xml += this.templateToXML(indent+1);
-        xml += this.propsToXML(indent+1);
-
-        xml += `${"\t".repeat(indent)}</component-class>\n\n`;
-        return xml;
-     }//selfToXML
-
-    override baseTemplatesToXML(indent: number): string
-    {
-        if (!this.baseClassChildNodes)
-            return "";
-
-        const serializer = new XMLSerializer();
-        let xml = "";
-        for (const node of this.baseClassChildNodes) {
-            if (node.nodeType === node.TEXT_NODE)
-                continue;
-            const t = serializer.serializeToString(node).trim();
-            let i = indent;
-            for (const line of t.split("\n")) {
-                xml += `${"\t".repeat(i)}${line}\n`;
-                i = 1;
-            }//for
-        }//for
-        return xml;
-    }//baseTemplateToXML
-
-    templateToXML(indent: number): string
-    {
-        if (this.template === "" || this.template instanceof Element && this.template.childElementCount === 0)
-            return "";
-
-        let xml = "";
-        if (typeof this.template === "string") {
-                xml += `${"\t".repeat(indent+1)}<template>\n`;
-                xml += `${"\t".repeat(indent+2)}${_.escape(this.template.trim())}\n`;
-                xml += `${"\t".repeat(indent+1)}</template>\n`;
-        } else {
-            const serializer = new XMLSerializer();
-            const t = serializer.serializeToString(this.originalTemplate ?? this.template).trim();
-            let i = indent;
-            for (const line of t.split("\n")) {
-                xml += `${"\t".repeat(i)}${line}\n`;
-                i = 1;
-            }//for
-        }//if
-
-        return xml;
-    }//templateToXML
 
 }//NetworkComponentClass

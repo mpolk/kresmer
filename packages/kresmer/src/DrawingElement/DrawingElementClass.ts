@@ -39,6 +39,7 @@ export default abstract class DrawingElementClass {
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,
+        sourceCode?: string,
     })
     {
         this.name = name;
@@ -46,7 +47,7 @@ export default abstract class DrawingElementClass {
         this.baseClass = params?.baseClass;
         this.styleBaseClasses = params?.styleBaseClasses;
         this.propsBaseClasses = params?.propsBaseClasses;
-        this.props = this.ownProps = params?.props ?? {};
+        this.props = params?.props ?? {};
         this.exceptProps = params?.exceptProps;
 
         if (params?.baseClass) {
@@ -54,17 +55,18 @@ export default abstract class DrawingElementClass {
                     Object.entries(params.baseClass.props)
                         .filter(entry => {return !params.exceptProps?.includes(entry[0])})
                 ));
-            for (const propName in this.ownProps) {
+            const ownProps = params?.props ?? {};
+            for (const propName in ownProps) {
                 if (!(propName in this.props)) {
-                    this.props[propName] = clone(this.ownProps[propName]);
+                    this.props[propName] = clone(ownProps[propName]);
                 } else {
-                    for (const k in this.ownProps[propName]) {
+                    for (const k in ownProps[propName]) {
                         const key = k as keyof DrawingElementClassProp;
-                        if (this.ownProps[propName][key] === null)
+                        if (ownProps[propName][key] === null)
                             this.props[propName][key] = undefined;
                         else
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            this.props[propName][key] = clone(this.ownProps[propName][key]) as any;
+                            this.props[propName][key] = clone(ownProps[propName][key]) as any;
                     }//for
                 }//if
             }//for
@@ -86,6 +88,7 @@ export default abstract class DrawingElementClass {
         this.defs = params?.defs;
         this.style = params?.style;
         this.category = params?.category;
+        this.sourceCode = params?.sourceCode?.replaceAll(/ *xmlns:[-a-zA-Z0-9]+="[-a-zA-Z0-9]+" */g, " ");
 
         for (const propName in params?.baseClassPropBindings) {
             const prop = this.props[toCamelCase(propName)] as {default: unknown}|undefined;
@@ -112,8 +115,6 @@ export default abstract class DrawingElementClass {
     abstract readonly usesEmbedding: boolean;
     /** Props definition of the Vue-component for this class */
     readonly props: Record<string, DrawingElementClassProp>;
-    /** Own props definition for this class (not including basem class props) */
-    readonly ownProps: Record<string, DrawingElementClassProp>;
     /** Computed props (aka just "computed") definition of the Vue-component for this class */
     readonly computedProps?: ComputedProps;
     /** Functions associated with this class (also sometimes called "methods") */
@@ -124,6 +125,8 @@ export default abstract class DrawingElementClass {
     readonly style?: PostCSSRoot;
     /** Class category (for ordering and usability) */
     readonly category?: string;
+    /** Source XML-code of this class */
+    readonly sourceCode?: string;
 
     /** Limits this class usage for embedding or inheritance */
     get isAbstract(): boolean {return Boolean(this.category?.startsWith('.'))}
@@ -143,102 +146,11 @@ export default abstract class DrawingElementClass {
     /** Makes XML-representation  of the class */
     toXML(indent: number, alreadySerialized: Set<DrawingElementClass>): string
     {
-        if (alreadySerialized.has(this))
+        if (alreadySerialized.has(this) || !this.sourceCode)
             return "";
-        
-        let xml = "";
-        if (this.baseClass)
-            xml += this.baseClass.toXML(indent, alreadySerialized);
-        if (this.styleBaseClasses) {
-            for (const base of this.styleBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized);
-            }//for
-        }//if
-        if (this.propsBaseClasses) {
-            for (const base of this.propsBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized);
-            }//for
-        }//if
-
-        xml += this.selfToXML(indent);
         alreadySerialized.add(this);
-        return xml;
+        return "\t" + this.sourceCode.split("\n").map(line => `\t${line}`).join("\n") + "\n";
     }//toXML
-
-    abstract selfToXML(indent: number): string;
-
-    baseToXML(indent: number): string
-    {
-        if (!this.baseClass)
-            return "";
-        let propBindAttrs = "";
-        for (const prop in this.baseClassPropBindings) {
-            propBindAttrs += ` ${prop}="${this.baseClassPropBindings[prop]}"`;
-        }//for
-
-        const baseTemplatesXML = this.baseTemplatesToXML(indent+1)
-        if (!baseTemplatesXML)
-            return `${"\t".repeat(indent)}<extends base="${this.baseClass.name}" ${propBindAttrs}/>\n`;
-
-        let xml = `${"\t".repeat(indent)}<extends base="${this.baseClass.name}" ${propBindAttrs}>\n`;
-        xml += baseTemplatesXML;
-        xml += `${"\t".repeat(indent)}</extends>\n`;
-        return xml;
-    }//baseToXML
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    baseTemplatesToXML(indent: number) {return ""}
-
-    propsToXML(indent: number): string
-    {
-        if (!this.ownProps)
-            return "";
-
-        const baseClasseAttr = this.propsBaseClasses ? ` extend="${this.propsBaseClasses.map(clazz => clazz.name).join(',')}"` : "";
-        let xml = `${"\t".repeat(indent)}<props${baseClasseAttr}>\n`;
-
-        for (const propName in this.ownProps) {
-            const prop = this.ownProps[propName];
-
-            const attrs: Record<string, string> = {};
-            if (Array.isArray(prop.type)) {
-                attrs.type = `${prop.type.map(t => t.name).join(',')}`;
-            } else if (prop.subtype === "image-url") {
-                attrs.type = "ImageURL"
-            } else if (prop.subtype === "color") {
-                attrs.type = "Color"
-            } else if (prop.type) {
-                attrs.type = prop.type.name;
-            }//if
-
-            switch (typeof prop.default) {
-                case "number": case "string":
-                    attrs.default = String(prop.default);
-                    break;
-                case "undefined":
-                    break;
-                default:
-                    attrs.default = JSON.stringify(prop.default);
-            }//switch
-
-            attrs.required !== undefined && (attrs.required = String(prop.required));
-            prop.category && (attrs.category = DrawingElementPropCategory[prop.category]);
-            prop.description && (attrs.description = prop.description);
-
-            if (prop.validator?.validValues) {
-                attrs.choices = prop.validator.validValues.join(",");
-            } else if (prop.validator?.min) {
-                attrs.range = `${prop.validator.min}..${prop.validator.max}`;
-            } else if (prop.validator?.pattern) {
-                attrs.pattern = prop.validator.pattern;
-            }//if
-
-            xml += `${"\t".repeat(indent+1)}<prop name="${propName}" ${Object.entries(attrs).map(([attr, value]) => `${attr}="${value}"`).join(" ")}/>\n`;
-        }//for
-
-        xml += `${"\t".repeat(indent)}</props>\n`;
-        return xml;
-    }//propsToXML
 
 }//DrawingElementClass
 

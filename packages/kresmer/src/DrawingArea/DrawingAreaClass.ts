@@ -37,6 +37,7 @@ export default class DrawingAreaClass extends DrawingElementClass {
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,
+        sourceCode?: string,
     })
     {
         super(name, params);
@@ -67,13 +68,4 @@ export default class DrawingAreaClass extends DrawingElementClass {
      */
      get defsVueName() {return "_Kre:area:" + this.name + ".defs"}
 
-
-    override selfToXML(indent: number): string 
-    {
-        let xml = "";
-        xml += `${"\t".repeat(indent)}<area-class name="${this.name}">\n`;
-
-        xml += `${"\t".repeat(indent)}</area-class>\n\n`;
-        return xml;
-    }//selfToXML
 }//DrawingAreaClass

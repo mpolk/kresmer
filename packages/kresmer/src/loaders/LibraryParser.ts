@@ -222,7 +222,7 @@ export default class LibraryParser {
         return new NetworkComponentClass(className, {version, baseClass, baseClassPropBindings, baseClassChildNodes, 
                                                      styleBaseClasses, propsBaseClasses, template, 
                                                      props, exceptProps, computedProps, functions, defs, 
-                                                     style, defaultContent, category});
+                                                     style, defaultContent, category, sourceCode: node.outerHTML});
     }//parseComponentClassNode
 
 
@@ -302,7 +302,8 @@ export default class LibraryParser {
 
         const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
         const linkClass = new ctor(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
-                                               baseClassPropBindings, computedProps, functions, defs, style, category});
+                                               baseClassPropBindings, computedProps, functions, defs, style, category, 
+                                               sourceCode: node.outerHTML});
         return linkClass;
     }//parseLinkClassNode
 
@@ -382,7 +383,8 @@ export default class LibraryParser {
         }//if
 
         const areaClass = new DrawingAreaClass(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
-                                               baseClassPropBindings, computedProps, functions, defs, style, category});
+                                               baseClassPropBindings, computedProps, functions, defs, style, category, 
+                                               sourceCode: node.outerHTML});
         return areaClass;
     }//parseAreaClassNode
 

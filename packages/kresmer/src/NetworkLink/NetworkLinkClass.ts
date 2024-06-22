@@ -37,6 +37,7 @@ export default class NetworkLinkClass extends DrawingElementClass {
         defs?: Template,
         style?: PostCSSRoot,
         category?: string,
+        sourceCode?: string,
     })
     {
         super(name, params);
@@ -67,15 +68,6 @@ export default class NetworkLinkClass extends DrawingElementClass {
      */
      get defsVueName() {return "_Kre:link:" + this.name + ".defs"}
 
-
-     override selfToXML(indent: number): string 
-     {
-         let xml = "";
-         xml += `${"\t".repeat(indent)}<link-class name="${this.name}">\n`;
- 
-         xml += `${"\t".repeat(indent)}</link-class>\n\n`;
-         return xml;
-     }//selfToXML
 }//LinkClass
 
 /** Class specialized for the link bundles */
