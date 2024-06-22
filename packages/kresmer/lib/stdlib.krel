@@ -14,7 +14,7 @@
 <!-- Define some little things to make the life less hard -->
 <!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
 
-<kresmer-library name="stdlib" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="stdlib" version="1" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="std-graphics" />
     <import library="std-ports" />
     <import library="std-links" />
@@ -194,7 +194,7 @@
 
     <!-- Graphics for adjustment-handles - visual elements used for "on-the-fly" editing network component props 
         without opening a modal form -->
-    <defs>
+    <defs name="AdjusmentHandles">
         <g id="kre:adjustment-ruler-marker-common">
             <polygon points="0,5 5,0 10,5 5,10" />
             <circle cx="5" cy="5" r="2" style="filter: brightness(0.25) invert(100%)"/>
@@ -208,7 +208,7 @@
             <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker fixed"/>
         </marker>
     </defs>
-    <style>
+    <style name="AdjusmentHandles">
         .adjustment-ruler {
             stroke: brown;
             stroke-width: 3px;

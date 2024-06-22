@@ -24,6 +24,7 @@ import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
 export default class LibraryParser {
 
     constructor(private kresmer: Kresmer) {}
+    private libVersion: number = 1;
 
     /**
      * Parses a library file contents and yields the sequence 
@@ -41,11 +42,12 @@ export default class LibraryParser {
             throw new LibraryParsingException(
                 `Invalid library root element: ${root?.nodeName}`);
 
+        this.libVersion = root?.hasAttribute("version") ? Number(root.getAttribute("version")) : 1;
         const libName = root.getAttribute("name");
         if (libName === null) 
             this.kresmer.raiseError(new LibraryParsingException("Library has no name!"));
         else
-            yield new LibParams(libName);
+            yield new LibParams(libName, this.libVersion);
 
         yield* this.parseLibraryNode(root, libName);
     }//parseXML
@@ -125,7 +127,7 @@ export default class LibraryParser {
 
         return new LibraryParsingException(
             `Invalid top-level node in library: "${node.nodeName}"`);
-}//parseLibraryNode
+    }//parseLibraryNode
 
 
     private parseComponentClassNode(node: Element)
@@ -135,7 +137,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
-        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : undefined;
+        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
         let baseClass: NetworkComponentClass | undefined;
         let baseClassPropBindings: DrawingElementProps | undefined;
         let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
@@ -233,7 +235,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 
-        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : undefined;
+        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
@@ -315,7 +317,7 @@ export default class LibraryParser {
         if (!className) 
             throw new LibraryParsingException("Area class without the name");
 
-        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : undefined;
+        const version = node.hasAttribute("version") ? Number(node.getAttribute("version")) : this.libVersion;
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptCProps: string[] | undefined;
@@ -702,7 +704,7 @@ export default class LibraryParser {
 // Wrappers for the top-level library elements
 
 export class LibParams {
-    constructor(readonly name: string) {}
+    constructor(readonly name: string, readonly version: number) {}
 }//LibParams
 
 export class ImportStatement {

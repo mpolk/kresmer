@@ -20,6 +20,7 @@
             <xs:complexContent>
                 <xs:extension base="library">
                     <xs:attribute name="name" use="required"/>
+                    <xs:attribute name="version" />
                 </xs:extension>
             </xs:complexContent>
         </xs:complexType>
@@ -29,8 +30,13 @@
         <xs:sequence>
 
             <xs:choice minOccurs="0" maxOccurs="unbounded">
-                <xs:element ref="defs" minOccurs="0"/>
-                
+                <xs:element name="defs">
+                    <xs:complexType mixed="true">
+                        <xs:group ref="svg-elements"></xs:group>
+                        <xs:attribute name="name" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+                            
                 <xs:element name="component-class">
                     <xs:complexType>
                         <xs:all>
@@ -75,8 +81,16 @@
                     </xs:complexType>
                 </xs:element>
 
-                <xs:element ref="style"/>
-
+                <xs:element name="style">
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="name" use="required"/>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element>
+            
                 <xs:element name="import">
                     <xs:complexType>
                         <xs:attribute name="library" use="required"/>
@@ -501,14 +515,14 @@
         </xs:complexType>
     </xs:element>
 
-    <!-- Local and global definitions (translated to SVG defs) -->
+    <!-- Local definitions (translated to SVG defs) -->
     <xs:element name="defs">
         <xs:complexType mixed="true">
             <xs:group ref="svg-elements"></xs:group>
         </xs:complexType>
     </xs:element>
 
-    <!-- Local and global styles (translated to CSS) -->
+    <!-- Local styles (translated to CSS) -->
     <xs:element name="style">
         <xs:complexType>
             <xs:simpleContent>
