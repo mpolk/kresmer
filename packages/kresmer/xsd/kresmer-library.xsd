@@ -52,6 +52,7 @@
                         <xs:attribute name="name" use="required" />
                         <xs:attribute name="version" />
                         <xs:attribute name="category" />
+                        <xs:attribute name="embeds"/>
 
                         <xs:attribute ref="ua:name" />
                         <xs:attribute ref="ua:category" />

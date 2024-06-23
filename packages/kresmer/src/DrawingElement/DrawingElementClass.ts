@@ -28,6 +28,7 @@ export default abstract class DrawingElementClass {
     public constructor(name: string, params?: {
         version?: number,
         baseClass?: DrawingElementClass,
+        embeddedElementClasses?: DrawingElementClass[],
         styleBaseClasses?: DrawingElementClass[],
         computedPropsBaseClasses?: DrawingElementClass[],
         propsBaseClasses?: DrawingElementClass[],
@@ -46,6 +47,7 @@ export default abstract class DrawingElementClass {
         this.name = name;
         this.version = params?.version ?? 1;
         this.baseClass = params?.baseClass;
+        this.embeddedElementClasses = new Set(params?.embeddedElementClasses);
         this.styleBaseClasses = params?.styleBaseClasses;
         this.propsBaseClasses = params?.propsBaseClasses;
         this.computedPropsBaseClasses = params?.computedPropsBaseClasses;
@@ -134,7 +136,7 @@ export default abstract class DrawingElementClass {
     readonly category?: string;
     /** Source XML-code of this class */
     readonly sourceCode?: string;
-    protected readonly embeddedElementClasses = new Set<DrawingElementClass>();
+    protected readonly embeddedElementClasses: Set<DrawingElementClass>;
 
     /** Limits this class usage for embedding or inheritance */
     get isAbstract(): boolean {return Boolean(this.category?.startsWith('.'))}

@@ -151,6 +151,13 @@ export default class LibraryParser {
 
         const version = this.getVersion(node);
         let baseClass: NetworkComponentClass | undefined;
+        let embeddedElementClasses: NetworkComponentClass[] | undefined;
+        if (node.hasAttribute("embeds")) {
+            embeddedElementClasses = node.getAttribute("embeds")!.split(/\s*,\s*/)
+                .map(name => {
+                    return NetworkComponentClass.getClass(name.trim())
+                });
+        }//if
         let baseClassPropBindings: DrawingElementProps | undefined;
         let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
         let template: Element | undefined;
@@ -166,6 +173,7 @@ export default class LibraryParser {
         let computedPropsBaseClasses: NetworkComponentClass[] | undefined;
         let functionsBaseClasses: NetworkComponentClass[] | undefined;
         let styleBaseClasses: NetworkComponentClass[] | undefined;
+
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -234,6 +242,7 @@ export default class LibraryParser {
 
 
         return new NetworkComponentClass(className, {version, baseClass, baseClassPropBindings, baseClassChildNodes, 
+                                                     embeddedElementClasses,
                                                      styleBaseClasses, propsBaseClasses, template, 
                                                      props, exceptProps, computedProps, computedPropsBaseClasses, 
                                                      functions, functionsBaseClasses, defs, 

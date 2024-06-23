@@ -28,6 +28,6 @@ describe('Loading a drawing without system libraries', () => {
     })
 
     specify('The "core-switch" presents om the drawing', () => {
-        cy.get("svg[name='core-switch']").should("exist");
+        cy.get("svg.network-component.Extreme-X590-24x-Stack").should("exist");
     })
 });

@@ -12,7 +12,8 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment">
+    <component-class name="PatchPanel" category="Passive equipment" 
+        embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>

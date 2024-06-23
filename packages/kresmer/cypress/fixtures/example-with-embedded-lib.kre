@@ -496,7 +496,117 @@
 	            <computed-prop name="downlinkPortPanelWidth">computedProps.downlinkPortRowLength + props.unitHeight*0.15</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="PatchPanel" category="Passive equipment">
+		<component-class name="RJ45" category=".ports">
+	        <extends base="RectangularConnector" v-bind:stroke-width="Math.min(w, h)*0.16"/>
+	        <defs>
+	            <pattern id="kre:std:rj45-contacts-v" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" preserveAspectRatio="none">
+	                <rect x="2" y="0" width="6" height="10" fill="#b28e01"/>
+	            </pattern>
+	            <pattern id="kre:std:rj45-contacts-h" patternUnits="objectBoundingBox" width="1" height="0.125" viewBox="0 0 10 10" preserveAspectRatio="none">
+	                <rect x="0" y="2" width="10" height="6" fill="#b28e01"/>
+	            </pattern>
+	        </defs>
+	        <template>
+	            <rect v-bind:x="keyPosition === 'left' ? w*0.5 : w*0.2" v-bind:y="keyPosition === 'top' ? h*0.5 : h*0.2" v-bind:width="orientation === 'v' ? w*0.6 : h*0.3" v-bind:height="orientation === 'v' ? h*0.3 : w*0.6" v-bind:fill="`url(#kre:std:rj45-contacts-${orientation})`"/>
+	        </template>
+	        <computed-props>
+	            <computed-prop name="orientation">props.keyPosition === "top" || props.keyPosition === "bottom" ? "v" : "h"</computed-prop>
+	        </computed-props>
+	        <style>
+	            .border {fill: none; stroke: #597865;}
+	        </style>
+	    </component-class>
+		<component-class name="RJ45-Port" category=".ports">
+	        <extends base="Port" v-bind:w="d" v-bind:h="d">
+	            <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+	        </extends>
+	        <props extend="KeyedConnector" except="w,h">
+	            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+	        </props>
+	        <computed-props>
+	            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+	        </computed-props>
+	    </component-class>
+		<component-class name="WDM-Port" category=".port-abstractions">
+	        <computed-props>
+	            <computed-prop name="beamColor">
+	                props.fiberInfo?.wavelength === 1470 ? "#949494" :
+	                props.fiberInfo?.wavelength === 1490 ? "#6B0094" :
+	                props.fiberInfo?.wavelength === 1510 ? "#0d4be7" :
+	                props.fiberInfo?.wavelength === 1530 ? "#01df01" :
+	                props.fiberInfo?.wavelength === 1550 ? "#fffc57" :
+	                props.fiberInfo?.wavelength === 1570 ? "#FF950E" :
+	                props.fiberInfo?.wavelength === 1590 ? "#ff0f0f" :
+	                props.fiberInfo?.wavelength === 1610 ? "#CC6633" :
+	                    undefined
+	            </computed-prop>
+	        </computed-props>
+	    </component-class>
+		<component-class name="FC-Port" category=".ports">
+	        <extends base="Port" v-bind:w="d" v-bind:h="d">
+	            <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" v-bind:stroke="beamColor ?? 'white'" v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}                                 0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`"/>
+	            <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
+	            <circle v-if="fiberInfo &amp;&amp; false" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.55" fill="none" v-bind:stroke-width="r*0.2" v-bind:stroke="beamColor"/>
+	        </extends>
+	        <template>
+	            <template v-if="fiberInfo">
+	                <text v-bind:x="r" v-bind:y="0" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
+	                    {{fiberInfo.signalDirection}}
+	                </text>
+	                <text v-bind:x="r" v-bind:y="d*1.1" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
+	                    {{fiberInfo.wavelength}}
+	                </text>
+	            </template>
+	        </template>
+	        <props except="w,h">
+	            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+	            <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
+	        </props>
+	        <computed-props extend="WDM-Port">
+	            <computed-prop name="labelY">props.d*0.67</computed-prop>
+	            <computed-prop name="r">props.d*0.5</computed-prop>
+	            <computed-prop name="rNut">props.d*0.5</computed-prop>
+	            <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
+	            <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
+	        </computed-props>
+	        <style>
+	            .port-icon.body {fill: transparent; stroke: transparent;}
+	            .port-name {fill: white; font-weight: bold}
+	            .nut {fill: silver; }
+	            .cap {fill: #3d3d3d; stroke: #d00101; stroke-width: 2px}
+	            .fiber-info {fill: #3d3d3d;}
+	        </style>
+	    </component-class>
+		<component-class name="FC-APC-Port" category=".ports">
+	        <extends base="FC-Port"/>
+	        <style>
+	            .cap {stroke: #18b933;}
+	        </style>
+	    </component-class>
+		<component-class name="SC-Port" category=".ports">
+	        <extends base="Port" v-bind:w="d" v-bind:h="d">
+	            <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+	            <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8"/>
+	        </extends>
+	        <props extend="KeyedConnector" except="w,h">
+	            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+	            <prop name="ferruleVisible" type="Boolean" default="false"/>
+	        </props>
+	        <computed-props>
+	            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+	        </computed-props>
+	        <style>
+	            .RectangularConnector .border {fill: none; stroke: #057aff;}
+	            .ferrule {fill: #ababab; stroke: #707070; stroke-width: 1px;}
+	        </style>
+	    </component-class>
+		<component-class name="SC-APC-Port" category=".ports">
+	        <extends base="SC-Port"/>
+	        <style>
+	            .RectangularConnector .border {fill: none; stroke: #18b933;}
+	        </style>
+	    </component-class>
+		<component-class name="PatchPanel" category="Passive equipment" embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
 	        <template>
 	            <title v-if="comment">{{comment}}</title>
 	            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -620,37 +730,6 @@
 	        <props>
 	            <prop name="management-protocol" type="String" category="Network" default="telnet:" description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
 	        </props>
-	    </component-class>
-		<component-class name="RJ45" category=".ports">
-	        <extends base="RectangularConnector" v-bind:stroke-width="Math.min(w, h)*0.16"/>
-	        <defs>
-	            <pattern id="kre:std:rj45-contacts-v" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" preserveAspectRatio="none">
-	                <rect x="2" y="0" width="6" height="10" fill="#b28e01"/>
-	            </pattern>
-	            <pattern id="kre:std:rj45-contacts-h" patternUnits="objectBoundingBox" width="1" height="0.125" viewBox="0 0 10 10" preserveAspectRatio="none">
-	                <rect x="0" y="2" width="10" height="6" fill="#b28e01"/>
-	            </pattern>
-	        </defs>
-	        <template>
-	            <rect v-bind:x="keyPosition === 'left' ? w*0.5 : w*0.2" v-bind:y="keyPosition === 'top' ? h*0.5 : h*0.2" v-bind:width="orientation === 'v' ? w*0.6 : h*0.3" v-bind:height="orientation === 'v' ? h*0.3 : w*0.6" v-bind:fill="`url(#kre:std:rj45-contacts-${orientation})`"/>
-	        </template>
-	        <computed-props>
-	            <computed-prop name="orientation">props.keyPosition === "top" || props.keyPosition === "bottom" ? "v" : "h"</computed-prop>
-	        </computed-props>
-	        <style>
-	            .border {fill: none; stroke: #597865;}
-	        </style>
-	    </component-class>
-		<component-class name="RJ45-Port" category=".ports">
-	        <extends base="Port" v-bind:w="d" v-bind:h="d">
-	            <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
-	        </extends>
-	        <props extend="KeyedConnector" except="w,h">
-	            <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
-	        </props>
-	        <computed-props>
-	            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
-	        </computed-props>
 	    </component-class>
 		<component-class name="DLinkSwitch" category="Switches/DLink">
 	        <extends base="DLinkSwitchBody"/>
