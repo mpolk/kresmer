@@ -104,6 +104,18 @@
         </style>
     </link-class>
 
+    <link-class name="sm-fiber" category="optical-links">
+        <extends base="_abstract-link" media-type="sm-optics" accept-media-types="none"/>
+        <style>
+            .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
+            .segment {stroke-width: 1px; stroke-dasharray: 3,5}
+            .segment.thick, .segment.highlighted, .segment.selected {stroke-width: 2px}
+            .segment.thick.highlighted, .segment.thick.selected {stroke-width: 3px}
+            .link-number {filter: brightness(0.6)}
+            .blank.header {fill-opacity: 0.3;}
+        </style>
+    </link-class>
+
     <link-class name="DAC" category="copper-links">
         <extends base="_abstract-link" media-type="DAC" accept-media-types="none"/>
         <style>
