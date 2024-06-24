@@ -449,6 +449,8 @@ export function updateAppSettings(newAppSettings: AppSettings)
     kresmer.animateComponentDragging = newAppSettings.animateComponentDragging;
     kresmer.animateLinkBundleDragging = newAppSettings.animateLinkBundleDragging;
     kresmer.streetAddressFormat = newAppSettings.streetAddressFormat;
+    kresmer.embedLibDataInDrawing = newAppSettings.embedLibDataInDrawing;
+    kresmer.libDataPriority = newAppSettings.libDataPriority;
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
 

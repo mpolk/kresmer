@@ -11,7 +11,8 @@
   "exports": {
     ".": {
       "import": "./dist/kresmer.es.js",
-      "require": "./dist/kresmer.umd.js"
+      "require": "./dist/kresmer.umd.js",
+      "types": "./dist/Kresmer.d.ts"
     },
     "./style": {
       "import": "./dist/style.css"

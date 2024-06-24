@@ -14,7 +14,7 @@ import Menus from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine, setDefaultDrawingFileName } from './init-funcs';
 import { RecentDrawings } from './file-ops';
-import { StreetAddressFormat } from 'kresmer';
+import { StreetAddressFormat, LibDataPriority } from 'kresmer';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const packageJson = require("../../package.json");
@@ -32,6 +32,8 @@ export const localSettings = new Settings("local-settings.json", {
     snappingGranularity: 1,
     autoAlignVertices: true as boolean,
     saveDynamicPropValuesWithDrawing: false as boolean,
+    embedLibDataInDrawing: true as boolean,
+    libDataPriority: LibDataPriority.useVersioning,
     customManagementProtocols: [] as CustomManagementProtocol[],
     animateComponentDragging: false as boolean,
     animateLinkBundleDragging: false as boolean,
@@ -48,6 +50,8 @@ export type AppSettings = {
     snappingGranularity: number,
     autoAlignVertices: boolean,
     saveDynamicPropValuesWithDrawing: boolean,
+    embedLibDataInDrawing: boolean,
+    libDataPriority: LibDataPriority,
     customManagementProtocols: CustomManagementProtocol[],
     animateComponentDragging: boolean,
     animateLinkBundleDragging: boolean,

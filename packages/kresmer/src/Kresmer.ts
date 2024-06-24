@@ -60,6 +60,8 @@ export default class Kresmer extends KresmerEventHooks {
         snapToGrid?: boolean,
         snappingGranularity?: number,
         saveDynamicPropValuesWithDrawing?: boolean,
+        embedLibDataInDrawing?: boolean,
+        libDataPriority?: LibDataPriority,
         autoAlignVertices?: boolean,
         animateComponentDragging?: boolean,
         animateLinkBundleDragging?: boolean,
@@ -78,6 +80,8 @@ export default class Kresmer extends KresmerEventHooks {
         this.snapToGrid = options?.snapToGrid ?? true;
         options?.snappingGranularity && (this.snappingGranularity = options.snappingGranularity);
         this.saveDynamicPropValuesWithDrawing = Boolean(options?.saveDynamicPropValuesWithDrawing);
+        this.embedLibDataInDrawing = Boolean(options?.embedLibDataInDrawing ?? true);
+        this.libDataPriority = options?.libDataPriority ?? LibDataPriority.useVersioning;
         this.autoAlignVertices = options?.autoAlignVertices ?? true;
         this.animateComponentDragging = Boolean(options?.animateComponentDragging);
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
@@ -736,6 +740,8 @@ export default class Kresmer extends KresmerEventHooks {
     saveDynamicPropValuesWithDrawing = false;
     /** Determines whether library elements (classes) should be saved with the drawing */
     embedLibDataInDrawing = true;
+    /** Determines the choice of the library data source when a conflict is detected */
+    libDataPriority: LibDataPriority = LibDataPriority.useVersioning;
 
 
     public exportDrawingToSVG(styles: string): string
@@ -1459,6 +1465,13 @@ export const enum StreetAddressFormat {
 /** Class type of the generic drawing element */
 export type DrawingElementClassType = typeof NetworkComponentClass | typeof NetworkLinkClass;
 export type DrawingElementClassConstructor = NetworkComponentClass | NetworkLinkClass;
+
+/** Options for choosing library data source when a conflict is detected */
+export const enum LibDataPriority {
+    preferSystem = "preferSystem",
+    preferEmbedded = "preferEmbedded",
+    useVersioning = "useVersioning",
+}//LibDataPriority
 
 // Re-export child classes to API
 export {default as DrawingElement } from "./DrawingElement/DrawingElement";

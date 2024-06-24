@@ -11,7 +11,7 @@
     import { Modal, Offcanvas } from 'bootstrap';
     import { updateAppSettings } from './renderer-main';
     import { AppSettings } from '../main/main';
-    import { StreetAddressFormat } from 'kresmer';
+    import { StreetAddressFormat, LibDataPriority } from 'kresmer';
 
     export default {
         name: "AppSettingsSidebar",
@@ -206,6 +206,24 @@
                             <label class="form-check-label" for="cbSaveDynamicPropsWithDrawing">Save dynamic props with the drawing</label>
                             <input type="checkbox" id="cbSaveDynamicPropsWithDrawing" class="form-check-input" v-model="appSettings!.saveDynamicPropValuesWithDrawing" />
                         </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <div class="form-check">
+                            <label class="form-check-label" for="cbEmbedLibDataInDrawing">Embed library data in the drawing</label>
+                            <input type="checkbox" id="cbEmbedLibDataInDrawing" class="form-check-input" v-model="appSettings!.embedLibDataInDrawing" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <label class="form-check-label" for="selLibDataPriority">Library data priority</label>
+                        <select id="selLibDataPriority" class="form-select" v-model="appSettings!.libDataPriority">
+                            <option>{{LibDataPriority.preferSystem}}</option>
+                            <option>{{LibDataPriority.preferEmbedded}}</option>
+                            <option>{{LibDataPriority.useVersioning}}</option>
+                        </select>
                     </div>
                 </div>
                 <div class="row">
