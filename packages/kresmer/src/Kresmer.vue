@@ -203,6 +203,10 @@
             <template v-for="_class of controller.registeredLinkClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
+            <!-- ...area-specific -->
+            <template v-for="_class of controller.registeredAreaClasses.values()">
+                <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
+            </template>
         </defs>
         <defs v-if="controller.globalStyles.size || controller.classStyles.length" v-html="styles"></defs>
 
