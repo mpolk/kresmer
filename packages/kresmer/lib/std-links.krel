@@ -108,7 +108,7 @@
         <extends base="_abstract-link" media-type="sm-optics" accept-media-types="none"/>
         <style>
             .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
-            .segment {stroke-width: 1px; stroke-dasharray: 3,5}
+            .segment {stroke-width: 1px; stroke-dasharray: 4,5; stroke-linecap: none;}
             .segment.thick, .segment.highlighted, .segment.selected {stroke-width: 2px}
             .segment.thick.highlighted, .segment.thick.selected {stroke-width: 3px}
             .link-number {filter: brightness(0.6)}
