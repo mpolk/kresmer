@@ -48,7 +48,6 @@ export default class NetworkComponentClass extends DrawingElementClass {
     {
         super(name, params);
         this.template = params.template;
-        this.baseClassChildNodes = params.baseClassChildNodes;
 
         if (this.baseClass  && this.template instanceof Element) {
             const baseClass = this.baseClass as NetworkComponentClass;
@@ -68,7 +67,6 @@ export default class NetworkComponentClass extends DrawingElementClass {
                 baseInstanceNode.setAttribute(propName, String(params.baseClassPropBindings[propName]));
             }//for
 
-            this.originalTemplate = this.template.cloneNode(true) as Element;
             this.template.prepend(baseInstanceNode);
         }//if
 
@@ -82,7 +80,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
             templateRoot = parser.parseFromString(this.template, "text/xml").firstElementChild;
         }//if
         if (templateRoot)
-            this.findEmbeddedComponentClasses(templateRoot);
+            this._findEmbeddedComponentClasses(templateRoot);
 
 
         const existingClass = NetworkComponentClass.allClasses[name];
@@ -90,10 +88,9 @@ export default class NetworkComponentClass extends DrawingElementClass {
             NetworkComponentClass.allClasses[name] = this;
     }//ctor
 
-    private readonly baseClassChildNodes?: NodeList;
     override readonly usesEmbedding = true;
 
-    private findEmbeddedComponentClasses(node: Element)
+    _findEmbeddedComponentClasses(node: Element)
     {
         for (const className in NetworkComponentClass.allClasses) {
             if (NetworkComponentClass.allClasses[className].adapterVueName === node.nodeName) {
@@ -103,9 +100,9 @@ export default class NetworkComponentClass extends DrawingElementClass {
         }//for
 
         for (let i = 0; i < node.childElementCount; i++) {
-            this.findEmbeddedComponentClasses(node.children[i]);
+            this._findEmbeddedComponentClasses(node.children[i]);
         }//for
-    }//findEmbeddedComponentClasses
+    }//_findEmbeddedComponentClasses
     
     private static allClasses: Record<string, NetworkComponentClass> = {};
     /**
@@ -118,8 +115,6 @@ export default class NetworkComponentClass extends DrawingElementClass {
      * Template for the Vue-component for this class
      */
     public template: Template;
-    // its copy untouched
-    private readonly originalTemplate?: Element;
     /** The default content for the component (i.e. its slot) */
     readonly defaultContent?: string;
 

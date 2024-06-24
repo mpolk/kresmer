@@ -136,7 +136,8 @@ export default abstract class DrawingElementClass {
     readonly category?: string;
     /** Source XML-code of this class */
     readonly sourceCode?: string;
-    protected readonly embeddedElementClasses: Set<DrawingElementClass>;
+    /** A list of the embedded element classes */
+    readonly embeddedElementClasses: Set<DrawingElementClass>;
 
     /** Limits this class usage for embedding or inheritance */
     get isAbstract(): boolean {return Boolean(this.category?.startsWith('.'))}
