@@ -34,6 +34,7 @@
                     <xs:complexType mixed="true">
                         <xs:group ref="svg-elements"></xs:group>
                         <xs:attribute name="name" use="required"/>
+                        <xs:attribute name="version" />
                     </xs:complexType>
                 </xs:element>
                             
@@ -87,6 +88,7 @@
                         <xs:simpleContent>
                             <xs:extension base="xs:string">
                                 <xs:attribute name="name" use="required"/>
+                                <xs:attribute name="version" />
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>
