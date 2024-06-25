@@ -166,6 +166,11 @@ export default class LibraryLoader
         const ast1 = ast.clone() as PostCSSRoot;
 
         ast1.walkRules((rule: PostCSSRule) => {
+            if (rule.selector.startsWith('/')) {
+                rule.selector = rule.selector.slice(1);
+                return;
+            }//if
+
             const additionalScopes: string[] = [];
             let firstScope = ".kresmer";
             if (classScope) {

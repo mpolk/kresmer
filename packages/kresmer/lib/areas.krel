@@ -31,10 +31,6 @@
         </style>
     </area-class>
 
-    <style name="Swamp">
-        #kre\:std\:Swamp .strokes {stroke: blue; stroke-width: 1}
-    </style>
-
     <area-class name="Swamp">
         <extends base="_abstract-area"></extends>
         <defs>
@@ -51,6 +47,7 @@
             </pattern>
         </defs>
         <style>
+            /#kre\:std\:Swamp .strokes {stroke: blue; stroke-width: 1}
             .area {
                 --border-color: blue; --highlighted-border-color: darkblue; 
                 fill: url(#kre:std:Swamp); 
