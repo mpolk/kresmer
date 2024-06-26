@@ -64,6 +64,9 @@
                     >hdr_auto</span>
             </div>
             <div class="pane" title="Backend server URL currently connected">
+                <span class="material-symbols-outlined align-bottom" 
+                    :style="`visibility: ${displayData.backendRequested ? 'visible' : 'hidden'}`"
+                    >swap_vert</span>
                 {{displayData.serverURL}}
             </div>
             <div class="pane" title="Drawing display scale" style="cursor: default">

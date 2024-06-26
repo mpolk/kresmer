@@ -24,6 +24,7 @@ class KresmerEventFormats  {
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
+    "backend-request":                  (state: "started"|"completed") => void;
     "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
     "library-element-loaded":           (libName: string, element: ParsedNode, sourceCode: string) => void;
     "drawing-scale":                    (newScaleFactor: number) => void;
@@ -165,6 +166,13 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("open-url")
     protected onOpenUrl(url: string, target?: string): boolean { return false; }
+
+    /**
+     * Is called when a backend request is initiated or completed
+     * @param state The request state
+     */
+    @overridableHandler("backend-request")
+    protected onBackendRequest(state: "started"|"completed") {}
 
     /**
      * Is called when a library import is requested when loading some other library that references this one

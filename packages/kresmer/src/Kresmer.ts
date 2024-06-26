@@ -285,7 +285,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public connectToBackend(serverURL: string, password?: string)
     {
-        this.backendConnection = new BackendConnection(serverURL, password);
+        this.backendConnection = new BackendConnection(this, serverURL, password);
     }//connectToBackend
     /** Disconnects from the backend server */
     public disconnectFromBackend()

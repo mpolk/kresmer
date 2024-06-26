@@ -10,6 +10,7 @@ import KresmerException from "./KresmerException";
 import DrawingElement, {DrawingElementData} from "./DrawingElement/DrawingElement";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
+import Kresmer from "Kresmer";
 
 export type BackendConnectionTestResult = {
     success: boolean,
@@ -18,7 +19,9 @@ export type BackendConnectionTestResult = {
 
 export default class BackendConnection {
 
-    constructor (private serverURL: string, private password?: string) {}
+    constructor (private readonly kresmer: Kresmer, 
+                 private serverURL: string, 
+                 private password?: string) {}
 
     private static makeHeaders(password: string|undefined)
     {
@@ -60,6 +63,7 @@ export default class BackendConnection {
     {
         const headers = BackendConnection.makeHeaders(this.password);
         const data = JSON.stringify(element.getData());
+        this.kresmer.emit("backend-request", "started");
         try {
             const response = await fetch(this.makeURL(type, "loaded", element.dbID!, element.getClass().name), {
                 method: "POST",
@@ -88,7 +92,9 @@ export default class BackendConnection {
             return result;
         } catch (error) {
             throw new KresmerException(`Error while sending a request to the backend server: ${error}`);
-        }//catch
+        } finally {
+            this.kresmer.emit("backend-request", "completed");
+        }//finally
     }//onDrawingElementLoaded
 
 

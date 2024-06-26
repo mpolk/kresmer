@@ -55,6 +55,7 @@ export type StatusBarDisplayData = {
     drawingScale: number,
     notificationsCount: number,
     autoAlignVertices: boolean,
+    backendRequested: boolean,
 };
 
 export const statusBarData: StatusBarDisplayData = reactive({
@@ -64,6 +65,7 @@ export const statusBarData: StatusBarDisplayData = reactive({
     drawingScale: 1,
     notificationsCount: 0,
     autoAlignVertices: true,
+    backendRequested: false,
 })//statusBarData
 
 export const vueStatusBar = createApp(StatusBar, {
@@ -210,6 +212,10 @@ kresmer
 
 kresmer.on("drawing-scale", (newScale) => {
     statusBarData.drawingScale = newScale;
+});
+
+kresmer.on("backend-request", state => {
+    statusBarData.backendRequested = state === "started";
 });
 
 kresmer.on("canvas-right-click", (mouseEvent: MouseEvent) =>
