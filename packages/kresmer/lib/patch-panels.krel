@@ -12,13 +12,14 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" 
+    <component-class name="PatchPanel" category="Passive equipment" version="2024062700"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
                 <svg v-for="i in nPorts" class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}"
+                    style="overflow: visible"
                     v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
                     v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight"
                     v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" 
@@ -35,6 +36,7 @@
                     <text v-else="" v-bind:x="labelHeight*0.8" v-bind:y="labelWidth - labelHeight*0.4" 
                           v-bind:transform="`rotate(-90, ${labelHeight*0.8}, ${labelWidth - labelHeight*0.4})`" 
                           v-bind:font-size="labelFontSize">{{i}} {{portLabels[i]}}</text>
+                    <connection-point v-bind="labelCPPos" v-bind:d="labelH/2" v-bind:name="`${i}@label`"/>
                 </svg>
             </template>
             <template v-for="i in nPorts/nPortRows">
@@ -90,10 +92,11 @@
             <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
             <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
             <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
-            <computed-prop name="labelFontSize">computedProps.labelHeight*0.8</computed-prop>
             <computed-prop name="labelWidth">
                 (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 3)*computedProps.labelFontSize*0.65
             </computed-prop>
+            <computed-prop name="labelH">props.orientation === "vertical" ? computedProps.labelHeight : computedProps.labelWidth</computed-prop>
+            <computed-prop name="labelW">props.orientation === "vertical" ? computedProps.labelWidth : computedProps.labelHeight</computed-prop>
             <computed-prop name="firstLabelX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth :
                 props.portLabelPosition==="after" ? computedProps.height :
@@ -106,6 +109,7 @@
                     (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
                       * computedProps.portSize * computedProps.height
             </computed-prop>
+            <computed-prop name="labelFontSize">computedProps.labelHeight*0.8</computed-prop>
             <computed-prop name="captionX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth - computedProps.height*0.1 :
                 props.portLabelPosition==="after" ? computedProps.height*1.1 + computedProps.labelWidth :
@@ -122,6 +126,13 @@
                     0
             </computed-prop>
             <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
+            <computed-prop name="labelCPPos">
+                props.portLabelPosition==="before" ? {x: 0, y: computedProps.labelH*0.5} :
+                props.portLabelPosition==="after" ?  {x: computedProps.labelW, y: computedProps.labelH*0.5} :
+                props.portLabelPosition==="above" ?  {x: computedProps.labelW*0.5, y: 0} :
+                props.portLabelPosition==="below" ?  {x: computedProps.labelW*0.5, y: computedProps.labelH} :
+                    {}
+            </computed-prop>
         </computed-props>
         <style>
             .port-label .pad {fill-opacity: 0.75; fill: #e8f7f7; }
