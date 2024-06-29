@@ -213,7 +213,7 @@
         |++++|
         +=w1=+
      -->
-     <component-class name="L-Building" category="Buildings">
+     <component-class name="L-Building" category="Buildings" version="2024062900">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
@@ -241,8 +241,8 @@
             <prop name="w" type="Number" default="200"/>
             <prop name="h2" type="Number" default="50" category="Geometry" description="Visual height of the horizontal part"/>
             <prop name="w1" type="Number" default="50" category="Geometry" description="Visual width of the vertical part"/>
-            <prop name="nEntrances1" type="Number" category="Construction" description="The number of entrances in the vertical part" />
-            <prop name="nEntrances2" type="Number" category="Construction" description="The number of entrances in the horizontal part" />
+            <prop name="nEntrances1" type="Number" category="Construction" description="The number of entrances in the vertical part" default="2"/>
+            <prop name="nEntrances2" type="Number" category="Construction" description="The number of entrances in the horizontal part" default="2"/>
             <prop name="entrancesLayout" type="String" choices="inside-cw, inside-ccw, outside-cw, outside-ccw" default="inside-ccw" />
             <prop name="buildingNumberPosition" type="String" choices="m, c1, c2, nw, n, ne, e1, e2, se1, se2, s1, s2, sw, w" default="m"/>
             <prop name="nFloorsPosition" type="String" choices="m, c1, c2, nw, n, ne, e1, e2, se1, se2, s1, s2, sw, w" default="w"/>
