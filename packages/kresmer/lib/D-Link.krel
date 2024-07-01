@@ -169,6 +169,7 @@
             <Kre:XFP-Port name="25" v-bind:x="unitHeight*7.4" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" />
             <Kre:XFP-Port name="26" v-bind:x="unitHeight*7.4" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" />
             <Kre:XFP-Port name="27" v-bind:x="unitHeight*8.3" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" />
+            <text v-bind:x="unitHeight*8.3" v-bind:y="unitHeight*0.75" v-bind:font-size="unitHeight/6">DGS-3627G</text>
         </template>
         <props extend="SwitchWithComboPorts" except="interUnitGap, nPorts">
             <prop name="width" type="Number" default="none" />
