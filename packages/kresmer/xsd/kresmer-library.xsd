@@ -278,6 +278,7 @@
                             </xs:simpleType>
                         </xs:attribute>
                         <xs:attribute ref="v-bind:dir" />
+                        <xs:attribute ref="v-bind:show-tooltip"/>
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>

@@ -175,6 +175,7 @@ class=${JSON.stringify(clazz)}`;
                    :has-connection-point="!model.parentElement.isBundle" 
                    :additional-classes="baseVertexClasses"
                    :additional-attrs="baseVertexAttrs"
+                   :show-connection-point-tooltips="false"
                    @updated="trackMoving"
                    >
         <text v-if="linkNumber?.number" class="link link-number" :class="linkNumber.clazz" :x="linkNumber.pos.x" :y="linkNumber.pos.y"

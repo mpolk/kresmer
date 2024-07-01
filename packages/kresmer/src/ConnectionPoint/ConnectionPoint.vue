@@ -21,10 +21,10 @@
         d: {type: Number, default: 10}, 
         dir: {type: [Number, String], default: 90},
         proxy: {type: Object as PropType<ConnectionPoint>},
+        showTooltip: {type: Boolean, default: true},
     });
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
-    const hostIsLink = hostElement instanceof NetworkLink;
     const proxy = props.proxy ?? new ConnectionPoint(hostElement, props.name, props.dir);
     if (!props.proxy)
         // eslint-disable-next-line vue/no-setup-props-destructure
@@ -38,7 +38,7 @@
     const dataAttr = computed(() => {
         if (!proxy.isActive)
             return undefined;
-        const hostName = hostIsLink ? `-${hostElement.name}` : hostElement.name;
+        const hostName = hostElement instanceof NetworkLink ? `-${hostElement.name}` : hostElement.name;
         return `${hostName}:${props.name}`;
     });
 
@@ -84,7 +84,7 @@
 
 <template>
     <g v-if="proxy.isActive" @contextmenu.stop="onRightClick()">
-        <title v-if="!hostIsLink">{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title>
+        <title v-if="showTooltip">{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title>
         <circle :cx="x" :cy="y" :r="d/2"
             class="connection-point-padding" 
             :class="{visible: kresmer.isEditable}" 

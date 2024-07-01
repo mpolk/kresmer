@@ -36,4 +36,5 @@
   <xs:attribute name="target" />
   <xs:attribute name="dominant-baseline" />
   <xs:attribute name="preserveAspectRatio" />
+  <xs:attribute name="show-tooltip" />
 </xs:schema>

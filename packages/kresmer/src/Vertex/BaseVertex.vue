@@ -23,6 +23,7 @@
         additionalClasses: {type: Object as PropType<Record<string, boolean>>},
         additionalAttrs: {type: Object as PropType<Record<string, string|undefined>>},
         base: {type: Object as PropType<ReturnType<typeof useVertex>>},
+        showConnectionPointTooltips: {type: Boolean, default: true},
     });
 
     const {
@@ -50,7 +51,7 @@
 
 <template>
     <ConnectionPointVue v-if="hasConnectionPoint && model.parentElement.kresmer.isEditable" :name="model.vertexNumber" 
-        :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint"
+        :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint" :show-tooltip="showConnectionPointTooltips"
         @click="onClick" class="vertex-connection-point"
         />
     <slot/>
