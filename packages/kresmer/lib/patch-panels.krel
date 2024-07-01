@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024062901"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024070100"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -111,7 +111,7 @@
                     (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
                       * computedProps.portSize * computedProps.height
             </computed-prop>
-            <computed-prop name="labelFontSize">computedProps.labelHeight*0.8</computed-prop>
+            <computed-prop name="labelFontSize">computedProps.labelHeight*0.7</computed-prop>
             <computed-prop name="captionX">
                 props.portLabelPosition==="before" ? -computedProps.labelWidth - computedProps.height*0.1 :
                 props.portLabelPosition==="after" ? computedProps.height*1.1 + computedProps.labelWidth :
@@ -154,7 +154,7 @@
     </component-class>
 
 
-    <component-class name="CableAttachmentTable" category="Passive equipment">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024070100">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -205,8 +205,8 @@
             </computed-prop>
             <computed-prop name="fiberFontSize">
                 props.orientation === "left" || props.orientation === "right" ? 
-                    computedProps.cellStep*0.8 : 
-                    computedProps.cellWidth*0.8
+                    computedProps.cellStep*0.7 : 
+                    computedProps.cellWidth*0.7
             </computed-prop>
             <computed-prop name="captionPos">
                 {
