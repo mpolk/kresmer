@@ -58,66 +58,40 @@
     </component-class>
 
 
-    <component-class name="DLink4ComboPortsSwitch" category=".Switches/DLink">
+    <component-class name="DLink4ComboPortsSwitch" category=".Switches/DLink" version="2024070100">
         <extends base="DLinkSwitch" v-bind:n-ports="nCopperPorts" />
         <template>
             <text v-for="(line, i) in modelNameLines" v-bind:x="width - unitHeight*2.15" 
                 v-bind:y="unitHeight*(0.25 + 0.15*i)" v-bind:font-size="unitHeight*0.15" 
                 text-anchor="middle" dominant-baseline="hanging" class="model-name">{{line}}</text>
             <Kre:SFP-Port v-bind:x="width - unitHeight*1.86" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
-                v-bind="comboPortData(1, 'fiber', firstComboMedia)"/>
+                v-bind="comboPortData(firstComboPort, 'fiber', firstComboMedia)"/>
             <Kre:SFP-Port v-bind:x="width - unitHeight*1.86" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3"
-                v-bind="comboPortData(2, 'fiber', secondComboMedia)" key-position="bottom"/>
+                v-bind="comboPortData(firstComboPort+1, 'fiber', secondComboMedia)" key-position="bottom"/>
             <Kre:RJ45-Port v-bind:x="width - unitHeight*1.46" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3"
-                v-bind="comboPortData(1, 'copper', firstComboMedia)"/>
+                v-bind="comboPortData(firstComboPort, 'copper', firstComboMedia)"/>
             <Kre:RJ45-Port v-bind:x="width - unitHeight*1.46" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3"
-                v-bind="comboPortData(2, 'copper', secondComboMedia)" key-position="bottom"/>
+                v-bind="comboPortData(firstComboPort+1, 'copper', secondComboMedia)" key-position="bottom"/>
             <Kre:RJ45-Port v-bind:x="width - unitHeight*0.96" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3"
-                v-bind="comboPortData(3, 'copper', thirdComboMedia)"/>
+                v-bind="comboPortData(firstComboPort+2, 'copper', thirdComboMedia)"/>
             <Kre:RJ45-Port v-bind:x="width - unitHeight*0.96" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3"
-                v-bind="comboPortData(4, 'copper', fourthComboMedia)" key-position="bottom"/>
+                v-bind="comboPortData(firstComboPort+3, 'copper', fourthComboMedia)" key-position="bottom"/>
             <Kre:SFP-Port v-bind:x="width - unitHeight*0.56" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3"
-                v-bind="comboPortData(3, 'fiber', thirdComboMedia)"/>
+                v-bind="comboPortData(firstComboPort+2, 'fiber', thirdComboMedia)"/>
             <Kre:SFP-Port v-bind:x="width - unitHeight*0.56" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3"
-                v-bind="comboPortData(4, 'fiber', fourthComboMedia)" key-position="bottom"/>
+                v-bind="comboPortData(firstComboPort+3, 'fiber', fourthComboMedia)" key-position="bottom"/>
         </template>
-        <props>
+        <props extend="SwitchWithComboPorts">
             <prop name="n-ports" type="Number" default="28" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB" />
             <prop name="n-copper-ports" type="Number" default="24" category="Hardware" description="The number of copper ports"/>
-            <prop name="first-combo-media" type="string" choices="fiber,copper" category="Network" description="First combo port media type" />
-            <prop name="second-combo-media" type="string" choices="fiber,copper" category="Network" description="Second combo port media type" />
-            <prop name="third-combo-media" type="string" choices="fiber,copper" category="Network" description="Third combo port media type" />
-            <prop name="fourth-combo-media" type="string" choices="fiber,copper" category="Network" description="Fourth combo port media type" />
             <prop name="model-name" type="String" />
         </props>
-        <computed-props>
+        <computed-props extend="SwitchWithComboPorts">
+            <computed-prop name="firstComboPort">props.nCopperPorts + 1</computed-prop>
             <computed-prop name="width">props.width ?? props.unitHeight * ((props.nCopperPorts + 4) * 0.25 + 1.46)</computed-prop>
-            <computed-prop name="firstComboMedia">props.firstComboMedia ?? props.portsInfo[props.nCopperPorts+1]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="secondComboMedia">props.secondComboMedia ?? props.portsInfo[props.nCopperPorts+2]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="thirdComboMedia">props.thirdComboMedia ?? props.portsInfo[props.nCopperPorts+3]?.media ?? "fiber"</computed-prop>
-            <computed-prop name="fourthComboMedia">props.fourthComboMedia ?? props.portsInfo[props.nCopperPorts+4]?.media ?? "fiber"</computed-prop>
             <computed-prop name="modelNameLines">props.modelName?.split(" ")</computed-prop>
         </computed-props>
-        <functions>
-            <function name="comboPortData" params="n, physPortMedia, logPortMedia">
-                return physPortMedia === logPortMedia ?
-                    {
-                        name: `${props.nCopperPorts+n}`,
-                        "port-info": props.portsInfo[props.nCopperPorts+n],
-                        "fiber-info": props.fibersInfo[props.nCopperPorts+n],
-                        combo: physPortMedia,
-                        "is-active": true,
-                    }
-                :
-                    {
-                        name: `${props.nCopperPorts+n}(${physPortMedia[0]})`,
-                        "port-info": undefined,
-                        "fiber-info": undefined,
-                        combo: physPortMedia,
-                        "is-active": false,
-                    }
-            </function>
-        </functions>
+        <functions extend="SwitchWithComboPorts" />
     </component-class>
 
     <component-class name="DLink-DES-3028" category="Switches/DLink">
