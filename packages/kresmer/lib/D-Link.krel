@@ -35,13 +35,14 @@
         </style>
     </component-class>
 
-    <component-class name="DLinkSwitch" category="Switches/DLink">
+
+    <component-class name="DLinkSwitch" category="Switches/DLink" version="2024080100">
         <extends base="DLinkSwitchBody" />
         <template>
-            <template v-for="i in nPorts/2">
+            <template v-for="i in Math.ceil(nPorts/2)">
                 <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
                     v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
-                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                <Kre:RJ45-Port v-if="i &lt;= nPorts/2 || nPorts%2 == 0" v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
                     v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
             </template>
         </template>
@@ -50,9 +51,12 @@
             <prop name="n-ports" type="Number" default="24" category="Hardware" description="The number of ports" />
         </props>
         <computed-props>
-            <computed-prop name="width">props.width ?? props.unitHeight * (props.nPorts * 0.25 + 0.33)</computed-prop>
+            <computed-prop name="width">
+                props.width ?? props.unitHeight * (Math.ceil(props.nPorts/2) * 0.5 + 0.33)
+            </computed-prop>
         </computed-props>
     </component-class>
+
 
     <component-class name="DLink4ComboPortsSwitch" category=".Switches/DLink">
         <extends base="DLinkSwitch" v-bind:n-ports="nCopperPorts" />
@@ -112,7 +116,7 @@
                         combo: physPortMedia,
                         "is-active": false,
                     }
-        </function>
+            </function>
         </functions>
     </component-class>
 
@@ -138,6 +142,44 @@
             <prop name="model-name" type="String" default="DES 3200 28" category="Hidden"/>
             <prop name="n-copper-ports" type="Number" default="24" category="Hidden"/>
         </props>
+    </component-class>
+
+
+    <component-class name="DLink-DGS-3627G" category="Switches/DLink" version="2024080100">
+        <extends base="DLinkSwitchBody"/>
+        <template>
+            <template v-for="i in 10">
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
+            </template>
+            <template v-for="i in [11,12]">
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2-1, 'fiber', comboPortMedia(i*2-1))"/>
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2, 'fiber', comboPortMedia(i*2))" key-position="bottom"/>
+            </template>
+            <template v-for="i in [11,12]">
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5 + 0.85)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2-1, 'copper', comboPortMedia(i*2-1))"/>
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5 + 0.85)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2, 'copper', comboPortMedia(i*2))" key-position="bottom"/>
+            </template>
+            <Kre:XFP-Port name="25" v-bind:x="unitHeight*7.4" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" />
+            <Kre:XFP-Port name="26" v-bind:x="unitHeight*7.4" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" />
+            <Kre:XFP-Port name="27" v-bind:x="unitHeight*8.3" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" />
+        </template>
+        <props extend="SwitchWithComboPorts" except="interUnitGap, nPorts">
+            <prop name="width" type="Number" default="none" />
+        </props>
+        <computed-props extend="SwitchWithComboPorts">
+            <computed-prop name="firstComboPort">21</computed-prop>
+            <computed-prop name="width">
+                props.width ?? props.unitHeight * 9.36
+            </computed-prop>
+        </computed-props>
+        <functions extend="SwitchWithComboPorts" />
     </component-class>
 
 

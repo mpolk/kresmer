@@ -62,4 +62,43 @@
         </computed-props>
     </component-class>
 
+    <!-- The trait for the switch that has a contigous range of combo-ports  -->
+    <component-class name="SwitchWithComboPorts" category=".Switches">
+        <props>
+            <prop name="first-combo-media" type="string" choices="fiber,copper" category="Network" description="First combo port media type" />
+            <prop name="second-combo-media" type="string" choices="fiber,copper" category="Network" description="Second combo port media type" />
+            <prop name="third-combo-media" type="string" choices="fiber,copper" category="Network" description="Third combo port media type" />
+            <prop name="fourth-combo-media" type="string" choices="fiber,copper" category="Network" description="Fourth combo port media type" />
+        </props>
+        <computed-props>
+            <computed-prop name="firstComboPort">24</computed-prop>
+            <computed-prop name="firstComboMedia">props.firstComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort)</computed-prop>
+            <computed-prop name="secondComboMedia">props.secondComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort+1)</computed-prop>
+            <computed-prop name="thirdComboMedia">props.thirdComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort+2)</computed-prop>
+            <computed-prop name="fourthComboMedia">props.fourthComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort+3)</computed-prop>
+        </computed-props>
+        <functions>
+            <function name="comboPortMedia" params="n">
+                return props.portsInfo[n]?.media ?? "fiber";
+            </function>
+            <function name="comboPortData" params="n, physPortMedia, logPortMedia">
+                return physPortMedia === logPortMedia ?
+                    {
+                        name: `${n}`,
+                        "port-info": props.portsInfo[n],
+                        "fiber-info": props.fibersInfo[n],
+                        combo: physPortMedia,
+                        "is-active": true,
+                    }
+                :
+                    {
+                        name: `${n}(${physPortMedia[0]})`,
+                        "port-info": undefined,
+                        "fiber-info": undefined,
+                        combo: physPortMedia,
+                        "is-active": false,
+                    }
+            </function>
+        </functions>
+    </component-class>
 </kresmer-library>
