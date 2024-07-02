@@ -509,7 +509,7 @@ export default class LibraryParser {
             range = node.getAttribute("range"),
             category = node.getAttribute("category"),
             description = node.getAttribute("description");
-        if (!propName) {
+        if (!propName && node.nodeName !== "elements") {
             this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
                 {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
             return undefined;
@@ -542,9 +542,9 @@ export default class LibraryParser {
         if (prop.type === Object) {
             prop.typeDescriptor = this.parseObjectPropType(node);
             if (!prop.typeDescriptor) {
-                this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" must have type description`,
+                this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" must have type definition`,
                     {source: `Component class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
-                return undefined;
+                // return undefined;
             }//if
         }//if
 
@@ -624,7 +624,7 @@ export default class LibraryParser {
                 const elementsNode = node.firstElementChild;
                 const childProp = this.parseProp(elementsNode);
                 if (!childProp) {
-                    this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} element type`,
+                    this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} element type definition`,
                         {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
                     return undefined;
                 }//if
@@ -638,7 +638,7 @@ export default class LibraryParser {
                     const child = node.children[i];
                     const subpropName = child.getAttribute("name");
                     if (!subpropName) {
-                        this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} subprop type`,
+                        this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} subprop type definition`,
                             {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
                     return undefined;
                     }//if
