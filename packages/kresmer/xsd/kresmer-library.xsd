@@ -436,49 +436,62 @@
     <xs:element name="props">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="prop" minOccurs="0" maxOccurs="unbounded">
-                    <xs:complexType>
-                        <xs:attribute name="name" use="required" />
-
-                        <xs:attribute name="type" use="required">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:string">
-                                    <xs:pattern value='[Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject|[Cc]olor|ImageURL|image-url|\[(([Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject), *)*([Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject)\]'></xs:pattern>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:attribute>
-
-                        <xs:attribute name="required" type="xs:boolean" />
-                        <xs:attribute name="default" />
-                        <xs:attribute name="choices" />
-                        <xs:attribute name="range" />
-                        <xs:attribute name="pattern" />
-                        <xs:attribute name="description"/>
-
-                        <xs:attribute ref="ua:choices" />
-                        <xs:attribute ref="ua:description" />
-
-                        <xs:attribute name="category">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:string">
-                                    <xs:enumeration value="Hidden"/>
-                                    <xs:enumeration value="Geometry"/>
-                                    <xs:enumeration value="Presentation"/>
-                                    <xs:enumeration value="Construction"/>
-                                    <xs:enumeration value="Location"/>
-                                    <xs:enumeration value="Network"/>
-                                    <xs:enumeration value="Hardware"/>
-                                    <xs:enumeration value="Optics"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:attribute>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element name="prop" type="namedProp" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <xs:attribute name="extend"/>
             <xs:attribute name="except"/>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="namedProp">
+        <xs:complexContent>
+            <xs:extension base="prop">
+                <xs:attribute name="name" use="required" />
+            </xs:extension>
+        </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="prop">
+        <xs:choice minOccurs="0" maxOccurs="1">
+            <xs:element name="element" type="prop"/>
+            <xs:sequence>
+                <xs:element name="subprop" type="namedProp" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:choice>
+
+        <xs:attribute name="type" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value='[Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject|[Cc]olor|ImageURL|image-url|\[(([Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject), *)*([Ss]tring|[Nn]umber|[Bb]oolean|[Oo]bject)\]'></xs:pattern>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+
+        <xs:attribute name="required" type="xs:boolean" />
+        <xs:attribute name="default" />
+        <xs:attribute name="choices" />
+        <xs:attribute name="range" />
+        <xs:attribute name="pattern" />
+        <xs:attribute name="description"/>
+
+        <xs:attribute ref="ua:choices" />
+        <xs:attribute ref="ua:description" />
+
+        <xs:attribute name="category">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="Hidden"/>
+                    <xs:enumeration value="Geometry"/>
+                    <xs:enumeration value="Presentation"/>
+                    <xs:enumeration value="Construction"/>
+                    <xs:enumeration value="Location"/>
+                    <xs:enumeration value="Network"/>
+                    <xs:enumeration value="Hardware"/>
+                    <xs:enumeration value="Optics"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
 
     <!-- Component or link computed props (translated to Vue computed props) -->
     <xs:element name="computed-props">
