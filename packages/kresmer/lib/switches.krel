@@ -19,7 +19,8 @@
                 <slot name="frontFacet" />
             </template>
             <template v-slot:topFacetC="{}">
-                <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
+                <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" 
+                    class="facet" />
                 <slot name="topFacetC"/>
             </template>
             <template v-slot:topFacetLR="{}">
@@ -33,7 +34,7 @@
         <props except="n-units">
             <prop name="n-stack-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
             <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar">
-                <element type="Object">
+                <elements type="Object">
                     <subprop name="description" type="String" />
                     <subprop name="media" type="String" choices="copper,fiber" description="The media type for the combo-port"/>
                     <subprop name="speed" type="String" description="The current physical port speed"/>
@@ -42,7 +43,7 @@
                     <subprop name="adminStatus" type="Boolean" description="The administrative port status"/>
                     <subprop name="statusMonitoring" type="Boolean" description="Is the port status monitoring turned on?"/>
                     <subprop name="speedMonitoring" type="Boolean" description="Is the port speed monitoring turned on?"/>
-                </element>
+                </elements>
             </prop>
             <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers"/>
         </props>

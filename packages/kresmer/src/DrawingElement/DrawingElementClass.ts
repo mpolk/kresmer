@@ -229,9 +229,12 @@ type Validator = ((value: unknown, props: Record<string, unknown>) => boolean) &
     validValues?: string[],
 };
 
+export type PropTypeDescriptor = {subprops: DrawingElementClassProp[]} | {elements: DrawingElementClassProp};
+
 export type DrawingElementClassProp = 
 {
     type?: PropType<unknown>,
+    typeDescriptor?: PropTypeDescriptor,
     required?: boolean,
     default?: unknown,
     validator?: Validator,

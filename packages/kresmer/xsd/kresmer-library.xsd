@@ -453,7 +453,7 @@
 
     <xs:complexType name="prop">
         <xs:choice minOccurs="0" maxOccurs="1">
-            <xs:element name="element" type="prop"/>
+            <xs:element name="elements" type="prop"/>
             <xs:sequence>
                 <xs:element name="subprop" type="namedProp" maxOccurs="unbounded"/>
             </xs:sequence>
