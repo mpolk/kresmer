@@ -541,11 +541,11 @@ export default class LibraryParser {
 
         if (prop.type === Object) {
             prop.typeDescriptor = this.parseObjectPropType(node);
-            // if (!prop.typeDescriptor) {
-            //     this.kresmer.raiseError(new LibraryParsingException(`Prop ${type} must have type description`,
-            //         {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
-            //     return undefined;
-            // }//if
+            if (!prop.typeDescriptor) {
+                this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" must have type description`,
+                    {source: `Component class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
+                return undefined;
+            }//if
         }//if
 
         switch (required) {

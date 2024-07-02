@@ -34,6 +34,33 @@
         </props>
     </component-class>
 
+
+    <!-- Abstract device with the managed ports -->
+    <component-class name="DeviceWithManagedPorts" category=".general">
+        <props>
+            <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar">
+                <elements type="Object">
+                    <subprop name="description" type="String" />
+                    <subprop name="media" type="String" choices="copper,fiber" description="The media type for the combo-port"/>
+                    <subprop name="speed" type="String" description="The current physical port speed"/>
+                    <subprop name="maxSpeed" type="String" description="The maximum physical port speed"/>
+                    <subprop name="operStatus" type="Boolean" description="The current port status"/>
+                    <subprop name="adminStatus" type="Boolean" description="The administrative port status"/>
+                    <subprop name="statusMonitoring" type="Boolean" description="Is the port status monitoring turned on?"/>
+                    <subprop name="speedMonitoring" type="Boolean" description="Is the port speed monitoring turned on?"/>
+                </elements>
+            </prop>
+        </props>
+    </component-class>
+
+
+    <component-class name="DeviceWithOpticalPorts">
+        <props>
+            <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers"/>
+        </props>
+    </component-class>
+
+
     <!-- A rack-mount device that can be stacked (i.t. consists of one or more stack units) and can be viewed in left, right or central perspective -->
     <component-class name="RackMountDevice" category=".general">
         <template>
