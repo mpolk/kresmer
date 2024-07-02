@@ -7,57 +7,6 @@
 	background-color="#ffffff">
 
 	<library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:ua="ua">
-		<defs name="CrossArrows">
-	        {{$global("crossArrows", [ 
-	            [0.1,0.5], [0.2,0.7], [0.2,0.6], [0.4,0.6], [0.4,0.8],
-	            [0.3,0.8], [0.5,0.9], [0.7,0.8], [0.6,0.8], [0.6,0.6], [0.8,0.6], [0.8,0.7], [0.9,0.5],
-	            [0.8,0.3], [0.8,0.4], [0.6,0.4], [0.6,0.2], [0.7,0.2], [0.5,0.1], [0.3,0.2], [0.4,0.2],
-	            [0.4,0.4], [0.2,0.4], [0.2,0.3] 
-	        ])}}
-	    </defs>
-		<defs name="AdjusmentHandles">
-	        <g id="kre:adjustment-ruler-marker-common">
-	            <polygon points="0,5 5,0 10,5 5,10"/>
-	            <circle cx="5" cy="5" r="2" style="filter: brightness(0.25) invert(100%)"/>
-	        </g>
-	        <marker id="kre:adjustment-ruler-marker" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
-	            <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker"/>
-	        </marker>
-	        <marker id="kre:adjustment-ruler-marker-fixed" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
-	            <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker fixed"/>
-	        </marker>
-	    </defs>
-		<defs name="Swamp">
-	        <pattern id="kre:std:Swamp" patternUnits="userSpaceOnUse" width="20" height="20" viewBox="0 0 20 20">
-	            <rect x="0" y="0" width="100%" height="100%" fill="lightcyan"/>
-	            <!-- <circle cx="0" cy="0" r="1" fill="red"/> -->
-	            <line class="strokes" x1="8" y1="10" x2="13" y2="10"/>
-	            <line class="strokes" x1="13" y1="15" x2="18" y2="15"/>
-	            <line class="strokes" x1="5" y1="5" x2="10" y2="5"/>
-	            <line class="strokes" x1="0" y1="7" x2="2" y2="7"/>
-	            <line class="strokes" x1="17" y1="7" x2="20" y2="7"/>
-	            <line class="strokes" x1="1" y1="17" x2="6" y2="17"/>
-	            <line class="strokes" x1="11" y1="1" x2="16" y2="1"/>
-	        </pattern>
-	    </defs>
-		<defs name="Crown">
-	        <text id="kre:std:Crown">👑</text>
-	    </defs>
-		<style name="AdjusmentHandles">
-	        .adjustment-ruler {
-	            stroke: brown;
-	            stroke-width: 3px;
-	            opacity: 0.5;
-	            cursor: pointer;
-	        }
-	        .adjustment-ruler.selected, .adjustment-ruler:hover { opacity: 1; }
-	        .adjustment-ruler-marker { fill: green; }
-	        .adjustment-ruler-marker.fixed { fill: red; }
-	        .adjustment-ruler .marker-padding { r: 3px; }
-	    </style>
-		<style name="Swamp">
-	        #kre\:std\:Swamp .strokes {stroke: blue; stroke-width: 1}
-	    </style>
 		<component-class name="ManagedDevice" category=".general">
 	        <props>
 	            <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network" description="Device management ip-address"/>
