@@ -21,7 +21,7 @@
             </template>
             <template v-slot:topFacetC="{}">
                 <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...$$.crossArrows))" class="facet" />
+                <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet" />
                 <slot name="topFacetC"/>
             </template>
             <template v-slot:topFacetLR="{}">
@@ -34,6 +34,7 @@
             <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar"/>
             <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers"/>
         </props>
+        <computed-props extend="CrossArrows"/>
     </component-class>
 
 </kresmer-library>
