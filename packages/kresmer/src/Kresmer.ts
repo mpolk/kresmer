@@ -104,7 +104,6 @@ export default class Kresmer extends KresmerEventHooks {
             ;
         // register the functions that can be used in templates
         const templateFunctions = {
-            ...GeneralTemplateFunctions, 
             ...TransformFunctons,
             ...NetworkComponentFunctions,
             $streetAddress: this.streetAddress,
@@ -1437,24 +1436,6 @@ class UpdateDrawingPropsOp extends EditorOperation
 
 /** Data type for Vue templates */
 export type Template = Element | string;
-
-/** General-purpose functions for using in component templates */
-export const GeneralTemplateFunctions = {
-    /** A dictionary for "global" values defined with $global function */
-    $$: {},
-
-    /**
-     * Defines a "global" value that may be accessed in any component template
-     * @param name The name for this global
-     * @param value The value itself
-     */
-    $global: function(name: string, value: unknown)
-    {
-        if (!(name in GeneralTemplateFunctions.$$)) {
-            Object.defineProperty(GeneralTemplateFunctions.$$, name, {value});
-        }//if
-    },//$global
-}//GeneralTemplateFunctions
 
 /** Options for the street address representation */
 export const enum StreetAddressFormat {
