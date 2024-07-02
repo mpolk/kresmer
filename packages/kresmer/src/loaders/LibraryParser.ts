@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 import postcss, {Root as PostCSSRoot, Rule as PostCSSRule, Declaration as PostCSSDeclaration} from 'postcss';
-import DrawingElementClass, { DrawingElementPropCategory, DrawingElementClassProp, DrawingElementClassProps, Functions, DrawingElementClassPropSubtype } from "../DrawingElement/DrawingElementClass";
+import DrawingElementClass, { DrawingElementPropCategory, DrawingElementClassProp, DrawingElementClassProps, Functions, DrawingElementClassPropSubtype, PropTypeDescriptor } from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../DrawingElement/DrawingElementClass";
@@ -465,123 +465,15 @@ export default class LibraryParser {
 
     private parseProps(node: Element)
     {
-        const allowedTypes: Record<string, {propType: {(): unknown}, makeDefault: (d: string) => unknown, subtype?: DrawingElementClassPropSubtype}> = {
-            "string": {propType: String, makeDefault: d => d}, 
-            "color": {propType: String, makeDefault: d => d, subtype: "color"}, 
-            "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
-            "number": {propType: Number, makeDefault: d => d === "none" ? null : Number(d)},
-            "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
-            "object": {propType: Object, makeDefault: d => d === "none" ? null : JSON.parse(d)}, 
-            "array": {propType: Array, makeDefault: d => d === "none" ? null : JSON.parse(d)},
-        };
-
         const props: DrawingElementClassProps = {};
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
                 case "prop": {
                     const propName = toCamelCase(child.getAttribute("name"));
-                    const prop: DrawingElementClassProp = {};
-                    const type = child.getAttribute("type");
-                    const required = child.getAttribute("required"),
-                        _default = child.getAttribute("default"),
-                        choices = child.getAttribute("choices"),
-                        pattern = child.getAttribute("pattern"),
-                        range = child.getAttribute("range"),
-                        category = child.getAttribute("category"),
-                        description = child.getAttribute("description");
-                    if (!propName) {
-                        this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
-                            {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
-                        continue;
-                    }//if
-
-                    Object.getOwnPropertyNames(allowedTypes).forEach(typeName => {
-                        if (type?.replaceAll('-', '').toLowerCase() === typeName) {
-                            prop.type = allowedTypes[typeName].propType;
-                            if (_default != null)
-                                prop.default = allowedTypes[typeName].makeDefault(_default);
-                            prop.subtype = allowedTypes[typeName].subtype;
-                        }//if
-                    });
-
-                    if (!prop.type) {
-                        const tnames = Object.getOwnPropertyNames(allowedTypes).join("|");
-                        const matches = type?.match(new RegExp(`(?:(${tnames}) *\\| *)+(${tnames})`, "i")) ??
-                            type?.match(new RegExp(`\\[ *(?:(${tnames}), *)+(${tnames})\\ *]`, "i"));
-                        if (matches) {
-                            prop.type = matches.slice(1).map(type => allowedTypes[type.toLowerCase()].propType);
-                            if (_default != null)
-                                prop.default = _default;
-                        } else {
-                            this.kresmer.raiseError(new LibraryParsingException(`Invalid prop type: ${type}`,
-                                {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
-                            continue;
-                        }//if
-                    }//if
-
-                    switch (required) {
-                        case "true": case "false":
-                            prop.required = (required === "true")&& (_default === null);
-                            break;
-                        case null: case undefined:
-                            break;
-                        default:
-                            throw `Invalid prop "required" attribute: ${prop.required}`;
-                    }//switch
-
-                    if (choices) {
-                        const validValues = choices.split(/ *, */);
-                        const validator = (value: unknown) => {
-                            return validValues.includes(String(value));
-                        }//validator
-                        validator.validValues = validValues;
-                        prop.validator = validator;
-                    }//if
-
-                    if (range) {
-                        const [min, max] = range.split("..").map(s => Number(s));
-                        const validator = (value: unknown) => {
-                            const n = Number(value);
-                            return n >= min && n <= max;
-                        }//validator
-                        validator.min = min;
-                        validator.max = max;
-                        prop.validator = validator;
-                    }//if
-
-                    if (pattern) {
-                        const rePattern = new RegExp(pattern);
-                        const validator = (value: unknown) => {
-                            return typeof value == "string" && (
-                                    Boolean(value.match(rePattern)) || (value === "" && !required)
-                                );
-                        }//validator
-                        validator.pattern = pattern;
-                        prop.validator = validator;
-                    }//if
-
-                    switch (category) {
-                        case "Hidden":
-                        case "Geometry":
-                        case "Presentation":
-                        case "Construction":
-                        case "Location":
-                        case "Network":
-                        case "Hardware":
-                        case "Optics":
-                            prop.category = DrawingElementPropCategory[category];
-                        // eslint-disable-next-line no-fallthrough
-                        case null:
-                            break;
-                        default: 
-                            this.kresmer.raiseError(new LibraryParsingException(`Invalid prop category: "${category}"`));
-                    }//switch
-
-                    if (description)
-                        prop.description = description;
-
-                    props[propName] = prop;
+                    const prop = this.parseProp(child);
+                    if (prop)
+                        props[propName] = prop;
                     break;
                 }
             }//switch
@@ -589,6 +481,177 @@ export default class LibraryParser {
 
         return props;
     }//parseProps
+
+    private static readonly allowedTypes: Record<string, {
+        propType: {(): unknown}, 
+        makeDefault: (d: string) => unknown, 
+        subtype?: DrawingElementClassPropSubtype
+    }> = {
+        "string": {propType: String, makeDefault: d => d}, 
+        "color": {propType: String, makeDefault: d => d, subtype: "color"}, 
+        "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
+        "number": {propType: Number, makeDefault: d => d === "none" ? null : Number(d)},
+        "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
+        "object": {propType: Object, makeDefault: d => d === "none" ? null : JSON.parse(d)}, 
+        "array": {propType: Array, makeDefault: d => d === "none" ? null : JSON.parse(d)},
+    };
+
+
+    private parseProp(node: Element): DrawingElementClassProp|undefined
+    {
+        const propName = toCamelCase(node.getAttribute("name"));
+        const prop: DrawingElementClassProp = {};
+        const type = node.getAttribute("type");
+        const required = node.getAttribute("required"),
+            _default = node.getAttribute("default"),
+            choices = node.getAttribute("choices"),
+            pattern = node.getAttribute("pattern"),
+            range = node.getAttribute("range"),
+            category = node.getAttribute("category"),
+            description = node.getAttribute("description");
+        if (!propName) {
+            this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
+                {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
+            return undefined;
+        }//if
+
+        Object.getOwnPropertyNames(LibraryParser.allowedTypes).forEach(typeName => {
+            if (type?.replaceAll('-', '').toLowerCase() === typeName) {
+                prop.type = LibraryParser.allowedTypes[typeName].propType;
+                if (_default != null)
+                    prop.default = LibraryParser.allowedTypes[typeName].makeDefault(_default);
+                prop.subtype = LibraryParser.allowedTypes[typeName].subtype;
+            }//if
+        });
+
+        if (!prop.type) {
+            const tnames = Object.getOwnPropertyNames(LibraryParser.allowedTypes).join("|");
+            const matches = type?.match(new RegExp(`(?:(${tnames}) *\\| *)+(${tnames})`, "i")) ??
+                type?.match(new RegExp(`\\[ *(?:(${tnames}), *)+(${tnames})\\ *]`, "i"));
+            if (matches) {
+                prop.type = matches.slice(1).map(type => LibraryParser.allowedTypes[type.toLowerCase()].propType);
+                if (_default != null)
+                    prop.default = _default;
+            } else {
+                this.kresmer.raiseError(new LibraryParsingException(`Invalid prop type: ${type}`,
+                    {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
+                return undefined;
+            }//if
+        }//if
+
+        if (prop.type === Object) {
+            prop.typeDescriptor = this.parseObjectPropType(node);
+            // if (!prop.typeDescriptor) {
+            //     this.kresmer.raiseError(new LibraryParsingException(`Prop ${type} must have type description`,
+            //         {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
+            //     return undefined;
+            // }//if
+        }//if
+
+        switch (required) {
+            case "true": case "false":
+                prop.required = (required === "true")&& (_default === null);
+                break;
+            case null: case undefined:
+                break;
+            default:
+                throw `Invalid prop "required" attribute: ${prop.required}`;
+        }//switch
+
+        if (choices) {
+            const validValues = choices.split(/ *, */);
+            const validator = (value: unknown) => {
+                return validValues.includes(String(value));
+            }//validator
+            validator.validValues = validValues;
+            prop.validator = validator;
+        }//if
+
+        if (range) {
+            const [min, max] = range.split("..").map(s => Number(s));
+            const validator = (value: unknown) => {
+                const n = Number(value);
+                return n >= min && n <= max;
+            }//validator
+            validator.min = min;
+            validator.max = max;
+            prop.validator = validator;
+        }//if
+
+        if (pattern) {
+            const rePattern = new RegExp(pattern);
+            const validator = (value: unknown) => {
+                return typeof value == "string" && (
+                        Boolean(value.match(rePattern)) || (value === "" && !required)
+                    );
+            }//validator
+            validator.pattern = pattern;
+            prop.validator = validator;
+        }//if
+
+        switch (category) {
+            case "Hidden":
+            case "Geometry":
+            case "Presentation":
+            case "Construction":
+            case "Location":
+            case "Network":
+            case "Hardware":
+            case "Optics":
+                prop.category = DrawingElementPropCategory[category];
+            // eslint-disable-next-line no-fallthrough
+            case null:
+                break;
+            default: 
+                this.kresmer.raiseError(new LibraryParsingException(`Invalid prop category: "${category}"`));
+        }//switch
+
+        if (description)
+            prop.description = description;
+
+        return prop;
+    }//parseProp
+
+
+    private parseObjectPropType(node: Element): PropTypeDescriptor|undefined
+    {
+        if (node.childElementCount === 0) {
+            return undefined;
+        }//if
+
+        switch (node.firstElementChild?.nodeName) {
+            case "elements": {
+                const elementsNode = node.firstElementChild;
+                const childProp = this.parseProp(elementsNode);
+                if (!childProp) {
+                    this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} element type`,
+                        {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
+                    return undefined;
+                }//if
+            
+                return {elements: childProp};
+            }//case elements
+
+            case "subprop": {
+                const subprops: DrawingElementClassProps = {};
+                for (let i = 0; i < node.childElementCount; i++) {
+                    const child = node.children[i];
+                    const subpropName = child.getAttribute("name");
+                    if (!subpropName) {
+                        this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} subprop type`,
+                            {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
+                    return undefined;
+                    }//if
+                    const subprop = this.parseProp(child);
+                    if (subprop)
+                        subprops[subpropName] = subprop;
+                }//for
+                return {subprops};
+            }//case subprop
+        }//switch
+
+        return undefined;
+    }//parseObjectPropType
 
 
     private parseComputedProps(node: Element|undefined, baseClasses: DrawingElementClass[]|undefined, except?: string[])
