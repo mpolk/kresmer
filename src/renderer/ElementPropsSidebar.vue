@@ -14,14 +14,14 @@
              NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
+    import { DrawingElementClassProp } from 'kresmer/dist/DrawingElement/DrawingElementClass';
 
-    export type ElementPropDescriptor = {
-        // eslint-disable-next-line @typescript-eslint/ban-types
-        name: string, localizedName?: string, value: unknown, type: Function, subtype?: string, required: boolean, 
-        min?: number, max?: number, validValues?: string[], localizedValidValues?: string[], pattern?: string, 
-        category?: DrawingElementPropCategory, default?: string, description?: string, localizedDescription?: string,
+    export interface ElementPropDescriptor extends DrawingElementClassProp {
+        name: string,
+        value: unknown,
         parentPropDescriptor?: ElementPropDescriptor,
-    };
+        isExpanded: boolean,
+    }//ElementPropDescriptor
 
     export const ikExpansionTrigger = Symbol() as InjectionKey<Ref<ElementPropDescriptor|undefined>>;
     export const ikClipboardContent = Symbol() as InjectionKey<Ref<string>>;
@@ -163,26 +163,10 @@ Continue?`)) {
 
         const descriptors = Object.keys(_class.props)
             .filter(name => _class.props[name].category !== DrawingElementPropCategory.Hidden)
-            .map(name => 
+            .map((name): ElementPropDescriptor => 
                 {
-                    return {
-                        name, 
-                        localizedName: _class.props[name].localizedName,
-                        value: clone(elementToEdit.props[name]), 
-                        type: _class.props[name].type,
-                        required: _class.props[name].required ?? false,
-                        category: _class.props[name].category,
-                        min: _class.props[name].validator?.min, 
-                        max: _class.props[name].validator?.max,
-                        validValues: _class.props[name].validator?.validValues, 
-                        localizedValidValues: _class.props[name].validator?.localizedValidValues,
-                        pattern: _class.props[name].validator?.pattern,
-                        default: _class.props[name].default !== undefined ? String(_class.props[name].default) : undefined,
-                        description: _class.props[name].description,
-                        localizedDescription: _class.props[name].localizedDescription,
-                        subtype: _class.props[name].subtype,
-                        isExpanded: false,
-                    }
+                    const cl = _class.props[name];
+                    return {...cl, name, value: clone(elementToEdit.props[name]), isExpanded: false}
                 })
             .sort((p1, p2) => 
                 {

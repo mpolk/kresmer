@@ -149,9 +149,9 @@
 
     function localizedChoice(i: number)
     {
-        if (!props.propToEdit.localizedValidValues)
-            return props.propToEdit.validValues![i];
-        return props.propToEdit.localizedValidValues[i] ?? props.propToEdit.validValues![i];
+        if (!props.propToEdit.validator?.localizedValidValues)
+            return props.propToEdit.validator!.validValues![i];
+        return props.propToEdit.validator.localizedValidValues[i] ?? props.propToEdit.validator.validValues![i];
     }//localizedChoice
 
     /**  The root (the ultimate parent) of the (sub)property being edited */
@@ -214,7 +214,7 @@
         return {"text-center": props.propToEdit.type === Boolean};
     })//valueCellClass
 
-    const urlType = ref(getURLType(props.propToEdit.subtype === "url" ? props.propToEdit.value as string: undefined));
+    const urlType = ref(getURLType(props.propToEdit.subtype === "image-url" ? props.propToEdit.value as string: undefined));
 
     function setUrlType(newType: URLType)
     {
@@ -296,21 +296,21 @@
         </td>
         <!-- Prop value -->
         <td class="p-1" :class="valueCellClass">
-            <select v-if="propToEdit.validValues" ref="propInputs" :data-prop-name="propToEdit.name"
+            <select v-if="propToEdit.validator?.validValues" ref="propInputs" :data-prop-name="propToEdit.name"
                     class="form-select form-select-sm border-0" :id="subpropInputID(propToEdit)"
                     v-model="subpropModel">
                 <option v-if="!propToEdit.required" :value="undefined"></option>
-                <option v-for="(choice, i) in propToEdit.validValues" class="text-secondary"
+                <option v-for="(choice, i) in propToEdit.validator.validValues" class="text-secondary"
                         :key="`${propToEdit.name}[${i}]`" :value="choice">{{ localizedChoice(i) }}</option>
             </select>
             <template v-else-if="propToEdit.type === Number">
                 <input type="number" :id="subpropInputID(propToEdit)"
                     ref="propInputs" :data-prop-name="propToEdit.name"
                     class="form-control form-control-sm text-end border-0"
-                    :placeholder="propToEdit.default"
+                    :placeholder="propToEdit.default ? String(propToEdit.default) : undefined"
                     v-model="subpropModel"/>
-                <input v-if="propToEdit.min !== undefined && propToEdit.max !== undefined" type="range" class="form-range" 
-                    :min="propToEdit.min" :max="propToEdit.max" :step="(propToEdit.max - propToEdit.min)*0.05" 
+                <input v-if="propToEdit.validator?.min !== undefined && propToEdit.validator.max !== undefined" type="range" class="form-range" 
+                    :min="propToEdit.validator.min" :max="propToEdit.validator.max" :step="(propToEdit.validator.max - propToEdit.validator.min)*0.05" 
                     :value="propToEdit.value ?? propToEdit.default" 
                     @input="event => propToEdit.value = (event.target as HTMLInputElement).value">
             </template>
@@ -336,7 +336,7 @@
                 </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                     class="form-control form-control-sm"  :disabled="urlType !== URLType.href" 
-                    :placeholder="propToEdit.default" v-model="subpropModel"/>
+                    :placeholder="propToEdit.default ? String(propToEdit.default) : undefined" v-model="subpropModel"/>
             </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">
                 <div v-if="!propToEdit.required" class="col-auto">
@@ -362,9 +362,9 @@
             </div>
             <input v-else 
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
-                :pattern="propToEdit.pattern"
+                :pattern="propToEdit.validator?.pattern"
                 class="form-control form-control-sm border-0"
-                :placeholder="propToEdit.default"
+                :placeholder="propToEdit.default ? String(propToEdit.default) : undefined"
                 v-model="subpropModel"/>
             <div class="invalid-feedback">
                 Syntax error!
@@ -380,4 +380,3 @@
             @add-subprop="onDescendantAddSubprop"/>
     </template>
 </template>
-./URLType
