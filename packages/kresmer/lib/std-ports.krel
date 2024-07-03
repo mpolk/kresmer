@@ -56,7 +56,16 @@
             <prop name="labelY" type="Number" category="Geometry" description="Port label vertical poisition"/>
             <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
-            <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
+            <prop name="port-info" type="object" description="Various port configuration and state parameters">
+                <subprop name="description" type="String" />
+                <subprop name="media" type="String" choices="copper,fiber" description="The media type for the combo-port"/>
+                <subprop name="speed" type="String" description="The current physical port speed"/>
+                <subprop name="maxSpeed" type="String" description="The maximum physical port speed"/>
+                <subprop name="operStatus" type="Boolean" description="The current port status"/>
+                <subprop name="adminStatus" type="Boolean" description="The administrative port status"/>
+                <subprop name="statusMonitoring" type="Boolean" description="Is the port status monitoring turned on?"/>
+                <subprop name="speedMonitoring" type="Boolean" description="Is the port speed monitoring turned on?"/>
+            </prop>
             <prop name="fiber-info" type="object" description="Various optical parameters of the individual fiber connected to the port">
                 <subprop name="nFibers" type="Number" description="The number of fibers that may be connected to this port"/>
                 <subprop name="wavelength" type="Number" description="The wave length of the beam transmitted from this port"/>

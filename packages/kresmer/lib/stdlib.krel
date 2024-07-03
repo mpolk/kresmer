@@ -36,19 +36,10 @@
 
 
     <!-- Abstract devices with the various kinds of ports -->
-    <component-class name="DeviceWithManagedPorts" category=".general">
+    <component-class name="DeviceWithManagedPorts" category=".general" version="2024070300">
         <props>
             <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar">
-                <elements type="Object">
-                    <subprop name="description" type="String" />
-                    <subprop name="media" type="String" choices="copper,fiber" description="The media type for the combo-port"/>
-                    <subprop name="speed" type="String" description="The current physical port speed"/>
-                    <subprop name="maxSpeed" type="String" description="The maximum physical port speed"/>
-                    <subprop name="operStatus" type="Boolean" description="The current port status"/>
-                    <subprop name="adminStatus" type="Boolean" description="The administrative port status"/>
-                    <subprop name="statusMonitoring" type="Boolean" description="Is the port status monitoring turned on?"/>
-                    <subprop name="speedMonitoring" type="Boolean" description="Is the port speed monitoring turned on?"/>
-                </elements>
+                <elements type="Object" type-ref="Port.port-info"/>
             </prop>
         </props>
     </component-class>

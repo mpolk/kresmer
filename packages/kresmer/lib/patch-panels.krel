@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024070200"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024070300"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -62,7 +62,7 @@
                 {{caption}}
             </text>
         </template>
-        <props>
+        <props extend="DeviceWithOpticalPorts">
             <prop name="comment" type="String" description="Device general info"/>
             <prop name="caption" type="String" description="Device picture caption"/>
             <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
@@ -80,7 +80,6 @@
             <prop name="portLabelWidth" type="Number" category="Presentation" description="The width of the port label table"/>
             <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
             <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
-            <prop name="fibers-info" type="Object" category="Optics" description="Various optical parameters of the individual fibers"/>
         </props>
         <computed-props>
             <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
