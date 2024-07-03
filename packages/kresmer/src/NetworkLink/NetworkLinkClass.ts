@@ -40,6 +40,8 @@ export default class NetworkLinkClass extends DrawingElementClass {
         style?: PostCSSRoot,
         category?: string,
         sourceCode?: string,
+        localizedName?: string,
+        localizedCategory?: string,
     })
     {
         super(name, params);

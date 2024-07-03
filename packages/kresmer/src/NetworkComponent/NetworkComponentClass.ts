@@ -45,6 +45,8 @@ export default class NetworkComponentClass extends DrawingElementClass {
         category?: string,
         defaultContent?: string,
         sourceCode?: string,
+        localizedName?: string,
+        localizedCategory?: string,
     })
     {
         if (params.embeddedElementClasses)

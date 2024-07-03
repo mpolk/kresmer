@@ -145,7 +145,9 @@ export default class LibraryParser {
     private parseComponentClassNode(node: Element)
     {
         const className = node.getAttribute("name");
+        const localizedName = node.getAttributeNS(this.kresmer.uiLanguage, "name") ?? undefined;
         const category = node.getAttribute("category") ?? undefined;
+        const localizedCategory = node.getAttributeNS(this.kresmer.uiLanguage, "category") ?? undefined;
         if (!className) 
             throw new LibraryParsingException("Component class without the name");
 
@@ -247,14 +249,17 @@ export default class LibraryParser {
                                                      styleBaseClasses, propsBaseClasses, template, 
                                                      props, exceptProps, computedProps, computedPropsBaseClasses, 
                                                      functions, functionsBaseClasses, defs, 
-                                                     style, defaultContent, category, sourceCode: node.outerHTML});
+                                                     style, defaultContent, category, sourceCode: node.outerHTML,
+                                                     localizedName, localizedCategory});
     }//parseComponentClassNode
 
 
     private parseLinkClassNode(node: Element)
     {
         const className = node.getAttribute("name");
+        const localizedName = node.getAttributeNS(this.kresmer.uiLanguage, "name") ?? undefined;
         const category = node.getAttribute("category") ?? undefined;
+        const localizedCategory = node.getAttributeNS(this.kresmer.uiLanguage, "category") ?? undefined;
         if (!className) 
             throw new LibraryParsingException("Link class without the name");
 
@@ -330,7 +335,8 @@ export default class LibraryParser {
         const linkClass = new ctor(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
                                                referencedClasses, baseClassPropBindings, computedProps, computedPropsBaseClasses, 
                                                functions, functionsBaseClasses, defs, style, category, 
-                                               sourceCode: node.outerHTML});
+                                               sourceCode: node.outerHTML,
+                                               localizedName, localizedCategory});
         return linkClass;
     }//parseLinkClassNode
 
@@ -338,7 +344,9 @@ export default class LibraryParser {
     private parseAreaClassNode(node: Element)
     {
         const className = node.getAttribute("name");
+        const localizedName = node.getAttributeNS(this.kresmer.uiLanguage, "name") ?? undefined;
         const category = node.getAttribute("category") ?? undefined;
+        const localizedCategory = node.getAttributeNS(this.kresmer.uiLanguage, "category") ?? undefined;
         if (!className) 
             throw new LibraryParsingException("Area class without the name");
 
@@ -415,7 +423,8 @@ export default class LibraryParser {
                                                            baseClassPropBindings, computedProps, computedPropsBaseClasses,
                                                            functions, functionsBaseClasses,
                                                            defs, style, category, 
-                                                           sourceCode: node.outerHTML});
+                                                           sourceCode: node.outerHTML,
+                                                           localizedName, localizedCategory});
         return areaClass;
     }//parseAreaClassNode
 
@@ -505,15 +514,19 @@ export default class LibraryParser {
         };
 
         const propName = toCamelCase(node.getAttribute("name"));
+        const localizedName = node.getAttributeNS(this.kresmer.uiLanguage, "name");
         const prop: DrawingElementClassProp = {};
         const type = node.getAttribute("type");
         const required = node.getAttribute("required"),
             _default = node.getAttribute("default"),
             choices = node.getAttribute("choices"),
+            localizedChoices = node.getAttributeNS(this.kresmer.uiLanguage, "choices"),
             pattern = node.getAttribute("pattern"),
             range = node.getAttribute("range"),
             category = node.getAttribute("category"),
-            description = node.getAttribute("description");
+            description = node.getAttribute("description"),
+            localizedDescription = node.getAttributeNS(this.kresmer.uiLanguage, "description")
+            ;
         if (!propName && node.nodeName !== "elements") {
             this.kresmer.raiseError(new LibraryParsingException("Prop without a name",
                 {source: `Component class "${node.parentElement?.getAttribute("name")}"`}));
@@ -587,10 +600,13 @@ export default class LibraryParser {
 
         if (choices) {
             const validValues = choices.split(/ *, */);
+            const localizedValidValues = localizedChoices?.split(/ *, */);
             const validator = (value: unknown) => {
                 return validValues.includes(String(value));
             }//validator
             validator.validValues = validValues;
+            if (localizedValidValues)
+                validator.localizedValidValues = localizedValidValues;
             prop.validator = validator;
         }//if
 
@@ -633,8 +649,12 @@ export default class LibraryParser {
                 this.kresmer.raiseError(new LibraryParsingException(`Invalid prop category: "${category}"`));
         }//switch
 
+        if (localizedName)
+            prop.localizedName = localizedName;
         if (description)
             prop.description = description;
+        if (localizedDescription)
+            prop.localizedDescription = localizedDescription;
 
         if (prop.typeDescriptor && node.nodeName === "prop")
             if (this.propTypes.has(className))

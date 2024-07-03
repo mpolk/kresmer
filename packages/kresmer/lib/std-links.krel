@@ -10,7 +10,7 @@
 <*************************************************************************** -->
 
 <kresmer-library name="std-links" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot"
-    xmlns:ua="ua">
+    xmlns:uk="uk">
 
     <!-- *********************************************** Links ********************************************************* -->
 
@@ -59,7 +59,7 @@
             <prop name="color" type="Color" category="Presentation"/>
             <prop name="highlightColor" type="Color" category="Presentation"/>
             <prop name="thickness" type="string" choices="thin,normal,thick" category="Presentation"
-                ua:description="товщина" ua:choices="тонкий,нормальний,товстий"
+                uk:name="товщина" uk:choices="тонкий,нормальний,товстий"
                 />
         </props>
         <style>

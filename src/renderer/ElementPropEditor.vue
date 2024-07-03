@@ -147,6 +147,13 @@
         }
     })//subpropModel
 
+    function localizedChoice(i: number)
+    {
+        if (!props.propToEdit.localizedValidValues)
+            return props.propToEdit.validValues![i];
+        return props.propToEdit.localizedValidValues[i] ?? props.propToEdit.validValues![i];
+    }//localizedChoice
+
     /**  The root (the ultimate parent) of the (sub)property being edited */
     // eslint-disable-next-line vue/no-setup-props-destructure
     let rootProp = props.propToEdit;
@@ -253,10 +260,10 @@
             <div class="d-flex align-items-center justify-content-between">
                 <div class="d-inline-block">
                     <label class="form-label mb-0" :class="{'text-secondary': subpropLevel}" :for="subpropInputID(propToEdit)"
-                        :title="propToEdit.description"
+                        :title="propToEdit.localizedDescription || propToEdit.description"
                         @click="isExpanded = !isExpanded"
                         >
-                        {{ propToEdit.name }}
+                        {{ propToEdit.localizedName || propToEdit.name }}
                     </label>
                     <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
                             @click="isExpanded = !isExpanded">
@@ -294,7 +301,7 @@
                     v-model="subpropModel">
                 <option v-if="!propToEdit.required" :value="undefined"></option>
                 <option v-for="(choice, i) in propToEdit.validValues" class="text-secondary"
-                        :key="`${propToEdit.name}[${i}]`">{{ choice }}</option>
+                        :key="`${propToEdit.name}[${i}]`" :value="choice">{{ localizedChoice(i) }}</option>
             </select>
             <template v-else-if="propToEdit.type === Number">
                 <input type="number" :id="subpropInputID(propToEdit)"

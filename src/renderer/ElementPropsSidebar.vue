@@ -17,9 +17,9 @@
 
     export type ElementPropDescriptor = {
         // eslint-disable-next-line @typescript-eslint/ban-types
-        name: string, value: unknown, type: Function, subtype?: string, required: boolean, 
-        min?: number, max?: number, validValues?: string[], pattern?: string, 
-        category?: DrawingElementPropCategory, default?: string, description?: string,
+        name: string, localizedName?: string, value: unknown, type: Function, subtype?: string, required: boolean, 
+        min?: number, max?: number, validValues?: string[], localizedValidValues?: string[], pattern?: string, 
+        category?: DrawingElementPropCategory, default?: string, description?: string, localizedDescription?: string,
         parentPropDescriptor?: ElementPropDescriptor,
     };
 
@@ -165,21 +165,21 @@ Continue?`)) {
             .filter(name => _class.props[name].category !== DrawingElementPropCategory.Hidden)
             .map(name => 
                 {
-                    const validValues = _class.props[name].validator?.validValues;
-                    const pattern = _class.props[name].validator?.pattern;
-                    const min = _class.props[name].validator?.min;
-                    const max = _class.props[name].validator?.max;
                     return {
                         name, 
+                        localizedName: _class.props[name].localizedName,
                         value: clone(elementToEdit.props[name]), 
                         type: _class.props[name].type,
                         required: _class.props[name].required ?? false,
                         category: _class.props[name].category,
-                        min, max,
-                        validValues,
-                        pattern,
+                        min: _class.props[name].validator?.min, 
+                        max: _class.props[name].validator?.max,
+                        validValues: _class.props[name].validator?.validValues, 
+                        localizedValidValues: _class.props[name].validator?.localizedValidValues,
+                        pattern: _class.props[name].validator?.pattern,
                         default: _class.props[name].default !== undefined ? String(_class.props[name].default) : undefined,
                         description: _class.props[name].description,
+                        localizedDescription: _class.props[name].localizedDescription,
                         subtype: _class.props[name].subtype,
                         isExpanded: false,
                     }

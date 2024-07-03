@@ -1,4 +1,4 @@
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="ua">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="uk">
     <xs:attribute name="name"/>
     <xs:attribute name="category"/>
     <xs:attribute name="description"/>

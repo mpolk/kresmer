@@ -67,6 +67,7 @@ export default class Kresmer extends KresmerEventHooks {
         animateLinkBundleDragging?: boolean,
         hrefBase?: string,
         streetAddressFormat?: StreetAddressFormat,
+        uiLanguage?: string,
     }) {
         super();
         this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
@@ -89,6 +90,7 @@ export default class Kresmer extends KresmerEventHooks {
         options?.streetAddressFormat && (this.streetAddressFormat = options.streetAddressFormat);
         options?.backgroundImage && (this.backgroundImage.copy(options.backgroundImage));
         options?.backgroundColor && (this.backgroundColor = options.backgroundColor);
+        options?.uiLanguage && (this.uiLanguage = options.uiLanguage);
             
         this.appKresmer = createApp(KresmerVue, {
             controller: this,
@@ -155,6 +157,8 @@ export default class Kresmer extends KresmerEventHooks {
     animateComponentDragging = false;
     /** Specifies whether link bundle dragging should be animated */
     animateLinkBundleDragging = false;
+    /** The code of the language to use in UI */
+    uiLanguage = new Intl.Locale(navigator.language).language;
 
     /** Specifies the street address representation format */
     streetAddressFormat = StreetAddressFormat.StreetFirst;

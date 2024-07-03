@@ -42,9 +42,12 @@ export default abstract class DrawingElementClass {
         style?: PostCSSRoot,
         category?: string,
         sourceCode?: string,
+        localizedName?: string,
+        localizedCategory?: string,
     })
     {
         this.name = name;
+        this.localizedName = params?.localizedCategory;
         this.version = params?.version ?? 1;
         this.baseClass = params?.baseClass;
         this.referencedClasses = new Set(params?.referencedClasses);
@@ -93,6 +96,7 @@ export default abstract class DrawingElementClass {
         this.defs = params?.defs;
         this.style = params?.style;
         this.category = params?.category;
+        this.localizedCategory = params?.localizedCategory;
         this.sourceCode = params?.sourceCode?.replaceAll(/ *xmlns:[-a-zA-Z0-9]+="[-a-zA-Z0-9]+" */g, " ");
 
         for (const propName in params?.baseClassPropBindings) {
@@ -104,6 +108,8 @@ export default abstract class DrawingElementClass {
 
     /** Class name */
     readonly name: string;
+    /** Class name (localized) */
+    readonly localizedName?: string;
     /** Class code version */
     readonly version: number;
     /** Base class (for the element as a whole) */
@@ -134,6 +140,8 @@ export default abstract class DrawingElementClass {
     readonly style?: PostCSSRoot;
     /** Class category (for ordering and usability) */
     readonly category?: string;
+    /** Class category (localized) */
+    readonly localizedCategory?: string;
     /** Source XML-code of this class */
     readonly sourceCode?: string;
     /** A list of the referenced element classes */
@@ -227,6 +235,7 @@ type Validator = ((value: unknown, props: Record<string, unknown>) => boolean) &
     max?: number,
     pattern?: string,
     validValues?: string[],
+    localizedValidValues?: string[],
 };
 
 export type PropTypeDescriptor = 
@@ -236,6 +245,7 @@ export type PropTypeDescriptor =
 
 export type DrawingElementClassProp = 
 {
+    localizedName?: string,
     type?: PropType<unknown>,
     typeDescriptor?: PropTypeDescriptor,
     required?: boolean,
@@ -243,6 +253,7 @@ export type DrawingElementClassProp =
     validator?: Validator,
     category?: DrawingElementPropCategory,
     description?: string,
+    localizedDescription?: string,
     subtype?: DrawingElementClassPropSubtype,
 };
 export type DrawingElementClassPropSubtype = "image-url" | "color";
