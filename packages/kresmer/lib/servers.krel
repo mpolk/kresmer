@@ -113,7 +113,7 @@
             <prop name="perspective" type="String" choices="left,right,center,none" default="none" category="Presentation" 
                   description="Visual perspective of the device image"/>
             <prop name="interfaces" type="Object" category="Network" default="{}">
-                <elements type="Object" type-ref="Ports.port-info"/>
+                <elements type="Object" type-ref="Port.port-info"/>
             </prop>
         </props>
         <computed-props>

@@ -562,8 +562,14 @@ export default class LibraryParser {
             if (!prop.typeDescriptor) {
                 prop.typeDescriptor = this.parseObjectPropType(node, className, referencedClasses);
                 if (!prop.typeDescriptor) {
-                    this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" must have type definition`,
-                        {source: `Component class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
+                    const chunks = [propName || "[]"];
+                    let el = node;
+                    while (el.nodeName !== "prop" && el.parentElement) {
+                        el = el.parentElement;
+                        chunks.unshift(el.getAttribute("name") || "[]");
+                    }//while
+                    this.kresmer.raiseError(new LibraryParsingException(`Prop "${chunks.join('.')}" must have type definition`,
+                        {source: `Component class "${className}"`}));
                     // return undefined;
                 }//if
             }//if
@@ -651,8 +657,14 @@ export default class LibraryParser {
                 const elementsNode = node.firstElementChild;
                 const childProp = this.parseProp(elementsNode, className, referencedClasses);
                 if (!childProp) {
-                    this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} element type definition`,
-                        {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
+                    const chunks = [node.getAttribute("name") || "[]"];
+                    let el = node;
+                    while (el.nodeName !== "prop" && el.parentElement) {
+                        el = el.parentElement;
+                        chunks.unshift(el.getAttribute("name") || "[]");
+                    }//while
+                    this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${chunks.join('.')} element type definition`,
+                        {source: `Class "${className}"`}));
                     return undefined;
                 }//if
             
@@ -665,8 +677,14 @@ export default class LibraryParser {
                     const child = node.children[i];
                     const subpropName = child.getAttribute("name");
                     if (!subpropName) {
-                        this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} subprop type definition`,
-                            {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
+                        const chunks = [node.getAttribute("name") || "[]"];
+                        let el = node;
+                        while (el.nodeName !== "prop" && el.parentElement) {
+                            el = el.parentElement;
+                            chunks.unshift(el.getAttribute("name") || "[]");
+                        }//while
+                            this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${chunks.join('.')} subprop type definition`,
+                            {source: `Class "${className}"`}));
                     return undefined;
                     }//if
                     const subprop = this.parseProp(child, className, referencedClasses);
