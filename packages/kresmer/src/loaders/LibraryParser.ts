@@ -23,7 +23,7 @@ import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
  */
 export default class LibraryParser {
 
-    constructor(private kresmer: Kresmer) {}
+    constructor(private kresmer: Kresmer, private propTypes: Map<string, Map<string, PropTypeDescriptor>>) {}
     private libVersion: number = 1;
 
     /**
@@ -187,7 +187,7 @@ export default class LibraryParser {
                 case "props":
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
-                    props = this.parseProps(child);
+                    props = this.parseProps(child, className);
                     break;
                 case "computed-props":
                     computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
@@ -281,7 +281,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    props = this.parseProps(child);
+                    props = this.parseProps(child, className);
                     break;
                 case "computed-props":
                     computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
@@ -364,7 +364,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    props = this.parseProps(child);
+                    props = this.parseProps(child, className);
                     break;
                 case "computed-props":
                     computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
@@ -463,7 +463,7 @@ export default class LibraryParser {
     }//parseClassInheritance
 
 
-    private parseProps(node: Element)
+    private parseProps(node: Element, className: string)
     {
         const props: DrawingElementClassProps = {};
         for (let i = 0; i < node.children.length; i++) {
@@ -471,7 +471,7 @@ export default class LibraryParser {
             switch (child.nodeName) {
                 case "prop": {
                     const propName = toCamelCase(child.getAttribute("name"));
-                    const prop = this.parseProp(child);
+                    const prop = this.parseProp(child, className);
                     if (prop)
                         props[propName] = prop;
                     break;
@@ -482,23 +482,24 @@ export default class LibraryParser {
         return props;
     }//parseProps
 
-    private static readonly allowedTypes: Record<string, {
-        propType: {(): unknown}, 
-        makeDefault: (d: string) => unknown, 
-        subtype?: DrawingElementClassPropSubtype
-    }> = {
-        "string": {propType: String, makeDefault: d => d}, 
-        "color": {propType: String, makeDefault: d => d, subtype: "color"}, 
-        "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
-        "number": {propType: Number, makeDefault: d => d === "none" ? null : Number(d)},
-        "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
-        "object": {propType: Object, makeDefault: d => d === "none" ? null : JSON.parse(d)}, 
-        "array": {propType: Array, makeDefault: d => d === "none" ? null : JSON.parse(d)},
-    };
 
-
-    private parseProp(node: Element): DrawingElementClassProp|undefined
+    private parseProp(node: Element, className: string): DrawingElementClassProp|undefined
     {
+
+        const allowedTypes: Record<string, {
+            propType: {(): unknown}, 
+            makeDefault: (d: string) => unknown, 
+            subtype?: DrawingElementClassPropSubtype
+        }> = {
+            "string": {propType: String, makeDefault: d => d}, 
+            "color": {propType: String, makeDefault: d => d, subtype: "color"}, 
+            "imageurl": {propType: String, makeDefault: d => d, subtype: "image-url"}, 
+            "number": {propType: Number, makeDefault: d => d === "none" ? null : Number(d)},
+            "boolean": {propType: Boolean, makeDefault: d => d === "true"}, 
+            "object": {propType: Object, makeDefault: d => d === "none" ? null : JSON.parse(d)}, 
+            "array": {propType: Array, makeDefault: d => d === "none" ? null : JSON.parse(d)},
+        };
+
         const propName = toCamelCase(node.getAttribute("name"));
         const prop: DrawingElementClassProp = {};
         const type = node.getAttribute("type");
@@ -515,21 +516,21 @@ export default class LibraryParser {
             return undefined;
         }//if
 
-        Object.getOwnPropertyNames(LibraryParser.allowedTypes).forEach(typeName => {
+        Object.getOwnPropertyNames(allowedTypes).forEach(typeName => {
             if (type?.replaceAll('-', '').toLowerCase() === typeName) {
-                prop.type = LibraryParser.allowedTypes[typeName].propType;
+                prop.type = allowedTypes[typeName].propType;
                 if (_default != null)
-                    prop.default = LibraryParser.allowedTypes[typeName].makeDefault(_default);
-                prop.subtype = LibraryParser.allowedTypes[typeName].subtype;
+                    prop.default = allowedTypes[typeName].makeDefault(_default);
+                prop.subtype = allowedTypes[typeName].subtype;
             }//if
         });
 
         if (!prop.type) {
-            const tnames = Object.getOwnPropertyNames(LibraryParser.allowedTypes).join("|");
+            const tnames = Object.getOwnPropertyNames(allowedTypes).join("|");
             const matches = type?.match(new RegExp(`(?:(${tnames}) *\\| *)+(${tnames})`, "i")) ??
                 type?.match(new RegExp(`\\[ *(?:(${tnames}), *)+(${tnames})\\ *]`, "i"));
             if (matches) {
-                prop.type = matches.slice(1).map(type => LibraryParser.allowedTypes[type.toLowerCase()].propType);
+                prop.type = matches.slice(1).map(type => allowedTypes[type.toLowerCase()].propType);
                 if (_default != null)
                     prop.default = _default;
             } else {
@@ -540,11 +541,20 @@ export default class LibraryParser {
         }//if
 
         if (prop.type === Object) {
-            prop.typeDescriptor = this.parseObjectPropType(node);
+            const typeRef = node.getAttribute("type-ref")?.split('.', 2);
+            if (typeRef) {
+                if (typeRef.length < 2)
+                    typeRef.unshift(className);
+                typeRef[1] = toCamelCase(typeRef[1]);
+                prop.typeDescriptor = this.propTypes.get(typeRef[0])?.get(typeRef[1]);
+            }//if
             if (!prop.typeDescriptor) {
-                this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" must have type definition`,
-                    {source: `Component class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
-                // return undefined;
+                prop.typeDescriptor = this.parseObjectPropType(node, className);
+                if (!prop.typeDescriptor) {
+                    this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" must have type definition`,
+                        {source: `Component class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
+                    // return undefined;
+                }//if
             }//if
         }//if
 
@@ -609,11 +619,16 @@ export default class LibraryParser {
         if (description)
             prop.description = description;
 
+        if (prop.typeDescriptor && node.nodeName === "prop")
+            if (this.propTypes.has(className))
+                this.propTypes.get(className)!.set(propName, prop.typeDescriptor);
+            else
+                this.propTypes.set(className, new Map([[propName, prop.typeDescriptor]]));
         return prop;
     }//parseProp
 
 
-    private parseObjectPropType(node: Element): PropTypeDescriptor|undefined
+    private parseObjectPropType(node: Element, className: string): PropTypeDescriptor|undefined
     {
         if (node.childElementCount === 0) {
             return undefined;
@@ -622,7 +637,7 @@ export default class LibraryParser {
         switch (node.firstElementChild?.nodeName) {
             case "elements": {
                 const elementsNode = node.firstElementChild;
-                const childProp = this.parseProp(elementsNode);
+                const childProp = this.parseProp(elementsNode, className);
                 if (!childProp) {
                     this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} element type definition`,
                         {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
@@ -642,7 +657,7 @@ export default class LibraryParser {
                             {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
                     return undefined;
                     }//if
-                    const subprop = this.parseProp(child);
+                    const subprop = this.parseProp(child, className);
                     if (subprop)
                         subprops[subpropName] = subprop;
                 }//for

@@ -35,7 +35,7 @@
     </component-class>
 
 
-    <!-- Abstract device with the managed ports -->
+    <!-- Abstract devices with the various kinds of ports -->
     <component-class name="DeviceWithManagedPorts" category=".general">
         <props>
             <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar">
@@ -56,7 +56,10 @@
 
     <component-class name="DeviceWithOpticalPorts">
         <props>
-            <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers"/>
+            <prop name="fibers-info" type="Object" default="{}" category="Optics" 
+                description="Various optical parameters of the individual fibers connected to the port">
+                <elements type="Object" type-ref="Port.fiber-info"/>
+            </prop>
         </props>
     </component-class>
 

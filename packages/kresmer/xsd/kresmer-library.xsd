@@ -467,6 +467,7 @@
             </xs:simpleType>
         </xs:attribute>
 
+        <xs:attribute name="type-ref" />
         <xs:attribute name="required" type="xs:boolean" />
         <xs:attribute name="default" />
         <xs:attribute name="choices" />

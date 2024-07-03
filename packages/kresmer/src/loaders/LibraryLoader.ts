@@ -9,7 +9,7 @@
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import LibraryParser, { DefsLibNode, ImportStatement, LibParams, LibraryParsingException, StyleLibNode } from "./LibraryParser";
-import DrawingElementClass from "../DrawingElement/DrawingElementClass";
+import DrawingElementClass, {PropTypeDescriptor} from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
 import { LibraryImportException } from "../KresmerException";
@@ -18,7 +18,10 @@ import DrawingAreaClass from "../DrawingArea/DrawingAreaClass";
 /**A loader for drawing element class libraries */
 export default class LibraryLoader
 {
-    constructor(private kresmer: Kresmer, private depth = 0) {}
+    constructor(private kresmer: Kresmer, 
+                private propTypes: Map<string, Map<string, PropTypeDescriptor>> = new Map, 
+                private depth = 0
+               ) {}
 
     /**
      * Loads a component class library from the raw XML data
@@ -39,7 +42,7 @@ export default class LibraryLoader
                             ): Promise<number>
     {
         // console.debug("Loading library...");
-        const parser = new LibraryParser(this.kresmer);
+        const parser = new LibraryParser(this.kresmer, this.propTypes);
         let nErrors = 0;
         let libName = "";
         for (const element of parser.parseXML(libData)) {
@@ -79,7 +82,7 @@ export default class LibraryLoader
                     if (!importedLibData)
                         this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
                     else {
-                        const childLoader = new LibraryLoader(this.kresmer, this.depth+1);
+                        const childLoader = new LibraryLoader(this.kresmer, this.propTypes, this.depth+1);
                         const nImportErrors = await childLoader._loadLibrary(importedLibData, importHandler);
                         if (nImportErrors > 0)
                             nErrors += nImportErrors;
@@ -125,7 +128,7 @@ export default class LibraryLoader
     public loadEmbeddedLibrary(root: Element)
     {
         // console.debug("Loading library...");
-        const parser = new LibraryParser(this.kresmer);
+        const parser = new LibraryParser(this.kresmer, this.propTypes);
         for (const element of parser.parseLibraryNode(root)) {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {

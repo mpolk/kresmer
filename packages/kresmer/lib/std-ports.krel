@@ -18,7 +18,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Port" category=".ports">
+    <component-class name="Port" category=".ports" version="2024070300">
         <template>
             <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
             <slot />
@@ -57,7 +57,11 @@
             <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
             <prop name="port-info" type="object" description="Various port configuration and state parameters"/>
-            <prop name="fiber-info" type="object" description="Various fiber optical parameters"/>
+            <prop name="fiber-info" type="object" description="Various optical parameters of the individual fiber connected to the port">
+                <subprop name="nFibers" type="Number" description="The number of fibers that may be connected to this port"/>
+                <subprop name="wavelength" type="Number" description="The wave length of the beam transmitted from this port"/>
+                <subprop name="signalDirection" type="String" choices="rx,tx" description="The direction of the signal in this fiber (transmit/receive)"/>
+            </prop>
             <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
             <prop name="is-active" type="Boolean" default="true" category="Network" description="Indicates whether this part (media) of the combo port is active" />
         </props>
