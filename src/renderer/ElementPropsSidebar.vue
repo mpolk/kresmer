@@ -190,10 +190,10 @@ Continue?`)) {
                         return -1;
                     if (p1.category && !p2.category || (p1.category ?? "") > (p2.category ?? ""))
                         return 1;
-                    if (p1.name < p2.name)
-                        return -1;
-                    if (p1.name > p2.name)
-                        return 1;
+                    // if (p1.name < p2.name)
+                    //     return -1;
+                    // if (p1.name > p2.name)
+                    //     return 1;
                     return 0;
                 });
         return descriptors;
