@@ -28,7 +28,7 @@ export default abstract class DrawingElementClass {
     public constructor(name: string, params?: {
         version?: number,
         baseClass?: DrawingElementClass,
-        embeddedElementClasses?: DrawingElementClass[],
+        referencedClasses?: DrawingElementClass[],
         styleBaseClasses?: DrawingElementClass[],
         computedPropsBaseClasses?: DrawingElementClass[],
         propsBaseClasses?: DrawingElementClass[],
@@ -47,7 +47,7 @@ export default abstract class DrawingElementClass {
         this.name = name;
         this.version = params?.version ?? 1;
         this.baseClass = params?.baseClass;
-        this.embeddedElementClasses = new Set(params?.embeddedElementClasses);
+        this.referencedClasses = new Set(params?.referencedClasses);
         this.styleBaseClasses = params?.styleBaseClasses;
         this.propsBaseClasses = params?.propsBaseClasses;
         this.computedPropsBaseClasses = params?.computedPropsBaseClasses;
@@ -136,8 +136,8 @@ export default abstract class DrawingElementClass {
     readonly category?: string;
     /** Source XML-code of this class */
     readonly sourceCode?: string;
-    /** A list of the embedded element classes */
-    readonly embeddedElementClasses: Set<DrawingElementClass>;
+    /** A list of the referenced element classes */
+    readonly referencedClasses: Set<DrawingElementClass>;
 
     /** Limits this class usage for embedding or inheritance */
     get isAbstract(): boolean {return Boolean(this.category?.startsWith('.'))}
@@ -161,7 +161,7 @@ export default abstract class DrawingElementClass {
             return "";
 
         let xml = "";
-        for (const embedded of this.embeddedElementClasses) {
+        for (const embedded of this.referencedClasses) {
             xml += embedded.toXML(indent, alreadySerialized);
         }//for
         if (this.baseClass)

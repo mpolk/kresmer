@@ -158,6 +158,7 @@ export default class LibraryParser {
                     return NetworkComponentClass.getClass(name.trim())
                 });
         }//if
+        const referencedClasses: DrawingElementClass[] = [];
         let baseClassPropBindings: DrawingElementProps | undefined;
         let baseClassChildNodes: NodeListOf<ChildNode> | undefined;
         let template: Element | undefined;
@@ -187,7 +188,7 @@ export default class LibraryParser {
                 case "props":
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
-                    props = this.parseProps(child, className);
+                    props = this.parseProps(child, className, referencedClasses);
                     break;
                 case "computed-props":
                     computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkComponentClass);
@@ -242,7 +243,7 @@ export default class LibraryParser {
 
 
         return new NetworkComponentClass(className, {version, baseClass, baseClassPropBindings, baseClassChildNodes, 
-                                                     embeddedElementClasses,
+                                                     embeddedElementClasses, referencedClasses,
                                                      styleBaseClasses, propsBaseClasses, template, 
                                                      props, exceptProps, computedProps, computedPropsBaseClasses, 
                                                      functions, functionsBaseClasses, defs, 
@@ -267,6 +268,7 @@ export default class LibraryParser {
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let baseClass: NetworkLinkClass | undefined;
+        const referencedClasses: DrawingElementClass[] = [];
         let baseClassPropBindings: DrawingElementProps | undefined;
         let propsBaseClasses: NetworkLinkClass[] | undefined;
         let computedPropsBaseClasses: NetworkLinkClass[] | undefined;
@@ -281,7 +283,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    props = this.parseProps(child, className);
+                    props = this.parseProps(child, className, referencedClasses);
                     break;
                 case "computed-props":
                     computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), NetworkLinkClass);
@@ -326,7 +328,7 @@ export default class LibraryParser {
 
         const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
         const linkClass = new ctor(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
-                                               baseClassPropBindings, computedProps, computedPropsBaseClasses, 
+                                               referencedClasses, baseClassPropBindings, computedProps, computedPropsBaseClasses, 
                                                functions, functionsBaseClasses, defs, style, category, 
                                                sourceCode: node.outerHTML});
         return linkClass;
@@ -350,6 +352,7 @@ export default class LibraryParser {
         let defs: Element | undefined;
         let style: PostCSSRoot | undefined;
         let baseClass: DrawingAreaClass | undefined;
+        const referencedClasses: DrawingElementClass[] = [];
         let baseClassPropBindings: DrawingElementProps | undefined;
         let propsBaseClasses: DrawingAreaClass[] | undefined;
         let computedPropsBaseClasses: DrawingAreaClass[] | undefined;
@@ -364,7 +367,7 @@ export default class LibraryParser {
                 case "props":
                     propsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
                     exceptProps = child.getAttribute("except")?.split(/ *, */).map(exc => toCamelCase(exc));
-                    props = this.parseProps(child, className);
+                    props = this.parseProps(child, className, referencedClasses);
                     break;
                 case "computed-props":
                     computedPropsBaseClasses = this.parseClassList(child.getAttribute("extend"), DrawingAreaClass);
@@ -408,7 +411,7 @@ export default class LibraryParser {
         }//if
 
         const areaClass = new DrawingAreaClass(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, 
-                                                           exceptProps,
+                                                           exceptProps, referencedClasses,
                                                            baseClassPropBindings, computedProps, computedPropsBaseClasses,
                                                            functions, functionsBaseClasses,
                                                            defs, style, category, 
@@ -463,7 +466,7 @@ export default class LibraryParser {
     }//parseClassInheritance
 
 
-    private parseProps(node: Element, className: string)
+    private parseProps(node: Element, className: string, referencedClasses: DrawingElementClass[])
     {
         const props: DrawingElementClassProps = {};
         for (let i = 0; i < node.children.length; i++) {
@@ -471,7 +474,7 @@ export default class LibraryParser {
             switch (child.nodeName) {
                 case "prop": {
                     const propName = toCamelCase(child.getAttribute("name"));
-                    const prop = this.parseProp(child, className);
+                    const prop = this.parseProp(child, className, referencedClasses);
                     if (prop)
                         props[propName] = prop;
                     break;
@@ -483,7 +486,8 @@ export default class LibraryParser {
     }//parseProps
 
 
-    private parseProp(node: Element, className: string): DrawingElementClassProp|undefined
+    private parseProp(node: Element, className: string, referencedClasses: DrawingElementClass[]): 
+        DrawingElementClassProp|undefined
     {
 
         const allowedTypes: Record<string, {
@@ -547,9 +551,16 @@ export default class LibraryParser {
                     typeRef.unshift(className);
                 typeRef[1] = toCamelCase(typeRef[1]);
                 prop.typeDescriptor = this.propTypes.get(typeRef[0])?.get(typeRef[1]);
+                if (prop.typeDescriptor) {
+                    const referencedClass = 
+                        NetworkComponentClass.getClass(typeRef[0]) || 
+                        NetworkLinkClass.getClass(typeRef[0]) ||
+                        DrawingAreaClass.getClass(typeRef[0]);
+                    referencedClasses.push(referencedClass);
+                }//if
             }//if
             if (!prop.typeDescriptor) {
-                prop.typeDescriptor = this.parseObjectPropType(node, className);
+                prop.typeDescriptor = this.parseObjectPropType(node, className, referencedClasses);
                 if (!prop.typeDescriptor) {
                     this.kresmer.raiseError(new LibraryParsingException(`Prop "${propName}" must have type definition`,
                         {source: `Component class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
@@ -628,7 +639,8 @@ export default class LibraryParser {
     }//parseProp
 
 
-    private parseObjectPropType(node: Element, className: string): PropTypeDescriptor|undefined
+    private parseObjectPropType(node: Element, className: string, referencedClasses: DrawingElementClass[]): 
+        PropTypeDescriptor|undefined
     {
         if (node.childElementCount === 0) {
             return undefined;
@@ -637,7 +649,7 @@ export default class LibraryParser {
         switch (node.firstElementChild?.nodeName) {
             case "elements": {
                 const elementsNode = node.firstElementChild;
-                const childProp = this.parseProp(elementsNode, className);
+                const childProp = this.parseProp(elementsNode, className, referencedClasses);
                 if (!childProp) {
                     this.kresmer.raiseError(new LibraryParsingException(`Invalid prop ${node.getAttribute("name")} element type definition`,
                         {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
@@ -657,7 +669,7 @@ export default class LibraryParser {
                             {source: `Class "${node.parentElement?.parentElement?.getAttribute("name")}"`}));
                     return undefined;
                     }//if
-                    const subprop = this.parseProp(child, className);
+                    const subprop = this.parseProp(child, className, referencedClasses);
                     if (subprop)
                         subprops[subpropName] = subprop;
                 }//for

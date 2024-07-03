@@ -25,6 +25,7 @@ export default class DrawingAreaClass extends DrawingElementClass {
      */
     public constructor(name: string, params?: {
         version?: number,
+        referencedClasses?: DrawingElementClass[],
         baseClass?: DrawingAreaClass,
         propsBaseClasses?: DrawingAreaClass[],
         computedPropsBaseClasses?: DrawingAreaClass[],

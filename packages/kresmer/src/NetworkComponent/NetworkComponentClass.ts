@@ -28,6 +28,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
         version?: number,
         baseClass?: NetworkComponentClass,
         embeddedElementClasses?: NetworkComponentClass[],
+        referencedClasses?: DrawingElementClass[],
         propsBaseClasses?: NetworkComponentClass[],
         computedPropsBaseClasses?: NetworkComponentClass[],
         styleBaseClasses?: NetworkComponentClass[],
@@ -46,6 +47,8 @@ export default class NetworkComponentClass extends DrawingElementClass {
         sourceCode?: string,
     })
     {
+        if (params.embeddedElementClasses)
+            params.referencedClasses?.push(...params.embeddedElementClasses);
         super(name, params);
         this.template = params.template;
 
@@ -94,7 +97,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
     {
         for (const className in NetworkComponentClass.allClasses) {
             if (NetworkComponentClass.allClasses[className].adapterVueName === node.nodeName) {
-                this.embeddedElementClasses.add(NetworkComponentClass.allClasses[className]);
+                this.referencedClasses.add(NetworkComponentClass.allClasses[className]);
                 break;
             }//if
         }//for

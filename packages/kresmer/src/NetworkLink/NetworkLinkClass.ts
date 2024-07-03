@@ -26,6 +26,7 @@ export default class NetworkLinkClass extends DrawingElementClass {
     public constructor(name: string, params: {
         version?: number,
         baseClass?: NetworkLinkClass,
+        referencedClasses?: DrawingElementClass[],
         propsBaseClasses?: NetworkLinkClass[],
         computedPropsBaseClasses?: NetworkLinkClass[],
         styleBaseClasses?: NetworkLinkClass[],
