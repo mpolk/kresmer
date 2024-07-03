@@ -24,7 +24,7 @@
                 <slot name="topFacetC"/>
             </template>
             <template v-slot:topFacetLR="{}">
-                <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
+                <polyline v-bind:points="$p([...crossArrows])" class="facet" />
                 <slot name="topFacetLR"/>
             </template>
         </extends>

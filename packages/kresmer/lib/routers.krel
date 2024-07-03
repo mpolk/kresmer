@@ -14,7 +14,7 @@
 
     <!-- General router body (differ form the switch body only with a circle on the top facet -->
 
-    <component-class name="RouterBody" category=".router-parts" version="2024070300">
+    <component-class name="RouterBody" category=".router-parts" embeds="CrossArrows" version="2024070301">
         <extends base="RackMountDevice">
             <template v-slot:frontFacet="{}">
                 <slot name="frontFacet" />
@@ -26,7 +26,7 @@
             </template>
             <template v-slot:topFacetLR="{}">
                 <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                <polyline v-bind:points="$p($$.crossArrows)" class="facet" />
+                <polyline v-bind:points="$p([...crossArrows])" class="facet" />
                 <slot name="topFacetLR"/>
             </template>
         </extends>
