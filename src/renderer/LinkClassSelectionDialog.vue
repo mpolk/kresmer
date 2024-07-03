@@ -90,7 +90,7 @@
                             <option v-for="cl in linkClasses" 
                                 :value="cl._class" 
                                 :key="`class[${cl.name}]`">
-                                {{ cl.name }}
+                                {{ cl._class.localizedName || cl.name }}
                             </option>
                         </select>
                     </div>

@@ -83,7 +83,7 @@
     </link-class>
 
     <!-- Various link types -->
-    <link-class name="twisted-pair" category="copper-links">
+    <link-class name="twisted-pair" category="copper-links" uk:name="кручена пара" uk:category="мідни з'еднання" version="2024070300">
         <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
         <style>
             .link {--link-color: #5e5e5e; --highlighted-link-color: #c22a00; }
@@ -93,7 +93,7 @@
         </style>
     </link-class>
 
-    <link-class name="sm-patch-cord" category="optical-links">
+    <link-class name="sm-patch-cord" category="optical-links" uk:name="одномодовий патч-корд" uk:category="оптични з'єднання" version="2024070300">
         <extends base="_abstract-link" media-type="sm-optics" accept-media-types="none"/>
         <style>
             .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
@@ -104,7 +104,7 @@
         </style>
     </link-class>
 
-    <link-class name="sm-fiber" category="optical-links">
+    <link-class name="sm-fiber" category="optical-links" uk:name="одномодове волокно" uk:category="оптични з'єднання" version="2024070300">
         <extends base="_abstract-link" media-type="sm-optics" accept-media-types="none"/>
         <style>
             .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
@@ -116,7 +116,7 @@
         </style>
     </link-class>
 
-    <link-class name="DAC" category="copper-links">
+    <link-class name="DAC" category="copper-links" uk:category="мідни з'еднання" version="2024070300">
         <extends base="_abstract-link" media-type="DAC" accept-media-types="none"/>
         <style>
             .link {--link-color: #236e85; --highlighted-link-color: #23beb3; }
@@ -129,7 +129,7 @@
         </style>
     </link-class>
 
-    <link-class name="AOC" category="optical-links">
+    <link-class name="AOC" category="optical-links" uk:category="оптични з'єднання" version="2024070300">
         <extends base="_abstract-link" media-type="AOC" accept-media-types="none"/>
         <style>
             .link {--link-color: #0098c7; --highlighted-link-color: #1de7e7; }
@@ -142,14 +142,14 @@
         </style>
     </link-class>
 
-    <link-class name="AOC-fan" category="optical-links">
+    <link-class name="AOC-fan" category="optical-links" uk:category="оптични з'єднання" version="2024070300">
         <extends base="AOC" media-type="AOC-fan" accept-media-types="AOC"/>
         <style>
             .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 3px; }
         </style>
     </link-class>
 
-    <link-class name="multifiber-cable" category="optical-links">
+    <link-class name="multifiber-cable" category="optical-links" uk:name="багатоволоконний кабель" uk:category="оптични з'єднання" version="2024070300">
         <extends base="_abstract-link" media-type="multifiber-cable" accept-media-types="multifiber-cable"/>
         <props>
             <prop name="nFibers" type="Number" category="Hardware" description="The number of fibers in the cable"/>

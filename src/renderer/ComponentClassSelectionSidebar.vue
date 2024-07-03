@@ -13,7 +13,7 @@
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref, watch, nextTick } from 'vue';
+    import { onMounted, ref, watch, nextTick, reactive } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import Kresmer, { NetworkComponentClass, NetworkComponent, NetworkComponentController } from 'kresmer';
     import { kresmer } from './renderer-main';
@@ -29,6 +29,7 @@
     const result = ref<NetworkComponentClass|null>(null);
     const componentClasses = ref<{name: string, _class: NetworkComponentClass}[]>([]);
     const categories = ref<string[]>([]);
+    const localizedCategories = reactive(new Map<string, string|undefined>);
     const selectedCategory = ref<string>();
 
     const selectSize = 10;
@@ -100,8 +101,10 @@
         for (const [_, _class] of kresmer.getRegisteredComponentClasses()) {
             if (!_class.category)
                 haveUncategorizedClasses = true;
-            else if (!_class.category.startsWith("."))
+            else if (!_class.category.startsWith(".")) {
                 categorySet.add(_class.category);
+                localizedCategories.set(_class.category, _class.localizedCategory);
+            }//if
         }//for
         categories.value = Array.from(categorySet).sort();
         if (haveUncategorizedClasses)
@@ -145,7 +148,7 @@
                             <div class="col">
                                 <select class="form-select" v-model="selectedCategory" :size="selectSize"  ref="selCategory">
                                     <option v-for="cat in categories" :value="cat" :key="`category-${cat}`">
-                                        {{ cat }}
+                                        {{ localizedCategories.get(cat) || cat }}
                                     </option>
                                 </select>
                             </div>
@@ -155,7 +158,7 @@
                                     <option v-for="cl in componentClasses" 
                                         :value="cl._class" 
                                         :key="`class[${cl.name}]`">
-                                        {{ cl.name }}
+                                        {{ cl._class.localizedName || cl.name }}
                                     </option>
                                 </select>
                             </div>

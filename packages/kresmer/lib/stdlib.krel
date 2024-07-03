@@ -45,7 +45,7 @@
     </component-class>
 
 
-    <component-class name="DeviceWithOpticalPorts">
+    <component-class name="DeviceWithOpticalPorts" category=".general" version="2024070300">
         <props>
             <prop name="fibers-info" type="Object" default="{}" category="Optics" 
                 description="Various optical parameters of the individual fibers connected to the port">

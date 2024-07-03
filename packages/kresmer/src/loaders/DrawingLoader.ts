@@ -179,7 +179,7 @@ export default class DrawingLoader {
     {
         let xml = ""
         const alreadySerialized = new Set<DrawingElementClass>();
-        xml += `${"\t".repeat(indentLevel)}<library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:ua="ua">\n`;
+        xml += `${"\t".repeat(indentLevel)}<library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:uk="uk">\n`;
 
         for (const def of this.kresmer.globalDefs.values()) {
             let i = indentLevel+1;

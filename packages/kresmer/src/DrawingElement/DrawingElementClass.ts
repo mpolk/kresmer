@@ -47,7 +47,7 @@ export default abstract class DrawingElementClass {
     })
     {
         this.name = name;
-        this.localizedName = params?.localizedCategory;
+        this.localizedName = params?.localizedName;
         this.version = params?.version ?? 1;
         this.baseClass = params?.baseClass;
         this.referencedClasses = new Set(params?.referencedClasses);
