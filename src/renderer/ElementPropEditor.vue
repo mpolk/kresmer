@@ -13,6 +13,7 @@
     import { ElementPropDescriptor, ikClipboardContent, ikExpansionTrigger } from './ElementPropsSidebar.vue';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
     import { selectOrLoadGraphicsFile } from './renderer-main';
+    import { PropTypeDescriptor } from 'kresmer/dist/DrawingElement/DrawingElementClass';
 
     export default {
         name: "ElementPropEditor",
@@ -104,29 +105,36 @@
 
     /**
      * Builds an array of the subproperty descriptors of the specified (sub)prop
-     * @param _class An element class
      */
-    function buildSubpropDescriptors(parentPropValue: Record<string, unknown>): ElementPropDescriptor[]
-    {
-        const descriptors = Object.keys(parentPropValue)
-            .map(name => 
+    const childSubpropDescriptors = computed((): ElementPropDescriptor[] => {
+        const parentPropValue = props.propToEdit.value as Record<string, unknown>;
+        const descriptors = "elements" in props.propToEdit.typeDescriptor! ? 
+                Object.entries(parentPropValue).map(([key, value]) => 
                 {
                     return {
+                        ...(props.propToEdit.typeDescriptor! as Extract<PropTypeDescriptor, {elements: unknown}>).elements,
+                        name: key, 
+                        value, 
+                        required: false,
+                        isExpanded: false,
+                        parentPropDescriptor: props.propToEdit,
+                    }
+                }) 
+            :
+                Object.entries(props.propToEdit.typeDescriptor!.subprops).map(([name, type]) => 
+                {
+                    return {
+                        ...type,
                         name, 
                         value: parentPropValue[name], 
-                        type: Array.isArray(parentPropValue[name]) ? Array :
-                            typeof parentPropValue[name] === "object" ? Object :
-                            typeof parentPropValue[name] === "number" ? Number :
-                            typeof parentPropValue[name] === "boolean" ? Boolean :
-                            String,
                         required: false,
                         isExpanded: false,
                         parentPropDescriptor: props.propToEdit,
                     }
                 })
-            .sort((p1, p2) => collateSubprops(p1.name, p2.name));
-        return descriptors;
-    }//buildSubpropDescriptors
+            ;
+        return descriptors.sort((p1, p2) => collateSubprops(p1.name, p2.name));
+    })//childSubpropDescriptors
 
     /** Builds the model object for the value of the prop being edited  */
     const subpropModel = computed({
@@ -373,7 +381,7 @@
     </tr>
     <!-- Subprops (if exist) -->
     <template v-if="isExpanded && propToEdit.type === Object && propToEdit.value">
-        <ElementPropEditor v-for="(subprop, i) in buildSubpropDescriptors(propToEdit.value as Record<string, any>)" 
+        <ElementPropEditor v-for="(subprop, i) in childSubpropDescriptors" 
             :key="`${propToEdit.name}[${subprop.name}]`" 
             :prop-to-edit="subprop" :dlg-new-subprop="dlgNewSubprop" :subprop-level="subpropLevel+1" 
             :subprop-index="i"
