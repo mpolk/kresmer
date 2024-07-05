@@ -63,7 +63,8 @@
     });
 
     const emit = defineEmits<{
-        (e: "add-subprop", parentProp: ElementPropDescriptor): void,
+        (e: "add-subprop", where: ElementPropDescriptor): void,
+        (e: "delete-subprop", from: ElementPropDescriptor, what: string): void,
         (e: "copy-to-clipboard", data: string): void,
     }>();
 
@@ -169,7 +170,6 @@
     }//localizedChoice
 
     /**  The root (the ultimate parent) of the (sub)property being edited */
-    // eslint-disable-next-line vue/no-setup-props-destructure
     let rootProp = props.propToEdit;
     const rootPath: string[] = [];
     while (rootProp.parentPropDescriptor) {
@@ -187,17 +187,6 @@
     }//getSubpropParentObject
 
     /**
-     * Deletes the specified subprop from the given property
-     * @param propName Prop to delete the subprop from
-     * @param subpropName Subprop to delete
-     */
-    function deleteSubprop(propName: string, subpropName: string)
-    {
-        if (confirm(`Delete subproperty "${subpropName}"? Are you sure?`))
-            delete getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[subpropName];
-    }// deleteSubprop
-
-    /**
      * Builds CSS for the table cell containing (sub-)prop name
      * @param index Subprop index within the subprop list
      */
@@ -210,12 +199,21 @@
 
     /**
      * Bubbles a descendant "add-subprop" event
-     * @param parentProp A property to add subprop to
+     * @param where A property to add subprop to
      */
-    function onDescendantAddSubprop(parentProp: ElementPropDescriptor)
+    function onDescendantAddSubprop(where: ElementPropDescriptor)
     {
-        emit("add-subprop", parentProp);
+        emit("add-subprop", where);
     }//onDescendantAddSubprop
+
+    /**
+     * Bubbles a descendant "delete-subprop" event
+     * @param from A property to add subprop to
+     */
+    function onDescendantDeleteSubprop(from: ElementPropDescriptor, what: string)
+    {
+        emit("delete-subprop", from, what);
+    }//onDescendantDeleteSubprop
 
     const cbColorDefined = ref<HTMLInputElement>();
     function onColorDefUndef()
@@ -287,7 +285,9 @@
                 </div>
                 <div class="btn-group">
                     <button v-if="propToEdit.isDeletable" type="button" class="btn btn-sm btn-outline-light" 
-                            title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
+                            title="Delete subproperty" 
+                            @click="emit('delete-subprop', propToEdit.parentPropDescriptor!, propToEdit.name)"
+                            >
                         <span class="material-symbols-outlined">close</span>
                     </button>
                     <button v-if="propToEdit.type === Object && withDynamicChildren" type="button" class="btn btn-sm btn-outline-light" 
@@ -380,6 +380,8 @@
             :key="`${propToEdit.name}[${subprop.name}]`" 
             :prop-to-edit="subprop" :dlg-new-subprop="dlgNewSubprop" :subprop-level="subpropLevel+1" 
             :subprop-index="i"
-            @add-subprop="onDescendantAddSubprop"/>
+            @add-subprop="onDescendantAddSubprop"
+            @delete-subprop="onDescendantDeleteSubprop"
+            />
     </template>
 </template>

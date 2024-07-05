@@ -85,9 +85,12 @@
             rootDiv.value!.addEventListener("hidden.bs.offcanvas", (event) => {
                 formEnabled.value = false;
             });
-            const el = document.querySelector("#dlgNewSubprop")!;
+            let el = document.querySelector("#dlgNewSubprop")!;
             el.addEventListener("shown.bs.modal", () => inpNewSubpropName.value!.focus());
             dlgNewSubprop = new Modal(el, {backdrop: "static", keyboard: true});
+            el = document.querySelector("#dlgDelSubprop")!;
+            el.addEventListener("shown.bs.modal", () => btnCancelSubpropDeletion.value!.focus());
+            dlgDelSubprop = new Modal(document.querySelector("#dlgDelSubprop")!, {backdrop: "static", keyboard: true});
         }//if
 
         const classes = 
@@ -278,11 +281,11 @@ Continue?`)) {
 
     /**
      * Adds a new subprop (field) to the given pop
-     * @param parentProp A prop to add the subprop to
+     * @param where A prop to add the subprop to
      */
-     function addSubprop(parentProp: ElementPropDescriptor)
+     function addSubprop(where: ElementPropDescriptor)
     {
-        propToAddSubpropTo.value = parentProp;
+        propToAddSubpropTo.value = where;
         dlgNewSubprop.show();
     }//addSubprop
 
@@ -310,10 +313,34 @@ Continue?`)) {
         dlgNewSubprop.hide();
         expansionTrigger.value = propToAddSubpropTo.value!;
         nextTick(() => {
-            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName)) as HTMLInputElement;
-            inpToFocus.focus();
+            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName));
+            inpToFocus?.focus();
         });
     }//completeAddingSubprop
+
+    /**
+     * Deletes a new subprop (field) from the given pop
+     * @param from A prop to from the subprop from
+     */
+    function deleteSubprop(from: ElementPropDescriptor, what: string)
+    {
+        propToDelSubpropFrom.value = from;
+        subpropToDelete.value = what;
+        dlgDelSubprop.show();
+    }//deleteSubprop
+
+
+    function completeSubpropDeletion()
+    {
+        dlgDelSubprop.hide();
+        const from = propToDelSubpropFrom.value!;
+        const what = subpropToDelete.value!;
+        delete (from.value as Record<string, unknown>)[what];
+        nextTick(() => {
+            const inpToFocus = document.getElementById(subpropInputID(from));
+            inpToFocus?.focus();
+        });
+    }//completeSubpropDeletion
 
 
     function makeInitialSubpropValue(newSubpropDef: DrawingElementClassProp)
@@ -337,6 +364,11 @@ Continue?`)) {
     // eslint-disable-next-line prefer-const
     let newSubpropName = "";
     const inpNewSubpropName = ref<HTMLInputElement>();
+
+    let dlgDelSubprop!: Modal;
+    const propToDelSubpropFrom = ref<ElementPropDescriptor>();
+    const subpropToDelete = ref<string>();
+    const btnCancelSubpropDeletion = ref<HTMLInputElement>();
 
     defineExpose({show});
 </script>
@@ -387,6 +419,7 @@ Continue?`)) {
                         </tr>
                         <ElementPropEditor :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" 
                             @add-subprop="addSubprop" 
+                            @delete-subprop="deleteSubprop" 
                             @copy-to-clipboard="data => clipboardContent = data"/>
                     </template>
                 </tbody></table>
@@ -397,7 +430,7 @@ Continue?`)) {
         </div>
     </div>
 
-    <!-- Dialog for adding subprops -->
+    <!-- Dialog for adding subprop -->
     <div class="modal" tabindex="-1" id="dlgNewSubprop">
         <div class="modal-dialog">
             <form class="modal-content">
@@ -412,6 +445,25 @@ Continue?`)) {
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-sm btn-primary" @click.prevent="completeAddingSubprop">Ok</button>
                     <button type="button" class="btn btn-sm btn-secondary" @click="dlgNewSubprop.hide">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Dialog for deleting subprop -->
+    <div class="modal" tabindex="-1" id="dlgDelSubprop">
+        <div class="modal-dialog">
+            <form class="modal-content">
+                <div class="modal-header">
+                    Delete a field from the "{{ propToDelSubpropFrom?.name }}" prop
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Really delete a field {{ subpropToDelete }} from the "{{ propToDelSubpropFrom?.name }}" prop?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-secondary" @click="completeSubpropDeletion">Ok</button>
+                    <button type="submit" class="btn btn-sm btn-primary" @click.prevent="dlgDelSubprop.hide" ref="btnCancelSubpropDeletion">Cancel</button>
                 </div>
             </form>
         </div>
