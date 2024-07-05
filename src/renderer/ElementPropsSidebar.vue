@@ -318,20 +318,17 @@ Continue?`)) {
 
     function makeInitialSubpropValue(newSubpropDef: DrawingElementClassProp)
     {
-        switch (newSubpropDef.type) {
-            case String:
-                return "";
-            case Number:
-            return 0;
-            case Boolean:
-                return false;
-            case Object:
-                if ("elements" in newSubpropDef.typeDescriptor!)
-                    return {};
-                else 
-                    return Object.keys(newSubpropDef.typeDescriptor!.subprops)
-                        .reduce((accum: Record<string, unknown>, key) => { accum[key] = undefined; return accum; }, {})
-        }//switch
+        if (newSubpropDef.type !== Object)
+            return undefined;
+        if ("elements" in newSubpropDef.typeDescriptor!)
+            return {};
+
+        const children = newSubpropDef.typeDescriptor!.subprops;
+        return Object.keys(children)
+            .reduce((accum: Record<string, unknown>, key) => {
+                accum[key] = makeInitialSubpropValue(children[key]); 
+                return accum; 
+            }, {});
     }//makeInitialSubpropValue
 
 
