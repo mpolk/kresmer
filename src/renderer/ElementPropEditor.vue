@@ -108,7 +108,7 @@
      */
     const childSubpropDescriptors = computed((): ElementPropDescriptor[] => {
         const parentPropValue = props.propToEdit.value as Record<string, unknown>;
-        const descriptors = "elements" in props.propToEdit.typeDescriptor! ? 
+        const descriptors: ElementPropDescriptor[] = "elements" in props.propToEdit.typeDescriptor! ? 
                 Object.entries(parentPropValue).map(([key, value]) => 
                 {
                     return {
@@ -295,7 +295,7 @@
                         <span class="material-symbols-outlined">add</span>
                     </button>
                 </div>
-                <button v-else-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light" 
+                <button v-else-if="propToEdit.isDeletable" type="button" class="btn btn-sm btn-outline-light" 
                         title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
                     <span class="material-symbols-outlined">close</span>
                 </button>
