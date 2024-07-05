@@ -238,9 +238,6 @@ type Validator = ((value: unknown, props: Record<string, unknown>) => boolean) &
     localizedValidValues?: string[],
 };
 
-export type ArrayLikeTypeDescriptor = {elements: DrawingElementClassProp}
-export type RecordLikeTypeDescriptor = {subprops: DrawingElementClassProps}
-
 export type PropTypeDescriptor = 
     {subprops: DrawingElementClassProps} | 
     {elements: DrawingElementClassProp}

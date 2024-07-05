@@ -63,7 +63,7 @@
     });
 
     const emit = defineEmits<{
-        (e: "add-subprop", parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"|"object"): void,
+        (e: "add-subprop", parentProp: ElementPropDescriptor): void,
         (e: "copy-to-clipboard", data: string): void,
     }>();
 
@@ -118,6 +118,7 @@
                         required: false,
                         isExpanded: false,
                         parentPropDescriptor: props.propToEdit,
+                        isDeletable: true,
                     }
                 }) 
             :
@@ -130,11 +131,16 @@
                         required: false,
                         isExpanded: false,
                         parentPropDescriptor: props.propToEdit,
+                        isDeletable: false,
                     }
                 })
             ;
         return descriptors.sort((p1, p2) => collateSubprops(p1.name, p2.name));
     })//childSubpropDescriptors
+
+
+    const withDynamicChildren = props.propToEdit.typeDescriptor && "elements" in props.propToEdit.typeDescriptor;
+
 
     /** Builds the model object for the value of the prop being edited  */
     const subpropModel = computed({
@@ -205,11 +211,10 @@
     /**
      * Bubbles a descendant "add-subprop" event
      * @param parentProp A property to add subprop to
-     * @param type A new subprop type
      */
-    function onDescendantAddSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"|"object")
+    function onDescendantAddSubprop(parentProp: ElementPropDescriptor)
     {
-        emit("add-subprop", parentProp, type);
+        emit("add-subprop", parentProp);
     }//onDescendantAddSubprop
 
     const cbColorDefined = ref<HTMLInputElement>();
@@ -281,20 +286,14 @@
                     </button>
                 </div>
                 <div v-if="propToEdit.type === Object" class="btn-group">
-                    <button v-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light" 
+                    <button v-if="propToEdit.isDeletable" type="button" class="btn btn-sm btn-outline-light" 
                             title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
                         <span class="material-symbols-outlined">close</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-light dropdown-toggle" 
-                            data-bs-toggle="dropdown" title="Add subproperty">
+                    <button v-if="withDynamicChildren" type="button" class="btn btn-sm btn-outline-light" 
+                            title="Add subproperty" @click="emit('add-subprop', propToEdit)">
                         <span class="material-symbols-outlined">add</span>
                     </button>
-                    <ul class="dropdown-menu">
-                        <li v-for="type in ['string', 'number', 'boolean', 'object']" :key="`add-${type}-subprop`" 
-                            style="cursor: pointer;">
-                            <a class="dropdown-item" @click="emit('add-subprop', propToEdit, type as any)">{{type}}</a>
-                        </li>
-                    </ul>
                 </div>
                 <button v-else-if="subpropLevel" type="button" class="btn btn-sm btn-outline-light" 
                         title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">

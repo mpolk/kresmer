@@ -14,13 +14,14 @@
              NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
-    import { DrawingElementClassProp } from 'kresmer/dist/DrawingElement/DrawingElementClass';
+    import { DrawingElementClassProp, PropTypeDescriptor } from 'kresmer/dist/DrawingElement/DrawingElementClass';
 
     export interface ElementPropDescriptor extends DrawingElementClassProp {
         name: string,
         value: unknown,
         parentPropDescriptor?: ElementPropDescriptor,
         isExpanded: boolean,
+        isDeletable: boolean,
     }//ElementPropDescriptor
 
     export const ikExpansionTrigger = Symbol() as InjectionKey<Ref<ElementPropDescriptor|undefined>>;
@@ -166,7 +167,7 @@ Continue?`)) {
             .map((name): ElementPropDescriptor => 
                 {
                     const cl = _class.props[name];
-                    return {...cl, name, value: clone(elementToEdit.props[name]), isExpanded: false}
+                    return {...cl, name, value: clone(elementToEdit.props[name]), isExpanded: false, isDeletable: false}
                 })
             .sort((p1, p2) => 
                 {
@@ -278,12 +279,10 @@ Continue?`)) {
     /**
      * Adds a new subprop (field) to the given pop
      * @param parentProp A prop to add the subprop to
-     * @param type A type of the new subprop
      */
-     function addSubprop(parentProp: ElementPropDescriptor, type: "string"|"number"|"boolean"|"object")
+     function addSubprop(parentProp: ElementPropDescriptor)
     {
         propToAddSubpropTo.value = parentProp;
-        newSubpropType.value = type;
         dlgNewSubprop.show();
     }//addSubprop
 
@@ -305,20 +304,8 @@ Continue?`)) {
             return;
         }//if
 
-        switch (newSubpropType.value) {
-            case "string":
-                parentPropValue[newSubpropName] = "";
-                break;
-            case "number":
-                parentPropValue[newSubpropName] = 0;
-                break;
-            case "boolean":
-                parentPropValue[newSubpropName] = false;
-                break;
-            case "object":
-                parentPropValue[newSubpropName] = {};
-                break;
-        }//switch
+        const newSubpropDef = (propToAddSubpropTo.value?.typeDescriptor as Extract<PropTypeDescriptor, {elements: unknown}>).elements;
+        parentPropValue[newSubpropName] = makeInitialSubpropValue(newSubpropDef);
 
         dlgNewSubprop.hide();
         expansionTrigger.value = propToAddSubpropTo.value!;
@@ -328,12 +315,28 @@ Continue?`)) {
         });
     }//completeAddingSubprop
 
+
+    function makeInitialSubpropValue(newSubpropDef: DrawingElementClassProp)
+    {
+        switch (newSubpropDef.type) {
+            case String:
+                return "";
+            case Number:
+            return 0;
+            case Boolean:
+                return false;
+            case Object: {
+                return {};
+            }
+        }//switch
+    }//makeInitialSubpropValue
+
+
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref<ElementPropDescriptor>();
     // eslint-disable-next-line prefer-const
     let newSubpropName = "";
     const inpNewSubpropName = ref<HTMLInputElement>();
-    const newSubpropType = ref<"string"|"number"|"boolean"|"object">("string");
 
     defineExpose({show});
 </script>
@@ -399,7 +402,7 @@ Continue?`)) {
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header">
-                    Adding a&nbsp;<strong>{{ newSubpropType }}</strong>&nbsp;field to the "{{ propToAddSubpropTo?.name }}" prop
+                    Adding a new field to the "{{ propToAddSubpropTo?.name }}" prop
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
