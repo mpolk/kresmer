@@ -13,7 +13,7 @@
     import { ElementPropDescriptor, ikClipboardContent, ikExpansionTrigger } from './ElementPropsSidebar.vue';
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
     import { selectOrLoadGraphicsFile } from './renderer-main';
-    import { PropTypeDescriptor } from 'kresmer/dist/DrawingElement/DrawingElementClass';
+    import { PropTypeDescriptor } from 'kresmer';
 
     export default {
         name: "ElementPropEditor",

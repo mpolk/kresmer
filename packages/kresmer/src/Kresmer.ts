@@ -1460,7 +1460,7 @@ export const enum LibDataPriority {
 
 // Re-export child classes to API
 export {default as DrawingElement } from "./DrawingElement/DrawingElement";
-export {default as DrawingElementClass, DrawingElementPropCategory } from "./DrawingElement/DrawingElementClass";
+export {default as DrawingElementClass, DrawingElementPropCategory, type PropTypeDescriptor} from "./DrawingElement/DrawingElementClass";
 export type {DrawingElementData} from "./DrawingElement/DrawingElement";
 export {default as NetworkComponent} from "./NetworkComponent/NetworkComponent";
 export {default as NetworkComponentClass} from "./NetworkComponent/NetworkComponentClass";
