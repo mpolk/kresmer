@@ -325,9 +325,12 @@ Continue?`)) {
             return 0;
             case Boolean:
                 return false;
-            case Object: {
-                return {};
-            }
+            case Object:
+                if ("elements" in newSubpropDef.typeDescriptor!)
+                    return {};
+                else 
+                    return Object.keys(newSubpropDef.typeDescriptor!.subprops)
+                        .reduce((accum: Record<string, unknown>, key) => { accum[key] = undefined; return accum; }, {})
         }//switch
     }//makeInitialSubpropValue
 

@@ -120,7 +120,7 @@
                         parentPropDescriptor: props.propToEdit,
                         isDeletable: true,
                     }
-                }) 
+                }).sort((p1, p2) => collateSubprops(p1.name, p2.name))
             :
                 Object.entries(props.propToEdit.typeDescriptor!.subprops).map(([name, type]) => 
                 {
@@ -135,7 +135,7 @@
                     }
                 })
             ;
-        return descriptors.sort((p1, p2) => collateSubprops(p1.name, p2.name));
+        return descriptors;
     })//childSubpropDescriptors
 
 
@@ -285,20 +285,16 @@
                         </span>
                     </button>
                 </div>
-                <div v-if="propToEdit.type === Object" class="btn-group">
+                <div class="btn-group">
                     <button v-if="propToEdit.isDeletable" type="button" class="btn btn-sm btn-outline-light" 
                             title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
                         <span class="material-symbols-outlined">close</span>
                     </button>
-                    <button v-if="withDynamicChildren" type="button" class="btn btn-sm btn-outline-light" 
+                    <button v-if="propToEdit.type === Object && withDynamicChildren" type="button" class="btn btn-sm btn-outline-light" 
                             title="Add subproperty" @click="emit('add-subprop', propToEdit)">
                         <span class="material-symbols-outlined">add</span>
                     </button>
                 </div>
-                <button v-else-if="propToEdit.isDeletable" type="button" class="btn btn-sm btn-outline-light" 
-                        title="Delete subproperty" @click="deleteSubprop(propToEdit.parentPropDescriptor!.name, propToEdit.name)">
-                    <span class="material-symbols-outlined">close</span>
-                </button>
             </div>
         </td>
         <!-- Prop value -->
