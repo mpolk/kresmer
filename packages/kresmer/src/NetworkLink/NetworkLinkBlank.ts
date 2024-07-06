@@ -12,6 +12,7 @@ import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoi
 import NetworkLinkClass, { LinkBundleClass } from "./NetworkLinkClass";
 import { Position } from "../Transform/Transform";
 import { LinkVertexInitParams } from "./LinkVertex";
+import MouseEventCapture from "../MouseEventCapture";
 
 /**
  * Network Link Blank (temporary object for a link creation)
@@ -29,24 +30,31 @@ export default class NetworkLinkBlank {
 
     protected readonly _kresmer: WeakRef<Kresmer>;
     get kresmer() { return this._kresmer.deref()! }
+
+    protected mouseCaptureTarget?: SVGElement;
+    _setMouseCaptureTarget(el: SVGElement)
+    {
+        this.mouseCaptureTarget = el;
+    }//_setMouseCaptureTarget
     
     readonly end = reactive<Position>({x: 0, y: 0});
-
-    public extrude(event: MouseEvent)
-    {
-        ({x: this.end.x, y: this.end.y} = this.kresmer.applyScreenCTM(event));
-    }//extrude
-
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public onMouseDown(_event: MouseEvent)
     {
         this.kresmer.deselectAllElements(this);
         this.kresmer._showAllConnectionPoints.value = true;
+        MouseEventCapture.start(this.mouseCaptureTarget!);
     }//onMouseDown
+
+    public drag(event: MouseEvent)
+    {
+        ({x: this.end.x, y: this.end.y} = this.kresmer.applyScreenCTM(event));
+    }//drag
 
     public onMouseUp(event: MouseEvent)
     {
+        MouseEventCapture.release();
         this.kresmer._showAllConnectionPoints.value = false;
         const elementsUnderCursor = document.elementsFromPoint(event.x, event.y);
         for (const element of elementsUnderCursor) {

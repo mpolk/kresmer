@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { PropType, computed } from 'vue';
+    import { PropType, computed, onMounted, ref } from 'vue';
     import NetworkLinkBlank from './NetworkLinkBlank';
 
     const props = defineProps({
@@ -18,10 +18,13 @@
         return props.model.start.conn ? props.model.start.conn.coords : props.model.start.pos!;
     })//start
 
+    const mouseCaptureTarget = ref<SVGElement>();
+    onMounted(() => {props.model._setMouseCaptureTarget(mouseCaptureTarget.value!)});
+
     function onMouseMove(event: MouseEvent)
     {
         if (event.buttons & 1) {
-            props.model.extrude(event);
+            props.model.drag(event);
         }//if
     }//onMouseMove
 
@@ -50,7 +53,7 @@
                 />
             <circle class="blank origin" :cx="start.x" :cy="start.y" r="20" />
             <circle class="blank origin-center" :cx="start.x" :cy="start.y" r="4" />
-            <circle class="blank header" style="cursor: move;"
+            <circle class="blank header" style="cursor: move;" ref="mouseCaptureTarget"
                 :cx="model.end.x" :cy="model.end.y" r="20"
                 @mousemove.self="onMouseMove($event)"
                 @mousedown="onMouseDown($event)"
