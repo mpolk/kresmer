@@ -10,6 +10,7 @@
     import { onMounted, ref, watch, nextTick } from 'vue';
     import Kresmer, { NetworkComponent, NetworkComponentClass, NetworkComponentController } from 'kresmer';
     import DrawingElementClassSelectionSidebar from './DrawingElementClassSelectionSidebar.vue';
+    import { kresmer } from './renderer-main';
 
     export default {
         name: "ComponentClassSelectionSidebar",
@@ -65,7 +66,7 @@
     async function show()
     {
         krePreview = base.init();
-        return base.show() as Promise<NetworkComponentClass>;
+        return base.show(Array.from(kresmer.getRegisteredComponentClasses())) as Promise<NetworkComponentClass>;
     }//show
 
     defineExpose({show});

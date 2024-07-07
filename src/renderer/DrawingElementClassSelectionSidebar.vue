@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *  A sidebar for component class selection wnen creating a new component
+ *  A sidebar for drawing element class selection wnen creating a new one
 <*************************************************************************** -->
 
 <script lang="ts">
@@ -16,18 +16,18 @@
     import { onMounted, ref, watch, reactive } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import Kresmer, { DrawingElementClass } from 'kresmer';
-    import { kresmer } from './renderer-main';
 
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
-    const selComponentClass = ref<HTMLSelectElement>();
+    const selElementClass = ref<HTMLSelectElement>();
     const selCategory = ref<HTMLSelectElement>();
     const btnOk = ref<HTMLButtonElement>();
     const divPreview = ref<HTMLDivElement>();
     let resolvePromise!: (result: DrawingElementClass|null) => void;
 
     const result = ref<DrawingElementClass|null>(null);
-    const componentClasses = ref<{name: string, _class: DrawingElementClass}[]>([]);
+    let allClasses: Array<[string, DrawingElementClass]>;
+    const classesInCategory = ref<{name: string, _class: DrawingElementClass}[]>([]);
     const categories = ref<string[]>([]);
     const localizedCategories = reactive(new Map<string, string|undefined>);
     const selectedCategory = ref<string>();
@@ -48,12 +48,12 @@
 
     function onCategorySelection()
     {
-        componentClasses.value = Array.from(kresmer.getRegisteredComponentClasses())
+        classesInCategory.value = Array.from(allClasses)
                 .map(([name, _class]) => {return {name, _class}})
                 .sort((c1, c2) => c1.name < c2.name ? -1 : c1.name > c2.name ? 1 : 0)
                 ;
-        componentClasses.value = componentClasses.value.filter(({_class}) => (_class.category ?? "") == selectedCategory.value);
-        result.value = componentClasses.value[0]._class;
+        classesInCategory.value = classesInCategory.value.filter(({_class}) => (_class.category ?? "") == selectedCategory.value);
+        result.value = classesInCategory.value[0]._class;
     }//onCategorySelection
 
 
@@ -61,20 +61,23 @@
         if (!krePreview) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: 'static'});
             krePreview = new Kresmer(divPreview.value!, {isEditable: false, logicalWidth: previewWidth, logicalHeight: previewHeight});
-            for (const [_, _class] of kresmer.getRegisteredComponentClasses()) {
-                krePreview.registerDrawingElementClass(_class);
-            }//for
         }//if
 
         return krePreview;
     }//init
 
 
-    async function show()
+    async function show(classesToChooseFrom: Array<[string, DrawingElementClass]>)
     {
+        allClasses = classesToChooseFrom;
+
+        for (const [_, _class] of allClasses) {
+            krePreview.registerDrawingElementClass(_class);
+        }//for
+
         const categorySet = new Set<string>();
         let haveUncategorizedClasses = false;
-        for (const [_, _class] of kresmer.getRegisteredComponentClasses()) {
+        for (const [_, _class] of allClasses) {
             if (!_class.category)
                 haveUncategorizedClasses = true;
             else if (!_class.category.startsWith(".")) {
@@ -115,7 +118,7 @@
 <template>
     <div class="offcanvas offcanvas-end" tabindex="-1" ref="rootDiv">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title fs-5">Choose a new component class...</h5>
+                    <h5 class="offcanvas-title fs-5">Choose a new element class...</h5>
                     <button type="button" class="btn-close" @click="close(null)"></button>
                 </div>
                 <form @submit.prevent="">
@@ -129,9 +132,9 @@
                                 </select>
                             </div>
                             <div class="col">
-                                <select class="form-select" v-model="result" ref="selComponentClass" 
+                                <select class="form-select" v-model="result" ref="selElementClass" 
                                         :size="selectSize" @dblclick="submit">
-                                    <option v-for="cl in componentClasses" 
+                                    <option v-for="cl in classesInCategory" 
                                         :value="cl._class" 
                                         :key="`class[${cl.name}]`">
                                         {{ cl._class.localizedName || cl.name }}
