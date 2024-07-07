@@ -38,7 +38,8 @@ import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
 import DrawingArea, { DrawingAreaMap } from "./DrawingArea/DrawingArea";
-import DrawingAreaClass from "DrawingArea/DrawingAreaClass";
+import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
+import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 
 
 /**
@@ -522,7 +523,7 @@ export default class Kresmer extends KresmerEventHooks {
     }//getRegisteredLinkClasses
 
     /**
-     * Register a Area Class in Kresmer
+     * Register an Area Class in Kresmer
      * @param areaClass A class to register
      * @returns Kresmer itself
      */
@@ -559,6 +560,23 @@ export default class Kresmer extends KresmerEventHooks {
     {
         return this.registeredAreaClasses.entries();
     }//getRegisteredAreaClasses
+
+
+    /**
+     * Registers any drawing element class (either a component, a link or an area)
+     * @param clazz Clazz to register
+     * @returns the Kremser itself (for chaining)
+     */
+    public registerDrawingElementClass(clazz: DrawingElementClass)
+    {
+        if (clazz instanceof NetworkComponentClass)
+            this.registerNetworkComponentClass(clazz);
+        else if (clazz instanceof NetworkLinkClass)
+            this.registerLinkClass(clazz);
+        else if (clazz instanceof DrawingAreaClass)
+            this.registerAreaClass(clazz);
+        return this;
+    }//registerDrawingElementClass
 
 
     private readonly libraryLoader = new LibraryLoader(this);
