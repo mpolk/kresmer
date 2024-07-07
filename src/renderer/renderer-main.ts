@@ -131,7 +131,7 @@ const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsS
     InstanceType<typeof AppSettingsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
-const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).mount("#dlgLinkClassSelection") as
+const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).mount("#linkClassSelectionSidebar") as
     InstanceType<typeof LinkClassSelectionSidebar>;
 const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionSidebar).mount("#componentClassSelectionSidebar") as
     InstanceType<typeof ComponentClassSelectionSidebar>;

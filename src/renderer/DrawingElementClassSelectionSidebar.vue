@@ -116,7 +116,7 @@
 </script>
 
 <template>
-    <div class="offcanvas offcanvas-end" tabindex="-1" ref="rootDiv">
+    <div class="offcanvas offcanvas-end w-50" style="max-width: 600px;" tabindex="-1" ref="rootDiv">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title fs-5">Choose a new element class...</h5>
                     <button type="button" class="btn-close" @click="close(null)"></button>

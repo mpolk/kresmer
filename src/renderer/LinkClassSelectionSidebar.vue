@@ -49,6 +49,7 @@
             });
             link.name = _class.name;
             krePreview.addLink(link);
+            link.selectThis();
         }//if
     }//showPreview
 
