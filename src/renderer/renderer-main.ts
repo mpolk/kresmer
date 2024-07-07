@@ -26,13 +26,13 @@ import MessageBox from './message-box.vue';
 import DrawingMergeDialog from './DrawingMergeDialog.vue';
 import { DrawingMergeDialogResult } from './DrawingMergeDialog';
 import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue';
-import LinkClassSelectionDialog from './LinkClassSelectionDialog.vue';
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import AboutDialog from './AboutDialog.vue';
 import { AppSettings } from '../main/main';
 import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
 import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 import { URLType } from './URLType';
+import LinkClassSelectionSidebar from './LinkClassSelectionSidebar.vue';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -131,8 +131,8 @@ const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsS
     InstanceType<typeof AppSettingsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
-const vueLinkClassSelectionDialog = createApp(LinkClassSelectionDialog).mount("#dlgLinkClassSelection") as
-    InstanceType<typeof LinkClassSelectionDialog>;
+const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).mount("#dlgLinkClassSelection") as
+    InstanceType<typeof LinkClassSelectionSidebar>;
 const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionSidebar).mount("#componentClassSelectionSidebar") as
     InstanceType<typeof ComponentClassSelectionSidebar>;
 const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
@@ -560,7 +560,7 @@ appCommandExecutor.on("align-vertices", (linkID?: number) =>
 
 appCommandExecutor.on("connect-connection-point", async (fromElementID: number, fromConnectionPointName: string|number) =>
 {
-    const linkClass = await vueLinkClassSelectionDialog.show(false);
+    const linkClass = await vueLinkClassSelectionSidebar.show(false);
     console.debug(`link-class = ${linkClass?.name}`);
 
     if (linkClass) {
@@ -572,7 +572,7 @@ appCommandExecutor.on("connect-connection-point", async (fromElementID: number, 
 
 appCommandExecutor.on("create-link", async (mousePos?: Position) =>
 {
-    const linkClass = await vueLinkClassSelectionDialog.show(false);
+    const linkClass = await vueLinkClassSelectionSidebar.show(false);
     if (linkClass) {
         const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
         kresmer.edAPI.startLinkCreation(linkClass, {pos});
@@ -581,7 +581,7 @@ appCommandExecutor.on("create-link", async (mousePos?: Position) =>
 
 appCommandExecutor.on("create-link-bundle", async (mousePos?: Position) =>
 {
-    const linkClass = await vueLinkClassSelectionDialog.show(true);
+    const linkClass = await vueLinkClassSelectionSidebar.show(true);
     if (linkClass) {
         const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
         kresmer.edAPI.startLinkCreation(linkClass, {pos});
