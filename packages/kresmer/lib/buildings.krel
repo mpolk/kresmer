@@ -162,7 +162,7 @@
         |++++++++++++h
         +============+
      -->
-    <component-class name="I-Building" category="Buildings">
+    <component-class name="I-Building" category="Buildings" version="2024070700">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
@@ -181,7 +181,7 @@
         </template>
         <props>
             <prop name="w" type="Number" default="200"/>
-            <prop name="nEntrances" type="Number" category="Construction" description="The number of entrances" />
+            <prop name="nEntrances" type="Number" default="4" category="Construction" description="The number of entrances" />
             <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
             <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
             <prop name="nFloorsPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="w"/>
