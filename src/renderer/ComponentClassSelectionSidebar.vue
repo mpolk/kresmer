@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { onMounted, ref, watch, nextTick } from 'vue';
+    import { onMounted, ref, nextTick } from 'vue';
     import Kresmer, { NetworkComponent, NetworkComponentClass, NetworkComponentController } from 'kresmer';
     import DrawingElementClassSelectionSidebar from './DrawingElementClassSelectionSidebar.vue';
     import { kresmer } from './renderer-main';
@@ -27,11 +27,6 @@
     onMounted(() =>
     {
         base = baseSidebar.value!;
-        base.rootDiv!.addEventListener('shown.bs.offcanvas', () => {
-            showPreview();
-            // selCategory.value!.focus();
-        });
-        watch(() => base.result, showPreview);
     })//mounted
 
 
@@ -74,6 +69,6 @@
 </script>
 
 <template>
-    <DrawingElementClassSelectionSidebar ref="baseSidebar" />
+    <DrawingElementClassSelectionSidebar ref="baseSidebar" @show-preview="showPreview"/>
 </template>
 

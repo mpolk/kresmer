@@ -32,7 +32,6 @@
     const localizedCategories = reactive(new Map<string, string|undefined>);
     const selectedCategory = ref<string>();
 
-    const selectSize = 10;
     const previewWidth = 400;
     const previewHeight = 400;
     let krePreview: Kresmer;
@@ -41,10 +40,16 @@
     {
         rootDiv.value!.addEventListener('shown.bs.offcanvas', () => {
             selCategory.value!.focus();
+            emit("show-preview");
         });
     })//mounted
 
+    const emit = defineEmits<{
+        (event: "show-preview"): void,
+    }>();
+
     watch(selectedCategory, onCategorySelection);
+    watch(result, () => {emit("show-preview")});
 
     function onCategorySelection()
     {
@@ -116,7 +121,7 @@
 </script>
 
 <template>
-    <div class="offcanvas offcanvas-end w-50" style="max-width: 600px;" tabindex="-1" ref="rootDiv">
+    <div class="offcanvas offcanvas-end" style="max-width: 600px;" tabindex="-1" ref="rootDiv">
                 <div class="offcanvas-header">
                     <h5 class="offcanvas-title fs-5">Choose a new element class...</h5>
                     <button type="button" class="btn-close" @click="close(null)"></button>
@@ -125,15 +130,17 @@
                     <div class="offcanvas-body">
                         <div class="row">
                             <div class="col">
-                                <select class="form-select" v-model="selectedCategory" :size="selectSize"  ref="selCategory">
+                                <select class="form-select" v-model="selectedCategory" :size="6"  ref="selCategory">
                                     <option v-for="cat in categories" :value="cat" :key="`category-${cat}`">
                                         {{ localizedCategories.get(cat) || cat }}
                                     </option>
                                 </select>
                             </div>
-                            <div class="col">
+                        </div>
+                        <div class="row mt-2">
+                            <div class="col ms-4">
                                 <select class="form-select" v-model="result" ref="selElementClass" 
-                                        :size="selectSize" @dblclick="submit">
+                                        :size="8" @dblclick="submit">
                                     <option v-for="cl in classesInCategory" 
                                         :value="cl._class" 
                                         :key="`class[${cl.name}]`">

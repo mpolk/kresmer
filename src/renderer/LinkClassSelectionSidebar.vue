@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { onMounted, ref, watch } from 'vue';
+    import { onMounted, ref } from 'vue';
     import Kresmer, { NetworkLink, NetworkLinkClass, LinkBundleClass } from 'kresmer';
     import DrawingElementClassSelectionSidebar from './DrawingElementClassSelectionSidebar.vue';
     import { kresmer } from './renderer-main';
@@ -27,11 +27,6 @@
     onMounted(() =>
     {
         base = baseSidebar.value!;
-        base.rootDiv!.addEventListener('shown.bs.offcanvas', () => {
-            showPreview();
-            // selCategory.value!.focus();
-        });
-        watch(() => base.result, showPreview);
     })//mounted
 
 
@@ -57,7 +52,9 @@
     async function show(forBundle: boolean)
     {
         krePreview = base.init();
-        return base.show(Array.from([...kresmer.getRegisteredLinkClasses()].filter(([name, _class]) => !_class.isAbstract && (_class instanceof LinkBundleClass == forBundle)))) as Promise<NetworkLinkClass>;
+        const classes = Array.from([...kresmer.getRegisteredLinkClasses()]
+            .filter(([name, _class]) => !_class.isAbstract && (_class instanceof LinkBundleClass == forBundle)));
+        return base.show(classes) as Promise<NetworkLinkClass>;
     }//show
 
     defineExpose({show});
@@ -65,6 +62,6 @@
 </script>
 
 <template>
-    <DrawingElementClassSelectionSidebar ref="baseSidebar" />
+    <DrawingElementClassSelectionSidebar ref="baseSidebar" @show-preview="showPreview"/>
 </template>
 
