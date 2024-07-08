@@ -9,7 +9,7 @@
  *        This library contains building templates for the site plans
 <*************************************************************************** -->
 
-<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:uk="uk">
     <import library="stdlib" />
 
     <!-- Abstract base building -->
@@ -162,7 +162,7 @@
         |++++++++++++h
         +============+
      -->
-    <component-class name="I-Building" category="Buildings" version="2024070700">
+    <component-class name="I-Building" category="Buildings" uk:name="I-Будинок" uk:category="Будинки" version="2024070800">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
@@ -213,7 +213,7 @@
         |++++|
         +=w1=+
      -->
-     <component-class name="L-Building" category="Buildings" version="2024062900">
+     <component-class name="L-Building" category="Buildings" uk:name="L-Будинок" uk:category="Будинки" version="2024070800">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
