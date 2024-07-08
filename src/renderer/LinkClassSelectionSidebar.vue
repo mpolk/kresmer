@@ -38,13 +38,26 @@
 
         if (base.result) {
             const _class = base.result as NetworkLinkClass;
-            const link = new NetworkLink(krePreview, _class, {
-                from: {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.5}},
-                to:   {pos: {x: base.previewWidth*0.8, y: base.previewHeight*0.5}},
+            const link1 = new NetworkLink(krePreview, _class, {
+                from: {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.2}},
+                vertices: [
+                    {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.2}},
+                    {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.6}},
+                ],
+                to:   {pos: {x: base.previewWidth*0.8, y: base.previewHeight*0.6}},
             });
-            link.name = _class.name;
-            krePreview.addLink(link);
-            link.selectThis();
+            const link2 = new NetworkLink(krePreview, _class, {
+                from: {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.4}},
+                vertices: [
+                    {pos: {x: base.previewWidth*0.4, y: base.previewHeight*0.4}},
+                    {pos: {x: base.previewWidth*0.4, y: base.previewHeight*0.8}},
+                ],
+                to:   {pos: {x: base.previewWidth*0.8, y: base.previewHeight*0.8}},
+            });
+            link1.name = _class.name;
+            krePreview.addLink(link1);
+            krePreview.addLink(link2);
+            link2.selectThis();
         }//if
     }//showPreview
 
