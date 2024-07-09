@@ -27,9 +27,9 @@
     "app:build": "electron-builder -lw",
     "preapp:preview": "run-s build-component vite:build ts",
     "app:preview": "electron . ${npm_package_config_args}",
-    "wdio": "wdio run ./wdio.conf.ts",
     "cypress:run": "npm run cypress:run -w kresmer",
-    "cypress:open": "npm run cypress:open -w kresmer"
+    "cypress:open": "npm run cypress:open -w kresmer",
+    "typedoc": "typedoc --tsconfig packages/kresmer/tsconfig.json packages/kresmer/src/Kresmer.ts"
   },
   "build": {
     "appId": "kresmer",
@@ -108,6 +108,7 @@
     "sass": "^1.54.3",
     "start-server-and-test": "^2.0.0",
     "ts-node": "^10.9.2",
+    "typedoc": "^0.26.3",
     "typescript": "^5.0.3",
     "vite": "^5.0.0",
     "vite-plugin-css-injected-by-js": "^3.0.1",

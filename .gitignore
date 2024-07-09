@@ -40,3 +40,5 @@ network-core.svg
 **/cypress/videos/**
 **/cypress/snapshots/**
 
+# Generated docs
+docs/**
