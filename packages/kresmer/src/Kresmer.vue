@@ -290,7 +290,6 @@
                 >
             <component :is="componentController.component.vueName" v-bind="componentController.component.props"
                    :component-id="componentController.component.id" :name="componentController.component.name"
-                   :highlighted-connection-id="componentController.component.highlightedConnectionID"
                 >
                 {{componentController.component.content}}
             </component>

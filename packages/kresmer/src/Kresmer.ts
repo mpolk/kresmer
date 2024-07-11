@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick, Prop } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick, Prop, inject } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
@@ -427,14 +427,17 @@ export default class Kresmer extends KresmerEventHooks {
                 const cp$ = computedProps, fn$ = functions; // aliases for more convenient usage outside of tepmlates
                 const super$ = computed(() => superFunctions);
 
-                return {...cp$, ...fn$, super$};
+                const injects = {
+                    highlightedConnectionId: inject(DrawingElement.ikHighlightedConnectionID),
+                }//injects
+
+                return {...cp$, ...fn$, super$, ...injects};
             },
             template: componentClass.template,
             props: {
                 ...componentClass.props,
                 componentId: {type: Number},
                 name: {type: [String, Number]},
-                highlightedConnectionId: {type: Object},
             },
         // ...and the one for its adapter (used for component-in-component embedding)
         }).component(componentClass.adapterVueName, {

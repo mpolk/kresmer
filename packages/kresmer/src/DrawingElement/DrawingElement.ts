@@ -238,6 +238,7 @@ export default abstract class DrawingElement {
     /** References to the central collections of this type of elements (for internal use)*/
     abstract get _byNameIndex(): Map<string, number>;
 
+    static readonly ikHighlightedConnectionID = Symbol() as InjectionKey<{value: string|undefined}>;
     readonly highlightedConnectionID = reactive<{value: string|undefined}>({value: undefined});
 
     propagateLinkHighlighting(connectionID: string, isHighlighted: boolean)
