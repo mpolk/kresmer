@@ -35,7 +35,7 @@
     const trBox = ref<InstanceType<typeof TransformBox>>()!;
     provide(NetworkComponent.injectionKey, props.controller.component);
     provide(DrawingElement.ikHostElement, props.controller.component);
-    provide(DrawingElement.ikHighlightedConnectionID, props.controller.component.highlightedConnectionID);
+    provide(DrawingElement.ikHighlightedConnection, props.controller.component.highlightedConnection);
 
     const applyTransform = ref(false);
     const bBox = ref<SVGRect>();

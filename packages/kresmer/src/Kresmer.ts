@@ -428,7 +428,7 @@ export default class Kresmer extends KresmerEventHooks {
                 const super$ = computed(() => superFunctions);
 
                 const injects = {
-                    highlightedConnectionId: inject(DrawingElement.ikHighlightedConnectionID),
+                    highlightedConnection: inject(DrawingElement.ikHighlightedConnection),
                 }//injects
 
                 return {...cp$, ...fn$, super$, ...injects};

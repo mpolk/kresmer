@@ -168,7 +168,8 @@
             </text>
             <connection-point name="c" v-bind="cableCPPos" connection-id="out:*"/>
             <template v-for="i in nFibers">
-                <rect v-bind="cellBgPos(i)" class="fiber-label background" v-bind:class="{highlighted: highlightedConnectionId.value == i}"/>
+                <rect v-bind="cellBgPos(i)" class="fiber-label background" 
+                      v-bind:class="{highlighted: highlightedConnection.id == i}"/>
                 <line v-if="i &lt; nFibers" v-bind="cellSepPos(i)" v-bind:stroke="strokeColor"/>
                 <text v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize" class="fiber-label">{{i}}</text>
                 <connection-point v-bind:name="i" v-bind="cellCPPos(i)" v-bind:connection-id="`${i}`"/>
