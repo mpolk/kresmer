@@ -8,7 +8,7 @@
  ***************************************************************************/
 
 import {v4 as uuidV4} from "uuid";
-import { InjectionKey } from "vue";
+import { InjectionKey, reactive } from "vue";
 import Kresmer from "../Kresmer";
 import DrawingElementClass from "./DrawingElementClass";
 import NetworkLink from "../NetworkLink/NetworkLink";
@@ -238,11 +238,14 @@ export default abstract class DrawingElement {
     /** References to the central collections of this type of elements (for internal use)*/
     abstract get _byNameIndex(): Map<string, number>;
 
-    propagateLinkHighlighting(connectionIDs: string[], isHighlighted: boolean)
+    readonly highlightedConnectionID = reactive<{value: string|undefined}>({value: undefined});
+
+    propagateLinkHighlighting(connectionID: string, isHighlighted: boolean)
     {
         for (const cp of this.getConnectionPoints()) {
-            cp.propagateLinkHighlightingOut(connectionIDs, isHighlighted);
+            cp.propagateLinkHighlightingOut(connectionID, isHighlighted);
         }//for
+        this.highlightedConnectionID.value = isHighlighted ? connectionID : undefined;
     }//propagateLinkHighlghting
 }//DrawingElement
 

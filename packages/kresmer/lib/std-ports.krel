@@ -18,7 +18,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Port" category=".ports" version="2024070300">
+    <component-class name="Port" category=".ports" version="2024071100">
         <template>
             <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
             <slot />

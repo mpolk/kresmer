@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024070300"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024071100"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -158,7 +158,7 @@
     </component-class>
 
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024070103">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024071100">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -168,6 +168,7 @@
             </text>
             <connection-point name="c" v-bind="cableCPPos" connection-id="out:*"/>
             <template v-for="i in nFibers">
+                <rect v-bind="cellBgPos(i)" class="fiber-label background" v-bind:class="{highlighted: highlightedConnectionId.value == i}"/>
                 <line v-if="i &lt; nFibers" v-bind="cellSepPos(i)" v-bind:stroke="strokeColor"/>
                 <text v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize" class="fiber-label">{{i}}</text>
                 <connection-point v-bind:name="i" v-bind="cellCPPos(i)" v-bind:connection-id="`${i}`"/>
@@ -281,6 +282,14 @@
                         {x1: c.x + computedProps.cellStep/2,  y1: c.y - computedProps.cellWidth/2, x2: c.x + computedProps.cellStep/2,  y2: c.y + computedProps.cellWidth/2};
                 return pos;
             </function>
+            <function name="cellBgPos" params="i">
+                const c1 = fn$.cellCenter(i-1);
+                const pos =
+                    props.orientation === "left" || props.orientation === "right" ? 
+                        {x: c1.x - computedProps.cellWidth/2, y: c1.y + computedProps.cellStep/2,  width: computedProps.cellWidth, height: computedProps.cellStep} :
+                        {x: c1.x + computedProps.cellStep/2,  y: c1.y - computedProps.cellWidth/2, width: computedProps.cellStep,  height: computedProps.cellWidth};
+                return pos;
+            </function>
             <function name="cellCPPos" params="i">
                 const c = fn$.cellCenter(i);
                 const pos =
@@ -294,6 +303,8 @@
         </functions>
         <style>
             .fiber-label, .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; dominant-baseline: central}
+            .fiber-label.background {fill: none}
+            .fiber-label.background.highlighted {fill: lightblue}
         </style>
     </component-class>
 

@@ -434,6 +434,7 @@ export default class Kresmer extends KresmerEventHooks {
                 ...componentClass.props,
                 componentId: {type: Number},
                 name: {type: [String, Number]},
+                highlightedConnectionId: {type: Object},
             },
         // ...and the one for its adapter (used for component-in-component embedding)
         }).component(componentClass.adapterVueName, {

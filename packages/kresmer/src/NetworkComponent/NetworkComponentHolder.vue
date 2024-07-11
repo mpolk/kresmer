@@ -33,9 +33,7 @@
     const svg = ref<SVGSVGElement>()!;
     const trGroup = ref<SVGGElement>()!;
     const trBox = ref<InstanceType<typeof TransformBox>>()!;
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(NetworkComponent.injectionKey, props.controller.component);
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(DrawingElement.ikHostElement, props.controller.component);
 
     const applyTransform = ref(false);
