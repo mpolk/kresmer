@@ -85,6 +85,9 @@ export default class NetworkComponent extends DrawingElement {
 
     /** A collection of this component connection points indexed by their names */
     private readonly connectionPoints = new Map<string, ConnectionPoint>();
+    getConnectionPoints(): Array<ConnectionPoint> {
+        return [...this.connectionPoints.values()];
+    }//getConnectionPoints
     /** Returns the connection with the given name */
     getConnectionPoint(name: string|number) {return this.connectionPoints.get(String(name))}
     /** Adds a connection point with the given name or replaces the existing one */

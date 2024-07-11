@@ -10,7 +10,7 @@ import { nextTick } from "vue";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import { Position } from "../Transform/Transform";
 import { UnrealizableVertexAlignmentException } from "../KresmerException";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
+import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 import { EditorOperation } from "../UndoStack";
 import MouseEventCapture from "../MouseEventCapture";
 
@@ -27,7 +27,7 @@ export default abstract class Vertex {
     constructor(parentElement: DrawingElementWithVertices, vertexNumber: number, protected initParams?: VertexInitParams) 
     {
         this._parentElement = new WeakRef(parentElement);
-        this.ownConnectionPoint = new ConnectionPointProxy(this.parentElement, this.vertexNumber, 0);
+        this.ownConnectionPoint = new ConnectionPoint(this.parentElement, this.vertexNumber, 0);
         this._vertexNumber = vertexNumber;
         this.ownConnectionPoint.name = String(vertexNumber);
         this._key = parentElement.nextVertexKey++;
@@ -90,7 +90,7 @@ export default abstract class Vertex {
         this.revision++;
     }//updateVue
 
-    public ownConnectionPoint: ConnectionPointProxy;
+    public ownConnectionPoint: ConnectionPoint;
 
     isGoingToBeDragged = false;
     isDragged = false;

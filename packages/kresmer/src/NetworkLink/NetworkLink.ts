@@ -46,11 +46,10 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
             throw new UndefinedLinkClassException({className: _class as string});
         }//if
         super(kresmer, clazz, args);
-        const _this = this as unknown as NetworkLink;
         let i = 0;
-        this.vertices.push(new LinkVertex(_this, i++, args?.from));
-        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(_this, i++, initParams)));
-        this.vertices.push(new LinkVertex(_this, i++, args?.to));
+        this.vertices.push(new LinkVertex(this, i++, args?.from));
+        args?.vertices?.forEach(initParams => this.vertices.push(new LinkVertex(this, i++, initParams)));
+        this.vertices.push(new LinkVertex(this, i++, args?.to));
     }//ctor
 
     declare protected _class: NetworkLinkClass;
@@ -69,7 +68,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     {
         super.isSelected = reallyIs;
         if (this.isHighlighted && !reallyIs) {
-            (this as unknown as NetworkLink).returnFromTop();
+            this.returnFromTop();
             this.isHighlighted = false;
         }//if
     }//isSelected
@@ -79,13 +78,19 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     private _isHighlighted = false
     private _highlightDownlinks = false;
     get isHighlighted() {return this._isHighlighted || this.hasHighlightedUplinks}
+
     set isHighlighted(newValue: boolean) {
+        if (this._isHighlighted === newValue)
+            return;
+        
         this._highlightDownlinks = this._isHighlighted = newValue;
         if (newValue)
-            this.kresmer.highlightedLinks.add(this as unknown as NetworkLink);
+            this.kresmer.highlightedLinks.add(this);
         else
-            this.kresmer.highlightedLinks.delete(this as unknown as NetworkLink);
+            this.kresmer.highlightedLinks.delete(this);
         this.propagateHighlightingUp(newValue, false);
+        this.head.anchor.conn?.propagateLinkHighlightingIn(newValue);
+        this.tail.anchor.conn?.propagateLinkHighlightingIn(newValue);
     }//set isHighlighted
 
     private propagateHighlightingUp(newValue: boolean, updateSelf = true)
@@ -249,13 +254,13 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     {
         this.kresmer.highlightedLinks.forEach(link => link.onMouseLeave());
         this.isHighlighted = true;
-        (this as unknown as NetworkLink).bringToTop();
+        this.bringToTop();
     }//onMouseEnter
 
     public onMouseLeave()
     {
         if (this.isHighlighted && !this.isSelected) {
-            (this as unknown as NetworkLink).returnFromTop();
+            this.returnFromTop();
             this.isHighlighted = false;
         }//if
     }//onMouseLeave

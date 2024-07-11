@@ -37,4 +37,5 @@
   <xs:attribute name="dominant-baseline" />
   <xs:attribute name="preserveAspectRatio" />
   <xs:attribute name="show-tooltip" />
+  <xs:attribute name="connection-id" />
 </xs:schema>

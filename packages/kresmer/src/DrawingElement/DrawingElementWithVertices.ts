@@ -8,11 +8,15 @@
 
 import DrawingElement from "./DrawingElement";
 import withVertices from "../Vertex/withVertices";
-import ConnectionPointProxy from "../ConnectionPoint/ConnectionPoint";
+import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 
 export default abstract class DrawingElementWithVertices extends withVertices(DrawingElement) {
 
-    override getConnectionPoint(name: string | number): ConnectionPointProxy | undefined {
+    override getConnectionPoints(): Array<ConnectionPoint> {
+        return this.vertices.map(v => v.ownConnectionPoint);
+    }//getConnectionPoints
+
+    override getConnectionPoint(name: string | number): ConnectionPoint | undefined {
         const i = Number(name);
         if (i >= 0 && i < this.vertices.length)
             return this.vertices[i].ownConnectionPoint;
@@ -21,7 +25,7 @@ export default abstract class DrawingElementWithVertices extends withVertices(Dr
     }//getConnectionPoint
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    override addConnectionPoint(name: string | number, connectionPoint: ConnectionPointProxy): void {
+    override addConnectionPoint(name: string | number, connectionPoint: ConnectionPoint): void {
         console.error(`"addConnectionPoint(${connectionPoint.name})" can not be called for an element of type ${this.constructor.name}`, this);
     }//addConnectionPoint
 

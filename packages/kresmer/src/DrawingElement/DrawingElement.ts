@@ -100,7 +100,9 @@ export default abstract class DrawingElement {
     /** A symbolic key for the component instance injection */
     static readonly ikHostElement = Symbol() as InjectionKey<DrawingElement>;
 
-    /** Returns the connection with the given name */
+    /** Returns all connection points */
+    abstract getConnectionPoints(): Array<ConnectionPoint>;
+    /** Returns the connection point with the given name */
     abstract getConnectionPoint(name: string|number): ConnectionPoint|undefined;
     /** Adds a connection point with the given name or replaces the existing one */
     abstract addConnectionPoint(name: string|number, connectionPoint: ConnectionPoint): void;
@@ -235,6 +237,13 @@ export default abstract class DrawingElement {
 
     /** References to the central collections of this type of elements (for internal use)*/
     abstract get _byNameIndex(): Map<string, number>;
+
+    propagateLinkHighlighting(connectionIDs: string[], isHighlighted: boolean)
+    {
+        for (const cp of this.getConnectionPoints()) {
+            cp.propagateLinkHighlightingOut(connectionIDs, isHighlighted);
+        }//for
+    }//propagateLinkHighlghting
 }//DrawingElement
 
 

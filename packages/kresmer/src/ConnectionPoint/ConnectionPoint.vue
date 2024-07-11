@@ -22,10 +22,11 @@
         dir: {type: [Number, String], default: 90},
         proxy: {type: Object as PropType<ConnectionPoint>},
         showTooltip: {type: Boolean, default: true},
+        connectionId: {type: String},
     });
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
-    const proxy = props.proxy ?? new ConnectionPoint(hostElement, props.name, props.dir);
+    const proxy = props.proxy ?? new ConnectionPoint(hostElement, props.name, props.dir, props.connectionId);
     if (!props.proxy)
         // eslint-disable-next-line vue/no-setup-props-destructure
         hostElement.addConnectionPoint(props.name, proxy);

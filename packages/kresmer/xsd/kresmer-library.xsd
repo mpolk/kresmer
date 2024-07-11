@@ -279,6 +279,8 @@
                         </xs:attribute>
                         <xs:attribute ref="v-bind:dir" />
                         <xs:attribute ref="v-bind:show-tooltip"/>
+                        <xs:attribute name="connection-id" />
+                        <xs:attribute ref="v-bind:connection-id" />
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="vue-attrs"/>
                         <xs:attribute name="vector-effect"/>

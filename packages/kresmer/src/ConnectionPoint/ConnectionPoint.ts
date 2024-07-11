@@ -22,7 +22,7 @@ export default class ConnectionPoint {
      * @param name The name of the connection point
      * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
      */
-    constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string)
+    constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string, connectionIDs?: string|undefined)
     {
         this._hostElement = new WeakRef(hostElement);
         switch (dir0) {
@@ -34,10 +34,23 @@ export default class ConnectionPoint {
                 this.dir0 = Number(dir0);
         }//switch
         this.dir = this.dir0;
+
+        connectionIDs?.split(/ *, */).map(cid => cid.trim()).forEach(cid => {
+            cid = cid.trim();
+            if (cid.startsWith("in:"))
+                this.connectionIDs.in.push(cid.slice(3));
+            else if (cid.startsWith("out:"))
+                this.connectionIDs.out.push(cid.slice(4));
+            else
+                this.connectionIDs.inout.push(cid);
+        })
+
     }//ctor
 
     private readonly _hostElement: WeakRef<DrawingElement>;
     get hostElement() { return this._hostElement.deref()! }
+
+    readonly connectionIDs: {in: string[], out: string[], inout: string[]} = {in: [], out: [], inout: []};
 
     toString() { 
         const prefix = this.hostElement instanceof NetworkLink ? "-" : "";
@@ -94,7 +107,24 @@ export default class ConnectionPoint {
             this.hostElement.restoreDisconnectedVertices(this);
         }//if
     }//restoreConnectedVertices
-}//ConnectionPointProxy
+
+
+    propagateLinkHighlightingIn(isHighlighted: boolean)
+    {
+        const cids = [...this.connectionIDs.in, ...this.connectionIDs.inout];
+        if (cids.length)
+            this.hostElement.propagateLinkHighlighting(cids, isHighlighted);
+    }//propagateLinkHighlightingIn
+
+
+    propagateLinkHighlightingOut(CIDsToPropagate: string[], isHighlighted: boolean)
+    {
+        const ourCIDs = [...this.connectionIDs.out, ...this.connectionIDs.inout];
+        if (ourCIDs.includes("*") || ourCIDs.some(cid => CIDsToPropagate.includes(cid))) {
+            this.connectedVertices.forEach(v => {v.parentElement.isHighlighted = isHighlighted});
+        }//if
+    }//propagateLinkHighlightingOut
+}//ConnectionPoint
 
 
 export function parseConnectionPointData(connectionPointData: string)
