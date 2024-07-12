@@ -291,6 +291,7 @@
                     <xs:complexType>
                         <xs:group ref="svg-elements" minOccurs="0" maxOccurs="unbounded"/>
                         <xs:attribute ref="v-bind:connection-id" use="required"/>
+                        <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
                 </xs:element>
 

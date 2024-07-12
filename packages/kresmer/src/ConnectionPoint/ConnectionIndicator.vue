@@ -19,20 +19,31 @@
 <script setup lang="ts">
 
     const props = defineProps({
-        connectionId: {type: String, required: true},
+        connectionId: {type: [String, Number], required: true},
     });
 
+    const hostElement = inject(DrawingElement.ikHostElement)!;
     const highlightedConnection = inject(DrawingElement.ikHighlightedConnection)!;
 
     const clazz = computed(() => {
         return {
             highlighted: props.connectionId == highlightedConnection.id,
         }
-    })
+    })//clazz
+
+
+    function onMouseEnter() {
+        hostElement.propagateLinkHighlighting(String(props.connectionId), true);
+    }//onMouseEnter
+
+    function onMouseLeave() {
+        hostElement.propagateLinkHighlighting(String(props.connectionId), false);
+    }//onMouseLeave
+
 </script>
 
 <template>
-    <g :class="clazz">
+    <g :class="clazz" @mouseenter.stop="onMouseEnter" @mouseleave.stop="onMouseLeave">
         <slot />
     </g>
 </template>
