@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024071100"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024071200"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -25,7 +25,9 @@
                         v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" 
                         v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth"
                         >
-                        <rect class="pad" x="0" y="0" width="100%" height="100%" v-bind:class="{highlighted: highlightedConnection.id == i}"/>
+                        <connection-indicator v-bind:connection-id="i">
+                            <rect class="pad" x="0" y="0" width="100%" height="100%"/>
+                        </connection-indicator>
                         <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
                         <template v-else="">
                             <line class="frame" x1="0" y1="0" x2="0" y2="100%"/>
@@ -150,7 +152,7 @@
             .port-label.row3 .pad {filter: saturate(0.85) brightness(0.85)}
             .port-label.row2 .pad {filter: saturate(0.9) brightness(0.9)}
             .port-label.row1 .pad {filter: saturate(0.95) brightness(0.95)}
-            .port-label .pad.highlighted {fill: lightblue}
+            .port-label .highlighted .pad {fill: lightblue}
             .port-label .frame {stroke: #9fd8e5; fill: none}
             .port-label text {fill: #333333; font-family: sans-serif; dominant-baseline: central; }
             .port-label text tspan.description {fill: #675137;}
@@ -159,7 +161,7 @@
     </component-class>
 
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024071100">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024071200">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -169,8 +171,9 @@
             </text>
             <connection-point name="c" v-bind="cableCPPos" connection-id="out:*"/>
             <template v-for="i in nFibers">
-                <rect v-bind="cellBgPos(i)" class="fiber-label background" 
-                      v-bind:class="{highlighted: highlightedConnection.id == i}"/>
+                <connection-indicator v-bind:connection-id="i">
+                    <rect v-bind="cellBgPos(i)" class="fiber-label background" />
+                </connection-indicator>
                 <line v-if="i &lt; nFibers" v-bind="cellSepPos(i)" v-bind:stroke="strokeColor"/>
                 <text v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize" class="fiber-label">{{i}}</text>
                 <connection-point v-bind:name="i" v-bind="cellCPPos(i)" v-bind:connection-id="`${i}`"/>
@@ -306,7 +309,7 @@
         <style>
             .fiber-label, .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; dominant-baseline: central}
             .fiber-label.background {fill: none}
-            .fiber-label.background.highlighted {fill: lightblue}
+            .highlighted .fiber-label.background {fill: lightblue}
         </style>
     </component-class>
 

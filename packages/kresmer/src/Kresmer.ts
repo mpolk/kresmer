@@ -40,6 +40,7 @@ import { BackgroundImageData } from "./BackgroundImageData";
 import DrawingArea, { DrawingAreaMap } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
+import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
 
 
 /**
@@ -103,6 +104,7 @@ export default class Kresmer extends KresmerEventHooks {
             .component("NetworkComponentHolder", NetworkComponentHolderVue)
             .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
             .component("ConnectionPoint", ConnectionPointVue)
+            .component("ConnectionIndicator", ConnectionIndicatorVue)
             .component("AdjustmentRuler", AdjustmentRulerVue)
             ;
         // register the functions that can be used in templates

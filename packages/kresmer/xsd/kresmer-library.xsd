@@ -287,6 +287,13 @@
                     </xs:complexType>
                 </xs:element>
 
+                <xs:element name="connection-indicator" minOccurs="0">
+                    <xs:complexType>
+                        <xs:group ref="svg-elements" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:attribute ref="v-bind:connection-id" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+
                 <xs:element name="adjustment-ruler">
                     <xs:complexType>
                         <xs:attribute name="target-prop" type="xs:string" use="required"/>
