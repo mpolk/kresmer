@@ -289,7 +289,11 @@
 
                 <xs:element name="connection-indicator" minOccurs="0">
                     <xs:complexType>
-                        <xs:group ref="svg-elements" minOccurs="0" maxOccurs="unbounded"/>
+                        <xs:choice minOccurs="0" maxOccurs="unbounded">
+                            <xs:group ref="svg-elements"/>
+                            <xs:element ref="slot"/>
+                            <xs:element ref="template"/>
+                        </xs:choice>
                         <xs:attribute ref="v-bind:connection-id" use="required"/>
                         <xs:attributeGroup ref="vue-attrs"/>
                     </xs:complexType>
