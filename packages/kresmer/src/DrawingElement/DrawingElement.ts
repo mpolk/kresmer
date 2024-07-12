@@ -238,15 +238,21 @@ export default abstract class DrawingElement {
     /** References to the central collections of this type of elements (for internal use)*/
     abstract get _byNameIndex(): Map<string, number>;
 
-    static readonly ikHighlightedConnection = Symbol() as InjectionKey<{id: string|undefined}>;
-    readonly highlightedConnection = reactive<{id: string|undefined}>({id: undefined});
+    static readonly ikHighlightedConnection = Symbol() as InjectionKey<string[]>;
+    readonly highlightedConnections = reactive<string[]>([]);
 
     propagateLinkHighlighting(connectionID: string, isHighlighted: boolean)
     {
         for (const cp of this.getConnectionPoints()) {
             cp.propagateLinkHighlightingOut(connectionID, isHighlighted);
         }//for
-        this.highlightedConnection.id = isHighlighted ? connectionID : undefined;
+        if (isHighlighted)
+            this.highlightedConnections.push(connectionID);
+        else {
+            const i = this.highlightedConnections.indexOf(connectionID);
+            if (i >= 0)
+                this.highlightedConnections.splice(i, 1);
+        }//if
     }//propagateLinkHighlghting
 }//DrawingElement
 
