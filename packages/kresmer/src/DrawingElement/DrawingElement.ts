@@ -72,8 +72,45 @@ export default abstract class DrawingElement {
     readonly props: Record<string, unknown>;
     /** Return the number of props (excluding "name") */
     get propCount() { return Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length;}
-    /** A set of the prop names marking "dynamic" values, i.e. name that came from the DB (back-end) */
-    readonly dynamicPropValues = new Set<string>();
+    /** "Dynamic" prop values, i.e. those that came from the DB (back-end) */
+    readonly dynamicProps = new Map<string, unknown>();
+    /** Synthetic props made by merging the usual "static" props and the "dynamic" ones */
+    get syntheticProps(): Record<string, unknown>
+    {
+        const synProps: Record<string, unknown> = {};
+        for (const key in this.props) {
+            synProps[key] = this.mergePropValues(key, this.props[key], this.dynamicProps.get(key));
+        }//for
+        for (const key of this.dynamicProps.keys()) {
+            if (!(key in this.props))
+                synProps[key] = this.dynamicProps.get(key);
+        }//for
+        return synProps;
+    }//syntheticProps
+
+    private mergePropValues(key: string, p1: unknown, p2: unknown)
+    {
+        if (typeof p2 === "undefined")
+            return p1;
+        if (typeof p2 !== typeof p1 || Array.isArray(p1) !== Array.isArray(p2)) {
+            this.kresmer.raiseError(new KresmerException(
+                `Incompatible types of the "${key}" prop static (${typeof p1}) and dynamic (${typeof p2} values)`));
+            return p1;
+        }//if
+        if (typeof p2 !== "object" || Array.isArray(p2))
+            return p2;
+
+        const sp: Record<string, unknown> = {};
+        for (const k in (<Record<string,unknown>>p1)) {
+            sp[k] = this.mergePropValues(k, (<Record<string,unknown>>p1)[k], (<Record<string,unknown>>p2)[k]);
+        }//for
+        for (const k in (<Record<string,unknown>>p2)) {
+            if (!(k in (<Record<string,unknown>>p1)))
+                sp[k] = (<Record<string,unknown>>p2)[k];
+        }//for
+
+        return sp;
+    }//mergePropValues
 
     private _name: string;
     /** A name for component lookup*/
@@ -171,7 +208,7 @@ export default abstract class DrawingElement {
         if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
             yield `${indent(indentLevel+1)}<props>`;
             for (const propName in this.props) {
-                if (!this.kresmer.saveDynamicPropValuesWithDrawing && this.dynamicPropValues.has(propName))
+                if (!this.kresmer.saveDynamicPropValuesWithDrawing && this.dynamicProps.has(propName))
                     continue;
                 let propValue: string;
                 if (typeof this.props[propName] === "object") {

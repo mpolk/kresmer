@@ -281,14 +281,15 @@
         </template>
 
         <!-- Areas -->
-        <DrawingAreaVue v-for="area in controller.areas.sorted" v-bind="area.props" :key="`area${area.id}`" :model="area" />
+        <DrawingAreaVue v-for="area in controller.areas.sorted" v-bind="area.syntheticProps" :key="`area${area.id}`" 
+            :model="area" />
 
         <!-- Components -->
         <NetworkComponentHolder 
             v-for="componentController in controller.networkComponents.sorted" 
             :key="`networkComponent${componentController.component.id}`" :controller="componentController"
                 >
-            <component :is="componentController.component.vueName" v-bind="componentController.component.props"
+            <component :is="componentController.component.vueName" v-bind="componentController.component.syntheticProps"
                    :component-id="componentController.component.id" :name="componentController.component.name"
                 >
                 {{componentController.component.content}}
@@ -296,7 +297,8 @@
         </NetworkComponentHolder>
 
         <!-- Links -->
-        <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.props" :key="`link${link.id}`" :model="link" />
+        <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.syntheticProps" :key="`link${link.id}`" 
+            :model="link" />
         <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
     </svg>
 </template>
