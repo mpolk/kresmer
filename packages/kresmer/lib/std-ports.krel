@@ -18,9 +18,9 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Port" category=".ports" version="2024071200">
+    <component-class name="Port" category=".ports" version="2024071400">
         <template>
-            <connection-indicator v-bind:connection-id="name">
+            <connection-indicator v-bind:connection-id="connectionId">
                 <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
                 <slot />
                 <rect v-if="portInfo?.operStatus" v-bind:width="h*0.25" v-bind:height="h*0.25" class="status-indicator" />
@@ -30,7 +30,7 @@
                 <title>{{title}}</title>
                 <connection-point v-if="isActive &amp;&amp; nFibers == 1"
                     v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
-                    v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId: `${name}`}"
+                    v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId}"
                     v-bind:show-tooltip="false"
                     />
                 <connection-point v-else-if="isActive"
@@ -40,7 +40,7 @@
                         down1: {x: w*0.4, y: h}, down2: {x: w*0.6, y: h}, 
                         left1: {x: 0, y: h*0.4}, left2: {x: 0, y: h*0.6}
                     }" 
-                    v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId: `${name}`}"
+                    v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId}"
                     v-bind:show-tooltip="false"
                     />
             </connection-indicator>
@@ -76,6 +76,7 @@
             </prop>
             <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
             <prop name="is-active" type="Boolean" default="true" category="Network" description="Indicates whether this part (media) of the combo port is active" />
+            <prop name="connection-id" type="[String,Number]"/>
         </props>
         <computed-props extend="MultiFiberPort">
             <computed-prop name="label0">props.combo ? String(props.name ?? "").replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name ?? "")</computed-prop>
@@ -86,6 +87,7 @@
                     (props.portInfo?.description ? ` ${props.portInfo.description}` : '') +
                     (props.portInfo?.speed ? ` (${props.portInfo.speed})` : '')
             </computed-prop>
+            <computed-prop name="connectionId">props.connectionId ? String(props.connectionId) : String(props.name)</computed-prop>
         </computed-props>
     </component-class>
 

@@ -18,7 +18,7 @@
         </props>
     </component-class>
     
-    <component-class name="CopperToOpticsMultiplexer" category="Multiplexers">
+    <component-class name="CopperToOpticsMultiplexer" category="Multiplexers" version="2024071400">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -26,6 +26,7 @@
                 v-bind:d="portSize" v-bind:ferrule-visible="true"
                 v-bind:name="i>1 ? 'rx' : nFibers>1 ? 'tx' : 'f'" 
                 v-bind:prefix="i>1 ? 'rx' : nFibers>1 ? 'tx' : 'f'"
+                connection-id="*"
                 />
             <Kre:RJ45-Port v-for="i in nCopperPorts" v-bind:x="height*5/14 + portSize*(nFibers+i-1)" v-bind:y="height*3/14" v-bind:d="portSize"
                 v-bind:name="`c${i}`" prefix="c"
