@@ -268,7 +268,12 @@ export default class Kresmer extends KresmerEventHooks {
     /** A symbolic key for the snap-to-grid flag injection */
     static readonly ikSnapToGrid = Symbol() as InjectionKey<boolean>;
     /** A step (granularity) of snapping to the grid */
-    snappingGranularity = 1;
+    get snappingGranularity() {return this._snappingGranularity}
+    set snappingGranularity(newValue: number) {this._snappingGranularity = this._gridStep.value = newValue}
+    protected _snappingGranularity = 1;
+    /** Visual grid step */
+    get gridStep() {return this._gridStep.value}
+    protected _gridStep = ref(this._snappingGranularity);
     /** A symbolic key for the snap-to-grid step injection */
     static readonly ikSnappingGranularity = Symbol() as InjectionKey<number>;
 
