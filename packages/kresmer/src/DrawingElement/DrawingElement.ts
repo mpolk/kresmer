@@ -73,17 +73,17 @@ export default abstract class DrawingElement {
     /** Return the number of props (excluding "name") */
     get propCount() { return Object.getOwnPropertyNames(this.props).filter(prop => prop !== "name").length;}
     /** "Dynamic" prop values, i.e. those that came from the DB (back-end) */
-    readonly dynamicProps = new Map<string, unknown>();
+    readonly dynamicPropValues = new Map<string, unknown>();
     /** Synthetic props made by merging the usual "static" props and the "dynamic" ones */
     get syntheticProps(): Record<string, unknown>
     {
         const synProps: Record<string, unknown> = {};
         for (const key in this.props) {
-            synProps[key] = this.mergePropValues(key, this.props[key], this.dynamicProps.get(key));
+            synProps[key] = this.mergePropValues(key, this.props[key], this.dynamicPropValues.get(key));
         }//for
-        for (const key of this.dynamicProps.keys()) {
+        for (const key of this.dynamicPropValues.keys()) {
             if (!(key in this.props))
-                synProps[key] = this.dynamicProps.get(key);
+                synProps[key] = this.dynamicPropValues.get(key);
         }//for
         return synProps;
     }//syntheticProps
@@ -207,15 +207,14 @@ export default abstract class DrawingElement {
     {
         if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
             yield `${indent(indentLevel+1)}<props>`;
-            for (const propName in this.props) {
-                if (!this.kresmer.saveDynamicPropValuesWithDrawing && this.dynamicProps.has(propName))
-                    continue;
+            const props = this.kresmer.saveDynamicPropValuesWithDrawing ? this.syntheticProps : this.props;
+            for (const propName in props) {
                 let propValue: string;
-                if (typeof this.props[propName] === "object") {
-                    propValue = JSON.stringify(this.props[propName], undefined, 2).split("\n")
+                if (typeof props[propName] === "object") {
+                    propValue = JSON.stringify(props[propName], undefined, 2).split("\n")
                         .map((line, i) => i ? `${indent(indentLevel+3)}${line}` : line).join("\n");
                 } else {
-                    propValue = String(this.props[propName]);
+                    propValue = String(props[propName]);
                 }//if
                 if (propName !== "name" && typeof propValue !== "undefined") {
                     yield `${indent(indentLevel+2)}<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(propValue)}</prop>`;
@@ -238,11 +237,12 @@ export default abstract class DrawingElement {
         }
     }//getData
 
-    /** Sets the element "mutable" data, i.e. the data meant to updatable from outside of Kresmer */
+    /** Sets the element "mutable" data, i.e. the data meant to be updatable from outside of Kresmer */
     public setData(data: DrawingElementData)
     {
         for (const propName in data.props) {
             this.props[propName] = data.props[propName];
+            this.dynamicPropValues.delete(propName);
         }//for
 
         if (data.props) {

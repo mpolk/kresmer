@@ -84,7 +84,7 @@ export default class BackendConnection {
 
             if (newData.props) {
                 for (const [key, value] of Object.entries(newData.props)) {
-                    element.dynamicProps.set(key, value);
+                    element.dynamicPropValues.set(key, value);
                 }//for
                 result = true;
             }//if
