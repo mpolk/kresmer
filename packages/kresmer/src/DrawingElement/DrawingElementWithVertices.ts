@@ -9,6 +9,9 @@
 import DrawingElement from "./DrawingElement";
 import withVertices from "../Vertex/withVertices";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
+import { IDraggable, DragConstraint } from "../Draggable";
+import { EditorOperation } from "../UndoStack";
+import { Position } from "../Transform/Transform";
 
 export default abstract class DrawingElementWithVertices extends withVertices(DrawingElement) {
 
@@ -34,4 +37,27 @@ export default abstract class DrawingElementWithVertices extends withVertices(Dr
     }//updateConnectionPoints()
 
 }//DrawingElementWithVertices
+
+
+export abstract class DraggableDrawingElementWithVertices extends DrawingElementWithVertices implements IDraggable {
+
+    origin!: Position;
+    abstract get isSelected(): boolean;
+    
+    public isGoingToBeDragged = false;
+    public isDragged = false;
+    public dragConstraint: DragConstraint|undefined;
+    dragStartPos?: Position;
+    savedMousePos?: Position;
+    mouseCaptureTarget!: SVGElement;
+
+    abstract bringToTop(): void;
+    abstract notifyOnDragStart(): void;
+    abstract notifyOnDrag(): void;
+    abstract notifyOnDragEnd(): void;
+    abstract createMoveOp(): EditorOperation;
+    abstract updateConnectionPoints(): void;
+    abstract alignConnectedLinks(): void;
+
+}//DraggableDrawingElementWithVertices
 

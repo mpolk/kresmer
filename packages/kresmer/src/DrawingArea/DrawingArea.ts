@@ -12,11 +12,12 @@ import { UndefinedAreaClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
 import AreaVertex, { AreaVertexGeometry, AreaVertexInitParams } from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
-import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
+import {DraggableDrawingElementWithVertices} from "../DrawingElement/DrawingElementWithVertices";
 import { EditorOperation } from "../UndoStack";
-import { Position, Shift } from "../Transform/Transform";
+import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, withZOrder } from "../ZOrdering";
+import { Draggable, IDraggable } from "../Draggable";
 // import { SelectionMoveOp } from "NetworkComponent/NetworkComponentController";
 // import MouseEventCapture from "MouseEventCapture";
 
@@ -24,7 +25,7 @@ import { MapWithZOrder, withZOrder } from "../ZOrdering";
  * Drawing Area 
  */
 
-export default class DrawingArea extends withZOrder(DrawingElementWithVertices) {
+export default class DrawingArea extends Draggable(withZOrder(DraggableDrawingElementWithVertices)) implements IDraggable {
     /**
      * 
      * @param _class The class this Area should belong 
@@ -59,13 +60,6 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
     }//getClass
     override isClosed = true;
     declare vertices: AreaVertex[];
-
-    public isGoingToBeDragged = false;
-    public isDragged = false;
-    public dragConstraint: DragConstraint|undefined;
-    private dragStartPos?: Position;
-    private savedMousePos?: Position;
-    mouseCaptureTarget!: SVGElement;
 
     get origin(): Position {return this.vertices[0].coords}
     set origin(newValue: Position) {
@@ -160,33 +154,6 @@ export default class DrawingArea extends withZOrder(DrawingElementWithVertices) 
     public get wouldAlignVertices() {return new Set(this.vertices);}
 
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public startDrag(event: MouseEvent)
-    {
-    }//startDrag
-
-    public _startDrag()
-    {
-        this.dragStartPos = {...this.origin};
-    }//_startDrag
-
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public drag(event: MouseEvent)
-    {
-    }//drag
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public moveFromStartPos(shift: Shift)
-    {}
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endDrag(_event: MouseEvent)
-    {
-        return false;
-    }//endDrag
-
-
     public onClick(event: MouseEvent, segmentNumber?: number)
     {
         if (event.ctrlKey && segmentNumber) {
@@ -220,8 +187,6 @@ export interface AreaBorder {
     to: number,
     clazz: string,
 }//AreaBorder
-
-type DragConstraint = "x" | "y" | "unknown";
 
 
 // Editor operations

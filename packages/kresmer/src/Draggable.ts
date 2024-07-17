@@ -14,6 +14,26 @@ import { EditorOperation } from "./UndoStack";
 
 export type DragConstraint = "x" | "y" | "unknown";
 
+export interface IDraggable {
+    kresmer: Kresmer;
+    origin: Position;
+    isGoingToBeDragged: boolean;
+    isDragged: boolean;
+    isSelected: boolean;
+    dragConstraint: DragConstraint|undefined;
+    dragStartPos?: Position;
+    savedMousePos?: Position;
+    mouseCaptureTarget: SVGElement;
+
+    bringToTop(): void;
+    notifyOnDragStart(): void;
+    notifyOnDrag(): void;
+    notifyOnDragEnd(): void;
+    createMoveOp(): EditorOperation;
+    updateConnectionPoints(): void;
+    alignConnectedLinks(): void;
+}//IDraggable
+
 export abstract class AbstractDraggable implements IDraggable {
     constructor(
         kresmer: Kresmer,
@@ -25,7 +45,7 @@ export abstract class AbstractDraggable implements IDraggable {
         this.origin = params.origin;
     }//ctor
 
-    private readonly _kresmer: WeakRef<Kresmer>;
+    readonly _kresmer: WeakRef<Kresmer>;
     get kresmer() { return this._kresmer.deref()! }
 
     origin!: Position;
@@ -46,26 +66,6 @@ export abstract class AbstractDraggable implements IDraggable {
     abstract updateConnectionPoints(): void;
     abstract alignConnectedLinks(): void;
 }//AbstractDraggable
-
-export interface IDraggable {
-    kresmer: Kresmer;
-    origin: Position;
-    isGoingToBeDragged: boolean;
-    isDragged: boolean;
-    isSelected: boolean;
-    dragConstraint: DragConstraint|undefined;
-    dragStartPos?: Position;
-    savedMousePos?: Position;
-    mouseCaptureTarget: SVGElement;
-
-    bringToTop(): void;
-    notifyOnDragStart(): void;
-    notifyOnDrag(): void;
-    notifyOnDragEnd(): void;
-    createMoveOp(): EditorOperation;
-    updateConnectionPoints(): void;
-    alignConnectedLinks(): void;
-}//IDraggable
 
 
 /**
