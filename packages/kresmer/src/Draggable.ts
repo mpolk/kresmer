@@ -11,6 +11,7 @@ import { Position } from "./Transform/Transform";
 import MouseEventCapture from "./MouseEventCapture";
 import { SelectionMoveOp } from "./NetworkComponent/NetworkComponentController";
 import { EditorOperation } from "./UndoStack";
+import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVertices";
 
 export type DragConstraint = "x" | "y" | "unknown";
 
@@ -66,6 +67,29 @@ export abstract class AbstractDraggable implements IDraggable {
     abstract updateConnectionPoints(): void;
     abstract alignConnectedLinks(): void;
 }//AbstractDraggable
+
+
+export abstract class DraggableDrawingElementWithVertices extends DrawingElementWithVertices implements IDraggable {
+
+    origin!: Position;
+    abstract get isSelected(): boolean;
+    
+    public isGoingToBeDragged = false;
+    public isDragged = false;
+    public dragConstraint: DragConstraint|undefined;
+    dragStartPos?: Position;
+    savedMousePos?: Position;
+    mouseCaptureTarget!: SVGElement;
+
+    abstract bringToTop(): void;
+    abstract notifyOnDragStart(): void;
+    abstract notifyOnDrag(): void;
+    abstract notifyOnDragEnd(): void;
+    abstract createMoveOp(): EditorOperation;
+    abstract updateConnectionPoints(): void;
+    abstract alignConnectedLinks(): void;
+
+}//DraggableDrawingElementWithVertices
 
 
 /**

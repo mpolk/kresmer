@@ -12,19 +12,15 @@ import { UndefinedAreaClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
 import AreaVertex, { AreaVertexGeometry, AreaVertexInitParams } from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
-import {DraggableDrawingElementWithVertices} from "../DrawingElement/DrawingElementWithVertices";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, withZOrder } from "../ZOrdering";
-import { Draggable, IDraggable } from "../Draggable";
-// import { SelectionMoveOp } from "NetworkComponent/NetworkComponentController";
-// import MouseEventCapture from "MouseEventCapture";
+import { Draggable, IDraggable, DraggableDrawingElementWithVertices } from "../Draggable";
 
 /**
  * Drawing Area 
  */
-
 export default class DrawingArea extends Draggable(withZOrder(DraggableDrawingElementWithVertices)) implements IDraggable {
     /**
      * 
