@@ -7,7 +7,8 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { computed, onBeforeMount, PropType, provide, onMounted } from 'vue';
+    import Kresmer from '../Kresmer';
+    import { computed, onBeforeMount, PropType, provide, inject, onMounted, ref } from 'vue';
     import DrawingArea, { AreaBorder } from './DrawingArea';
     import DrawingElement from '../DrawingElement/DrawingElement';
     import DrawingVertexVue from './AreaVertex.vue';
@@ -26,12 +27,17 @@
         highlightColor: {type: String, required: false},
     });
 
+    const mouseCaptureTaget = ref<SVGElement>();
+
     // eslint-disable-next-line vue/no-setup-props-destructure
     provide(DrawingElement.ikHostElement, props.model);
+    const isEditable = inject(Kresmer.ikIsEditable);
 
     // eslint-disable-next-line vue/no-setup-props-destructure
     onBeforeMount(props.model.initVertices);
     onMounted(() => {
+        // eslint-disable-next-line vue/no-mutating-props
+        props.model.mouseCaptureTarget = mouseCaptureTaget.value!;
         props.model.updateConnectionPoints();
     });
 
@@ -112,11 +118,37 @@
         }//for
         return chunks.join(" ");
     }//borderPathData
+
+    function onMouseDown(event: MouseEvent)
+    {
+        if (event.buttons === 1 && isEditable) {
+            event.preventDefault();
+            props.model.startDrag(event);
+        }//if
+    }//onMouseDown
+
+    function onMouseUp(event: MouseEvent)
+    {
+        if (isEditable && props.model.endDrag(event)) { 
+            props.model.returnFromTop();
+            return;
+        }//if
+    }//onMouseUp
+
+    function onMouseMove(event: MouseEvent)
+    {
+        if (event.buttons & 1 && isEditable) {
+            props.model.drag(event);
+        }//if
+    }//onMouseMove
 </script>
 
 <template>
     <g :class="areaClass">
-        <path :d="path" :class="areaClass" :style="areaStyle" 
+        <path :d="path" :class="areaClass" :style="areaStyle" ref="mouseCaptureTaget"
+            @mousedown.stop="onMouseDown($event)"
+            @mouseup.stop="onMouseUp($event)"
+            @mousemove.stop.prevent="onMouseMove($event)"
             @click.self="model.onClick($event)"
             @contextmenu.self="model.onRightClick($event)"
             @dblclick.self="model.onDoubleClick($event)"

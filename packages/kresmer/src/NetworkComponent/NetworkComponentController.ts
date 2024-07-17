@@ -19,11 +19,12 @@ import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
 import { withZOrder  } from "../ZOrdering";
 import NetworkLink from "../NetworkLink/NetworkLink";
+import DrawingArea from "../DrawingArea/DrawingArea";
+import {Draggable, IDraggable, AbstractDraggable } from "../Draggable";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
-
-export default class NetworkComponentController extends withZOrder(class {}) {
+export default class NetworkComponentController extends Draggable(withZOrder(AbstractDraggable)) implements IDraggable {
     constructor(
         kresmer: Kresmer,
         component: NetworkComponent,
@@ -32,45 +33,33 @@ export default class NetworkComponentController extends withZOrder(class {}) {
             transform?: Transform,
         }
     ) {
-        super();
-        this._kresmer = new WeakRef(kresmer);
+        super(kresmer, params);
         this.component = component;
         this.component.controller = this;
-        this.origin = params.origin;
         this.transform = params.transform ? params.transform : new Transform;
     }//ctor
 
-    private readonly _kresmer: WeakRef<Kresmer>;
-    get kresmer() { return this._kresmer.deref()! }
     public component: NetworkComponent;
-    origin: Position;
+    get isSelected() {return this.component.isSelected}
+    set isSelected(newValue: boolean) {this.component.isSelected = newValue}
+
     transform: Transform;
-    public isGoingToBeDragged = false;
-    public isDragged = false;
-    public dragConstraint: DragConstraint|undefined;
     public isBeingTransformed = false;
     public transformMode?: TransformMode;
     public isInAdjustmentMode = false;
 
-    private dragStartPos?: Position;
-    private savedMousePos?: Position;
-
     get id() {return this.component.id}
 
-    private mouseCaptureTarget?: SVGElement;
     _setMouseCaptureTarget(el: SVGElement)
     {
         this.mouseCaptureTarget = el;
     }//_setMouseCaptureTarget
 
-    private getMousePosition(event: MouseEvent) {
+    getMousePosition(event: MouseEvent) {
         return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
     }//getMousePosition
 
-    get isSelected() {return this.component.isSelected}
-    set isSelected(newValue: boolean) {this.component.isSelected = newValue}
-
-    public selectComponent(this: NetworkComponentController, deselectTheRest: boolean): void
+    public selectComponent(deselectTheRest: boolean): void
     {
         if (!this.component.isSelected) {
             if (deselectTheRest)
@@ -84,106 +73,23 @@ export default class NetworkComponentController extends withZOrder(class {}) {
         this.isInAdjustmentMode = false;
     }//selectComponent
 
-    public startDrag(this: NetworkComponentController, event: MouseEvent)
-    {
-        this.kresmer.resetAllComponentMode(this);
-        if (event.shiftKey)
-            this.dragConstraint = "unknown";
-        this._startDrag();
-        this.savedMousePos = this.getMousePosition(event);
-        this.isGoingToBeDragged = true;
-        this.bringToTop();
-        if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
-            const op = new SelectionMoveOp(this.kresmer);
-            this.kresmer.undoStack.startOperation(op);
-            this.kresmer._startSelectionDragging(this, op);
-        } else {
-            this.kresmer.undoStack.startOperation(new ComponentMoveOp(this));
-        }//if
-        MouseEventCapture.start(this.mouseCaptureTarget!);
-    }//startDrag
-
-    public _startDrag(this: NetworkComponentController)
-    {
-        this.dragStartPos = {...this.origin};
+    notifyOnDragStart() {
         this.kresmer.emit("component-move-started", this);
-    }//_startDrag
+    }//notifyOnDragStart
 
-    public drag(this: NetworkComponentController, event: MouseEvent)
-    {
-        const mousePos = this.getMousePosition(event);
-        const effectiveMove = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
-
-        if (this.isGoingToBeDragged) {
-            if (Math.hypot(effectiveMove.x, effectiveMove.y) < 2)
-                return false;
-            this.isGoingToBeDragged = false;
-            this.isDragged = true;
-            this.kresmer._allLinksFreezed = true;
-        } else if (!this.isDragged) {
-            return false;
-        }//if
-
-        if (this.dragConstraint === "unknown") {
-            const r = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
-            if (Math.hypot(r.x, r.y) > 3) {
-                if (Math.abs(r.x) >= Math.abs(r.y))
-                    this.dragConstraint = "x";
-                else
-                    this.dragConstraint = "y";
-            }//if
-        }//if
-
-        switch (this.dragConstraint) {
-            case 'x': effectiveMove.y = 0; break;
-            case 'y': effectiveMove.x = 0; break;
-        }//switch
-            
-        this.moveFromStartPos(effectiveMove);
-        if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
-            this.kresmer._dragSelection(effectiveMove, this);
-        }//if
-        return true;
-    }//drag
-
-    public moveFromStartPos(this: NetworkComponentController, delta: Position)
-    {
-        this.origin.x = this.dragStartPos!.x + delta.x;
-        this.origin.y = this.dragStartPos!.y + delta.y;
-        if (this.kresmer.animateComponentDragging)
-            this.updateConnectionPoints();
+    notifyOnDrag() {
         this.kresmer.emit("component-being-moved", this);
-    }//moveFromStartPos
+    }//notifyOnDrag
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endDrag(this: NetworkComponentController, _event: MouseEvent)
-    {
-        if (this.isDragged) {
-            this.isDragged = false;
-            this.dragConstraint = undefined;
-            MouseEventCapture.release();
-            if (this.kresmer.snapToGrid) {
-                this.origin = {
-                    x: Math.round(this.origin.x / this.kresmer.snappingGranularity) * this.kresmer.snappingGranularity,
-                    y: Math.round(this.origin.y / this.kresmer.snappingGranularity) * this.kresmer.snappingGranularity,
-                };
-            }//if
-            this.updateConnectionPoints();
-            if (this.component.isSelected && this.kresmer.muiltipleComponentsSelected) {
-                this.kresmer._endSelectionDragging(this);
-            }//if
-            this.kresmer.undoStack.commitOperation();
-            this.kresmer._allLinksFreezed = false;
-            this.kresmer.emit("component-moved", this);
-            this.alignConnectedLinks();
-            return true;
-        }//if
+    notifyOnDragEnd() {
+        this.kresmer.emit("component-moved", this);
+    }//notifyOnDragEnd
 
-        return false;
-    }//endDrag
-
+    createMoveOp() {
+        return new ComponentMoveOp(this);
+    }//createMoveOp
     
-    public startRotate(this: NetworkComponentController, event: MouseEvent)
+    public startRotate(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.savedMousePos = this.getMousePosition(event);
@@ -196,7 +102,7 @@ export default class NetworkComponentController extends withZOrder(class {}) {
         this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startRotate
 
-    public rotate(this: NetworkComponentController, event: MouseEvent, center: Position)
+    public rotate(event: MouseEvent, center: Position)
     {
         if (!this.isBeingTransformed)
             return false;
@@ -218,7 +124,7 @@ export default class NetworkComponentController extends withZOrder(class {}) {
     }//makeRaduisVectors
 
 
-    public startScale(this: NetworkComponentController, event: MouseEvent)
+    public startScale(event: MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.transform.makeSnapshot();
@@ -231,7 +137,7 @@ export default class NetworkComponentController extends withZOrder(class {}) {
         this.kresmer.undoStack.startOperation(new ComponentTransformOp(this));
     }//startScale
 
-    public scale(this: NetworkComponentController, event: MouseEvent, zone: TransformBoxZone, 
+    public scale(event: MouseEvent, zone: TransformBoxZone, 
                  bBox: SVGRect, center: Position)
     {
         if (!this.isBeingTransformed)
@@ -250,7 +156,7 @@ export default class NetworkComponentController extends withZOrder(class {}) {
 
     
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public endTransform(this: NetworkComponentController, _event: MouseEvent)
+    public endTransform(_event: MouseEvent)
     {
         if (!this.isBeingTransformed) {
             return false;
@@ -272,7 +178,7 @@ export default class NetworkComponentController extends withZOrder(class {}) {
 
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public enterTransformMode(this: NetworkComponentController, _event:  MouseEvent)
+    public enterTransformMode(_event:  MouseEvent)
     {
         // this.isBeingTransformed = true;
         this.kresmer.resetAllComponentMode(this);
@@ -284,7 +190,7 @@ export default class NetworkComponentController extends withZOrder(class {}) {
     }//enterTransformMode
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public enterAdjustmentMode(this: NetworkComponentController, _event:  MouseEvent)
+    public enterAdjustmentMode(_event:  MouseEvent)
     {
         this.kresmer.resetAllComponentMode(this);
         this.kresmer.deselectAllElements();
@@ -310,7 +216,7 @@ export default class NetworkComponentController extends withZOrder(class {}) {
     }//resetMode
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public onTransformBoxClick(this: NetworkComponentController, _event: MouseEvent)
+    public onTransformBoxClick(_event: MouseEvent)
     {
         if (this.transformMode) {
             this.kresmer.emit("component-exited-transform-mode", this);
@@ -359,8 +265,6 @@ export default class NetworkComponentController extends withZOrder(class {}) {
     }//alignConnectedLinks
 }//NetworkComponentController
 
-type DragConstraint = "x" | "y" | "unknown";
-
 
 // Editor operations
 class ComponentMoveOp extends EditorOperation {
@@ -393,9 +297,10 @@ class ComponentMoveOp extends EditorOperation {
 
 export class SelectionMoveOp extends EditorOperation {
 
-    constructor(kresmer: Kresmer)
+    constructor(kresmer: Kresmer, public readonly leader: IDraggable)
     {
         super();
+        this.leaderOldPos = this.leaderNewPos = {...leader.origin};
         for (const [, controller] of kresmer.networkComponents) {
             if (controller.component.isSelected) {
                 this.controllers.push(controller);
@@ -414,21 +319,40 @@ export class SelectionMoveOp extends EditorOperation {
             this.links.push(link);
             this.oldVertexPos[link.id] = link.vertices.map(v => ({...v.coords}));
         }//for
+        for (const [, area] of kresmer.areas) {
+            if (area.isSelected) {
+                this.areas.push(area);
+                this.oldVertexPos[area.id] = area.vertices.map(v => ({...v.coords}));
+            }//if
+        }//for
     }//ctor
 
     public controllers: NetworkComponentController[] = [];
     public links: NetworkLink[] = [];
+    public areas: DrawingArea[] = [];
     public oldPos: Record<number, Position> = {};
     private oldVertexPos: Record<number, Position[]> = {};
     public newPos: Record<number, Position> = {};
     private newVertexPos: Record<number, Position[]> = {};
+    public readonly leaderOldPos: Position;
+    public leaderNewPos: Position;
+
+    get effectiveMove() {
+        return {
+            x: this.leaderNewPos.x - this.leaderOldPos.x, 
+            y: this.leaderNewPos.y - this.leaderOldPos.y
+    }}//effectiveMove
 
     override onCommit(): void {
+        this.leaderNewPos = {...this.leader.origin};
         for (const controller of this.controllers) {
             this.newPos[controller.component.id] = {...controller.origin};
         }//for
         for (const link of this.links) {
             this.newVertexPos[link.id] = link.vertices.map(v => ({...v.coords}));
+        }//for
+        for (const area of this.areas) {
+            this.newVertexPos[area.id] = area.vertices.map(v => ({...v.coords}));
         }//for
     }//onCommit
 
@@ -445,6 +369,12 @@ export class SelectionMoveOp extends EditorOperation {
             }//for
             link.updateConnectionPoints();
         }//for
+        for (const area of this.areas) {
+            for (let i = 0; i < area.vertices.length; ++i) {
+                area.vertices[i].pinUp(this.newVertexPos[area.id][i]);
+            }//for
+            area.updateConnectionPoints();
+        }//for
     }//exec
 
     override undo(): void {
@@ -459,6 +389,12 @@ export class SelectionMoveOp extends EditorOperation {
                 }//if
             }//for
             link.updateConnectionPoints();
+        }//for
+        for (const area of this.areas) {
+            for (let i = 0; i < area.vertices.length; ++i) {
+                area.vertices[i].pinUp(this.oldVertexPos[area.id][i]);
+            }//for
+            area.updateConnectionPoints();
         }//for
     }//undo
 }//SelectionMoveOp

@@ -943,7 +943,7 @@ ${svg.outerHTML}
     /**
      * Resets the mode (transform etc.) for all network component modes except the one specified
      */
-    public resetAllComponentMode(except?: NetworkComponentController)
+    public resetAllComponentMode(except?: unknown)
     {
         for (const controller of this.networkComponents.values()) {
             if (controller !== except)
@@ -1079,14 +1079,19 @@ ${svg.outerHTML}
 
     /** 
      * Starts dragging the selected components following the leading one 
-     * @param leader The controller of the component being dragged (directly)
+     * @param leader The object is going to be dragged (directly)
      * @param operation The operation being performed
     */
-    public _startSelectionDragging(leader: NetworkComponentController, operation: SelectionMoveOp)
+    public _startSelectionDragging(leader: unknown, operation: SelectionMoveOp)
     {
         for (const controller of operation.controllers) {
             if (controller.component.isSelected && controller !== leader) {
                 controller._startDrag();
+            }//if
+        }//for
+        for (const area of operation.areas) {
+            if (area.isSelected && area !== leader) {
+                area._startDrag();
             }//if
         }//for
     }//_startSelectionDragging
@@ -1094,14 +1099,19 @@ ${svg.outerHTML}
     /** 
      * Performs a step of dragging the selected components following the leading one 
      * @param effectiveMove The effective (current) move of the leading component
-     * @param leader The controller of the component being dragged (directly)
+     * @param leader The object being dragged (directly)
     */
-    public _dragSelection(effectiveMove: Shift, leader: NetworkComponentController)
+    public _dragSelection(effectiveMove: Shift, leader: unknown)
     {
         const operation = this.undoStack.currentOperation as SelectionMoveOp;
         for (const controller of operation.controllers) {
             if (controller.component.isSelected && controller !== leader) {
                 controller.moveFromStartPos(effectiveMove);
+            }//if
+        }//for
+        for (const area of operation.areas) {
+            if (area.isSelected && area !== leader) {
+                area.moveFromStartPos(effectiveMove);
             }//if
         }//for
     }//_dragSelection
@@ -1110,7 +1120,7 @@ ${svg.outerHTML}
      * Finishes dragging the selected components following the leading one 
      * @param leader The controller of the component was being dragged (directly)
     */
-    public _endSelectionDragging(leader: NetworkComponentController)
+    public _endSelectionDragging(leader: unknown)
     {
         const operation = this.undoStack.currentOperation as SelectionMoveOp;
         for (const controller of operation.controllers) {
@@ -1120,9 +1130,7 @@ ${svg.outerHTML}
                 this.emit("component-moved", controller);
             }//if
         }//for
-        const oldPos = operation.oldPos[leader.component.id];
-        const newPos = {...leader.origin};
-        const effectiveMove = {x: newPos.x - oldPos.x, y: newPos.y - oldPos.y};
+        const effectiveMove = operation.effectiveMove;
         for (const link of operation.links) {
             for (let i = 0; i < link.vertices.length; i++) {
                 const vertex = link.vertices[i];
