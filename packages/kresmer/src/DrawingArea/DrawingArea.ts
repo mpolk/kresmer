@@ -185,6 +185,10 @@ export default class DrawingArea extends Draggable(withZOrder(DraggableDrawingEl
         this.kresmer.emit("area-moved", this);
     }//notifyOnDragEnd
 
+    createMoveOp() {
+        return new AreaMoveOp(this);
+    }//createMoveOp
+
 }//DrawingArea
 
 export class DrawingAreaMap extends MapWithZOrder<number, DrawingArea> {}
@@ -304,3 +308,167 @@ export class DeleteVertexOp extends AddVertexOp {
         super.exec();
     }//undo
 }//DeleteVertexOp
+
+
+class AreaMoveOp extends EditorOperation {
+
+    constructor(private area: DrawingArea)
+    {
+        super();
+        this.oldPos = {...area.origin};
+    }//ctor
+
+    private oldPos: Position;
+    private newPos?: Position;
+
+    override onCommit(): void {
+        this.newPos = {...this.area.origin};
+    }//onCommit
+
+    override exec(): void {
+        this.area.origin = {...this.newPos!};
+        this.area.updateConnectionPoints();
+    }//exec
+
+    override undo(): void {
+        this.area.origin = {...this.oldPos};
+        this.area.updateConnectionPoints();
+    }//undo
+}//AreaMoveOp
+
+
+// export class AreaAddOp extends EditorOperation {
+
+//     constructor(private controller: NetworkComponentController) 
+//     {
+//         super();
+//     }//ctor
+
+//     override exec(): void {
+//         this.controller.kresmer.addPositionedNetworkComponent(this.controller);
+//     }//exec
+
+//     override undo(): void {
+//         this.controller.kresmer.deleteArea(this.controller);
+//     }//undo
+// }//AreaAddOp
+
+
+// export class AreaDeleteOp extends EditorOperation {
+
+//     constructor(private controller: NetworkComponentController) 
+//     {
+//         super();
+//     }//ctor
+
+//     private detachedVertices = new Map<LinkVertex, string|number>();
+
+//     override exec(): void {
+//         this.controller.kresmer.links.forEach(link => {
+//             link.vertices.forEach(vertex => {
+//                 if (vertex.isConnected && vertex.anchor.conn!.hostElement === this.controller.component) {
+//                     this.detachedVertices.set(vertex, vertex.anchor.conn!.name);
+//                     vertex.detach();
+//                 }//if
+//             })//vertices
+//         })//links
+
+//         this.controller.kresmer.deleteArea(this.controller);
+//     }//exec
+
+//     override undo(): void {
+//         this.controller.kresmer.addPositionedNetworkComponent(this.controller);
+//         nextTick(() => {
+//             this.controller.updateConnectionPoints();
+//             this.detachedVertices.forEach((connectionPointName, vertex) => {
+//                 vertex.connect(this.controller.component.getConnectionPoint(connectionPointName)!);
+//             });
+//         });
+//     }//undo
+
+// }//AreaDeleteOp
+
+
+// export class AreaMoveUpOp extends EditorOperation {
+
+//     constructor(private controller: NetworkComponentController) 
+//     {
+//         super();
+//     }//ctor
+
+//     override exec(): void {
+//         this.controller.returnFromTop();
+//         this.controller.kresmer.networkComponents.moveItemUp(this.controller);
+//     }//exec
+
+//     override undo(): void {
+//         this.controller.returnFromTop();
+//         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
+//     }//undo
+
+// }//AreaMoveUpOp
+
+
+// export class AreaMoveToTopOp extends EditorOperation {
+
+//     constructor(private controller: NetworkComponentController) 
+//     {
+//         super();
+//     }//ctor
+
+//     private savedZIndex = 0;
+
+//     override exec(): void {
+//         this.controller.returnFromTop();
+//         this.savedZIndex = this.controller.zIndex;
+//         this.controller.kresmer.networkComponents.moveItemToTop(this.controller);
+//     }//exec
+
+//     override undo(): void {
+//         this.controller.returnFromTop();
+//         this.controller.kresmer.networkComponents.moveItemTo(this.controller, this.savedZIndex);
+//     }//undo
+
+// }//AreaMoveToTopOp
+
+// export class AreaMoveDownOp extends EditorOperation {
+
+//     constructor(private controller: NetworkComponentController) 
+//     {
+//         super();
+//     }//ctor
+
+//     override exec(): void {
+//         this.controller.returnFromTop();
+//         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
+//     }//exec
+
+//     override undo(): void {
+//         this.controller.returnFromTop();
+//         this.controller.kresmer.networkAreas.moveItemUp(this.controller);
+//     }//undo
+
+// }//AreaMoveDownOp
+
+
+// export class AreaMoveToBottomOp extends EditorOperation {
+
+//     constructor(private controller: NetworkAreaController) 
+//     {
+//         super();
+//     }//ctor
+
+//     private savedZIndex = 0;
+
+//     override exec(): void {
+//         this.controller.returnFromTop();
+//         this.savedZIndex = this.controller.zIndex;
+//         this.controller.kresmer.networkAreas.moveItemToBottom(this.controller);
+//     }//exec
+
+//     override undo(): void {
+//         this.controller.returnFromTop();
+//         this.controller.kresmer.networkComponents.moveItemTo(this.controller, this.savedZIndex);
+//     }//undo
+
+// }//AreaMoveToBottomOp

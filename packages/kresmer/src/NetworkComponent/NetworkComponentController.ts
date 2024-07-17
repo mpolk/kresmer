@@ -18,8 +18,6 @@ import MouseEventCapture from "../MouseEventCapture";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
 import { withZOrder  } from "../ZOrdering";
-import NetworkLink from "../NetworkLink/NetworkLink";
-import DrawingArea from "../DrawingArea/DrawingArea";
 import {Draggable, IDraggable, AbstractDraggable } from "../Draggable";
 
 export type TransformMode = undefined | "scaling" | "rotation";
@@ -54,10 +52,6 @@ export default class NetworkComponentController extends Draggable(withZOrder(Abs
     {
         this.mouseCaptureTarget = el;
     }//_setMouseCaptureTarget
-
-    getMousePosition(event: MouseEvent) {
-        return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
-    }//getMousePosition
 
     public selectComponent(deselectTheRest: boolean): void
     {
@@ -294,110 +288,6 @@ class ComponentMoveOp extends EditorOperation {
         this.controller.updateConnectionPoints();
     }//undo
 }//ComponentMoveOp
-
-export class SelectionMoveOp extends EditorOperation {
-
-    constructor(kresmer: Kresmer, public readonly leader: IDraggable)
-    {
-        super();
-        this.leaderOldPos = this.leaderNewPos = {...leader.origin};
-        for (const [, controller] of kresmer.networkComponents) {
-            if (controller.component.isSelected) {
-                this.controllers.push(controller);
-                this.oldPos[controller.component.id] = {...controller.origin};
-            }//if
-        }//for
-        for (const [, link] of kresmer.links) {
-            if (link.isLoopback)
-                continue;
-            const fromComponent = link.vertices[0].anchor.conn?.hostElement ?? undefined;
-            if (!fromComponent?.isSelected)
-                continue;
-            const toComponent = link.vertices[link.vertices.length-1].anchor.conn?.hostElement ?? undefined;
-            if (!toComponent?.isSelected)
-                continue;
-            this.links.push(link);
-            this.oldVertexPos[link.id] = link.vertices.map(v => ({...v.coords}));
-        }//for
-        for (const [, area] of kresmer.areas) {
-            if (area.isSelected) {
-                this.areas.push(area);
-                this.oldVertexPos[area.id] = area.vertices.map(v => ({...v.coords}));
-            }//if
-        }//for
-    }//ctor
-
-    public controllers: NetworkComponentController[] = [];
-    public links: NetworkLink[] = [];
-    public areas: DrawingArea[] = [];
-    public oldPos: Record<number, Position> = {};
-    private oldVertexPos: Record<number, Position[]> = {};
-    public newPos: Record<number, Position> = {};
-    private newVertexPos: Record<number, Position[]> = {};
-    public readonly leaderOldPos: Position;
-    public leaderNewPos: Position;
-
-    get effectiveMove() {
-        return {
-            x: this.leaderNewPos.x - this.leaderOldPos.x, 
-            y: this.leaderNewPos.y - this.leaderOldPos.y
-    }}//effectiveMove
-
-    override onCommit(): void {
-        this.leaderNewPos = {...this.leader.origin};
-        for (const controller of this.controllers) {
-            this.newPos[controller.component.id] = {...controller.origin};
-        }//for
-        for (const link of this.links) {
-            this.newVertexPos[link.id] = link.vertices.map(v => ({...v.coords}));
-        }//for
-        for (const area of this.areas) {
-            this.newVertexPos[area.id] = area.vertices.map(v => ({...v.coords}));
-        }//for
-    }//onCommit
-
-    override exec(): void {
-        for (const controller of this.controllers) {
-            controller.origin = {...this.newPos[controller.component.id]};
-            controller.updateConnectionPoints();
-        }//for
-        for (const link of this.links) {
-            for (let i = 0; i < link.vertices.length; ++i) {
-                if (!link.vertices[i].isConnected) {
-                    link.vertices[i].pinUp(this.newVertexPos[link.id][i]);
-                }//if
-            }//for
-            link.updateConnectionPoints();
-        }//for
-        for (const area of this.areas) {
-            for (let i = 0; i < area.vertices.length; ++i) {
-                area.vertices[i].pinUp(this.newVertexPos[area.id][i]);
-            }//for
-            area.updateConnectionPoints();
-        }//for
-    }//exec
-
-    override undo(): void {
-        for (const controller of this.controllers) {
-            controller.origin = {...this.oldPos[controller.component.id]};
-            controller.updateConnectionPoints();
-        }//for
-        for (const link of this.links) {
-            for (let i = 0; i < link.vertices.length; ++i) {
-                if (!link.vertices[i].isConnected) {
-                    link.vertices[i].pinUp(this.oldVertexPos[link.id][i]);
-                }//if
-            }//for
-            link.updateConnectionPoints();
-        }//for
-        for (const area of this.areas) {
-            for (let i = 0; i < area.vertices.length; ++i) {
-                area.vertices[i].pinUp(this.oldVertexPos[area.id][i]);
-            }//for
-            area.updateConnectionPoints();
-        }//for
-    }//undo
-}//SelectionMoveOp
 
 class ComponentTransformOp extends EditorOperation {
 

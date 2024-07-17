@@ -6,10 +6,9 @@
  *            Data types for z-ordering support on the drawing 
  ***************************************************************************/
 
-import Kresmer from "Kresmer";
+import Kresmer, { SelectionMoveOp } from "./Kresmer";
 import { Position } from "./Transform/Transform";
 import MouseEventCapture from "./MouseEventCapture";
-import { SelectionMoveOp } from "./NetworkComponent/NetworkComponentController";
 import { EditorOperation } from "./UndoStack";
 import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVertices";
 
