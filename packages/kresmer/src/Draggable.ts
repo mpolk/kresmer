@@ -70,7 +70,6 @@ export abstract class AbstractDraggable implements IDraggable {
 
 
 export abstract class DraggableDrawingElementWithVertices extends DrawingElementWithVertices implements IDraggable {
-
     origin!: Position;
     abstract get isSelected(): boolean;
     

@@ -72,13 +72,16 @@ class KresmerEventFormats  {
     "area-added":                       (area: DrawingArea) => void;
     "area-deleted":                     (area: DrawingArea) => void;
     "area-selected":                    (area: DrawingArea, isSelected: boolean) => void;
+    "area-vertex-move-started":         (vertex: AreaVertex) => void;
+    "area-vertex-being-moved":          (vertex: AreaVertex) => void;
+    "area-vertex-moved":                (vertex: AreaVertex) => void;
     "area-right-click":                 (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) => void;
     "area-double-click":                (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) => void;
     "area-vertex-added":                (vertex: AreaVertex) => void;
     "area-vertex-deleted":              (vertex: AreaVertex) => void;
-    "area-vertex-move-started":         (vertex: AreaVertex) => void;
-    "area-vertex-being-moved":          (vertex: AreaVertex) => void;
-    "area-vertex-moved":                (vertex: AreaVertex) => void;
+    "area-move-started":                (area: DrawingArea) => void;
+    "area-being-moved":                 (area: DrawingArea) => void;
+    "area-moved":                       (area: DrawingArea) => void;
     "area-vertex-handle-move-started":  (vertex: AreaVertex, handleNumber: number) => void;
     "area-vertex-handle-being-moved":   (vertex: AreaVertex, handleNumber: number) => void;
     "area-vertex-handle-moved":         (vertex: AreaVertex, handleNumber: number) => void;
@@ -493,6 +496,27 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("area-double-click")
     protected onAreaDoubleClick(area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) {}
+  
+    /**
+     * Is called when a area move starts
+     * @param controller The area starting to move
+     */
+    @overridableHandler("area-move-started")
+    protected onAreaMoveStarted(area: DrawingArea) {}
+ 
+    /**
+     * Is called when an area is being moved (dragged)
+     * @param controller The vertex is being moved
+     */
+    @overridableHandler("area-being-moved")
+    protected onAreaBeingMoved(area: DrawingArea) {}
+ 
+    /**
+     * Is called when an area had been moved (dragged)
+     * @param controller The vertex been moved
+     */
+    @overridableHandler("area-moved")
+    protected onAreaMoved(area: DrawingArea) {}
  
     /**
      * Is called when a vertex had been added
@@ -510,7 +534,7 @@ export default class KresmerEventHooks {
   
     /**
      * Is called when a vertex move starts
-     * @param controller The controller of the component starting to move
+     * @param controller The vertex starting to move
      */
     @overridableHandler("area-vertex-move-started")
     protected onAreaVertexMoveStarted(vertex: AreaVertex) {}

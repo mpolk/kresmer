@@ -173,6 +173,18 @@ export default class DrawingArea extends Draggable(withZOrder(DraggableDrawingEl
         this.kresmer.emit("area-double-click", this, event, segmentNumber);
     }//onDoubleClick
 
+    notifyOnDragStart(): void {
+        this.kresmer.emit("area-move-started", this);
+    }//notifyOnDragStart
+
+    notifyOnDrag(): void {
+        this.kresmer.emit("area-being-moved", this);
+    }//notifyOnDrag
+
+    notifyOnDragEnd(): void {
+        this.kresmer.emit("area-moved", this);
+    }//notifyOnDragEnd
+
 }//DrawingArea
 
 export class DrawingAreaMap extends MapWithZOrder<number, DrawingArea> {}
