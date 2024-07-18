@@ -62,7 +62,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
     set origin(newValue: Position) {
         const delta = {x: newValue.x - this.origin.x, y: newValue.y - this.origin.y};
         for (const v of this.vertices) {
-            v.pinUp({x: v.coords.x + delta.x, y: v.coords.y + delta.y})
+            v.move(delta);
         }//for
     }//set origin
 

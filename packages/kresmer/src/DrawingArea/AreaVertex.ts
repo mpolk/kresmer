@@ -8,7 +8,7 @@
 
 import Vertex from "../Vertex/Vertex";
 import { VertexInitParams } from "../Vertex/Vertex";
-import { Position } from "../Transform/Transform";
+import { Position, Shift } from "../Transform/Transform";
 import DrawingArea from "./DrawingArea";
 import MouseEventCapture from "../MouseEventCapture";
 import { EditorOperation } from "../UndoStack";
@@ -143,6 +143,13 @@ export default class AreaVertex extends Vertex {
         return true;
     }//endHandleDrag
 
+
+    move(delta: Shift)
+    {
+        this.pinUp({x: this.coords.x + delta.x, y: this.coords.y + delta.y});
+        this._geometry.move(delta);
+    }//move
+
     override onClick(): void 
     {
         super.onClick();
@@ -231,6 +238,13 @@ class Geometry {
     }//toPath
 
     copy() {return new Geometry(this)}
+
+    move(delta: Shift)
+    {
+        for (let i = 0; i < this.controlPoints.length; i++) {
+            this.controlPoints[i] = {x: this.controlPoints[i].x + delta.x, y: this.controlPoints[i].y + delta.y};
+        }//for
+    }//move
 }//Geometry
 
 export type AreaVertexInitParams = VertexInitParams & {geometry?: AreaVertexGeometry};

@@ -72,11 +72,11 @@ describe('DrawingArea object test', () => {
         cy.get(".area.vertex").should("be.visible").and("have.length", 3);
     })
 
-    const [deltaX, deltaY] = [-50, 100];
-    const secondVertexNewCoords = {x: vertexData[1].pos.x + deltaX, y: vertexData[1].pos.y + deltaY}
-    it(`Now we drag the right corner from ${JSON.stringify(vertexData[1])} by (${deltaX},${deltaY})`, () => {
+    const delta1 = {x: -50, y: 100};
+    const secondVertexNewCoords = {x: vertexData[1].pos.x + delta1.x, y: vertexData[1].pos.y + delta1.y}
+    it(`Now we drag the right corner from ${JSON.stringify(vertexData[1])} by (${delta1.x},${delta1.y})`, () => {
         kresmer.autoAlignVertices = false;
-        cy.get(".vertex.area").eq(1).drag(deltaX, deltaY);
+        cy.get(".vertex.area").eq(1).drag(delta1.x, delta1.y);
     })
 
     specify(`...and now its position is somewhere near to ${JSON.stringify(secondVertexNewCoords)}`, () => {
@@ -95,7 +95,7 @@ describe('DrawingArea object test', () => {
         cy.get(".area.vertex").should("have.length", 4);
     })
 
-    specify("...and even pentagular after adding yet one more vertex", () => {
+    specify("...and even pentangular after adding yet one more vertex", () => {
         swamp.addVertex(3, {x: 150, y: 400});
         cy.get(".area.vertex").should("have.length", 5);
     })
@@ -150,4 +150,16 @@ describe('DrawingArea object test', () => {
         cy.get(".Swamp.area path.coast").should("have.css", "stroke").and("be.colored", "blue");
     })
 
+    const p4 = {x: 200, y: 300};
+    specify(`Now the point (${p4.x}, ${p4.y}) is in the swamp`, () => {
+        expect(isInTheSwamp(p4)).to.be.true;
+    })
+
+    const delta2 = {x: 100, y: 0};
+    it(`Move the swamp by (${delta2.x}, ${delta2.y})`, () => {
+        cy.get(".Swamp.area").eq(1).drag(delta2.x, delta2.y);
+    })
+    specify(`And now the point (${p4.x}, ${p4.y}) is already outside the swamp`, () => {
+        expect(isInTheSwamp(p4)).to.be.false;
+    })
 })//describe
