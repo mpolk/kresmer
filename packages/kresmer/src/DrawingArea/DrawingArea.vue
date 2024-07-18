@@ -46,12 +46,13 @@
             [props.model.getClass().name]: true,
             area: true,
             selected: props.model.isSelected,
+            dragged: props.model.isDragged,
         }
     })//areaClass
 
     const cursorStyle = computed(() => {
         return {
-            cursor: props.model.isSelected ? "default" : "pointer",
+            cursor: props.model.isDragged ? "move" : props.model.isSelected ? "default" : "pointer",
         }
     })//segmentStyle
 
