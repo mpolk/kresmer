@@ -115,8 +115,10 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
     
         public moveFromStartPos(delta: Position)
         {
-            this.origin.x = this.dragStartPos!.x + delta.x;
-            this.origin.y = this.dragStartPos!.y + delta.y;
+            this.origin = {
+                x: this.dragStartPos!.x + delta.x,
+                y: this.dragStartPos!.y + delta.y
+            }
             if (this.kresmer.animateComponentDragging)
                 this.updateConnectionPoints();
             this.notifyOnDrag();
