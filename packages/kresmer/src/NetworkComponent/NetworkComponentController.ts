@@ -18,11 +18,11 @@ import MouseEventCapture from "../MouseEventCapture";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
 import { withZOrder  } from "../ZOrdering";
-import {Draggable, IDraggable, AbstractDraggable } from "../Draggable";
+import { draggable } from "../Draggable";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
-export default class NetworkComponentController extends Draggable(withZOrder(AbstractDraggable)) implements IDraggable {
+export default class NetworkComponentController extends draggable(withZOrder(class{})) {
     constructor(
         kresmer: Kresmer,
         component: NetworkComponent,
@@ -31,11 +31,20 @@ export default class NetworkComponentController extends Draggable(withZOrder(Abs
             transform?: Transform,
         }
     ) {
-        super(kresmer, params);
+        super();
+        this._kresmer = new WeakRef(kresmer);
         this.component = component;
         this.component.controller = this;
+        this._origin = params.origin;
         this.transform = params.transform ? params.transform : new Transform;
     }//ctor
+
+    readonly _kresmer: WeakRef<Kresmer>;
+    get kresmer() {return this._kresmer.deref()!}
+
+    protected _origin: Position;
+    get origin() {return {...this._origin}}
+    set origin(newValue: Position) {this._origin = {...newValue}}
 
     public component: NetworkComponent;
     get isSelected() {return this.component.isSelected}
@@ -66,6 +75,8 @@ export default class NetworkComponentController extends Draggable(withZOrder(Abs
         this.transformMode = undefined;
         this.isInAdjustmentMode = false;
     }//selectComponent
+
+    public get isThisSelected(): boolean {return this.isSelected;}
 
     notifyOnDragStart() {
         this.kresmer.emit("component-move-started", this);

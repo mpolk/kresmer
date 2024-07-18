@@ -41,7 +41,6 @@ import DrawingArea, { DrawingAreaMap } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
-import { IDraggable } from "Draggable";
 
 
 /**
@@ -1473,7 +1472,7 @@ class UpdateDrawingPropsOp extends EditorOperation
 
 export class SelectionMoveOp extends EditorOperation {
 
-    constructor(kresmer: Kresmer, public readonly leader: IDraggable)
+    constructor(kresmer: Kresmer, public readonly leader: NetworkComponentController|DrawingArea)
     {
         super();
         this.leaderOldPos = this.leaderNewPos = {...leader.origin};

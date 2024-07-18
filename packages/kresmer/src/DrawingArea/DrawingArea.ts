@@ -16,12 +16,13 @@ import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
 import { indent } from "../Utils";
 import { MapWithZOrder, withZOrder } from "../ZOrdering";
-import { Draggable, IDraggable, DraggableDrawingElementWithVertices } from "../Draggable";
+import { draggable } from "../Draggable";
+import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 
 /**
  * Drawing Area 
  */
-export default class DrawingArea extends Draggable(withZOrder(DraggableDrawingElementWithVertices)) implements IDraggable {
+export default class DrawingArea extends draggable(withZOrder(DrawingElementWithVertices)) {
     /**
      * 
      * @param _class The class this Area should belong 
@@ -90,6 +91,8 @@ export default class DrawingArea extends Draggable(withZOrder(DraggableDrawingEl
         }//if
     }//isSelected
 
+    public get isThisSelected(): boolean {return this.isSelected;}
+
     toString()
     {
         return `${this.name}: ${this.getClass().name}`;
@@ -148,6 +151,18 @@ export default class DrawingArea extends Draggable(withZOrder(DraggableDrawingEl
     }//addVertex
 
     public get wouldAlignVertices() {return new Set(this.vertices);}
+
+
+    public async alignConnectedLinks()
+    {
+        if (this.kresmer.autoAlignVertices) {
+            await nextTick();
+            await nextTick();
+            for (const link of this.connectedLinks) {
+                this.kresmer.edAPI.alignLinkVertices({link});
+            }//for
+        }//if
+    }//alignConnectedLinks
 
 
     public onClick(event: MouseEvent, segmentNumber?: number)

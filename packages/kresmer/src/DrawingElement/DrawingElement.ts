@@ -262,7 +262,7 @@ export default abstract class DrawingElement {
 
     protected _isSelected = false;
     /** Indicates if the element is currently selected */
-    get isSelected() {return this._isSelected}
+    get isSelected(): boolean {return this._isSelected}
     set isSelected(reallyIs: boolean) {
         this._isSelected = reallyIs;
         this.kresmer.selectedElement = reallyIs ? this : undefined;

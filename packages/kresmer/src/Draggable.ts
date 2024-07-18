@@ -3,103 +3,49 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *            Data types for z-ordering support on the drawing 
+ *         Data types for element dragging support on the drawing 
  ***************************************************************************/
 
 import Kresmer, { SelectionMoveOp } from "./Kresmer";
 import { Position } from "./Transform/Transform";
 import MouseEventCapture from "./MouseEventCapture";
 import { EditorOperation } from "./UndoStack";
-import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVertices";
 
 export type DragConstraint = "x" | "y" | "unknown";
 
-export interface IDraggable {
-    kresmer: Kresmer;
-    origin: Position;
-    isGoingToBeDragged: boolean;
-    isDragged: boolean;
-    isSelected: boolean;
-    dragConstraint: DragConstraint|undefined;
-    dragStartPos?: Position;
-    savedMousePos?: Position;
-    mouseCaptureTarget: SVGElement;
-
-    bringToTop(): void;
-    notifyOnDragStart(): void;
-    notifyOnDrag(): void;
-    notifyOnDragEnd(): void;
-    createMoveOp(): EditorOperation;
-    updateConnectionPoints(): void;
-    alignConnectedLinks(): void;
-}//IDraggable
-
-export abstract class AbstractDraggable implements IDraggable {
-    constructor(
-        kresmer: Kresmer,
-        params: {
-            origin: Position,
-        }
-    ) {
-        this._kresmer = new WeakRef(kresmer);
-        this.origin = params.origin;
-    }//ctor
-
-    readonly _kresmer: WeakRef<Kresmer>;
-    get kresmer() { return this._kresmer.deref()! }
-
-    origin!: Position;
-    abstract get isSelected(): boolean;
-    
-    public isGoingToBeDragged = false;
-    public isDragged = false;
-    public dragConstraint: DragConstraint|undefined;
-    dragStartPos?: Position;
-    savedMousePos?: Position;
-    mouseCaptureTarget!: SVGElement;
-
-    abstract bringToTop(): void;
-    abstract notifyOnDragStart(): void;
-    abstract notifyOnDrag(): void;
-    abstract notifyOnDragEnd(): void;
-    abstract createMoveOp(): EditorOperation;
-    abstract updateConnectionPoints(): void;
-    abstract alignConnectedLinks(): void;
-}//AbstractDraggable
-
-
-export abstract class DraggableDrawingElementWithVertices extends DrawingElementWithVertices implements IDraggable {
-    origin!: Position;
-    abstract get isSelected(): boolean;
-    
-    public isGoingToBeDragged = false;
-    public isDragged = false;
-    public dragConstraint: DragConstraint|undefined;
-    dragStartPos?: Position;
-    savedMousePos?: Position;
-    mouseCaptureTarget!: SVGElement;
-
-    abstract bringToTop(): void;
-    abstract notifyOnDragStart(): void;
-    abstract notifyOnDrag(): void;
-    abstract notifyOnDragEnd(): void;
-    abstract createMoveOp(): EditorOperation;
-    abstract updateConnectionPoints(): void;
-    abstract alignConnectedLinks(): void;
-
-}//DraggableDrawingElementWithVertices
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type GConstructor<T = object> = abstract new (...args: any[]) => T;
 
 /**
  * Adds a mixin implementing dragging with mouse
  * @param Base A base class to be augmented
  * @returns An augmented class
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function Draggable<TBase extends abstract new(...args: any[]) => IDraggable>(Base: TBase)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
+export function draggable<TBase extends GConstructor>(Base: TBase)
 {
     abstract class DraggableBase extends Base {
 
+        abstract get kresmer(): Kresmer;
+        abstract get origin(): Position;
+        abstract set origin(newValue: Position);
+        abstract get isThisSelected(): boolean; //ugly workaround for Typescript accessor inheritance quirk
+        
+        public isGoingToBeDragged = false;
+        public isDragged = false;
+        public dragConstraint: DragConstraint|undefined;
+        dragStartPos?: Position;
+        savedMousePos?: Position;
+        mouseCaptureTarget!: SVGElement;
+    
+        abstract bringToTop(): void;
+        abstract notifyOnDragStart(): void;
+        abstract notifyOnDrag(): void;
+        abstract notifyOnDragEnd(): void;
+        abstract createMoveOp(): EditorOperation;
+        abstract updateConnectionPoints(): void;
+        abstract alignConnectedLinks(): void;
+    
         getMousePosition(event: MouseEvent) {
             return this.kresmer.applyScreenCTM({x: event.clientX, y: event.clientY});
         }//getMousePosition
@@ -113,8 +59,9 @@ export function Draggable<TBase extends abstract new(...args: any[]) => IDraggab
             this.savedMousePos = this.getMousePosition(event);
             this.isGoingToBeDragged = true;
             this.bringToTop();
-            if (this.isSelected && this.kresmer.muiltipleComponentsSelected) {
-                const op = new SelectionMoveOp(this.kresmer, this);
+            if (this.isThisSelected && this.kresmer.muiltipleComponentsSelected) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const op = new SelectionMoveOp(this.kresmer, this as any);
                 this.kresmer.undoStack.startOperation(op);
                 this.kresmer._startSelectionDragging(this, op);
             } else {
@@ -160,7 +107,7 @@ export function Draggable<TBase extends abstract new(...args: any[]) => IDraggab
             }//switch
                 
             this.moveFromStartPos(effectiveMove);
-            if (this.isSelected && this.kresmer.muiltipleComponentsSelected) {
+            if (this.isThisSelected && this.kresmer.muiltipleComponentsSelected) {
                 this.kresmer._dragSelection(effectiveMove, this);
             }//if
             return true;
@@ -189,7 +136,7 @@ export function Draggable<TBase extends abstract new(...args: any[]) => IDraggab
                     };
                 }//if
                 this.updateConnectionPoints();
-                if (this.isSelected && this.kresmer.muiltipleComponentsSelected) {
+                if (this.isThisSelected && this.kresmer.muiltipleComponentsSelected) {
                     this.kresmer._endSelectionDragging(this);
                 }//if
                 this.kresmer.undoStack.commitOperation();
