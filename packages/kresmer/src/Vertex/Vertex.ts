@@ -9,7 +9,7 @@
 import { nextTick } from "vue";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import { Position } from "../Transform/Transform";
-import { UnrealizableVertexAlignmentException } from "../KresmerException";
+// import { UnrealizableVertexAlignmentException } from "../KresmerException";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 import { EditorOperation } from "../UndoStack";
 import MouseEventCapture from "../MouseEventCapture";
@@ -282,9 +282,9 @@ export default abstract class Vertex {
             newAnchor.pos.x <= 0 || newAnchor.pos.x >= this.parentElement.kresmer.logicalWidth ||
             newAnchor.pos.y <= 0 || newAnchor.pos.y >= this.parentElement.kresmer.logicalHeight);
         if (outOfLimits) {
-            if (mode === "normal") 
-                this.parentElement.kresmer.raiseError(new UnrealizableVertexAlignmentException(
-                    {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
+            // if (mode === "normal") 
+            //     this.parentElement.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+            //         {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
             shouldMove = false;
             this.blink();
         }//if

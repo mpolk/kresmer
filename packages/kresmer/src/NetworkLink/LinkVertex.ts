@@ -567,9 +567,9 @@ export default class LinkVertex extends Vertex {
             newAnchor.pos.x <= 0 || newAnchor.pos.x >= this.parentElement.kresmer.logicalWidth ||
             newAnchor.pos.y <= 0 || newAnchor.pos.y >= this.parentElement.kresmer.logicalHeight);
         if (outOfLimits) {
-            if (mode === "normal") 
-                this.parentElement.kresmer.raiseError(new UnrealizableVertexAlignmentException(
-                    {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
+            // if (mode === "normal") 
+            //     this.parentElement.kresmer.raiseError(new UnrealizableVertexAlignmentException(
+            //         {message: "Aligned position is out of the drawing boundaries", severity: "warning"}));
             shouldMove = false;
             this.blink();
         }//if
