@@ -142,6 +142,16 @@
         <div class="offcanvas-body">
             <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
                 <div class="row">
+                    <div class="col">
+                        <label class="form-label" for="selUILanguage">UI language <span class="text-secondary">(requires restart)</span></label>
+                        <select id="selUILanguage" class="form-select" v-model="appSettings!.uiLanguage">
+                            <option value="">default</option>
+                            <option value="en">English</option>
+                            <option value="uk">Українська</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col d-flex justify-content-between">
                         <span>Library directory(-ies)</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
@@ -218,7 +228,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label class="form-check-label" for="selLibDataPriority">Library data priority</label>
+                        <label class="form-label" for="selLibDataPriority">Library data priority</label>
                         <select id="selLibDataPriority" class="form-select" v-model="appSettings!.libDataPriority">
                             <option>{{LibDataPriority.preferSystem}}</option>
                             <option>{{LibDataPriority.preferEmbedded}}</option>
@@ -244,7 +254,7 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label class="form-check-label" for="selStreetAddressFormat">Street address format</label>
+                        <label class="form-label" for="selStreetAddressFormat">Street address format</label>
                         <select id="selStreetAddressFormat" class="form-select" v-model="appSettings!.streetAddressFormat">
                             <option>{{StreetAddressFormat.BuildingFirst}}</option>
                             <option>{{StreetAddressFormat.StreetFirst}}</option>

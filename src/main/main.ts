@@ -33,6 +33,7 @@ export const localSettings = new Settings("local-settings.json", {
     autoloadLastDrawing: true as boolean,
     hrefBase: "",
     streetAddressFormat: StreetAddressFormat.StreetFirst,
+    uiLanguage: "",
 });
 
 import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
@@ -48,7 +49,7 @@ i18next.use(FsBackend).init<FsBackendOptions>({
     },
     debug: true,
     initImmediate: false,
-    lng: "uk",
+    lng: localSettings.data.uiLanguage,
     fallbackLng: "en",
 });
 
@@ -78,6 +79,7 @@ export type AppSettings = {
     autoloadLastDrawing: boolean,
     hrefBase: string,
     streetAddressFormat: StreetAddressFormat,
+    uiLanguage: string,
 }//AppSettings
 
 export type CustomManagementProtocol = {
