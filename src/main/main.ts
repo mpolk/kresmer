@@ -49,6 +49,7 @@ i18next.use(FsBackend).init<FsBackendOptions>({
     },
     debug: true,
     initImmediate: false,
+    ns: "main",
     lng: localSettings.data.uiLanguage,
     fallbackLng: "en",
 });
@@ -184,3 +185,8 @@ export function reloadContent(ignoreCache?: boolean)
     else
         mainWindow.webContents.reloadIgnoringCache();
 }//reloadContent
+
+export function quitApp()
+{
+    mainWindow.close();
+}//quitApp

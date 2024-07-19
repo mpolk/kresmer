@@ -7,12 +7,10 @@
  ***************************************************************************/
 import { BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions } from "electron";
 import { Position } from "kresmer";
-import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent, recentDrawings } from "./main";
+import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent, recentDrawings, quitApp } from "./main";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing, openDrawingFromPath } from "./file-ops";
 import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
 import {t} from "i18next";
-
-const isMac = process.platform === 'darwin'
 
 export interface ContextMenus {
     "drawing": (mousePos?: Position) => void,
@@ -65,49 +63,49 @@ export default class Menus {
 
     private static readonly appMenuTemplate: MenuItemConstructorOptions[] = [
         {
-            label: t("main.menu.file._", 'File'),
+            label: t("main:menu.file._", 'File'),
             submenu: [
-                { label: t("main.menu.file.new-drawing", "New drawing"), click: () => createNewDrawing()},
-                { label: t("main.menu.file.open-drawing", "Open drawing..."), accelerator: "Control+O", click: () => openDrawing() },
-                { label: t("main.menu.file.open-recent", "Open recent"), id: "open-recent", submenu: []},
-                { label: t("main.menu.file.load-library", "Load library..."), accelerator: "Control+L", click: () => loadLibrary() },
+                { label: t("main:menu.file.new-drawing", "New drawing"), click: () => createNewDrawing()},
+                { label: t("main:menu.file.open-drawing", "Open drawing..."), accelerator: "Control+O", click: () => openDrawing() },
+                { label: t("main:menu.file.open-recent", "Open recent"), id: "open-recent", submenu: []},
+                { label: t("main:menu.file.load-library", "Load library..."), accelerator: "Control+L", click: () => loadLibrary() },
                 { type: 'separator' },
-                { label: t("main.menu.file.save-drawing", "Save drawing"), accelerator: "Control+S", click: () => saveDrawing() },
-                { label: t("main.menu.file.save-drawing-as", "Save drawing as..."), click: () => saveDrawingAs() },
-                { label: t("main.menu.file.export-drawing-to-svg", "Export drawing to SVG..."), click: () => exportDrawingToSVG() },
+                { label: t("main:menu.file.save-drawing", "Save drawing"), accelerator: "Control+S", click: () => saveDrawing() },
+                { label: t("main:menu.file.save-drawing-as", "Save drawing as..."), click: () => saveDrawingAs() },
+                { label: t("main:menu.file.export-drawing-to-svg", "Export drawing to SVG..."), click: () => exportDrawingToSVG() },
                 { type: 'separator' },
                 {
-                    label: t("main.menu.file.connect-to-server", "Connect to the backend server..."), 
+                    label: t("main:menu.file.connect-to-server", "Connect to the backend server..."), 
                     accelerator: "Control+B", id: "connectToServer",
                     click: () => requestConnectToServer(true)
                 },
                 {
-                    label: t("main.menu.file.disconnect-from-server", "Disconnect from the backend server"), 
+                    label: t("main:menu.file.disconnect-from-server", "Disconnect from the backend server"), 
                     accelerator: "Shift+Control+B", id: "disconnectFromServer",
                     click: () => requestDisconnectFromServer(), visible: false, enabled: false
                 },
                 { type: 'separator' },
-                isMac ? { role: 'close' } : { role: 'quit' }
+                { label: t("main:menu.file.quit", "Quit"), click: quitApp }
             ]
         },
         {
-            label: 'Edit',
+            label: t("main:menu.edit._", 'Edit'),
             submenu: [
                 { label: 'Escape', accelerator: "Escape", visible: false, enabled: true, click: () => sendAppCommand("escape") },
-                { label: 'Undo', accelerator: "Control+Z", click: () => sendAppCommand("undo") },
-                { label: 'Redo', accelerator: "Control+Y", click: () => sendAppCommand("redo") },
+                { label:  t("main:menu.edit.undo", 'Undo'), accelerator: "Control+Z", click: () => sendAppCommand("undo") },
+                { label:  t("main:menu.edit.redo", 'Redo'), accelerator: "Control+Y", click: () => sendAppCommand("redo") },
                 { type: 'separator' },
                 {
-                    label: 'Delete drawing element', accelerator: "delete", enabled: false,
+                    label:  t("main:menu.edit.delete", 'Delete selected element'), accelerator: "delete", enabled: false,
                     id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")
                 },
                 { type: 'separator' },
                 {
-                    label: 'Auto-align link vertices', type: "checkbox", checked: true, accelerator: "F2", id: "toggleVertexAutoAlignment",
+                    label:  t("main:menu.edit.auto-align-vertices", 'Auto-align vertices'), type: "checkbox", checked: true, accelerator: "F2", id: "toggleVertexAutoAlignment",
                     click: () => sendAppCommand("toggle-vertex-auto-alignment")
                 },
-                { label: "Drawing properties...", click: () => sendAppCommand("edit-drawing-properties", { x: 0, y: 0 }) },
-                { label: "Application settings...", click: () => sendAppCommand("edit-app-settings", localSettings.data) },
+                { label:  t("main:menu.edit.drawing-properties", "Drawing properties..."), click: () => sendAppCommand("edit-drawing-properties", { x: 0, y: 0 }) },
+                { label:  t("main:menu.edit.app-settings", "Application settings..."), click: () => sendAppCommand("edit-app-settings", localSettings.data) },
             ]
         },
         {
