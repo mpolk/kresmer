@@ -43,6 +43,8 @@ if (!fs.statSync(locPath, {throwIfNoEntry: false}))
     locPath = '../../locales';
 if (!fs.statSync(locPath, {throwIfNoEntry: false}))
     locPath = path.resolve('locales');
+if (!fs.statSync(locPath, {throwIfNoEntry: false}))
+    locPath = path.join(__dirname, 'locales');
 i18next.use(FsBackend).init<FsBackendOptions>({
     backend: {
         loadPath: path.join(locPath, '{{lng}}/{{ns}}.json'),
