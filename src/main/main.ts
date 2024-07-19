@@ -190,3 +190,16 @@ export function quitApp()
 {
     mainWindow.close();
 }//quitApp
+
+export function toggleDevTools()
+{
+    if (mainWindow.webContents.isDevToolsOpened())
+        mainWindow.webContents.closeDevTools();
+    else
+        mainWindow.webContents.openDevTools();
+}//toggleDevTools
+
+export function toggleFullScreen()
+{
+    mainWindow.setFullScreen(!mainWindow.isFullScreen());
+}//toggleFullScreen

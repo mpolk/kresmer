@@ -7,7 +7,7 @@
  ***************************************************************************/
 import { BrowserWindow, Menu, MenuItem, MenuItemConstructorOptions } from "electron";
 import { Position } from "kresmer";
-import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent, recentDrawings, quitApp } from "./main";
+import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent, recentDrawings, quitApp, toggleDevTools, toggleFullScreen } from "./main";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing, openDrawingFromPath } from "./file-ops";
 import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
 import {t} from "i18next";
@@ -109,21 +109,21 @@ export default class Menus {
             ]
         },
         {
-            label: 'View',
+            label:  t("main:menu.view._", "View"),
             submenu: [
-                { label: 'Reload', accelerator: "Control+R", click: () => reloadContent(false) },
-                { label: 'Force reload', accelerator: "Control+Shift+R", click: () => reloadContent(true) },
-                { role: 'toggleDevTools' },
+                { label: t("main:menu.view.reload", "Reload"), accelerator: "Control+R", click: () => reloadContent(false) },
+                { label: t("main:menu.view.force-reload", "Force reload"), accelerator: "Control+Shift+R", click: () => reloadContent(true) },
+                { label: t("main:menu.view.toggle-dev-tools", "Toggle DevTools"), click: toggleDevTools, accelerator: "Control+Shift+I" },
                 { type: 'separator' },
-                { label: 'Zoom to fit', accelerator: "Control+0", click: () => sendAppCommand("scale-drawing", "0") },
-                { label: 'Zoom In', accelerator: "Control+Plus", click: () => sendAppCommand("scale-drawing", "+") },
-                { label: 'Zoom Out', accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-") },
-                { label: 'Actual size', accelerator: "Control+1", click: () => sendAppCommand("scale-drawing", "1") },
+                { label: t("main:menu.view.zoom-to-fit", "Zoom to Fit"), accelerator: "Control+0", click: () => sendAppCommand("scale-drawing", "0") },
+                { label: t("main:menu.view.zoom-in", "Zoom In"), accelerator: "Control+Plus", click: () => sendAppCommand("scale-drawing", "+") },
+                { label: t("main:menu.view.zoom-out", "Zoom Out"), accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-") },
+                { label: t("main:menu.view.actual-size", "Actual Size"), accelerator: "Control+1", click: () => sendAppCommand("scale-drawing", "1") },
                 { type: 'separator' },
-                { label: 'Rulers', type: "checkbox", checked: false, accelerator: "F4", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
-                { label: 'Grid', type: "checkbox", checked: false, accelerator: "Shift+F4", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
+                { label: t("main:menu.view.rulers", "Rulers"), type: "checkbox", checked: false, accelerator: "F4", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
+                { label: t("main:menu.view.grid", "Grid"), type: "checkbox", checked: false, accelerator: "Shift+F4", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
                 { type: 'separator' },
-                { role: 'togglefullscreen' }
+                { label: t("main:menu.view.toggle-full-screen", "Toggle Full Screen"), click: toggleFullScreen, accelerator: "F11" }
             ]
         },
         {

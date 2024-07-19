@@ -21,6 +21,19 @@
       "auto-align-vertices": "Auto-align vertices",
       "drawing-properties": "Drawing properties...",
       "app-settings": "Application settings..."
+    },
+    "view": {
+      "_": "View",
+      "reload": "Reload",
+      "force-reload": "Force reload",
+      "toggle-dev-tools": "Toggle DevTools",
+      "zoom-to-fit": "Zoom to Fit",
+      "zoom-in": "Zoom In",
+      "zoom-out": "Zoom Out",
+      "actual-size": "Actual Size",
+      "rulers": "Rulers",
+      "grid": "Grid",
+      "toggle-full-screen": "Toggle Full Screen"
     }
   }
 }
