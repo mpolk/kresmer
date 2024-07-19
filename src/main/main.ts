@@ -36,9 +36,15 @@ export const localSettings = new Settings("local-settings.json", {
 });
 
 import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
+
+let locPath = path.join(__dirname, '../../locales');
+if (!fs.statSync(locPath, {throwIfNoEntry: false}))
+    locPath = '../../locales';
+if (!fs.statSync(locPath, {throwIfNoEntry: false}))
+    locPath = path.resolve('locales');
 i18next.use(FsBackend).init<FsBackendOptions>({
     backend: {
-        loadPath: path.join(__dirname, '../../locales/{{lng}}/{{ns}}.json'),
+        loadPath: path.join(locPath, '{{lng}}/{{ns}}.json'),
     },
     debug: true,
     initImmediate: false,

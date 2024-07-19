@@ -10,7 +10,7 @@ import { Position } from "kresmer";
 import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent, recentDrawings } from "./main";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing, openDrawingFromPath } from "./file-ops";
 import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
-import i18next from "i18next";
+import {t} from "i18next";
 
 const isMac = process.platform === 'darwin'
 
@@ -65,23 +65,25 @@ export default class Menus {
 
     private static readonly appMenuTemplate: MenuItemConstructorOptions[] = [
         {
-            label: i18next.t("main.menu.file._", 'File'),
+            label: t("main.menu.file._", 'File'),
             submenu: [
-                { label: i18next.t("main.menu.file.new-drawing", "New drawing"), click: () => createNewDrawing()},
-                { label: "Open drawing...", accelerator: "Control+O", click: () => openDrawing() },
-                { label: "Open recent", id: "open-recent", submenu: []},
-                { label: "Load library...", accelerator: "Control+L", click: () => loadLibrary() },
+                { label: t("main.menu.file.new-drawing", "New drawing"), click: () => createNewDrawing()},
+                { label: t("main.menu.file.open-drawing", "Open drawing..."), accelerator: "Control+O", click: () => openDrawing() },
+                { label: t("main.menu.file.open-recent", "Open recent"), id: "open-recent", submenu: []},
+                { label: t("main.menu.file.load-library", "Load library..."), accelerator: "Control+L", click: () => loadLibrary() },
                 { type: 'separator' },
-                { label: "Save drawing", accelerator: "Control+S", click: () => saveDrawing() },
-                { label: "Save drawing as...", click: () => saveDrawingAs() },
-                { label: "Export drawing to SVG...", click: () => exportDrawingToSVG() },
+                { label: t("main.menu.file.save-drawing", "Save drawing"), accelerator: "Control+S", click: () => saveDrawing() },
+                { label: t("main.menu.file.save-drawing-as", "Save drawing as..."), click: () => saveDrawingAs() },
+                { label: t("main.menu.file.export-drawing-to-svg", "Export drawing to SVG..."), click: () => exportDrawingToSVG() },
                 { type: 'separator' },
                 {
-                    label: "Connect to the backend server...", accelerator: "Control+B", id: "connectToServer",
+                    label: t("main.menu.file.connect-to-server", "Connect to the backend server..."), 
+                    accelerator: "Control+B", id: "connectToServer",
                     click: () => requestConnectToServer(true)
                 },
                 {
-                    label: "Disconnect from the backend server", accelerator: "Shift+Control+B", id: "disconnectFromServer",
+                    label: t("main.menu.file.disconnect-from-server", "Disconnect from the backend server"), 
+                    accelerator: "Shift+Control+B", id: "disconnectFromServer",
                     click: () => requestDisconnectFromServer(), visible: false, enabled: false
                 },
                 { type: 'separator' },

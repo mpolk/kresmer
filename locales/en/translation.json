@@ -3,7 +3,15 @@
     "menu": {
       "file": {
         "_": "File",
-        "new-drawing": "New drawing"
+        "new-drawing": "New drawing",
+        "open-drawing": "Open drawing...",
+        "open-recent": "Open recent",
+        "load-library": "Load library...",
+        "save-drawing": "Save drawing",
+        "save-drawing-as": "Save drawing as...",
+        "export-drawing-to-svg": "Export drawing to SVG...",
+        "connect-to-server": "Connect to the backend server...",
+        "disconnect-from-server": "Disconnect from the backend server"
       }
     }
   }

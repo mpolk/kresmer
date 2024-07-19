@@ -50,6 +50,10 @@
       {
         "from": "xsd",
         "to": "xsd"
+      },
+      {
+        "from": "locales",
+        "to": "locales"
       }
     ],
     "mac": {
