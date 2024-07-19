@@ -10,6 +10,7 @@ import { Position } from "kresmer";
 import { sendAppCommand, localSettings, showAboutDialog, createNewDrawing, reloadContent, recentDrawings } from "./main";
 import { openDrawing, loadLibrary, saveDrawingAs, exportDrawingToSVG, saveDrawing, openDrawingFromPath } from "./file-ops";
 import { requestConnectToServer, requestDisconnectFromServer } from "./misc-ops";
+import i18next from "i18next";
 
 const isMac = process.platform === 'darwin'
 
@@ -64,9 +65,9 @@ export default class Menus {
 
     private static readonly appMenuTemplate: MenuItemConstructorOptions[] = [
         {
-            label: 'File',
+            label: i18next.t("main.menu.file._", 'File'),
             submenu: [
-                { label: "New drawing", click: () => createNewDrawing()},
+                { label: i18next.t("main.menu.file.new-drawing", "New drawing"), click: () => createNewDrawing()},
                 { label: "Open drawing...", accelerator: "Control+O", click: () => openDrawing() },
                 { label: "Open recent", id: "open-recent", submenu: []},
                 { label: "Load library...", accelerator: "Control+L", click: () => loadLibrary() },

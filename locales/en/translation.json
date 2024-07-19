@@ -1,0 +1,10 @@
+{
+  "main": {
+    "menu": {
+      "file": {
+        "_": "File",
+        "new-drawing": "New drawing"
+      }
+    }
+  }
+}

@@ -10,19 +10,11 @@ import path from 'path';
 import fs from 'fs';
 import { app, BrowserWindow } from 'electron';
 import Settings from './Settings';
-import Menus from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine, setDefaultDrawingFileName } from './init-funcs';
 import { RecentDrawings } from './file-ops';
 import { StreetAddressFormat, LibDataPriority } from 'kresmer';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-export const packageJson = require("../../package.json");
-export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
-export const appDir = path.dirname(process.argv0);
-
-export let mainWindow: BrowserWindow;
-export let menus: Menus;
+import i18next from 'i18next';
 
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
@@ -42,6 +34,27 @@ export const localSettings = new Settings("local-settings.json", {
     hrefBase: "",
     streetAddressFormat: StreetAddressFormat.StreetFirst,
 });
+
+import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
+i18next.use(FsBackend).init<FsBackendOptions>({
+    backend: {
+        loadPath: path.join(__dirname, '../../locales/{{lng}}/{{ns}}.json'),
+    },
+    debug: true,
+    initImmediate: false,
+    lng: "uk",
+    fallbackLng: "en",
+});
+
+import Menus from "./Menus";
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+export const packageJson = require("../../package.json");
+export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
+export const appDir = path.dirname(process.argv0);
+
+export let mainWindow: BrowserWindow;
+export let menus: Menus;
 
 export type AppSettings = {
     server: {url: string, password: string, autoConnect: boolean},
