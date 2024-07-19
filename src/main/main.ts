@@ -15,6 +15,7 @@ import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, 
 import { RecentDrawings } from './file-ops';
 import { StreetAddressFormat, LibDataPriority } from 'kresmer';
 import i18next from 'i18next';
+import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
 
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
@@ -36,7 +37,7 @@ export const localSettings = new Settings("local-settings.json", {
     uiLanguage: "",
 });
 
-import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
+export const appDir = path.dirname(process.argv0);
 
 let locPath = path.join(__dirname, '../../locales');
 if (!fs.statSync(locPath, {throwIfNoEntry: false}))
@@ -44,7 +45,7 @@ if (!fs.statSync(locPath, {throwIfNoEntry: false}))
 if (!fs.statSync(locPath, {throwIfNoEntry: false}))
     locPath = path.resolve('locales');
 if (!fs.statSync(locPath, {throwIfNoEntry: false}))
-    locPath = path.join(__dirname, 'locales');
+    locPath = path.join(appDir, 'locales');
 i18next.use(FsBackend).init<FsBackendOptions>({
     backend: {
         loadPath: path.join(locPath, '{{lng}}/{{ns}}.json'),
@@ -61,7 +62,6 @@ import Menus from "./Menus";
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const packageJson = require("../../package.json");
 export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
-export const appDir = path.dirname(process.argv0);
 
 export let mainWindow: BrowserWindow;
 export let menus: Menus;
