@@ -48,16 +48,6 @@ let localesPath: string;
     localesPath = p;
     return !fs.statSync(localesPath, {throwIfNoEntry: false});
 })//every
-i18next.use(FsBackend).init<FsBackendOptions>({
-    backend: {
-        loadPath: path.join(localesPath!, '{{lng}}/{{ns}}.json'),
-    },
-    debug: true,
-    initImmediate: false,
-    ns: "main",
-    lng: localSettings.data.uiLanguage,
-    fallbackLng: "en",
-});
 
 import Menus from "./Menus";
 
@@ -101,20 +91,31 @@ export const libsToLoad: string[] = [];
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.whenReady().then(() => {
-    const libDirs = localSettings.get("libDirs");
-    libDirs.forEach(libDir => addLibDir(libDir));
-    parseCommandLine();
-    mainWindow = createMainWindow();
-    menus = new Menus(mainWindow);
-    menus.buildRecentDrawingsSubmenu();
-    initIpcMainHooks();
-    registerCustomManagementProtocols();
+    i18next.use(FsBackend).init<FsBackendOptions>({
+        backend: {
+            loadPath: path.join(localesPath!, '{{lng}}/{{ns}}.json'),
+        },
+        debug: true,
+        //initImmediate: false,
+        ns: "main",
+        lng: localSettings.data.uiLanguage,
+        fallbackLng: "en",
+    }, () => {
+        const libDirs = localSettings.get("libDirs");
+        libDirs.forEach(libDir => addLibDir(libDir));
+        parseCommandLine();
+        mainWindow = createMainWindow();
+        menus = new Menus(mainWindow);
+        menus.buildRecentDrawingsSubmenu();
+        initIpcMainHooks();
+        registerCustomManagementProtocols();
 
-    app.on('activate', function () {
-        // On macOS it's common to re-create a window in the app when the
-        // dock icon is clicked and there are no other windows open.
-        if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
-    })
+        app.on('activate', function () {
+            // On macOS it's common to re-create a window in the app when the
+            // dock icon is clicked and there are no other windows open.
+            if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
+        })
+    });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

@@ -51,17 +51,18 @@ export interface ContextMenuCommands {
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
 type ContextMenuItemConstructorOptions =
-    Omit<MenuItemConstructorOptions, "id"> & { id?: ContextMenuCommandID, cond?: (args: unknown[]) => boolean };
+    Omit<MenuItemConstructorOptions, "id" | "submenu"> & { 
+        id?: ContextMenuCommandID, cond?: (args: unknown[]) => boolean,
+        submenu?: ContextMenuItemConstructorOptions[] | Menu
+    };
 
 export default class Menus {
 
-    constructor(browserWindow: BrowserWindow) {
-        this.browserWindow = browserWindow;
-        this.mainMenu = Menu.buildFromTemplate(Menus.appMenuTemplate);
+    constructor(private browserWindow: BrowserWindow) {
         Menu.setApplicationMenu(this.mainMenu);
     }//ctor
 
-    private static readonly appMenuTemplate: MenuItemConstructorOptions[] = [
+    private readonly appMenuTemplate: MenuItemConstructorOptions[] = [
         {
             label: t("main:menu.file._", 'File'),
             submenu: [
@@ -152,16 +153,19 @@ export default class Menus {
                 { label: t("main:menu.help.about", "About..."), click: () => showAboutDialog() },
             ]
         }
-    ]// as MenuItemConstructorOptions[]
+    ]
+
+    readonly mainMenu: Menu = Menu.buildFromTemplate(this.appMenuTemplate);
 
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
         {
             "drawing": [
-                { label: "Add component...", id: "add-component" },
-                { label: "Create link", id: "create-link" },
-                { label: "Create link bundle", id: "create-link-bundle" },
-                { type: 'separator' },
-                { label: "Properties...", id: "edit-drawing-properties" },
+                { label: t("main:ctx-menu.drawing.add._", "Add"), submenu: [
+                    { label: t("main:ctx-menu.drawing.add.component", "Component..."), id: "add-component" },
+                    { label: t("main:ctx-menu.drawing.add.link", "Link..."), id: "create-link" },
+                    { label: t("main:ctx-menu.drawing.add.bundle", "Bundle..."), id: "create-link-bundle" },
+                ]},
+                { label: t("main:ctx-menu.drawing.properties", "Drawing properties..."), id: "edit-drawing-properties" },
             ],
             "component": [
                 { label: "Transform component", id: "transform-component" },
@@ -192,9 +196,6 @@ export default class Menus {
             ],
         }
 
-    private readonly browserWindow: BrowserWindow;
-    private readonly mainMenu: Menu;
-
     public buildRecentDrawingsSubmenu()
     {
         const submenu = this.mainMenu.getMenuItemById("open-recent")!.submenu!;
@@ -215,8 +216,9 @@ export default class Menus {
         }));
     }//addRecentDrawingItem
 
-    public contextMenu(id: ContextMenuID, ...args: unknown[]) {
-        const template = [...this.contextMenus[id]];
+    private initSubmenu(originalTemplate: ContextMenuItemConstructorOptions[], ...args: unknown[])
+    {
+        const template = [...originalTemplate];
         for (const item of template) {
             if (item.cond && !item.cond(args)) {
                 item.enabled = item.visible = false;
@@ -224,7 +226,15 @@ export default class Menus {
             item.click = () => {
                 this.browserWindow.webContents.send("command", item.id, ...args);
             }
+            if (Array.isArray(item.submenu)) {
+                item.submenu = this.initSubmenu(item.submenu, ...args);
+            }//if
         }//for
+        return template;
+    }//initSubmenu
+
+    public contextMenu(id: ContextMenuID, ...args: unknown[]) {
+        const template = this.initSubmenu(this.contextMenus[id], ...args);
         console.debug("Context menu args:", args);
         const menu = Menu.buildFromTemplate(template);
         menu.popup();

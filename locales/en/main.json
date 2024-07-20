@@ -54,5 +54,16 @@
       "_": "Help",
       "about": "About..."
     }
+  },
+  "ctx-menu": {
+    "drawing": {
+      "add": {
+        "_": "Add",
+        "component": "Component...",
+        "link": "Link...",
+        "bundle": "Bundle..."
+      },
+      "properties": "Drawing properties..."
+    }
   }
 }
