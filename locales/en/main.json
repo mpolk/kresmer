@@ -64,6 +64,29 @@
         "bundle": "Bundle..."
       },
       "properties": "Drawing properties..."
+    },
+    "component": {
+      "transform": "Transform",
+      "duplicate": "Duplicate",
+      "delete": "Delete",
+      "move-to-top": "Move to Top",
+      "move-up": "Move Up",
+      "move-down": "Move Down",
+      "move-to-bottom": "Move to Bottom",
+      "properties": "Component Properties..."
+    },
+    "link": {
+      "align-vertices": "Align Vertices",
+      "add-vertex": "Add Vertex",
+      "delete": "Delete Link",
+      "properties": "Link Properties..."
+    },
+    "link-vertex": {
+      "align": "Align Vertex",
+      "delete": "Delete Vertex"
+    },
+    "connection-point": {
+      "connect": "Connect..."
     }
   }
 }

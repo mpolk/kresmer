@@ -167,31 +167,31 @@ export default class Menus {
                 { label: t("main:ctx-menu.drawing.properties", "Drawing properties..."), id: "edit-drawing-properties" },
             ],
             "component": [
-                { label: "Transform component", id: "transform-component" },
-                { label: "Duplicate component", id: "duplicate-component" },
-                { label: "Delete component", id: "delete-component" },
+                { label: t("main:ctx-menu.component.transform", "Transform"), id: "transform-component" },
+                { label: t("main:ctx-menu.component.duplicate", "Duplicate"), id: "duplicate-component" },
+                { label: t("main:ctx-menu.component.delete", "Delete"), id: "delete-component" },
                 { type: 'separator' },
-                { label: 'Move component to top', id: "move-component-to-top" },
-                { label: 'Move component up', id: "move-component-up" },
-                { label: 'Move component down', id: "move-component-down" },
-                { label: 'Move component to bottom', id: "move-component-to-bottom" },
+                { label: t("main:ctx-menu.component.move-to-top", "Move to Top"), id: "move-component-to-top" },
+                { label: t("main:ctx-menu.component.move-up", "Move Up"), id: "move-component-up" },
+                { label: t("main:ctx-menu.component.move-down", "Move Down"), id: "move-component-down" },
+                { label: t("main:ctx-menu.component.move-to-bottom", "Move to Bottom"), id: "move-component-to-bottom" },
                 { type: 'separator' },
-                { label: " Component properties...", id: "edit-component-properties" },
+                { label: t("main:ctx-menu.component.properties", "Component Properties..."), id: "edit-component-properties" },
             ],
             "link": [
-                { label: "Align vertices", id: "align-vertices" },
-                { label: "Add vertex", id: "add-vertex" },
+                { label: t("main:ctx-menu.link.align-vertices", "Align Vertices"), id: "align-vertices" },
+                { label: t("main:ctx-menu.link.add-vertex", "Add Vertex"), id: "add-vertex" },
                 { type: 'separator' },
-                { label: "Delete link", id: "delete-link" },
+                { label: t("main:ctx-menu.link.delete", "Delete Link"), id: "delete-link" },
                 { type: 'separator' },
-                { label: "Properties...", id: "edit-link-properties" },
+                { label: t("main:ctx-menu.link.properties", "Link Properties..."), id: "edit-link-properties" },
             ],
             "link-vertex": [
-                { label: "Align vertex (double-click)", id: "align-vertex" },
-                { label: "Delete vertex", id: "delete-vertex" },
+                { label: t("main:ctx-menu.link-vertex.align", "Align Vertex"), id: "align-vertex" },
+                { label: t("main:ctx-menu.link-vertex.delete", "Delete Vertex"), id: "delete-vertex" },
             ],
             "connection-point": [
-                { label: "Connect...", id: "connect-connection-point" },
+                { label: t("main:ctx-menu.connection-point.connect", "Connect..."), id: "connect-connection-point" },
             ],
         }
 
@@ -215,7 +215,7 @@ export default class Menus {
         }));
     }//addRecentDrawingItem
 
-    private initSubmenu(originalTemplate: ContextMenuItemConstructorOptions[], ...args: unknown[])
+    private initCtxSubmenu(originalTemplate: ContextMenuItemConstructorOptions[], ...args: unknown[])
     {
         const template = [...originalTemplate];
         for (const item of template) {
@@ -226,14 +226,14 @@ export default class Menus {
                 this.browserWindow.webContents.send("command", item.id, ...args);
             }
             if (Array.isArray(item.submenu)) {
-                item.submenu = this.initSubmenu(item.submenu, ...args);
+                item.submenu = this.initCtxSubmenu(item.submenu, ...args);
             }//if
         }//for
         return template;
     }//initSubmenu
 
     public contextMenu(id: ContextMenuID, ...args: unknown[]) {
-        const template = this.initSubmenu(this.contextMenus[id], ...args);
+        const template = this.initCtxSubmenu(this.contextMenus[id], ...args);
         console.debug("Context menu args:", args);
         const menu = Menu.buildFromTemplate(template);
         menu.popup();
