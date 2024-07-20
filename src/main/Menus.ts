@@ -97,11 +97,6 @@ export default class Menus {
                 { label:  t("main:menu.edit.redo", 'Redo'), accelerator: "Control+Y", click: () => sendAppCommand("redo") },
                 { type: 'separator' },
                 {
-                    label:  t("main:menu.edit.delete", 'Delete selected element'), accelerator: "delete", enabled: false,
-                    id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")
-                },
-                { type: 'separator' },
-                {
                     label:  t("main:menu.edit.auto-align-vertices", 'Auto-align vertices'), type: "checkbox", checked: true, accelerator: "F2", id: "toggleVertexAutoAlignment",
                     click: () => sendAppCommand("toggle-vertex-auto-alignment")
                 },
@@ -139,6 +134,10 @@ export default class Menus {
                 {
                     label: t("main:menu.element.duplicate", "Duplicate"), accelerator: "Control+D", enabled: false, id: "duplicate-component",
                     click: () => sendAppCommand("duplicate-component")
+                },
+                {
+                    label:  t("main:menu.element.delete", 'Delete selected element'), accelerator: "delete", enabled: false,
+                    id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")
                 },
                 { type: 'separator' },
                 { label: t("main:menu.element.move-to-top", "Move to Top"), accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },

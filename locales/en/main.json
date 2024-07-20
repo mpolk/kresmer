@@ -17,7 +17,6 @@
       "_": "Edit",
       "undo": "Undo",
       "redo": "Redo",
-      "delete": "Delete selected element",
       "auto-align-vertices": "Auto-align vertices",
       "drawing-properties": "Drawing properties...",
       "app-settings": "Application settings..."
@@ -45,6 +44,7 @@
       },
       "transform": "Transform",
       "duplicate": "Duplicate",
+      "delete": "Delete selected element",
       "move-to-top": "Move to Bottom",
       "move-up": "Move Up",
       "move-down": "Move Down",
