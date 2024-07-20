@@ -10,12 +10,37 @@ import path from 'path';
 import fs from 'fs';
 import { app, BrowserWindow } from 'electron';
 import Settings from './Settings';
+import Menus from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine, setDefaultDrawingFileName } from './init-funcs';
 import { RecentDrawings } from './file-ops';
 import { StreetAddressFormat, LibDataPriority } from 'kresmer';
 import i18next from 'i18next';
 import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
+
+export type AppSettings = {
+    server: {url: string, password: string, autoConnect: boolean},
+    libDirs: string[],
+    snapToGrid: boolean,
+    snappingGranularity: number,
+    autoAlignVertices: boolean,
+    saveDynamicPropValuesWithDrawing: boolean,
+    embedLibDataInDrawing: boolean,
+    libDataPriority: LibDataPriority,
+    customManagementProtocols: CustomManagementProtocol[],
+    animateComponentDragging: boolean,
+    animateLinkBundleDragging: boolean,
+    recentDrawings: string[],
+    autoloadLastDrawing: boolean,
+    hrefBase: string,
+    streetAddressFormat: StreetAddressFormat,
+    uiLanguage: string,
+}//AppSettings
+
+export type CustomManagementProtocol = {
+    name: string,
+    cmd: string,
+}//CustomManagementProtocol
 
 export const localSettings = new Settings("local-settings.json", {
     window: {width: 800, height: 600},
@@ -49,43 +74,14 @@ let localesPath: string;
     return !fs.statSync(localesPath, {throwIfNoEntry: false});
 })//every
 
-import Menus from "./Menus";
-
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 export const packageJson = require("../../package.json");
 export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
-
-export let mainWindow: BrowserWindow;
-export let menus: Menus;
-
-export type AppSettings = {
-    server: {url: string, password: string, autoConnect: boolean},
-    libDirs: string[],
-    snapToGrid: boolean,
-    snappingGranularity: number,
-    autoAlignVertices: boolean,
-    saveDynamicPropValuesWithDrawing: boolean,
-    embedLibDataInDrawing: boolean,
-    libDataPriority: LibDataPriority,
-    customManagementProtocols: CustomManagementProtocol[],
-    animateComponentDragging: boolean,
-    animateLinkBundleDragging: boolean,
-    recentDrawings: string[],
-    autoloadLastDrawing: boolean,
-    hrefBase: string,
-    streetAddressFormat: StreetAddressFormat,
-    uiLanguage: string,
-}//AppSettings
-
-export type CustomManagementProtocol = {
-    name: string,
-    cmd: string,
-}//CustomManagementProtocol
-
 export const recentDrawings = new RecentDrawings();
-
 export const libDirs: string[] = [];
 export const libsToLoad: string[] = [];
+export let mainWindow: BrowserWindow;
+export let menus: Menus;
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -96,26 +92,26 @@ app.whenReady().then(() => {
             loadPath: path.join(localesPath!, '{{lng}}/{{ns}}.json'),
         },
         debug: true,
-        //initImmediate: false,
+        initImmediate: false,
         ns: "main",
-        lng: localSettings.data.uiLanguage,
+        lng: localSettings.data.uiLanguage || app.getSystemLocale(),
         fallbackLng: "en",
-    }, () => {
-        const libDirs = localSettings.get("libDirs");
-        libDirs.forEach(libDir => addLibDir(libDir));
-        parseCommandLine();
-        mainWindow = createMainWindow();
-        menus = new Menus(mainWindow);
-        menus.buildRecentDrawingsSubmenu();
-        initIpcMainHooks();
-        registerCustomManagementProtocols();
-
-        app.on('activate', function () {
-            // On macOS it's common to re-create a window in the app when the
-            // dock icon is clicked and there are no other windows open.
-            if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
-        })
     });
+
+    const libDirs = localSettings.get("libDirs");
+    libDirs.forEach(libDir => addLibDir(libDir));
+    parseCommandLine();
+    mainWindow = createMainWindow();
+    menus = new Menus(mainWindow);
+    menus.buildRecentDrawingsSubmenu();
+    initIpcMainHooks();
+    registerCustomManagementProtocols();
+
+    app.on('activate', function () {
+        // On macOS it's common to re-create a window in the app when the
+        // dock icon is clicked and there are no other windows open.
+        if (BrowserWindow.getAllWindows().length === 0) createMainWindow()
+    })
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common
