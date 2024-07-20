@@ -273,7 +273,7 @@ kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) =>
 {
     statusBarData.selectedElement = isSelected ? link : null;
     window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
-    window.electronAPI.enableLinkOpMenuItems(isSelected);
+    // window.electronAPI.enableLinkOpMenuItems(isSelected);
 });//onLinkSelected
 
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>

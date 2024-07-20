@@ -25,7 +25,7 @@ export interface ElectronAPI {
     enableComponentOpMenuItems: (enable: boolean) => void,
     enableMoveComponentUpMenuItems: (enable: boolean) => void,
     enableMoveComponentDownMenuItems: (enable: boolean) => void,
-    enableLinkOpMenuItems: (enable: boolean) => void,
+    // enableLinkOpMenuItems: (enable: boolean) => void,
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => void,
     backendServerDisconnected: () => void,
     openURL: (url: string) => void,

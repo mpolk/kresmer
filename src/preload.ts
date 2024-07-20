@@ -80,9 +80,9 @@ exposeToRenderer({
         sendToMain("enable-component-op-menu-items", enable);
     },
 
-    enableLinkOpMenuItems: (enable: boolean) => {
-        sendToMain("enable-link-op-menu-items", enable);
-    },
+    // enableLinkOpMenuItems: (enable: boolean) => {
+    //     sendToMain("enable-link-op-menu-items", enable);
+    // },
 
     enableMoveComponentUpMenuItems: (enable: boolean) => {
         sendToMain("enable-move-component-up-menu-items", enable);

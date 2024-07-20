@@ -134,48 +134,36 @@ export function initIpcMainHooks()
         defaultDrawingFileName = fileName;
     });
 
-    IpcMainHooks.on('enable-delete-selected-element-menu-item', (enable: boolean) => {
-        Menu.getApplicationMenu()!.getMenuItemById("delete-selected-element")!.enabled = enable;
+    IpcMainHooks.on('enable-delete-selected-element-menu-item', (enabled: boolean) => {
+        changeMenuItems("delete-selected-element")({enabled});
     });
 
-    IpcMainHooks.on('enable-component-op-menu-items', (enable: boolean) => {
-        Menu.getApplicationMenu()!.getMenuItemById("delete-component")!.enabled = enable;
-        Menu.getApplicationMenu()!.getMenuItemById("duplicate-component")!.enabled = enable;
-        Menu.getApplicationMenu()!.getMenuItemById("transform-component")!.enabled = enable;
+    IpcMainHooks.on('enable-component-op-menu-items', (enabled: boolean) => {
+        changeMenuItems(/* "delete-component", */ "duplicate-component", "transform-component")({enabled});
     });
 
-    IpcMainHooks.on('enable-link-op-menu-items', (enable: boolean) => {
-        Menu.getApplicationMenu()!.getMenuItemById("delete-link")!.enabled = enable;
+    // IpcMainHooks.on('enable-link-op-menu-items', (enable: boolean) => {
+    //     // Menu.getApplicationMenu()!.getMenuItemById("delete-link")!.enabled = enable;
+    // });
+
+    IpcMainHooks.on('enable-move-component-up-menu-items', (enabled: boolean) => {
+        changeMenuItems("move-component-up", "move-component-to-top")({enabled});
     });
 
-    IpcMainHooks.on('enable-move-component-up-menu-items', (enable: boolean) => {
-        Menu.getApplicationMenu()!.getMenuItemById("move-component-up")!.enabled = enable;
-        Menu.getApplicationMenu()!.getMenuItemById("move-component-to-top")!.enabled = enable;
-    });
-
-    IpcMainHooks.on('enable-move-component-down-menu-items', (enable: boolean) => {
-        Menu.getApplicationMenu()!.getMenuItemById("move-component-down")!.enabled = enable;
-        Menu.getApplicationMenu()!.getMenuItemById("move-component-to-bottom")!.enabled = enable;
+    IpcMainHooks.on('enable-move-component-down-menu-items', (enabled: boolean) => {
+        changeMenuItems("move-component-down", "move-component-to-bottom")({enabled});
     });
 
     IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
         localSettings.set("server", {url, password, autoConnect});
-        const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
-        menuConnectToServer.visible = false;
-        menuConnectToServer.enabled = false;
-        const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
-        menuDisconnectFromServer.visible = true;
-        menuDisconnectFromServer.enabled = true;
+        changeMenuItems("connectToServer")({visible: false, enabled: false});
+        changeMenuItems("disconnectFromServer")({visible: true, enabled: true});
     });
 
     IpcMainHooks.on("backend-server-disconnected", () => {
         localSettings.set("server", "autoConnect", false);
-        const menuConnectToServer = Menu.getApplicationMenu()!.getMenuItemById("connectToServer")!;
-        menuConnectToServer.visible = true;
-        menuConnectToServer.enabled = true;
-        const menuDisconnectFromServer = Menu.getApplicationMenu()!.getMenuItemById("disconnectFromServer")!;
-        menuDisconnectFromServer.visible = false;
-        menuDisconnectFromServer.enabled = false;
+        changeMenuItems("connectToServer")({visible: true, enabled: true});
+        changeMenuItems("disconnectFromServer")({visible: false, enabled: false});
     });
 
     IpcMainHooks.on("open-url", openUrlWithSystemBrowser);
@@ -189,15 +177,15 @@ export function initIpcMainHooks()
     });
 
     IpcMainHooks.on("grid-shown-or-hidden", shown => {
-        Menu.getApplicationMenu()!.getMenuItemById("toggleGrid")!.checked = shown;
+        changeMenuItems("toggleGrid")({checked: shown});
     });
 
     IpcMainHooks.on("rulers-shown-or-hidden", shown => {
-        Menu.getApplicationMenu()!.getMenuItemById("toggleRulers")!.checked = shown;
+        changeMenuItems("toggleRulers")({checked: shown});
     });
 
     IpcMainHooks.on("vertex-auto-alignment-toggled", autoAlignVertices => {
-        Menu.getApplicationMenu()!.getMenuItemById("toggleVertexAutoAlignment")!.checked = autoAlignVertices;
+        changeMenuItems("toggleVertexAutoAlignment")({checked: autoAlignVertices});
         localSettings.set("autoAlignVertices", autoAlignVertices);
     });
 
@@ -219,6 +207,21 @@ export function initIpcMainHooks()
 
     IpcMainHooks.onInvokation("select-or-load-file", selectOrLoadFile);
 }//initIpcMainHooks
+
+
+function changeMenuItems(...ids: string[])
+{
+    return function(options: {enabled?: boolean, visible?: boolean, checked?: boolean}) {
+        for (const id of ids) {
+            if (options.enabled !== undefined)
+                Menu.getApplicationMenu()!.getMenuItemById(id)!.enabled = options.enabled;
+            if (options.visible !== undefined)
+                Menu.getApplicationMenu()!.getMenuItemById(id)!.visible = options.visible;
+            if (options.checked !== undefined)
+                Menu.getApplicationMenu()!.getMenuItemById(id)!.checked = options.checked;
+        }//for
+    }
+}//changeMenuItems
 
 
 /** Perform a single step of the App initialization in response to the signals received from the renderer process.

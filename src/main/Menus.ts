@@ -131,9 +131,9 @@ export default class Menus {
             label: t("main:menu.element._", "Element"),
             submenu: [
                 { label: t("main:menu.element.add._", "Add"), submenu: [
-                    { label: t("main:menu.element.add.component", "Component..."), accelerator: "insert", click: () => sendAppCommand("add-component") },
-                    { label: t("main:menu.element.add.link", "Link..."), accelerator: "Alt+l", click: () => sendAppCommand("create-link") },
-                    { label: t("main:menu.element.add.bundle", "Bundle..."), accelerator: "Alt+b", click: () => sendAppCommand("create-link-bundle") },
+                    { label: t("main:menu.element.add.component", "Component..."), accelerator: "insert", id: "add-component", click: () => sendAppCommand("add-component") },
+                    { label: t("main:menu.element.add.link", "Link..."), accelerator: "Alt+l", id: "create-link", click: () => sendAppCommand("create-link") },
+                    { label: t("main:menu.element.add.bundle", "Bundle..."), accelerator: "Alt+b", id: "create-link-bundle", click: () => sendAppCommand("create-link-bundle") },
                     ]},
                 { label: t("main:menu.element.transform", "Transform"), id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
                 {
