@@ -52,8 +52,10 @@
                 krePreview.logicalWidth = d;
                 krePreview.logicalHeight = d;
                 const componentPos = krePreview.applyScreenCTM(clRect);
-                controller.origin.x = base.previewWidth/2 + d/2 - (componentPos.x + bBox.width/2);
-                controller.origin.y = base.previewHeight/2 + d/2 - (componentPos.y + bBox.height/2);
+                controller.origin = {
+                    x: base.previewWidth/2 + d/2 - (componentPos.x + bBox.width/2),
+                    y: base.previewHeight/2 + d/2 - (componentPos.y + bBox.height/2)
+                };
             }//if
         }//if
     }//showPreview
