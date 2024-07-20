@@ -34,6 +34,25 @@
       "rulers": "Rulers",
       "grid": "Grid",
       "toggle-full-screen": "Toggle Full Screen"
+    },
+    "element": {
+      "_": "Element",
+      "add": {
+        "_": "Add",
+        "component": "Component...",
+        "link": "Link...",
+        "bundle": "Bundle..."
+      },
+      "transform": "Transform",
+      "duplicate": "Duplicate",
+      "move-to-top": "Move to Bottom",
+      "move-up": "Move Up",
+      "move-down": "Move Down",
+      "move-to-bottom": "Move to Bottom"
+    },
+    "help": {
+      "_": "Help",
+      "about": "About..."
     }
   }
 }

@@ -127,40 +127,29 @@ export default class Menus {
             ]
         },
         {
-            label: 'Component',
+            label: t("main:menu.element._", "Element"),
             submenu: [
-                { label: 'Add...', accelerator: "insert", click: () => sendAppCommand("add-component") },
-                { label: "Transform", id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
+                { label: t("main:menu.element.add._", "Add"), submenu: [
+                    { label: t("main:menu.element.add.component", "Component..."), accelerator: "insert", click: () => sendAppCommand("add-component") },
+                    { label: t("main:menu.element.add.link", "Link..."), accelerator: "Alt+l", click: () => sendAppCommand("create-link") },
+                    { label: t("main:menu.element.add.bundle", "Bundle..."), accelerator: "Alt+b", click: () => sendAppCommand("create-link-bundle") },
+                    ]},
+                { label: t("main:menu.element.transform", "Transform"), id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
                 {
-                    label: 'Duplicate', accelerator: "Control+D", enabled: false, id: "duplicate-component",
+                    label: t("main:menu.element.duplicate", "Duplicate"), accelerator: "Control+D", enabled: false, id: "duplicate-component",
                     click: () => sendAppCommand("duplicate-component")
                 },
-                {
-                    label: 'Delete', enabled: false,
-                    id: "delete-component", click: () => sendAppCommand("delete-component")
-                },
                 { type: 'separator' },
-                { label: 'Move to top', accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
-                { label: 'Move up', accelerator: "PageUp", id: "move-component-up", enabled: false, click: () => sendAppCommand("move-component-up") },
-                { label: 'Move down', accelerator: "PageDown", id: "move-component-down", enabled: false, click: () => sendAppCommand("move-component-down") },
-                { label: 'Move to bottom', accelerator: "Control+PageDown", id: "move-component-to-bottom", enabled: false, click: () => sendAppCommand("move-component-to-bottom") },
+                { label: t("main:menu.element.move-to-top", "Move to Top"), accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
+                { label: t("main:menu.element.move-up", "Move Up"), accelerator: "PageUp", id: "move-component-up", enabled: false, click: () => sendAppCommand("move-component-up") },
+                { label: t("main:menu.element.move-down", "Move Down"), accelerator: "PageDown", id: "move-component-down", enabled: false, click: () => sendAppCommand("move-component-down") },
+                { label: t("main:menu.element.move-to-bottom", "Move to Bottom"), accelerator: "Control+PageDown", id: "move-component-to-bottom", enabled: false, click: () => sendAppCommand("move-component-to-bottom") },
             ]
         },
         {
-            label: 'Link',
+            label: t("main:menu.help._", "Help"),
             submenu: [
-                { label: 'Add...', accelerator: "Alt+l", click: () => sendAppCommand("create-link") },
-                { label: 'Add bundle...', accelerator: "Alt+b", click: () => sendAppCommand("create-link-bundle") },
-                {
-                    label: 'Delete', enabled: false,
-                    id: "delete-link", click: () => sendAppCommand("delete-link")
-                },
-            ]
-        },
-        {
-            role: 'help',
-            submenu: [
-                { label: 'About', click: () => showAboutDialog() },
+                { label: t("main:menu.help.about", "About..."), click: () => showAboutDialog() },
             ]
         }
     ]// as MenuItemConstructorOptions[]
