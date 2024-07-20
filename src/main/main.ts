@@ -38,17 +38,19 @@ export const localSettings = new Settings("local-settings.json", {
 });
 
 export const appDir = path.dirname(process.argv0);
-
-let locPath = path.join(__dirname, '../../locales');
-if (!fs.statSync(locPath, {throwIfNoEntry: false}))
-    locPath = '../../locales';
-if (!fs.statSync(locPath, {throwIfNoEntry: false}))
-    locPath = path.resolve('locales');
-if (!fs.statSync(locPath, {throwIfNoEntry: false}))
-    locPath = path.join(appDir, 'locales');
+let localesPath: string;
+[
+    path.join(__dirname, '../../locales'),
+    '../../locales',
+    path.resolve('locales'),
+    path.join(appDir, 'locales')
+].every(p => {
+    localesPath = p;
+    return !fs.statSync(localesPath, {throwIfNoEntry: false});
+})//every
 i18next.use(FsBackend).init<FsBackendOptions>({
     backend: {
-        loadPath: path.join(locPath, '{{lng}}/{{ns}}.json'),
+        loadPath: path.join(localesPath!, '{{lng}}/{{ns}}.json'),
     },
     debug: true,
     initImmediate: false,
