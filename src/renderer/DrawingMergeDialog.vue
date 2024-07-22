@@ -7,18 +7,19 @@
 <*************************************************************************** -->
 
 <script lang="ts">
+    import { onMounted, reactive, ref } from 'vue';
+    import {Modal} from 'bootstrap';
+    import { DrawingMergeOptions } from 'kresmer';
+    import { kresmer } from '../renderer/renderer-main';
+    import {DrawingMergeDialogResult} from './DrawingMergeDialog';
+    import i18next from 'i18next';
+
     export default {
         name: "DrawingMergeDialog",
     }
 </script>
 
 <script setup lang="ts">
-    import { onMounted, reactive, ref } from 'vue';
-    import {Modal} from 'bootstrap';
-    import { DrawingMergeOptions } from 'kresmer';
-    import { kresmer } from '../renderer/renderer-main';
-    import {DrawingMergeDialogResult} from './DrawingMergeDialog'
-
     let modal!: Modal;
     const rootDiv = ref<HTMLDivElement>();
     const btnOk = ref<HTMLButtonElement>();
@@ -96,7 +97,9 @@
         <div class="modal-dialog">
             <form class="modal-content" @submit.prevent="">
                 <div class="modal-header">
-                    <h5 class="modal-title fs-5">Drawing merge options...</h5>
+                    <h5 class="modal-title fs-5">
+                        {{ i18next.t("drawing-merge-dialog.title", "Drawing merge options...") }}
+                    </h5>
                     <button type="button" class="btn-close" @click="cancel"></button>
                 </div>
                 <div class="modal-body">
@@ -104,21 +107,21 @@
                         <input class="form-check-input" type="radio" id="rbErasePreviousContent" name="mergeOptions"
                             @click="setMergeOption('erase-previous-content')">
                         <label class="form-check-label" for="rbErasePreviousContent">
-                            Erase previous content
+                            {{ i18next.t("drawing-merge-dialog.erase-previous-content", "Erase previous content") }}
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbMergeDuplicates" name="mergeOptions"
                             @click="setMergeOption('merge-duplicates')">
                         <label class="form-check-label" for="rbMergeDuplicates">
-                            Merge duplicates
+                            {{ i18next.t("drawing-merge-dialog.merge-duplicates", "Merge duplicates") }}
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbRenameDuplicates" name="mergeOptions"
                             @click="setMergeOption('rename-duplicates')">
                         <label class="form-check-label" for="rbRenameDuplicates">
-                            Rename duplicates
+                            {{ i18next.t("drawing-merge-dialog.rename-duplicates", "Rename duplicates") }}
                         </label>
                     </div>
                     <template v-if="haveUnsavedChanges">
@@ -127,17 +130,19 @@
                             <input class="form-check-input" type="checkbox" id="cbSaveChanges" name="saveChanges"
                                 v-model="data.saveChanges" @click="onSaveChanges">
                             <label class="form-check-label" for="cbSaveChanges">
-                                ...and save the drawing before opening the new one
+                                {{ i18next.t("drawing-merge-dialog.save-drawing", "...and save the drawing before opening the new one") }}
                             </label>
                         </div>
                     </template>
                     <div v-if="showWarning" class="text-warning text-center">
-                        Please choose one of the options above
+                        {{ i18next.t("drawing-merge-dialog.choose-one-option", "Please choose one of the options above") }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
-                    <button type="button" class="btn btn-secondary" @click="cancel">Cancel</button>
+                    <button type="button" class="btn btn-secondary" @click="cancel">
+                        {{ i18next.t("drawing-merge-dialog.cancel", "Cancel") }}
+                    </button>
                 </div>
             </form>
         </div>

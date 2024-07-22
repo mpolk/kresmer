@@ -53,6 +53,15 @@
     "title": "Choose a new element class...",
     "cancel": "Cancel"
   },
+  "drawing-merge-dialog": {
+    "title": "Drawing merge options...",
+    "erase-previous-content": "Erase previous content",
+    "merge-duplicates": "Merge duplicates",
+    "rename-duplicates": "Rename duplicates",
+    "save-drawing": "...and save the drawing before opening the new one",
+    "choose-one-option": "Please choose one of the options above",
+    "cancel": "Cancel"
+  },
   "dialogs": {
     "graphics-files": "Graphics files"
   }
