@@ -7,16 +7,17 @@
 <*************************************************************************** -->
 
 <script lang="ts">
+    import { onMounted, ref, watch, reactive } from 'vue';
+    import { Offcanvas } from 'bootstrap';
+    import Kresmer, { DrawingElementClass } from 'kresmer';
+    import i18next from 'i18next';
+
     export default {
         name: "DrawingElementClassSelectionSidebar",
     }
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref, watch, reactive } from 'vue';
-    import { Offcanvas } from 'bootstrap';
-    import Kresmer, { DrawingElementClass } from 'kresmer';
-
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
     const selElementClass = ref<HTMLSelectElement>();
@@ -123,7 +124,9 @@
 <template>
     <div class="offcanvas offcanvas-end" style="max-width: 600px;" tabindex="-1" ref="rootDiv">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title fs-5">Choose a new element class...</h5>
+                    <h5 class="offcanvas-title fs-5">
+                        {{ i18next.t("class-selection-dialog.title", "Choose a new element class...") }}
+                    </h5>
                     <button type="button" class="btn-close" @click="close(null)"></button>
                 </div>
                 <form @submit.prevent="">
@@ -157,7 +160,9 @@
                         <div class="row justify-content-end mt-3">
                             <div class="col-auto">
                                 <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>&nbsp;
-                                <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
+                                <button type="button" class="btn btn-secondary" @click="close(null)">
+                                    {{ i18next.t("class-selection-dialog.cancel", "Cancel") }}
+                                </button>
                             </div>
                         </div>
                     </div>

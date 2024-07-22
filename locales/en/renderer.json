@@ -49,6 +49,10 @@
     "cannot-connect": "Cannot connect to the backend. Message is following:",
     "cancel": "Cancel"
   },
+  "class-selection-dialog": {
+    "title": "Choose a new element class...",
+    "cancel": "Cancel"
+  },
   "dialogs": {
     "graphics-files": "Graphics files"
   }
