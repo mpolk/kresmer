@@ -9,6 +9,7 @@
 <script lang="ts">
     import { nextTick, ref } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
+    import {t} from 'i18next';
     import { updateAppSettings } from './renderer-main';
     import { AppSettings } from '../main/main';
     import { StreetAddressFormat, LibDataPriority } from 'kresmer';
@@ -134,7 +135,7 @@
         <!-- Sidebar header -->
         <div class="offcanvas-header align-items-baseline">
             <div>
-                <h5 class="offcanvas-title">Settings</h5>
+                <h5 class="offcanvas-title">{{ t("renderer:app-settings._", "Settings") }}</h5>
             </div>
             <button type="button" class="btn-close" @click="close"></button>
         </div>

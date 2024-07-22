@@ -1,5 +1,8 @@
 {
-  "dialog": {
+  "app-settings": {
+    "_": "Settings"
+  },
+  "dialogs": {
     "graphics-files": "Graphics files"
   }
 }
