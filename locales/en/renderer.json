@@ -40,7 +40,14 @@
   },
   "backend-connection-dialog": {
     "plain-password-warning": "Keep in mind that the password is stored in plain text.\nAre you sure you want to save the password?",
-    "unknown-error": "Unknown error, probably CORS-related"
+    "unknown-error": "Unknown error, probably CORS-related",
+    "title": "Connect to the backend server...",
+    "server-url": "Server URL:",
+    "password": "Password:",
+    "save-password": "Save password",
+    "autoconnect-to-server": "Connect to the server automatically",
+    "cannot-connect": "Cannot connect to the backend. Message is following:",
+    "cancel": "Cancel"
   },
   "dialogs": {
     "graphics-files": "Graphics files"

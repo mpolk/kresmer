@@ -98,31 +98,44 @@
         <div class="modal-dialog">
             <form class="modal-content" @submit.prevent="">
                 <div class="modal-header">
-                    <h5 class="modal-title fs-5">Connect to the backend server...</h5>
+                    <h5 class="modal-title fs-5">
+                        {{ i18next.t("backend-connection-dialog.title", "Connect to the backend server...") }}
+                    </h5>
                     <button type="button" class="btn-close" @click="close(null)"></button>
                 </div>
                 <div class="modal-body">
-                    <label for="inpServerURL" class="form-label">Server URL:</label>
+                    <label for="inpServerURL" class="form-label">
+                        {{ i18next.t("backend-connection-dialog.server-url", "Server URL:") }}
+                    </label>
                     <input id="inpServerURL" class="form-control" v-model="data.serverURL" />
-                    <label for="inpBackendPassword" class="form-label">Password:</label>
+                    <label for="inpBackendPassword" class="form-label">
+                        {{ i18next.t("backend-connection-dialog.password", "Password:") }}
+                    </label>
                     <input id="inpBackendPassword" type="password" class="form-control" v-model="data.password" />
                     <div class="form-check mt-2">
                         <input id="cbSavePassword" type="checkbox" class="form-check-input" v-model="data.savePassword" 
                                @change="onSavePasswordChange($event)"/>
-                        <label for="cbSavePassword" class="form-check-label">Save password</label>
+                        <label for="cbSavePassword" class="form-check-label">
+                            {{ i18next.t("backend-connection-dialog.save-password", "Save password") }}
+                        </label>
                     </div>
                     <div class="form-check">
                         <input id="cbAutoConnect" type="checkbox" class="form-check-input" v-model="data.autoConnect" />
-                        <label for="cbAutoConnect" class="form-check-label">Connect to the server automatically</label>
+                        <label for="cbAutoConnect" class="form-check-label">
+                            {{ i18next.t("backend-connection-dialog.autoconnect-to-server", "Connect to the server automatically") }}
+                        </label>
                     </div>
                     <div v-if="diagMessage" class="text-danger text-center">
-                        Cannot connect to the backend. Message is following:<br/>
+                        {{ i18next.t("backend-connection-dialog.cannot-connect", "Cannot connect to the backend. Message is following:") }}
+                        <br/>
                         {{ diagMessage }}
                     </div>
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-primary" ref="btnOk" @click="submit">Ok</button>
-                    <button type="button" class="btn btn-secondary" @click="close(null)">Cancel</button>
+                    <button type="button" class="btn btn-secondary" @click="close(null)">
+                        {{ i18next.t("backend-connection-dialog.cancel", "Cancel") }}
+                    </button>
                 </div>
             </form>
         </div>
