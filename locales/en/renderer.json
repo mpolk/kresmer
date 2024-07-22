@@ -1,7 +1,10 @@
 {
   "app-settings": {
     "_": "Settings",
-    "ui-language": "UI language",
+    "ui-language": {
+      "_": "UI language",
+      "default": "default"
+    },
     "requires-restart": "requires restart",
     "library-directories": "Library directory(-ies)"
   },

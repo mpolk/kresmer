@@ -145,11 +145,11 @@
                 <div class="row">
                     <div class="col">
                         <label class="form-label" for="selUILanguage">
-                            {{ i18next.t("app-settings.ui-language", "UI language") }}
+                            {{ i18next.t("app-settings.ui-language._", "UI language") }}
                             <span class="text-secondary">({{ t("app-settings.requires-restart", "requires restart") }})</span>
                         </label>
                         <select id="selUILanguage" class="form-select" v-model="appSettings!.uiLanguage">
-                            <option value="">default</option>
+                            <option value="">{{ t("app-settings.ui-language.default", "default") }}</option>
                             <option value="en">English</option>
                             <option value="uk">Українська</option>
                         </select>
