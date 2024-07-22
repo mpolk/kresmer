@@ -1,6 +1,8 @@
 {
   "app-settings": {
-    "_": "Settings"
+    "_": "Settings",
+    "ui-language": "UI language",
+    "requires-restart": "requires restart"
   },
   "dialogs": {
     "graphics-files": "Graphics files"

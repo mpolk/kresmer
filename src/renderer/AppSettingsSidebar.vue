@@ -144,7 +144,10 @@
             <form v-if="formEnabled" :class='{"was-validated": formValidated}'>
                 <div class="row">
                     <div class="col">
-                        <label class="form-label" for="selUILanguage">UI language <span class="text-secondary">(requires restart)</span></label>
+                        <label class="form-label" for="selUILanguage">
+                            {{ t("renderer:app-settings.ui-language", "UI language") }}
+                            <span class="text-secondary">({{ t("renderer:app-settings.requires-restart", "requires restart") }})</span>
+                        </label>
                         <select id="selUILanguage" class="form-select" v-model="appSettings!.uiLanguage">
                             <option value="">default</option>
                             <option value="en">English</option>

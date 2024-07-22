@@ -465,6 +465,7 @@ export function updateAppSettings(newAppSettings: AppSettings)
     kresmer.streetAddressFormat = newAppSettings.streetAddressFormat;
     kresmer.embedLibDataInDrawing = newAppSettings.embedLibDataInDrawing;
     kresmer.libDataPriority = newAppSettings.libDataPriority;
+    i18next.changeLanguage(newAppSettings.uiLanguage);
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
 
