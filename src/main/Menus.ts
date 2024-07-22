@@ -64,92 +64,92 @@ export default class Menus {
 
     private readonly appMenuTemplate: MenuItemConstructorOptions[] = [
         {
-            label: t("main:menu.file._", 'File'),
+            label: t("menu.file._", 'File'),
             submenu: [
-                { label: t("main:menu.file.new-drawing", "New drawing"), click: () => createNewDrawing()},
-                { label: t("main:menu.file.open-drawing", "Open drawing..."), accelerator: "Control+O", click: () => openDrawing() },
-                { label: t("main:menu.file.open-recent", "Open recent"), id: "open-recent", submenu: []},
-                { label: t("main:menu.file.load-library", "Load library..."), accelerator: "Control+L", click: () => loadLibrary() },
+                { label: t("menu.file.new-drawing", "New drawing"), click: () => createNewDrawing()},
+                { label: t("menu.file.open-drawing", "Open drawing..."), accelerator: "Control+O", click: () => openDrawing() },
+                { label: t("menu.file.open-recent", "Open recent"), id: "open-recent", submenu: []},
+                { label: t("menu.file.load-library", "Load library..."), accelerator: "Control+L", click: () => loadLibrary() },
                 { type: 'separator' },
-                { label: t("main:menu.file.save-drawing", "Save drawing"), accelerator: "Control+S", click: () => saveDrawing() },
-                { label: t("main:menu.file.save-drawing-as", "Save drawing as..."), click: () => saveDrawingAs() },
-                { label: t("main:menu.file.export-drawing-to-svg", "Export drawing to SVG..."), click: () => exportDrawingToSVG() },
+                { label: t("menu.file.save-drawing", "Save drawing"), accelerator: "Control+S", click: () => saveDrawing() },
+                { label: t("menu.file.save-drawing-as", "Save drawing as..."), click: () => saveDrawingAs() },
+                { label: t("menu.file.export-drawing-to-svg", "Export drawing to SVG..."), click: () => exportDrawingToSVG() },
                 { type: 'separator' },
                 {
-                    label: t("main:menu.file.connect-to-server", "Connect to the backend server..."), 
+                    label: t("menu.file.connect-to-server", "Connect to the backend server..."), 
                     accelerator: "Control+B", id: "connectToServer",
                     click: () => requestConnectToServer(true)
                 },
                 {
-                    label: t("main:menu.file.disconnect-from-server", "Disconnect from the backend server"), 
+                    label: t("menu.file.disconnect-from-server", "Disconnect from the backend server"), 
                     accelerator: "Shift+Control+B", id: "disconnectFromServer",
                     click: () => requestDisconnectFromServer(), visible: false, enabled: false
                 },
                 { type: 'separator' },
-                { label: t("main:menu.file.quit", "Quit"), click: quitApp }
+                { label: t("menu.file.quit", "Quit"), click: quitApp }
             ]
         },
         {
-            label: t("main:menu.edit._", 'Edit'),
+            label: t("menu.edit._", 'Edit'),
             submenu: [
                 { label: 'Escape', accelerator: "Escape", visible: false, enabled: true, click: () => sendAppCommand("escape") },
-                { label:  t("main:menu.edit.undo", 'Undo'), accelerator: "Control+Z", click: () => sendAppCommand("undo") },
-                { label:  t("main:menu.edit.redo", 'Redo'), accelerator: "Control+Y", click: () => sendAppCommand("redo") },
+                { label:  t("menu.edit.undo", 'Undo'), accelerator: "Control+Z", click: () => sendAppCommand("undo") },
+                { label:  t("menu.edit.redo", 'Redo'), accelerator: "Control+Y", click: () => sendAppCommand("redo") },
                 { type: 'separator' },
                 {
-                    label:  t("main:menu.edit.auto-align-vertices", 'Auto-align vertices'), type: "checkbox", checked: true, accelerator: "F2", id: "toggleVertexAutoAlignment",
+                    label:  t("menu.edit.auto-align-vertices", 'Auto-align vertices'), type: "checkbox", checked: true, accelerator: "F2", id: "toggleVertexAutoAlignment",
                     click: () => sendAppCommand("toggle-vertex-auto-alignment")
                 },
-                { label:  t("main:menu.edit.drawing-properties", "Drawing properties..."), click: () => sendAppCommand("edit-drawing-properties", { x: 0, y: 0 }) },
-                { label:  t("main:menu.edit.app-settings", "Application settings..."), click: () => sendAppCommand("edit-app-settings", localSettings.data) },
+                { label:  t("menu.edit.drawing-properties", "Drawing properties..."), click: () => sendAppCommand("edit-drawing-properties", { x: 0, y: 0 }) },
+                { label:  t("menu.edit.app-settings", "Application settings..."), click: () => sendAppCommand("edit-app-settings", localSettings.data) },
             ]
         },
         {
-            label:  t("main:menu.view._", "View"),
+            label:  t("menu.view._", "View"),
             submenu: [
-                { label: t("main:menu.view.reload", "Reload"), accelerator: "Control+R", click: () => reloadContent(false) },
-                { label: t("main:menu.view.force-reload", "Force reload"), accelerator: "Control+Shift+R", click: () => reloadContent(true) },
-                { label: t("main:menu.view.toggle-dev-tools", "Toggle DevTools"), click: toggleDevTools, accelerator: "Control+Shift+I" },
+                { label: t("menu.view.reload", "Reload"), accelerator: "Control+R", click: () => reloadContent(false) },
+                { label: t("menu.view.force-reload", "Force reload"), accelerator: "Control+Shift+R", click: () => reloadContent(true) },
+                { label: t("menu.view.toggle-dev-tools", "Toggle DevTools"), click: toggleDevTools, accelerator: "Control+Shift+I" },
                 { type: 'separator' },
-                { label: t("main:menu.view.zoom-to-fit", "Zoom to Fit"), accelerator: "Control+0", click: () => sendAppCommand("scale-drawing", "0") },
-                { label: t("main:menu.view.zoom-in", "Zoom In"), accelerator: "Control+Plus", click: () => sendAppCommand("scale-drawing", "+") },
-                { label: t("main:menu.view.zoom-out", "Zoom Out"), accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-") },
-                { label: t("main:menu.view.actual-size", "Actual Size"), accelerator: "Control+1", click: () => sendAppCommand("scale-drawing", "1") },
+                { label: t("menu.view.zoom-to-fit", "Zoom to Fit"), accelerator: "Control+0", click: () => sendAppCommand("scale-drawing", "0") },
+                { label: t("menu.view.zoom-in", "Zoom In"), accelerator: "Control+Plus", click: () => sendAppCommand("scale-drawing", "+") },
+                { label: t("menu.view.zoom-out", "Zoom Out"), accelerator: "Control+-", click: () => sendAppCommand("scale-drawing", "-") },
+                { label: t("menu.view.actual-size", "Actual Size"), accelerator: "Control+1", click: () => sendAppCommand("scale-drawing", "1") },
                 { type: 'separator' },
-                { label: t("main:menu.view.rulers", "Rulers"), type: "checkbox", checked: false, accelerator: "F4", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
-                { label: t("main:menu.view.grid", "Grid"), type: "checkbox", checked: false, accelerator: "Shift+F4", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
+                { label: t("menu.view.rulers", "Rulers"), type: "checkbox", checked: false, accelerator: "F4", id: "toggleRulers", click: () => sendAppCommand("toggle-rulers") },
+                { label: t("menu.view.grid", "Grid"), type: "checkbox", checked: false, accelerator: "Shift+F4", id: "toggleGrid", click: () => sendAppCommand("toggle-grid") },
                 { type: 'separator' },
-                { label: t("main:menu.view.toggle-full-screen", "Toggle Full Screen"), click: toggleFullScreen, accelerator: "F11" }
+                { label: t("menu.view.toggle-full-screen", "Toggle Full Screen"), click: toggleFullScreen, accelerator: "F11" }
             ]
         },
         {
-            label: t("main:menu.element._", "Element"),
+            label: t("menu.element._", "Element"),
             submenu: [
-                { label: t("main:menu.element.add._", "Add"), submenu: [
-                    { label: t("main:menu.element.add.component", "Component..."), accelerator: "insert", id: "add-component", click: () => sendAppCommand("add-component") },
-                    { label: t("main:menu.element.add.link", "Link..."), accelerator: "Alt+l", id: "create-link", click: () => sendAppCommand("create-link") },
-                    { label: t("main:menu.element.add.bundle", "Bundle..."), accelerator: "Alt+b", id: "create-link-bundle", click: () => sendAppCommand("create-link-bundle") },
+                { label: t("menu.element.add._", "Add"), submenu: [
+                    { label: t("menu.element.add.component", "Component..."), accelerator: "insert", id: "add-component", click: () => sendAppCommand("add-component") },
+                    { label: t("menu.element.add.link", "Link..."), accelerator: "Alt+l", id: "create-link", click: () => sendAppCommand("create-link") },
+                    { label: t("menu.element.add.bundle", "Bundle..."), accelerator: "Alt+b", id: "create-link-bundle", click: () => sendAppCommand("create-link-bundle") },
                     ]},
-                { label: t("main:menu.element.transform", "Transform"), id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
+                { label: t("menu.element.transform", "Transform"), id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
                 {
-                    label: t("main:menu.element.duplicate", "Duplicate"), accelerator: "Control+D", enabled: false, id: "duplicate-component",
+                    label: t("menu.element.duplicate", "Duplicate"), accelerator: "Control+D", enabled: false, id: "duplicate-component",
                     click: () => sendAppCommand("duplicate-component")
                 },
                 {
-                    label:  t("main:menu.element.delete", 'Delete selected element'), accelerator: "delete", enabled: false,
+                    label:  t("menu.element.delete", 'Delete selected element'), accelerator: "delete", enabled: false,
                     id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")
                 },
                 { type: 'separator' },
-                { label: t("main:menu.element.move-to-top", "Move to Top"), accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
-                { label: t("main:menu.element.move-up", "Move Up"), accelerator: "PageUp", id: "move-component-up", enabled: false, click: () => sendAppCommand("move-component-up") },
-                { label: t("main:menu.element.move-down", "Move Down"), accelerator: "PageDown", id: "move-component-down", enabled: false, click: () => sendAppCommand("move-component-down") },
-                { label: t("main:menu.element.move-to-bottom", "Move to Bottom"), accelerator: "Control+PageDown", id: "move-component-to-bottom", enabled: false, click: () => sendAppCommand("move-component-to-bottom") },
+                { label: t("menu.element.move-to-top", "Move to Top"), accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
+                { label: t("menu.element.move-up", "Move Up"), accelerator: "PageUp", id: "move-component-up", enabled: false, click: () => sendAppCommand("move-component-up") },
+                { label: t("menu.element.move-down", "Move Down"), accelerator: "PageDown", id: "move-component-down", enabled: false, click: () => sendAppCommand("move-component-down") },
+                { label: t("menu.element.move-to-bottom", "Move to Bottom"), accelerator: "Control+PageDown", id: "move-component-to-bottom", enabled: false, click: () => sendAppCommand("move-component-to-bottom") },
             ]
         },
         {
-            label: t("main:menu.help._", "Help"),
+            label: t("menu.help._", "Help"),
             submenu: [
-                { label: t("main:menu.help.about", "About..."), click: () => showAboutDialog() },
+                { label: t("menu.help.about", "About..."), click: () => showAboutDialog() },
             ]
         }
     ]
@@ -159,39 +159,39 @@ export default class Menus {
     private readonly contextMenus: Record<ContextMenuID, ContextMenuItemConstructorOptions[]> =
         {
             "drawing": [
-                { label: t("main:ctx-menu.drawing.add._", "Add"), submenu: [
-                    { label: t("main:ctx-menu.drawing.add.component", "Component..."), id: "add-component" },
-                    { label: t("main:ctx-menu.drawing.add.link", "Link..."), id: "create-link" },
-                    { label: t("main:ctx-menu.drawing.add.bundle", "Bundle..."), id: "create-link-bundle" },
+                { label: t("ctx-menu.drawing.add._", "Add"), submenu: [
+                    { label: t("ctx-menu.drawing.add.component", "Component..."), id: "add-component" },
+                    { label: t("ctx-menu.drawing.add.link", "Link..."), id: "create-link" },
+                    { label: t("ctx-menu.drawing.add.bundle", "Bundle..."), id: "create-link-bundle" },
                 ]},
-                { label: t("main:ctx-menu.drawing.properties", "Drawing properties..."), id: "edit-drawing-properties" },
+                { label: t("ctx-menu.drawing.properties", "Drawing properties..."), id: "edit-drawing-properties" },
             ],
             "component": [
-                { label: t("main:ctx-menu.component.transform", "Transform"), id: "transform-component" },
-                { label: t("main:ctx-menu.component.duplicate", "Duplicate"), id: "duplicate-component" },
-                { label: t("main:ctx-menu.component.delete", "Delete"), id: "delete-component" },
+                { label: t("ctx-menu.component.transform", "Transform"), id: "transform-component" },
+                { label: t("ctx-menu.component.duplicate", "Duplicate"), id: "duplicate-component" },
+                { label: t("ctx-menu.component.delete", "Delete"), id: "delete-component" },
                 { type: 'separator' },
-                { label: t("main:ctx-menu.component.move-to-top", "Move to Top"), id: "move-component-to-top" },
-                { label: t("main:ctx-menu.component.move-up", "Move Up"), id: "move-component-up" },
-                { label: t("main:ctx-menu.component.move-down", "Move Down"), id: "move-component-down" },
-                { label: t("main:ctx-menu.component.move-to-bottom", "Move to Bottom"), id: "move-component-to-bottom" },
+                { label: t("ctx-menu.component.move-to-top", "Move to Top"), id: "move-component-to-top" },
+                { label: t("ctx-menu.component.move-up", "Move Up"), id: "move-component-up" },
+                { label: t("ctx-menu.component.move-down", "Move Down"), id: "move-component-down" },
+                { label: t("ctx-menu.component.move-to-bottom", "Move to Bottom"), id: "move-component-to-bottom" },
                 { type: 'separator' },
-                { label: t("main:ctx-menu.component.properties", "Component Properties..."), id: "edit-component-properties" },
+                { label: t("ctx-menu.component.properties", "Component Properties..."), id: "edit-component-properties" },
             ],
             "link": [
-                { label: t("main:ctx-menu.link.align-vertices", "Align Vertices"), id: "align-vertices" },
-                { label: t("main:ctx-menu.link.add-vertex", "Add Vertex"), id: "add-vertex" },
+                { label: t("ctx-menu.link.align-vertices", "Align Vertices"), id: "align-vertices" },
+                { label: t("ctx-menu.link.add-vertex", "Add Vertex"), id: "add-vertex" },
                 { type: 'separator' },
-                { label: t("main:ctx-menu.link.delete", "Delete Link"), id: "delete-link" },
+                { label: t("ctx-menu.link.delete", "Delete Link"), id: "delete-link" },
                 { type: 'separator' },
-                { label: t("main:ctx-menu.link.properties", "Link Properties..."), id: "edit-link-properties" },
+                { label: t("ctx-menu.link.properties", "Link Properties..."), id: "edit-link-properties" },
             ],
             "link-vertex": [
-                { label: t("main:ctx-menu.link-vertex.align", "Align Vertex"), id: "align-vertex" },
-                { label: t("main:ctx-menu.link-vertex.delete", "Delete Vertex"), id: "delete-vertex" },
+                { label: t("ctx-menu.link-vertex.align", "Align Vertex"), id: "align-vertex" },
+                { label: t("ctx-menu.link-vertex.delete", "Delete Vertex"), id: "delete-vertex" },
             ],
             "connection-point": [
-                { label: t("main:ctx-menu.connection-point.connect", "Connect..."), id: "connect-connection-point" },
+                { label: t("ctx-menu.connection-point.connect", "Connect..."), id: "connect-connection-point" },
             ],
         }
 

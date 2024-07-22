@@ -135,7 +135,7 @@
         <!-- Sidebar header -->
         <div class="offcanvas-header align-items-baseline">
             <div>
-                <h5 class="offcanvas-title">{{ t("renderer:app-settings._", "Settings") }}</h5>
+                <h5 class="offcanvas-title">{{ t("app-settings._", "Settings") }}</h5>
             </div>
             <button type="button" class="btn-close" @click="close"></button>
         </div>
@@ -145,8 +145,8 @@
                 <div class="row">
                     <div class="col">
                         <label class="form-label" for="selUILanguage">
-                            {{ i18next.t("renderer:app-settings.ui-language", "UI language") }}
-                            <span class="text-secondary">({{ t("renderer:app-settings.requires-restart", "requires restart") }})</span>
+                            {{ i18next.t("app-settings.ui-language", "UI language") }}
+                            <span class="text-secondary">({{ t("app-settings.requires-restart", "requires restart") }})</span>
                         </label>
                         <select id="selUILanguage" class="form-select" v-model="appSettings!.uiLanguage">
                             <option value="">default</option>
@@ -157,7 +157,7 @@
                 </div>
                 <div class="row">
                     <div class="col d-flex justify-content-between">
-                        <span>{{ t("renderer:app-settings.library-directories", "Library directory(-ies)") }}</span>
+                        <span>{{ t("app-settings.library-directories", "Library directory(-ies)") }}</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
                             title="Add library directory" @click="addLibDir">
                         <span class="material-symbols-outlined align-top">add</span>

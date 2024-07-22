@@ -111,7 +111,7 @@ export type fileSelectOrLoadResult = {
 
 export async function selectOrLoadGraphicsFile(urlType: URLType)
 {
-    const filters = [{name: t("renderer:dialogs.graphics-files", "Graphics files"), extensions: ["png", "jpg", "jpeg"]}];
+    const filters = [{name: t("dialogs.graphics-files", "Graphics files"), extensions: ["png", "jpg", "jpeg"]}];
     const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType, filters);
 
     if (!filePath)
