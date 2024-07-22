@@ -38,6 +38,10 @@
     "save": "Save",
     "adding-new-protocol": "Adding new protocol"
   },
+  "backend-connection-dialog": {
+    "plain-password-warning": "Keep in mind that the password is stored in plain text.\nAre you sure you want to save the password?",
+    "unknown-error": "Unknown error, probably CORS-related"
+  },
   "dialogs": {
     "graphics-files": "Graphics files"
   }

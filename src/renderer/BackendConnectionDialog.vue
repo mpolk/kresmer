@@ -7,15 +7,17 @@
 <*************************************************************************** -->
 
 <script lang="ts">
+    import { onMounted, ref, reactive } from 'vue';
+    import {Modal} from 'bootstrap';
+    import {kresmer, BackendConnectionParams} from "./renderer-main";
+    import i18next from 'i18next';
+
     export default {
         name: "BackendConnectionDialog",
     }
 </script>
 
 <script setup lang="ts">
-    import { onMounted, ref, reactive } from 'vue';
-    import {Modal} from 'bootstrap';
-    import {kresmer, BackendConnectionParams} from "./renderer-main";
 
     let modal!: Modal;
     const diagMessage = ref("");
@@ -59,8 +61,9 @@
     function onSavePasswordChange(event: Event)
     {
         if (data.savePassword && 
-            !confirm("Keep in mind that the password is stored in plain text.\n" + 
-                     "Are you sure you want to save the password?")) 
+            !confirm(i18next.t("backend-connection-dialog.plain-password-warning", 
+                     "Keep in mind that the password is stored in plain text.\n" + 
+                     "Are you sure you want to save the password?"))) 
         {
             data.savePassword = false;
         }//if
@@ -71,7 +74,8 @@
     {
         const {success, message} = await kresmer.testBackendConnection(data.serverURL, data.password);
         if (!success) {
-            diagMessage.value = message ? message : "<Some hidden error, probably CORS-related>";
+            diagMessage.value = message || 
+                `<${i18next.t("backend-connection-dialog.unknown-error", "Unknown error, probably CORS-related")}>`;
             return;
         }//if
 
