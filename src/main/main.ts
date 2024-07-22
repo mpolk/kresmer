@@ -164,7 +164,7 @@ export function createNewDrawing()
 export function showAboutDialog()
 {
     // console.debug("App version: ",  app.getVersion());
-    sendAppCommand("show-about-dialog", app.getVersion());
+    sendAppCommand("show-about-dialog", app.getVersion(), process.versions.electron);
 }//showAboutDialog
 
 

@@ -1,4 +1,7 @@
 {
+  "about-dialog": {
+    "title": "Про Кресмера..."
+  },
   "app-settings": {
     "add-library-directory": "Додати бібліотечний каталог",
     "delete-library-directory": "Видалити бібліотечний каталог",

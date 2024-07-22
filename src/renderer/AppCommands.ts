@@ -42,7 +42,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "toggle-grid": () => void,
     "toggle-rulers": () => void,
     "add-component": (position?: {x: number, y: number}) => void,
-    "show-about-dialog": (appVersion: string) => void,
+    "show-about-dialog": (appVersion: string, electronVersion: string) => void,
 }//AppCommandFormats
 
 export type AppCommand = keyof AppCommandFormats;

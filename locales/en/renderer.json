@@ -1,4 +1,7 @@
 {
+  "about-dialog": {
+    "title": "About Kresmer..."
+  },
   "app-settings": {
     "add-library-directory": "Add library directory",
     "delete-library-directory": "Delete library directory",

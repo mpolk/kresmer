@@ -685,8 +685,8 @@ appCommandExecutor.on("escape", () => {
 });
 
 
-appCommandExecutor.on("show-about-dialog", appVersion => {
-    vueAboutDialog.show(appVersion);
+appCommandExecutor.on("show-about-dialog", (appVersion, electronVersion) => {
+    vueAboutDialog.show(appVersion, electronVersion);
 });
 
 // -------------------------------------------------------------------------------------------------
