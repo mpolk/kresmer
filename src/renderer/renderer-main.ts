@@ -44,6 +44,8 @@ i18next.init({
     resources: locales, 
     debug: true,
     lng: window.electronAPI.initialAppSettings.uiLanguage || new Intl.Locale(navigator.language).language,
+    ns: "renderer",
+    defaultNS: "renderer",
 });
 
 export const enum AppInitStage {

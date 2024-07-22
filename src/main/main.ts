@@ -94,6 +94,7 @@ app.whenReady().then(() => {
         debug: true,
         initImmediate: false,
         ns: "main",
+        defaultNS: "main",
         lng: localSettings.data.uiLanguage || app.getSystemLocale(),
         fallbackLng: "en",
     });
