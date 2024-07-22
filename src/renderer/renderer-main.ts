@@ -8,6 +8,8 @@
 
 import { IpcRendererEvent } from 'electron';
 import { createApp, reactive, toRaw } from 'vue';
+import i18next, {t} from 'i18next';
+import locales from 'virtual:i18next-loader';
 // import vueDevtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
@@ -37,6 +39,12 @@ import LinkClassSelectionSidebar from './LinkClassSelectionSidebar.vue';
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
 // }//if
+
+i18next.init({
+    resources: locales, 
+    debug: true,
+    lng: window.electronAPI.initialAppSettings.uiLanguage || new Intl.Locale(navigator.language).language,
+});
 
 export const enum AppInitStage {
     HANDLERS_INITIALIZED = 0,
@@ -101,7 +109,7 @@ export type fileSelectOrLoadResult = {
 
 export async function selectOrLoadGraphicsFile(urlType: URLType)
 {
-    const filters = [{name: "Graphics files", extensions: ["png", "jpg", "jpeg"]}];
+    const filters = [{name: t("renderer:dialog.graphics-files", "Graphics files"), extensions: ["png", "jpg", "jpeg"]}];
     const {filePath, data} = await window.electronAPI.selectOrLoadFile(urlType, filters);
 
     if (!filePath)

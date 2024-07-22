@@ -230,7 +230,7 @@ export default class Menus {
             }//if
         }//for
         return template;
-    }//initSubmenu
+    }//initCxtSubmenu
 
     public contextMenu(id: ContextMenuID, ...args: unknown[]) {
         const template = this.initCtxSubmenu(this.contextMenus[id], ...args);
