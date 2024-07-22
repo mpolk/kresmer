@@ -7,7 +7,7 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { nextTick, ref } from 'vue';
+    import { nextTick, ref, computed } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
     import i18next, {t} from 'i18next';
     import { updateAppSettings } from './renderer-main';
@@ -118,6 +118,8 @@
         appSettings.value!.libDirs.push("");
     }//addLibDir
 
+    const addLibDirTitle = computed(() => i18next.t('app-settings.add-library-directory', 'Add library directory'));
+
     /**
      * Deletes the specified library directory
      * @param i An index of the directory to delete
@@ -126,6 +128,11 @@
     {
         appSettings.value!.libDirs.splice(i, 1);
     }//deleteLibDir
+
+    const delLibDirTitle = computed(() => i18next.t('app-settings.delete-library-directory', 'Delete library directory'));
+
+    const addProtocolTitle = computed(() => i18next.t('app-settings.add-protocol', 'Add protocol'));
+    const delProtocolTitle = computed(() => i18next.t('app-settings.delete-protocol', 'Delete protocol'));
 
     defineExpose({show});
 </script>
@@ -159,7 +166,7 @@
                     <div class="col d-flex justify-content-between">
                         <span>{{ t("app-settings.library-directories", "Library directory(-ies)") }}</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
-                            title="Add library directory" @click="addLibDir">
+                            :title="addLibDirTitle" @click="addLibDir">
                         <span class="material-symbols-outlined align-top">add</span>
                     </button>
                     </div>
@@ -171,7 +178,7 @@
                                 <td class="p-1 d-flex justify-content-between align-items-center">
                                     <input class="form-control form-control-sm border-0" v-model="appSettings!.libDirs[i]"/>
                                     <button type="button" class="btn btn-sm btn-outline-light" 
-                                            title="Delete library directory" @click="deleteLibDir(i)">
+                                            :title="delLibDirTitle" @click="deleteLibDir(i)">
                                         <span class="material-symbols-outlined align-top">close</span>
                                     </button>
                                 </td>
@@ -299,9 +306,9 @@
                 </div>
                 <div class="row pt-2">
                     <div class="col d-flex justify-content-between">
-                        <span>Management protocols</span>
+                        <span>{{ i18next.t("app-settings.management-protocols", "Management protocols") }}</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
-                            title="Add protocol" @click="addProtocol">
+                            :title="addProtocolTitle" @click="addProtocol">
                         <span class="material-symbols-outlined align-top">add</span>
                     </button>
                     </div>
@@ -315,7 +322,7 @@
                                         {{ proto.name }}
                                     </label>
                                     <button type="button" class="btn btn-sm btn-outline-light" 
-                                            title="Delete protocol" @click="deleteProtocol(i)">
+                                            :title="delProtocolTitle" @click="deleteProtocol(i)">
                                         <span class="material-symbols-outlined align-top">close</span>
                                     </button>
                                 </td>
@@ -327,7 +334,7 @@
                     </table>
                 </div></div>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>
+                    <button type="submit" class="btn btn-primary" @click.prevent="save">{{ i18next.t('app-settings.save', 'Save') }}</button>
                 </div>
             </form>
         </div>
@@ -338,7 +345,7 @@
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header">
-                    Adding new protocol
+                    {{ i18next.t('app-settings.adding-new-protocol', 'Adding new protocol') }}
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">

@@ -1,5 +1,9 @@
 {
   "app-settings": {
+    "add-library-directory": "Додати бібліотечний каталог",
+    "delete-library-directory": "Видалити бібліотечний каталог",
+    "add-protocol": "Додати протокол",
+    "delete-protocol": "Видалити протокол",
     "_": "Налаштування",
     "ui-language": {
       "_": "Мова інтерфейсу користувача",
@@ -26,7 +30,10 @@
       "_": "Формат адреси",
       "building-first": "спочатку номер будинку",
       "street-first": "спочатку вулиця"
-    }
+    },
+    "management-protocols": "Протоколи управління",
+    "save": "Зберегти",
+    "adding-new-protocol": "Додавання нового протоколу"
   },
   "dialogs": {
     "graphics-files": "Графічні файли"

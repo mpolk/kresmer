@@ -1,5 +1,9 @@
 {
   "app-settings": {
+    "add-library-directory": "Add library directory",
+    "delete-library-directory": "Delete library directory",
+    "add-protocol": "Add protocol",
+    "delete-protocol": "Delete protocol",
     "_": "Settings",
     "ui-language": {
       "_": "UI language",
@@ -26,7 +30,10 @@
       "_": "Street address format",
       "building-first": "building first",
       "street-first": "street first"
-    }
+    },
+    "management-protocols": "Management protocols",
+    "save": "Save",
+    "adding-new-protocol": "Adding new protocol"
   },
   "dialogs": {
     "graphics-files": "Graphics files"
