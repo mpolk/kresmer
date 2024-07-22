@@ -182,7 +182,9 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
-                            <label class="form-check-label" for="cbAutoloadLastDrawing">Autoload the last opened drawing</label>
+                            <label class="form-check-label" for="cbAutoloadLastDrawing">
+                                {{ i18next.t("app-settings.autoload-last-drawing", "Autoload the last opened drawing") }}
+                            </label>
                             <input type="checkbox" id="cbAutoloadLastDrawing" class="form-check-input" v-model="appSettings!.autoloadLastDrawing" />
                         </div>
                     </div>
@@ -190,7 +192,9 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
-                            <label class="form-check-label" for="cbAutoconnectToServer">Automatically connect to the server</label>
+                            <label class="form-check-label" for="cbAutoconnectToServer">
+                                {{ i18next.t("app-settings.autoconnect-to-server", "Automatically connect to the server") }}
+                            </label>
                             <input type="checkbox" id="cbAutoconnectToServer" class="form-check-input" v-model="appSettings!.server.autoConnect" />
                         </div>
                     </div>

@@ -6,7 +6,9 @@
       "default": "default"
     },
     "requires-restart": "requires restart",
-    "library-directories": "Library directory(-ies)"
+    "library-directories": "Library directory(-ies)",
+    "autoload-last-drawing": "Autoload the last opened drawing",
+    "autoconnect-to-server": "Automatically connect to the server"
   },
   "dialogs": {
     "graphics-files": "Graphics files"

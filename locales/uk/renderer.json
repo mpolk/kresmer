@@ -6,7 +6,9 @@
       "default": "за замовчуванням"
     },
     "requires-restart": "вимагає перезавантаження",
-    "library-directories": "Бібліотечни каталог(и)"
+    "library-directories": "Бібліотечни каталог(и)",
+    "autoload-last-drawing": "Автоматичне завантаження останнього відкритого креслення",
+    "autoconnect-to-server": "Автоматичне підключення до сервера"
   },
   "dialogs": {
     "graphics-files": "Графічні файли"
