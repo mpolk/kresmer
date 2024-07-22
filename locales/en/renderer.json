@@ -8,7 +8,9 @@
     "requires-restart": "requires restart",
     "library-directories": "Library directory(-ies)",
     "autoload-last-drawing": "Autoload the last opened drawing",
-    "autoconnect-to-server": "Automatically connect to the server"
+    "autoconnect-to-server": "Automatically connect to the server",
+    "snap-to-grid": "Snap to grid",
+    "snapping-step": "step"
   },
   "dialogs": {
     "graphics-files": "Graphics files"

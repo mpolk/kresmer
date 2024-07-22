@@ -8,7 +8,9 @@
     "requires-restart": "вимагає перезавантаження",
     "library-directories": "Бібліотечни каталог(и)",
     "autoload-last-drawing": "Автоматичне завантаження останнього відкритого креслення",
-    "autoconnect-to-server": "Автоматичне підключення до сервера"
+    "autoconnect-to-server": "Автоматичне підключення до сервера",
+    "snap-to-grid": "Прив’язка до сітки",
+    "snapping-step": "крок"
   },
   "dialogs": {
     "graphics-files": "Графічні файли"
