@@ -1,8 +1,9 @@
 {
   "app-settings": {
     "_": "Налаштування",
-    "ui-language": "мова інтерфейсу користувача",
-    "requires-restart": "вимагає перезавантаження"
+    "ui-language": "Мова інтерфейсу користувача",
+    "requires-restart": "вимагає перезавантаження",
+    "library-directories": "Бібліотечни каталог(и)"
   },
   "dialogs": {
     "graphics-files": "Графічні файли"

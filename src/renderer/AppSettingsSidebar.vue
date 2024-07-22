@@ -9,7 +9,7 @@
 <script lang="ts">
     import { nextTick, ref } from 'vue';
     import { Modal, Offcanvas } from 'bootstrap';
-    import {t} from 'i18next';
+    import i18next, {t} from 'i18next';
     import { updateAppSettings } from './renderer-main';
     import { AppSettings } from '../main/main';
     import { StreetAddressFormat, LibDataPriority } from 'kresmer';
@@ -145,7 +145,7 @@
                 <div class="row">
                     <div class="col">
                         <label class="form-label" for="selUILanguage">
-                            {{ t("renderer:app-settings.ui-language", "UI language") }}
+                            {{ i18next.t("renderer:app-settings.ui-language", "UI language") }}
                             <span class="text-secondary">({{ t("renderer:app-settings.requires-restart", "requires restart") }})</span>
                         </label>
                         <select id="selUILanguage" class="form-select" v-model="appSettings!.uiLanguage">
@@ -157,7 +157,7 @@
                 </div>
                 <div class="row">
                     <div class="col d-flex justify-content-between">
-                        <span>Library directory(-ies)</span>
+                        <span>{{ t("renderer:app-settings.library-directories", "Library directory(-ies)") }}</span>
                         <button type="button" class="btn btn-sm btn-outline-secondary ms-1" 
                             title="Add library directory" @click="addLibDir">
                         <span class="material-symbols-outlined align-top">add</span>

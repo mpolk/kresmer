@@ -2,7 +2,8 @@
   "app-settings": {
     "_": "Settings",
     "ui-language": "UI language",
-    "requires-restart": "requires restart"
+    "requires-restart": "requires restart",
+    "library-directories": "Library directory(-ies)"
   },
   "dialogs": {
     "graphics-files": "Graphics files"
