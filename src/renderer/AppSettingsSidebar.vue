@@ -217,7 +217,9 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
-                            <label class="form-check-label" for="cbAutoAlignVertices">Automatically align vertices</label>
+                            <label class="form-check-label" for="cbAutoAlignVertices">
+                                {{ i18next.t("app-settings.autoalign-vertices", "Automatically align vertices") }}
+                            </label>
                             <input type="checkbox" id="cbAutoAlignVertices" class="form-check-input" v-model="appSettings!.autoAlignVertices" />
                         </div>
                     </div>
@@ -225,7 +227,9 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
-                            <label class="form-check-label" for="cbSaveDynamicPropsWithDrawing">Save dynamic props with the drawing</label>
+                            <label class="form-check-label" for="cbSaveDynamicPropsWithDrawing">
+                                {{ i18next.t("app-settings.save-dynamic-props", "Save dynamic props with the drawing") }}
+                            </label>
                             <input type="checkbox" id="cbSaveDynamicPropsWithDrawing" class="form-check-input" v-model="appSettings!.saveDynamicPropValuesWithDrawing" />
                         </div>
                     </div>
@@ -233,18 +237,28 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
-                            <label class="form-check-label" for="cbEmbedLibDataInDrawing">Embed library data in the drawing</label>
+                            <label class="form-check-label" for="cbEmbedLibDataInDrawing">
+                                {{ i18next.t("app-settings.embed-library-data", "Embed library data in the drawing") }}
+                            </label>
                             <input type="checkbox" id="cbEmbedLibDataInDrawing" class="form-check-input" v-model="appSettings!.embedLibDataInDrawing" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label class="form-label" for="selLibDataPriority">Library data priority</label>
+                        <label class="form-label" for="selLibDataPriority">
+                            {{ i18next.t("app-settings.library-data-priority._", "Library data priority") }}
+                        </label>
                         <select id="selLibDataPriority" class="form-select" v-model="appSettings!.libDataPriority">
-                            <option>{{LibDataPriority.preferSystem}}</option>
-                            <option>{{LibDataPriority.preferEmbedded}}</option>
-                            <option>{{LibDataPriority.useVersioning}}</option>
+                            <option :value="LibDataPriority.preferSystem">
+                                {{t("app-settings.library-data-priority.prefer-system", "prefer system")}}
+                            </option>
+                            <option :value="LibDataPriority.preferEmbedded">
+                                {{t("app-settings.library-data-priority.prefer-embedded", "prefer embedded")}}
+                            </option>
+                            <option :value="LibDataPriority.useVersioning">
+                                {{t("app-settings.library-data-priority.use-versioning", "use versioning")}}
+                            </option>
                         </select>
                     </div>
                 </div>

@@ -10,7 +10,16 @@
     "autoload-last-drawing": "Autoload the last opened drawing",
     "autoconnect-to-server": "Automatically connect to the server",
     "snap-to-grid": "Snap to grid",
-    "snapping-step": "step"
+    "snapping-step": "step",
+    "autoalign-vertices": "Automatically align vertices",
+    "save-dynamic-props": "Save dynamic props with the drawing",
+    "embed-library-data": "Embed library data in the drawing",
+    "library-data-priority": {
+      "_": "Library data priority",
+      "prefer-system": "prefer system",
+      "prefer-embedded": "prefer embedded",
+      "use-versioning": "use versioning"
+    }
   },
   "dialogs": {
     "graphics-files": "Graphics files"
