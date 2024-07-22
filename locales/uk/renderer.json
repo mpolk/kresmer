@@ -19,6 +19,13 @@
       "prefer-system": "віддавати перевагу системним",
       "prefer-embedded": "віддаувати перевагу вбудованим",
       "use-versioning": "використовувати керування версіями"
+    },
+    "animate-component-dragging": "Анімувати перетягування компонентів",
+    "animate-bundle-dragging": "Анімувати перетягування жмутів з'єднань",
+    "street-address-format": {
+      "_": "Формат адреси",
+      "building-first": "номер будинку перший",
+      "street-first": "вулиця перша"
     }
   },
   "dialogs": {

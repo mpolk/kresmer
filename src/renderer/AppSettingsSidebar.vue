@@ -265,7 +265,9 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
-                            <label class="form-check-label" for="cbAnimateComponentDragging">Animate component dragging</label>
+                            <label class="form-check-label" for="cbAnimateComponentDragging">
+                                {{ i18next.t("app-settings.animate-component-dragging", "Animate component dragging") }}
+                            </label>
                             <input type="checkbox" id="cbAnimateComponentDragging" class="form-check-input" v-model="appSettings!.animateComponentDragging" />
                         </div>
                     </div>
@@ -273,17 +275,25 @@
                 <div class="row">
                     <div class="col">
                         <div class="form-check">
-                            <label class="form-check-label" for="cbAnimateLinkBundleDragging">Animate link bundle dragging</label>
+                            <label class="form-check-label" for="cbAnimateLinkBundleDragging">
+                                {{ i18next.t("app-settings.animate-bundle-dragging", "Animate link bundle dragging") }}
+                            </label>
                             <input type="checkbox" id="cbAnimateLinkBundleDragging" class="form-check-input" v-model="appSettings!.animateLinkBundleDragging" />
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label class="form-label" for="selStreetAddressFormat">Street address format</label>
+                        <label class="form-label" for="selStreetAddressFormat">
+                            {{ i18next.t("app-settings.street-address-format._", "Street address format") }}
+                        </label>
                         <select id="selStreetAddressFormat" class="form-select" v-model="appSettings!.streetAddressFormat">
-                            <option>{{StreetAddressFormat.BuildingFirst}}</option>
-                            <option>{{StreetAddressFormat.StreetFirst}}</option>
+                            <option :value="StreetAddressFormat.BuildingFirst">
+                                {{ i18next.t("app-settings.street-address-format.building-first", "building first") }}
+                            </option>
+                            <option :value="StreetAddressFormat.StreetFirst">
+                                {{ i18next.t("app-settings.street-address-format.street-first", "street first") }}
+                            </option>
                         </select>
                     </div>
                 </div>
