@@ -62,6 +62,24 @@
     "choose-one-option": "Виберіть один із варіантів вище",
     "cancel": "Скасувати"
   },
+  "drawing-props-sidebar": {
+    "background-image-visibility": "Видимість фонового зображення",
+    "background-image-alignment": {
+      "center": "центрувати",
+      "cover": "накривати",
+      "scale": "масштабувати",
+      "strech": "розтягнути",
+      "tile": "вкривати черепицею"
+    },
+    "title": "Креслення",
+    "name": "назва",
+    "width": "ширина",
+    "height": "висота",
+    "background-image": "фонове зображення",
+    "background-color": "колір фону",
+    "href-base": "база гіперпосилань",
+    "save": "Зберегти"
+  },
   "dialogs": {
     "graphics-files": "Графічні файли"
   }

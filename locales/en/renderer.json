@@ -62,6 +62,24 @@
     "choose-one-option": "Please choose one of the options above",
     "cancel": "Cancel"
   },
+  "drawing-props-sidebar": {
+    "background-image-visibility": "Background image visibility",
+    "background-image-alignment": {
+      "center": "center",
+      "cover": "cover",
+      "scale": "scale",
+      "strech": "strech",
+      "tile": "tile"
+    },
+    "title": "Drawing",
+    "name": "name",
+    "width": "width",
+    "height": "height",
+    "background-image": "background image",
+    "background-color": "background color",
+    "href-base": "href base",
+    "save": "Save"
+  },
   "dialogs": {
     "graphics-files": "Graphics files"
   }

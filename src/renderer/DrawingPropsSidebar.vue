@@ -7,18 +7,19 @@
 <*************************************************************************** -->
 
 <script lang="ts">
+    import { ref, reactive, computed } from 'vue';
+    import { Offcanvas } from 'bootstrap';
+    import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
+    import { URLType, getURLType, urlTypeDescriptions } from './URLType';
+    import { BackgroundImageData, BackgroundImageAlignment } from 'kresmer';
+    import i18next from 'i18next';
+
     export default {
         name: "DrawingPropsSidebar",
     }
 </script>
 
 <script setup lang="ts">
-    import { ref, reactive } from 'vue';
-    import { Offcanvas } from 'bootstrap';
-    import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
-    import { URLType, getURLType, urlTypeDescriptions } from './URLType';
-    import { BackgroundImageData, BackgroundImageAlignment } from 'kresmer';
-
     let offCanvas: Offcanvas | undefined;
     const rootDiv = ref<HTMLDivElement>()!;
     const form = ref<HTMLFormElement>()!;
@@ -86,13 +87,26 @@
         backgroundImage.url = "";
     }//clearBackgroundImage
 
+    const bgImageVisibilityTitle = computed(() => i18next.t('drawing-props-sidebar.background-image-visibility', 'Background image visibility'));
+
+    function backgroundImageAlignmentDispl(alignment: BackgroundImageAlignment)
+    {
+        switch (alignment) {
+            case BackgroundImageAlignment.CENTER: return i18next.t("drawing-props-sidebar.background-image-alignment.center", "center");
+            case BackgroundImageAlignment.COVER: return i18next.t("drawing-props-sidebar.background-image-alignment.cover", "cover");
+            case BackgroundImageAlignment.SCALE: return i18next.t("drawing-props-sidebar.background-image-alignment.scale", "scale");
+            case BackgroundImageAlignment.STRECH: return i18next.t("drawing-props-sidebar.background-image-alignment.strech", "strech");
+            case BackgroundImageAlignment.TILE: return i18next.t("drawing-props-sidebar.background-image-alignment.tile", "tile");
+        }//switch
+    }//backgroundImageAlignmentDispl
+
     defineExpose({show});
 </script>
 
 <template>
     <div ref="rootDiv" class="offcanvas offcanvas-end w-50" tabindex="-1">
         <div class="offcanvas-header align-items-baseline">
-            <h5 class="offcanvas-title">Drawing "{{drawingName}}"</h5>
+            <h5 class="offcanvas-title">{{i18next.t("drawing-props-sidebar.title", "Drawing")}} "{{drawingName}}"</h5>
             <button type="button" class="btn-close" @click="close"></button>
          </div>
         <div class="offcanvas-body">
@@ -101,7 +115,7 @@
                     <tbody>
                         <tr>
                             <td class="p-1 align-middle">
-                                <label class="form-label text-secondary mb-0" for="inpDrawingName">name</label>
+                                <label class="form-label text-secondary mb-0" for="inpDrawingName">{{i18next.t("drawing-props-sidebar.name", "name")}}</label>
                             </td>
                             <td class="p-1">
                                 <input class="form-control form-control-sm border-0" id="inpDrawingName" v-model="drawingName"/>
@@ -109,7 +123,7 @@
                         </tr>
                         <tr>
                             <td class="p-1 align-middle">
-                                <label class="form-label text-secondary mb-0" for="inpDrawingWidth">width</label>
+                                <label class="form-label text-secondary mb-0" for="inpDrawingWidth">{{i18next.t("drawing-props-sidebar.width", "width")}}</label>
                             </td>
                             <td class="p-1">
                                 <input type="number" class="form-control form-control-sm text-end border-0" 
@@ -118,7 +132,7 @@
                         </tr>
                         <tr>
                             <td class="p-1 align-middle">
-                                <label class="form-label text-secondary mb-0" for="inpDrawingHeight">height</label>
+                                <label class="form-label text-secondary mb-0" for="inpDrawingHeight">{{i18next.t("drawing-props-sidebar.height", "height")}}</label>
                             </td>
                             <td class="p-1">
                                 <input type="number" class="form-control form-control-sm text-end border-0" 
@@ -127,7 +141,9 @@
                         </tr>
                         <tr>
                             <td class="p-1 align-middle">
-                                <label class="form-label text-secondary mb-0" for="inpBackgroundImage">background image</label>
+                                <label class="form-label text-secondary mb-0" for="inpBackgroundImage">
+                                    {{i18next.t("drawing-props-sidebar.background-image", "background image")}}
+                                </label>
                             </td>
                             <td class="p-1">
                                 <div class="input-group input-group-sm">
@@ -153,21 +169,25 @@
                                 </div>
                                 <div class="input-group input-group-sm flex-nowrap">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        {{ backgroundImage.alignment }}
+                                        {{ backgroundImageAlignmentDispl(backgroundImage.alignment) }}
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li v-for="alignment in BackgroundImageAlignment" :key="alignment">
-                                            <a class="dropdown-item" href="#" @click="backgroundImage.alignment = alignment">{{ alignment }}</a>
+                                            <a class="dropdown-item" href="#" @click="backgroundImage.alignment = alignment">
+                                                {{ backgroundImageAlignmentDispl(alignment) }}
+                                            </a>
                                         </li>
                                     </ul>
-                                    <input type="range" min="0" max="1" step="0.05" class="form-range ms-2" title="Background image visibility"
-                                        v-model="backgroundImage.visibility" />
+                                    <input type="range" min="0" max="1" step="0.05" class="form-range ms-2" 
+                                        :title="bgImageVisibilityTitle" v-model="backgroundImage.visibility" />
                                 </div>
                             </td>
                         </tr>
                         <tr>
                             <td class="p-1 align-middle">
-                                <label class="form-label text-secondary mb-0" for="inpBackgroundColor">background color</label>
+                                <label class="form-label text-secondary mb-0" for="inpBackgroundColor">
+                                    {{i18next.t("drawing-props-sidebar.background-color", "background color")}}
+                                </label>
                             </td>
                             <td class="p-1">
                                 <input type="color" id="inpBackgroundColor" class="form-control form-control-sm border-0"
@@ -176,7 +196,9 @@
                         </tr>
                         <tr>
                             <td class="p-1 align-middle">
-                                <label class="form-label text-secondary mb-0" for="inpHrefBase">href base</label>
+                                <label class="form-label text-secondary mb-0" for="inpHrefBase">
+                                    {{i18next.t("drawing-props-sidebar.href-base", "href base")}}
+                                </label>
                             </td>
                             <td class="p-1">
                                 <input type="text" class="form-control form-control-sm border-0" 
@@ -186,7 +208,9 @@
                     </tbody>
                 </table>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>
+                    <button type="submit" class="btn btn-primary" @click.prevent="save">
+                        {{i18next.t("drawing-props-sidebar.save", "Save")}}
+                    </button>
                 </div>
             </form>
         </div>
