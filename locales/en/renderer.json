@@ -85,7 +85,19 @@
     "delete-subprop": "Delete subproperty"
   },
   "element-props-sidebar": {
-    "confirm-component-class-change": "Changing component class will disconnect all links connected to it.\nAlso, the values of the component properties that absent in the new class will be lost.\n\nContinue?"
+    "confirm-component-class-change": "Changing component class will disconnect all links connected to it.\nAlso, the values of the component properties that absent in the new class will be lost.\n\nContinue?",
+    "confirm-link-class-change": "Changing link class will make the values of the link properties that absent in the new class to be lost.\n\nContinue?",
+    "name-is-required": "Element name is required!",
+    "duplicate-name": "Duplicate element name!",
+    "invalid-object-syntax": "Invalid object syntax",
+    "invalid-array-syntax": "Invalid array syntax",
+    "invalid-syntax": "Invalid object/array syntax",
+    "name": "name",
+    "save": "Save",
+    "adding-new-field": "Adding a new field to the prop",
+    "cancel": "Cancel",
+    "deleting-new-field": "Deleting a field from the prop",
+    "confirm-deletion": "Really delete a field {{what}} from the \"{{from}}\" prop?"
   },
   "dialogs": {
     "graphics-files": "Graphics files"

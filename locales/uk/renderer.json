@@ -85,7 +85,19 @@
     "delete-subprop": "Видалити дочірню властивість"
   },
   "element-props-sidebar": {
-    "confirm-component-class-change": "Зміна класу компонента призведе до роз’єднання всіх пов’язаних з ним з'еднань.\nКрім того, значення властивостей компонента, яких немає в новому класі, будуть втрачені.\n\nПродовжити?"
+    "confirm-component-class-change": "Зміна класу компонента призведе до роз’єднання всіх пов’язаних з ним з'еднань.\nКрім того, значення властивостей компонента, яких немає в новому класі, будуть втрачені.\n\nПродовжити?",
+    "confirm-link-class-change": "Changing link class will make the values of the link properties that absent in the new class to be lost.\n\nContinue?",
+    "name-is-required": "Element name is required!",
+    "duplicate-name": "Duplicate element name!",
+    "invalid-object-syntax": "Invalid object syntax",
+    "invalid-array-syntax": "Invalid array syntax",
+    "invalid-syntax": "Invalid object/array syntax",
+    "name": "name",
+    "save": "Save",
+    "adding-new-field": "Adding a new field to the prop",
+    "cancel": "Cancel",
+    "deleting-new-field": "Deleting a field from the prop",
+    "confirm-deletion": "Really delete a field {{what}} from the \"{{from}}\" prop?"
   },
   "dialogs": {
     "graphics-files": "Графічні файли"

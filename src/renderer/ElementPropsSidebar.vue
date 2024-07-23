@@ -131,10 +131,10 @@ Continue?`))) {
             }//if
             kresmer.edAPI.changeComponentClass(elementToEdit, newClass as NetworkComponentClass);
         } else if (elementToEdit instanceof NetworkLink) {
-            if (!confirm(`\
+            if (!confirm(i18next.t("element-props-sidebar.confirm-link-class-change", `\
 Changing link class will make the values of the link properties that absent in the new class to be lost.
 
-Continue?`)) {
+Continue?`))) {
                 elementClass.value = elementToEdit.getClass();
                 return;
             }//if
@@ -191,9 +191,11 @@ Continue?`)) {
     function validateElementName()
     {
         if (!elementName.value) {
-            elementNameValidationMessage.value = "Element name is required!";
+            elementNameValidationMessage.value = 
+                i18next.t("element-props-sidebar.name-is-required", "Element name is required!");
         } else if (!elementToEdit.checkNameUniqueness(elementName.value!)) {
-            elementNameValidationMessage.value = "Duplicate element name!";
+            elementNameValidationMessage.value = 
+                i18next.t("element-props-sidebar.duplicate-name", "Duplicate element name!");
         } else {
             elementNameValidationMessage.value = "";
         }//if
@@ -214,12 +216,12 @@ Continue?`)) {
                 try {
                     v = JSON.parse(prop.value as string);
                     if (prop.type === Object && typeof v !== "object") {
-                        error = "Invalid object syntax";
+                        error = i18next.t("element-props-sidebar.invalid-object-syntax", "Invalid object syntax");
                     } else if (!Array.isArray(v)) {
-                        error = "Invalid array syntax";
+                        error = i18next.t("element-props-sidebar.invalid-array-syntax", "Invalid array syntax");
                     }//if
                 } catch {
-                    error = "Invalid object/array syntax";
+                    error = i18next.t("element-props-sidebar.invalid-syntax", "Invalid object/array syntax");
                 }
                 break;
             case Number:
@@ -294,7 +296,7 @@ Continue?`)) {
     function completeAddingSubprop()
     {
         if (!newSubpropName) {
-            alert("Subproperty name cannot be empty!");
+            alert(i18next.t("element-props-sidebar.name-is-required", "Element name is required!"));
             return;
         }//if
 
@@ -304,7 +306,7 @@ Continue?`)) {
         const parentPropValue = propToAddSubpropTo.value!.value as Record<string, unknown>;
 
         if (Object.hasOwn(parentPropValue, newSubpropName)) {
-            alert(`Subprop "${newSubpropName}" already exists in the prop "${propToAddSubpropTo.value!.name}"`);
+            alert(i18next.t("element-props-sidebar.duplicate-name", "Duplicate element name!"));
             return;
         }//if
 
@@ -395,7 +397,8 @@ Continue?`)) {
                 <table class="table table-bordered"><tbody>
                     <!-- Element name -->
                     <tr>
-                        <td class="align-middle p-1"><label class="form-label mb-0" for="inpElementName">name</label></td>
+                        <td class="align-middle p-1"><label class="form-label mb-0" for="inpElementName">
+                            {{i18next.t("element-props-sidebar.name", "name")}}</label></td>
                         <td class="p-1">
                             <input id="inpElementName" type="text" class="form-control form-control-sm border-0" 
                                     v-model="elementName" ref="inpElementName"/>
@@ -425,7 +428,9 @@ Continue?`)) {
                     </template>
                 </tbody></table>
                 <div class="d-flex justify-content-end">
-                    <button type="submit" class="btn btn-primary" @click.prevent="save">Save</button>
+                    <button type="submit" class="btn btn-primary" @click.prevent="save">
+                        {{i18next.t("element-props-sidebar.save", "Save")}}
+                    </button>
                 </div>
             </form>
         </div>
@@ -436,7 +441,7 @@ Continue?`)) {
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header">
-                    Adding a new field to the "{{ propToAddSubpropTo?.name }}" prop
+                    {{i18next.t("element-props-sidebar.adding-new-field", "Adding a new field to the prop")}} "{{ propToAddSubpropTo?.name }}"
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -445,7 +450,9 @@ Continue?`)) {
                 </div>
                 <div class="modal-footer">
                     <button type="submit" class="btn btn-sm btn-primary" @click.prevent="completeAddingSubprop">Ok</button>
-                    <button type="button" class="btn btn-sm btn-secondary" @click="dlgNewSubprop.hide">Cancel</button>
+                    <button type="button" class="btn btn-sm btn-secondary" @click="dlgNewSubprop.hide">
+                        {{i18next.t("element-props-sidebar.cancel", "Cancel")}}
+                    </button>
                 </div>
             </form>
         </div>
@@ -456,15 +463,20 @@ Continue?`)) {
         <div class="modal-dialog">
             <form class="modal-content">
                 <div class="modal-header">
-                    Delete a field from the "{{ propToDelSubpropFrom?.name }}" prop
+                    {{i18next.t("element-props-sidebar.deleting-new-field", "Deleting a field from the prop")}} "{{ propToDelSubpropFrom?.name }}"
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Really delete a field {{ subpropToDelete }} from the "{{ propToDelSubpropFrom?.name }}" prop?
+                    {{i18next.t("element-props-sidebar.confirm-deletion", {
+                        defaultValue: 'Really delete a field \{\{what\}\} from the "\{\{from\}\}" prop?',
+                        what: subpropToDelete, from: propToDelSubpropFrom?.name,
+                    })}}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-sm btn-secondary" @click="completeSubpropDeletion">Ok</button>
-                    <button type="submit" class="btn btn-sm btn-primary" @click.prevent="dlgDelSubprop.hide" ref="btnCancelSubpropDeletion">Cancel</button>
+                    <button type="submit" class="btn btn-sm btn-primary" @click.prevent="dlgDelSubprop.hide" ref="btnCancelSubpropDeletion">
+                        {{i18next.t("element-props-sidebar.cancel", "Cancel")}}
+                    </button>
                 </div>
             </form>
         </div>
