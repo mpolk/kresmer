@@ -361,6 +361,21 @@ Continue?`))) {
             }, {});
     }//makeInitialSubpropValue
 
+    
+    function propCategoryDispl(category: DrawingElementPropCategory)
+    {
+        switch (category) {
+            case DrawingElementPropCategory.Construction: return i18next.t("element-prop-category.construction", "Construction");
+            case DrawingElementPropCategory.Geometry: return i18next.t("element-prop-category.geometry", "Geometry");
+            case DrawingElementPropCategory.Hardware: return i18next.t("element-prop-category.hardware", "Hardware");
+            case DrawingElementPropCategory.Hidden: return i18next.t("element-prop-category.hidden", "Hidden");
+            case DrawingElementPropCategory.Location: return i18next.t("element-prop-category.location", "Location");
+            case DrawingElementPropCategory.Network: return i18next.t("element-prop-category.network", "Network");
+            case DrawingElementPropCategory.Optics: return i18next.t("element-prop-category.optics", "Optics");
+            case DrawingElementPropCategory.Presentation: return i18next.t("element-prop-category.presentation", "Presentation");
+        }//switch
+    }//propCategoryDispl
+
 
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref<ElementPropDescriptor>();
@@ -418,7 +433,7 @@ Continue?`))) {
                     <template v-for="(prop, i) in elementPropDescriptors" :key="`prop[${prop.name}]`">
                         <tr v-if="prop.category && (i === 0 || prop.category !== elementPropDescriptors[i-1].category)">
                             <td colspan="2" class="border-0 text-primary text-opacity-75">
-                                {{ DrawingElementPropCategory[prop.category] }}
+                                {{ propCategoryDispl(prop.category) }}
                             </td>
                         </tr>
                         <ElementPropEditor :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" 

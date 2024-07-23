@@ -99,6 +99,16 @@
     "deleting-new-field": "Deleting a field from the prop",
     "confirm-deletion": "Really delete a field {{what}} from the \"{{from}}\" prop?"
   },
+  "element-prop-category": {
+    "construction": "Construction",
+    "geometry": "Geometry",
+    "hardware": "Hardware",
+    "hidden": "Hidden",
+    "location": "Location",
+    "network": "Network",
+    "optics": "Optics",
+    "presentation": "Presentation"
+  },
   "dialogs": {
     "graphics-files": "Graphics files"
   }
