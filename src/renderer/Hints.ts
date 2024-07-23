@@ -7,6 +7,7 @@
 \***************************************************************************/
 
 import {statusBarData} from './renderer-main';
+import i18next from 'i18next';
 
 export default class Hints {
     private currentHint = "";
@@ -48,10 +49,10 @@ export default class Hints {
     }//reset
 
     // Specific hints
-    static onComponentMouseEnter = "Drag the component to move it, ctrl-click to transform or ctrl-shift-click to adjust";
-    static onDrag = "Drop the component where you want to leave it...";
-    static onRotation = "Rotate the component around the center mark or click to switch to the scaling mode";
-    static onScaling = "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode";
-    static onAdjustment = "Click on any adjustment tool to adjust (edit) the corresponding component prop";
-    static onAdjustmentHandleSelected = "Drag any free (green) handle to adjust the corresponding component prop";
+    onComponentMouseEnter = i18next.t("hints.drag-component", "Drag the component to move it, \"ctrl-click\" to transform or \"ctrl-shift-click\" to adjust");
+    onDrag = i18next.t("hints.drop-component", "Drop the component where you want to leave it...");
+    onRotation = i18next.t("hints.rotate-component", "Rotate the component around the center mark or click to switch to the scaling mode");
+    onScaling = i18next.t("hints.scale-component", "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode");
+    onAdjustment = i18next.t("hints.adjust-component", "Click on any adjustment tool to adjust (edit) the corresponding component prop");
+    onAdjustmentHandleSelected = i18next.t("hints.adjust-component-prop", "Drag any free (green) handle to adjust the corresponding component prop");
 }//Hints

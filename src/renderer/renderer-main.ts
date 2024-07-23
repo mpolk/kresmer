@@ -207,9 +207,9 @@ kresmer
     .on("got-dirty", updateWindowTitle)
     .on("drawing-mouse-leave", () => hints.reset())
     .on("mode-reset", () => {hints.reset(); vueToastPane.hide();})
-    .on("component-mouse-enter", () => hints.push(Hints.onComponentMouseEnter))
+    .on("component-mouse-enter", () => hints.push(hints.onComponentMouseEnter))
     .on("component-mouse-leave", () => hints.pop())
-    .on("component-move-started", () => hints.push(Hints.onDrag))
+    .on("component-move-started", () => hints.push(hints.onDrag))
     .on("component-moved", () => hints.pop())
     .on("component-transform-started", () => hints.push(""))
     .on("component-transformed", () => hints.pop())
@@ -245,13 +245,13 @@ kresmer.on("component-right-click", (controller: NetworkComponentController) =>
 
 kresmer.on("component-entered-transform-mode", (_: NetworkComponentController, mode: TransformMode) =>
 {
-    hints.push(mode == "rotation" ? Hints.onRotation : Hints.onScaling);
+    hints.push(mode == "rotation" ? hints.onRotation : hints.onScaling);
 });//onComponentEnteredTransformMode
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 kresmer.on("component-entered-adjustment-mode", (_: NetworkComponentController) =>
 {
-    hints.push(Hints.onAdjustment);
+    hints.push(hints.onAdjustment);
 });//onComponentEnteredTransformMode
 
 kresmer.on("component-being-transformed", (controller: NetworkComponentController) =>
