@@ -15,6 +15,7 @@
     import { kresmer, updateWindowTitle } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
     import { DrawingElementClassProp, PropTypeDescriptor } from 'kresmer/dist/DrawingElement/DrawingElementClass';
+    import i18next from 'i18next';
 
     export interface ElementPropDescriptor extends DrawingElementClassProp {
         name: string,
@@ -120,11 +121,11 @@
         const newClass = elementClass.value!;
 
         if (elementToEdit instanceof NetworkComponent) {
-            if (!confirm(`\
+            if (!confirm(i18next.t("element-props-sidebar.confirm-component-class-change", `\
 Changing component class will disconnect all links connected to it.
 Also, the values of the component properties that absent in the new class will be lost.
 
-Continue?`)) {
+Continue?`))) {
                 elementClass.value = elementToEdit.getClass();
                 return;
             }//if

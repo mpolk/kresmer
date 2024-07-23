@@ -14,6 +14,7 @@
     import { URLType, getURLType, urlTypeDescriptions } from './URLType';
     import { selectOrLoadGraphicsFile } from './renderer-main';
     import { PropTypeDescriptor } from 'kresmer';
+    import i18next from 'i18next';
 
     export default {
         name: "ElementPropEditor",
@@ -262,6 +263,9 @@
         }//if
         return undefined;
     })//pasteColorButtonStyle
+
+    const addSubpropTitle = computed(() => i18next.t('element-prop-editor.add-subprop', 'Add subproperty'));
+    const deleteSubpropTitle = computed(() => i18next.t('element-prop-editor.delete-subprop', 'Delete subproperty'));
 </script>
 
 <template>
@@ -285,13 +289,13 @@
                 </div>
                 <div class="btn-group">
                     <button v-if="propToEdit.isDeletable" type="button" class="btn btn-sm btn-outline-light" 
-                            title="Delete subproperty" 
+                            :title="deleteSubpropTitle"
                             @click="emit('delete-subprop', propToEdit.parentPropDescriptor!, propToEdit.name)"
                             >
                         <span class="material-symbols-outlined">close</span>
                     </button>
                     <button v-if="propToEdit.type === Object && withDynamicChildren" type="button" class="btn btn-sm btn-outline-light" 
-                            title="Add subproperty" @click="emit('add-subprop', propToEdit)">
+                            :title="addSubpropTitle" @click="emit('add-subprop', propToEdit)">
                         <span class="material-symbols-outlined">add</span>
                     </button>
                 </div>

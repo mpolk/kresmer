@@ -80,6 +80,13 @@
     "href-base": "href base",
     "save": "Save"
   },
+  "element-prop-editor": {
+    "add-subprop": "Add subproperty",
+    "delete-subprop": "Delete subproperty"
+  },
+  "element-props-sidebar": {
+    "confirm-component-class-change": "Changing component class will disconnect all links connected to it.\nAlso, the values of the component properties that absent in the new class will be lost.\n\nContinue?"
+  },
   "dialogs": {
     "graphics-files": "Graphics files"
   }
