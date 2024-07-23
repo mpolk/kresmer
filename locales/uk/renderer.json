@@ -97,7 +97,7 @@
     "adding-new-field": "Adding a new field to the prop",
     "cancel": "Cancel",
     "deleting-new-field": "Deleting a field from the prop",
-    "confirm-deletion": "Really delete a field {{what}} from the \"{{from}}\" prop?"
+    "confirm-deletion": "Справді видалити поле {{what}} із параметра \"{{from}}\"?"
   },
   "dialogs": {
     "graphics-files": "Графічні файли"

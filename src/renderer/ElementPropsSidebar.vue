@@ -468,7 +468,7 @@ Continue?`))) {
                 </div>
                 <div class="modal-body">
                     {{i18next.t("element-props-sidebar.confirm-deletion", {
-                        defaultValue: 'Really delete a field \{\{what\}\} from the "\{\{from\}\}" prop?',
+                        defaultValue: `Really delete a field ${subpropToDelete} from the "${propToDelSubpropFrom?.name}" prop?`,
                         what: subpropToDelete, from: propToDelSubpropFrom?.name,
                     })}}
                 </div>
