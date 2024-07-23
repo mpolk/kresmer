@@ -119,5 +119,10 @@
   },
   "dialogs": {
     "graphics-files": "Graphics files"
+  },
+  "main": {
+    "reload": "reload",
+    "closing": "closing",
+    "ask-for-unsaved-changes": "The current drawing has unsaved changes.\nDo you want to save it before {{opName}}?"
   }
 }

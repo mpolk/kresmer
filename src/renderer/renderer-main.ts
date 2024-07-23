@@ -173,8 +173,8 @@ window.onbeforeunload = (event: Event) =>
 
     window.electronAPI.isReloadInProgress().then(reloadInProgress => {
         const [continuationHandler, opName] = reloadInProgress ?
-            [() => window.electronAPI.reloadContent(), "reload"] :
-            [() => window.close(), "closing"];
+            [() => window.electronAPI.reloadContent(), i18next.t("main.reload", "reload")] :
+            [() => window.close(), i18next.t("main.closing", "closing")];
         askForUnsavedChanges(opName).then(async(answer) => {
             switch (answer)
             {
@@ -196,7 +196,10 @@ window.onbeforeunload = (event: Event) =>
 
 async function askForUnsavedChanges(opName: string): Promise<MessageBoxResult>
 {
-    const prompt = `The current drawing has unsaved changes.\nDo you want to save it before ${opName}?`;
+    const prompt = i18next.t("main.ask-for-unsaved-changes", {
+        defaultValue: `The current drawing has unsaved changes.\nDo you want to save it before ${opName}?`,
+        opName,
+    });
     return await vueMessageBox.ask(prompt, {buttons: MessageBoxButtons.YES_NO_CANCEL});
 }//askForUnsavedChanges
 
