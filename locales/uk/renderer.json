@@ -129,9 +129,9 @@
     "notifications": "Сповіщення ({{notificationCount}})",
     "backend-url": "URL-адреса сервера, до якого ми зараз підключені",
     "drawing-scale": "Масштаб відображення креслення (\"ctrl-scroll\" щоб змінити)",
-    "auto-alignment": "Автоматичне вирівнювання вершин {{state}}",
     "on": "увімкнено",
-    "off": "вимкнено"
+    "off": "вимкнено",
+    "auto-alignment": "Автоматичне вирівнювання вершин {{state}}"
   },
   "toast-pane": {
     "clear-all": "Очистити все",

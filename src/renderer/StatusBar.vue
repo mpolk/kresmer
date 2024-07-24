@@ -52,12 +52,12 @@
     }));
     const backendURLTitle = computed(() => i18next.t("status-bar.backend-url", "Backend server URL we are currently connected"));
     const drawingScaleTitle = computed(() => i18next.t("status-bar.drawing-scale", "Drawing display scale (\"ctrl-scroll\" to change)"));
-    const autoAlignmentTitle = computed(() => i18next.t("status-bar.auto-alignment", {
-        defaultValue: "Vertex auto-alignment",
-        state: props.displayData.autoAlignVertices ? 
+    const autoAlignmentTitle = computed(() => {
+        const state = props.displayData.autoAlignVertices ? 
             i18next.t("status-bar.on", "on") : 
-            i18next.t("status-bar.off", "off"),
-    }));
+            i18next.t("status-bar.off", "off");
+        return i18next.t("status-bar.auto-alignment", {defaultValue: "Vertex auto-alignment", state});
+    });
 
     defineExpose({getHeight});
 </script>
@@ -78,8 +78,7 @@
                 {{displayData.serverURL}}
             </div>
             <div class="pane" :title="autoAlignmentTitle">
-                <span class="material-symbols-outlined align-bottom" 
-                    :style="`visibility: ${displayData.autoAlignVertices ? 'visible' : 'hidden'}`"
+                <span class="material-symbols-outlined align-bottom" :class="{disabled: displayData.autoAlignVertices}"
                     >hdr_auto</span>
             </div>
             <div class="pane" :title="drawingScaleTitle">
@@ -113,12 +112,12 @@
             overflow: hidden;
             cursor: default;
 
-            // &.selected-element {
-            //     min-width: 15rem;
-            // }
-
             &.hint {
                 color: yellow;
+            }
+
+            .disabled {
+                color: rgb(57, 57, 192);
             }
         }
     }
