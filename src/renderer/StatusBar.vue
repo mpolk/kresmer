@@ -53,8 +53,10 @@
     const backendURLTitle = computed(() => i18next.t("status-bar.backend-url", "Backend server URL we are currently connected"));
     const drawingScaleTitle = computed(() => i18next.t("status-bar.drawing-scale", "Drawing display scale (\"ctrl-scroll\" to change)"));
     const autoAlignmentTitle = computed(() => i18next.t("status-bar.auto-alignment", {
-        defaultValue: `Vertex auto-alignment is ${props.displayData.autoAlignVertices ? 'on' : 'off'}`,
-        state: props.displayData.autoAlignVertices ? i18next.t("status-bar.on", "on") : i18next.t("status-bar.off", "off"),
+        defaultValue: "Vertex auto-alignment",
+        state: props.displayData.autoAlignVertices ? 
+            i18next.t("status-bar.on", "on") : 
+            i18next.t("status-bar.off", "off"),
     }));
 
     defineExpose({getHeight});
