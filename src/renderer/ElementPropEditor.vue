@@ -11,7 +11,7 @@
     import { PropType, computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikClipboardContent, ikExpansionTrigger } from './ElementPropsSidebar.vue';
-    import { URLType, getURLType, urlTypeDescriptions } from './URLType';
+    import { URLType, getURLType, urlTypeDescription } from './URLType';
     import { selectOrLoadGraphicsFile } from './renderer-main';
     import { PropTypeDescriptor } from 'kresmer';
     import i18next from 'i18next';
@@ -334,7 +334,7 @@
                     {{ urlType }}
                 </button>
                 <ul class="dropdown-menu">
-                    <li v-for="ut in URLType" :key="ut" :title="urlTypeDescriptions[ut]">
+                    <li v-for="ut in URLType" :key="ut" :title="urlTypeDescription(ut)">
                         <a class="dropdown-item" href="#" @click="setUrlType(ut)">{{ ut }}</a>
                     </li>
                 </ul>

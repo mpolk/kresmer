@@ -6,6 +6,7 @@
  *                Enumeration representing URL types: 
  *             data:, file: and regular hrefs (http(s):)
  ***************************************************************************/
+import i18next from "i18next";
 
 export enum URLType {
     data = "data:",
@@ -14,11 +15,13 @@ export enum URLType {
     fileRel = "file: (rel)"
 } //URLType
 
-export const urlTypeDescriptions = {
-    [URLType.data]: "Embedded graphics data",
-    [URLType.href]: "Regular URL (http: or https:)",
-    [URLType.fileAbs]: "File URL with an absolute path",
-    [URLType.fileRel]: "File URL with a relative path",
+export function urlTypeDescription(ut: URLType) {
+    switch (ut) {
+        case URLType.data: return i18next.t("url-type.data", "Embedded graphics data");
+        case URLType.href: return i18next.t("url-type.href", "Regular URL (http: or https:)");
+        case URLType.fileAbs: return i18next.t("url-type.file-abs", "File URL with an absolute path");
+        case URLType.fileRel: return i18next.t("url-type.file-rel", "File URL with a relative path");
+    }//switch
 }//urlTypeDescriptions
 
 export function getURLType(url: string|undefined)

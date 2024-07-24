@@ -10,7 +10,7 @@
     import { ref, reactive, computed } from 'vue';
     import { Offcanvas } from 'bootstrap';
     import { kresmer, selectOrLoadGraphicsFile, updateWindowTitle } from './renderer-main';
-    import { URLType, getURLType, urlTypeDescriptions } from './URLType';
+    import { URLType, getURLType, urlTypeDescription } from './URLType';
     import { BackgroundImageData, BackgroundImageAlignment } from 'kresmer';
     import i18next from 'i18next';
 
@@ -151,7 +151,7 @@
                                         {{ backgroundImageUrlType }}
                                     </button>
                                     <ul class="dropdown-menu">
-                                        <li v-for="ut in URLType" :key="ut" :title="urlTypeDescriptions[ut]">
+                                        <li v-for="ut in URLType" :key="ut" :title="urlTypeDescription(ut)">
                                             <a class="dropdown-item" href="#" @click="backgroundImageUrlType = ut">{{ ut }}</a>
                                         </li>
                                     </ul>

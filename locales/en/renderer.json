@@ -129,5 +129,11 @@
     "backend-url": "Backend server URL we are currently connected",
     "drawing-scale": "Drawing display scale (\"ctrl-scroll\" to change)",
     "auto-alignment": "Vertex auto-alignment is {{state}}"
+  },
+  "url-type": {
+    "data": "Embedded graphics data",
+    "href": "Regular URL (http: or https:)",
+    "file-abs": "File URL with an absolute path",
+    "file-rel": "File URL with a relative path"
   }
 }
