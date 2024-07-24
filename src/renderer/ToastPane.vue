@@ -7,7 +7,7 @@
 \**************************************************************************/
 
 <script lang="ts">
-    import { onMounted, ref, reactive, computed } from 'vue';
+    import { onMounted, ref, reactive } from 'vue';
     import {format} from 'date-fns';
     import Toast from 'bootstrap/js/dist/toast';
     import { statusBarData } from './renderer-main';
@@ -19,7 +19,7 @@
         timestamp?: Date,
     };
 
-    const maxMessagesToShow = 5;
+    const maxMessagesToShow = 100;
     const maxMessagesToKeep = 100;
     const autoHideDelay = 5000;
 
@@ -73,7 +73,7 @@
         }//if
     }//toggle
 
-    function headerClass(severity: string|undefined)
+    function severityClass(severity: string|undefined)
     {
         switch (severity) {
             case 'error':
@@ -81,9 +81,9 @@
             case 'warning':
                 return 'bg-warning text-dark';
             default:
-                return '';
+                return undefined;
         }//switch
-    }//headerClass
+    }//severityClass
 
     function isEmpty()
     {
@@ -103,38 +103,33 @@
     {
         toastMessages.splice(0);
         hide();
-        statusBarData.notificationsCount = messageCount;
+        statusBarData.notificationsCount = 0;
     }//clearToaster
-
-    const toastMessagesToShow = computed(() => {
-        return toastMessages.slice(0, Math.min(toastMessages.length, maxMessagesToShow));
-    })//toastMessagesToShow
 
     defineExpose({show, hide, toggle, isEmpty});
 </script>
 
 <template>
-    <div ref="divToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
-        <div class="d-flex justify-content-between align-items-center">
+    <div ref="divToast" class="toast hide">
+        <div class="toast-header">
             <span class="m-auto">Notfications ({{toastMessages.length}})</span>
             <button type="button" class="btn" title="Clear all" @click="clearToaster">
                 <span class="material-symbols-outlined">delete_sweep</span>
             </button>
         </div>
-        <template  v-for="(tm, i) in toastMessagesToShow" :key="`tm[${tm.seqNo}]`">
-            <div class="toast-header" :class="headerClass(tm.severity)" v-if="tm.title">
-                <strong class="me-auto">{{tm.title}}</strong>
-                <small v-if="tm.subtitle">{{tm.subtitle}}</small>
-                <small class="text-dark">{{format(tm.timestamp!, "HH:MM:ss.sss")}}</small>
-                <button type="button" class="btn-close" :class='{"btn-close-white": tm.severity === "error"}'
-                        title="Delete notification" @click="deleteMessage(i)"></button>
+        <div class="toast-body overflow-y-scroll" style="max-height: 400px;">
+            <div v-for="(tm, i) in toastMessages.slice(0, maxMessagesToShow)" :key="`tm[${tm.seqNo}]`">
+                <button type="button" class="btn btn-sm btn-light" title="Delete notification" @click="deleteMessage(i)">
+                    <span class="material-symbols-outlined align-bottom">close</span>
+                </button>
+                <span class="badge text-sm" :class="severityClass(tm.severity)">
+                    {{format(tm.timestamp!, "HH:MM:ss.sss")}} {{ tm.severity }}
+                </span>
+                <strong class="ms-2">{{tm.title}}</strong>
+                <small class="ms-2" v-if="tm.subtitle">{{tm.subtitle}}</small>
+                <br/>
+                <span class="ms-4">{{tm.message}}</span>
             </div>
-            <div class="toast-body">
-                {{tm.message}}
-            </div>
-        </template>
-        <div class="toast-header" v-if="toastMessages.length > maxMessagesToShow"
-             :class="headerClass(toastMessages[maxMessagesToShow].severity)">
         </div>
     </div>
 </template>
