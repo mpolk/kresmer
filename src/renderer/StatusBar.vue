@@ -78,7 +78,7 @@
                 {{displayData.serverURL}}
             </div>
             <div class="pane" :title="autoAlignmentTitle">
-                <span class="material-symbols-outlined align-bottom" :class="{disabled: displayData.autoAlignVertices}"
+                <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.autoAlignVertices}"
                     >hdr_auto</span>
             </div>
             <div class="pane" :title="drawingScaleTitle">
