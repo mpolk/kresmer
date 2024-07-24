@@ -58,10 +58,10 @@
 
 <template>
     <div class="status-bar row gx-0 justify-content-between" :style="{bottom, left: 0}" ref="divStatusBar">
-        <div class="pane selected-element col-4">
+        <div class="pane selected-element col-2">
             {{displayData.selectedElement}}
         </div>
-        <div class="pane hint col-4">
+        <div class="pane hint col-6">
             {{displayData.hint}}
         </div>
         <div class="col-auto d-flex justify-content-end" :title="backendURLTitle">
