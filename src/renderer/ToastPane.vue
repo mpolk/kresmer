@@ -7,10 +7,11 @@
 \**************************************************************************/
 
 <script lang="ts">
-    import { onMounted, ref, reactive } from 'vue';
+    import { onMounted, ref, reactive, computed } from 'vue';
     import {format} from 'date-fns';
     import Toast from 'bootstrap/js/dist/toast';
     import { statusBarData } from './renderer-main';
+    import i18next from 'i18next';
 
     export type ToastMessage = {
         seqNo?: number,
@@ -106,20 +107,23 @@
         statusBarData.notificationsCount = 0;
     }//clearToaster
 
+    const clearAllButtonTitle = computed(() => i18next.t("toast-pane.clear-all", "Clear all"));
+    const deleteNotificationButtonTitle = computed(() => i18next.t("toast-pane.delete-notification", "Delete notification"));
+
     defineExpose({show, hide, toggle, isEmpty});
 </script>
 
 <template>
     <div ref="divToast" class="toast hide">
         <div class="toast-header">
-            <span class="m-auto">Notfications ({{toastMessages.length}})</span>
-            <button type="button" class="btn" title="Clear all" @click="clearToaster">
+            <span class="m-auto">{{i18next.t("toast-pane.notifications", "Notifications")}} ({{toastMessages.length}})</span>
+            <button type="button" class="btn" :title="clearAllButtonTitle" @click="clearToaster">
                 <span class="material-symbols-outlined">delete_sweep</span>
             </button>
         </div>
         <div class="toast-body overflow-y-scroll" style="max-height: 400px;">
             <div class="border-bottom" v-for="(tm, i) in toastMessages.slice(-maxMessagesToShow)" :key="`tm[${tm.seqNo}]`">
-                <button type="button" class="btn btn-sm btn-light" title="Delete notification" @click="deleteMessage(i)">
+                <button type="button" class="btn btn-sm btn-light" :title="deleteNotificationButtonTitle" @click="deleteMessage(i)">
                     <span class="material-symbols-outlined align-bottom">close</span>
                 </button>
                 <span class="badge text-sm" :class="severityClass(tm.severity)">

@@ -46,6 +46,10 @@
     })//drawingScaleDispl
 
     const haveNotifications = computed(() => props.displayData.notificationsCount > 0);
+    const notificationsTitle = computed(() => i18next.t("status-bar.notifications", {
+        defaultValue: "Notifications",
+        count: props.displayData.notificationsCount,
+    }));
     const backendURLTitle = computed(() => i18next.t("status-bar.backend-url", "Backend server URL we are currently connected"));
     const drawingScaleTitle = computed(() => i18next.t("status-bar.drawing-scale", "Drawing display scale (\"ctrl-scroll\" to change)"));
     const autoAlignmentTitle = computed(() => i18next.t("status-bar.auto-alignment", {
@@ -79,7 +83,7 @@
             <div class="pane" :title="drawingScaleTitle">
                 <span class="align-bottom">{{drawingScaleDispl}}</span>
             </div>
-            <div class="pane" :title="`Notifications (${displayData.notificationsCount})`" style="cursor: pointer">
+            <div class="pane" :title="notificationsTitle" style="cursor: pointer">
                 <span class="material-symbols-outlined align-bottom" 
                     :class="{filled: haveNotifications}"
                     @click="vueToastPane.toggle">notifications</span>
