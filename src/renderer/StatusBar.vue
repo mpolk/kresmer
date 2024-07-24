@@ -7,15 +7,16 @@
 <*************************************************************************** -->
 
 <script lang="ts">
+    import { computed, onMounted, PropType, ref } from 'vue';
+    import {StatusBarDisplayData, vueToastPane} from './renderer-main';
+    import i18next from 'i18next';
+
     export default {
         name: "StatusBar",
     }
 </script>
 
 <script setup lang="ts">
-    import { computed, onMounted, PropType, ref } from 'vue';
-    import {StatusBarDisplayData, vueToastPane} from './renderer-main';
-
     const props = defineProps({
         displayData: {type: Object as PropType<StatusBarDisplayData>, required: true},
     });
@@ -45,6 +46,12 @@
     })//drawingScaleDispl
 
     const haveNotifications = computed(() => props.displayData.notificationsCount > 0);
+    const backendURLTitle = computed(() => i18next.t("status-bar.backend-url", "Backend server URL we are currently connected"));
+    const drawingScaleTitle = computed(() => i18next.t("status-bar.drawing-scale", "Drawing display scale (\"ctrl-scroll\" to change)"));
+    const autoAlignmentTitle = computed(() => i18next.t("status-bar.auto-alignment", {
+        defaultValue: `Vertex auto-alignment is ${props.displayData.autoAlignVertices ? 'on' : 'off'}`,
+        state: props.displayData.autoAlignVertices ? i18next.t("status-bar.on", "on") : i18next.t("status-bar.off", "off"),
+    }));
 
     defineExpose({getHeight});
 </script>
@@ -57,19 +64,19 @@
         <div class="pane hint col-4">
             {{displayData.hint}}
         </div>
-        <div class="col-auto d-flex justify-content-end" title="Backend server URL currently connected">
+        <div class="col-auto d-flex justify-content-end" :title="backendURLTitle">
             <div class="pane">
                 <span class="material-symbols-outlined align-bottom" 
                     :style="`visibility: ${displayData.backendRequested ? 'visible' : 'hidden'}`"
                     >swap_vert</span>
                 {{displayData.serverURL}}
             </div>
-            <div class="pane" :title="`Vertex auto-alignment is ${displayData.autoAlignVertices ? 'on' : 'off'}`">
+            <div class="pane" :title="autoAlignmentTitle">
                 <span class="material-symbols-outlined align-bottom" 
                     :style="`visibility: ${displayData.autoAlignVertices ? 'visible' : 'hidden'}`"
                     >hdr_auto</span>
             </div>
-            <div class="pane" title="Drawing display scale" style="cursor: default">
+            <div class="pane" :title="drawingScaleTitle">
                 <span class="align-bottom">{{drawingScaleDispl}}</span>
             </div>
             <div class="pane" :title="`Notifications (${displayData.notificationsCount})`" style="cursor: pointer">
@@ -98,6 +105,7 @@
             text-overflow: ellipsis;
             text-wrap: nowrap;
             overflow: hidden;
+            cursor: default;
 
             // &.selected-element {
             //     min-width: 15rem;

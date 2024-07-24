@@ -124,5 +124,10 @@
     "reload": "reload",
     "closing": "closing",
     "ask-for-unsaved-changes": "The current drawing has unsaved changes.\nDo you want to save it before {{opName}}?"
+  },
+  "status-bar": {
+    "backend-url": "Backend server URL we are currently connected",
+    "drawing-scale": "Drawing display scale (\"ctrl-scroll\" to change)",
+    "auto-alignment": "Vertex auto-alignment is {{state}}"
   }
 }
