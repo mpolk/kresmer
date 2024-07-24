@@ -93,9 +93,9 @@
     function deleteMessage(index: number)
     {
         toastMessages.splice(index, 1);
+        statusBarData.notificationsCount = --messageCount;
         if (toastMessages.length === 0) {
             hide();
-            statusBarData.notificationsCount = messageCount;
         }//if
     }//deleteMessage
 
@@ -118,7 +118,7 @@
             </button>
         </div>
         <div class="toast-body overflow-y-scroll" style="max-height: 400px;">
-            <div v-for="(tm, i) in toastMessages.slice(0, maxMessagesToShow)" :key="`tm[${tm.seqNo}]`">
+            <div class="border-bottom" v-for="(tm, i) in toastMessages.slice(-maxMessagesToShow)" :key="`tm[${tm.seqNo}]`">
                 <button type="button" class="btn btn-sm btn-light" title="Delete notification" @click="deleteMessage(i)">
                     <span class="material-symbols-outlined align-bottom">close</span>
                 </button>
