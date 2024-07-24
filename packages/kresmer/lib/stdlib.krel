@@ -167,17 +167,17 @@
             .inter-unit-gap { fill-opacity: 0.1; stroke-opacity: 0.5; stroke-width: 1px }
         </style>
         <props extend="ManagedDevice">
-            <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
-            <prop name="unit-height" type="Number" default="75" category="Geometry" description="The height of a single unit"/>
-            <prop name="inter-unit-gap" type="Number" default="0" category="Geometry" description="The visual gap between the units"/>
-            <prop name="width" type="Number" required="true" default="312.5" category="Geometry" />
+            <prop xx-name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
+            <prop xx-name="unit-height" type="Number" default="75" category="Geometry" description="The height of a single unit"/>
+            <prop xx-name="inter-unit-gap" type="Number" default="0" category="Geometry" description="The visual gap between the units"/>
+            <prop xx-name="width" type="Number" required="true" default="312.5" category="Geometry" />
             <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" 
                   description="Visual perspective of the device image"/>
-            <prop name="top-facet-size" type="Number" default="1.4" category="Geometry" />
-            <prop name="top-facet-skew" type="Number" default="60" category="Geometry" />
-            <prop name="show-device-name" type="boolean" default="true" category="Presentation"/>
-            <prop name="show-ip-address" type="boolean" default="true" category="Presentation" />
-            <prop name="name-vertical-pos" type="Number" default="0.3" category="Presentation" description="Device name offset from the device top edge (relative to unitHeight)" />
+            <prop xx-name="top-facet-size" type="Number" default="1.4" category="Geometry" />
+            <prop xx-name="top-facet-skew" type="Number" default="60" category="Geometry" />
+            <prop xx-name="show-device-name" type="boolean" default="true" category="Presentation"/>
+            <prop xx-name="show-ip-address" type="boolean" default="true" category="Presentation" />
+            <prop xx-name="name-vertical-pos" type="Number" default="0.3" category="Presentation" description="Device name offset from the device top edge (relative to unitHeight)" />
         </props>
         <computed-props>
             <computed-prop name="perspCorrection">0.85</computed-prop>
@@ -208,8 +208,8 @@
         </style>
         <props>
             <prop name="unit" type="Number" required="true" />
-            <prop name="width" type="Number" required="true" category="Geometry" />
-            <prop name="height" type="Number" required="true" category="Geometry" />
+            <prop xx-name="width" type="Number" required="true" category="Geometry" />
+            <prop xx-name="height" type="Number" required="true" category="Geometry" />
         </props>
     </component-class>
 
