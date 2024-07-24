@@ -36,13 +36,13 @@
         addEventListener("resize", stickToBottom);
     });
 
-    const drawingScale = computed(() => {
+    const drawingScaleDispl = computed(() => {
         if (props.displayData.drawingScale >= 1) {
             return `${Math.round(props.displayData.drawingScale * 100) / 100} : 1`;
         } else {
             return `1 : ${Math.round(100 / props.displayData.drawingScale) / 100}`;
         }//if
-    })//drawingScale
+    })//drawingScaleDispl
 
     const haveNotifications = computed(() => props.displayData.notificationsCount > 0);
 
@@ -50,27 +50,27 @@
 </script>
 
 <template>
-    <div class="status-bar" :style="{bottom}" ref="divStatusBar">
-        <div class="pane selected-element">
+    <div class="status-bar row gx-0 justify-content-between" :style="{bottom, left: 0}" ref="divStatusBar">
+        <div class="pane selected-element col-4">
             {{displayData.selectedElement}}
         </div>
-        <div class="pane hint">
+        <div class="pane hint col-4">
             {{displayData.hint}}
         </div>
-        <div>
-            <div class="pane" :title="`Vertex auto-alignment is ${displayData.autoAlignVertices ? 'on' : 'off'}`">
-                <span class="material-symbols-outlined align-bottom" 
-                    :style="`visibility: ${displayData.autoAlignVertices ? 'visible' : 'hidden'}`"
-                    >hdr_auto</span>
-            </div>
-            <div class="pane" title="Backend server URL currently connected">
+        <div class="col-auto d-flex justify-content-end" title="Backend server URL currently connected">
+            <div class="pane">
                 <span class="material-symbols-outlined align-bottom" 
                     :style="`visibility: ${displayData.backendRequested ? 'visible' : 'hidden'}`"
                     >swap_vert</span>
                 {{displayData.serverURL}}
             </div>
+            <div class="pane" :title="`Vertex auto-alignment is ${displayData.autoAlignVertices ? 'on' : 'off'}`">
+                <span class="material-symbols-outlined align-bottom" 
+                    :style="`visibility: ${displayData.autoAlignVertices ? 'visible' : 'hidden'}`"
+                    >hdr_auto</span>
+            </div>
             <div class="pane" title="Drawing display scale" style="cursor: default">
-                {{drawingScale}}
+                <span class="align-bottom">{{drawingScaleDispl}}</span>
             </div>
             <div class="pane" :title="`Notifications (${displayData.notificationsCount})`" style="cursor: pointer">
                 <span class="material-symbols-outlined align-bottom" 
@@ -84,9 +84,6 @@
 <style lang="scss">
     .status-bar {
         position: fixed;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
         width: 100%;
         padding: 0.2rem 0;
         font: status-bar; 
@@ -95,21 +92,19 @@
         background-color: rgb(52, 122, 250);
 
         .pane {
+            position:relative;
             display: inline-block;
             padding: 0 0.5rem;
             text-overflow: ellipsis;
             text-wrap: nowrap;
+            overflow: hidden;
 
-            &.selected-element {
-                min-width: 15rem;
-            }
+            // &.selected-element {
+            //     min-width: 15rem;
+            // }
 
             &.hint {
                 color: yellow;
-            }
-
-            &.right {
-                float: right;
             }
         }
     }
