@@ -126,7 +126,7 @@
     "ask-for-unsaved-changes": "The current drawing has unsaved changes.\nDo you want to save it before {{opName}}?"
   },
   "status-bar": {
-    "notifications": "Notifications {{count}}",
+    "notifications": "Notifications {{notificationCount}}",
     "backend-url": "Backend server URL we are currently connected",
     "drawing-scale": "Drawing display scale (\"ctrl-scroll\" to change)",
     "on": "on",

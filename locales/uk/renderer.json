@@ -126,7 +126,7 @@
     "ask-for-unsaved-changes": "Поточне креслення містить незбережені зміни.\nВи хочете зберегти його до {{opName}}?"
   },
   "status-bar": {
-    "notifications": "Сповіщення ({{count}})",
+    "notifications": "Сповіщення ({{notificationCount}})",
     "backend-url": "URL-адреса сервера, до якого ми зараз підключені",
     "drawing-scale": "Масштаб відображення креслення (\"ctrl-scroll\" щоб змінити)",
     "on": "увімкнено",

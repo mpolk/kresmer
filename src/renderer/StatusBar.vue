@@ -48,7 +48,7 @@
     const haveNotifications = computed(() => props.displayData.notificationsCount > 0);
     const notificationsTitle = computed(() => i18next.t("status-bar.notifications", {
         defaultValue: "Notifications",
-        count: props.displayData.notificationsCount,
+        notificationCount: props.displayData.notificationsCount,
     }));
     const backendURLTitle = computed(() => i18next.t("status-bar.backend-url", "Backend server URL we are currently connected"));
     const drawingScaleTitle = computed(() => i18next.t("status-bar.drawing-scale", "Drawing display scale (\"ctrl-scroll\" to change)"));
