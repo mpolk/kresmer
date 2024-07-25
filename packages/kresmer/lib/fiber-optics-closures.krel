@@ -169,16 +169,21 @@
         <template>
             <rect v-bind:width="width" v-bind:height="height" class="body"/>
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in leftCables" 
-                v-bind:x="0" v-bind:y="0" v-bind:width="atw*width" v-bind:height="atw*height"
+                v-bind:x="0" v-bind:y="leftAtY(i-1)" v-bind:width="lwidth" v-bind:height="cableInfo.nFibers*lStep"
                 v-bind:caption="cableInfo.cableName" orientation="right"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
             <adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
+            <adjustment-ruler target-prop="lw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lwidth" v-bind:y2="height" fixed-end="1"/>
         </template>
         <props>
-            <prop name="width" type="Number" category="Geometry" default="400"/>
-            <prop name="height" type="Number" category="Geometry" default="400"/>
+            <prop name="width" type="Number" category="Geometry" default="400" required="true"/>
+            <prop name="height" type="Number" category="Geometry" default="400" required="true"/>
+            <prop name="lw" type="Number" category="Geometry" default="0.3333333" description="Left cable attachment tables width (relative)"/>
+            <prop name="rw" type="Number" category="Geometry" default="0.3333333" description="Right cable attachment tables width (relative)"/>
+            <prop name="th" type="Number" category="Geometry" default="0.3333333" description="Top cable attachment tables height (relative)"/>
+            <prop name="bh" type="Number" category="Geometry" default="0.3333333" description="Bottom cable attachment tables height (relative)"/>
             <prop name="cables" type="Object" category="Network">
                 <elements type="Object">
                     <subprop name="cableName" type="String"/>
@@ -191,10 +196,39 @@
             </prop>
         </props>
         <computed-props>
-            <computed-prop name="atw">1/3</computed-prop>
             <computed-prop name="leftCables">Object.values(props.cables).filter(v =&gt; v.position === "left")</computed-prop>
             <computed-prop name="nLeftCables">computedProps.leftCables.length</computed-prop>
+            <computed-prop name="nLeftFibers">computedProps.leftCables.reduce((acc, cable) =&gt; acc + cable.nFibers, 0)</computed-prop>
+
+            <computed-prop name="rightCables">Object.values(props.cables).filter(v =&gt; v.position === "right")</computed-prop>
+            <computed-prop name="nRightCables">computedProps.rightCables.length</computed-prop>
+            <computed-prop name="nRightFibers">computedProps.rightCables.reduce((acc, cable) =&gt; acc + cable.nFibers, 0)</computed-prop>
+
+            <computed-prop name="topCables">Object.values(props.cables).filter(v =&gt; v.position === "top")</computed-prop>
+            <computed-prop name="nTopCables">computedProps.topCables.length</computed-prop>
+            <computed-prop name="nTopFibers">computedProps.topCables.reduce((acc, cable) =&gt; acc + cable.nFibers, 0)</computed-prop>
+
+            <computed-prop name="bottomCables">Object.values(props.cables).filter(v =&gt; v.position === "bottom")</computed-prop>
+            <computed-prop name="nBottomCables">computedProps.bottomCables.length</computed-prop>
+            <computed-prop name="nBottomFibers">computedProps.bottomCables.reduce((acc, cable) =&gt; acc + cable.nFibers, 0)</computed-prop>
+
+            <computed-prop name="lwidth">computedProps.nLeftCables ? props.width*props.lw : 0</computed-prop>
+            <computed-prop name="rwidth">computedProps.nRightCables ? props.width*props.rw : 0</computed-prop>
+            <computed-prop name="theight">computedProps.nTopCables ? props.height*props.th : 0</computed-prop>
+            <computed-prop name="bheight">computedProps.nBottomCables ? props.height*props.bh : 0</computed-prop>
+            <computed-prop name="x0">computedProps.lwidth</computed-prop>
+            <computed-prop name="y0">computedProps.theight</computed-prop>
+            <computed-prop name="x1">props.width - computedProps.rwidth</computed-prop>
+            <computed-prop name="y1">props.height - computedProps.bheight</computed-prop>
+            <computed-prop name="intW">computedProps.x1 - computedProps.x0</computed-prop>
+            <computed-prop name="intH">computedProps.y1 - computedProps.y0</computed-prop>
+            <computed-prop name="lStep">computedProps.intH / computedProps.nLeftFibers</computed-prop>
         </computed-props>
+        <functions>
+            <function name="leftAtY" params="i">
+                return computedProps.y0 + computedProps.leftCables.slice(0, i).reduce((acc, cable) =&gt; acc + cable.nFibers, 0)*computedProps.lStep
+            </function>
+        </functions>
         <style>
             .body {fill: #e6e6e6; stroke: gray; stroke-width: 1px; }
         </style>
