@@ -147,38 +147,32 @@
     /** Builds the model object for the value of the prop being edited  */
     const editorModel = computed({
         get() {
-            if (props.subpropLevel == 0) {
+            if (!modelParent) {
                 let value = props.propToEdit.value;
                 if (props.propToEdit.subtype === 'color' && props.propToEdit.value === undefined)
                     value = props.propToEdit.default;
                 return value;
             } else
-                return applyRootPath(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
+                return modelParent[props.propToEdit.name];
         },
         set(newValue) {
-            if (props.subpropLevel == 0)
+            if (!modelParent)
                 props.propToEdit.value = newValue;
             else
-                applyRootPath(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
+                modelParent[props.propToEdit.name] = newValue;
         }
     })//editorModel
 
-    /**  The root (the ultimate parent) of the (sub)property being edited */
-    let rootProp = props.propToEdit;
-    const rootPath: string[] = [];
-    while (rootProp.parentPropDescriptor) {
-        rootPath.unshift(rootProp.name);
-        rootProp = rootProp.parentPropDescriptor;
-    }//while
+    // /**  The root (the ultimate parent) of the (sub)property being edited */
+    // let rootProp = props.propToEdit;
+    // const rootPath: string[] = [];
+    // while (rootProp.parentPropDescriptor) {
+    //     rootPath.unshift(rootProp.name);
+    //     rootProp = rootProp.parentPropDescriptor;
+    // }//while
 
-    /** Finds the immediate parent object of the editor model */
-    function applyRootPath(startFrom: Record<string, unknown>, depth: number): Record<string, unknown>
-    {
-        if (depth == 0)
-            return startFrom;
-        else
-            return applyRootPath(startFrom[rootPath[rootPath.length - depth-1]] as Record<string, unknown>, depth-1);
-    }//applyRootPath
+    const modelParent = props.propToEdit.parentPropDescriptor?.value as Record<string, unknown>|undefined;
+    // const modelParent = rootPath.slice(0, rootPath.length-1).reduce((acc, pathSeg) => acc[pathSeg], rootProp.value as Record<string, any>);
 
     /**
      * Builds CSS for the table cell containing (sub-)prop name
