@@ -145,7 +145,7 @@
 
 
     /** Builds the model object for the value of the prop being edited  */
-    const subpropModel = computed({
+    const editorModel = computed({
         get() {
             if (props.subpropLevel == 0) {
                 let value = props.propToEdit.value;
@@ -153,22 +153,15 @@
                     value = props.propToEdit.default;
                 return value;
             } else
-                return getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
+                return applyRootPath(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name];
         },
         set(newValue) {
             if (props.subpropLevel == 0)
                 props.propToEdit.value = newValue;
             else
-                getSubpropParentObject(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
+                applyRootPath(rootProp.value as Record<string, unknown>, props.subpropLevel-1)[props.propToEdit.name] = newValue;
         }
-    })//subpropModel
-
-    function localizedChoice(i: number)
-    {
-        if (!props.propToEdit.validator?.localizedValidValues)
-            return props.propToEdit.validator!.validValues![i];
-        return props.propToEdit.validator.localizedValidValues[i] ?? props.propToEdit.validator.validValues![i];
-    }//localizedChoice
+    })//editorModel
 
     /**  The root (the ultimate parent) of the (sub)property being edited */
     let rootProp = props.propToEdit;
@@ -178,14 +171,14 @@
         rootProp = rootProp.parentPropDescriptor;
     }//while
 
-    /** Finds the immediate parent object of the subproperty being edited */
-    function getSubpropParentObject(parentObject: Record<string, unknown>, depth: number): Record<string, unknown>
+    /** Finds the immediate parent object of the editor model */
+    function applyRootPath(startFrom: Record<string, unknown>, depth: number): Record<string, unknown>
     {
         if (depth == 0)
-            return parentObject;
+            return startFrom;
         else
-            return getSubpropParentObject(parentObject[rootPath[depth-1]] as Record<string, unknown>, depth-1);
-    }//getSubpropParentObject
+            return applyRootPath(startFrom[rootPath[rootPath.length - depth-1]] as Record<string, unknown>, depth-1);
+    }//applyRootPath
 
     /**
      * Builds CSS for the table cell containing (sub-)prop name
@@ -266,6 +259,13 @@
 
     const addSubpropTitle = computed(() => i18next.t('element-prop-editor.add-subprop', 'Add subproperty'));
     const deleteSubpropTitle = computed(() => i18next.t('element-prop-editor.delete-subprop', 'Delete subproperty'));
+
+    function localizedChoice(i: number)
+    {
+        if (!props.propToEdit.validator?.localizedValidValues)
+            return props.propToEdit.validator!.validValues![i];
+        return props.propToEdit.validator.localizedValidValues[i] ?? props.propToEdit.validator.validValues![i];
+    }//localizedChoice
 </script>
 
 <template>
@@ -305,7 +305,7 @@
         <td class="p-1" :class="valueCellClass">
             <select v-if="propToEdit.validator?.validValues" ref="propInputs" :data-prop-name="propToEdit.name"
                     class="form-select form-select-sm border-0" :id="subpropInputID(propToEdit)"
-                    v-model="subpropModel">
+                    v-model="editorModel">
                 <option v-if="!propToEdit.required" :value="undefined"></option>
                 <option v-for="(choice, i) in propToEdit.validator.validValues" class="text-secondary"
                         :key="`${propToEdit.name}[${i}]`" :value="choice">{{ localizedChoice(i) }}</option>
@@ -315,7 +315,7 @@
                     ref="propInputs" :data-prop-name="propToEdit.name"
                     class="form-control form-control-sm text-end border-0"
                     :placeholder="propToEdit.default ? String(propToEdit.default) : undefined"
-                    v-model="subpropModel"/>
+                    v-model="editorModel"/>
                 <input v-if="propToEdit.validator?.min !== undefined && propToEdit.validator.max !== undefined" type="range" class="form-range" 
                     :min="propToEdit.validator.min" :max="propToEdit.validator.max" :step="(propToEdit.validator.max - propToEdit.validator.min)*0.05" 
                     :value="propToEdit.value ?? propToEdit.default" 
@@ -324,7 +324,7 @@
             <input v-else-if="propToEdit.type === Boolean" type="checkbox"
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-check-input" :indeterminate="propToEdit.value === undefined"
-                v-model="subpropModel"/>
+                v-model="editorModel"/>
             <input v-else-if="propToEdit.type === Object"
                 ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                 class="form-control form-control-sm text-secondary border-0" readonly
@@ -343,7 +343,7 @@
                 </button>
                 <input ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                     class="form-control form-control-sm"  :disabled="urlType !== URLType.href" 
-                    :placeholder="propToEdit.default ? String(propToEdit.default) : undefined" v-model="subpropModel"/>
+                    :placeholder="propToEdit.default ? String(propToEdit.default) : undefined" v-model="editorModel"/>
             </div>
             <div v-else-if="propToEdit.subtype === 'color'" class="row">
                 <div v-if="!propToEdit.required" class="col-auto">
@@ -363,7 +363,7 @@
                         <input v-show="propToEdit.value" type="color"
                             ref="propInputs" :data-prop-name="propToEdit.name" :id="subpropInputID(propToEdit)"
                             class="form-control form-control-sm"
-                            v-model="subpropModel"/>
+                            v-model="editorModel"/>
                     </div>
                 </div>
             </div>
@@ -372,7 +372,7 @@
                 :pattern="propToEdit.validator?.pattern"
                 class="form-control form-control-sm border-0"
                 :placeholder="propToEdit.default ? String(propToEdit.default) : undefined"
-                v-model="subpropModel"/>
+                v-model="editorModel"/>
             <div class="invalid-feedback">
                 Syntax error!
             </div>
