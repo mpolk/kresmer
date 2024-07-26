@@ -8,7 +8,7 @@
 
 <script lang="ts">
     import { computed, onMounted, PropType, ref } from 'vue';
-    import {StatusBarDisplayData, vueToastPane} from './renderer-main';
+    import {StatusBarDisplayData, vueToastPane, toggleAutoAlignment} from './renderer-main';
     import i18next from 'i18next';
 
     export default {
@@ -77,7 +77,7 @@
                     >swap_vert</span>
                 {{displayData.serverURL}}
             </div>
-            <div class="pane" :title="autoAlignmentTitle">
+            <div class="pane" :title="autoAlignmentTitle" style="cursor: pointer" @click="toggleAutoAlignment">
                 <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.autoAlignVertices}"
                     >hdr_auto</span>
             </div>

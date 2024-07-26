@@ -621,10 +621,12 @@ appCommandExecutor.on("toggle-grid", () => {
     window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 });
 
-appCommandExecutor.on("toggle-vertex-auto-alignment", () => {
+appCommandExecutor.on("toggle-vertex-auto-alignment", toggleAutoAlignment);
+export function toggleAutoAlignment()
+{
     kresmer.autoAlignVertices = statusBarData.autoAlignVertices = !kresmer.autoAlignVertices;
     window.electronAPI.autoAlignmentToggled(kresmer.autoAlignVertices);
-});
+}//toggleAutoAlignment
 
 export type BackendConnectionParams = {
     serverURL: string,
