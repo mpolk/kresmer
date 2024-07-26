@@ -169,13 +169,19 @@
         <template>
             <rect v-bind:width="width" v-bind:height="height" class="body"/>
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in leftCables" 
-                v-bind:x="0" v-bind:y="leftAtY(i-1)" v-bind:width="lwidth" v-bind:height="cableInfo.nFibers*lStep"
+                v-bind:x="0" v-bind:y="lY(i-1)" v-bind:width="lwidth" v-bind:height="cableInfo.nFibers*lStep"
                 v-bind:caption="cableInfo.cableName" orientation="right"
+                v-bind:labels="cableInfo.fiberLabels"
+                />
+            <Kre:CableAttachmentTable v-for="(cableInfo, i) in rightCables" 
+                v-bind:x="x1" v-bind:y="rY(i-1)" v-bind:width="rwidth" v-bind:height="cableInfo.nFibers*rStep"
+                v-bind:caption="cableInfo.cableName" orientation="left"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
             <adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
             <adjustment-ruler target-prop="lw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lwidth" v-bind:y2="height" fixed-end="1"/>
+            <adjustment-ruler target-prop="rw" v-bind:x1="width-rwidth" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height" fixed-end="2"/>
         </template>
         <props>
             <prop name="width" type="Number" category="Geometry" default="400" required="true"/>
@@ -223,10 +229,14 @@
             <computed-prop name="intW">computedProps.x1 - computedProps.x0</computed-prop>
             <computed-prop name="intH">computedProps.y1 - computedProps.y0</computed-prop>
             <computed-prop name="lStep">computedProps.intH / computedProps.nLeftFibers</computed-prop>
+            <computed-prop name="rStep">computedProps.intH / computedProps.nRightFibers</computed-prop>
         </computed-props>
         <functions>
-            <function name="leftAtY" params="i">
+            <function name="lY" params="i">
                 return computedProps.y0 + computedProps.leftCables.slice(0, i).reduce((acc, cable) =&gt; acc + cable.nFibers, 0)*computedProps.lStep
+            </function>
+            <function name="rY" params="i">
+                return computedProps.y0 + computedProps.rightCables.slice(0, i).reduce((acc, cable) =&gt; acc + cable.nFibers, 0)*computedProps.rStep
             </function>
         </functions>
         <style>
