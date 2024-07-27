@@ -11,7 +11,7 @@
 <kresmer-library name="fiber-optics-closures" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024072400">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024072700">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -23,7 +23,9 @@
             <connection-indicator v-for="i in nFibers" v-bind:connection-id="i">
                 <rect v-bind="cellBgPos(i)" class="fiber-label background" />
                 <line v-if="i &lt; nFibers" v-bind="cellSepPos(i)" v-bind:stroke="strokeColor"/>
-                <text v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize" class="fiber-label">{{labels &amp;&amp; labels[i] ? `${i}: ${labels[i]}` : i}}</text>
+                <text v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize"
+                      v-bind:transform="labelTransform" v-bind:transform-origin="`${cellCenter(i).x} ${cellCenter(i).y}`"
+                      class="fiber-label">{{labels &amp;&amp; labels[i] ? `${i}: ${labels[i]}` : i}}</text>
                 <connection-point v-bind:name="i" v-bind="cellCPPos(i)" v-bind:connection-id="`${i}`"/>
             </connection-indicator>
         </template>
@@ -64,11 +66,7 @@
                     computedProps.width/(1+computedProps.captionHeight) : 
                     computedProps.height/(1+computedProps.captionHeight)
             </computed-prop>
-            <computed-prop name="fiberFontSize">
-                props.orientation === "left" || props.orientation === "right" ? 
-                    computedProps.cellStep*0.6 : 
-                    computedProps.cellWidth*0.6
-            </computed-prop>
+            <computed-prop name="fiberFontSize">computedProps.cellStep*0.6</computed-prop>
             <computed-prop name="captionPos">
                 {
                     x:  props.orientation ==="left" ? computedProps.width * (1+computedProps.captionHeight/2)/(1+computedProps.captionHeight) :
@@ -120,6 +118,11 @@
                     d: computedProps.cellStep/2,
                 }
             </computed-prop>
+            <computed-prop name="labelTransform">
+                props.orientation === "up" || props.orientation === "down" ?
+                    "rotate(-90)" :
+                    undefined
+            </computed-prop>
         </computed-props>
         <functions>
             <function name="cellCenter" params="i">
@@ -164,24 +167,37 @@
         </style>
     </component-class>
 
+
     <!-- Fiber Optics Splice Closure -->
-    <component-class name="FOSC" category="Passive equipment" version="2024072400">
+    <component-class name="FOSC" category="Passive equipment" version="2024072700">
         <template>
             <rect v-bind:width="width" v-bind:height="height" class="body"/>
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in leftCables" 
                 v-bind:x="0" v-bind:y="lY(i-1)" v-bind:width="lwidth" v-bind:height="cableInfo.nFibers*lStep"
-                v-bind:caption="cableInfo.cableName" orientation="right"
+                v-bind:caption="cableInfo.cableName" v-bind:nFibers="cableInfo.nFibers" orientation="right"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in rightCables" 
                 v-bind:x="x1" v-bind:y="rY(i-1)" v-bind:width="rwidth" v-bind:height="cableInfo.nFibers*rStep"
-                v-bind:caption="cableInfo.cableName" orientation="left"
+                v-bind:caption="cableInfo.cableName" v-bind:nFibers="cableInfo.nFibers" orientation="left"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
-            <adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
-            <adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
+            <Kre:CableAttachmentTable v-for="(cableInfo, i) in topCables" 
+                v-bind:x="tX(i-1)" v-bind:y="0" v-bind:width="cableInfo.nFibers*tStep" v-bind:height="theight"
+                v-bind:caption="cableInfo.cableName" v-bind:nFibers="cableInfo.nFibers" orientation="down"
+                v-bind:labels="cableInfo.fiberLabels"
+                />
+            <Kre:CableAttachmentTable v-for="(cableInfo, i) in bottomCables" 
+                v-bind:x="bX(i-1)" v-bind:y="height-bheight" v-bind:width="cableInfo.nFibers*bStep" v-bind:height="bheight"
+                v-bind:caption="cableInfo.cableName" v-bind:nFibers="cableInfo.nFibers" orientation="up"
+                v-bind:labels="cableInfo.fiberLabels"
+                />
             <adjustment-ruler target-prop="lw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lwidth" v-bind:y2="height" fixed-end="1"/>
             <adjustment-ruler target-prop="rw" v-bind:x1="width-rwidth" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height" fixed-end="2"/>
+            <adjustment-ruler target-prop="th" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="theight" fixed-end="1"/>
+            <adjustment-ruler target-prop="bh" v-bind:x1="width" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height-bheight" fixed-end="1"/>
+            <adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
+            <adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
         </template>
         <props>
             <prop name="width" type="Number" category="Geometry" default="400" required="true"/>
@@ -222,14 +238,18 @@
             <computed-prop name="rwidth">computedProps.nRightCables ? props.width*props.rw : 0</computed-prop>
             <computed-prop name="theight">computedProps.nTopCables ? props.height*props.th : 0</computed-prop>
             <computed-prop name="bheight">computedProps.nBottomCables ? props.height*props.bh : 0</computed-prop>
+
             <computed-prop name="x0">computedProps.lwidth</computed-prop>
             <computed-prop name="y0">computedProps.theight</computed-prop>
             <computed-prop name="x1">props.width - computedProps.rwidth</computed-prop>
             <computed-prop name="y1">props.height - computedProps.bheight</computed-prop>
             <computed-prop name="intW">computedProps.x1 - computedProps.x0</computed-prop>
             <computed-prop name="intH">computedProps.y1 - computedProps.y0</computed-prop>
+
             <computed-prop name="lStep">computedProps.intH / computedProps.nLeftFibers</computed-prop>
             <computed-prop name="rStep">computedProps.intH / computedProps.nRightFibers</computed-prop>
+            <computed-prop name="tStep">computedProps.intW / computedProps.nTopFibers</computed-prop>
+            <computed-prop name="bStep">computedProps.intW / computedProps.nBottomFibers</computed-prop>
         </computed-props>
         <functions>
             <function name="lY" params="i">
@@ -237,6 +257,12 @@
             </function>
             <function name="rY" params="i">
                 return computedProps.y0 + computedProps.rightCables.slice(0, i).reduce((acc, cable) =&gt; acc + cable.nFibers, 0)*computedProps.rStep
+            </function>
+            <function name="tX" params="i">
+                return computedProps.x0 + computedProps.topCables.slice(0, i).reduce((acc, cable) =&gt; acc + cable.nFibers, 0)*computedProps.tStep
+            </function>
+            <function name="bX" params="i">
+                return computedProps.x0 + computedProps.bottomCables.slice(0, i).reduce((acc, cable) =&gt; acc + cable.nFibers, 0)*computedProps.bStep
             </function>
         </functions>
         <style>
