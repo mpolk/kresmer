@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick, Prop } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick, Prop, provide } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import KresmerEventHooks from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
@@ -383,6 +383,9 @@ export default class Kresmer extends KresmerEventHooks {
     /** Returns a list of all Component Classes, registered by Kresmer */
     public getRegisteredComponentClasses() {return this.registeredComponentClasses.entries()}
 
+    /** A symbolic key for the injection of the component embedding indicator */
+    static readonly ikIsEmbedded = Symbol() as InjectionKey<boolean|undefined>;
+
     /**
      * Registers a Network Component Class in the Kresmer and registers
      * the corresponding new component in the Vue application
@@ -452,7 +455,8 @@ export default class Kresmer extends KresmerEventHooks {
                     }//for
                     return prop;
                 });
-                return {componentProps};
+                const prov = provide(Kresmer.ikIsEmbedded, true);
+                return {componentProps, prov};
             },
             template: `\
                 <NetworkComponentAdapter component-class="${componentClass.name}" 
