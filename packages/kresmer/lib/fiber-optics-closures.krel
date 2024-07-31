@@ -11,7 +11,7 @@
 <kresmer-library name="fiber-optics-closures" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024073100">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024073101">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -19,7 +19,7 @@
             <text v-bind="captionPos" class="caption" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
                 {{caption}}
             </text>
-            <connection-point name="c" v-bind="cableCPPos" connection-id="out:*"/>
+            <connection-point v-bind:name="`${connIdPrefix ? connIdPrefix + ':' : ''}c`" v-bind="cableCPPos" connection-id="out:*"/>
             <connection-indicator v-for="i in nFibers" v-bind:connection-id="connID(i)">
                 <rect v-bind="cellBgPos(i)" class="fiber-label background" />
                 <line v-if="i &lt; nFibers" v-bind="cellSepPos(i)" v-bind:stroke="strokeColor"/>
@@ -192,7 +192,7 @@
 
 
     <!-- Fiber Optics Splice Closure -->
-    <component-class name="FOSC" category="Passive equipment" version="2024073100">
+    <component-class name="FOSC" category="Passive equipment" version="2024073101">
         <template>
             <rect v-bind:width="width" v-bind:height="height" class="body"/>
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in leftCables" 
@@ -223,10 +223,10 @@
                 v-bind:nFibers="cableInfo.nFibers" orientation="up"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
-            <adjustment-ruler target-prop="ltch" v-bind:x1="0" v-bind:y1="tHeight" v-bind:x2="lWidth*ltch/(1+ltch)" v-bind:y2="tHeight" fixed-end="1"/>
-            <adjustment-ruler target-prop="rtch" v-bind:x1="width" v-bind:y1="tHeight" v-bind:x2="width - rWidth*rtch/(1+rtch)" v-bind:y2="tHeight" fixed-end="1"/>
-            <adjustment-ruler target-prop="ttch" v-bind:x1="lWidth" v-bind:y1="0" v-bind:x2="lWidth" v-bind:y2="tHeight*ttch/(1+ttch)" fixed-end="1"/>
-            <adjustment-ruler target-prop="btch" v-bind:x1="lWidth" v-bind:y1="height" v-bind:x2="lWidth" v-bind:y2="height - bHeight*btch/(1+btch)" fixed-end="1"/>
+            <adjustment-ruler v-if="nLeftCables" target-prop="ltch" v-bind:x1="0" v-bind:y1="height/2" v-bind:x2="lWidth*ltch/(1+ltch)" v-bind:y2="height/2" fixed-end="1"/>
+            <adjustment-ruler v-if="nRightCables" target-prop="rtch" v-bind:x1="width" v-bind:y1="height/2" v-bind:x2="width - rWidth*rtch/(1+rtch)" v-bind:y2="height/2" fixed-end="1"/>
+            <adjustment-ruler v-if="nTopCables" target-prop="ttch" v-bind:x1="width/2" v-bind:y1="0" v-bind:x2="width/2" v-bind:y2="tHeight*ttch/(1+ttch)" fixed-end="1"/>
+            <adjustment-ruler v-if="nBottomCables" target-prop="btch" v-bind:x1="width/2" v-bind:y1="height" v-bind:x2="width/2" v-bind:y2="height - bHeight*btch/(1+btch)" fixed-end="1"/>
             <adjustment-ruler target-prop="ltw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lWidth" v-bind:y2="height" fixed-end="1"/>
             <adjustment-ruler target-prop="rtw" v-bind:x1="width-rWidth" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height" fixed-end="2"/>
             <adjustment-ruler target-prop="tth" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="tHeight" fixed-end="1"/>
