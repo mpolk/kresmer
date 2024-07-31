@@ -280,7 +280,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** A base (common) prefix for all hyperlinks on the drawing */
     readonly hrefBase = ref("");
     /** Makes a hyperlink from the commpon prefix and the specific tail */
-    private makeHref = (tail: string) =>
+    makeHref = (tail: string) =>
     {
         if (!this.hrefBase || tail.match(/^(\/|data:|file:|[a-z]+:\/\/)/))
             return tail;
@@ -455,8 +455,8 @@ export default class Kresmer extends KresmerEventHooks {
                     }//for
                     return prop;
                 });
-                const prov = provide(Kresmer.ikIsEmbedded, true);
-                return {componentProps, prov};
+                const provides = provide(Kresmer.ikIsEmbedded, true);
+                return {componentProps, provides};
             },
             template: `\
                 <NetworkComponentAdapter component-class="${componentClass.name}" 

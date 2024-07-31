@@ -14,7 +14,7 @@
 
     <!-- *********************************************** Links ********************************************************* -->
 
-    <link-class name="_abstract-link" category=".abstract-links">
+    <link-class name="_abstract-link" category=".abstract-links" version="2024073101">
         <defs>
             <marker id="kre:link-marker-circle" markerWidth="4.5" markerHeight="4.5" refX="5" refY="5" viewBox="0 0 10 10">
                 <circle r="4.5" cx="5" cy="5" fill="context-stroke" stroke="context-stroke" />
@@ -53,7 +53,9 @@
             <prop name="mediaType" type="string" category="Network"/>
             <prop name="acceptMediaTypes" type="string" category="Network"/>
             <prop name="startLabel" type="string"/>
+            <prop name="startLabelHref" type="string"/>
             <prop name="endLabel" type="string"/>
+            <prop name="endLabelHref" type="string"/>
             <prop name="startMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
             <prop name="endMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
             <prop name="color" type="Color" category="Presentation"/>
@@ -71,7 +73,8 @@
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
             .connection-point-marker {r: 8px; fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;}
-            .label {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color);}
+            .label {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); text-decoration: none; }
+            .label.href:hover {text-decoration: underline}
             .link-number {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
             .blank.line {stroke: red; stroke-width: 2px;}
             .blank.origin {stroke: orange; stroke-width: 2px; fill: orange; fill-opacity: 0.5;}

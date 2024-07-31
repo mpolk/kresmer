@@ -11,14 +11,21 @@
 <kresmer-library name="fiber-optics-closures" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024073101">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024073102">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <line v-bind="cableSepPos" v-bind:stroke="strokeColor"/>
-            <text v-bind="captionPos" class="caption" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
-                {{caption}}
-            </text>
+            <template v-if="caption">
+                <a v-if="captionHref" class="caption href" v-bind:href="$href(captionHref)">
+                    <text v-bind="captionPos" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
+                        {{caption}}
+                    </text>
+                </a>
+                <text v-else="" v-bind="captionPos" class="caption" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
+                    {{caption}}
+                </text>
+            </template>
             <connection-point v-bind:name="`${connIdPrefix ? connIdPrefix + ':' : ''}c`" v-bind="cableCPPos" connection-id="out:*"/>
             <connection-indicator v-for="i in nFibers" v-bind:connection-id="connID(i)">
                 <rect v-bind="cellBgPos(i)" class="fiber-label background" />
@@ -33,6 +40,7 @@
         <props>
             <prop name="comment" type="String"/>
             <prop name="caption" type="String" description="Cable caption"/>
+            <prop name="caption-href" type="String" description="Optional hyperlink for the caption" />
             <prop name="height" type="Number" category="Geometry" description="Table height"/>
             <prop name="width" type="Number" category="Geometry" description="Table width"/>
             <prop name="orientation" type="String" choices="left,right,up,down" required="true" default="left" category="Geometry" description="Table orientation: the direction fibers are open in" />
@@ -185,6 +193,8 @@
         </functions>
         <style>
             .fiber-label, .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; dominant-baseline: central}
+            .caption.href {text-decoration: none}
+            .caption.href:hover {text-decoration: underline}
             .fiber-label.background {fill: transparent}
             .highlighted .fiber-label.background {fill: lightblue}
         </style>
@@ -198,28 +208,28 @@
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in leftCables" 
                 v-bind:conn-id-prefix="`l${i}`"
                 v-bind:x="0" v-bind:y="lY(i-1)" v-bind:width="lWidth" v-bind:height="cableInfo.nFibers*lStep"
-                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="ltch" 
+                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="ltch" v-bind:caption-href="cableInfo.cableHref"
                 v-bind:nFibers="cableInfo.nFibers" orientation="right"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in rightCables" 
                 v-bind:conn-id-prefix="`r${i}`"
                 v-bind:x="x1" v-bind:y="rY(i-1)" v-bind:width="rWidth" v-bind:height="cableInfo.nFibers*rStep"
-                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="rtch" 
+                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="rtch" v-bind:caption-href="cableInfo.cableHref"
                 v-bind:nFibers="cableInfo.nFibers" orientation="left"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in topCables" 
                 v-bind:conn-id-prefix="`t${i}`"
                 v-bind:x="tX(i-1)" v-bind:y="0" v-bind:width="cableInfo.nFibers*tStep" v-bind:height="tHeight"
-                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="ttch" 
+                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="ttch" v-bind:caption-href="cableInfo.cableHref"
                 v-bind:nFibers="cableInfo.nFibers" orientation="down"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in bottomCables" 
                 v-bind:conn-id-prefix="`b${i}`"
                 v-bind:x="bX(i-1)" v-bind:y="height-bHeight" v-bind:width="cableInfo.nFibers*bStep" v-bind:height="bHeight"
-                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="btch" 
+                v-bind:caption="cableInfo.cableName" v-bind:captionHeight="btch" v-bind:caption-href="cableInfo.cableHref"
                 v-bind:nFibers="cableInfo.nFibers" orientation="up"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
@@ -248,6 +258,7 @@
             <prop name="cables" type="Object" category="Network">
                 <elements type="Object">
                     <subprop name="cableName" type="String"/>
+                    <subprop name="cableHref" type="String" description="Optional hyperlink for the cable caption" />
                     <subprop name="position" type="String" choices="left,top,right,bottom" description="Visual position of the cable input" required="true"/>
                     <subprop name="nFibers" type="Number" required="true" description="The number of fibers in the cable"/>
                     <subprop name="fiberLabels" type="Object">

@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024071202"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024073100"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -56,16 +56,24 @@
             <connection-point
                 v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
                 v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" connection-id="out:*"/>
-            <text v-if="caption" class="caption" v-bind:x="captionX" v-bind:y="captionY" 
-                  v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`"
-                  v-bind:font-size="captionFontSize"
-                  >
-                {{caption}}
-            </text>
+            <template v-if="caption">
+                <a v-if="captionHref" class="caption href" v-bind:href="$href(captionHref)">
+                    <text v-bind:x="captionX" v-bind:y="captionY" 
+                          v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`"
+                          v-bind:font-size="captionFontSize">{{caption}}</text>
+                </a>
+                <text v-else="" class="caption" v-bind:x="captionX" v-bind:y="captionY" 
+                    v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`"
+                    v-bind:font-size="captionFontSize"
+                    >
+                    {{caption}}
+                </text>
+            </template>
         </template>
         <props extend="DeviceWithOpticalPorts">
             <prop name="comment" type="String" description="Device general info"/>
             <prop name="caption" type="String" description="Device picture caption"/>
+            <prop name="caption-href" type="String" description="Optional hyperlink for the caption" />
             <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
             <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
             <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open in" />
@@ -154,7 +162,8 @@
             .port-label .frame {stroke: #9fd8e5; fill: none}
             .port-label text {fill: #333333; font-family: sans-serif; dominant-baseline: central; }
             .port-label text tspan.description {fill: #675137;}
-            .caption {fill: #333333; font-family: sans-serif; text-anchor: middle;}
+            .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; text-decoration: none; }
+            .caption.href:hover {text-decoration: underline !important}
         </style>
     </component-class>
 

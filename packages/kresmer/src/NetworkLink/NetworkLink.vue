@@ -26,7 +26,9 @@
     const props = defineProps({
         model: {type: Object as PropType<NetworkLink>, required: true},
         startLabel: {type: String, required: false},
+        startLabelHref: {type: String, required: false},
         endLabel: {type: String, required: false},
+        endLabelHref: {type: String, required: false},
         startMarker: {type: String, required: false},
         endMarker: {type: String, required: false},
         color: {type: String, required: false},
@@ -163,12 +165,26 @@
         @mouseleave="model.onMouseLeave"
         >
         <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
-        <text v-if="startLabel" class="link label start">
-            <textPath :href="`#${pathID}`"><template v-if="startMarker">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}</textPath>
-        </text>
-        <text v-if="endLabel" class="link label end">
-            <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}<template v-if="endMarker">&nbsp;&nbsp;&nbsp;</template></textPath>
-        </text>
+        <template v-if="startLabel">
+            <a v-if="startLabelHref" class="link label start href" v-bind:href="model.kresmer.makeHref(startLabelHref)">
+                <text>
+                    <textPath :href="`#${pathID}`"><template v-if="startMarker">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}</textPath>
+                </text>
+            </a>
+            <text v-else class="link label start">
+                <textPath :href="`#${pathID}`"><template v-if="startMarker">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}</textPath>
+            </text>
+        </template>
+        <template v-if="endLabel">
+            <a v-if="endLabelHref" class="link label end href" v-bind:href="model.kresmer.makeHref(endLabelHref)">
+                <text>
+                    <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}<template v-if="endMarker">&nbsp;&nbsp;&nbsp;</template></textPath>
+                </text>
+            </a>
+            <text v-else class="link label end">
+                <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}<template v-if="endMarker">&nbsp;&nbsp;&nbsp;</template></textPath>
+            </text>
+        </template>
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
             <template v-if="i">
                 <line v-if="segmentHasPadding(i)" :x1="model.vertices[i-1].coords.x" :y1="model.vertices[i-1].coords.y" 
@@ -205,6 +221,7 @@
             cursor: default; dominant-baseline: ideographic;
             &.start {text-anchor: start;}
             &.end {text-anchor: end;}
+            &.href {cursor: pointer;}
         }
     }
 
