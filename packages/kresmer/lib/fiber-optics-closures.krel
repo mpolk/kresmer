@@ -11,18 +11,20 @@
 <kresmer-library name="fiber-optics-closures" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024073102">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024073103">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <line v-bind="cableSepPos" v-bind:stroke="strokeColor"/>
             <template v-if="caption">
                 <a v-if="captionHref" class="caption href" v-bind:href="$href(captionHref)">
-                    <text v-bind="captionPos" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
+                    <text v-bind="captionPos" v-bind:font-size="captionFontSize"
+                          v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
                         {{caption}}
                     </text>
                 </a>
-                <text v-else="" v-bind="captionPos" class="caption" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
+                <text v-else="" v-bind="captionPos" class="caption"  v-bind:font-size="captionFontSize"
+                      v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionPos.x} ${captionPos.y}`">
                     {{caption}}
                 </text>
             </template>
@@ -93,7 +95,9 @@
                     0
             </computed-prop>
             <computed-prop name="captionFontSize">
-                computedProps.cellWidth*0.25
+                props.orientation === "left" || props.orientation === "right" ? 
+                    computedProps.width*props.captionHeight/(1+props.captionHeight) * 0.6 : 
+                    computedProps.height*props.captionHeight/(1+props.captionHeight) * 0.6
             </computed-prop>
             <computed-prop name="cableSepPos">
                 props.orientation === "left" ? {
