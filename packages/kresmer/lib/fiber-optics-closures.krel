@@ -197,40 +197,40 @@
             <rect v-bind:width="width" v-bind:height="height" class="body"/>
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in leftCables" 
                 v-bind:conn-id-prefix="`l${i}`"
-                v-bind:x="0" v-bind:y="lY(i-1)" v-bind:width="lwidth" v-bind:height="cableInfo.nFibers*lStep"
+                v-bind:x="0" v-bind:y="lY(i-1)" v-bind:width="lWidth" v-bind:height="cableInfo.nFibers*lStep"
                 v-bind:caption="cableInfo.cableName" v-bind:captionHeight="ltch" 
                 v-bind:nFibers="cableInfo.nFibers" orientation="right"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in rightCables" 
                 v-bind:conn-id-prefix="`r${i}`"
-                v-bind:x="x1" v-bind:y="rY(i-1)" v-bind:width="rwidth" v-bind:height="cableInfo.nFibers*rStep"
+                v-bind:x="x1" v-bind:y="rY(i-1)" v-bind:width="rWidth" v-bind:height="cableInfo.nFibers*rStep"
                 v-bind:caption="cableInfo.cableName" v-bind:captionHeight="rtch" 
                 v-bind:nFibers="cableInfo.nFibers" orientation="left"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in topCables" 
                 v-bind:conn-id-prefix="`t${i}`"
-                v-bind:x="tX(i-1)" v-bind:y="0" v-bind:width="cableInfo.nFibers*tStep" v-bind:height="theight"
+                v-bind:x="tX(i-1)" v-bind:y="0" v-bind:width="cableInfo.nFibers*tStep" v-bind:height="tHeight"
                 v-bind:caption="cableInfo.cableName" v-bind:captionHeight="ttch" 
                 v-bind:nFibers="cableInfo.nFibers" orientation="down"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
             <Kre:CableAttachmentTable v-for="(cableInfo, i) in bottomCables" 
                 v-bind:conn-id-prefix="`b${i}`"
-                v-bind:x="bX(i-1)" v-bind:y="height-bheight" v-bind:width="cableInfo.nFibers*bStep" v-bind:height="bheight"
+                v-bind:x="bX(i-1)" v-bind:y="height-bHeight" v-bind:width="cableInfo.nFibers*bStep" v-bind:height="bHeight"
                 v-bind:caption="cableInfo.cableName" v-bind:captionHeight="btch" 
                 v-bind:nFibers="cableInfo.nFibers" orientation="up"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
-            <adjustment-ruler target-prop="ltch" v-bind:x1="0" v-bind:y1="theight" v-bind:x2="lwidth*ltch/(1+ltch)" v-bind:y2="theight" fixed-end="1"/>
-            <adjustment-ruler target-prop="rtch" v-bind:x1="width" v-bind:y1="theight" v-bind:x2="width - rwidth*rtch/(1+rtch)" v-bind:y2="theight" fixed-end="1"/>
-            <adjustment-ruler target-prop="ttch" v-bind:x1="lwidth" v-bind:y1="0" v-bind:x2="lwidth" v-bind:y2="theight*ttch/(1+ttch)" fixed-end="1"/>
-            <adjustment-ruler target-prop="btch" v-bind:x1="lwidth" v-bind:y1="height" v-bind:x2="lwidth" v-bind:y2="height - bheight*btch/(1+btch)" fixed-end="1"/>
-            <adjustment-ruler target-prop="ltw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lwidth" v-bind:y2="height" fixed-end="1"/>
-            <adjustment-ruler target-prop="rtw" v-bind:x1="width-rwidth" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height" fixed-end="2"/>
-            <adjustment-ruler target-prop="tth" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="theight" fixed-end="1"/>
-            <adjustment-ruler target-prop="bth" v-bind:x1="width" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height-bheight" fixed-end="1"/>
+            <adjustment-ruler target-prop="ltch" v-bind:x1="0" v-bind:y1="tHeight" v-bind:x2="lWidth*ltch/(1+ltch)" v-bind:y2="tHeight" fixed-end="1"/>
+            <adjustment-ruler target-prop="rtch" v-bind:x1="width" v-bind:y1="tHeight" v-bind:x2="width - rWidth*rtch/(1+rtch)" v-bind:y2="tHeight" fixed-end="1"/>
+            <adjustment-ruler target-prop="ttch" v-bind:x1="lWidth" v-bind:y1="0" v-bind:x2="lWidth" v-bind:y2="tHeight*ttch/(1+ttch)" fixed-end="1"/>
+            <adjustment-ruler target-prop="btch" v-bind:x1="lWidth" v-bind:y1="height" v-bind:x2="lWidth" v-bind:y2="height - bHeight*btch/(1+btch)" fixed-end="1"/>
+            <adjustment-ruler target-prop="ltw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lWidth" v-bind:y2="height" fixed-end="1"/>
+            <adjustment-ruler target-prop="rtw" v-bind:x1="width-rWidth" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height" fixed-end="2"/>
+            <adjustment-ruler target-prop="tth" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="tHeight" fixed-end="1"/>
+            <adjustment-ruler target-prop="bth" v-bind:x1="width" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height-bHeight" fixed-end="1"/>
             <adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
             <adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
         </template>
@@ -273,15 +273,15 @@
             <computed-prop name="nBottomCables">computedProps.bottomCables.length</computed-prop>
             <computed-prop name="nBottomFibers">computedProps.bottomCables.reduce((acc, cable) =&gt; acc + cable.nFibers, 0)</computed-prop>
 
-            <computed-prop name="lwidth">computedProps.nLeftCables ? props.width*props.ltw : 0</computed-prop>
-            <computed-prop name="rwidth">computedProps.nRightCables ? props.width*props.rtw : 0</computed-prop>
-            <computed-prop name="theight">computedProps.nTopCables ? props.height*props.tth : 0</computed-prop>
-            <computed-prop name="bheight">computedProps.nBottomCables ? props.height*props.bth : 0</computed-prop>
+            <computed-prop name="lWidth">computedProps.nLeftCables ? props.width*props.ltw : 0</computed-prop>
+            <computed-prop name="rWidth">computedProps.nRightCables ? props.width*props.rtw : 0</computed-prop>
+            <computed-prop name="tHeight">computedProps.nTopCables ? props.height*props.tth : 0</computed-prop>
+            <computed-prop name="bHeight">computedProps.nBottomCables ? props.height*props.bth : 0</computed-prop>
 
-            <computed-prop name="x0">computedProps.lwidth</computed-prop>
-            <computed-prop name="y0">computedProps.theight</computed-prop>
-            <computed-prop name="x1">props.width - computedProps.rwidth</computed-prop>
-            <computed-prop name="y1">props.height - computedProps.bheight</computed-prop>
+            <computed-prop name="x0">computedProps.lWidth</computed-prop>
+            <computed-prop name="y0">computedProps.tHeight</computed-prop>
+            <computed-prop name="x1">props.width - computedProps.rWidth</computed-prop>
+            <computed-prop name="y1">props.height - computedProps.bHeight</computed-prop>
             <computed-prop name="intW">computedProps.x1 - computedProps.x0</computed-prop>
             <computed-prop name="intH">computedProps.y1 - computedProps.y0</computed-prop>
 
