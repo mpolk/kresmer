@@ -11,7 +11,7 @@
 <kresmer-library name="fiber-optics-closures" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024072800">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024072900">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -28,6 +28,7 @@
                       class="fiber-label">{{labels &amp;&amp; labels[i] ? `${i}: ${labels[i]}` : i}}</text>
                 <connection-point v-bind:name="connID(i)" v-bind="cellCPPos(i)" v-bind:connection-id="connID(i)"/>
             </connection-indicator>
+            <adjustment-ruler target-prop="captionHeight" v-bind="adjRulerPos" fixed-end="1"/>
         </template>
         <props>
             <prop name="comment" type="String"/>
@@ -43,18 +44,18 @@
                 <elements type="String"/>
             </prop>
             <prop name="connIdPrefix" type="String" category="Hidden" description="The prefix for connection ids for the fibers"></prop>
+            <prop name="captionHeight" type="Number" category="Geometry" default="0.8" description="Caption height relative to the cell width"/>
         </props>
         <computed-props>
             <computed-prop name="defaultCellSize">30</computed-prop>
-            <computed-prop name="captionHeight">0.8</computed-prop><!-- relative to the cell width -->
             <computed-prop name="height">
                 props.height ?? ((props.orientation === "left" || props.orientation === "right") ? 
                     computedProps.defaultCellSize * props.nFibers : 
-                    computedProps.defaultCellSize*(1+computedProps.captionHeight))
+                    computedProps.defaultCellSize*(1+props.captionHeight))
             </computed-prop>
             <computed-prop name="width">
                 props.width ?? ((props.orientation === "left" || props.orientation === "right") ? 
-                    computedProps.defaultCellSize*(1+computedProps.captionHeight) : 
+                    computedProps.defaultCellSize*(1+props.captionHeight) : 
                     computedProps.defaultCellSize * props.nFibers)
             </computed-prop>
             <computed-prop name="cellStep">
@@ -64,17 +65,17 @@
             </computed-prop>
             <computed-prop name="cellWidth">
                 props.orientation === "left" || props.orientation === "right" ? 
-                    computedProps.width/(1+computedProps.captionHeight) : 
-                    computedProps.height/(1+computedProps.captionHeight)
+                    computedProps.width/(1+props.captionHeight) : 
+                    computedProps.height/(1+props.captionHeight)
             </computed-prop>
             <computed-prop name="fiberFontSize">computedProps.cellStep*0.6</computed-prop>
             <computed-prop name="captionPos">
                 {
-                    x:  props.orientation ==="left" ? computedProps.width * (1+computedProps.captionHeight/2)/(1+computedProps.captionHeight) :
-                        props.orientation ==="right" ? computedProps.width * computedProps.captionHeight/2/(1+computedProps.captionHeight) :
+                    x:  props.orientation ==="left" ? computedProps.width * (1+props.captionHeight/2)/(1+props.captionHeight) :
+                        props.orientation ==="right" ? computedProps.width * props.captionHeight/2/(1+props.captionHeight) :
                             computedProps.width / 2,
-                    y:  props.orientation ==="up" ? computedProps.height * (1+computedProps.captionHeight/2)/(1+computedProps.captionHeight) :
-                        props.orientation ==="down" ? computedProps.height * computedProps.captionHeight/2/(1+computedProps.captionHeight) :
+                    y:  props.orientation ==="up" ? computedProps.height * (1+props.captionHeight/2)/(1+props.captionHeight) :
+                        props.orientation ==="down" ? computedProps.height * props.captionHeight/2/(1+props.captionHeight) :
                             computedProps.height / 2
                 }
             </computed-prop>
@@ -88,20 +89,38 @@
             </computed-prop>
             <computed-prop name="cableSepPos">
                 props.orientation === "left" ? {
-                    x1: computedProps.width/(1+computedProps.captionHeight), y1: 0, 
-                    x2: computedProps.width/(1+computedProps.captionHeight), y2: computedProps.height
+                    x1: computedProps.width/(1+props.captionHeight), y1: 0, 
+                    x2: computedProps.width/(1+props.captionHeight), y2: computedProps.height
                 } :
                 props.orientation === "right" ? {
-                    x1: computedProps.width*computedProps.captionHeight/(1+computedProps.captionHeight), y1: 0, 
-                    x2: computedProps.width*computedProps.captionHeight/(1+computedProps.captionHeight), y2: computedProps.height
+                    x1: computedProps.width*props.captionHeight/(1+props.captionHeight), y1: 0, 
+                    x2: computedProps.width*props.captionHeight/(1+props.captionHeight), y2: computedProps.height
                 } :
                 props.orientation === "up" ? {
-                    x1: 0, y1: computedProps.height/(1+computedProps.captionHeight), 
-                    x2: computedProps.width, y2: computedProps.height/(1+computedProps.captionHeight)
+                    x1: 0, y1: computedProps.height/(1+props.captionHeight), 
+                    x2: computedProps.width, y2: computedProps.height/(1+props.captionHeight)
                 } :
                 {
-                    x1: 0, y1: computedProps.height*computedProps.captionHeight/(1+computedProps.captionHeight), 
-                    x2: computedProps.width, y2: computedProps.height*computedProps.captionHeight/(1+computedProps.captionHeight)
+                    x1: 0, y1: computedProps.height*props.captionHeight/(1+props.captionHeight), 
+                    x2: computedProps.width, y2: computedProps.height*props.captionHeight/(1+props.captionHeight)
+                }
+            </computed-prop>
+            <computed-prop name="adjRulerPos">
+                props.orientation === "left" ? {
+                    x1: computedProps.width/(1+props.captionHeight), y1: 0,
+                    x2: computedProps.width, y2: 0, 
+                } :
+                props.orientation === "right" ? {
+                    x1: 0, y1: 0, 
+                    x2: computedProps.width*props.captionHeight/(1+props.captionHeight), y2: 0
+                } :
+                props.orientation === "up" ? {
+                    x2: 0, y2: computedProps.height, 
+                    x1: 0, y1: computedProps.height/(1+props.captionHeight)
+                } :
+                {
+                    x1: 0, y1: 0, 
+                    x2: 0, y2: computedProps.height*props.captionHeight/(1+props.captionHeight)
                 }
             </computed-prop>
             <computed-prop name="cableCPPos">
@@ -132,9 +151,9 @@
             <function name="cellCenter" params="i">
                 const pos =
                     props.orientation === "left"  ? {x: computedProps.cellWidth/2, y: computedProps.cellStep*(i-0.5)} :
-                    props.orientation === "right" ? {x: computedProps.cellWidth/2 + computedProps.width*computedProps.captionHeight/(1+computedProps.captionHeight), y: computedProps.cellStep*(i-0.5)} :
+                    props.orientation === "right" ? {x: computedProps.cellWidth/2 + computedProps.width*props.captionHeight/(1+props.captionHeight), y: computedProps.cellStep*(i-0.5)} :
                     props.orientation === "up"    ? {x: computedProps.cellStep*(i-0.5), y: computedProps.cellWidth/2} :
-                                                    {x: computedProps.cellStep*(i-0.5), y: computedProps.cellWidth/2 + computedProps.height*computedProps.captionHeight/(1+computedProps.captionHeight)};
+                                                    {x: computedProps.cellStep*(i-0.5), y: computedProps.cellWidth/2 + computedProps.height*props.captionHeight/(1+props.captionHeight)};
                 return pos;
             </function>
             <function name="cellSepPos" params="i">
