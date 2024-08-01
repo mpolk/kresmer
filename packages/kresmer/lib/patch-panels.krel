@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024073100"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024080100"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -41,6 +41,7 @@
                     <connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" 
                         v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
                 </connection-indicator>
+                <adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
             </template>
             <template v-for="i in nPorts/nPortRows">
                 <component v-for="j in nPortRows" v-bind:is="portClass" 
@@ -86,7 +87,7 @@
             <prop name="portLabels" type="Object" default="{}" category="Network" description="Port (fiber) labels">
                 <elements type="String"/>
             </prop>
-            <prop name="portLabelWidth" type="Number" category="Presentation" description="The width of the port label table"/>
+            <prop name="portLabelWidth" type="Number" default="0.65" category="Presentation" description="The width of the port label table (relative)"/>
             <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
             <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
         </props>
@@ -106,7 +107,7 @@
             <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
             <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
             <computed-prop name="labelWidth">
-                props.portLabelWidth ?? (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 3)*computedProps.labelFontSize*0.65
+                props.portLabelWidth * (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 3)*computedProps.labelFontSize
             </computed-prop>
             <computed-prop name="labelH">props.orientation === "vertical" ? computedProps.labelHeight : computedProps.labelWidth</computed-prop>
             <computed-prop name="labelW">props.orientation === "vertical" ? computedProps.labelWidth : computedProps.labelHeight</computed-prop>
@@ -139,6 +140,21 @@
                     0
             </computed-prop>
             <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
+            <computed-prop name="labelAdjRulerPos">
+                props.portLabelPosition==="after" ? {
+                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                    x2: computedProps.firstLabelX + computedProps.labelWidth, y2: computedProps.firstLabelY
+                } : props.portLabelPosition==="before" ? {
+                    x1: computedProps.firstLabelX + computedProps.labelWidth, y1: computedProps.firstLabelY,
+                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                } : props.portLabelPosition==="above" ? {
+                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY + computedProps.labelWidth,
+                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                } : {
+                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY + computedProps.labelWidth,
+                }
+            </computed-prop>
         </computed-props>
         <functions>
             <function name="labelCPPos" params="i">
