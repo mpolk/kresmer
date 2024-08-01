@@ -26,21 +26,21 @@
     const formEnabled = ref(false);
     const formValidated = ref(false);
 
-    let drawingName: string|undefined;
-    let drawingBox: {width: number, height: number};
-    let hrefBase: string|undefined;
+    const drawingName = ref<string|undefined>();
+    const drawingBox = reactive({width: 0, height: 0});
+    const hrefBase = ref<string|undefined>();
     const backgroundImage = reactive(new BackgroundImageData);
-    let backgroundColor: string|undefined;
+    const backgroundColor = ref<string|undefined>();
 
     const backgroundImageUrlType = ref(getURLType(backgroundImage.url));
 
     function show()
     {
-        drawingName = kresmer.drawingName;
-        hrefBase = kresmer.hrefBase.value;
-        drawingBox = {width: kresmer.logicalWidth, height: kresmer.logicalHeight};
+        drawingName.value = kresmer.drawingName;
+        hrefBase.value = kresmer.hrefBase.value;
+        drawingBox.width = kresmer.logicalWidth; drawingBox.height = kresmer.logicalHeight;
         backgroundImage.copy(kresmer.backgroundImage);
-        backgroundColor = kresmer.backgroundColor;
+        backgroundColor.value = kresmer.backgroundColor;
 
         if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: "static", scroll: true});
@@ -59,12 +59,12 @@
 
         close();
         kresmer.edAPI.updateDrawingProperties({
-            name: drawingName, 
+            name: drawingName.value, 
             logicalWidth: drawingBox.width, 
             logicalHeight: drawingBox.height,
-            hrefBase,
+            hrefBase: hrefBase.value,
             backgroundImage,
-            backgroundColor
+            backgroundColor: backgroundColor.value,
         });
         updateWindowTitle();
     }//save
