@@ -62,4 +62,4 @@ If you just want to create network drawings using ready components, e-Kresmer de
 
 But if you want to make your own components (and you probably will want, since currently there are not many ready components around) you will need
 some more things. You should be familiar with such a technologies as SVG (required), Javascript (recommended) and VueJS (also recommended). 
-And finally, you should read the [Kresmer Library Authoring Guide](/wiki/Kresmer-Library-Authoring-Guide).
+And finally, you should read the [Kresmer Library Authoring Guide](//mpolk/kresmer/wiki/Kresmer-Library-Authoring-Guide).
