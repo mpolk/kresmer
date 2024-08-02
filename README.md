@@ -62,4 +62,6 @@ If you just want to create network drawings using ready components, e-Kresmer de
 
 But if you want to make your own components (and you probably will want, since currently there are not many ready components around) you will need
 some more things. You should be familiar with such a technologies as SVG (required), Javascript (recommended) and VueJS (also recommended). 
-And finally, you should read the [Kresmer Library Authoring Guide](//github.com/mpolk/kresmer/wiki/Kresmer-Library-Authoring-Guide).
+And finally, you should read the [Kresmer Library Authoring Guide](//github.com/mpolk/kresmer/wiki/Kresmer-Library-Authoring-Guide). Currently there
+are not visual tools for Kresmer library editing. So you will have to edit Kresmer libraries' code manually as a raw XML. Fortunately. there
+are many good XML-editors (VSCode is one of them) and Kresmer provides XSD-schemas, which can help a lot with library editing.
