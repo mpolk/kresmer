@@ -17,6 +17,10 @@
 		"files.associations": {
 			"*.kre": "xml",
 			"*.krel": "xml"
-		}
+		},
+		"cSpell.words": [
+			"Inkscape",
+			"Kresmer"
+		]
 	}
 }
