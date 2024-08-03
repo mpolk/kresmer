@@ -58,7 +58,8 @@ the following options to publish you drawings:
 
 ### Authoring the drawings
 
-If you just want to create network drawings using ready components, e-Kresmer desktop application is all you need. Launch it and create!
+If you just want to create network drawings using ready components, e-Kresmer desktop application is all you need. Launch it and create. You'll
+probably want to read the [Kresmer User Guide](//github.com/mpolk/kresmer/wiki/Kresmer-User-Guide).
 
 But if you want to make your own components (and you probably will want, since currently there are not many ready components around) you will need
 some more things. You should be familiar with such a technologies as SVG (required), Javascript (recommended) and VueJS (also recommended). 
