@@ -47,7 +47,7 @@ To distinguish between the desktop application and the web component, the former
 Kresmer uses its own drawing file format, which can not be directly read by other applications (at least currently). So you have
 the following options to publish you drawings:
 
-- Embed Kresmer web component into the page of your site or web-application and feed the drawing file to this component. This is the best way,
+- Embed Kresmer web component into a page of your website or web-application and feed the drawing file to this component. This is the best way,
   because it lets you leverage all Kresmer features and capabilities, such as link highlighting, dynamic data binding etc. But you also may find
   this way somewhat complicated, because it requires to use some not-so-trivial front-end technics, such as Typescript compilation and script bundling.
   If you are not afraid of these technics, this is your way.
