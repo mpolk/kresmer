@@ -86,6 +86,16 @@
     </link-class>
 
     <!-- Various link types -->
+    <link-class name="invisible-link" category="general" uk:name="невидиме з'єднання" uk:category="загальни">
+        <extends base="_abstract-link"/>
+        <style>
+            .link {--link-color: transparent; --highlighted-link-color: #595959;}
+            .segment {stroke: transparent; stroke-width: 1px; stroke-dasharray: 1,1}
+            .segment.highlighted, .segment.selected {stroke-width: 1px}
+        </style>
+    </link-class>
+
+
     <link-class name="twisted-pair" category="copper links" uk:name="кручена пара" uk:category="мідни з'еднання" version="2024070800">
         <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
         <style>
