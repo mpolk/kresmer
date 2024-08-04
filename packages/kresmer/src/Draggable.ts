@@ -59,7 +59,7 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
             this.savedMousePos = this.getMousePosition(event);
             this.isGoingToBeDragged = true;
             this.bringToTop();
-            if (this.isThisSelected && this.kresmer.muiltipleComponentsSelected) {
+            if (this.isThisSelected && this.kresmer.multipleComponentsSelected) {
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 const op = new SelectionMoveOp(this.kresmer, this as any);
                 this.kresmer.undoStack.startOperation(op);
@@ -107,7 +107,7 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
             }//switch
                 
             this.moveFromStartPos(effectiveMove);
-            if (this.isThisSelected && this.kresmer.muiltipleComponentsSelected) {
+            if (this.isThisSelected && this.kresmer.multipleComponentsSelected) {
                 this.kresmer._dragSelection(effectiveMove, this);
             }//if
             return true;
@@ -138,7 +138,7 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
                     };
                 }//if
                 this.updateConnectionPoints();
-                if (this.isThisSelected && this.kresmer.muiltipleComponentsSelected) {
+                if (this.isThisSelected && this.kresmer.multipleComponentsSelected) {
                     this.kresmer._endSelectionDragging(this);
                 }//if
                 this.kresmer.undoStack.commitOperation();
