@@ -66,3 +66,14 @@ some more things. You should be familiar with such a technologies as SVG (requir
 And finally, you should read the [Kresmer Libraries Authoring Guide](//github.com/mpolk/kresmer/wiki/Kresmer-Libraries-Authoring-Guide). Currently there
 are not visual tools for Kresmer library editing. So you will have to edit Kresmer libraries' code manually as a raw XML. Fortunately, there
 are many good XML-editors (VSCode is one of them) and Kresmer provides XSD-schemas, which can help a lot with library editing.
+
+## System Requirements
+
+### Desktop Application
+
+*e-Kresmer* is an Electron application that can be built al least for Linux and Windows. It probably also can be built for MacOS, though this was not tested.
+Binary packages are provided with each release both for Linux (Debian package and AppImage) and for Windows (NSIS installer).
+
+### Core Web Component
+
+*Kresmer web-component* works in all modern browsers.
