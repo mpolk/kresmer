@@ -19,8 +19,20 @@
 			"*.krel": "xml"
 		},
 		"cSpell.words": [
+			"clazz",
+			"Dmitriy",
+			"editability",
+			"Elems",
+			"Functons",
+			"hrefs",
 			"Inkscape",
-			"Kresmer"
+			"krel",
+			"Kreslennya",
+			"Kresmer",
+			"Merezh",
+			"Stepanenko",
+			"unapply",
+			"undoable"
 		]
 	}
 }

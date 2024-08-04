@@ -1,4 +1,4 @@
-# Kresmer - network drawing and diagram editor: Core component
+# Kresmer - network drawing and diagram editor: the *Core component*
 
 This is [Kresmer][1]'s web-component, implementing all its core functionality.
 If you are looking for the **Kresmer** desktop application, this is a wrong place. You can find it [here][1].
@@ -14,9 +14,9 @@ To use Kresmer component on your web-page do something like this:
 
 1. ### Install the component
 
-```bash
-npm install kresmer
-```
+    ```bash
+    npm install kresmer
+    ```
 
 1. ### Define the place somewhere on the page, where the drawing should be rendered
     ```html
@@ -31,15 +31,15 @@ npm install kresmer
     const kresmer = new Kresmer("#divDrawing", {logicalWidth: 2000, logicalHeight: 1000, backgroundColor: pink});
     ```
     Actually there are much more optional parameters for initializing Kresmer component. You can learn it and much more 
-    Kresmer component API details [here](https://github.com/mpolk/kresmer/wiki/Using-Kresmer-Core-Component). And yes,
-    *pink* is not usual background color for the network drawings.
+    Kresmer component API details [here][2]. And 
+    *pink* is not a usual background color for the network drawings.
 
-1. ### Load the standard element library
+
+1. ### Load your drawing into the Kresmer
     ```typescript
-    kresmer.loadLibrary(await (await fetch("stdlib.krel")).text());
+    kresmer.loadDrawing(await (await fetch("my-drawing.kre")).text());
     ```
 
-1. ### Load some drawing
-    ```typescript
-    kresmer.loadDrawing(await (await fetch("autoload.kre")).text());
-    
+Read [Using Kresmer Core Component][2] guide for more details about publishing Kresmer drawings on the web.
+
+[2]: https://github.com/mpolk/kresmer/wiki/Using-Kresmer-Core-Component

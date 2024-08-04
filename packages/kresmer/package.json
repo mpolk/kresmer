@@ -1,9 +1,10 @@
 {
   "name": "kresmer",
-  "private": true,
+  "private": false,
   "version": "0.13.6",
   "author": "Dmitriy Stepanenko",
-  "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the core component",
+  "description": "Network drawing and diagram editor: the core web-component",
+  "repository": "https://github.com/mpolk/kresmer",
   "module": "dist/kresmer.es.js",
   "main": "dist/kresmer.umd.js",
   "types": "dist/Kresmer.d.ts",
@@ -30,7 +31,8 @@
     "vite:build": "run-p type-check build-only",
     "vite:preview": "vite preview --port ${npm_package_config_port}",
     "cypress:open": "cypress open --component >/dev/null 2>&1 &",
-    "cypress:run": "cypress run --component"
+    "cypress:run": "cypress run --component",
+    "test": "cypress run --component"
   },
   "build": {
     "appId": "kresmer",

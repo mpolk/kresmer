@@ -27,6 +27,7 @@
     "app:build": "electron-builder -lw",
     "preapp:preview": "run-s build-component vite:build ts",
     "app:preview": "electron . ${npm_package_config_args}",
+    "test": "npm run test -w kresmer",
     "cypress:run": "npm run cypress:run -w kresmer",
     "cypress:open": "npm run cypress:open -w kresmer",
     "typedoc": "typedoc --tsconfig packages/kresmer/tsconfig.json packages/kresmer/src/Kresmer.ts",
