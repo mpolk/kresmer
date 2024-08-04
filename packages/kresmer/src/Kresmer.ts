@@ -279,7 +279,7 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** A base (common) prefix for all hyperlinks on the drawing */
     readonly hrefBase = ref("");
-    /** Makes a hyperlink from the commpon prefix and the specific tail */
+    /** Makes a hyperlink from the common prefix and the specific tail */
     makeHref = (tail: string) =>
     {
         if (!this.hrefBase || tail.match(/^(\/|data:|file:|[a-z]+:\/\/)/))
@@ -434,7 +434,7 @@ export default class Kresmer extends KresmerEventHooks {
                     eval(`superFunctions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
 
-                const cp$ = computedProps, fn$ = functions; // aliases for more convenient usage outside of tepmlates
+                const cp$ = computedProps, fn$ = functions; // aliases for more convenient usage outside of templates
                 const super$ = computed(() => superFunctions);
 
                 return {...cp$, ...fn$, super$};
@@ -576,7 +576,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Registers any drawing element class (either a component, a link or an area)
      * @param clazz Clazz to register
-     * @returns the Kremser itself (for chaining)
+     * @returns the Kresmer itself (for chaining)
      */
     public registerDrawingElementClass(clazz: DrawingElementClass)
     {
@@ -989,7 +989,7 @@ ${svg.outerHTML}
 
 
     /** Checks if more than one component is selected */
-    public get muiltipleComponentsSelected() {
+    public get multipleComponentsSelected() {
         if (!this._selectedElement)
             return false;
         
@@ -1000,11 +1000,11 @@ ${svg.outerHTML}
             }//if
         }//for
         return false;
-    }//muiltipleComponentsSelected
+    }//multipleComponentsSelected
 
 
     /**
-     * Converts screen coordiates to the user-space coordinates
+     * Converts screen coordinates to the user-space coordinates
      * @param pos The position (x, y) to convert
      * @returns The converted position
      */
@@ -1018,7 +1018,7 @@ ${svg.outerHTML}
 
 
     /**
-     * Converts user-space coordiates to the screen coordinates
+     * Converts user-space coordinates to the screen coordinates
      * @param pos The position (x, y) to convert
      * @returns The converted position
      */
@@ -1073,7 +1073,7 @@ ${svg.outerHTML}
         }//if
     }//_abortLinkCreation
 
-    /** Inactivates temporarily normal link behaviour and reactivity (for internal use) */
+    /** Inactivates temporarily normal link behavior and reactivity (for internal use) */
     public _allLinksFreezed = false;
 
     /** Temporarily makes all connections points visible (for internal use) */
@@ -1272,7 +1272,7 @@ ${svg.outerHTML}
 
         /**
          * Adds a link vertex
-         * @param linkID The link this vertexs belongs
+         * @param linkID The link this vertex belongs
          * @param segmentNumber The seq number of the segment where tne vertex should be added
          * @param mousePos The mouse click position
          * @returns True if the vertex was added or false otherwise
@@ -1289,7 +1289,7 @@ ${svg.outerHTML}
         },//addLinkVertex
 
         /**
-         * Aligns (or at least tries to) a link vertex to its neighbours
+         * Aligns (or at least tries to) a link vertex to its neighbors
          * @param vertexSpec The specifier of the vertex to align (either direct ref or (parentID, vertexNumber) pair)
          */
         alignVertex: (vertexSpec: VertexSpec, mode: VertexAlignmentMode = "normal") =>
@@ -1316,7 +1316,7 @@ ${svg.outerHTML}
         },//alignVertex
 
         /**
-         * Aligns (or at least tries to) all link vertices to their neighbours
+         * Aligns (or at least tries to) all link vertices to their neighbors
          * @param linkSpec The specifier of the link (either direct ref or linkID)
          */
         alignLinkVertices: (linkSpec: LinkSpec) =>
@@ -1372,7 +1372,7 @@ ${svg.outerHTML}
 
         /**
          * Adds an area vertex
-         * @param areaID The area this vertexs belongs
+         * @param areaID The area this vertex belongs
          * @param segmentNumber The seq number of the segment where tne vertex should be added
          * @param mousePos The mouse click position
          * @returns True if the vertex was added or false otherwise
