@@ -83,10 +83,7 @@
     "linux": {
       "icon": "logo.icns",
       "category": "Graphics; Engineering",
-      "target": [
-        "deb",
-        "AppImage"
-      ]
+      "target": [ "deb", "rpm", "AppImage" ]
     }
   },
   "dependencies": {
