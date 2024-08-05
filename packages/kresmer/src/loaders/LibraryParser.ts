@@ -23,7 +23,7 @@ import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
  */
 export default class LibraryParser {
 
-    constructor(private kresmer: Kresmer, private propTypes: Map<string, Map<string, PropTypeDescriptor>>) {}
+    constructor(private kresmer: Kresmer, private propTypes: Map<string, Map<string, PropTypeDescriptor>> = new Map) {}
     private libVersion: number = 1;
 
     /**
@@ -31,7 +31,7 @@ export default class LibraryParser {
      * of the parsed library elements
      * @param rawData XML-data to parse
      */
-    public *parseXML(rawData: string): Generator<ParsedNode>
+    public *parseXML(rawData: string): Generator<ParsedLibraryNode>
     {
         // console.debug('Parsing library XML...');
         const domParser = new DOMParser();
@@ -39,7 +39,7 @@ export default class LibraryParser {
         const root = dom.firstElementChild;
 
         if (root?.nodeName !== "kresmer-library")
-            throw new LibraryParsingException(
+            return new LibraryParsingException(
                 `Invalid library root element: ${root?.nodeName}`);
 
         this.libVersion = root?.hasAttribute("version") ? Number(root.getAttribute("version")) : 1;
@@ -53,11 +53,81 @@ export default class LibraryParser {
     }//parseXML
 
     /**
+     * Parses a library translation file contents and yields the sequence 
+     * of the parsed elements
+     * @param rawData XML-data to parse
+     */
+    public *parseTranslationXML(rawData: string): Generator<ParsedTranslationNode>
+    {
+        // console.debug('Parsing library translation XML...');
+        const domParser = new DOMParser();
+        const dom = domParser.parseFromString(rawData, "text/xml") as XMLDocument;
+        const root = dom.firstElementChild;
+
+        if (root?.nodeName !== "kresmer-library-translation")
+            return new LibraryParsingException(
+                `Invalid library translation root element: ${root?.nodeName}`);
+
+        const language = root.getAttribute("language");
+        if (language !== this.kresmer.uiLanguage) 
+            return new LibraryParsingException("Library translation does not match the app language", {severity: "warning"});
+
+        for (let i = 0; i < root.children.length; i++) {
+            const rawNode = root.children[i]
+            const originalName = rawNode.getAttribute("original-name");
+            if (!originalName)
+                return new LibraryParsingException('Translation elements must have "original-name" attribute');
+            const name = rawNode.getAttribute("name") ?? undefined;
+            const description = rawNode.getAttribute("description") ?? undefined;
+            const category = rawNode.getAttribute("category") ?? undefined;
+
+            let parsedNode: ParsedTranslationNode;
+            switch (rawNode.nodeName) {
+                case "component-class":
+                    parsedNode = new NetworkComponentClassTranslation(originalName, {name, description, category});
+                    break;
+                case "link-class":
+                    parsedNode = new NetworkLinkClassTranslation(originalName, {name, description, category});
+                    break;
+                case "area-class":
+                    parsedNode = new DrawingAreaClassTranslation(originalName, {name, description, category});
+                    break;
+                default:
+                    yield new LibraryParsingException(`Invalid translation element: "${rawNode.nodeName}"`);
+                    continue;
+            }//switch
+
+            for (let j = 0; j < rawNode.children.length; j++) {
+                const child = rawNode.children[j];
+                if (child.nodeName === "props") {
+                    for (let k = 0; k < child.children.length; k++) {
+                        const grandchild = child.children[k];
+                        if (grandchild.nodeName === "prop") {
+                            const originalName = grandchild.getAttribute("original-name");
+                            if (!originalName) {
+                                yield new LibraryParsingException('Translation elements must have "original-name" attribute');
+                                break;
+                            }//if
+                            const name = grandchild.getAttribute("name") ?? undefined;
+                            const description = grandchild.getAttribute("description") ?? undefined;
+                            const choices = grandchild.getAttribute("choices")?.split(/ *, */);
+                            parsedNode.props.push(new PropTranslation(originalName, {name, description, choices}));
+                        }//if
+                    }//for
+                    break;
+                }//if
+            }//for
+
+            yield parsedNode;
+        }//for
+    }//parseTranslationXML
+
+    /**
      * Parses a library XML-node and yields the sequence 
      * of the parsed library elements
      * @param root library root node to parse
      */
-    public *parseLibraryNode(root: Element, libName?: string|null): Generator<ParsedNode>
+    public *parseLibraryNode(root: Element, libName?: string|null): Generator<ParsedLibraryNode>
     {
         for (let i = 0; i < root.children.length; i++) {
             const rawNode = root.children[i]
@@ -70,7 +140,7 @@ export default class LibraryParser {
     }//parseLibraryNode
 
 
-    private parseLibrarySubnode(node: Element): ParsedNode
+    private parseLibrarySubnode(node: Element): ParsedLibraryNode
     {
         switch (node.nodeName) {
             case "component-class":
@@ -873,7 +943,7 @@ export class StyleLibNode {
     constructor(readonly data: PostCSSRoot, readonly name: string, readonly version: number, readonly sourceCode: string) {}
 }//StyleLibNode
 
-export type ParsedNode =
+export type ParsedLibraryNode =
     | LibParams
     | ImportStatement
     | NetworkComponentClass
@@ -889,6 +959,52 @@ type DrawingElementClassType =
     | typeof NetworkLinkClass
     | typeof DrawingAreaClass
     ;
+
+abstract class TranslationNode {
+
+    constructor(readonly originalName: string, translations?: {name?: string, description?: string})
+    {
+        this.name = translations?.name;
+        this.description = translations?.description;
+    }//ctor
+
+    readonly name?: string;
+    readonly description?: string;
+}//TranslationNode
+
+class PropTranslation extends TranslationNode {
+    constructor(readonly originalName: string, translations?: {name?: string, description?: string, choices?: string[]})
+    {
+        super(originalName, translations);
+        if (translations?.choices)
+            this.choices = translations.choices;
+    }//ctor
+
+    readonly choices: string[] = [];
+}//PropTranslation
+
+export abstract class DrawingElementClassTranslation extends TranslationNode {
+    constructor(readonly originalName: string, translations?: {name?: string, description?: string, category?: string})
+    {
+        super(originalName, translations);
+        this.category = translations?.category;
+    }//ctor
+
+    readonly category?: string;
+    props: PropTranslation[] = [];
+}//DrawingElementClassTranslation
+
+export class NetworkComponentClassTranslation extends DrawingElementClassTranslation {}
+export class NetworkLinkClassTranslation extends DrawingElementClassTranslation {}
+export class DrawingAreaClassTranslation extends DrawingElementClassTranslation {}
+
+export type ParsedTranslationNode =
+    | NetworkComponentClassTranslation
+    | NetworkLinkClassTranslation
+    | DrawingAreaClassTranslation
+    | LibraryParsingException
+    ;
+
 export class LibraryParsingException extends ParsingException {
     constructor(message: string, options?: {
         severity?: KresmerExceptionSeverity,

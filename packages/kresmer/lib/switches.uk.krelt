@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library-translation.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                          Switches library
+ *        This library contains generic switches and their parts.
+<*************************************************************************** -->
+
+<kresmer-library-translation name="switches" language="uk">
+
+    <!-- General switch (non-stacked) -->
+    <component-class original-name="Switch" name="Свіч" category="Свічи">
+    </component-class>
+</kresmer-library-translation>

@@ -8,7 +8,8 @@
 
 import Kresmer from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
-import LibraryParser, { DefsLibNode, ImportStatement, LibParams, LibraryParsingException, StyleLibNode } from "./LibraryParser";
+import LibraryParser, { DefsLibNode, ImportStatement, LibParams, LibraryParsingException, 
+    NetworkComponentClassTranslation, NetworkLinkClassTranslation, DrawingAreaClassTranslation, StyleLibNode } from "./LibraryParser";
 import DrawingElementClass, {PropTypeDescriptor} from "../DrawingElement/DrawingElementClass";
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass from "../NetworkLink/NetworkLinkClass";
@@ -157,6 +158,26 @@ export default class LibraryLoader
             }//if
         }//for
     }//loadEmbeddedLibrary
+
+    /**
+     * Loads library translation data from XML and applies the translation to the registered classes
+     * @param translationData Library translation raw data (XML)
+     */
+    public loadLibraryTranslation(translationData: string)
+    {
+        const parser = new LibraryParser(this.kresmer);
+        for (const element of parser.parseTranslationXML(translationData)) {
+            if (element instanceof NetworkComponentClassTranslation) {
+                NetworkComponentClass.getClass(element.originalName)?.applyTranslation(element);
+            } else if (element instanceof NetworkLinkClassTranslation) {
+                NetworkLinkClass.getClass(element.originalName)?.applyTranslation(element);
+            } else if (element instanceof DrawingAreaClassTranslation) {
+                DrawingAreaClass.getClass(element.originalName)?.applyTranslation(element);
+            } else {
+                this.kresmer.raiseError(element);
+            }//if
+        }//for
+    }//loadLibraryTranslation
 
     /**
      * Adds global and (optionally) component class scopes to the CSS style definition

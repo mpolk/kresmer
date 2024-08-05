@@ -337,7 +337,7 @@ kresmer.on("library-import-requested", async(libName: string, fileName?: string)
 
 
 
-// Processing application comand (coming from the main process)
+// Processing application command (coming from the main process)
 const appCommandExecutor = new AppCommandExecutor;
 appCommandExecutor
     .on("undo", () => {kresmer.undo()})
@@ -369,7 +369,7 @@ appCommandExecutor.on("load-library", async(libData: string, options?: LoadLibra
 });//loadLibrary
 
 
-appCommandExecutor.on("load-initial-libraries", async(libPaths: string[]) =>
+appCommandExecutor.on("load-initial-libraries", async(libPaths: string[], libTranslationPaths: string[]) =>
 { 
     for (const libPath of libPaths) {
         const libData = await window.electronAPI.loadLibraryFile("", libPath);
@@ -377,6 +377,14 @@ appCommandExecutor.on("load-initial-libraries", async(libPaths: string[]) =>
             await kresmer.loadLibrary(libData);
         else
             kresmer.raiseError(new LibraryImportException({fileName: libPath}));
+    }//for
+
+    for (const libTranslationPath of libTranslationPaths) {
+        const libTranslationData = await window.electronAPI.loadLibraryFile("", libTranslationPath);
+        if (libTranslationData) {
+            kresmer.loadLibraryTranslation(libTranslationData);
+            console.debug(`Library translation file "${libTranslationPath}" loaded`);
+        }//if
     }//for
 
     window.electronAPI.signalReadiness(AppInitStage.LIBS_LOADED);

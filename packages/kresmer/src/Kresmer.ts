@@ -604,12 +604,28 @@ export default class Kresmer extends KresmerEventHooks {
     }//loadLibrary
 
     /**
+     * Loads a component class library translation from the raw XML data
+     * @param libData Library translation data
+     */
+    public loadLibraryTranslation(libTranslationData: string)
+    {
+        this.libraryLoader.loadLibraryTranslation(libTranslationData);
+    }//loadLibraryTranslation
+
+    /**
      * Loads several libraries at once
      * @param libs Mapping libName => libData
+     * @param translations Optional translations for the libs
      */
-    public loadLibraries(libs: Record<string, string>): Promise<number>
+    public async loadLibraries(libs: Record<string, string>, translations?: string[]): Promise<number>
     {
-        return this.libraryLoader.loadLibraries(libs);
+        const result = await this.libraryLoader.loadLibraries(libs);
+        if (translations) {
+            for (const translation of translations) {
+                this.libraryLoader.loadLibraryTranslation(translation);
+            }//for
+        }//if
+        return result;
     }//loadLibraries
 
     /**

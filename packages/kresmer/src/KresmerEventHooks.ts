@@ -17,16 +17,16 @@ import NetworkLink from "./NetworkLink/NetworkLink";
 import {toCamelCase} from "./Utils";
 import DrawingArea from "DrawingArea/DrawingArea";
 import AreaVertex from "DrawingArea/AreaVertex";
-import { ParsedNode } from "./loaders/LibraryParser";
+import { ParsedLibraryNode } from "./loaders/LibraryParser";
 
-/** A list of Kresmer events along with correponding handler definitions */
+/** A list of Kresmer events along with corresponding handler definitions */
 class KresmerEventFormats  {
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
     "backend-request":                  (state: "started"|"completed") => void;
     "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
-    "library-element-loaded":           (libName: string, element: ParsedNode, sourceCode: string) => void;
+    "library-element-loaded":           (libName: string, element: ParsedLibraryNode, sourceCode: string) => void;
     "drawing-scale":                    (newScaleFactor: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
@@ -193,7 +193,7 @@ export default class KresmerEventHooks {
      * @param sourceCode The XML-text this element was created from
      */
     @overridableHandler("library-element-loaded")
-    protected onLibraryElementLoaded(libName: string, element: ParsedNode, sourceCode: string): void {}
+    protected onLibraryElementLoaded(libName: string, element: ParsedLibraryNode, sourceCode: string): void {}
 
     /**
      * Is called when the global drawing scale change occurs
@@ -626,7 +626,7 @@ function overridableHandler<Event extends KresmerEvent>(event: Event)
     }//function
 }//overridableHandler
 
-// Decorator checking if handler placeholers are defined for every event
+// Decorator checking if handler placeholders are defined for every event
 // (a kind of self-testing)
 function checked(target: typeof KresmerEventHooks)
 {

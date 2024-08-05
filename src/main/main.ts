@@ -80,6 +80,7 @@ export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
 export const recentDrawings = new RecentDrawings();
 export const libDirs: string[] = [];
 export const libsToLoad: string[] = [];
+export const libTranslationsToLoad: string[] = [];
 export let mainWindow: BrowserWindow;
 export let menus: Menus;
 
@@ -133,9 +134,11 @@ export function addLibDir(libDir: string)
         return;
     if (!libDirs.includes(libDir))
         libDirs.push(libDir);
-    fs.readdirSync(libDir).forEach(lib => {
-        if (lib.endsWith(".krel")) {
-            addLib(path.resolve(libDir!, lib));
+    fs.readdirSync(libDir).forEach(file => {
+        if (file.endsWith(".krel")) {
+            addLib(path.resolve(libDir!, file));
+        } else if (file.endsWith(".krelt")) {
+            addLibTranslation(path.resolve(libDir!, file));
         }//if
     });
 }//addLibDir
@@ -146,6 +149,13 @@ export function addLib(libPath: string)
     if (!libsToLoad.includes(libPath))
         libsToLoad.push(libPath);
 }//addLib
+
+/** Adds a specified library translation file path to the global list */
+export function addLibTranslation(libPath: string)
+{
+    if (!libTranslationsToLoad.includes(libPath))
+        libTranslationsToLoad.push(libPath);
+}//addLibTranslation
 
 
 export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: Parameters<AppCommandFormats[Command]>): void;

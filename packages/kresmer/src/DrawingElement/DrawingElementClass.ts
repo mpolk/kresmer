@@ -13,6 +13,7 @@ import { Template } from "../Kresmer";
 import { clone } from "../Utils";
 import { DrawingElementProps } from "../loaders/DrawingParser";
 import { toCamelCase } from "../Utils";
+import { DrawingElementClassTranslation } from "loaders/LibraryParser";
 
 /**
  * DrawingElement Class - a generic drawing element class
@@ -109,7 +110,7 @@ export default abstract class DrawingElementClass {
     /** Class name */
     readonly name: string;
     /** Class name (localized) */
-    readonly localizedName?: string;
+    localizedName?: string;
     /** Class code version */
     readonly version: number;
     /** Base class (for the element as a whole) */
@@ -120,7 +121,7 @@ export default abstract class DrawingElementClass {
     readonly styleBaseClasses?: DrawingElementClass[];
     /** A list of the base classes for this class props set */
     readonly propsBaseClasses?: DrawingElementClass[];
-    /** Then ames of the props that should be exluded from prop inheritance */
+    /** Then ames of the props that should be excluded from prop inheritance */
     readonly exceptProps?: string[];
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;
@@ -141,7 +142,7 @@ export default abstract class DrawingElementClass {
     /** Class category (for ordering and usability) */
     readonly category?: string;
     /** Class category (localized) */
-    readonly localizedCategory?: string;
+    localizedCategory?: string;
     /** Source XML-code of this class */
     readonly sourceCode?: string;
     /** A list of the referenced element classes */
@@ -200,6 +201,26 @@ export default abstract class DrawingElementClass {
         return xml;
     }//toXML
 
+
+    public applyTranslation(translation: DrawingElementClassTranslation)
+    {
+        if (translation.name)
+            this.localizedName = translation.name;
+        if (translation.category)
+            this.localizedCategory = translation.category;
+
+        for (const prop of translation.props) {
+            if (prop.originalName in this.props) {
+                if (prop.name)
+                    this.props[prop.originalName].localizedName = prop.name;
+                if (prop.description)
+                    this.props[prop.originalName].localizedDescription = prop.description;
+                if (prop.choices.length && this.props[prop.originalName].validator) {
+                    this.props[prop.originalName].validator!.localizedValidValues = prop.choices;
+                }//if
+            }//if
+        }//for
+    }//applyTranslation
 }//DrawingElementClass
 
 /** Drawing Element computed prop - translate to the common Vue computed property */
