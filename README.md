@@ -80,7 +80,7 @@ Binary packages are provided with each release both for Linux (Debian and RPM pa
 
 ## Installation
 
-Download a binary installer for your OS from [here](releases). Alternatively you may run Kresmer on Linux without installing using AppImage. This way is not
+Download a binary installer for your OS from [here](https://github.com/mpolk/kresmer/releases). Alternatively you may run Kresmer on Linux without installing using AppImage. This way is not
 very suitable if you are going to develop your own Kresmer components, since you will not get the standard Kresmer libraries (at least in the unpacked form),
 which you could use as a start point for your development.
 
@@ -99,5 +99,5 @@ npm run app:dev
 
 - build all binaries:
 ```bash
-npm run app:dev
+npm run app:buld
 ```
