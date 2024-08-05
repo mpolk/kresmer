@@ -99,5 +99,5 @@ npm run app:dev
 
 - build all binaries:
 ```bash
-npm run app:buld
+npm run app:build
 ```
