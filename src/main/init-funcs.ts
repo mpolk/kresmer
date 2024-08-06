@@ -11,12 +11,11 @@ import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
 import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, 
-         AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent, recentDrawings, 
-         libTranslationsToLoad} from "./main";
+         AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent, recentDrawings} from "./main";
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/renderer-main';
 import { IpcMainHooks } from './IpcMainHooks';
-import { loadLibraryFile, saveDrawing, selectOrLoadFile } from './file-ops';
+import { loadLibraryFile, loadLibraryTranslation, saveDrawing, selectOrLoadFile } from './file-ops';
 import { openUrlWithSystemBrowser, requestConnectToServer } from './misc-ops';
 
 export let defaultDrawingFileName: string|undefined;
@@ -194,6 +193,10 @@ export function initIpcMainHooks()
         return loadLibraryFile(libName, fileName);
     });
 
+    IpcMainHooks.onInvokation("load-library-translation", (libName: string, language: string) => {
+        return loadLibraryTranslation(libName, language);
+    });
+
     IpcMainHooks.onInvokation("save-drawing", (dwgData: string) => {
         return saveDrawing(dwgData);
     });
@@ -242,7 +245,7 @@ export function initApp(stage: AppInitStage)
         // eslint-disable-next-line no-fallthrough
         case AppInitStage.CONNECTED_TO_BACKEND:
             console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`);
-            sendAppCommand("load-initial-libraries", libsToLoad, libTranslationsToLoad);
+            sendAppCommand("load-initial-libraries", libsToLoad);
             break;
         case AppInitStage.LIBS_LOADED: {
             if (!drawingToAutoload && localSettings.get("autoloadLastDrawing")) {

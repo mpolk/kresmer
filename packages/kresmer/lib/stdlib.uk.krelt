@@ -16,7 +16,7 @@
     <!-- *************************************** General device prototypes ******************************************** -->
     
     <!-- Any device that has an ip-address and can be managed using some network protocol -->
-    <component-class name="ManagedDevice" category=".general">
+    <component-class original-name="ManagedDevice">
         <props>
             <prop original-name="ip-address" name="ip-адреса" description="IP-адреса керування пристроєм"/>
 <!--             <prop name="management-protocol" type="String" category="Network"

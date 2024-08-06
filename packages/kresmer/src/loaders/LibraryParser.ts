@@ -38,9 +38,10 @@ export default class LibraryParser {
         const dom = domParser.parseFromString(rawData, "text/xml") as XMLDocument;
         const root = dom.firstElementChild;
 
-        if (root?.nodeName !== "kresmer-library")
-            return new LibraryParsingException(
-                `Invalid library root element: ${root?.nodeName}`);
+        if (root?.nodeName !== "kresmer-library") {
+            yield new LibraryParsingException(`Invalid library root element: ${root?.nodeName}`);
+            return;
+        }//if
 
         this.libVersion = root?.hasAttribute("version") ? Number(root.getAttribute("version")) : 1;
         const libName = root.getAttribute("name");
@@ -64,19 +65,24 @@ export default class LibraryParser {
         const dom = domParser.parseFromString(rawData, "text/xml") as XMLDocument;
         const root = dom.firstElementChild;
 
-        if (root?.nodeName !== "kresmer-library-translation")
-            return new LibraryParsingException(
-                `Invalid library translation root element: ${root?.nodeName}`);
+        if (root?.nodeName !== "kresmer-library-translation") {
+            yield new LibraryParsingException(`Invalid library translation root element: ${root?.nodeName}`);
+            return;
+        }//if
 
         const language = root.getAttribute("language");
-        if (language !== this.kresmer.uiLanguage) 
-            return new LibraryParsingException("Library translation does not match the app language", {severity: "warning"});
+        if (language !== this.kresmer.uiLanguage) {
+            yield new LibraryParsingException("Library translation does not match the app language", {severity: "warning"});
+            return;
+        }//if
 
         for (let i = 0; i < root.children.length; i++) {
             const rawNode = root.children[i]
             const originalName = rawNode.getAttribute("original-name");
-            if (!originalName)
-                return new LibraryParsingException('Translation elements must have "original-name" attribute');
+            if (!originalName) {
+                yield new LibraryParsingException('Translation elements must have "original-name" attribute');
+                return;
+            }//if
             const name = rawNode.getAttribute("name") ?? undefined;
             const description = rawNode.getAttribute("description") ?? undefined;
             const category = rawNode.getAttribute("category") ?? undefined;
@@ -103,7 +109,7 @@ export default class LibraryParser {
                     for (let k = 0; k < child.children.length; k++) {
                         const grandchild = child.children[k];
                         if (grandchild.nodeName === "prop") {
-                            const originalName = grandchild.getAttribute("original-name");
+                            const originalName = toCamelCase(grandchild.getAttribute("original-name"));
                             if (!originalName) {
                                 yield new LibraryParsingException('Translation elements must have "original-name" attribute');
                                 break;

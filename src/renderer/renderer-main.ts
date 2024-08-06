@@ -335,6 +335,10 @@ kresmer.on("library-import-requested", async(libName: string, fileName?: string)
     return window.electronAPI.loadLibraryFile(libName, fileName);
 });//onLibraryImportRequested
 
+kresmer.on("library-translation-requested", async(libName: string, language: string) => {
+    return window.electronAPI.loadLibraryTranslation(libName, language);
+});//onLibraryImportRequested
+
 
 
 // Processing application command (coming from the main process)
@@ -369,7 +373,7 @@ appCommandExecutor.on("load-library", async(libData: string, options?: LoadLibra
 });//loadLibrary
 
 
-appCommandExecutor.on("load-initial-libraries", async(libPaths: string[], libTranslationPaths: string[]) =>
+appCommandExecutor.on("load-initial-libraries", async(libPaths: string[]) =>
 { 
     for (const libPath of libPaths) {
         const libData = await window.electronAPI.loadLibraryFile("", libPath);
@@ -377,14 +381,6 @@ appCommandExecutor.on("load-initial-libraries", async(libPaths: string[], libTra
             await kresmer.loadLibrary(libData);
         else
             kresmer.raiseError(new LibraryImportException({fileName: libPath}));
-    }//for
-
-    for (const libTranslationPath of libTranslationPaths) {
-        const libTranslationData = await window.electronAPI.loadLibraryFile("", libTranslationPath);
-        if (libTranslationData) {
-            kresmer.loadLibraryTranslation(libTranslationData);
-            console.debug(`Library translation file "${libTranslationPath}" loaded`);
-        }//if
     }//for
 
     window.electronAPI.signalReadiness(AppInitStage.LIBS_LOADED);

@@ -86,8 +86,8 @@ export default abstract class DrawingElementClass {
 
         this.propsBaseClasses?.forEach(baseClass => {
             for (const propName in baseClass.props) {
-                if (!this.exceptProps || this.exceptProps.findIndex(except => except === propName) < 0)
-                    this.props[propName] = clone(baseClass.props[propName]);
+                if (!this.exceptProps || !this.exceptProps.includes(propName))
+                    this.props[propName] = {...clone(baseClass.props[propName]), ...this.props[propName]};
             }//for
         });
 
@@ -121,7 +121,7 @@ export default abstract class DrawingElementClass {
     readonly styleBaseClasses?: DrawingElementClass[];
     /** A list of the base classes for this class props set */
     readonly propsBaseClasses?: DrawingElementClass[];
-    /** Then ames of the props that should be excluded from prop inheritance */
+    /** The names of the props that should be excluded from prop inheritance */
     readonly exceptProps?: string[];
     /** Indicates whether this class instances use template embedding for extending other classes */
     abstract readonly usesEmbedding: boolean;

@@ -26,6 +26,7 @@ class KresmerEventFormats  {
     "open-url":                         (url: string, target?: string) => boolean;
     "backend-request":                  (state: "started"|"completed") => void;
     "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
+    "library-translation-requested":    (libName: string, language: string) => Promise<string|undefined>;
     "library-element-loaded":           (libName: string, element: ParsedLibraryNode, sourceCode: string) => void;
     "drawing-scale":                    (newScaleFactor: number) => void;
     "drawing-mouse-enter":              () => void;
@@ -178,13 +179,22 @@ export default class KresmerEventHooks {
     protected onBackendRequest(state: "started"|"completed") {}
 
     /**
-     * Is called when a library import is requested when loading some other library that references this one
+     * Is called when a library import is required when loading some other library that references this one
      * @param libName A name of the library to import
      * @param fileName Optional library file name (for the case when does not match `${libName}.krel` pattern)
      * @returns Content of the imported library (as a text string) or "undefined" if the library can not be found)
      */
     @overridableHandler("library-import-requested")
     protected onLibraryImportRequested(libName: string, fileName?: string): string|undefined { return undefined; }
+
+    /**
+     * Is called when a library translation is required after library itself is loaded
+     * @param libName A name of the library imported
+     * @param language Tde code of the language the translation is required for
+     * @returns Content of the imported library (as a text string) or "undefined" if the library can not be found)
+     */
+    @overridableHandler("library-translation-requested")
+    protected onLibraryTranslationRequested(libName: string, language: string): string|undefined { return undefined; }
 
     /**
      * Is called when a library element is parsed during a library load process

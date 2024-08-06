@@ -120,6 +120,10 @@ exposeToRenderer({
         return invokeFromMain("load-library-file", libName, fileName);
     },
 
+    loadLibraryTranslation: (libName: string, language: string) => {
+        return invokeFromMain("load-library-translation", libName, language);
+    },
+
     isReloadInProgress: () => {
         return invokeFromMain("check-reload-status");
     },

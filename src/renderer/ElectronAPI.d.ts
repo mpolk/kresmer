@@ -33,6 +33,7 @@ export interface ElectronAPI {
     gridShownOrHidden: (shown: boolean) => void,
     autoAlignmentToggled: (autoAlignVertices: boolean) => void,
     loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
+    loadLibraryTranslation: (libName: string, language: string) => Promise<string|undefined>,
     isReloadInProgress: () => Promise<boolean>,
     reloadContent: () => void,
     selectOrLoadFile: (requiredResultType: UrlType, filters: FileFilter[]) => Promise<fileSelectOrLoadResult>,

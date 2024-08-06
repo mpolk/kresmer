@@ -33,13 +33,15 @@ export default class LibraryLoader
     {
         return this._loadLibrary(
             libData, 
-            (libName, fileName) => this.kresmer.emit("library-import-requested", libName, fileName)
+            (libName, libFile) => this.kresmer.emit("library-import-requested", libName, libFile),
+            (libName, language) => this.kresmer.emit("library-translation-requested", libName, language),
         );
     }//loadLibrary
 
 
     private async _loadLibrary(libData: string, 
                                importHandler: (libName: string, fileName?: string) => Promise<string|undefined>,
+                               translationHandler: (libName: string, language: string, fileName?: string) => Promise<string|undefined>,
                             ): Promise<number>
     {
         // console.debug("Loading library...");
@@ -84,7 +86,7 @@ export default class LibraryLoader
                         this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
                     else {
                         const childLoader = new LibraryLoader(this.kresmer, this.propTypes, this.depth+1);
-                        const nImportErrors = await childLoader._loadLibrary(importedLibData, importHandler);
+                        const nImportErrors = await childLoader._loadLibrary(importedLibData, importHandler, translationHandler);
                         if (nImportErrors > 0)
                             nErrors += nImportErrors;
                         console.debug(`${"  ".repeat(this.depth+1)}Library "${element.libName}" - imported`);
@@ -97,6 +99,12 @@ export default class LibraryLoader
             }//if
         }//for
 
+        const translation = await translationHandler(libName, this.kresmer.uiLanguage);
+        if (translation) {
+            this.loadLibraryTranslation(translation);
+            console.debug(`${"  ".repeat(this.depth)}Translation for the library "${libName}" loaded`);
+        }//if
+
         console.debug(`${"  ".repeat(this.depth)}Library "${libName}" - loaded (${nErrors} errors)`);
         return nErrors;
     }//_loadLibrary
@@ -105,16 +113,23 @@ export default class LibraryLoader
      * Loads several libraries at once
      * @param libs Mapping libName => libData
      */
-    public async loadLibraries(libs: Record<string, string>): Promise<number>
+    public async loadLibraries(libs: Record<string, string>, translations: Record<string, Record<string, string>>): Promise<number>
     {
         let nErrors = 0;
         for (const libName in libs) {
             const libData = libs[libName];
-            const rc = await this._loadLibrary(libData, (libToImportName: string) => {
-                const libToImportData = libs[libToImportName];
-                return libToImportData ? Promise.resolve(libToImportData) : 
-                    this.kresmer.emit("library-import-requested", libToImportName );
-            });
+            const rc = await this._loadLibrary(libData, 
+                (importedLibName: string) => {
+                    const importedLibData = libs[importedLibName];
+                    return importedLibData ? Promise.resolve(importedLibData) : 
+                        this.kresmer.emit("library-import-requested", importedLibName );
+                },
+                (libName: string) => {
+                    const transData = translations[libName][this.kresmer.uiLanguage];
+                    return transData ? Promise.resolve(transData) : 
+                        this.kresmer.emit("library-translation-requested", libName, this.kresmer.uiLanguage);
+                }
+            );
             if (rc > 0)
                 nErrors += rc;
         }//for

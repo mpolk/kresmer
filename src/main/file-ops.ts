@@ -209,6 +209,29 @@ export function loadLibraryFile(libName: string, fileName?: string)
 }//loadLibraryFile
 
 
+export function loadLibraryTranslation(libName: string, language: string)
+{
+    console.debug(`Trying to load library "${libName}" translation`);
+    const libTransFile = `${libName}.${language}.krelt`;
+    for (const libDir of libDirs) {
+        const libTransPath = path.resolve(libDir, libTransFile);
+        if (fs.existsSync(libTransPath)) {
+            try {
+                const libTransData = fs.readFileSync(libTransPath, "utf-8");
+                console.debug(`Library translation "${libTransPath}" loaded`);
+                return libTransData;
+            } catch {
+                console.debug(`Error loading library "${libTransPath}"`);
+                return undefined;
+            }
+        }//if
+    }//for
+
+    console.debug(`Could not load library "${libName}" translation`);
+    return undefined;
+}//loadLibraryTranslation
+
+
 export function selectOrLoadFile(requiredResultType: URLType, filters: FileFilter[]) 
 {
     const filePaths = dialog.showOpenDialogSync(mainWindow, {
