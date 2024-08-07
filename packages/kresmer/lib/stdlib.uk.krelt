@@ -19,12 +19,11 @@
     <component-class original-name="ManagedDevice">
         <props>
             <prop original-name="ip-address" name="ip-адреса" description="IP-адреса керування пристроєм"/>
-<!--             <prop name="management-protocol" type="String" category="Network"
-                description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
-            <prop name="management-ref-target" type="String" choices="_self,_blank" category="Network"
-                description="Target for on-drawing hyperlinks"/>
-            <prop name="comment" type="String" description="Device general info"/>
- -->        </props>
+            <prop original-name="management-protocol" name="протокол-керування"
+                description="Протокол керування пристроєм (для відкриття сеансів керування з гіперпосилань на кресленні)"/>
+            <prop original-name="management-ref-target" description="Ціль для гіперпосилань на кресленні"/>
+            <prop original-name="comment" name="коментар" description="Загальна інформація про пристрій"/>
+        </props>
     </component-class>
 
 </kresmer-library-translation>
