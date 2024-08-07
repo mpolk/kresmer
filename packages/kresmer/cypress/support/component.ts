@@ -33,7 +33,7 @@ declare global {
 }//global
 
 export let $kresmer: Kresmer;
-export let $libs: Record<string, string>;
+export let $libs: Map<string, string>;
 
 // Expose exceptions throw from within Vue-applications to Cypress
 // (without this Vue catches exceptions and hides them from Cypress)
@@ -57,7 +57,7 @@ Cypress.Commands.add('mount', (params) => {
     $kresmer = params?.kresmer ?? new Kresmer("[data-cy-root]", {snappingGranularity: 10});
 
     const onVueError = (error: any, vm: any, info: string) => {
-        console.debug("Vue error catched!");
+        console.debug("Vue error caught!");
         lastException = error;
     };
     $kresmer.appKresmer.config.warnHandler = onVueError;
@@ -65,9 +65,9 @@ Cypress.Commands.add('mount', (params) => {
 
     const mountedKresmer = CypressVue.mount($kresmer);
     return mountedKresmer.task("loadLibraries").then(libs => {
-        $libs = libs;
+        $libs = new Map(Object.entries(libs));
         if (params?.loadLibraries ?? true)
-            $kresmer.loadLibraries(libs);
+            $kresmer.loadLibraries($libs);
         return $kresmer;
     });
 });

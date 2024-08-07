@@ -87,7 +87,7 @@ export default abstract class DrawingElementClass {
         }//for
     }//ctor
 
-    private mergeProps(additionalProps: Record<string, DrawingElementClassProp>|undefined, withExceptions: boolean)
+    public mergeProps(additionalProps: Record<string, DrawingElementClassProp>|undefined, withExceptions: boolean)
     {
         for (const name in additionalProps) {
             if (withExceptions && this.exceptProps?.includes(name))
@@ -216,7 +216,7 @@ export default abstract class DrawingElementClass {
         this.applyPropTranslations(translation.props, true);
     }//applyTranslation
 
-    private applyPropTranslations(propTranslations: PropTranslation[], overrideExisting: boolean)
+    public applyPropTranslations(propTranslations: PropTranslation[], overrideExisting: boolean)
     {
         for (const prop of propTranslations) {
             if (prop.originalName in this.props) {

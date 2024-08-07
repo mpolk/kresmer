@@ -113,19 +113,18 @@ export default class LibraryLoader
      * Loads several libraries at once
      * @param libs Mapping libName => libData
      */
-    public async loadLibraries(libs: Record<string, string>, translations: Record<string, Record<string, string>>): Promise<number>
+    public async loadLibraries(libs: Map<string, string>, translations?: Map<string, Map<string, string>>): Promise<number>
     {
         let nErrors = 0;
-        for (const libName in libs) {
-            const libData = libs[libName];
+        for (const libData of libs.values()) {
             const rc = await this._loadLibrary(libData, 
                 (importedLibName: string) => {
-                    const importedLibData = libs[importedLibName];
+                    const importedLibData = libs.get(importedLibName);
                     return importedLibData ? Promise.resolve(importedLibData) : 
                         this.kresmer.emit("library-import-requested", importedLibName );
                 },
                 (libName: string) => {
-                    const transData = translations[libName][this.kresmer.uiLanguage];
+                    const transData = translations?.get(libName)?.get(this.kresmer.uiLanguage);
                     return transData ? Promise.resolve(transData) : 
                         this.kresmer.emit("library-translation-requested", libName, this.kresmer.uiLanguage);
                 }

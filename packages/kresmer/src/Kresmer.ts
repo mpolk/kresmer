@@ -617,7 +617,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param libs Mapping libName => libData
      * @param translations Optional translations for the libs
      */
-    public async loadLibraries(libs: Record<string, string>, translations: Record<string, Record<string, string>>): Promise<number>
+    public async loadLibraries(libs: Map<string, string>, translations?: Map<string, Map<string, string>>): Promise<number>
     {
         return await this.libraryLoader.loadLibraries(libs, translations);
     }//loadLibraries
