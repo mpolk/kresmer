@@ -56,40 +56,20 @@ export default abstract class DrawingElementClass {
         this.propsBaseClasses = params?.propsBaseClasses;
         this.computedPropsBaseClasses = params?.computedPropsBaseClasses;
         this.functionsBaseClasses = params?.functionsBaseClasses;
-        this.props = params?.props ?? {};
         this.exceptProps = params?.exceptProps;
 
-        if (params?.baseClass) {
-            this.props = clone(Object.fromEntries(
-                    Object.entries(params.baseClass.props)
-                        .filter(entry => {return !params.exceptProps?.includes(entry[0])})
-                ));
-            const ownProps = params?.props ?? {};
-            for (const propName in ownProps) {
-                if (!(propName in this.props)) {
-                    this.props[propName] = clone(ownProps[propName]);
-                } else {
-                    for (const k in ownProps[propName]) {
-                        const key = k as keyof DrawingElementClassProp;
-                        if (ownProps[propName][key] === null)
-                            this.props[propName][key] = undefined;
-                        else
-                            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            this.props[propName][key] = clone(ownProps[propName][key]) as any;
-                    }//for
-                }//if
-            }//for
+        this.props = {};
 
-            // this.propsBaseClasses = [params.baseClass, ...(this.propsBaseClasses ?? [])];
+        if (params?.baseClass) {
+            this.mergeProps(params.baseClass.props, true);
             this.styleBaseClasses = [params.baseClass, ...(this.styleBaseClasses ?? [])];
         }//if
 
         this.propsBaseClasses?.forEach(baseClass => {
-            for (const propName in baseClass.props) {
-                if (!this.exceptProps || !this.exceptProps.includes(propName))
-                    this.props[propName] = {...clone(baseClass.props[propName]), ...this.props[propName]};
-            }//for
+            this.mergeProps(baseClass.props, true);
         });
+
+        this.mergeProps(params?.props, false);
 
         this.baseClassPropBindings = params?.baseClassPropBindings;
         this.computedProps = params?.computedProps;
@@ -106,6 +86,27 @@ export default abstract class DrawingElementClass {
                 prop.default = params.baseClassPropBindings[propName];
         }//for
     }//ctor
+
+    private mergeProps(additionalProps: Record<string, DrawingElementClassProp>|undefined, withExceptions: boolean)
+    {
+        for (const name in additionalProps) {
+            if (withExceptions && this.exceptProps?.includes(name))
+                continue;
+            const additionalProp = additionalProps[name];
+            if (!(name in this.props))
+                this.props[name] = clone(additionalProp);
+            else {
+                for (const key in additionalProp) {
+                    const k = key as keyof DrawingElementClassProp;
+                    if (additionalProp[k] === null)
+                        this.props[name][k] = undefined;
+                    else
+                        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                        this.props[name][k] = clone(additionalProp[k]) as any;
+                }//for
+            }//if
+        }//for
+    }//mergeProps
 
     /** Class name */
     readonly name: string;
