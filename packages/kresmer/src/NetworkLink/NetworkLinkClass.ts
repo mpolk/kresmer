@@ -59,6 +59,7 @@ export default class NetworkLinkClass extends DrawingElementClass {
      *  @param name The name of the class to find
      */
     public static getClass(name: string): NetworkLinkClass|undefined {return this.allClasses[name]}
+    public getAllClasses() { return NetworkLinkClass.allClasses; }
 
     /**
      * Returns the name of the vue-component for this class

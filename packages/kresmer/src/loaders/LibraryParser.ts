@@ -978,7 +978,7 @@ abstract class TranslationNode {
     readonly description?: string;
 }//TranslationNode
 
-class PropTranslation extends TranslationNode {
+export class PropTranslation extends TranslationNode {
     constructor(readonly originalName: string, translations?: {name?: string, description?: string, choices?: string[]})
     {
         super(originalName, translations);

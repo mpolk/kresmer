@@ -13,7 +13,7 @@ import { Template } from "../Kresmer";
 import { clone } from "../Utils";
 import { DrawingElementProps } from "../loaders/DrawingParser";
 import { toCamelCase } from "../Utils";
-import { DrawingElementClassTranslation } from "loaders/LibraryParser";
+import { DrawingElementClassTranslation, PropTranslation } from "loaders/LibraryParser";
 
 /**
  * DrawingElement Class - a generic drawing element class
@@ -152,6 +152,9 @@ export default abstract class DrawingElementClass {
     /** Limits this class usage for embedding or inheritance */
     get isAbstract(): boolean {return Boolean(this.category?.startsWith('.'))}
 
+    /** Returns all classes of this type */
+    abstract getAllClasses(): Record<string, DrawingElementClass>;
+
     /**
      * Returns the name of the vue-component for this class
      * @returns The vue-component name
@@ -210,18 +213,31 @@ export default abstract class DrawingElementClass {
         if (translation.category)
             this.localizedCategory = translation.category;
 
-        for (const prop of translation.props) {
+        this.applyPropTranslations(translation.props, true);
+    }//applyTranslation
+
+    private applyPropTranslations(propTranslations: PropTranslation[], overrideExisting: boolean)
+    {
+        for (const prop of propTranslations) {
             if (prop.originalName in this.props) {
-                if (prop.name)
-                    this.props[prop.originalName].localizedName = prop.name;
-                if (prop.description)
-                    this.props[prop.originalName].localizedDescription = prop.description;
-                if (prop.choices.length && this.props[prop.originalName].validator) {
-                    this.props[prop.originalName].validator!.localizedValidValues = prop.choices;
+                const propToPatch = this.props[prop.originalName];
+                if (prop.name && (overrideExisting || !("localizedName" in propToPatch)))
+                    propToPatch.localizedName = prop.name;
+                if (prop.description && (overrideExisting || !("localizedDescription" in propToPatch)))
+                    propToPatch.localizedDescription = prop.description;
+                if (prop.choices.length && propToPatch.validator && (overrideExisting || !("localizedValidValues" in propToPatch.validator))) {
+                    propToPatch.validator!.localizedValidValues = prop.choices;
                 }//if
             }//if
         }//for
-    }//applyTranslation
+
+        for (const className in this.getAllClasses()) {
+            const clazz = this.getAllClasses()[className];
+            const thisClassName = this.name;
+            if (clazz.baseClass?.name === thisClassName || clazz.propsBaseClasses?.some(baseClass => baseClass.name === thisClassName))
+                clazz.applyPropTranslations(propTranslations, false);
+        }//for
+    }//applyPropTranslations
 }//DrawingElementClass
 
 /** Drawing Element computed prop - translate to the common Vue computed property */

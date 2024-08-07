@@ -59,6 +59,7 @@ export default class DrawingAreaClass extends DrawingElementClass {
      *  @param name The name of the class to find
      */
     public static getClass(name: string): DrawingAreaClass|undefined {return this.allClasses[name]}
+    public getAllClasses() { return DrawingAreaClass.allClasses; }
 
     /**
      * Returns the name of the vue-component for this class

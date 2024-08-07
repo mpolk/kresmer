@@ -115,6 +115,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
      *  @param name The name of the class to find
      */
     public static getClass(name: string) {return this.allClasses[name]}
+    public getAllClasses() { return NetworkComponentClass.allClasses; }
 
     /**
      * Template for the Vue-component for this class
