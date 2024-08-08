@@ -16,13 +16,13 @@
     <!-- *************************************** General device prototypes ******************************************** -->
     
     <!-- Any device that has an ip-address and can be managed using some network protocol -->
-    <component-class original-name="ManagedDevice">
+    <component-class ref="ManagedDevice">
         <props>
-            <prop original-name="ip-address" name="ip-адреса" description="IP-адреса керування пристроєм"/>
-            <prop original-name="management-protocol" name="протокол-керування"
+            <prop ref="ip-address" name="ip-адреса" description="IP-адреса керування пристроєм"/>
+            <prop ref="management-protocol" name="протокол-керування"
                 description="Протокол керування пристроєм (для відкриття сеансів керування з гіперпосилань на кресленні)"/>
-            <prop original-name="management-ref-target" description="Ціль для гіперпосилань на кресленні"/>
-            <prop original-name="comment" name="коментар" description="Загальна інформація про пристрій"/>
+            <prop ref="management-ref-target" description="Ціль для гіперпосилань на кресленні"/>
+            <prop ref="comment" name="коментар" description="Загальна інформація про пристрій"/>
         </props>
     </component-class>
 

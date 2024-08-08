@@ -219,8 +219,8 @@ export default abstract class DrawingElementClass {
     public applyPropTranslations(propTranslations: PropTranslation[], overrideExisting: boolean)
     {
         for (const prop of propTranslations) {
-            if (prop.originalName in this.props) {
-                const propToPatch = this.props[prop.originalName];
+            if (prop.ref in this.props) {
+                const propToPatch = this.props[prop.ref];
                 if (prop.name && (overrideExisting || !("localizedName" in propToPatch)))
                     propToPatch.localizedName = prop.name;
                 if (prop.description && (overrideExisting || !("localizedDescription" in propToPatch)))

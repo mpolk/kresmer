@@ -12,6 +12,6 @@
 <kresmer-library-translation name="switches" language="uk">
 
     <!-- General switch (non-stacked) -->
-    <component-class original-name="Switch" name="Свіч" category="Свічи">
+    <component-class ref="Switch" name="Свіч" category="Свічи">
     </component-class>
 </kresmer-library-translation>

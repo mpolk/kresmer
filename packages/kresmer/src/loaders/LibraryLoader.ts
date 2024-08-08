@@ -182,11 +182,11 @@ export default class LibraryLoader
         const parser = new LibraryParser(this.kresmer);
         for (const element of parser.parseTranslationXML(translationData)) {
             if (element instanceof NetworkComponentClassTranslation) {
-                NetworkComponentClass.getClass(element.originalName)?.applyTranslation(element);
+                NetworkComponentClass.getClass(element.ref)?.applyTranslation(element);
             } else if (element instanceof NetworkLinkClassTranslation) {
-                NetworkLinkClass.getClass(element.originalName)?.applyTranslation(element);
+                NetworkLinkClass.getClass(element.ref)?.applyTranslation(element);
             } else if (element instanceof DrawingAreaClassTranslation) {
-                DrawingAreaClass.getClass(element.originalName)?.applyTranslation(element);
+                DrawingAreaClass.getClass(element.ref)?.applyTranslation(element);
             } else {
                 this.kresmer.raiseError(element);
             }//if

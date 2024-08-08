@@ -19,7 +19,7 @@
                                 <xs:element ref="props" minOccurs="0"/>
                             </xs:all>
 
-                            <xs:attribute name="original-name" use="required" />
+                            <xs:attribute name="ref" use="required" />
                             <xs:attribute name="name" />
                             <xs:attribute name="category" />
                         </xs:complexType>
@@ -52,7 +52,7 @@
             <xs:element ref="props" minOccurs="0"/>
         </xs:all>
 
-        <xs:attribute name="original-name" use="required" />
+        <xs:attribute name="ref" use="required" />
         <xs:attribute name="name" />
         <xs:attribute name="category" />
     </xs:complexType>
@@ -63,7 +63,7 @@
             <xs:sequence>
                 <xs:element name="prop" minOccurs="0" maxOccurs="unbounded">
                     <xs:complexType>
-                        <xs:attribute name="original-name" use="required" />
+                        <xs:attribute name="ref" use="required" />
                         <xs:attribute name="name" />
                         <xs:attribute name="choices" />
                         <xs:attribute name="description"/>

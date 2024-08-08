@@ -78,9 +78,9 @@ export default class LibraryParser {
 
         for (let i = 0; i < root.children.length; i++) {
             const rawNode = root.children[i]
-            const originalName = rawNode.getAttribute("original-name");
-            if (!originalName) {
-                yield new LibraryParsingException('Translation elements must have "original-name" attribute');
+            const ref = rawNode.getAttribute("ref");
+            if (!ref) {
+                yield new LibraryParsingException('Translation elements must have "ref" attribute');
                 return;
             }//if
             const name = rawNode.getAttribute("name") ?? undefined;
@@ -90,13 +90,13 @@ export default class LibraryParser {
             let parsedNode: ParsedTranslationNode;
             switch (rawNode.nodeName) {
                 case "component-class":
-                    parsedNode = new NetworkComponentClassTranslation(originalName, {name, description, category});
+                    parsedNode = new NetworkComponentClassTranslation(ref, {name, description, category});
                     break;
                 case "link-class":
-                    parsedNode = new NetworkLinkClassTranslation(originalName, {name, description, category});
+                    parsedNode = new NetworkLinkClassTranslation(ref, {name, description, category});
                     break;
                 case "area-class":
-                    parsedNode = new DrawingAreaClassTranslation(originalName, {name, description, category});
+                    parsedNode = new DrawingAreaClassTranslation(ref, {name, description, category});
                     break;
                 default:
                     yield new LibraryParsingException(`Invalid translation element: "${rawNode.nodeName}"`);
@@ -109,15 +109,15 @@ export default class LibraryParser {
                     for (let k = 0; k < child.children.length; k++) {
                         const grandchild = child.children[k];
                         if (grandchild.nodeName === "prop") {
-                            const originalName = toCamelCase(grandchild.getAttribute("original-name"));
-                            if (!originalName) {
-                                yield new LibraryParsingException('Translation elements must have "original-name" attribute');
+                            const ref = toCamelCase(grandchild.getAttribute("ref"));
+                            if (!ref) {
+                                yield new LibraryParsingException('Translation elements must have "ref" attribute');
                                 break;
                             }//if
                             const name = grandchild.getAttribute("name") ?? undefined;
                             const description = grandchild.getAttribute("description") ?? undefined;
                             const choices = grandchild.getAttribute("choices")?.split(/ *, */);
-                            parsedNode.props.push(new PropTranslation(originalName, {name, description, choices}));
+                            parsedNode.props.push(new PropTranslation(ref, {name, description, choices}));
                         }//if
                     }//for
                     break;
@@ -968,7 +968,7 @@ type DrawingElementClassType =
 
 abstract class TranslationNode {
 
-    constructor(readonly originalName: string, translations?: {name?: string, description?: string})
+    constructor(readonly ref: string, translations?: {name?: string, description?: string})
     {
         this.name = translations?.name;
         this.description = translations?.description;
@@ -979,9 +979,9 @@ abstract class TranslationNode {
 }//TranslationNode
 
 export class PropTranslation extends TranslationNode {
-    constructor(readonly originalName: string, translations?: {name?: string, description?: string, choices?: string[]})
+    constructor(readonly ref: string, translations?: {name?: string, description?: string, choices?: string[]})
     {
-        super(originalName, translations);
+        super(ref, translations);
         if (translations?.choices)
             this.choices = translations.choices;
     }//ctor
@@ -990,9 +990,9 @@ export class PropTranslation extends TranslationNode {
 }//PropTranslation
 
 export abstract class DrawingElementClassTranslation extends TranslationNode {
-    constructor(readonly originalName: string, translations?: {name?: string, description?: string, category?: string})
+    constructor(readonly ref: string, translations?: {name?: string, description?: string, category?: string})
     {
-        super(originalName, translations);
+        super(ref, translations);
         this.category = translations?.category;
     }//ctor
 
