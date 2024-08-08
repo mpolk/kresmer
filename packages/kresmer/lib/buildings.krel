@@ -9,7 +9,7 @@
  *        This library contains building templates for the site plans
 <*************************************************************************** -->
 
-<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:uk="uk">
+<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
     <!-- Abstract base building -->

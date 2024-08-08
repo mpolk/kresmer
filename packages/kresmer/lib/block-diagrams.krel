@@ -8,8 +8,7 @@
  *                        Block Diagrams library
  *    This library contains graphics block-diagrams and similar drawings.
 <*************************************************************************** -->
-<kresmer-library name="block-diagrams" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot"
-    xmlns:uk="uk">
+<kresmer-library name="block-diagrams" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
     <component-class name="RectangularBlock" category="BlockDiagrams">
         <template>
