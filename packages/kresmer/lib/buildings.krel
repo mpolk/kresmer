@@ -9,15 +9,15 @@
  *        This library contains building templates for the site plans
 <*************************************************************************** -->
 
-<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" version="2024080800">
     <import library="stdlib" />
 
     <!-- Abstract base building -->
     <component-class name="Building" category=".Buildings">
         <props>
-            <prop name="h" type="Number" category="Geometry" default="50" required="true" 
+            <prop name="height" type="Number" category="Geometry" default="50" required="true" 
                   description="Vertical size of the building image (in its own coords)"/>
-            <prop name="w" type="Number" category="Geometry" 
+            <prop name="width" type="Number" category="Geometry" 
                   description="Horizontal size of the building image (in its own coords)"/>
             <prop name="nFloors" type="Number" category="Construction" description="The number of floors" />
             <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
@@ -25,21 +25,21 @@
             <prop name="street" type="String" category="Location"/>
             <prop name="buildingNumber" type="String" category="Location" description="The building street number"/>
             <prop name="buildingNumberPosition" type="String" category="Presentation" description="The position of the building number label"/>
-            <prop name="nFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
+            <prop name="nFloorsPosition" type="String" category="Presentation" description="The position of the number of the floors label"/>
             <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
         </props>
         <functions>
             <function name="labelPosBase" params="posCode">
                 const result = 
-                    posCode === "nw" ? {x: props.w*0.02, y: props.h*0.02, align: "left",   valign: "top"} :
-                    posCode === "n"  ? {x: props.w/2,    y: props.h*0.02, align: "middle", valign: "top"} :
-                    posCode === "ne" ? {x: props.w*0.98, y: props.h*0.02, align: "right",  valign: "top"} :
-                    posCode === "e"  ? {x: props.w*0.98, y: props.h/2,    align: "right",  valign: "middle"} :
-                    posCode === "se" ? {x: props.w*0.98, y: props.h*0.98, align: "right",  valign: "bottom"} :
-                    posCode === "s"  ? {x: props.w/2,    y: props.h*0.98, align: "middle", valign: "bottom"} :
-                    posCode === "sw" ? {x: props.w*0.02, y: props.h*0.98, align: "left",   valign: "bottom"} :
-                    posCode === "w"  ? {x: props.w*0.02, y: props.h/2,    align: "left",   valign: "middle"} :
-                  /*posCode === "s" ?*/{x: props.w/2,    y: props.h/2,    align: "middle", valign: "middle"};
+                    posCode === "nw" ? {x: props.width*0.02, y: props.height*0.02, align: "left",   valign: "top"} :
+                    posCode === "n"  ? {x: props.width/2,    y: props.height*0.02, align: "middle", valign: "top"} :
+                    posCode === "ne" ? {x: props.width*0.98, y: props.height*0.02, align: "right",  valign: "top"} :
+                    posCode === "e"  ? {x: props.width*0.98, y: props.height/2,    align: "right",  valign: "middle"} :
+                    posCode === "se" ? {x: props.width*0.98, y: props.height*0.98, align: "right",  valign: "bottom"} :
+                    posCode === "s"  ? {x: props.width/2,    y: props.height*0.98, align: "middle", valign: "bottom"} :
+                    posCode === "sw" ? {x: props.width*0.02, y: props.height*0.98, align: "left",   valign: "bottom"} :
+                    posCode === "w"  ? {x: props.width*0.02, y: props.height/2,    align: "left",   valign: "middle"} :
+                  /*posCode === "s" ?*/{x: props.width/2,    y: props.height/2,    align: "middle", valign: "middle"};
                 return result;
             </function>
             <function name="addTextAttrs" params="pos">
@@ -162,40 +162,40 @@
         |++++++++++++h
         +============+
      -->
-    <component-class name="I-Building" category="Buildings" version="2024070800">
+    <component-class name="I-Building" category="Buildings" version="2024080800">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
-            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" class="building" v-bind:class="material" />
+            <rect x="0" y="0" v-bind:width="width" v-bind:height="height" class="building" v-bind:class="material" />
             <template v-for="i in nEntrances">
                 <Kre:Entrance v-bind="entrancePos(i)" v-bind:w="entrW" v-bind:number="i"/>
-                <connection-point v-bind:name="i" v-bind:x="entrancePos(i).x" v-bind:y="h/2"/>
+                <connection-point v-bind:name="i" v-bind:x="entrancePos(i).x" v-bind:y="height/2"/>
             </template>
-            <Kre:NFloorsLabel v-if="nFloors" v-bind="labelPos(nFloorsPosition)" v-bind:h="h/3" 
+            <Kre:NFloorsLabel v-if="nFloors" v-bind="labelPos(nFloorsPosition)" v-bind:h="height/3" 
                 v-bind:n-floors="nFloors" v-bind:roof-shape="roofShape"/>
             <text v-bind="labelPos(buildingNumberPosition)" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
-            <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
-            <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
+            <adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
+            <adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
         </template>
         <props>
-            <prop name="w" type="Number" default="200"/>
+            <prop name="width" type="Number" default="200"/>
             <prop name="nEntrances" type="Number" default="4" category="Construction" description="The number of entrances" />
             <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
             <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
             <prop name="nFloorsPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="w"/>
         </props>
         <computed-props>
-            <computed-prop name="entrStep">props.w / props.nEntrances</computed-prop>
+            <computed-prop name="entrStep">props.width / props.nEntrances</computed-prop>
             <computed-prop name="entrW">cp$.entrStep/4</computed-prop>
-            <computed-prop name="numberFontSize">props.h/3</computed-prop>
+            <computed-prop name="numberFontSize">props.height/3</computed-prop>
         </computed-props>
         <functions>
             <function name="entrancePos" params="i">
                 switch (props.entrancesLayout) {
-                    case "bottom-ccw": return {x: cp$.entrStep * (i - 0.5), y: props.h, align: "bottom"};
-                    case "bottom-cw": return {x: cp$.entrStep * (props.nEntrances - i + 0.5), y: props.h, align: "bottom"};
+                    case "bottom-ccw": return {x: cp$.entrStep * (i - 0.5), y: props.height, align: "bottom"};
+                    case "bottom-cw": return {x: cp$.entrStep * (props.nEntrances - i + 0.5), y: props.height, align: "bottom"};
                     case "top-ccw": return {x: cp$.entrStep * (props.nEntrances - i + 0.5), y: 0, align: "top"};
                     case "top-cw": return {x: cp$.entrStep * (i - 0.5), y: 0, align: "top"};
                 }//switch
@@ -213,11 +213,11 @@
         |++++|
         +=w1=+
      -->
-     <component-class name="L-Building" category="Buildings" version="2024070800">
+     <component-class name="L-Building" category="Buildings" version="2024080800">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
-            <polygon v-bind:points="`0,0 0,${h} ${w1},${h} ${w1},${h2} ${w},${h2} ${w},0`" class="building" v-bind:class="material" />
+            <polygon v-bind:points="`0,0 0,${height} ${w1},${height} ${w1},${h2} ${width},${h2} ${width},0`" class="building" v-bind:class="material" />
             <template  v-for="i in nEntrances">
                 <Kre:Entrance v-bind="entrancePos(i)" v-bind:w="entrW" v-bind:number="i"/>
                 <connection-point 
@@ -231,14 +231,14 @@
             <text v-bind="labelPos(buildingNumberPosition)" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
-            <adjustment-ruler target-prop="h" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="h" fixed-end="1"/>
-            <adjustment-ruler target-prop="w" v-bind:x1="0" v-bind:y1="0" v-bind:x2="w" v-bind:y2="0" fixed-end="1"/>
-            <adjustment-ruler target-prop="h2" v-bind:x1="w" v-bind:y1="0" v-bind:x2="w" v-bind:y2="h2" fixed-end="1"/>
-            <adjustment-ruler target-prop="w1" v-bind:x1="0" v-bind:y1="h" v-bind:x2="w1" v-bind:y2="h" fixed-end="1"/>
+            <adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
+            <adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
+            <adjustment-ruler target-prop="h2" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="h2" fixed-end="1"/>
+            <adjustment-ruler target-prop="w1" v-bind:x1="0" v-bind:y1="height" v-bind:x2="w1" v-bind:y2="height" fixed-end="1"/>
         </template>
         <props>
-            <prop name="h" type="Number" default="200"/>
-            <prop name="w" type="Number" default="200"/>
+            <prop name="height" type="Number" default="200"/>
+            <prop name="width" type="Number" default="200"/>
             <prop name="h2" type="Number" default="50" category="Geometry" description="Visual height of the horizontal part"/>
             <prop name="w1" type="Number" default="50" category="Geometry" description="Visual width of the vertical part"/>
             <prop name="nEntrances1" type="Number" category="Construction" description="The number of entrances in the vertical part" default="2"/>
@@ -251,19 +251,19 @@
             <function name="entrancePos" params="i">
                 switch (props.entrancesLayout) {
                     case "inside-ccw": if (i &lt;= props.nEntrances1)
-                            return {x: props.w1, y: props.h - cp$.entrStep1 * (i-0.5), align: "right"};
+                            return {x: props.w1, y: props.height - cp$.entrStep1 * (i-0.5), align: "right"};
                         else 
                             return {x: props.w1 + cp$.entrStep2 * (i-props.nEntrances1-0.5), y: props.h2, align: "bottom"};
                     case "inside-cw": if (i &lt;= props.nEntrances2)
-                            return {x: props.w - cp$.entrStep2 * (i-0.5), y: props.h2, align: "bottom"};
+                            return {x: props.width - cp$.entrStep2 * (i-0.5), y: props.h2, align: "bottom"};
                         else 
                             return {x: props.w1, y: props.h2 + cp$.entrStep1 * (i-props.nEntrances2-0.5), align: "right"};
                     case "outside-ccw": if (i &lt;= props.nEntrances2)
-                            return {x: props.w - cp$.entrStep2 * (i-0.5), y: 0, align: "top"};
+                            return {x: props.width - cp$.entrStep2 * (i-0.5), y: 0, align: "top"};
                         else 
                             return {x: 0, y: cp$.entrStep1 * (i-props.nEntrances2-0.5), align: "left"};
                     case "outside-cw": if (i &lt;= props.nEntrances1)
-                            return {x: 0, y: props.h - cp$.entrStep1 * (i-0.5), align: "left"};
+                            return {x: 0, y: props.height - cp$.entrStep1 * (i-0.5), align: "left"};
                         else 
                             return {x: cp$.entrStep2 * (i-props.nEntrances1-0.5), y: 0, align: "top"};
                 }//switch
@@ -271,20 +271,20 @@
             </function>
             <function name="labelPosBase" params="posCode">
                 const result = 
-                    posCode === "sw"  ? {x: props.w*0.02,  y: props.h - props.h2*0.02, align: "left",   valign: "bottom"} :
-                    posCode === "s1"  ? {x: props.w1/2,    y: props.h - props.h2*0.02, align: "middle", valign: "bottom"} :
-                    posCode === "s2"  ? {x: props.w/2,     y: props.h2*0.98,           align: "middle", valign: "bottom"} :
-                    posCode === "se1" ? {x: props.w1*0.98, y: props.h - props.h2*0.02, align: "right",  valign: "bottom"} :
-                    posCode === "se2" ? {x: props.w*0.98,  y: props.h2*0.98,           align: "right",  valign: "bottom"} :
-                    posCode === "e1"  ? {x: props.w1*0.98, y: props.h/2 + props.h2/2,  align: "right",  valign: "middle"} :
-                    posCode === "e2"  ? {x: props.w*0.98,  y: props.h2/2,              align: "right",  valign: "middle"} :
-                    posCode === "ne"  ? {x: props.w*0.98,  y: props.h2*0.02,           align: "right",  valign: "top"} :
-                    posCode === "n"   ? {x: props.w/2,     y: props.h2*0.02,           align: "middle", valign: "top"} :
-                    posCode === "nw"  ? {x: props.w*0.02,  y: props.h2*0.02,           align: "left",   valign: "top"} :
-                   /* posCode === "w"   ? {x: props.w*0.02,  y: props.h/2,               align: "left",   valign: "middle"} : */
-                    posCode === "c1"  ? {x: props.w1/2,    y: props.h/2,               align: "middle", valign: "middle"} :
-                    posCode === "c2"  ? {x: props.w/2,     y: props.h2/2,              align: "middle", valign: "middle"} :
-                    posCode === "m"   ? {x: props.w1/2,    y: props.h2/2,              align: "middle", valign: "middle"} :
+                    posCode === "sw"  ? {x: props.width*0.02,  y: props.height - props.h2*0.02, align: "left",   valign: "bottom"} :
+                    posCode === "s1"  ? {x: props.w1/2,        y: props.height - props.h2*0.02, align: "middle", valign: "bottom"} :
+                    posCode === "s2"  ? {x: props.width/2,     y: props.h2*0.98,                align: "middle", valign: "bottom"} :
+                    posCode === "se1" ? {x: props.w1*0.98,     y: props.height - props.h2*0.02, align: "right",  valign: "bottom"} :
+                    posCode === "se2" ? {x: props.width*0.98,  y: props.h2*0.98,                align: "right",  valign: "bottom"} :
+                    posCode === "e1"  ? {x: props.w1*0.98,     y: props.height/2 + props.h2/2,  align: "right",  valign: "middle"} :
+                    posCode === "e2"  ? {x: props.width*0.98,  y: props.h2/2,                   align: "right",  valign: "middle"} :
+                    posCode === "ne"  ? {x: props.width*0.98,  y: props.h2*0.02,                align: "right",  valign: "top"} :
+                    posCode === "n"   ? {x: props.width/2,     y: props.h2*0.02,                align: "middle", valign: "top"} :
+                    posCode === "nw"  ? {x: props.width*0.02,  y: props.h2*0.02,                align: "left",   valign: "top"} :
+                   /* posCode === "w" ? {x: props.width*0.02,  y: props.height/2,               align: "left",   valign: "middle"} : */
+                    posCode === "c1"  ? {x: props.w1/2,        y: props.height/2,               align: "middle", valign: "middle"} :
+                    posCode === "c2"  ? {x: props.width/2,     y: props.h2/2,                   align: "middle", valign: "middle"} :
+                    posCode === "m"   ? {x: props.w1/2,        y: props.h2/2,                   align: "middle", valign: "middle"} :
                         super$.labelPosBase(posCode);
 
                 return result;
@@ -293,10 +293,10 @@
         <computed-props>
             <computed-prop name="nEntrances">props.nEntrances1 + props.nEntrances2</computed-prop>
             <computed-prop name="entrStep1">
-                props.entrancesLayout.startsWith('outside') ? props.h/props.nEntrances1 : (props.h-props.h2)/props.nEntrances1
+                props.entrancesLayout.startsWith('outside') ? props.h/props.nEntrances1 : (props.height-props.h2)/props.nEntrances1
             </computed-prop>
             <computed-prop name="entrStep2">
-                props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.w-props.w1)/props.nEntrances2
+                props.entrancesLayout.startsWith('outside') ? props.w/props.nEntrances2 : (props.width-props.w1)/props.nEntrances2
             </computed-prop>
             <computed-prop name="entrW">Math.min(cp$.entrStep1, cp$.entrStep2)/4</computed-prop>
             <computed-prop name="numberFontSize">props.h2/3</computed-prop>

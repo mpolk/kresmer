@@ -14,40 +14,17 @@
     <!-- Abstract base building -->
     <component-class ref="Building">
         <props>
-<!--             <prop name="h" type="Number" category="Geometry" default="50" required="true" 
-                  description="Vertical size of the building image (in its own coords)"/>
-            <prop name="w" type="Number" category="Geometry" 
-                  description="Horizontal size of the building image (in its own coords)"/>
-            <prop name="nFloors" type="Number" category="Construction" description="The number of floors" />
-            <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
-            <prop name="roofShape" type="String" choices="flat, pitched" category="Construction" description="The roof shape"/>
-            <prop name="street" type="String" category="Location"/>
-            <prop name="buildingNumber" type="String" category="Location" description="The building street number"/>
-            <prop name="buildingNumberPosition" type="String" category="Presentation" description="The position of the building number label"/>
-            <prop name="nFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
-            <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
- -->        </props>
-    </component-class>
-
-    <!-- Building elements -->
-    <component-class ref="Entrance">
-        <props>
-<!--             <prop name="h" type="Number" />
-            <prop name="w" type="Number" required="true" />
-            <prop name="number" type="[String, Number]" />
-            <prop name="align" type="String" choices="top, bottom, left, right" default="bottom"/>
- -->        </props>
-    </component-class>
-
-    <component-class ref="NFloorsLabel">
-        <props>
-<!--             <prop name="n-floors" type="Number" required="true"/>
-            <prop name="roofShape" type="String" />
-            <prop name="w" type="Number" />
-            <prop name="h" type="Number" required="true" />
-            <prop name="align" type="String" choices="left, middle, right" default="left" />
-            <prop name="valign" type="String" choices="top, middle, bottom" default="bottom" />
- -->        </props>
+            <prop ref="height" name="ширина" description="Вертикальний розмір зображення будівлі (у власних координатах)"/>
+            <prop ref="width" name="висота" description="Горизонтальний розмір зображення будівлі (у власних координатах)"/>
+            <prop ref="nFloors" name="кількість поверхів" description="Кількість поверхів" />
+            <prop ref="material" name="матеріал" choices="бетон, цегла, камінь, дерево" description="Будівельний матеріал"/>
+            <prop ref="roofShape" name="форма даху" description="Форма даху" choices="плоский, скатний"/>
+            <prop ref="street" name="вулиця"/>
+            <prop ref="buildingNumber" name="номер будівлі" description="Номер будівлі"/>
+            <prop ref="buildingNumberPosition" name="позиція номера будівлі " description="Позиція підпісу з номером будинку"/>
+            <prop ref="nFloorsPosition" name="позиція кількісті поверхів" description="Позиція мітки кількісті поверхів"/>
+            <prop ref="entrancesLayout" name="розташування під'їздів" description="Розташування та порядок під'їздів"/>
+        </props>
     </component-class>
     
     <!-- Various building shapes (inspired by Pentamino) -->
