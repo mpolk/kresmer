@@ -162,7 +162,7 @@
         |++++++++++++h
         +============+
      -->
-    <component-class name="I-Building" category="Buildings" uk:name="I-Будинок" uk:category="Будинки" version="2024070800">
+    <component-class name="I-Building" category="Buildings" version="2024070800">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>
@@ -213,7 +213,7 @@
         |++++|
         +=w1=+
      -->
-     <component-class name="L-Building" category="Buildings" uk:name="L-Будинок" uk:category="Будинки" version="2024070800">
+     <component-class name="L-Building" category="Buildings" version="2024070800">
         <extends base="Building"/>
         <template>
             <title>{{title}}</title>

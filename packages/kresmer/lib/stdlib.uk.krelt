@@ -19,9 +19,9 @@
     <component-class ref="ManagedDevice">
         <props>
             <prop ref="ip-address" name="ip-адреса" description="IP-адреса керування пристроєм"/>
-            <prop ref="management-protocol" name="протокол-керування"
+            <prop ref="management-protocol" name="протокол керування"
                 description="Протокол керування пристроєм (для відкриття сеансів керування з гіперпосилань на кресленні)"/>
-            <prop ref="management-ref-target" description="Ціль для гіперпосилань на кресленні"/>
+            <prop ref="management-ref-target" name="ціль посилань керування" description="Ціль для гіперпосилань протоколу кервання на кресленні"/>
             <prop ref="comment" name="коментар" description="Загальна інформація про пристрій"/>
         </props>
     </component-class>

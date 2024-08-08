@@ -93,6 +93,7 @@ export default class LibraryParser {
                     parsedNode = new NetworkComponentClassTranslation(ref, {name, description, category});
                     break;
                 case "link-class":
+                case "link-bundle-class":
                     parsedNode = new NetworkLinkClassTranslation(ref, {name, description, category});
                     break;
                 case "area-class":

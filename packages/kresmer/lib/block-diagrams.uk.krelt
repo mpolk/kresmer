@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library-translation.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                        Block Diagrams library
+ *    This library contains graphics block-diagrams and similar drawings.
+<*************************************************************************** -->
+<kresmer-library-translation name="block-diagrams" language="uk">
+
+    <component-class ref="RectangularBlock" name="Прямокутний блок" category="Блок-схеми">
+        <props>
+            <prop ref="width" name="ширина"/>
+            <prop ref="height" name="висота"/>
+            <prop ref="corner-radius" name="радіус кутків" />
+            <prop ref="fill" name="заповнення"/>
+            <prop ref="stroke-color" name="колір обведення" />
+            <prop ref="stroke-width" name="ширина обведення"/>
+            <prop ref="caption" name="підпис"/>
+            <prop ref="caption-color" name="колір підпису" />
+            <prop ref="caption-pos" name="положення підпису" choices="по-центру, зверху, знизу, ліворуч, праворуч, вище, нижче, до, після"/>
+            <prop ref="caption-href" name="посилання підпису" description="Необов'язкове гіперпосилання для підпису" />
+            <prop ref="font-size" name="розмір шрифту"/>
+            <prop ref="font-family" name="сімейство шрифту"/>
+            <prop ref="subtitle" name="підзаголовок"/>
+            <prop ref="subtitle-font-size" name="розмір шрифту підзаголовка"/>
+        </props>
+
+    </component-class>
+
+</kresmer-library-translation>

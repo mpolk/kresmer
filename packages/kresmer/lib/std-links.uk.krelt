@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library-translation.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                        The standard library
+ *       This sub-library contains various network link classes
+<*************************************************************************** -->
+
+<kresmer-library-translation name="std-links" language="uk">
+
+    <!-- *********************************************** Links ********************************************************* -->
+
+    <link-class ref="_abstract-link">
+        <props>
+            <!-- <prop name="mediaType" type="string" category="Network"/>
+            <prop name="acceptMediaTypes" type="string" category="Network"/>
+            <prop name="startLabel" type="string"/>
+            <prop name="startLabelHref" type="string"/>
+            <prop name="endLabel" type="string"/>
+            <prop name="endLabelHref" type="string"/>
+            <prop name="startMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
+            <prop name="endMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
+            <prop name="color" type="Color" category="Presentation"/>
+            <prop name="highlightColor" type="Color" category="Presentation"/> -->
+            <prop ref="thickness" name="товщина" choices="тонкий,нормальний,товстий" />
+        </props>
+    </link-class>
+
+    <!-- Various link types -->
+    <link-class ref="invisible-link" name="невидиме з'єднання" category="загальни" />
+    <link-class ref="twisted-pair" name="кручена пара" category="мідни з'еднання" />
+    <link-class ref="sm-patch-cord" name="одномодовий патч-корд" category="оптични з'єднання"/>
+    <link-class ref="sm-fiber" name="одномодове волокно" category="оптични з'єднання" />
+    <link-class ref="DAC" category="кабелі прямого підключення"/>
+    <link-class ref="AOC" category="кабелі прямого підключення"/>
+    <link-class ref="AOC-fan" name="віяло AOC" category="кабелі прямого підключення"/>
+    <link-class ref="multifiber-cable" name="багатоволоконний кабель" category="оптични з'єднання"/>
+
+    <!-- Link bundles -->
+    <link-bundle-class ref="link-bundle" name="жмут" category="загальни"/>
+    <link-bundle-class ref="DAC-bundle" name="жмут DAC" category="кабелі прямого підключення"/>
+    <link-bundle-class ref="AOC-bundle" name="жмут AOC" category="кабелі прямого підключення"/>
+
+</kresmer-library-translation>

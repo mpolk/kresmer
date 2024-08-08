@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library-translation.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                          Buildings library
+ *        This library contains building templates for the site plans
+<*************************************************************************** -->
+
+<kresmer-library-translation name="buildings" language="uk">
+
+    <!-- Abstract base building -->
+    <component-class ref="Building">
+        <props>
+<!--             <prop name="h" type="Number" category="Geometry" default="50" required="true" 
+                  description="Vertical size of the building image (in its own coords)"/>
+            <prop name="w" type="Number" category="Geometry" 
+                  description="Horizontal size of the building image (in its own coords)"/>
+            <prop name="nFloors" type="Number" category="Construction" description="The number of floors" />
+            <prop name="material" type="String" category="Construction" choices="concrete, brick, stone, wood" description="Building material"/>
+            <prop name="roofShape" type="String" choices="flat, pitched" category="Construction" description="The roof shape"/>
+            <prop name="street" type="String" category="Location"/>
+            <prop name="buildingNumber" type="String" category="Location" description="The building street number"/>
+            <prop name="buildingNumberPosition" type="String" category="Presentation" description="The position of the building number label"/>
+            <prop name="nFloorsPosition" type="String" category="Presentation" description="The position of the number of the flows label"/>
+            <prop name="entrancesLayout" type="String" category="Construction" description="The location and the order of the entrances"/>
+ -->        </props>
+    </component-class>
+
+    <!-- Building elements -->
+    <component-class ref="Entrance">
+        <props>
+<!--             <prop name="h" type="Number" />
+            <prop name="w" type="Number" required="true" />
+            <prop name="number" type="[String, Number]" />
+            <prop name="align" type="String" choices="top, bottom, left, right" default="bottom"/>
+ -->        </props>
+    </component-class>
+
+    <component-class ref="NFloorsLabel">
+        <props>
+<!--             <prop name="n-floors" type="Number" required="true"/>
+            <prop name="roofShape" type="String" />
+            <prop name="w" type="Number" />
+            <prop name="h" type="Number" required="true" />
+            <prop name="align" type="String" choices="left, middle, right" default="left" />
+            <prop name="valign" type="String" choices="top, middle, bottom" default="bottom" />
+ -->        </props>
+    </component-class>
+    
+    <!-- Various building shapes (inspired by Pentamino) -->
+    
+    <!-- I-shaped building:  
+        +======w=====+
+        |++++++++++++h
+        +============+
+     -->
+    <component-class ref="I-Building" name="I-Будинок" category="Будивлі">
+        <props>
+            <!-- <prop name="w" type="Number" default="200"/>
+            <prop name="nEntrances" type="Number" default="4" category="Construction" description="The number of entrances" />
+            <prop name="entrancesLayout" type="String" choices="bottom-cw, bottom-ccw, top-cw, top-ccw" default="bottom-ccw" />
+            <prop name="buildingNumberPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="c"/>
+            <prop name="nFloorsPosition" type="String" choices="c, nw, n, ne, e, se, s, sw, w" default="w"/> -->
+        </props>
+    </component-class>
+    
+    <!-- L-shaped building:  
+        +=====w=====+
+        |+++++++++++h2
+        |+++++======+
+        h++++|
+        |++++|
+        |++++|
+        +=w1=+
+     -->
+     <component-class ref="L-Building" name="L-Будинок" category="Будивлі">
+        <props>
+            <!-- <prop name="h" type="Number" default="200"/>
+            <prop name="w" type="Number" default="200"/>
+            <prop name="h2" type="Number" default="50" category="Geometry" description="Visual height of the horizontal part"/>
+            <prop name="w1" type="Number" default="50" category="Geometry" description="Visual width of the vertical part"/>
+            <prop name="nEntrances1" type="Number" category="Construction" description="The number of entrances in the vertical part" default="2"/>
+            <prop name="nEntrances2" type="Number" category="Construction" description="The number of entrances in the horizontal part" default="2"/>
+            <prop name="entrancesLayout" type="String" choices="inside-cw, inside-ccw, outside-cw, outside-ccw" default="inside-ccw" />
+            <prop name="buildingNumberPosition" type="String" choices="m, c1, c2, nw, n, ne, e1, e2, se1, se2, s1, s2, sw, w" default="m"/>
+            <prop name="nFloorsPosition" type="String" choices="m, c1, c2, nw, n, ne, e1, e2, se1, se2, s1, s2, sw, w" default="w"/> -->
+        </props>
+
+    </component-class>
+
+</kresmer-library-translation>
