@@ -136,7 +136,7 @@ export default class NetworkComponent extends DrawingElement {
     }//saveDisconnectedVertices
     /**
      * Restore temporarily disconnected vertices that were connected to the previous incarnation 
-     * of the specified connection poiny
+     * of the specified connection point
      * @param connectionPoint The connection for which the vertices should be restored
      */
     restoreDisconnectedVertices(connectionPoint: ConnectionPoint)

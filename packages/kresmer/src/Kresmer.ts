@@ -109,8 +109,8 @@ export default class Kresmer extends KresmerEventHooks {
             ;
         // register the functions that can be used in templates
         const templateFunctions = {
-            ...TransformFunctons,
-            ...NetworkComponentFunctions,
+            // ...TransformFunctons,
+            // ...NetworkComponentFunctions,
             // kre$streetAddress: this.streetAddress,
             // kre$openURL: this.openURL,
             // kre$href: this.makeHref,
@@ -220,8 +220,8 @@ export default class Kresmer extends KresmerEventHooks {
     }//makeHref
 
     private readonly injectedTemplateFunctions = {
-        // ...TransformFunctons,
-        // ...NetworkComponentFunctions,
+        ...TransformFunctons,
+        ...NetworkComponentFunctions,
         kre$streetAddress: this.streetAddress,
         kre$openURL: this.openURL,
         kre$href: this.makeHref,
