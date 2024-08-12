@@ -236,7 +236,7 @@ function normalizePoint(p: Point): NormalizedPoint
 
 /** Transform functions for using in component templates */
 export const TransformFunctons = {
-    $scale: function(factor: ScaleFactor, origin: Point = [0,0]) {
+    kre$scale: function(factor: ScaleFactor, origin: Point = [0,0]) {
         const {fx, fy} = (typeof factor === "number") ? {fx: factor, fy: factor} :
             (Array.isArray(factor)) ? {fx: factor[0], fy: factor[1]} :
             {fx: factor.x, fy: factor.y};
@@ -250,7 +250,7 @@ export const TransformFunctons = {
                 fx * (p[0] - ox) + ox, 
                 fy * (p[1] - oy) + oy
             ]);
-    },//$scale
+    },//kre$scale
 
 
     $ThreeVectorTransform: function(m: ThreeVectorMatrix) {
