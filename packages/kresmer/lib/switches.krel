@@ -19,7 +19,7 @@
                 <slot name="frontFacet" />
             </template>
             <template v-slot:topFacetC="{}">
-                <polyline v-bind:points="$p($ThreeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" 
+                <polyline v-bind:points="$p(kre$3VectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" 
                     class="facet" />
                 <slot name="topFacetC"/>
             </template>

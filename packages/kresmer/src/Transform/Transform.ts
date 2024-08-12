@@ -253,7 +253,7 @@ export const TransformFunctons = {
     },//kre$scale
 
 
-    $ThreeVectorTransform: function(m: ThreeVectorMatrix) {
+    kre$3VectorTransform: function(m: ThreeVectorMatrix) {
         const [ux, uy, vx, vy, wx, wy] = Array.isArray(m) ? m : 
             normalizePoint(m.u).concat(normalizePoint(m.v)).concat(normalizePoint(m.w));
         return (...points: Points): Point[] =>
@@ -261,7 +261,7 @@ export const TransformFunctons = {
                 ux * p[0] + vx * p[1] + wx * p[0] * p[1],
                 uy * p[0] + vy * p[1] + wy * p[0] * p[1]
             ]);
-    },//$ThreeVectorTransform
+    },//kre$3VectorTransform
 
 
     $p: function(points: NormalizedPoint[]) {
