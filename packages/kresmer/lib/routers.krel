@@ -21,12 +21,12 @@
             </template>
             <template v-slot:topFacetC="{}">
                 <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                <polyline v-bind:points="$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet" />
+                <polyline v-bind:points="kre$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet" />
                 <slot name="topFacetC"/>
             </template>
             <template v-slot:topFacetLR="{}">
                 <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015" />
-                <polyline v-bind:points="$p([...crossArrows])" class="facet" />
+                <polyline v-bind:points="kre$p([...crossArrows])" class="facet" />
                 <slot name="topFacetLR"/>
             </template>
         </extends>

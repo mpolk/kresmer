@@ -79,7 +79,7 @@ import { indent } from "../Utils";
     get nonEmpty()
     {
         return this.hasRotation || this.hasScale;
-    }//nponEmpty
+    }//nonEmpty
 
     /**
      * Generates an SVG "transform" attribute for this Transform
@@ -129,7 +129,7 @@ import { indent } from "../Utils";
     }//makeSnapshot
 
     /**
-     * Applies an additional rotattion to the current transform 
+     * Applies an additional rotation to the current transform 
      * based on pointing device pointer shift
      * @param r1 Pointer radius-vector specifying the final rotation value
      * @param r0 Pointer radius-vector specifying the starting rotation value
@@ -264,8 +264,8 @@ export const TransformFunctons = {
     },//kre$threeVectorTransform
 
 
-    $p: function(points: NormalizedPoint[]) {
+    kre$p: function(points: NormalizedPoint[]) {
         return points.map(p => `${p[0]},${p[1]}`).join(' ');
-    },//$p
+    },//kre$p
 }//TransformFunctons
  

@@ -190,12 +190,12 @@ export class ChangeComponentClassOp extends EditorOperation {
 export const NetworkComponentFunctions = {
 
     /** Makes the full name of the port based on the unit number and the total number of units */
-    $portName: function(portName: string, unitNumber?: number, nUnits?: number): string
+    kre$portName: function(portName: string, unitNumber?: number, nUnits?: number): string
     {
         if (!unitNumber || !nUnits || nUnits == 1)
             return portName;
         else
             return `${unitNumber}:${portName}`;
-    },//$portName
+    },//kre$portName
 
 }//NetworkComponentFunctions

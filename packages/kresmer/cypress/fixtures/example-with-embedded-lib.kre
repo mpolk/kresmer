@@ -51,7 +51,7 @@
 	            </template>
 	            <slot name="frontFacet"/>
 	            <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
-	                <polyline v-bind:points="$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})                                                            ([0,0], [0,1], [1,1], [1,0]))" class="top facet"/>
+	                <polyline v-bind:points="kre$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})                                                            ([0,0], [0,1], [1,1], [1,0]))" class="top facet"/>
 	                <slot name="topFacetC"/>
 	            </g>
 	            <template v-if="perspective === 'right'">
@@ -238,11 +238,11 @@
 	                <slot name="frontFacet"/>
 	            </template>
 	            <template v-slot:topFacetC="{}">
-	                <polyline v-bind:points="$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet"/>
+	                <polyline v-bind:points="kre$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet"/>
 	                <slot name="topFacetC"/>
 	            </template>
 	            <template v-slot:topFacetLR="{}">
-	                <polyline v-bind:points="$p([...crossArrows])" class="facet"/>
+	                <polyline v-bind:points="kre$p([...crossArrows])" class="facet"/>
 	                <slot name="topFacetLR"/>
 	            </template>
 	        </extends>
@@ -343,12 +343,12 @@
 	                <Kre:StackUnitBadge v-if="nStackUnits &gt; 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)" v-bind:width="unitHeight*0.25" v-bind:height="unitHeight*0.25" v-bind:unit="unit"/>
 	                <text v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.67)+interUnitGap*(unit-1)" v-bind:font-size="unitHeight*0.25" class="model-name">X590</text>
 	                  <template v-for="i in 12">
-	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[$portName(i*2-1, unit, nStackUnits)]"/>
-	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[$portName(i*2, unit, nStackUnits)]" key-position="bottom"/>
+	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[kre$portName(i*2-1, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2-1, unit, nStackUnits)]"/>
+	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[kre$portName(i*2, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2, unit, nStackUnits)]" key-position="bottom"/>
 	                </template>
-	                <Kre:QSFP-Port  v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="$portName(25, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(25, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[$portName(25, unit, nStackUnits)]"/>
-	                <Kre:QSFP-Port  v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="$portName(26, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(26, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[$portName(26, unit, nStackUnits)]"/>
-	                <Kre:QSFP-Port  v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[$portName(27, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[$portName(27, unit, nStackUnits)]"/>
+	                <Kre:QSFP-Port  v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="kre$portName(25, unit, nStackUnits)" v-bind:port-info="portsInfo[kre$portName(25, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(25, unit, nStackUnits)]"/>
+	                <Kre:QSFP-Port  v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="kre$portName(26, unit, nStackUnits)" v-bind:port-info="portsInfo[kre$portName(26, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(26, unit, nStackUnits)]"/>
+	                <Kre:QSFP-Port  v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="kre$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[kre$portName(27, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(27, unit, nStackUnits)]"/>
 	            </template>
 	        </template>
 	        <style extends="StackUnitBadge, ExtremeSwitchStack"/>
@@ -365,8 +365,8 @@
 	            <template v-for="unit in nStackUnits">
 	                <Kre:StackUnitBadge v-if="nStackUnits &gt; 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)" v-bind:width="unitHeight*0.25" v-bind:height="unitHeight*0.25" v-bind:unit="unit"/>
 	                <template v-for="i in 24">
-	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[$portName(i*2-1, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[$portName(i*2-1, unit, nStackUnits)]"/>
-	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" key-position="bottom" v-bind:port-info="portsInfo[$portName(i*2, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[$portName(i*2, unit, nStackUnits)]"/>
+	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[kre$portName(i*2-1, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2-1, unit, nStackUnits)]"/>
+	                    <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" key-position="bottom" v-bind:port-info="portsInfo[kre$portName(i*2, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2, unit, nStackUnits)]"/>
 	                    </template>
 	            </template>
 	        </template>
@@ -385,12 +385,12 @@
 	            </template>
 	            <template v-slot:topFacetC="{}">
 	                <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015"/>
-	                <polyline v-bind:points="$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet"/>
+	                <polyline v-bind:points="kre$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet"/>
 	                <slot name="topFacetC"/>
 	            </template>
 	            <template v-slot:topFacetLR="{}">
 	                <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015"/>
-	                <polyline v-bind:points="$p([...crossArrows])" class="facet"/>
+	                <polyline v-bind:points="kre$p([...crossArrows])" class="facet"/>
 	                <slot name="topFacetLR"/>
 	            </template>
 	        </extends>
