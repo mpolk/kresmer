@@ -112,21 +112,21 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
         if (!this.isBeingTransformed)
             return false;
             
-        const {r1, r0} = this.makeRaduisVectors(event, center);
+        const {r1, r0} = this.makeRadiusVectors(event, center);
         this.transform.rotate(r1, r0);
         this.updateConnectionPoints();
         this.kresmer.emit("component-being-transformed", this);
         return true;
     }//rotate
 
-    private makeRaduisVectors(event: MouseEvent, center: Position)
+    private makeRadiusVectors(event: MouseEvent, center: Position)
     {
         const mousePos = this.getMousePosition(event);
         const c = {x: center.x + this.origin.x, y: center.y + this.origin.y};
         const r1 = {x: mousePos.x - c.x, y: mousePos.y - c.y};
         const r0 = {x: this.savedMousePos!.x - c.x, y: this.savedMousePos!.y - c.y};
         return {r1, r0};
-    }//makeRaduisVectors
+    }//makeRadiusVectors
 
 
     public startScale(event: MouseEvent)
@@ -148,7 +148,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
         if (!this.isBeingTransformed)
             return false;
             
-        const {r1, r0} = this.makeRaduisVectors(event, center);
+        const {r1, r0} = this.makeRadiusVectors(event, center);
         let direction = zone.replace('-handle', '');
         if (direction.length > 1 && !event.shiftKey) {
             direction = '*';

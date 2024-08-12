@@ -18,7 +18,6 @@ import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, Componen
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "./NetworkLink/NetworkLinkClass";
-import TransformBoxVue from "./Transform/TransformBox.vue"
 import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
@@ -99,29 +98,7 @@ export default class Kresmer extends KresmerEventHooks {
         });
 
         // register the components used to construct the drawing
-        this.appKresmer
-            .component("TransformBox", TransformBoxVue)
-            .component("NetworkComponentHolder", NetworkComponentHolderVue)
-            .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
-            .component("ConnectionPoint", ConnectionPointVue)
-            .component("ConnectionIndicator", ConnectionIndicatorVue)
-            .component("AdjustmentRuler", AdjustmentRulerVue)
-            ;
-        // register the functions that can be used in templates
-        const templateFunctions = {
-            // ...TransformFunctons,
-            // ...NetworkComponentFunctions,
-            // kre$streetAddress: this.streetAddress,
-            // kre$openURL: this.openURL,
-            // kre$href: this.makeHref,
-        }//templateFunctions
-        this.appKresmer.config.globalProperties = templateFunctions;
-        // also make them available from computed props
-        for (const funcName in templateFunctions) {
-            if (!(funcName in window))
-                Object.defineProperty(window, funcName, {value: templateFunctions[funcName as keyof typeof templateFunctions]});
-        }//for
-
+        Kresmer._registerGlobals(this.appKresmer);
         // at last mount the main vue
         this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
         // and somehow awake its scaling mechanism (workaround for something beyond understanding)
@@ -136,13 +113,12 @@ export default class Kresmer extends KresmerEventHooks {
     static _registerGlobals(app: App)
     {
         app
-            .component("TransformBox", TransformBoxVue)
-            .component("NetworkComponentHolder", NetworkComponentHolderVue)
-            .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
-            .component("ConnectionPoint", ConnectionPointVue)
-            .component("ConnectionIndicator", ConnectionIndicatorVue)
-            .component("AdjustmentRuler", AdjustmentRulerVue)
-            ;
+          .component("NetworkComponentHolder", NetworkComponentHolderVue)
+          .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
+          .component("ConnectionPoint", ConnectionPointVue)
+          .component("ConnectionIndicator", ConnectionIndicatorVue)
+          .component("AdjustmentRuler", AdjustmentRulerVue)
+          ;
     }//_registerGlobals
 
 
@@ -219,6 +195,7 @@ export default class Kresmer extends KresmerEventHooks {
         return `${this.hrefBase.value.replace(/\/$/, '')}/${tail}`;
     }//makeHref
 
+    /** A set of functions we make available in the templates */
     private readonly injectedTemplateFunctions = {
         ...TransformFunctons,
         ...NetworkComponentFunctions,
@@ -1451,7 +1428,7 @@ ${svg.outerHTML}
  */
 export const kresmerPlugin = {
     install(app: App) {
-        app
+        Kresmer._registerGlobals(app);
     }//install
 }//kresmerPlugin
 
