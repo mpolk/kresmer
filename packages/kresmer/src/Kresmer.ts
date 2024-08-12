@@ -18,7 +18,6 @@ import NetworkComponentController, { ComponentAddOp, ComponentDeleteOp, Componen
 import { Position, Shift, Transform, TransformFunctons, ITransform } from "./Transform/Transform";
 import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "./NetworkLink/NetworkLinkClass";
-import NetworkComponentHolderVue from "./NetworkComponent/NetworkComponentHolder.vue";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
@@ -113,8 +112,6 @@ export default class Kresmer extends KresmerEventHooks {
     static _registerGlobals(app: App)
     {
         app
-          .component("NetworkComponentHolder", NetworkComponentHolderVue)
-          .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
           .component("ConnectionPoint", ConnectionPointVue)
           .component("ConnectionIndicator", ConnectionIndicatorVue)
           .component("AdjustmentRuler", AdjustmentRulerVue)
@@ -451,6 +448,7 @@ export default class Kresmer extends KresmerEventHooks {
             },
         // ...and the one for its adapter (used for component-in-component embedding)
         }).component(componentClass.adapterVueName, {
+            components: {NetworkComponentAdapterVue},
             setup(props: Record<string, Prop<unknown>>) {
                 const componentProps = computed(() => {
                     const prop = {...props};
@@ -463,14 +461,14 @@ export default class Kresmer extends KresmerEventHooks {
                 return {componentProps, provides};
             },
             template: `\
-                <NetworkComponentAdapter component-class="${componentClass.name}" 
+                <NetworkComponentAdapterVue component-class="${componentClass.name}" 
                                          :x="x" :y="y" :transform="transform" :transform-origin="transformOrigin">
                     <component :is="'${componentClass.vueName}'" v-bind="componentProps">
                         <template v-for="(_, slotName) in $slots" v-slot:[slotName]="{...props}">
                             <slot :name="slotName"/>
                         </template>
                     </component>
-                </NetworkComponentAdapter>`,
+                </NetworkComponentAdapterVue>`,
             props: {
                 ...componentClass.props,
                 name: {type: [String, Number]},
