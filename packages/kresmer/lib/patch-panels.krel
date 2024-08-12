@@ -41,7 +41,7 @@
                     <connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" 
                         v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
                 </connection-indicator>
-                <adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
+                <Kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
             </template>
             <template v-for="i in nPorts/nPortRows">
                 <component v-for="j in nPortRows" v-bind:is="portClass" 

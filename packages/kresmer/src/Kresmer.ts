@@ -114,7 +114,7 @@ export default class Kresmer extends KresmerEventHooks {
         app
           .component("ConnectionPoint", ConnectionPointVue)
           .component("ConnectionIndicator", ConnectionIndicatorVue)
-          .component("AdjustmentRuler", AdjustmentRulerVue)
+          .component("Kre:adjustment-ruler", AdjustmentRulerVue)
           ;
     }//_registerGlobals
 

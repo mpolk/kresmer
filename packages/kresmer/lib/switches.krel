@@ -45,7 +45,7 @@
                 v-bind:x="height*(0.75*i - 0.5)" v-bind:y="height/4" v-bind:d="height/2"
                 v-bind:name="i" v-bind:port-info="portsInfo[i]" v-bind:fiber-info="fibersInfo[i]"
                 />
-            <adjustment-ruler target-prop="height" 
+            <Kre:adjustment-ruler target-prop="height" 
                 v-bind:x1="0" v-bind:y1="0" 
                 v-bind:x2="0" v-bind:y2="height"
                 fixed-end="1"
