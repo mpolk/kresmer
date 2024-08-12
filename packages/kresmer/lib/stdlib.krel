@@ -69,7 +69,7 @@
             <slot name="frontFacet"/>
             <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
                 <polyline
-                    v-bind:points="$p(kre$3VectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
+                    v-bind:points="$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})
                                                            ([0,0], [0,1], [1,1], [1,0]))"
                     class="top facet" />
                 <slot name="topFacetC"/>
