@@ -62,7 +62,7 @@
             </function>
         </functions>
         <computed-props>
-            <computed-prop name="title">$streetAddress({street: props.street, buildingNumber: props.buildingNumber})</computed-prop>
+            <computed-prop name="title">tf$.kre$streetAddress({street: props.street, buildingNumber: props.buildingNumber})</computed-prop>
         </computed-props>
         <style>
             .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }

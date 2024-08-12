@@ -111,9 +111,9 @@ export default class Kresmer extends KresmerEventHooks {
         const templateFunctions = {
             ...TransformFunctons,
             ...NetworkComponentFunctions,
-            $streetAddress: this.streetAddress,
-            $openURL: this.openURL,
-            $href: this.makeHref,
+            // kre$streetAddress: this.streetAddress,
+            // kre$openURL: this.openURL,
+            // kre$href: this.makeHref,
         }//templateFunctions
         this.appKresmer.config.globalProperties = templateFunctions;
         // also make them available from computed props
@@ -127,6 +127,23 @@ export default class Kresmer extends KresmerEventHooks {
         // and somehow awake its scaling mechanism (workaround for something beyond understanding)
         this.zoomFactor = 1;
     }//ctor
+
+
+    /**
+     * Auxiliary function for registering global Kresmer components and properties in the Vue application
+     * @param app Vue App to register globals for
+     */
+    static _registerGlobals(app: App)
+    {
+        app
+            .component("TransformBox", TransformBoxVue)
+            .component("NetworkComponentHolder", NetworkComponentHolderVue)
+            .component("NetworkComponentAdapter", NetworkComponentAdapterVue)
+            .component("ConnectionPoint", ConnectionPointVue)
+            .component("ConnectionIndicator", ConnectionIndicatorVue)
+            .component("AdjustmentRuler", AdjustmentRulerVue)
+            ;
+    }//_registerGlobals
 
 
     /** Kresmer's vue-component Application */
@@ -177,6 +194,39 @@ export default class Kresmer extends KresmerEventHooks {
             .replace("{street}", addrElems.street)
             .replace("{building-number}", addrElems.buildingNumber);
     }//streetAddress
+
+    /**
+     * Opens an URL. First it tries to delegate opening an URL to the host and then
+     * (if the host returns false) opens an URL on its own.
+     * @param url An URL to open
+     * @param target Navigation target
+     */
+    public readonly openURL = (url: string, target = "_self") =>
+        {
+            console.debug(`openURL("${url}")`);
+            if (this.onOpenUrl(url, target))
+                return;
+            window.open(url, target);
+    }//openURL
+
+    /** A base (common) prefix for all hyperlinks on the drawing */
+    readonly hrefBase = ref("");
+    /** Makes a hyperlink from the common prefix and the specific tail */
+    makeHref = (tail: string) =>
+    {
+        if (!this.hrefBase || tail.match(/^(\/|data:|file:|[a-z]+:\/\/)/))
+            return tail;
+        return `${this.hrefBase.value.replace(/\/$/, '')}/${tail}`;
+    }//makeHref
+
+    private readonly injectedTemplateFunctions = {
+        // ...TransformFunctons,
+        // ...NetworkComponentFunctions,
+        kre$streetAddress: this.streetAddress,
+        kre$openURL: this.openURL,
+        kre$href: this.makeHref,
+    }//injectedTemplateFunctions
+
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
@@ -277,16 +327,6 @@ export default class Kresmer extends KresmerEventHooks {
     /** A symbolic key for the snap-to-grid step injection */
     static readonly ikSnappingGranularity = Symbol() as InjectionKey<number>;
 
-    /** A base (common) prefix for all hyperlinks on the drawing */
-    readonly hrefBase = ref("");
-    /** Makes a hyperlink from the common prefix and the specific tail */
-    makeHref = (tail: string) =>
-    {
-        if (!this.hrefBase || tail.match(/^(\/|data:|file:|[a-z]+:\/\/)/))
-            return tail;
-        return `${this.hrefBase.value.replace(/\/$/, '')}/${tail}`;
-    }//makeHref
-
     /** Kresmer-backend server connection (if any) */
     public backendConnection?: BackendConnection;
     /** 
@@ -364,20 +404,6 @@ export default class Kresmer extends KresmerEventHooks {
         return this;
     }//forceUpdate
 
-    /**
-     * Opens an URL. First it tries to delegate opening an URL to the host and then
-     * (if the host returns false) opens an URL on its own.
-     * @param url An URL to open
-     * @param target Navigation target
-     */
-    public readonly openURL = (url: string, target = "_self") =>
-    {
-        console.debug(`openURL("${url}")`);
-        if (this.onOpenUrl(url, target))
-            return;
-        window.open(url, target);
-    }//openURL
-
     /** A list of all Component Classes, registered by Kresmer */
     public readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();
     /** Returns a list of all Component Classes, registered by Kresmer */
@@ -407,6 +433,7 @@ export default class Kresmer extends KresmerEventHooks {
         }//patchBody
 
         // Register a Vue-component for the class itself
+        const injectedTemplateFunctions = this.injectedTemplateFunctions;
         this.appKresmer.component(componentClass.vueName, 
         {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -434,10 +461,10 @@ export default class Kresmer extends KresmerEventHooks {
                     eval(`superFunctions.${name} = function ${name}(${params.join(",")}) {${body}}`);
                 }//for
 
-                const cp$ = computedProps, fn$ = functions; // aliases for more convenient usage outside of templates
+                const cp$ = computedProps, fn$ = functions, tf$ = injectedTemplateFunctions // aliases for more convenient usage outside of templates
                 const super$ = computed(() => superFunctions);
 
-                return {...cp$, ...fn$, super$};
+                return {...cp$, ...fn$, super$, tf$, ...tf$};
             },
             template: componentClass.template,
             props: {
@@ -1417,6 +1444,17 @@ ${svg.outerHTML}
 
     }//edAPI
 }//Kresmer
+
+
+/**
+ * Vue plugin for using Kresmer component inside another Vue application
+ */
+export const kresmerPlugin = {
+    install(app: App) {
+        app
+    }//install
+}//kresmerPlugin
+
 
 const UNNAMED_DRAWING = "?unnamed?";
 

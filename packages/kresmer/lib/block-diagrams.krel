@@ -18,7 +18,7 @@
                 />
             <connection-point v-for="({x, y, dir}, name) in connectionPoints" v-bind="{name, x, y, dir, d: 16}"/>
             <template v-if="caption">
-                <a v-if="captionHref" class="caption href" v-bind:href="$href(captionHref)"><text v-bind="captionParams">{{caption}}</text></a>
+                <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)"><text v-bind="captionParams">{{caption}}</text></a>
                 <text v-else="" class="caption" v-bind="captionParams">{{caption}}</text>
             </template>
             <text v-if="subtitle" class="subtitle" v-bind="subtitleParams">{{subtitle}}</text>

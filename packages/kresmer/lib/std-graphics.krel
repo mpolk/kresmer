@@ -41,7 +41,7 @@
     <!-- Standalone raster image -->
     <component-class name="Image" category="General">
         <template>
-            <image v-bind:width="width" v-bind:height="height" v-bind:href="$href(url)" 
+            <image v-bind:width="width" v-bind:height="height" v-bind:href="kre$href(url)" 
                    v-bind:preserveAspectRatio="preserveAspectRatio" v-bind:opacity="opacity"/>
         </template>
         <props>
