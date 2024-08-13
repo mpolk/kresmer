@@ -9,6 +9,8 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
 
     <uri name="xsd/kresmer-library.xsd" uri="./kresmer-library.xsd" />
+    <uri name="xsd/builtin-elements.xsd" uri="./builtin-elements.xsd" />
+    <uri name="builtin-elements.xsd" uri="./builtin-elements.xsd" />
     <uri name="xsd/kresmer-library-translation.xsd" uri="./kresmer-library-translation.xsd" />
     <uri name="xsd/kresmer-drawing.xsd" uri="./kresmer-drawing.xsd" />
   

@@ -8,7 +8,7 @@
  *                        Patch-panels library
  *         This library contains graphics for various fiber optics closures.
 <*************************************************************************** -->
-<kresmer-library name="fiber-optics-closures" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="fiber-optics-closures" xmlns="kresmer-library" xmlns:kre="builtin-elements" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
     <component-class name="CableAttachmentTable" category="Passive equipment" version="2024073103">
@@ -37,7 +37,7 @@
                       class="fiber-label">{{labels &amp;&amp; labels[i] ? `${i}: ${labels[i]}` : i}}</text>
                 <connection-point v-bind:name="connID(i)" v-bind="cellCPPos(i)" v-bind:connection-id="connID(i)"/>
             </connection-indicator>
-            <Kre:adjustment-ruler target-prop="captionHeight" v-bind="adjRulerPos" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="captionHeight" v-bind="adjRulerPos" fixed-end="1"/>
         </template>
         <props>
             <prop name="comment" type="String"/>
@@ -237,16 +237,16 @@
                 v-bind:nFibers="cableInfo.nFibers" orientation="up"
                 v-bind:labels="cableInfo.fiberLabels"
                 />
-            <Kre:adjustment-ruler v-if="nLeftCables" target-prop="ltch" v-bind:x1="0" v-bind:y1="height/2" v-bind:x2="lWidth*ltch/(1+ltch)" v-bind:y2="height/2" fixed-end="1"/>
-            <Kre:adjustment-ruler v-if="nRightCables" target-prop="rtch" v-bind:x1="width" v-bind:y1="height/2" v-bind:x2="width - rWidth*rtch/(1+rtch)" v-bind:y2="height/2" fixed-end="1"/>
-            <Kre:adjustment-ruler v-if="nTopCables" target-prop="ttch" v-bind:x1="width/2" v-bind:y1="0" v-bind:x2="width/2" v-bind:y2="tHeight*ttch/(1+ttch)" fixed-end="1"/>
-            <Kre:adjustment-ruler v-if="nBottomCables" target-prop="btch" v-bind:x1="width/2" v-bind:y1="height" v-bind:x2="width/2" v-bind:y2="height - bHeight*btch/(1+btch)" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="ltw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lWidth" v-bind:y2="height" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="rtw" v-bind:x1="width-rWidth" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height" fixed-end="2"/>
-            <Kre:adjustment-ruler target-prop="tth" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="tHeight" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="bth" v-bind:x1="width" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height-bHeight" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
+            <kre:adjustment-ruler v-if="nLeftCables" target-prop="ltch" v-bind:x1="0" v-bind:y1="height/2" v-bind:x2="lWidth*ltch/(1+ltch)" v-bind:y2="height/2" fixed-end="1"/>
+            <kre:adjustment-ruler v-if="nRightCables" target-prop="rtch" v-bind:x1="width" v-bind:y1="height/2" v-bind:x2="width - rWidth*rtch/(1+rtch)" v-bind:y2="height/2" fixed-end="1"/>
+            <kre:adjustment-ruler v-if="nTopCables" target-prop="ttch" v-bind:x1="width/2" v-bind:y1="0" v-bind:x2="width/2" v-bind:y2="tHeight*ttch/(1+ttch)" fixed-end="1"/>
+            <kre:adjustment-ruler v-if="nBottomCables" target-prop="btch" v-bind:x1="width/2" v-bind:y1="height" v-bind:x2="width/2" v-bind:y2="height - bHeight*btch/(1+btch)" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="ltw" v-bind:x1="0" v-bind:y1="height" v-bind:x2="lWidth" v-bind:y2="height" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="rtw" v-bind:x1="width-rWidth" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height" fixed-end="2"/>
+            <kre:adjustment-ruler target-prop="tth" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="tHeight" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="bth" v-bind:x1="width" v-bind:y1="height" v-bind:x2="width" v-bind:y2="height-bHeight" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
         </template>
         <props>
             <prop name="width" type="Number" category="Geometry" default="400" required="true"/>

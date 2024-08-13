@@ -641,7 +641,7 @@
 	                    </svg>
 	                    <connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
 	                </connection-indicator>
-	                <Kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
+	                <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
 	            </template>
 	            <template v-for="i in nPorts/nPortRows">
 	                <component v-for="j in nPortRows" v-bind:is="portClass" v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" v-bind:d="portSize*height" v-bind:name="firstPort - 1 + (i-1)*nPortRows + j" v-bind:key="firstPort - 1 + (i-1)*nPortRows + j" v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined" v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'"/>

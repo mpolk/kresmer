@@ -6,9 +6,11 @@
  * ___________________________________________________________________________
  *            Schema  for the Kresmer libraries validation
  *************************************************************************** -->
-<xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-           xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre"
+<xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="kresmer-library" xmlns="kresmer-library" xmlns:krel="kresmer-library"
+           elementFormDefault="qualified" attributeFormDefault="unqualified"
+           xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre" xmlns:kre="builtin-elements"
            >
+    <xs:import namespace="builtin-elements" schemaLocation="builtin-elements.xsd"/>
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:import namespace="v-slot" schemaLocation="v-slot.xsd"/>
     <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
@@ -25,7 +27,7 @@
         </xs:complexType>
     </xs:element>
 
-    <xs:complexType name="library">
+    <xs:complexType name="library" xmlns="kresmer-library">
         <xs:sequence>
 
             <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -289,21 +291,7 @@
                     </xs:complexType>
                 </xs:element>
 
-                <xs:element name="adjustment-ruler">
-                    <xs:complexType>
-                        <xs:attribute name="target-prop" type="xs:string" use="required"/>
-                        <xs:attributeGroup ref="line-attrs"/>
-                        <xs:attributeGroup ref="vue-attrs"/>
-                        <xs:attribute name="fixed-end">
-                            <xs:simpleType>
-                                <xs:restriction base="xs:unsignedInt">
-                                    <xs:enumeration value="1"/>
-                                    <xs:enumeration value="2"/>
-                                </xs:restriction>
-                            </xs:simpleType>
-                        </xs:attribute>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element ref="kre:adjustment-ruler"/>
 
                 <xs:element name="g">
                     <xs:complexType>
@@ -361,7 +349,7 @@
                         <xs:attributeGroup ref="presentation-attrs"/>
                         <xs:attributeGroup ref="transform-attrs"/>
                         <xs:attributeGroup ref="image-attrs"/>
-                        <xs:attribute ref="viewBox"/>
+                        <xs:attribute name="viewBox" type="four-numbers"/>
                         <xs:attribute name="patternUnits" type="coordSystem"/>
                     </xs:complexType>
                 </xs:element>
@@ -378,7 +366,7 @@
                         <xs:attribute name="markerUnits" type="coordSystem"/>
                         <xs:attribute name="markerWidth" type="xs:decimal"/>
                         <xs:attribute name="markerHeight" type="xs:decimal"/>
-                        <xs:attribute ref="viewBox"/>
+                        <xs:attribute name="viewBox" type="four-numbers"/>
                         <xs:attribute name="orient"/>
                         <xs:attribute name="refX" type="xs:decimal"/>
                         <xs:attribute name="refY" type="xs:decimal"/>
@@ -731,4 +719,5 @@
             <xs:enumeration value="right"/>
         </xs:restriction>
     </xs:simpleType>
+    
 </xs:schema>

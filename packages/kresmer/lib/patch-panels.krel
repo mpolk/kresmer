@@ -8,7 +8,7 @@
  *                        Patch-panels library
  *         This library contains graphics for various patch-panels.
 <*************************************************************************** -->
-<kresmer-library name="patch-panels" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="patch-panels" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
     <import library="multiplexers" />
 
@@ -41,7 +41,7 @@
                     <connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" 
                         v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
                 </connection-indicator>
-                <Kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
+                <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
             </template>
             <template v-for="i in nPorts/nPortRows">
                 <component v-for="j in nPortRows" v-bind:is="portClass" 

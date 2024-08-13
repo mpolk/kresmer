@@ -9,7 +9,7 @@
  *        This library contains building templates for the site plans
 <*************************************************************************** -->
 
-<kresmer-library name="buildings" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" version="2024080800">
+<kresmer-library name="buildings" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" version="2024080800">
     <import library="stdlib" />
 
     <!-- Abstract base building -->
@@ -176,8 +176,8 @@
             <text v-bind="labelPos(buildingNumberPosition)" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
-            <Kre:adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
         </template>
         <props>
             <prop name="width" type="Number" default="200"/>
@@ -231,10 +231,10 @@
             <text v-bind="labelPos(buildingNumberPosition)" class="building number" v-bind:font-size="numberFontSize">
                 {{buildingNumber}}
             </text>
-            <Kre:adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="h2" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="h2" fixed-end="1"/>
-            <Kre:adjustment-ruler target-prop="w1" v-bind:x1="0" v-bind:y1="height" v-bind:x2="w1" v-bind:y2="height" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="height" v-bind:x1="0" v-bind:y1="0" v-bind:x2="0" v-bind:y2="height" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="width" v-bind:x1="0" v-bind:y1="0" v-bind:x2="width" v-bind:y2="0" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="h2" v-bind:x1="width" v-bind:y1="0" v-bind:x2="width" v-bind:y2="h2" fixed-end="1"/>
+            <kre:adjustment-ruler target-prop="w1" v-bind:x1="0" v-bind:y1="height" v-bind:x2="w1" v-bind:y2="height" fixed-end="1"/>
         </template>
         <props>
             <prop name="height" type="Number" default="200"/>

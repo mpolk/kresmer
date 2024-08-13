@@ -5,9 +5,9 @@ To enable this capability, several breaking changes have been made. Kresmer buil
 renamed to prevent outer namespace pollution and name collisions:
 
 - Kresmer built-in elements:
-    - **connection-point** => **Kre:connection-point**
-    - **connection-indicator** => **Kre:connection-indicator**
-    - **adjustment-ruler** => **Kre:adjustment-ruler**
+    - **connection-point** => **kre:connection-point**
+    - **connection-indicator** => **kre:connection-indicator**
+    - **adjustment-ruler** => **kre:adjustment-ruler**
 
 - Kresmer built-in template functions:
     - **$streetAddress()** => **kre$streetAddress()**

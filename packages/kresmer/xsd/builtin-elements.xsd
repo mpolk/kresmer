@@ -1,0 +1,55 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="builtin-elements" targetNamespace="builtin-elements"
+    xmlns:v-bind="v-bind" xmlns:krel="kresmer-library">
+    <xs:import namespace="kresmer-library" schemaLocation="kresmer-library.xsd"/>
+    <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
+
+    <xs:element name="connection-point">
+        <xs:complexType>
+            <xs:attributeGroup ref="krel:general-attrs"/>
+            <xs:attributeGroup ref="krel:origin-attrs"/>
+            <xs:attribute name="d" type="xs:decimal" />
+            <xs:attribute ref="v-bind:d" />
+            <xs:attribute name="dir">
+                <xs:simpleType>
+                    <xs:union memberTypes="xs:decimal krel:directions"/>
+                </xs:simpleType>
+            </xs:attribute>
+            <xs:attribute ref="v-bind:dir" />
+            <xs:attribute ref="v-bind:show-tooltip"/>
+            <xs:attribute name="connection-id" />
+            <xs:attribute ref="v-bind:connection-id" />
+            <xs:attributeGroup ref="krel:presentation-attrs"/>
+            <xs:attributeGroup ref="krel:vue-attrs"/>
+            <xs:attribute name="vector-effect"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="connection-indicator">
+        <xs:complexType>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+                <xs:group ref="krel:svg-elements"/>
+                <xs:element ref="krel:slot"/>
+                <xs:element ref="krel:template"/>
+            </xs:choice>
+            <xs:attribute ref="v-bind:connection-id" use="required"/>
+            <xs:attributeGroup ref="krel:vue-attrs"/>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="adjustment-ruler">
+        <xs:complexType>
+            <xs:attribute name="target-prop" type="xs:string" use="required"/>
+            <xs:attributeGroup ref="krel:line-attrs"/>
+            <xs:attributeGroup ref="krel:vue-attrs"/>
+            <xs:attribute name="fixed-end">
+                <xs:simpleType>
+                    <xs:restriction base="xs:unsignedInt">
+                        <xs:enumeration value="1"/>
+                        <xs:enumeration value="2"/>
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:attribute>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

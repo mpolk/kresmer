@@ -9,7 +9,7 @@
  *       This sub-library contains various network link classes
 <*************************************************************************** -->
 
-<kresmer-library name="std-links" xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="std-links" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
     <!-- *********************************************** Links ********************************************************* -->
 
