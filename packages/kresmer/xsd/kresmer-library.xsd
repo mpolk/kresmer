@@ -258,26 +258,7 @@
                     </xs:complexType>
                 </xs:element>
 
-                <xs:element name="connection-point" minOccurs="0">
-                    <xs:complexType>
-                        <xs:attributeGroup ref="general-attrs"/>
-                        <xs:attributeGroup ref="origin-attrs"/>
-                        <xs:attribute name="d" type="xs:decimal" />
-                        <xs:attribute ref="v-bind:d" />
-                        <xs:attribute name="dir">
-                            <xs:simpleType>
-                                <xs:union memberTypes="xs:decimal directions"/>
-                            </xs:simpleType>
-                        </xs:attribute>
-                        <xs:attribute ref="v-bind:dir" />
-                        <xs:attribute ref="v-bind:show-tooltip"/>
-                        <xs:attribute name="connection-id" />
-                        <xs:attribute ref="v-bind:connection-id" />
-                        <xs:attributeGroup ref="presentation-attrs"/>
-                        <xs:attributeGroup ref="vue-attrs"/>
-                        <xs:attribute name="vector-effect"/>
-                    </xs:complexType>
-                </xs:element>
+                <xs:element ref="kre:connection-point" minOccurs="0"/>
 
                 <xs:element ref="kre:connection-indicator" minOccurs="0"/>
 

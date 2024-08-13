@@ -28,14 +28,14 @@
                     {{caption}}
                 </text>
             </template>
-            <connection-point v-bind:name="`${connIdPrefix ? connIdPrefix + ':' : ''}c`" v-bind="cableCPPos" connection-id="out:*"/>
+            <kre:connection-point v-bind:name="`${connIdPrefix ? connIdPrefix + ':' : ''}c`" v-bind="cableCPPos" connection-id="out:*"/>
             <kre:connection-indicator v-for="i in nFibers" v-bind:connection-id="connID(i)">
                 <rect v-bind="cellBgPos(i)" class="fiber-label background" />
                 <line v-if="i &lt; nFibers" v-bind="cellSepPos(i)" v-bind:stroke="strokeColor"/>
                 <text v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize"
                       v-bind:transform="labelTransform" v-bind:transform-origin="`${cellCenter(i).x} ${cellCenter(i).y}`"
                       class="fiber-label">{{labels &amp;&amp; labels[i] ? `${i}: ${labels[i]}` : i}}</text>
-                <connection-point v-bind:name="connID(i)" v-bind="cellCPPos(i)" v-bind:connection-id="connID(i)"/>
+                <kre:connection-point v-bind:name="connID(i)" v-bind="cellCPPos(i)" v-bind:connection-id="connID(i)"/>
             </kre:connection-indicator>
             <kre:adjustment-ruler target-prop="captionHeight" v-bind="adjRulerPos" fixed-end="1"/>
         </template>

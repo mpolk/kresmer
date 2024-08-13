@@ -16,7 +16,7 @@
                 v-bind:fill="fill" v-bind:stroke="strokeColor" v-bind:stroke-width="strokeWidth" stroke-opacity="0.5"
                 v-bind:rx="cornerRadius"
                 />
-            <connection-point v-for="({x, y, dir}, name) in connectionPoints" v-bind="{name, x, y, dir, d: 16}"/>
+            <kre:connection-point v-for="({x, y, dir}, name) in connectionPoints" v-bind="{name, x, y, dir, d: 16}"/>
             <template v-if="caption">
                 <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)"><text v-bind="captionParams">{{caption}}</text></a>
                 <text v-else="" class="caption" v-bind="captionParams">{{caption}}</text>

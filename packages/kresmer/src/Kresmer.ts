@@ -47,30 +47,15 @@ import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
  */
 export default class Kresmer extends KresmerEventHooks {
 
-    constructor(mountPoint: string|HTMLElement, options?: {
-        mountingWidth?: number | string,
-        mountingHeight?: number | string,
-        logicalWidth?: number,
-        logicalHeight?: number,
-        backgroundImage?: BackgroundImageData,
-        backgroundColor?: string,
-        isEditable?: boolean,
-        showRulers?: boolean,
-        showGrid?: boolean,
-        snapToGrid?: boolean,
-        snappingGranularity?: number,
-        saveDynamicPropValuesWithDrawing?: boolean,
-        embedLibDataInDrawing?: boolean,
-        libDataPriority?: LibDataPriority,
-        autoAlignVertices?: boolean,
-        animateComponentDragging?: boolean,
-        animateLinkBundleDragging?: boolean,
-        hrefBase?: string,
-        streetAddressFormat?: StreetAddressFormat,
-        uiLanguage?: string,
-    }) {
+    constructor(mountPoint: string|Element, options?: KresmerInitOptions);
+    constructor(modelInitializer: KresmerModelInitializer, options?: KresmerInitOptions);
+    constructor(mountPointOrInitializer: string|Element|KresmerModelInitializer, options?: KresmerInitOptions)
+    {
         super();
-        this.mountPoint = typeof mountPoint === "string" ? document.querySelector(mountPoint)! : mountPoint;
+        if (typeof mountPointOrInitializer === "string")
+            this.mountPoint = document.querySelector(mountPointOrInitializer)!;
+        else if (mountPointOrInitializer instanceof Element)
+            this.mountPoint = mountPointOrInitializer;
         options?.mountingWidth && (this.mountingBox.width = options.mountingWidth);
         options?.mountingHeight && (this.mountingBox.height = options.mountingHeight);
         options?.logicalWidth && (this.logicalBox.width = options.logicalWidth);
@@ -99,7 +84,7 @@ export default class Kresmer extends KresmerEventHooks {
         // register the components used to construct the drawing
         Kresmer._registerGlobals(this.appKresmer);
         // at last mount the main vue
-        this.vueKresmer = this.appKresmer.mount(mountPoint) as InstanceType<typeof KresmerVue>;
+        this.vueKresmer = this.appKresmer.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
         // and somehow awake its scaling mechanism (workaround for something beyond understanding)
         this.zoomFactor = 1;
     }//ctor
@@ -112,7 +97,7 @@ export default class Kresmer extends KresmerEventHooks {
     static _registerGlobals(app: App)
     {
         app
-          .component("ConnectionPoint", ConnectionPointVue)
+          .component("kre:connection-point", ConnectionPointVue)
           .component("kre:connection-indicator", ConnectionIndicatorVue)
           .component("kre:adjustment-ruler", AdjustmentRulerVue)
           ;
@@ -285,7 +270,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** A symbolic key for the editability flag injection */
     static readonly ikIsEditable = Symbol() as InjectionKey<boolean>;
     /** The element Kresmer was mounted on */
-    readonly mountPoint: HTMLElement;
+    readonly mountPoint?: Element;
 
     /** Determines if components and link vertices should snap to the grid when being dragged and dropped */
     snapToGrid = true;
@@ -1432,6 +1417,35 @@ export const kresmerPlugin = {
 
 
 const UNNAMED_DRAWING = "?unnamed?";
+
+export type KresmerInitOptions = {
+    mountingWidth?: number | string,
+    mountingHeight?: number | string,
+    logicalWidth?: number,
+    logicalHeight?: number,
+    backgroundImage?: BackgroundImageData,
+    backgroundColor?: string,
+    isEditable?: boolean,
+    showRulers?: boolean,
+    showGrid?: boolean,
+    snapToGrid?: boolean,
+    snappingGranularity?: number,
+    saveDynamicPropValuesWithDrawing?: boolean,
+    embedLibDataInDrawing?: boolean,
+    libDataPriority?: LibDataPriority,
+    autoAlignVertices?: boolean,
+    animateComponentDragging?: boolean,
+    animateLinkBundleDragging?: boolean,
+    hrefBase?: string,
+    streetAddressFormat?: StreetAddressFormat,
+    uiLanguage?: string,
+}//KresmerInitOptions
+
+export class KresmerModelInitializer {
+    constructor(
+        readonly app: App,
+    ) {}
+}//KresmerModelInitializer
 
 export type DrawingProps = {
     /** The drawing name */
