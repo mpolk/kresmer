@@ -301,7 +301,7 @@
         <!-- Links -->
         <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.syntheticProps" :key="`link${link.id}`" 
             :model="link" />
-        <NetworkLinkBlankVue v-if="controller.newLinkBlank" :model="controller.newLinkBlank" />
+        <NetworkLinkBlankVue v-if="controller.newLinkBlank.value" :model="controller.newLinkBlank.value" />
     </svg>
 </template>
 

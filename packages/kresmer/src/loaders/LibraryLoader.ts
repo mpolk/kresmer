@@ -70,7 +70,7 @@ export default class LibraryLoader
             } else if (element instanceof DefsLibNode) {
                 if (!this.kresmer.globalDefs.has(element.name) || this.kresmer.globalDefs.get(element.name)!.version < element.version) {
                     this.kresmer.globalDefs.set(element.name, element);
-                    this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.globalDefs.size - 1}`, {template: element.data});
+                    this.kresmer.app.component(`GlobalDefs${this.kresmer.globalDefs.size - 1}`, {template: element.data});
                 }//if
 
             } else if (element instanceof StyleLibNode) {
@@ -158,7 +158,7 @@ export default class LibraryLoader
             } else if (element instanceof DefsLibNode) {
                 if (!this.kresmer.globalDefs.has(element.name) || this.kresmer.globalDefs.get(element.name)!.version < element.version) {
                     this.kresmer.globalDefs.set(element.name, element);
-                    this.kresmer.appKresmer.component(`GlobalDefs${this.kresmer.globalDefs.size - 1}`, {template: element.data});
+                    this.kresmer.app.component(`GlobalDefs${this.kresmer.globalDefs.size - 1}`, {template: element.data});
                 }//if
 
             } else if (element instanceof StyleLibNode) {

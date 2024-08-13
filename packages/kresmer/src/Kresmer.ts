@@ -80,15 +80,17 @@ export default class Kresmer extends KresmerEventHooks {
         // if we received the mount-point from the calling site,
         // we create and mount the Kresmer app ourselves
         if (this.mountPoint) {
-            this.appKresmer = createApp(KresmerVue, {
+            this.app = createApp(KresmerVue, {
                 controller: this,
             });
             // register the components used to construct the drawing
-            Kresmer._registerGlobals(this.appKresmer);
+            Kresmer._registerGlobals(this.app);
             // at last mount the main vue
-            this.vueKresmer = this.appKresmer.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
+            const vueKresmer = this.app.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
+            this.rootSVG = vueKresmer.rootSVG!;
         } else if (mountPointOrInitializer instanceof KresmerModelInitializer) {
-            this.appKresmer = mountPointOrInitializer.app;
+            this.app = mountPointOrInitializer.app;
+            this.rootSVG = mountPointOrInitializer.rootSVG;
         } else {
             throw new KresmerException("Invalid first Kresmer constructor parameter");
         }//if
@@ -113,9 +115,7 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     /** Kresmer's vue-component Application */
-    readonly appKresmer: App;
-    /** Kresmer's vue-component instance itself */
-    private readonly vueKresmer: InstanceType<typeof KresmerVue>;
+    readonly app: App;
     /** A symbolic key for the Kresmer instance injection */
     static readonly ikKresmer = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
@@ -364,13 +364,6 @@ export default class Kresmer extends KresmerEventHooks {
         return !this.links.size && !this.networkComponents.size;
     }//get isEmpty
 
-    /** Forces update on the underlying Vue-component */
-    public forceUpdate(): Kresmer
-    {
-        this.vueKresmer.$forceUpdate();
-        return this;
-    }//forceUpdate
-
     /** A list of all Component Classes, registered by Kresmer */
     public readonly registeredComponentClasses = new Map<string, NetworkComponentClass>();
     /** Returns a list of all Component Classes, registered by Kresmer */
@@ -401,7 +394,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // Register a Vue-component for the class itself
         const injectedTemplateFunctions = this.injectedTemplateFunctions;
-        this.appKresmer.component(componentClass.vueName, 
+        this.app.component(componentClass.vueName, 
         {
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             setup(props: Record<string, Prop<unknown>>) {
@@ -474,7 +467,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // also register class's svg-definitions
         if (componentClass.defs) {
-            this.appKresmer.component(componentClass.defsVueName, 
+            this.app.component(componentClass.defsVueName, 
             {
                 template: componentClass.defs,
             })
@@ -503,7 +496,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // Register class's svg-definitions
         if (linkClass.defs) {
-            this.appKresmer.component(linkClass.defsVueName, 
+            this.app.component(linkClass.defsVueName, 
             {
                 template: linkClass.defs,
             })
@@ -542,7 +535,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         // Register class's svg-definitions
         if (areaClass.defs) {
-            this.appKresmer.component(areaClass.defsVueName, 
+            this.app.component(areaClass.defsVueName, 
             {
                 template: areaClass.defs,
             })
@@ -930,10 +923,7 @@ ${svg.outerHTML}
   
 
     /** Returns the root SVG element */
-    public get rootSVG(): SVGSVGElement
-    {
-        return this.vueKresmer.rootSVG!;
-    }//rootSVG
+    readonly rootSVG: SVGSVGElement
 
 
     /** Returns the whole drawing bounding rectangle */
@@ -1045,7 +1035,7 @@ ${svg.outerHTML}
     }//onElementRename
 
     /** A blank for a new link creation */
-    public newLinkBlank?: NetworkLinkBlank;
+    public newLinkBlank: {value: NetworkLinkBlank|undefined} = reactive({value: undefined});
 
     /**
      * Completes the new link creation (for private use only)
@@ -1055,16 +1045,15 @@ ${svg.outerHTML}
     {
         const to = toConnectionPoint ? 
             {conn: toConnectionPoint} :
-            {pos: {...this.newLinkBlank!.end}};
-        const _class = this.newLinkBlank!._class;
+            {pos: {...this.newLinkBlank.value!.end}};
+        const _class = this.newLinkBlank.value!._class;
         const newLink = _class instanceof LinkBundleClass ?  
-            new LinkBundle(this, _class, {from: this.newLinkBlank!.start, to}) : 
-            new NetworkLink(this, _class, {from: this.newLinkBlank!.start, to});
+            new LinkBundle(this, _class, {from: this.newLinkBlank.value!.start, to}) : 
+            new NetworkLink(this, _class, {from: this.newLinkBlank.value!.start, to});
         newLink.initVertices();
         const op = newLink instanceof LinkBundle ? new CreateBundleOp(newLink) : new AddLinkOp(newLink);
         this.undoStack.execAndCommit(op);
-        this.newLinkBlank = undefined;
-        this.vueKresmer.$forceUpdate();
+        this.newLinkBlank.value = undefined;
     }//_completeLinkCreation
 
     /**
@@ -1072,9 +1061,8 @@ ${svg.outerHTML}
      */
     public _abortLinkCreation()
     {
-        if (this.newLinkBlank) {
-            this.newLinkBlank = undefined;
-            this.vueKresmer.$forceUpdate();
+        if (this.newLinkBlank.value) {
+            this.newLinkBlank.value = undefined;
         }//if
     }//_abortLinkCreation
 
@@ -1245,8 +1233,7 @@ ${svg.outerHTML}
          */
         startLinkCreation: (linkClass: NetworkLinkClass, from: LinkVertexInitParams) =>
         {
-            this.newLinkBlank = new NetworkLinkBlank(this, linkClass, from);
-            this.vueKresmer.$forceUpdate();
+            this.newLinkBlank.value = new NetworkLinkBlank(this, linkClass, from);
         },//startLinkCreation
 
         /**
@@ -1452,6 +1439,7 @@ export type KresmerInitOptions = {
 export class KresmerModelInitializer {
     constructor(
         readonly app: App,
+        readonly rootSVG: SVGSVGElement,
     ) {}
 }//KresmerModelInitializer
 
