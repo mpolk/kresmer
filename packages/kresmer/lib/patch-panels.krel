@@ -18,7 +18,7 @@
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
             <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
-                <connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
+                <kre:connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
                         <svg class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}"
                         v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
                         v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight"
@@ -40,7 +40,7 @@
                     </svg>
                     <connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" 
                         v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
-                </connection-indicator>
+                </kre:connection-indicator>
                 <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
             </template>
             <template v-for="i in nPorts/nPortRows">
