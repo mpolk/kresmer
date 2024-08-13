@@ -76,15 +76,23 @@ export default class Kresmer extends KresmerEventHooks {
         options?.backgroundImage && (this.backgroundImage.copy(options.backgroundImage));
         options?.backgroundColor && (this.backgroundColor = options.backgroundColor);
         options?.uiLanguage && (this.uiLanguage = options.uiLanguage);
-            
-        this.appKresmer = createApp(KresmerVue, {
-            controller: this,
-        });
+        
+        // if we received the mount-point from the calling site,
+        // we create and mount the Kresmer app ourselves
+        if (this.mountPoint) {
+            this.appKresmer = createApp(KresmerVue, {
+                controller: this,
+            });
+            // register the components used to construct the drawing
+            Kresmer._registerGlobals(this.appKresmer);
+            // at last mount the main vue
+            this.vueKresmer = this.appKresmer.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
+        } else if (mountPointOrInitializer instanceof KresmerModelInitializer) {
+            this.appKresmer = mountPointOrInitializer.app;
+        } else {
+            throw new KresmerException("Invalid first Kresmer constructor parameter");
+        }//if
 
-        // register the components used to construct the drawing
-        Kresmer._registerGlobals(this.appKresmer);
-        // at last mount the main vue
-        this.vueKresmer = this.appKresmer.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
         // and somehow awake its scaling mechanism (workaround for something beyond understanding)
         this.zoomFactor = 1;
     }//ctor
@@ -270,7 +278,7 @@ export default class Kresmer extends KresmerEventHooks {
     /** A symbolic key for the editability flag injection */
     static readonly ikIsEditable = Symbol() as InjectionKey<boolean>;
     /** The element Kresmer was mounted on */
-    readonly mountPoint?: Element;
+    mountPoint!: Element;
 
     /** Determines if components and link vertices should snap to the grid when being dragged and dropped */
     snapToGrid = true;
