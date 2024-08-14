@@ -115,6 +115,8 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Kresmer's vue-component Application */
     readonly app: App;
+    /** A symbolic key for the current App injection */
+    static readonly ikApp = Symbol() as InjectionKey<App>;
     /** A symbolic key for the Kresmer instance injection */
     static readonly ikKresmer = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
@@ -1405,6 +1407,7 @@ ${svg.outerHTML}
  */
 export const kresmerPlugin = {
     install(app: App) {
+        app.provide(Kresmer.ikApp, app);
         Kresmer._registerGlobals(app);
     }//install
 }//kresmerPlugin

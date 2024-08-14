@@ -7,7 +7,7 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide, watch, nextTick, StyleValue, App } from 'vue';
+    import { PropType, ref, computed, provide, watch, nextTick, StyleValue, inject } from 'vue';
     import Kresmer, {BackgroundImageData, KresmerException, KresmerInitOptions, KresmerModelInitializer, LibDataPriority, StreetAddressFormat} from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
@@ -28,7 +28,6 @@
 
     const props = defineProps({
         model: {type: Object as PropType<Kresmer>},
-        app: {type: Object as PropType<App>},
 
         mountingWidth: {type: [Number, String]},
         mountingHeight: {type: [Number, String]},
@@ -52,14 +51,16 @@
         uiLanguage: {type: String},
     });
 
-    if (!props.model && !props.app) {
-        throw new KresmerException("Kresmer Vue-component must be given either \"model\" or \"app\" prop");
+    const app = inject(Kresmer.ikApp);
+
+    if (!props.model && !app) {
+        throw new KresmerException("Kresmer Vue-component must be either given \"model\" prop or provided with \"app\" injected value");
     }//if
 
     const rootSVG = ref<SVGSVGElement>()!;
 
     const model = props.model || new Kresmer(
-        new KresmerModelInitializer(props.app!, rootSVG.value!),
+        new KresmerModelInitializer(app!, rootSVG.value!),
         {
             mountingWidth: props.mountingWidth,
             mountingHeight: props.mountingHeight,
@@ -83,8 +84,6 @@
             uiLanguage: props.uiLanguage,
         } as KresmerInitOptions
     );//autoCreatedModel
-
-    // const model = computed(() => (props.model || autoCreatedModel) as Kresmer);
 
     // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikKresmer, model);
