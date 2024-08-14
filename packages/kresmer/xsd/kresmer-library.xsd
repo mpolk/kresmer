@@ -6,10 +6,11 @@
  * ___________________________________________________________________________
  *            Schema  for the Kresmer libraries validation
  *************************************************************************** -->
-<xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="kresmer-library" xmlns="kresmer-library" xmlns:krel="kresmer-library"
-           elementFormDefault="qualified" attributeFormDefault="unqualified"
-           xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre" xmlns:kre="builtin-elements"
-           >
+<xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="kresmer-library" xmlns="kresmer-library"
+    elementFormDefault="qualified" attributeFormDefault="unqualified"
+    xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre" xmlns:kre="builtin-elements"
+    >
     <xs:import namespace="builtin-elements" schemaLocation="builtin-elements.xsd"/>
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:import namespace="v-slot" schemaLocation="v-slot.xsd"/>

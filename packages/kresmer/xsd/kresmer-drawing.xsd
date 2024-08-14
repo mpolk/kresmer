@@ -6,7 +6,10 @@
  * ___________________________________________________________________________
  *              Schema  for the Kresmer drawings validation
  *************************************************************************** -->
- <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+ <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
+    targetNamespace="kresmer-library" xmlns="kresmer-library"
+    elementFormDefault="qualified" attributeFormDefault="unqualified"
+    >
     <xs:include schemaLocation="kresmer-library.xsd"/>
 
     <xs:element name="kresmer-drawing">

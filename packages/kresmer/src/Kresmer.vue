@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 <script lang="ts">
     import { PropType, ref, computed, provide, watch, nextTick, StyleValue } from 'vue';
-    import Kresmer from './Kresmer';
+    import Kresmer, {BackgroundImageData, LibDataPriority, StreetAddressFormat} from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
@@ -28,6 +28,27 @@
 
     const props = defineProps({
         model: {type: Object as PropType<Kresmer>, required: true},
+
+        mountingWidth: {type: [Number, String]},
+        mountingHeight: {type: [Number, String]},
+        logicalWidth: {type: Number},
+        logicalHeight: {type: Number},
+        backgroundImage: {type: Object as PropType<typeof BackgroundImageData>},
+        backgroundColor: {type: String},
+        isEditable: {type: Boolean},
+        showRulers: {type: Boolean},
+        showGrid: {type: Boolean},
+        snapToGrid: {type: Boolean},
+        snappingGranularity: {type: Number},
+        saveDynamicPropValuesWithDrawing: {type: Boolean},
+        embedLibDataInDrawing: {type: Boolean},
+        libDataPriority: {type: Object as PropType<typeof LibDataPriority>},
+        autoAlignVertices: {type: Boolean},
+        animateComponentDragging: {type: Boolean},
+        animateLinkBundleDragging: {type: Boolean},
+        hrefBase: {type: String},
+        streetAddressFormat: {type: Object as PropType<typeof StreetAddressFormat>},
+        uiLanguage: {type: String},
     });
 
     // eslint-disable-next-line vue/no-setup-props-destructure
