@@ -8,7 +8,7 @@
  *                        DLink Networks library
  *      This library contains graphics for D-Link devices
 <*************************************************************************** -->
-<kresmer-library name="D-Link" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="D-Link" xmlns="kresmer-library" xmlns:Kre="kresmer-user-defined-elements" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="switches" />
 
     <component-class name="DLinkSwitchBody" category=".switch-parts">

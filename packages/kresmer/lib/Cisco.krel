@@ -9,7 +9,7 @@
  *         This library contains graphics for Cisco devices
 <*************************************************************************** -->
 
-<kresmer-library name="Cisco" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="Cisco" xmlns="kresmer-library" xmlns:Kre="kresmer-user-defined-elements" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="switches" />
 
     <component-class name="Catalyst" category="Switches/Cisco">

@@ -9,12 +9,14 @@
 <xs:schema version="1.1" xmlns:xs="http://www.w3.org/2001/XMLSchema" 
     targetNamespace="kresmer-library" xmlns="kresmer-library"
     elementFormDefault="qualified" attributeFormDefault="unqualified"
-    xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" xmlns:Kre="Kre" xmlns:kre="kresmer-builtin-elements"
+    xmlns:v-bind="v-bind" xmlns:v-slot="v-slot" 
+    xmlns:Kre="kresmer-user-defined-elements" 
+    xmlns:kre="kresmer-builtin-elements"
     >
     <xs:import namespace="kresmer-builtin-elements" schemaLocation="kresmer-builtin-elements.xsd"/>
+    <xs:import namespace="kresmer-user-defined-elements" schemaLocation="kresmer-user-defined-elements.xsd"/>
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
     <xs:import namespace="v-slot" schemaLocation="v-slot.xsd"/>
-    <xs:import namespace="Kre" schemaLocation="Kre.xsd"/>
 
     <!-- Library itself (the root element) -->
     <xs:element name="kresmer-library">
@@ -34,7 +36,7 @@
             <xs:choice minOccurs="0" maxOccurs="unbounded">
                 <xs:element name="defs">
                     <xs:complexType mixed="true">
-                        <xs:group ref="svg-elements"></xs:group>
+                        <xs:group ref="svg-elements"/>
                         <xs:attribute name="name" use="required"/>
                         <xs:attribute name="version" />
                     </xs:complexType>

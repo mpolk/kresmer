@@ -4,7 +4,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * ___________________________________________________________________________
- *              Schema  for the Kresmer kresmer-builtin-elements validation
+ *            Schema for the Kresmer builtin elements validation
  *************************************************************************** -->
  <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
     xmlns="kresmer-builtin-elements" targetNamespace="kresmer-builtin-elements"
