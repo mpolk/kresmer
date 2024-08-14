@@ -14,7 +14,7 @@
 <!-- Define some little things to make the life less hard -->
 <!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
 
-<kresmer-library name="stdlib" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="stdlib" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="std-graphics" />
     <import library="std-ports" />
     <import library="std-links" />

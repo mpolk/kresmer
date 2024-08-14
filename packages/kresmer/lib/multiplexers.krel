@@ -9,7 +9,7 @@
   *        This library contains graphics for various multiplexers.
 <*************************************************************************** -->
 
-<kresmer-library name="multiplexers" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="multiplexers" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
     <component-class name="OpticalMultiplexer" category=".optical-equipment" version="2024070300">

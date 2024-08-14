@@ -9,7 +9,7 @@
  *      This sub-library contains network ports and their parts
 <*************************************************************************** -->
 
-<kresmer-library name="std-ports" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
+<kresmer-library name="std-ports" xmlns="kresmer-library" xmlns:Kre="Kre" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
 
     <!-- Switch or router port -->
     <component-class name="MultiFiberPort" category=".port-abstractions">

@@ -4,10 +4,10 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * ___________________________________________________________________________
- *              Schema  for the Kresmer builtin-elements validation
+ *              Schema  for the Kresmer kresmer-builtin-elements validation
  *************************************************************************** -->
  <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" 
-    xmlns="builtin-elements" targetNamespace="builtin-elements"
+    xmlns="kresmer-builtin-elements" targetNamespace="kresmer-builtin-elements"
     xmlns:v-bind="v-bind" xmlns:krel="kresmer-library">
     <xs:import namespace="kresmer-library" schemaLocation="kresmer-library.xsd"/>
     <xs:import namespace="v-bind" schemaLocation="v-bind.xsd"/>
