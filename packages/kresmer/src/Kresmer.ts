@@ -47,7 +47,8 @@ import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
  */
 export default class Kresmer extends KresmerEventHooks {
 
-    constructor(mountPoint: string|Element, options?: KresmerInitOptions);
+    constructor(mountPoint: string, options?: KresmerInitOptions);
+    constructor(mountPoint: Element, options?: KresmerInitOptions);
     constructor(modelInitializer: KresmerModelInitializer, options?: KresmerInitOptions);
     constructor(mountPointOrInitializer: string|Element|KresmerModelInitializer, options?: KresmerInitOptions)
     {

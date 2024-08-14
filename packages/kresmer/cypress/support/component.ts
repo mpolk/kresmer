@@ -60,8 +60,8 @@ Cypress.Commands.add('mount', (params) => {
         console.debug("Vue error caught!");
         lastException = error;
     };
-    $kresmer.appKresmer.config.warnHandler = onVueError;
-    $kresmer.appKresmer.config.errorHandler = onVueError;
+    $kresmer.app.config.warnHandler = onVueError;
+    $kresmer.app.config.errorHandler = onVueError;
 
     const mountedKresmer = CypressVue.mount($kresmer);
     return mountedKresmer.task("loadLibraries").then(libs => {
