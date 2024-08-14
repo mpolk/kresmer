@@ -58,7 +58,7 @@
 
     const rootSVG = ref<SVGSVGElement>()!;
 
-    const autoCreatedModel = props.model ? undefined : new Kresmer(
+    const model = props.model || new Kresmer(
         new KresmerModelInitializer(props.app!, rootSVG.value!),
         {
             mountingWidth: props.mountingWidth,
@@ -84,16 +84,16 @@
         } as KresmerInitOptions
     );//autoCreatedModel
 
-    const model = computed(() => (props.model || autoCreatedModel) as Kresmer);
+    // const model = computed(() => (props.model || autoCreatedModel) as Kresmer);
 
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikKresmer, model.value);
+    provide(Kresmer.ikKresmer, model);
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikIsEditable, model.value.isEditable);
+    provide(Kresmer.ikIsEditable, model.isEditable);
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikSnapToGrid, model.value.snapToGrid);
+    provide(Kresmer.ikSnapToGrid, model.snapToGrid);
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikSnappingGranularity, model.value.snappingGranularity);
+    provide(Kresmer.ikSnappingGranularity, model.snappingGranularity);
 
     function zoomed(size: string|number)
     {
@@ -102,12 +102,12 @@
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * model.value.zoomFactor}${matches[2]}`;
+        return `${n * model.zoomFactor}${matches[2]}`;
     }//zoomed
 
     function zoomedOffset(size: string|number)
     {
-        if (model.value.zoomFactor >= 1)
+        if (model.zoomFactor >= 1)
             return 0;
         const matches = size.toString().match(/^([0-9]+(?:\.[0-9]*)?)(.*)$/);
         if (!matches)
@@ -115,18 +115,18 @@
 
         const n = parseFloat(matches[1]);
         const units = matches[2] || "px";
-        return `${Math.round(n * 0.5 * (1 - model.value.zoomFactor))}${units}`;
+        return `${Math.round(n * 0.5 * (1 - model.zoomFactor))}${units}`;
     }//zoomedOffset
 
     const rootSVGStyle = computed(() => {
         let style: Record<string, unknown> = {
-            marginLeft: zoomedOffset(model.value.mountingWidth), 
-            marginTop: zoomedOffset(model.value.mountingHeight),
-            backgroundColor: model.value.backgroundColor,
+            marginLeft: zoomedOffset(model.mountingWidth), 
+            marginTop: zoomedOffset(model.mountingHeight),
+            backgroundColor: model.backgroundColor,
         }; 
 
-        if (model.value.backgroundImage.nonEmpty) {
-            style = {...style, ...model.value.backgroundImage.cssAttr()};
+        if (model.backgroundImage.nonEmpty) {
+            style = {...style, ...model.backgroundImage.cssAttr()};
         }//if
 
         return style as StyleValue;
@@ -138,12 +138,12 @@
 
     const mountingDims = computed(() => {
         return {
-            width: zoomed(model.value.mountingWidth),
-            height: zoomed(model.value.mountingHeight)
+            width: zoomed(model.mountingWidth),
+            height: zoomed(model.mountingHeight)
         }
     });
 
-    const viewBox = computed(() => `0 0 ${model.value.logicalWidth} ${model.value.logicalHeight}`);
+    const viewBox = computed(() => `0 0 ${model.logicalWidth} ${model.logicalHeight}`);
 
     const drawingOrigin = {x: 0, y: 0};
     provide(Kresmer.ikDrawingOrigin, drawingOrigin);
@@ -157,16 +157,16 @@
     }, {immediate: true});
 
     const rulerBox = computed(() => {
-        model.value.mountingHeight;
-        model.value.mountingWidth;
-        model.value.zoomFactor;
+        model.mountingHeight;
+        model.mountingWidth;
+        model.zoomFactor;
         const drawingWidth = rootSVG.value!.width.baseVal.value;
         const drawingHeight = rootSVG.value!.height.baseVal.value;
-        const aspectRatio = drawingWidth / drawingHeight * model.value.logicalHeight / model.value.logicalWidth;
+        const aspectRatio = drawingWidth / drawingHeight * model.logicalHeight / model.logicalWidth;
         const [x, width] = (aspectRatio <= 1 ? [0, 1] : [(1 - aspectRatio) / 2, aspectRatio])
-            .map(x => x * model.value.logicalWidth);
+            .map(x => x * model.logicalWidth);
         const [y, height] = (aspectRatio >= 1 ? [0, 1] : [(1 - 1/aspectRatio) / 2, 1/aspectRatio])
-            .map(y => y * model.value.logicalHeight);
+            .map(y => y * model.logicalHeight);
         return {x, y, width, height};
     });
 
@@ -182,12 +182,12 @@
     const tensMarkingLength = 5, fiftiesMarkingLength = 8, hundredsMarkingLength = 12;
 
     const styles = computed(() => {
-        const styles = [...Array.from(model.value.globalStyles.values()).map(({data}) => data), ...model.value.classStyles];
+        const styles = [...Array.from(model.globalStyles.values()).map(({data}) => data), ...model.classStyles];
         return `<style>${styles.map(style => style.toResult().css).join(" ")}</style>`;
     });
 
     const defs = computed(() => {
-        return Array.from(model.value.globalDefs.values()).map(({data}) => data);
+        return Array.from(model.globalDefs.values()).map(({data}) => data);
     });
 
 
@@ -199,37 +199,37 @@
             event.preventDefault();
         }//if
 
-        model.value.deselectAllElements();
-        model.value.resetAllComponentMode();
-        model.value.emit("mode-reset");
+        model.deselectAllElements();
+        model.resetAllComponentMode();
+        model.emit("mode-reset");
     }//onMouseDownOnCanvas
 
     function onCanvasRightClick(event: MouseEvent)
     {
-        model.value.emit("canvas-right-click", event);
+        model.emit("canvas-right-click", event);
     }//onCanvasRightClick
 
     function onMouseWheel(event: WheelEvent)
     {
-        model.value._onMouseWheel(event);
+        model._onMouseWheel(event);
     }//onMouseWheel
 
     function onMouseEnter()
     {
-        model.value.emit("drawing-mouse-enter");
+        model.emit("drawing-mouse-enter");
     }//onMouseEnter
 
     function onMouseMove()
     {
-        model.value.highlightedLinks.forEach(link => link.onMouseLeave());
+        model.highlightedLinks.forEach(link => link.onMouseLeave());
     }//onMouseMove
 
     function onMouseLeave()
     {
-        model.value.emit("drawing-mouse-leave");
+        model.emit("drawing-mouse-leave");
     }//onMouseLeave
 
-    defineExpose({rootSVG});
+    defineExpose({rootSVG, model});
 </script>
 
 <template>
