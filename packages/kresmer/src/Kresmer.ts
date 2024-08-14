@@ -80,9 +80,7 @@ export default class Kresmer extends KresmerEventHooks {
         // if we received the mount-point from the calling site,
         // we create and mount the Kresmer app ourselves
         if (this.mountPoint) {
-            this.app = createApp(KresmerVue, {
-                controller: this,
-            });
+            this.app = createApp(KresmerVue, {model: this});
             // register the components used to construct the drawing
             Kresmer._registerGlobals(this.app);
             // at last mount the main vue

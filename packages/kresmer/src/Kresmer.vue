@@ -27,17 +27,17 @@
 <script setup lang="ts">
 
     const props = defineProps({
-        controller: {type: Object as PropType<Kresmer>, required: true},
+        model: {type: Object as PropType<Kresmer>, required: true},
     });
 
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikKresmer, props.controller);
+    provide(Kresmer.ikKresmer, props.model);
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikIsEditable, props.controller.isEditable);
+    provide(Kresmer.ikIsEditable, props.model.isEditable);
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikSnapToGrid, props.controller.snapToGrid);
+    provide(Kresmer.ikSnapToGrid, props.model.snapToGrid);
     // eslint-disable-next-line vue/no-setup-props-destructure
-    provide(Kresmer.ikSnappingGranularity, props.controller.snappingGranularity);
+    provide(Kresmer.ikSnappingGranularity, props.model.snappingGranularity);
     const rootSVG = ref<SVGSVGElement>()!;
 
     function zoomed(size: string|number)
@@ -47,12 +47,12 @@
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * props.controller.zoomFactor}${matches[2]}`;
+        return `${n * props.model.zoomFactor}${matches[2]}`;
     }//zoomed
 
     function zoomedOffset(size: string|number)
     {
-        if (props.controller.zoomFactor >= 1)
+        if (props.model.zoomFactor >= 1)
             return 0;
         const matches = size.toString().match(/^([0-9]+(?:\.[0-9]*)?)(.*)$/);
         if (!matches)
@@ -60,18 +60,18 @@
 
         const n = parseFloat(matches[1]);
         const units = matches[2] || "px";
-        return `${Math.round(n * 0.5 * (1 - props.controller.zoomFactor))}${units}`;
+        return `${Math.round(n * 0.5 * (1 - props.model.zoomFactor))}${units}`;
     }//zoomedOffset
 
     const rootSVGStyle = computed(() => {
         let style: Record<string, unknown> = {
-            marginLeft: zoomedOffset(props.controller.mountingWidth), 
-            marginTop: zoomedOffset(props.controller.mountingHeight),
-            backgroundColor: props.controller.backgroundColor,
+            marginLeft: zoomedOffset(props.model.mountingWidth), 
+            marginTop: zoomedOffset(props.model.mountingHeight),
+            backgroundColor: props.model.backgroundColor,
         }; 
 
-        if (props.controller.backgroundImage.nonEmpty) {
-            style = {...style, ...props.controller.backgroundImage.cssAttr()};
+        if (props.model.backgroundImage.nonEmpty) {
+            style = {...style, ...props.model.backgroundImage.cssAttr()};
         }//if
 
         return style as StyleValue;
@@ -83,12 +83,12 @@
 
     const mountingDims = computed(() => {
         return {
-            width: zoomed(props.controller.mountingWidth),
-            height: zoomed(props.controller.mountingHeight)
+            width: zoomed(props.model.mountingWidth),
+            height: zoomed(props.model.mountingHeight)
         }
     });
 
-    const viewBox = computed(() => `0 0 ${props.controller.logicalWidth} ${props.controller.logicalHeight}`);
+    const viewBox = computed(() => `0 0 ${props.model.logicalWidth} ${props.model.logicalHeight}`);
 
     const drawingOrigin = {x: 0, y: 0};
     provide(Kresmer.ikDrawingOrigin, drawingOrigin);
@@ -102,16 +102,16 @@
     }, {immediate: true});
 
     const rulerBox = computed(() => {
-        props.controller.mountingHeight;
-        props.controller.mountingWidth;
-        props.controller.zoomFactor;
+        props.model.mountingHeight;
+        props.model.mountingWidth;
+        props.model.zoomFactor;
         const drawingWidth = rootSVG.value!.width.baseVal.value;
         const drawingHeight = rootSVG.value!.height.baseVal.value;
-        const aspectRatio = drawingWidth / drawingHeight * props.controller.logicalHeight / props.controller.logicalWidth;
+        const aspectRatio = drawingWidth / drawingHeight * props.model.logicalHeight / props.model.logicalWidth;
         const [x, width] = (aspectRatio <= 1 ? [0, 1] : [(1 - aspectRatio) / 2, aspectRatio])
-            .map(x => x * props.controller.logicalWidth);
+            .map(x => x * props.model.logicalWidth);
         const [y, height] = (aspectRatio >= 1 ? [0, 1] : [(1 - 1/aspectRatio) / 2, 1/aspectRatio])
-            .map(y => y * props.controller.logicalHeight);
+            .map(y => y * props.model.logicalHeight);
         return {x, y, width, height};
     });
 
@@ -127,12 +127,12 @@
     const tensMarkingLength = 5, fiftiesMarkingLength = 8, hundredsMarkingLength = 12;
 
     const styles = computed(() => {
-        const styles = [...Array.from(props.controller.globalStyles.values()).map(({data}) => data), ...props.controller.classStyles];
+        const styles = [...Array.from(props.model.globalStyles.values()).map(({data}) => data), ...props.model.classStyles];
         return `<style>${styles.map(style => style.toResult().css).join(" ")}</style>`;
     });
 
     const defs = computed(() => {
-        return Array.from(props.controller.globalDefs.values()).map(({data}) => data);
+        return Array.from(props.model.globalDefs.values()).map(({data}) => data);
     });
 
 
@@ -144,34 +144,34 @@
             event.preventDefault();
         }//if
 
-        props.controller.deselectAllElements();
-        props.controller.resetAllComponentMode();
-        props.controller.emit("mode-reset");
+        props.model.deselectAllElements();
+        props.model.resetAllComponentMode();
+        props.model.emit("mode-reset");
     }//onMouseDownOnCanvas
 
     function onCanvasRightClick(event: MouseEvent)
     {
-        props.controller.emit("canvas-right-click", event);
+        props.model.emit("canvas-right-click", event);
     }//onCanvasRightClick
 
     function onMouseWheel(event: WheelEvent)
     {
-        props.controller._onMouseWheel(event);
+        props.model._onMouseWheel(event);
     }//onMouseWheel
 
     function onMouseEnter()
     {
-        props.controller.emit("drawing-mouse-enter");
+        props.model.emit("drawing-mouse-enter");
     }//onMouseEnter
 
     function onMouseMove()
     {
-        props.controller.highlightedLinks.forEach(link => link.onMouseLeave());
+        props.model.highlightedLinks.forEach(link => link.onMouseLeave());
     }//onMouseMove
 
     function onMouseLeave()
     {
-        props.controller.emit("drawing-mouse-leave");
+        props.model.emit("drawing-mouse-leave");
     }//onMouseLeave
 
     defineExpose({rootSVG});
@@ -196,27 +196,27 @@
             <ConnectionPointFilters />
             <component v-for="(_, i) in defs" :is="`GlobalDefs${i}`" :key="`GlobalDefs${i}`" />
             <!-- ...component-specific -->
-            <template v-for="_class of controller.registeredComponentClasses.values()">
+            <template v-for="_class of model.registeredComponentClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
             <!-- ...link-specific -->
-            <template v-for="_class of controller.registeredLinkClasses.values()">
+            <template v-for="_class of model.registeredLinkClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
             <!-- ...area-specific -->
-            <template v-for="_class of controller.registeredAreaClasses.values()">
+            <template v-for="_class of model.registeredAreaClasses.values()">
                 <component v-if="_class.defs" :is="_class.defsVueName" :key="`${_class}Defs`"/>
             </template>
         </defs>
-        <defs v-if="controller.globalStyles.size || controller.classStyles.length" v-html="styles"></defs>
+        <defs v-if="model.globalStyles.size || model.classStyles.length" v-html="styles"></defs>
 
         <!-- Background mask -->
-        <rect v-if="rootSVG" :style="backgroundMaskStyle" :fill="controller.backgroundColor" 
-            :opacity="1 - controller.backgroundImage.visibility" />
+        <rect v-if="rootSVG" :style="backgroundMaskStyle" :fill="model.backgroundColor" 
+            :opacity="1 - model.backgroundImage.visibility" />
 
         <!-- Grid -->
-        <template v-if="controller.showGrid">
-            <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, controller.gridStep)" 
+        <template v-if="model.showGrid">
+            <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, model.gridStep)" 
                 :key="`x-grid${x}`">
                 <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"
                     @mousedown.self="onMouseDownOnCanvas($event)"
@@ -224,7 +224,7 @@
                     @mousemove.prevent.self=""
                     />
             </template>
-            <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, controller.gridStep)" 
+            <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, model.gridStep)" 
                 :key="`y-grid${y}`">
                 <line class="grid" :x1="rulerBox.x" :y1="y" :x2="rulerBox.x + rulerBox.width" :y2="y"
                     @mousedown.self="onMouseDownOnCanvas($event)"
@@ -234,11 +234,11 @@
             </template>
         </template>
         <!-- Rulers -->
-        <template v-if="controller.showRulers">
+        <template v-if="model.showRulers">
             <g class="rulers">
                 <rect class="axis" v-bind="rulerBox"/>
-                <rect :class="{boundaries: true, strong: controller.showGrid}" 
-                      x="0" y="0" :width="controller.logicalWidth" :height="controller.logicalHeight"/>
+                <rect :class="{boundaries: true, strong: model.showGrid}" 
+                      x="0" y="0" :width="model.logicalWidth" :height="model.logicalHeight"/>
                 <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, 10, 50)" :key="`tx-marking${x}`">
                     <line class="marking" :x1="x" :y1="rulerBox.y" 
                                           :x2="x" :y2="rulerBox.y + tensMarkingLength"/>
@@ -283,12 +283,12 @@
         </template>
 
         <!-- Areas -->
-        <DrawingAreaVue v-for="area in controller.areas.sorted" v-bind="area.syntheticProps" :key="`area${area.id}`" 
+        <DrawingAreaVue v-for="area in model.areas.sorted" v-bind="area.syntheticProps" :key="`area${area.id}`" 
             :model="area" />
 
         <!-- Components -->
         <NetworkComponentHolder 
-            v-for="componentController in controller.networkComponents.sorted" 
+            v-for="componentController in model.networkComponents.sorted" 
             :key="`networkComponent${componentController.component.id}`" :controller="componentController"
                 >
             <component :is="componentController.component.vueName" v-bind="componentController.component.syntheticProps"
@@ -299,9 +299,9 @@
         </NetworkComponentHolder>
 
         <!-- Links -->
-        <NetworkLinkVue v-for="link in controller.links.sorted" v-bind="link.syntheticProps" :key="`link${link.id}`" 
+        <NetworkLinkVue v-for="link in model.links.sorted" v-bind="link.syntheticProps" :key="`link${link.id}`" 
             :model="link" />
-        <NetworkLinkBlankVue v-if="controller.newLinkBlank.value" :model="controller.newLinkBlank.value" />
+        <NetworkLinkBlankVue v-if="model.newLinkBlank.value" :model="model.newLinkBlank.value" />
     </svg>
 </template>
 
