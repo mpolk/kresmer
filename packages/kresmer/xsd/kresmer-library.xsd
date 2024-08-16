@@ -348,7 +348,7 @@
                 </xs:element>
 
                 <!-- Embedded components -->
-                <xs:any namespace="Kre" processContents="lax"/>
+                <xs:any namespace="kresmer-user-defined-elements" processContents="lax"/>
             </xs:choice>
         </xs:sequence>
     </xs:group>
