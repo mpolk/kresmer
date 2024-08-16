@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 <script lang="ts">
     import { PropType, ref, computed, provide, watch, nextTick, StyleValue, inject, onMounted } from 'vue';
-    import Kresmer, {BackgroundImageData, KresmerException, KresmerInitOptions, KresmerModelInitializer} from './Kresmer';
+    import Kresmer, {BackgroundImageData, KresmerException, KresmerInitOptions} from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
@@ -64,7 +64,7 @@
     });
 
     const model = props.model || new Kresmer(
-        new KresmerModelInitializer(app!, rootSVG.value!),
+        app!,
         {
             mountingWidth: props.mountingWidth,
             mountingHeight: props.mountingHeight,

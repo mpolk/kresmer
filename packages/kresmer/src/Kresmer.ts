@@ -49,14 +49,14 @@ export default class Kresmer extends KresmerEventHooks {
 
     constructor(mountPoint: string, options?: KresmerInitOptions);
     constructor(mountPoint: Element, options?: KresmerInitOptions);
-    constructor(modelInitializer: KresmerModelInitializer, options?: KresmerInitOptions);
-    constructor(mountPointOrInitializer: string|Element|KresmerModelInitializer, options?: KresmerInitOptions)
+    constructor(app: App, options?: KresmerInitOptions);
+    constructor(mountPointOrApp: string|Element|App, options?: KresmerInitOptions)
     {
         super();
-        if (typeof mountPointOrInitializer === "string")
-            this._mountPoint = document.querySelector(mountPointOrInitializer)!;
-        else if (mountPointOrInitializer instanceof Element)
-            this._mountPoint = mountPointOrInitializer;
+        if (typeof mountPointOrApp === "string")
+            this._mountPoint = document.querySelector(mountPointOrApp)!;
+        else if (mountPointOrApp instanceof Element)
+            this._mountPoint = mountPointOrApp;
         options?.mountingWidth && (this.mountingBox.width = options.mountingWidth);
         options?.mountingHeight && (this.mountingBox.height = options.mountingHeight);
         options?.logicalWidth && (this.logicalBox.width = options.logicalWidth);
@@ -87,11 +87,10 @@ export default class Kresmer extends KresmerEventHooks {
             // at last mount the main vue
             const vueKresmer = this.app.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
             this._rootSVG = vueKresmer.rootSVG!;
-        } else if (mountPointOrInitializer instanceof KresmerModelInitializer) {
-            this.app = mountPointOrInitializer.app;
-            // this.rootSVG = mountPointOrInitializer.rootSVG;
         } else {
-            throw new KresmerException("Invalid Kresmer constructor first parameter");
+            // otherwise we consider that the Kresmer Vue component is already created and receive the reference
+            // to the application from it
+            this.app = mountPointOrApp as App;
         }//if
 
         // and somehow awake its scaling mechanism (workaround for something beyond understanding)
@@ -99,8 +98,9 @@ export default class Kresmer extends KresmerEventHooks {
     }//ctor
 
 
-    /**
+    /*
      * Auxiliary function for registering global Kresmer components and properties in the Vue application
+     * (for internal use)
      * @param app Vue App to register globals for
      */
     static _registerGlobals(app: App)
@@ -1444,13 +1444,6 @@ export type KresmerInitOptions = {
     streetAddressFormat?: StreetAddressFormat,
     uiLanguage?: string,
 }//KresmerInitOptions
-
-export class KresmerModelInitializer {
-    constructor(
-        readonly app: App,
-        readonly rootSVG: SVGSVGElement,
-    ) {}
-}//KresmerModelInitializer
 
 export type DrawingProps = {
     /** The drawing name */
