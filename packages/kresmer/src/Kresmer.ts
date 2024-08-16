@@ -54,9 +54,9 @@ export default class Kresmer extends KresmerEventHooks {
     {
         super();
         if (typeof mountPointOrInitializer === "string")
-            this.mountPoint = document.querySelector(mountPointOrInitializer)!;
+            this._mountPoint = document.querySelector(mountPointOrInitializer)!;
         else if (mountPointOrInitializer instanceof Element)
-            this.mountPoint = mountPointOrInitializer;
+            this._mountPoint = mountPointOrInitializer;
         options?.mountingWidth && (this.mountingBox.width = options.mountingWidth);
         options?.mountingHeight && (this.mountingBox.height = options.mountingHeight);
         options?.logicalWidth && (this.logicalBox.width = options.logicalWidth);
@@ -86,7 +86,7 @@ export default class Kresmer extends KresmerEventHooks {
             Kresmer._registerGlobals(this.app);
             // at last mount the main vue
             const vueKresmer = this.app.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
-            this.rootSVG = vueKresmer.rootSVG!;
+            this._rootSVG = vueKresmer.rootSVG!;
         } else if (mountPointOrInitializer instanceof KresmerModelInitializer) {
             this.app = mountPointOrInitializer.app;
             // this.rootSVG = mountPointOrInitializer.rootSVG;
@@ -129,13 +129,18 @@ export default class Kresmer extends KresmerEventHooks {
     public classStyles: PostCSSRoot[] = reactive([]);
 
     /** Returns the root SVG element */
-    _rootSVG!: SVGSVGElement;
-    get rootSVG() {
-        return this._rootSVG
-    }
-    set rootSVG(newValue: SVGSVGElement) {
-        this._rootSVG = newValue
-    }
+    get rootSVG() { return this._rootSVG }
+    private _rootSVG!: SVGSVGElement;
+    /** The element Kresmer was mounted on */
+    get mountPoint(): Element { return this._mountPoint }
+    private _mountPoint!: Element;
+
+    // For internal use
+    _setRoot(rootSVG: SVGSVGElement, mountPoint: Element)
+    {
+        this._rootSVG = rootSVG;
+        this._mountPoint = mountPoint;
+    }//_setRoot
 
     /** Drawing name */
     public drawingName = UNNAMED_DRAWING;
@@ -287,9 +292,6 @@ export default class Kresmer extends KresmerEventHooks {
     isEditable = true;
     /** A symbolic key for the editability flag injection */
     static readonly ikIsEditable = Symbol() as InjectionKey<boolean>;
-    /** The element Kresmer was mounted on */
-    mountPoint!: Element;
-
     /** Determines if components and link vertices should snap to the grid when being dragged and dropped */
     snapToGrid = true;
     /** A symbolic key for the snap-to-grid flag injection */

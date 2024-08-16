@@ -60,8 +60,7 @@
     const rootSVG = ref<SVGSVGElement>()!;
 
     onMounted(() => {
-        model.rootSVG = rootSVG.value!;
-        model.mountPoint = rootSVG.value!.parentElement!;
+        model._setRoot(rootSVG.value!, rootSVG.value!.parentElement!);
     });
 
     const model = props.model || new Kresmer(
