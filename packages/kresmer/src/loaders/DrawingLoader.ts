@@ -182,7 +182,7 @@ export default class DrawingLoader {
 
         const attrs: Record<string, unknown> = {
             "xmlns:kre": "kresmer-builtin-elements",
-            "xmlns:Kre": "Kre",
+            "xmlns:Kre": "kresmer-user-defined-elements",
             "xmlns:v-bind": "v-bind",
             "xmlns:v-on": "v-on",
             "xmlns:v-slot": "v-slot",
