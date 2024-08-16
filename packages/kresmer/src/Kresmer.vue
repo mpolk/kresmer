@@ -228,7 +228,7 @@
         model.emit("drawing-mouse-leave");
     }//onMouseLeave
 
-    defineExpose({rootSVG, model});
+    defineExpose({model});
 </script>
 
 <template>

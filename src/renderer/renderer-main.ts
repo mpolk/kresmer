@@ -84,9 +84,17 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar") as InstanceType<typeof StatusBar>;
 
-const app = createApp(KresmerVue, {...window.electronAPI.initialAppSettings, ...calcKresmerSize()}).use(kresmerPlugin);
+const app = createApp(KresmerVue, {
+    ...window.electronAPI.initialAppSettings, 
+    ...calcKresmerSize(),
+    isEditable: true,
+}).use(kresmerPlugin);
 export const kresmer = (app.mount("#kresmer") as InstanceType<typeof KresmerVue>).model as Kresmer;
-// export const kresmer = new Kresmer("#kresmer", {...window.electronAPI.initialAppSettings, ...calcKresmerSize()});
+// export const kresmer = new Kresmer("#kresmer", {
+//     ...window.electronAPI.initialAppSettings, 
+//     ...calcKresmerSize(),
+//     isEditable: true,
+// });
 statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);

@@ -61,10 +61,10 @@ export default class Kresmer extends KresmerEventHooks {
         options?.mountingHeight && (this.mountingBox.height = options.mountingHeight);
         options?.logicalWidth && (this.logicalBox.width = options.logicalWidth);
         options?.logicalHeight && (this.logicalBox.height = options.logicalHeight);
-        options?.isEditable !== undefined && (this.isEditable = options.isEditable);
+        this.isEditable = Boolean(options?.isEditable);
         this.showRulers = Boolean(options?.showRulers);
         this.showGrid = Boolean(options?.showGrid);
-        this.snapToGrid = options?.snapToGrid ?? true;
+        this.snapToGrid = Boolean(options?.snapToGrid ?? true);
         options?.snappingGranularity && (this.snappingGranularity = options.snappingGranularity);
         this.saveDynamicPropValuesWithDrawing = Boolean(options?.saveDynamicPropValuesWithDrawing);
         this.embedLibDataInDrawing = Boolean(options?.embedLibDataInDrawing ?? true);
@@ -85,8 +85,7 @@ export default class Kresmer extends KresmerEventHooks {
             // register the components used to construct the drawing
             Kresmer._registerGlobals(this.app);
             // at last mount the main vue
-            const vueKresmer = this.app.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
-            this._rootSVG = vueKresmer.rootSVG!;
+            this.app.mount(this.mountPoint) as InstanceType<typeof KresmerVue>;
         } else {
             // otherwise we consider that the Kresmer Vue component is already created and receive the reference
             // to the application from it

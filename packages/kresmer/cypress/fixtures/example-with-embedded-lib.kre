@@ -6,8 +6,13 @@
 	height="1200"
 	background-color="#ffffff">
 
-	<library xmlns:Kre="Kre" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot" xmlns:uk="uk">
-		<defs name="AdjustmentHandles" version="2024062500">
+	<library
+		xmlns:kre="kresmer-builtin-elements"
+		xmlns:Kre="Kre"
+		xmlns:v-bind="v-bind"
+		xmlns:v-on="v-on"
+		xmlns:v-slot="v-slot">
+		<defs xmlns="kresmer-library" name="AdjustmentHandles" version="2024062500">
 	        <g id="kre:adjustment-ruler-marker-common">
 	            <polygon points="0,5 5,0 10,5 5,10"/>
 	            <circle cx="5" cy="5" r="2" style="filter: brightness(0.25) invert(100%)"/>
@@ -19,7 +24,7 @@
 	            <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker fixed"/>
 	        </marker>
 	    </defs>
-		<style name="AdjustmentHandles" version="2024062500">
+		<style xmlns="kresmer-library" name="AdjustmentHandles" version="2024062500">
 	        .adjustment-ruler {
 	            stroke: brown;
 	            stroke-width: 3px;
@@ -31,7 +36,7 @@
 	        .adjustment-ruler-marker.fixed { fill: red; }
 	        .adjustment-ruler .marker-padding { r: 3px; }
 	    </style>
-		<component-class name="ManagedDevice" category=".general">
+		<component-class xmlns="kresmer-library" name="ManagedDevice" category=".general">
 	        <props>
 	            <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network" description="Device management ip-address"/>
 	            <prop name="management-protocol" type="String" category="Network" description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
@@ -39,7 +44,7 @@
 	            <prop name="comment" type="String" description="Device general info"/>
 	        </props>
 	    </component-class>
-		<component-class name="RackMountDevice" category=".general">
+		<component-class xmlns="kresmer-library" name="RackMountDevice" category=".general">
 	        <template>
 	            <title v-if="comment">{{comment}}</title>
 	            <template v-for="i in nUnits">
@@ -144,22 +149,22 @@
 	            </computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="MultiFiberPort" category=".port-abstractions">
+		<component-class xmlns="kresmer-library" name="MultiFiberPort" category=".port-abstractions">
 	        <computed-props>
 	            <computed-prop name="nFibers">props.fiberInfo?.nFibers ?? props.portInfo?.nFibers ?? 1</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="Port" category=".ports" version="2024071400">
+		<component-class xmlns="kresmer-library" name="Port" category=".ports" version="2024071400">
 	        <template>
-	            <connection-indicator v-bind:connection-id="connectionId">
+	            <kre:connection-indicator  v-bind:connection-id="connectionId">
 	                <rect v-bind:width="w" v-bind:height="h" class="port-icon body"/>
 	                <slot/>
 	                <rect v-if="portInfo?.operStatus" v-bind:width="h*0.25" v-bind:height="h*0.25" class="status-indicator"/>
 	                <text v-bind:x="w/2" v-bind:y="labelY" text-anchor="middle" v-bind:font-size="fontSize*h" class="port-name" v-bind:class="{disabled: !(portInfo?.adminStatus ?? true)}">{{label}}</text>
 	                <title>{{title}}</title>
-	                <connection-point v-if="isActive &amp;&amp; nFibers == 1" v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
-	                <connection-point v-else-if="isActive" v-for="({x, y}, dir) in {                         up1: {x: w*0.4, y: 0}, up2: {x: w*0.6, y: 0},                          right1: {x: w, y: h*0.4}, right2: {x: w, y: h*0.6},                          down1: {x: w*0.4, y: h}, down2: {x: w*0.6, y: h},                          left1: {x: 0, y: h*0.4}, left2: {x: 0, y: h*0.6}                     }" v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
-	            </connection-indicator>
+	                <kre:connection-point v-if="isActive &amp;&amp; nFibers == 1" v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
+	                <kre:connection-point v-else-if="isActive" v-for="({x, y}, dir) in {                         up1: {x: w*0.4, y: 0}, up2: {x: w*0.6, y: 0},                          right1: {x: w, y: h*0.4}, right2: {x: w, y: h*0.6},                          down1: {x: w*0.4, y: h}, down2: {x: w*0.6, y: h},                          left1: {x: 0, y: h*0.4}, left2: {x: 0, y: h*0.6}                     }" v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
+	            </kre:connection-indicator>
 	        </template>
 	        <style>
 	            .port-name {font-family: sans-serif; fill: white;}
@@ -206,21 +211,21 @@
 	            <computed-prop name="connectionId">props.connectionId ? String(props.connectionId) : String(props.name)</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="DeviceWithManagedPorts" category=".general" version="2024070300">
+		<component-class xmlns="kresmer-library" name="DeviceWithManagedPorts" category=".general" version="2024070300">
 	        <props>
 	            <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar">
 	                <elements type="Object" type-ref="Port.port-info"/>
 	            </prop>
 	        </props>
 	    </component-class>
-		<component-class name="DeviceWithOpticalPorts" category=".general" version="2024070300">
+		<component-class xmlns="kresmer-library" name="DeviceWithOpticalPorts" category=".general" version="2024070300">
 	        <props>
 	            <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers connected to the port">
 	                <elements type="Object" type-ref="Port.fiber-info"/>
 	            </prop>
 	        </props>
 	    </component-class>
-		<component-class name="CrossArrows" category=".Graphics">
+		<component-class xmlns="kresmer-library" name="CrossArrows" category=".Graphics">
 	        <computed-props>
 	            <computed-prop name="crossArrows">
 	                [ 
@@ -232,7 +237,7 @@
 	            </computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="SwitchBody" category=".switch-parts" version="2024070300">
+		<component-class xmlns="kresmer-library" name="SwitchBody" category=".switch-parts" version="2024070300">
 	        <extends base="RackMountDevice" v-bind:n-units="nStackUnits">
 	            <template v-slot:frontFacet="{}">
 	                <slot name="frontFacet"/>
@@ -254,7 +259,7 @@
 	        </props>
 	        <computed-props extend="CrossArrows"/>
 	    </component-class>
-		<component-class name="ExtremeSwitchBody" category=".switch-parts">
+		<component-class xmlns="kresmer-library" name="ExtremeSwitchBody" category=".switch-parts">
 	        <extends base="SwitchBody"/>
 	        <style>
 	            .device-name { fill: white; text-shadow: 3px 3px 3px black; }
@@ -265,7 +270,7 @@
 	            .port-icon.body { stroke: #fde3fd; }
 	        </style>
 	    </component-class>
-		<component-class name="StackUnitBadge" category=".switch-parts">
+		<component-class xmlns="kresmer-library" name="StackUnitBadge" category=".switch-parts">
 	        <template>
 	            <rect x="0" y="0" v-bind:width="width" v-bind:height="height" class="unit-badge"/>
 	            <text v-bind:x="width/2" v-bind:y="height*0.75" v-bind:font-size="height*0.75" text-anchor="middle" class="unit-badge-text">{{unit}}</text>
@@ -280,12 +285,12 @@
 	            <prop name="height" type="Number" required="true" category="Geometry"/>
 	        </props>
 	    </component-class>
-		<component-class name="KeyedConnector" category=".ports">
+		<component-class xmlns="kresmer-library" name="KeyedConnector" category=".ports">
 	        <props>
 	            <prop name="key-position" type="String" choices="top,bottom,left,right" default="top" category="Geometry" description="Key groove position"/>
 	        </props>
 	    </component-class>
-		<component-class name="RectangularConnector" category=".ports">
+		<component-class xmlns="kresmer-library" name="RectangularConnector" category=".ports">
 	        <template>
 	            <polyline v-if="nFibers === 1" v-bind:points="                 keyPosition === 'top' ?                     `${cx+h*0.2},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}                      ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`                 : keyPosition === 'bottom' ?                     `${cx+h*0.2},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}                      ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`                 : keyPosition === 'left' ?                     `${cy-h*q},${cx+h*0.2} ${cy-h*q},${cx+w*q} ${cy+h*q},${cx+w*q}                      ${cy+h*q},${cx-w*q}    ${cy-h*q},${cx-w*q} ${cy-h*q},${cx-h*0.2}`                 :                     `${-cy+h*q+w},${cx+h*0.2} ${-cy+h*q+w},${cx+w*q}  ${-cy-h*q+w},${cx+w*q}                      ${-cy-h*q+w},${cx-w*q}    ${-cy+h*q+w},${cx-w*q}  ${-cy+h*q+w},${cx-h*0.2}`                 " class="border" v-bind:stroke-width="strokeWidth"/>
 	            <template v-else="">
@@ -306,13 +311,13 @@
 	            <computed-prop name="strokeWidth">props.strokeWidth ?? Math.min(props.w, props.h)*0.12</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="PluginModule" category=".ports">
+		<component-class xmlns="kresmer-library" name="PluginModule" category=".ports">
 	        <extends base="RectangularConnector"/>
 	        <style>
 	            .border {fill: none; stroke: #8998a9;}
 	        </style>
 	    </component-class>
-		<component-class name="SFP-Port" category=".ports">
+		<component-class xmlns="kresmer-library" name="SFP-Port" category=".ports">
 	        <extends base="Port" v-bind:w="d" v-bind:h="d">
 	            <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers"/>
 	        </extends>
@@ -323,20 +328,20 @@
 	            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="QSFP-Port" category=".ports">
+		<component-class xmlns="kresmer-library" name="QSFP-Port" category=".ports">
 	        <extends base="Port" v-bind:w="h*2">
 	            <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers"/>
 	        </extends>
 	        <props extend="KeyedConnector" except="w"/>
 	        <computed-props extend="MultiFiberPort"/>
 	    </component-class>
-		<component-class name="ExtremeSwitchStack" category=".switch-parts">
+		<component-class xmlns="kresmer-library" name="ExtremeSwitchStack" category=".switch-parts">
 	        <style>
 	            .unit-badge { fill: #7e0133; stroke: #e0d900; }
 	            .unit-badge-text { fill: white; }
 	        </style>
 	    </component-class>
-		<component-class name="Extreme-X590-24x-Stack" category="Switches/Extreme">
+		<component-class xmlns="kresmer-library" name="Extreme-X590-24x-Stack" category="Switches/Extreme">
 	        <extends base="ExtremeSwitchBody" v-bind:top-facet-size="1"/>
 	        <template>
 	            <template v-for="unit in nStackUnits">
@@ -359,7 +364,7 @@
 	            <computed-prop name="width">props.width ?? props.unitHeight * 8.6</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="Extreme-X670-48x-Stack" category="Switches/Extreme">
+		<component-class xmlns="kresmer-library" name="Extreme-X670-48x-Stack" category="Switches/Extreme">
 	        <extends base="ExtremeSwitchBody" v-bind:top-facet-size="1"/>
 	        <template>
 	            <template v-for="unit in nStackUnits">
@@ -378,7 +383,7 @@
 	            <computed-prop name="width">props.width ?? props.unitHeight * 12.51</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="RouterBody" category=".router-parts" embeds="CrossArrows" version="2024070301">
+		<component-class xmlns="kresmer-library" name="RouterBody" category=".router-parts" embeds="CrossArrows" version="2024070301">
 	        <extends base="RackMountDevice">
 	            <template v-slot:frontFacet="{}">
 	                <slot name="frontFacet"/>
@@ -397,7 +402,7 @@
 	        <props extend="DeviceWithManagedPorts, DeviceWithOpticalPorts"/>
 	        <computed-props extend="CrossArrows"/>
 	    </component-class>
-		<component-class name="Juniper-MX204" category="Routers/Juniper">
+		<component-class xmlns="kresmer-library" name="Juniper-MX204" category="Routers/Juniper">
 	        <extends base="RouterBody" v-bind:top-facet-size="1"/>
 	        <template>
 	            <defs>
@@ -438,7 +443,7 @@
 	            <computed-prop name="width">props.width || props.height * 9.1</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="ServerBody" category=".server-parts">
+		<component-class xmlns="kresmer-library" name="ServerBody" category=".server-parts">
 	        <extends base="RackMountDevice" v-bind:top-facet-size="0.8" v-bind:show-device-name="false" v-bind:show-ip-address="false">
 	            <template v-slot:frontFacet="{}">
 	                <slot name="frontFacet"/>
@@ -453,7 +458,7 @@
 	            </template>
 	        </extends>
 	    </component-class>
-		<component-class name="Server" category="Servers" version="2024070300">
+		<component-class xmlns="kresmer-library" name="Server" category="Servers" version="2024070300">
 	        <extends base="ServerBody"/>
 	        <template>
 	            <defs>
@@ -512,7 +517,7 @@
 	            <computed-prop name="downlinkPortPanelWidth">computedProps.downlinkPortRowLength + props.unitHeight*0.15</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="RJ45" category=".ports">
+		<component-class xmlns="kresmer-library" name="RJ45" category=".ports">
 	        <extends base="RectangularConnector" v-bind:stroke-width="Math.min(w, h)*0.16"/>
 	        <defs>
 	            <pattern id="kre:std:rj45-contacts-v" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" preserveAspectRatio="none">
@@ -532,7 +537,7 @@
 	            .border {fill: none; stroke: #597865;}
 	        </style>
 	    </component-class>
-		<component-class name="RJ45-Port" category=".ports">
+		<component-class xmlns="kresmer-library" name="RJ45-Port" category=".ports">
 	        <extends base="Port" v-bind:w="d" v-bind:h="d">
 	            <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
 	        </extends>
@@ -543,7 +548,7 @@
 	            <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="WDM-Port" category=".port-abstractions">
+		<component-class xmlns="kresmer-library" name="WDM-Port" category=".port-abstractions">
 	        <computed-props>
 	            <computed-prop name="beamColor">
 	                props.fiberInfo?.wavelength === 1470 ? "#949494" :
@@ -558,7 +563,7 @@
 	            </computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="FC-Port" category=".ports">
+		<component-class xmlns="kresmer-library" name="FC-Port" category=".ports">
 	        <extends base="Port" v-bind:w="d" v-bind:h="d">
 	            <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" v-bind:stroke="beamColor ?? 'white'" v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}                                 0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`"/>
 	            <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
@@ -593,13 +598,13 @@
 	            .fiber-info {fill: #3d3d3d;}
 	        </style>
 	    </component-class>
-		<component-class name="FC-APC-Port" category=".ports">
+		<component-class xmlns="kresmer-library" name="FC-APC-Port" category=".ports">
 	        <extends base="FC-Port"/>
 	        <style>
 	            .cap {stroke: #18b933;}
 	        </style>
 	    </component-class>
-		<component-class name="SC-Port" category=".ports">
+		<component-class xmlns="kresmer-library" name="SC-Port" category=".ports">
 	        <extends base="Port" v-bind:w="d" v-bind:h="d">
 	            <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
 	            <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8"/>
@@ -616,18 +621,18 @@
 	            .ferrule {fill: #ababab; stroke: #707070; stroke-width: 1px;}
 	        </style>
 	    </component-class>
-		<component-class name="SC-APC-Port" category=".ports">
+		<component-class xmlns="kresmer-library" name="SC-APC-Port" category=".ports">
 	        <extends base="SC-Port"/>
 	        <style>
 	            .RectangularConnector .border {fill: none; stroke: #18b933;}
 	        </style>
 	    </component-class>
-		<component-class name="PatchPanel" category="Passive equipment" version="2024080100" embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
+		<component-class xmlns="kresmer-library" name="PatchPanel" category="Passive equipment" version="2024080100" embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
 	        <template>
 	            <title v-if="comment">{{comment}}</title>
 	            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
 	            <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
-	                <connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
+	                <kre:connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
 	                        <svg class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}" v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight" v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight" v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth">
 	                        <rect class="pad" x="0" y="0" width="100%" height="100%"/>
 	                        <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
@@ -639,14 +644,14 @@
 	                        <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.4" v-bind:y="labelHeight*0.5" v-bind:font-size="labelFontSize"><tspan>{{i}}: </tspan><tspan class="description">{{portLabels[i]}}</tspan></text>
 	                        <text v-else="" v-bind:x="labelHeight*0.5" v-bind:y="labelWidth - labelHeight*0.4" v-bind:transform="`rotate(-90, ${labelHeight*0.5}, ${labelWidth - labelHeight*0.4})`" v-bind:font-size="labelFontSize"><tspan>{{i}}: </tspan><tspan class="description">{{portLabels[i]}}</tspan></text>
 	                    </svg>
-	                    <connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
-	                </connection-indicator>
+	                    <kre:connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
+	                </kre:connection-indicator>
 	                <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
 	            </template>
 	            <template v-for="i in nPorts/nPortRows">
 	                <component v-for="j in nPortRows" v-bind:is="portClass" v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" v-bind:d="portSize*height" v-bind:name="firstPort - 1 + (i-1)*nPortRows + j" v-bind:key="firstPort - 1 + (i-1)*nPortRows + j" v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined" v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'"/>
 	            </template>
-	            <connection-point v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" connection-id="out:*"/>
+	            <kre:connection-point v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" connection-id="out:*"/>
 	            <template v-if="caption">
 	                <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)">
 	                    <text v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
@@ -767,16 +772,16 @@
 	            .caption.href:hover {text-decoration: underline !important}
 	        </style>
 	    </component-class>
-		<component-class name="OpticalMultiplexer" category=".optical-equipment" version="2024070300">
+		<component-class xmlns="kresmer-library" name="OpticalMultiplexer" category=".optical-equipment" version="2024070300">
 	        <props extend="DeviceWithOpticalPorts">
 	            <prop name="division-mode" type="String" choices="CWDM, DWDM" category="Optics" description="Multiplexer signal division mode"/>
 	        </props>
 	    </component-class>
-		<component-class name="MuxPatchPanel" category="OpticalEquipment">
+		<component-class xmlns="kresmer-library" name="MuxPatchPanel" category="OpticalEquipment">
 	        <extends base="PatchPanel"/>
 	        <props extend="OpticalMultiplexer"/>
 	    </component-class>
-		<component-class name="DLinkSwitchBody" category=".switch-parts">
+		<component-class xmlns="kresmer-library" name="DLinkSwitchBody" category=".switch-parts">
 	        <extends base="SwitchBody"/>
 	        <style>
 	            .device-name { fill: white; text-shadow: 3px 3px 3px black; }
@@ -791,7 +796,7 @@
 	            <prop name="management-protocol" type="String" category="Network" default="telnet:" description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
 	        </props>
 	    </component-class>
-		<component-class name="DLinkSwitch" category="Switches/DLink" version="2024080100">
+		<component-class xmlns="kresmer-library" name="DLinkSwitch" category="Switches/DLink" version="2024080100">
 	        <extends base="DLinkSwitchBody"/>
 	        <template>
 	            <template v-for="i in Math.ceil(nPorts/2)">
@@ -809,7 +814,7 @@
 	            </computed-prop>
 	        </computed-props>
 	    </component-class>
-		<component-class name="SwitchWithComboPorts" category=".Switches">
+		<component-class xmlns="kresmer-library" name="SwitchWithComboPorts" category=".Switches">
 	        <props>
 	            <prop name="first-combo-media" type="string" choices="fiber,copper" category="Network" description="First combo port media type"/>
 	            <prop name="second-combo-media" type="string" choices="fiber,copper" category="Network" description="Second combo port media type"/>
@@ -847,7 +852,7 @@
 	            </function>
 	        </functions>
 	    </component-class>
-		<component-class name="DLink4ComboPortsSwitch" category=".Switches/DLink" version="2024070100">
+		<component-class xmlns="kresmer-library" name="DLink4ComboPortsSwitch" category=".Switches/DLink" version="2024070100">
 	        <extends base="DLinkSwitch" v-bind:n-ports="nCopperPorts"/>
 	        <template>
 	            <text v-for="(line, i) in modelNameLines" v-bind:x="width - unitHeight*2.15" v-bind:y="unitHeight*(0.25 + 0.15*i)" v-bind:font-size="unitHeight*0.15" text-anchor="middle" dominant-baseline="hanging" class="model-name">{{line}}</text>
@@ -872,14 +877,14 @@
 	        </computed-props>
 	        <functions extend="SwitchWithComboPorts"/>
 	    </component-class>
-		<component-class name="DLink-DES-3200-28" category="Switches/DLink">
+		<component-class xmlns="kresmer-library" name="DLink-DES-3200-28" category="Switches/DLink">
 	        <extends base="DLink4ComboPortsSwitch"/>
 	        <props>
 	            <prop name="model-name" type="String" default="DES 3200 28" category="Hidden"/>
 	            <prop name="n-copper-ports" type="Number" default="24" category="Hidden"/>
 	        </props>
 	    </component-class>
-		<component-class name="CopperToOpticsMediaConverter" category="Media-converters" version="2024071400">
+		<component-class xmlns="kresmer-library" name="CopperToOpticsMediaConverter" category="Media-converters" version="2024071400">
 	        <template>
 	            <title v-if="comment">{{comment}}</title>
 	            <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -909,7 +914,7 @@
 	            .port-label text {fill: #333333; font-family: sans-serif;}
 	        </style>
 	    </component-class>
-		<component-class name="CopperToOpticsMultiplexer" category="Multiplexers" version="2024071400">
+		<component-class xmlns="kresmer-library" name="CopperToOpticsMultiplexer" category="Multiplexers" version="2024071400">
 	        <template>
 	            <title v-if="comment">{{comment}}</title>
 	            <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -939,14 +944,14 @@
 	            .port-label text {fill: #333333; font-family: sans-serif;}
 	        </style>
 	    </component-class>
-		<component-class name="DLink-DES-3052" category="Switches/DLink">
+		<component-class xmlns="kresmer-library" name="DLink-DES-3052" category="Switches/DLink">
 	        <extends base="DLink4ComboPortsSwitch"/>
 	        <props>
 	            <prop name="model-name" type="String" default="DES 3052" category="Hidden"/>
 	            <prop name="n-copper-ports" type="Number" default="48" category="Hidden"/>
 	        </props>
 	    </component-class>
-		<link-class name="_abstract-link" category=".abstract-links" version="2024073101">
+		<link-class xmlns="kresmer-library" name="_abstract-link" category=".abstract-links" version="2024073101">
 	        <defs>
 	            <marker id="kre:link-marker-circle" markerWidth="4.5" markerHeight="4.5" refX="5" refY="5" viewBox="0 0 10 10">
 	                <circle r="4.5" cx="5" cy="5" fill="context-stroke" stroke="context-stroke"/>
@@ -1011,7 +1016,7 @@
 	            .seg-mark {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
 	        </style>
 	    </link-class>
-		<link-class name="twisted-pair" category="copper links" version="2024070800">
+		<link-class xmlns="kresmer-library" name="twisted-pair" category="copper links" version="2024070800">
 	        <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
 	        <style>
 	            .link {--link-color: #5e5e5e; --highlighted-link-color: #c22a00; }
@@ -1020,7 +1025,7 @@
 	            .blank.header {fill-opacity: 0.3;}
 	        </style>
 	    </link-class>
-		<link-class name="DAC" category="direct attached cables" version="2024070800">
+		<link-class xmlns="kresmer-library" name="DAC" category="direct attached cables" version="2024070800">
 	        <extends base="_abstract-link" media-type="DAC" accept-media-types="none"/>
 	        <style>
 	            .link {--link-color: #236e85; --highlighted-link-color: #23beb3; }
@@ -1032,7 +1037,7 @@
 	            .blank.header {fill-opacity: 0.3;}
 	        </style>
 	    </link-class>
-		<link-class name="AOC" category="direct attached cables" version="2024070800">
+		<link-class xmlns="kresmer-library" name="AOC" category="direct attached cables" version="2024070800">
 	        <extends base="_abstract-link" media-type="AOC" accept-media-types="none"/>
 	        <style>
 	            .link {--link-color: #0098c7; --highlighted-link-color: #1de7e7; }
@@ -1044,7 +1049,7 @@
 	            .blank.header {fill-opacity: 0.3;}
 	        </style>
 	    </link-class>
-		<link-class name="sm-patch-cord" category="optical links" version="2024070800">
+		<link-class xmlns="kresmer-library" name="sm-patch-cord" category="optical links" version="2024070800">
 	        <extends base="_abstract-link" media-type="sm-optics" accept-media-types="none"/>
 	        <style>
 	            .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
@@ -1054,7 +1059,7 @@
 	            .blank.header {fill-opacity: 0.3;}
 	        </style>
 	    </link-class>
-		<link-class name="multifiber-cable" category="optical links" version="2024070800">
+		<link-class xmlns="kresmer-library" name="multifiber-cable" category="optical links" version="2024070800">
 	        <extends base="_abstract-link" media-type="multifiber-cable" accept-media-types="multifiber-cable"/>
 	        <props>
 	            <prop name="nFibers" type="Number" category="Hardware" description="The number of fibers in the cable"/>
@@ -1073,18 +1078,18 @@
 	            .blank.header {fill-opacity: 0.3;}
 	        </style>
 	    </link-class>
-		<link-bundle-class name="link-bundle" category="general" version="2024070800">
+		<link-bundle-class xmlns="kresmer-library" name="link-bundle" category="general" version="2024070800">
 	        <extends base="_abstract-link" accept-media-types="none"/>
 	        <style>
 	            .link {--highlighted-link-color: #c22a00; }
 	            .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 3px; stroke-linejoin: round; }
 	        </style>
 	    </link-bundle-class>
-		<link-bundle-class name="AOC-bundle" category="direct attached cables" version="2024070800">
+		<link-bundle-class xmlns="kresmer-library" name="AOC-bundle" category="direct attached cables" version="2024070800">
 	        <extends base="link-bundle"/>
 	        <style extends="AOC"/>
 	    </link-bundle-class>
-		<link-bundle-class name="DAC-bundle" category="direct attached cables" version="2024070800">
+		<link-bundle-class xmlns="kresmer-library" name="DAC-bundle" category="direct attached cables" version="2024070800">
 	        <extends base="link-bundle"/>
 	        <style extends="DAC"/>
 	    </link-bundle-class>
