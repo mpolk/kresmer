@@ -7,8 +7,8 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide, watch, nextTick, StyleValue, inject } from 'vue';
-    import Kresmer, {BackgroundImageData, KresmerException, KresmerInitOptions, KresmerModelInitializer, LibDataPriority, StreetAddressFormat} from './Kresmer';
+    import { PropType, ref, computed, provide, watch, nextTick, StyleValue, inject, onMounted } from 'vue';
+    import Kresmer, {BackgroundImageData, KresmerException, KresmerInitOptions, KresmerModelInitializer} from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
@@ -42,12 +42,12 @@
         snappingGranularity: {type: Number},
         saveDynamicPropValuesWithDrawing: {type: Boolean},
         embedLibDataInDrawing: {type: Boolean},
-        libDataPriority: {type: Object as PropType<typeof LibDataPriority>},
+        libDataPriority: {type: String},
         autoAlignVertices: {type: Boolean},
         animateComponentDragging: {type: Boolean},
         animateLinkBundleDragging: {type: Boolean},
         hrefBase: {type: String},
-        streetAddressFormat: {type: Object as PropType<typeof StreetAddressFormat>},
+        streetAddressFormat: {type: String},
         uiLanguage: {type: String},
     });
 
@@ -58,6 +58,11 @@
     }//if
 
     const rootSVG = ref<SVGSVGElement>()!;
+
+    onMounted(() => {
+        model.rootSVG = rootSVG.value!;
+        model.mountPoint = rootSVG.value!.parentElement!;
+    });
 
     const model = props.model || new Kresmer(
         new KresmerModelInitializer(app!, rootSVG.value!),

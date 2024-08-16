@@ -89,9 +89,9 @@ export default class Kresmer extends KresmerEventHooks {
             this.rootSVG = vueKresmer.rootSVG!;
         } else if (mountPointOrInitializer instanceof KresmerModelInitializer) {
             this.app = mountPointOrInitializer.app;
-            this.rootSVG = mountPointOrInitializer.rootSVG;
+            // this.rootSVG = mountPointOrInitializer.rootSVG;
         } else {
-            throw new KresmerException("Invalid first Kresmer constructor parameter");
+            throw new KresmerException("Invalid Kresmer constructor first parameter");
         }//if
 
         // and somehow awake its scaling mechanism (workaround for something beyond understanding)
@@ -127,6 +127,15 @@ export default class Kresmer extends KresmerEventHooks {
     public globalStyles = reactive(new Map<string, {data: PostCSSRoot, version: number, sourceCode: string}>());
     /** CSS styles collected from drawing element classes */
     public classStyles: PostCSSRoot[] = reactive([]);
+
+    /** Returns the root SVG element */
+    _rootSVG!: SVGSVGElement;
+    get rootSVG() {
+        return this._rootSVG
+    }
+    set rootSVG(newValue: SVGSVGElement) {
+        this._rootSVG = newValue
+    }
 
     /** Drawing name */
     public drawingName = UNNAMED_DRAWING;
@@ -923,10 +932,6 @@ ${svg.outerHTML}
     }//getElementByName
   
 
-    /** Returns the root SVG element */
-    readonly rootSVG: SVGSVGElement
-
-
     /** Returns the whole drawing bounding rectangle */
     public get drawingRect(): DOMRect
     {
@@ -1635,6 +1640,7 @@ export const enum LibDataPriority {
 }//LibDataPriority
 
 // Re-export child classes to API
+export {default as KresmerVue} from "./Kresmer.vue";
 export {default as DrawingElement } from "./DrawingElement/DrawingElement";
 export {default as DrawingElementClass, DrawingElementPropCategory, type PropTypeDescriptor} from "./DrawingElement/DrawingElementClass";
 export type {DrawingElementData} from "./DrawingElement/DrawingElement";
