@@ -90,13 +90,9 @@
         } as KresmerInitOptions
     );//autoCreatedModel
 
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikKresmer, model);
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikIsEditable, model.isEditable);
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikSnapToGrid, model.snapToGrid);
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(Kresmer.ikSnappingGranularity, model.snappingGranularity);
 
     function zoomed(size: string|number)
