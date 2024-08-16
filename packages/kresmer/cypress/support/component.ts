@@ -54,7 +54,7 @@ export function assertNoExceptions()
 
 // Mounting tested Kresmer component
 Cypress.Commands.add('mount', (params) => {
-    $kresmer = params?.kresmer ?? new Kresmer("[data-cy-root]", {snappingGranularity: 10});
+    $kresmer = params?.kresmer ?? new Kresmer("[data-cy-root]", {snappingGranularity: 10, isEditable: true});
 
     const onVueError = (error: any, vm: any, info: string) => {
         console.debug("Vue error caught!");
