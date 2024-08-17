@@ -136,6 +136,7 @@ export default class DrawingLoader {
         this.kresmer.deselectAllElements();
 
         const attrs: Record<string, unknown> = {
+            xmlns: "kresmer-drawing",
             name: this.kresmer.drawingName,
             width: this.kresmer.logicalWidth, 
             height: this.kresmer.logicalHeight,

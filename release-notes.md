@@ -1,8 +1,10 @@
 ## 0.15.0
 
-Implemented the ability to use Kresmer as a full-fledged Vue component and embed it into other Vue components/applications. 
-To enable this capability, several breaking changes have been made. Kresmer built-in elements and template functions were
-renamed to prevent outer namespace pollution and name collisions:
+Now Kresmer may be as a regular Vue component: either top-most (i.e. ```createApp(KresmerVue, {...}).mount("#kresmer")```) 
+or embedded it into some other Vue component/application. 
+To enable this capability and prevent the outer namespace pollution and name collisions, several breaking changes have been made. 
+
+Kresmer built-in elements and template functions were renamed:
 
 - Kresmer built-in elements:
     - **connection-point** => **kre:connection-point**
