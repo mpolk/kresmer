@@ -22,7 +22,7 @@ import Kresmer, {
     NetworkComponentController, NetworkComponent,
     NetworkLink, DrawingElement, Vertex,
     TransformMode, ConnectionPointProxy,
-    KresmerVue,
+    // KresmerVue,
     kresmerPlugin,
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
@@ -84,17 +84,17 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar") as InstanceType<typeof StatusBar>;
 
-const app = createApp(KresmerVue, {
-    ...window.electronAPI.initialAppSettings, 
-    ...calcKresmerSize(),
-    isEditable: true,
-}).use(kresmerPlugin);
-export const kresmer = (app.mount("#kresmer") as InstanceType<typeof KresmerVue>).model as Kresmer;
-// export const kresmer = new Kresmer("#kresmer", {
+// const app = createApp(KresmerVue, {
 //     ...window.electronAPI.initialAppSettings, 
 //     ...calcKresmerSize(),
 //     isEditable: true,
-// });
+// }).use(kresmerPlugin);
+// export const kresmer = (app.mount("#kresmer") as InstanceType<typeof KresmerVue>).model as Kresmer;
+export const kresmer = new Kresmer("#kresmer", {
+    ...window.electronAPI.initialAppSettings, 
+    ...calcKresmerSize(),
+    isEditable: true,
+});
 statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
@@ -153,9 +153,9 @@ const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsS
     InstanceType<typeof AppSettingsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
-const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).mount("#linkClassSelectionSidebar") as
+const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).use(kresmerPlugin).mount("#linkClassSelectionSidebar") as
     InstanceType<typeof LinkClassSelectionSidebar>;
-const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionSidebar).mount("#componentClassSelectionSidebar") as
+const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionSidebar).use(kresmerPlugin).mount("#componentClassSelectionSidebar") as
     InstanceType<typeof ComponentClassSelectionSidebar>;
 const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
     InstanceType<typeof DrawingMergeDialog>;

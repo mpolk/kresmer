@@ -11,6 +11,7 @@
     import { Offcanvas } from 'bootstrap';
     import Kresmer, { DrawingElementClass } from 'kresmer';
     import i18next from 'i18next';
+    import { KresmerVue } from 'kresmer';
 
     export default {
         name: "DrawingElementClassSelectionSidebar",
@@ -18,12 +19,13 @@
 </script>
 
 <script setup lang="ts">
+
     let offCanvas!: Offcanvas;
     const rootDiv = ref<HTMLDivElement>();
     const selElementClass = ref<HTMLSelectElement>();
     const selCategory = ref<HTMLSelectElement>();
     const btnOk = ref<HTMLButtonElement>();
-    const divPreview = ref<HTMLDivElement>();
+    const vuePreview = ref<InstanceType<typeof KresmerVue>>();
     let resolvePromise!: (result: DrawingElementClass|null) => void;
 
     const result = ref<DrawingElementClass|null>(null);
@@ -64,9 +66,9 @@
 
 
     function init() {
-        if (!krePreview) {
+        if (!offCanvas) {
             offCanvas = new Offcanvas(rootDiv.value!, {backdrop: 'static'});
-            krePreview = new Kresmer(divPreview.value!, {isEditable: false, logicalWidth: previewWidth, logicalHeight: previewHeight});
+            krePreview = vuePreview.value.model;
         }//if
 
         return krePreview;
@@ -154,7 +156,9 @@
                         </div>
                         <div class="row mt-2">
                             <div class="col">
-                                <div class="w-100 h-100" ref="divPreview"></div>
+                                <div class="w-100 h-100">
+                                    <KresmerVue ref="vuePreview" :logical-width="previewWidth" :logical-height="previewHeight" />
+                                </div>
                             </div>
                         </div>
                         <div class="row justify-content-end mt-3">
