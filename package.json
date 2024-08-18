@@ -1,7 +1,7 @@
 {
   "name": "e-kresmer",
   "private": true,
-  "version": "0.15.0",
+  "version": "0.15.1",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "main": "dist/main/main.js",
