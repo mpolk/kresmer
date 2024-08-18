@@ -170,7 +170,7 @@
         @mouseleave="model.onMouseLeave"
         >
         <path :id="pathID" :d="path()" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
-        <path v-if="mirrorLabels" :id="reversePathID" :d="path(true)" style="fill: none; stroke: none" :style="segmentStyle" />
+        <path v-if="mirrorLabels" :id="reversePathID" :d="path(true)" style="fill: none; stroke: none" />
         <template v-if="startLabel">
             <a v-if="startLabelHref" class="link label href" :class="mirrorLabels ? 'end' : 'start'" 
                v-bind:href="model.kresmer.makeHref(startLabelHref)">
