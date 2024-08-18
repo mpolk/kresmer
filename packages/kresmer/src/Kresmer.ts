@@ -818,6 +818,7 @@ ${svg.outerHTML}
                 this.componentsByName.delete(name);
             }//if
         });
+        this.zoomFactor = 1;
     }//eraseContent
 
 
