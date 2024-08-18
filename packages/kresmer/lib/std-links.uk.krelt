@@ -15,17 +15,17 @@
 
     <link-class ref="_abstract-link">
         <props>
-            <!-- <prop name="mediaType" type="string" category="Network"/>
-            <prop name="acceptMediaTypes" type="string" category="Network"/>
-            <prop name="startLabel" type="string"/>
-            <prop name="startLabelHref" type="string"/>
-            <prop name="endLabel" type="string"/>
-            <prop name="endLabelHref" type="string"/>
-            <prop name="mirrorLabels" type="Boolean" />
-            <prop name="startMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
-            <prop name="endMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
-            <prop name="color" type="Color" category="Presentation"/>
-            <prop name="highlightColor" type="Color" category="Presentation"/> -->
+            <prop ref="mediaType" name="тип носія" description="Тип носія"/>
+            <prop ref="acceptMediaTypes" name="приймати типи носіїв" description="Приймати типи носіїв"/>
+            <prop ref="startLabel" name="початкова мітка" description="Початкова мітка"/>
+            <prop ref="startLabelHref" name="посилання початкової мітки" description="Посилання початкової мітки"/>
+            <prop ref="endLabel" name="кінцева мітка" description="кінцева мітка"/>
+            <prop ref="endLabelHref" name="посилання кінцевої мітки" description="Посилання кінцевої мітки"/>
+            <prop ref="mirrorLabels" name="відзеркалити мітки" description="Відзеркалити мітки відносно лінії з'єднання" />
+            <prop ref="startMarker" name="початковий маркер" description="Початковий маркер" choices="стрілка, коло, квадрат, ромб"/>
+            <prop ref="endMarker" name="кінцевий маркер" description="Кінцевий маркер" choices="стрілка, коло, квадрат, ромб"/>
+            <prop ref="color" name="колір" description="Колір лінії за замовчуванням"/>
+            <prop ref="highlightColor" name="колір виділення" description="Колір виділеної лінії"/>
             <prop ref="thickness" name="товщина" choices="тонкий,нормальний,товстий" />
         </props>
     </link-class>
@@ -38,7 +38,14 @@
     <link-class ref="DAC" category="кабелі прямого підключення"/>
     <link-class ref="AOC" category="кабелі прямого підключення"/>
     <link-class ref="AOC-fan" name="віяло AOC" category="кабелі прямого підключення"/>
-    <link-class ref="multifiber-cable" name="багатоволоконний кабель" category="оптични з'єднання"/>
+
+    <link-class ref="multifiber-cable" name="багатоволоконний кабель" category="оптични з'єднання">
+        <props>
+            <prop ref="nFibers" name="кількість волокон" description="Кількість волокон в кабелі"/>
+            <prop ref="mode" name="кількість мод" choices="одномодовий, багатомодовий" description="Використання оптичного режиму"/>
+            <prop ref="layingMethod" name="метод укладання" choices="по-стовпах, по-дахах,в-каналізації"/>
+        </props>
+    </link-class>
 
     <!-- Link bundles -->
     <link-bundle-class ref="link-bundle" name="жмут" category="загальни"/>
