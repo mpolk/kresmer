@@ -29,6 +29,7 @@
         startLabelHref: {type: String, required: false},
         endLabel: {type: String, required: false},
         endLabelHref: {type: String, required: false},
+        mirrorLabels: {type: Boolean, required: false},
         startMarker: {type: String, required: false},
         endMarker: {type: String, required: false},
         color: {type: String, required: false},
@@ -103,10 +104,12 @@
         }
     })//segMarkStyle
 
-    const path = computed(() => {
+    function path(reverse?: boolean)
+    {
         const chunks: string[] = [];
         let prefix = "M";
-        props.model.vertices.forEach(v => {
+        const vertices = reverse ? props.model.vertices.toReversed() : props.model.vertices;
+        vertices.forEach(v => {
             chunks.push(`${prefix}${v.coords.x},${v.coords.y}`)
             prefix = "L";
             const bv1 = v.anchor.bundle?.baseVertex;
@@ -129,9 +132,11 @@
             }//if
         });
         return chunks.join(" ");
-    })//path
+    }//path
 
-    const pathID = computed(() => `kre:link${props.model.id}path`);
+    const pathID = `kre:link${props.model.id}path`;
+    const reversePathID = `kre:link${props.model.id}reversePath`;
+    const labelPathID = computed(() => props.mirrorLabels ? reversePathID : pathID);
     function segmentPathID(i: number) { return `kre:link${props.model.id}seg${i}path`; }
 
     function segmentDataAttr(i: number)
@@ -164,25 +169,36 @@
         @mouseenter="model.onMouseEnter"
         @mouseleave="model.onMouseLeave"
         >
-        <path :id="pathID" :d="path" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
+        <path :id="pathID" :d="path()" :class="segmentClass" style="fill: none;" :style="segmentStyle" />
+        <path v-if="mirrorLabels" :id="reversePathID" :d="path(true)" style="fill: none; stroke: none" :style="segmentStyle" />
         <template v-if="startLabel">
-            <a v-if="startLabelHref" class="link label start href" v-bind:href="model.kresmer.makeHref(startLabelHref)">
+            <a v-if="startLabelHref" class="link label href" :class="mirrorLabels ? 'end' : 'start'" 
+               v-bind:href="model.kresmer.makeHref(startLabelHref)">
                 <text>
-                    <textPath :href="`#${pathID}`"><template v-if="startMarker">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}</textPath>
+                    <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? '100%' : undefined">
+                        <template v-if="startMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}<template v-if="endMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                    </textPath>
                 </text>
             </a>
-            <text v-else class="link label start">
-                <textPath :href="`#${pathID}`"><template v-if="startMarker">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}</textPath>
+            <text v-else class="link label" :class="mirrorLabels ? 'end' : 'start'">
+                <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? '100%' : undefined">
+                    <template v-if="startMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>{{startLabel}}<template v-if="endMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                </textPath>
             </text>
         </template>
         <template v-if="endLabel">
-            <a v-if="endLabelHref" class="link label end href" v-bind:href="model.kresmer.makeHref(endLabelHref)">
+            <a v-if="endLabelHref" class="link label href" :class="mirrorLabels ? 'start' : 'end'" 
+               v-bind:href="model.kresmer.makeHref(endLabelHref)">
                 <text>
-                    <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}<template v-if="endMarker">&nbsp;&nbsp;&nbsp;</template></textPath>
+                    <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? undefined : '100%'">
+                        <template v-if="startMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>{{endLabel}}<template v-if="endMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                    </textPath>
                 </text>
             </a>
-            <text v-else class="link label end">
-                <textPath :href="`#${pathID}`" startOffset="100%">{{endLabel}}<template v-if="endMarker">&nbsp;&nbsp;&nbsp;</template></textPath>
+            <text v-else class="link label" :class="mirrorLabels ? 'start' : 'end'">
+                <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? undefined : '100%'">
+                    <template v-if="startMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>{{endLabel}}<template v-if="endMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                </textPath>
             </text>
         </template>
         <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">

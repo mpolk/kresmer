@@ -21,6 +21,7 @@
             <prop name="startLabelHref" type="string"/>
             <prop name="endLabel" type="string"/>
             <prop name="endLabelHref" type="string"/>
+            <prop name="mirrorLabels" type="Boolean" />
             <prop name="startMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
             <prop name="endMarker" type="string" choices="arrow,circle,square,diamond" category="Presentation"/>
             <prop name="color" type="Color" category="Presentation"/>
