@@ -73,7 +73,7 @@ export default class Menus {
                 { type: 'separator' },
                 { label: t("menu.file.save-drawing", "Save drawing"), accelerator: "Control+S", click: () => saveDrawing() },
                 { label: t("menu.file.save-drawing-as", "Save drawing as..."), click: () => saveDrawingAs() },
-                { label: t("menu.file.export-drawing-to-svg", "Export drawing to SVG..."), click: () => exportDrawingToSVG() },
+                { label: t("menu.file.export-drawing-to-svg", "Export drawing to SVG..."), accelerator: "Control+G", click: () => exportDrawingToSVG() },
                 { type: 'separator' },
                 {
                     label: t("menu.file.connect-to-server", "Connect to the backend server..."), 
