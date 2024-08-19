@@ -39,6 +39,7 @@ import DrawingArea, { DrawingAreaMap } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
+import SVGExporter from "./SVGExporter";
 
 
 /**
@@ -787,17 +788,8 @@ export default class Kresmer extends KresmerEventHooks {
 
     public exportDrawingToSVG(styles: string): string
     {
-        const svg = this.rootSVG.cloneNode(true) as SVGElement;
-        const defsElement = document.createElement("defs");
-        const styleElement = document.createElement("style");
-        styleElement.textContent = styles;
-        defsElement.appendChild(styleElement);
-        svg.insertBefore(defsElement, svg.firstChild);
-        return `\
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
-${svg.outerHTML}
-`;
+        const exporter = new SVGExporter(this);
+        return exporter.export(styles);
     }//exportDrawingToSVG
 
 
