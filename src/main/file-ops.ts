@@ -148,15 +148,15 @@ export function exportDrawingToSVG()
     if (filePath) {
         if (!path.extname(filePath)) {
             filePath += ".svg";
-        }//if
 
-        if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
-            message: `File "${path.basename(filePath)}" exists! Overwrite?`,
-            buttons: ["Ok", "Cancel"],
-            defaultId: 1,
-            })) 
-        {
-            return;
+            if (fs.existsSync(filePath) && dialog.showMessageBoxSync(mainWindow, {
+                message: `File "${path.basename(filePath)}" exists! Overwrite?`,
+                buttons: ["Ok", "Cancel"],
+                defaultId: 1,
+                })) 
+            {
+                return;
+            }//if
         }//if
         
         IpcMainHooks.once("complete-drawing-export-to-SVG", (svgData: string) => {
