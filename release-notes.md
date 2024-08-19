@@ -1,3 +1,10 @@
+## 0.15.3
+
+- Fixed an error in SVG exporting, which made exported SVG-files unreadable by some SVG-manipulating software because of wrong XML-namespace usage. The error was introduced in the 0.15.0 release, where the whole XML-namespace hierarchy was reorganized.
+
+- A boolean prop called ```mirrorLabels``` was added to all types of links. It helps a resolve a problem when a start or end link label rendered upside-down because of the orientation of the corresponding link end (or start). Previously the only solution was to 
+exchange the link's start and end points. It might be rather inconvenient, especially when the link had many intermediate vertices and you had to move them all. Now you can just set ```mirrorLabels``` to ```true```, and the labels will be mirrored relative to the link path.
+
 ## 0.15.0
 
 Now Kresmer may be used as a regular Vue component: either top-most (i.e. ```createApp(KresmerVue, {...}).mount("#kresmer")```) 
