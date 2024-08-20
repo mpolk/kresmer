@@ -56,7 +56,7 @@
 
 
     <!-- A rack-mount device that can be stacked (i.t. consists of one or more stack units) and can be viewed in left, right or central perspective -->
-    <component-class name="RackMountDevice" category=".general">
+    <component-class name="RackMountDevice" category=".general" version="2024081900">
         <template>
             <title v-if="comment">{{comment}}</title>
             <template v-for="i in nUnits">
@@ -147,6 +147,10 @@
                     {{ipAddress}}
                 </text>
             </template>
+            <kre:adjustment-ruler target-prop="nameVerticalPos" 
+                v-bind:x1="width/2" v-bind:y1="unitHeight" 
+                v-bind:x2="width/2"  v-bind:y2="nameY" 
+                fixed-end="1"/>
         </template>
         <style>
             .device-name { font-family: sans-serif; fill: black; text-shadow: none}

@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- * A proxy objectt for Adjustment Rulers 
+ * A proxy object for Adjustment Rulers 
  * (ruler-like handles for component numeric props adjustment)
 \***************************************************************************/
 

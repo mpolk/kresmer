@@ -32,6 +32,7 @@
 
     const hostComponent = inject(NetworkComponent.injectionKey)!;
     const isEmbedded = inject(Kresmer.ikIsEmbedded, false);
+    const isBaseObject = inject(Kresmer.ikIsBaseObject, false);
     const proxy = reactive(new AdjustmentRuler(hostComponent, props.targetProp)) as unknown as AdjustmentRuler;
     hostComponent.addAdjustmentHandle(proxy);
     const kresmer = inject(Kresmer.ikKresmer)!;
@@ -106,7 +107,7 @@
 </script>
 
 <template>
-    <template v-if="hostComponent?.controller?.isInAdjustmentMode && !isEmbedded">
+    <template v-if="hostComponent?.controller?.isInAdjustmentMode && (!isEmbedded || isBaseObject)">
         <g class="adjustment-ruler" :class="{selected: proxy.isSelected}" @click="hostComponent.selectAdjustmentHandle(proxy)">
             <line :x1="x1" :y1="y1" :x2="x2" :y2="y2"
                 :marker-start="`url(#${markerID(1)})`" :marker-end="`url(#${markerID(2)})`" />

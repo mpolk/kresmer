@@ -383,6 +383,8 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** A symbolic key for the injection of the component embedding indicator */
     static readonly ikIsEmbedded = Symbol() as InjectionKey<boolean|undefined>;
+    /** A symbolic key for the injection of the component being base embedded object indicator */
+    static readonly ikIsBaseObject = Symbol() as InjectionKey<boolean|undefined>;
 
     /**
      * Registers a Network Component Class in the Kresmer and registers

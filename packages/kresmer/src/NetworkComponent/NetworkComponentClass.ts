@@ -64,6 +64,7 @@ export default class NetworkComponentClass extends DrawingElementClass {
                 }//for
             }//if
             baseInstanceNode.setAttribute("v-bind:name", "name");
+            baseInstanceNode.setAttribute("v-bind:isBaseObject", "true");
             for (const propName in this.props) {
                 if (!params.baseClassPropBindings || !(propName in params.baseClassPropBindings))
                     baseInstanceNode.setAttribute(`v-bind:${propName}`, propName);

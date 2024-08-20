@@ -11,8 +11,9 @@
 <*************************************************************************** -->
 
 <script lang="ts">
-    import { PropType, computed } from 'vue';
+    import { PropType, computed, provide } from 'vue';
     import { ITransform, Position } from '../Transform/Transform';
+    import Kresmer from '../Kresmer';
 </script>
 
 <script setup lang="ts">
@@ -22,7 +23,11 @@
         y: {type: [Number, String] as PropType<number|string>, default: 0},
         transform: {type: [Object, String] as PropType<ITransform|string>},
         transformOrigin: {type: [Object, String] as PropType<Position|string>},
+        isBaseObject: {type: Boolean},
     });
+
+    if (props.isBaseObject)
+        provide(Kresmer.ikIsBaseObject, true);
 
     const transform = computed(() => {
         let {x, y} = props;
