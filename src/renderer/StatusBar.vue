@@ -110,23 +110,28 @@
                 <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.autoAlignVertices}"
                     >hdr_auto</span>
             </div>
-            <div class="pane" :title="snappingToGridTitle" style="cursor: pointer; overflow: visible;">
+            <div class="pane" :title="snappingToGridTitle" style="cursor: pointer; overflow: visible;" 
+                 @click="onGridControlClick($event)">
                 <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.snapToGrid}" 
-                    @click="onGridControlClick($event)"
                     >grid_4x4</span>
-                <datalist id="snappingValues">
-                    <option value="0" label="0"></option>
-                    <option value="5" label="5"></option>
-                    <option value="10" label="10"></option>
-                    <option value="15" label="15"></option>
-                    <option value="20" label="20"></option>
-                </datalist>
-                <input type="range" v-show="displayData.snappingSliderVisible"
-                    style="writing-mode: vertical-lr; position: absolute; 
-                           top: -10.5rem; left: 0.3rem; height: 10rem; width: 2rem" 
-                    min="1" max="20" step="1" list="snappingValues"
-                    :title="String(displayData.snappingGranularity)"
-                    :value="displayData.snappingGranularity" @change="onSnapGranularityChange($event)"/>
+                <div v-show="displayData.snappingSliderVisible"
+                    style="position: absolute; top: -10.5rem; left: 0.3rem; height: 10rem; width: 2rem"
+                    >
+                    <input type="range" style="writing-mode: vertical-lr; height: 100%; vertical-align: bottom;" 
+                        min="1" max="20" step="1" list="snappingValues"
+                        :title="String(displayData.snappingGranularity)"
+                        :value="displayData.snappingGranularity" 
+                        @change="onSnapGranularityChange($event)"/>
+                    <datalist id="snappingValues" class="snapping-datalist"
+                        style="display: inline-flex; flex-direction: column; justify-content: space-between; height: 100%;">
+                        <option value="0" label="0"></option>
+                        <option value="5" label="5"></option>
+                        <option value="10" label="10"></option>
+                        <option value="15" label="15"></option>
+                        <option value="20" label="20"></option>
+                    </datalist>
+                </div>
+                <span class="align-bottom">{{ displayData.snappingGranularity }}</span>
             </div>
             <div class="pane" :title="drawingScaleTitle">
                 <span class="align-bottom">{{drawingScaleDisplay}}</span>
@@ -165,6 +170,10 @@
 
             .disabled {
                 color: rgb(57, 57, 192);
+            }
+
+            .snapping-datalist {
+                color: rgb(69, 69, 69);
             }
         }
     }
