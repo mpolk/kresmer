@@ -158,4 +158,40 @@
     </component-class>
 
 
+    <component-class name="DLink-DXS-3400-24SC" category="Switches/DLink">
+        <extends base="DLinkSwitchBody"/>
+        <template>
+            <template v-for="i in 10">
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
+            </template>
+            <template v-for="i in [11,12]">
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2-1, 'fiber', comboPortMedia(i*2-1))"/>
+                <Kre:SFP-Port v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2, 'fiber', comboPortMedia(i*2))" key-position="bottom"/>
+            </template>
+            <template v-for="i in [11,12]">
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5 + 0.85)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2-1, 'copper', comboPortMedia(i*2-1))"/>
+                <Kre:RJ45-Port v-bind:x="unitHeight*(i*0.5 + 0.85)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" 
+                    v-bind="comboPortData(i*2, 'copper', comboPortMedia(i*2))" key-position="bottom"/>
+            </template>
+            <text v-bind:x="unitHeight*7.3" v-bind:y="unitHeight*0.3" v-bind:font-size="unitHeight/6">DXS-3400</text>
+            <text v-bind:x="unitHeight*7.3" v-bind:y="unitHeight*0.5" v-bind:font-size="unitHeight/6">24SC</text>
+        </template>
+        <props extend="SwitchWithComboPorts" except="interUnitGap, nPorts">
+            <prop name="width" type="Number" default="none" />
+        </props>
+        <computed-props extend="SwitchWithComboPorts">
+            <computed-prop name="firstComboPort">21</computed-prop>
+            <computed-prop name="width">
+                props.width ?? props.unitHeight * 8.2
+            </computed-prop>
+        </computed-props>
+        <functions extend="SwitchWithComboPorts" />
+    </component-class>
+
 </kresmer-library>
