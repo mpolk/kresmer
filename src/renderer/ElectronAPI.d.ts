@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *        Renderer-to-main electron interprocess API declaration
+ *        Renderer-to-main electron inter-process API declaration
  ***************************************************************************/
 
 import {FileFilter, IpcRendererEvent} from 'electron';
@@ -31,6 +31,7 @@ export interface ElectronAPI {
     openURL: (url: string) => void,
     rulersShownOrHidden: (shown: boolean) => void,
     gridShownOrHidden: (shown: boolean) => void,
+    snappingToGridToggled: (snapToGrid: boolean) => void,
     autoAlignmentToggled: (autoAlignVertices: boolean) => void,
     loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
     loadLibraryTranslation: (libName: string, language: string) => Promise<string|undefined>,

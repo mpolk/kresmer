@@ -112,6 +112,10 @@ exposeToRenderer({
         sendToMain("grid-shown-or-hidden", shown);
     },
 
+    snappingToGridToggled: (snapToGrid: boolean) => {
+        sendToMain("snapping-to-grid-toggled", snapToGrid)
+    },
+
     autoAlignmentToggled: (autoAlignVertices: boolean) => {
         sendToMain("vertex-auto-alignment-toggled", autoAlignVertices)
     },

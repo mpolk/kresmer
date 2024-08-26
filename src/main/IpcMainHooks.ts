@@ -29,6 +29,7 @@ export interface IpcMainChannels {
     "open-url": (url: string) => void;
     "grid-shown-or-hidden": (shown: boolean) => void;
     "rulers-shown-or-hidden": (shown: boolean) => void;
+    "snapping-to-grid-toggled": (snapToGrid: boolean) => void;
     "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
     "load-library-file": (libName: string, fileName?: string) => string|undefined;
     "load-library-translation": (libName: string, language: string) => string|undefined;

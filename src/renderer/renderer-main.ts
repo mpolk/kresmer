@@ -67,6 +67,7 @@ export type StatusBarDisplayData = {
     drawingScale: number,
     notificationsCount: number,
     autoAlignVertices: boolean,
+    snapToGrid: boolean,
     backendRequested: boolean,
 };
 
@@ -77,6 +78,7 @@ export const statusBarData: StatusBarDisplayData = reactive({
     drawingScale: 1,
     notificationsCount: 0,
     autoAlignVertices: true,
+    snapToGrid: true,
     backendRequested: false,
 })//statusBarData
 
@@ -99,6 +101,7 @@ statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 statusBarData.autoAlignVertices = kresmer.autoAlignVertices;
+statusBarData.snapToGrid = kresmer.snapToGrid;
 
 function calcKresmerSize()
 {
@@ -636,6 +639,13 @@ appCommandExecutor.on("toggle-grid", () => {
     kresmer.showGrid = !kresmer.showGrid;
     window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 });
+
+appCommandExecutor.on("toggle-snapping-to-grid", toggleSnappingToGrid);
+export function toggleSnappingToGrid()
+{
+    kresmer.snapToGrid = statusBarData.snapToGrid = !kresmer.snapToGrid;
+    window.electronAPI.snappingToGridToggled(kresmer.snapToGrid);
+}//toggleSnappingToGrid
 
 appCommandExecutor.on("toggle-vertex-auto-alignment", toggleAutoAlignment);
 export function toggleAutoAlignment()

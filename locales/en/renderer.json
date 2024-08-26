@@ -68,7 +68,7 @@
       "center": "center",
       "cover": "cover",
       "scale": "scale",
-      "strech": "strech",
+      "stretch": "stretch",
       "tile": "tile"
     },
     "title": "Drawing",
@@ -113,7 +113,7 @@
     "drag-component": "Drag the component to move it, \"ctrl-click\" to transform or \"ctrl-shift-click\" to adjust",
     "drop-component": "Drop the component where you want to leave it...",
     "rotate-component": "Rotate the component around the center mark or click to switch to the scaling mode",
-    "scale-component": "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode",
+    "scale-component": "Drag any handle to scale, drag the center to move or click to switch to the rotation mode",
     "adjust-component": "Click on any adjustment tool to adjust (edit) the corresponding component prop",
     "adjust-component-prop": "Drag any free (green) handle to adjust the corresponding component prop"
   },
@@ -131,7 +131,8 @@
     "drawing-scale": "Drawing display scale (\"ctrl-scroll\" to change)",
     "on": "on",
     "off": "off",
-    "auto-alignment": "Vertex auto-alignment is {{state}}"
+    "auto-alignment": "Vertex auto-alignment is {{state}}",
+    "snap-to-grid": "Snap to grid"
   },
   "toast-pane": {
     "clear-all": "Clear all",

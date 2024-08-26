@@ -100,6 +100,10 @@ export default class Menus {
                     label:  t("menu.edit.auto-align-vertices", 'Auto-align vertices'), type: "checkbox", checked: true, accelerator: "F2", id: "toggleVertexAutoAlignment",
                     click: () => sendAppCommand("toggle-vertex-auto-alignment")
                 },
+                {
+                    label:  t("menu.edit.snap-to-grid", 'Snap to grid'), type: "checkbox", checked: true, accelerator: "F3", id: "toggleSnappingToGrid",
+                    click: () => sendAppCommand("toggle-snapping-to-grid")
+                },
                 { label:  t("menu.edit.drawing-properties", "Drawing properties..."), click: () => sendAppCommand("edit-drawing-properties", { x: 0, y: 0 }) },
                 { label:  t("menu.edit.app-settings", "Application settings..."), click: () => sendAppCommand("edit-app-settings", localSettings.data) },
             ]

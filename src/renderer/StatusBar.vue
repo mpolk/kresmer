@@ -8,7 +8,7 @@
 
 <script lang="ts">
     import { computed, onMounted, PropType, ref } from 'vue';
-    import {StatusBarDisplayData, vueToastPane, toggleAutoAlignment} from './renderer-main';
+    import {StatusBarDisplayData, vueToastPane, toggleAutoAlignment, toggleSnappingToGrid} from './renderer-main';
     import i18next from 'i18next';
 
     export default {
@@ -37,13 +37,13 @@
         addEventListener("resize", stickToBottom);
     });
 
-    const drawingScaleDispl = computed(() => {
+    const drawingScaleDisplay = computed(() => {
         if (props.displayData.drawingScale >= 1) {
             return `${Math.round(props.displayData.drawingScale * 100) / 100} : 1`;
         } else {
             return `1 : ${Math.round(100 / props.displayData.drawingScale) / 100}`;
         }//if
-    })//drawingScaleDispl
+    })//drawingScaleDisplay
 
     const haveNotifications = computed(() => props.displayData.notificationsCount > 0);
     const notificationsTitle = computed(() => i18next.t("status-bar.notifications", {
@@ -52,11 +52,19 @@
     }));
     const backendURLTitle = computed(() => i18next.t("status-bar.backend-url", "Backend server URL we are currently connected"));
     const drawingScaleTitle = computed(() => i18next.t("status-bar.drawing-scale", "Drawing display scale (\"ctrl-scroll\" to change)"));
+
     const autoAlignmentTitle = computed(() => {
         const state = props.displayData.autoAlignVertices ? 
             i18next.t("status-bar.on", "on") : 
             i18next.t("status-bar.off", "off");
         return i18next.t("status-bar.auto-alignment", {defaultValue: "Vertex auto-alignment", state});
+    });
+
+    const snappingToGridTitle = computed(() => {
+        const state = props.displayData.snapToGrid ? 
+            i18next.t("status-bar.on", "on") : 
+            i18next.t("status-bar.off", "off");
+        return i18next.t("status-bar.snap-to-grid", {defaultValue: "Snap to grid", state});
     });
 
     defineExpose({getHeight});
@@ -81,8 +89,12 @@
                 <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.autoAlignVertices}"
                     >hdr_auto</span>
             </div>
+            <div class="pane" :title="snappingToGridTitle" style="cursor: pointer" @click="toggleSnappingToGrid">
+                <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.snapToGrid}"
+                    >grid_4x4</span>
+            </div>
             <div class="pane" :title="drawingScaleTitle">
-                <span class="align-bottom">{{drawingScaleDispl}}</span>
+                <span class="align-bottom">{{drawingScaleDisplay}}</span>
             </div>
             <div class="pane" :title="notificationsTitle" style="cursor: pointer">
                 <span class="material-symbols-outlined align-bottom" 

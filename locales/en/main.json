@@ -18,6 +18,7 @@
       "undo": "Undo",
       "redo": "Redo",
       "auto-align-vertices": "Auto-align vertices",
+      "snap-to-grid": "Snap to grid",
       "drawing-properties": "Drawing properties...",
       "app-settings": "Application settings..."
     },

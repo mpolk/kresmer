@@ -184,6 +184,11 @@ export function initIpcMainHooks()
         changeMenuItems("toggleRulers")({checked: shown});
     });
 
+    IpcMainHooks.on("snapping-to-grid-toggled", snapToGrid => {
+        changeMenuItems("toggleSnappingToGrid")({checked: snapToGrid});
+        localSettings.set("snapToGrid", snapToGrid);
+    });
+
     IpcMainHooks.on("vertex-auto-alignment-toggled", autoAlignVertices => {
         changeMenuItems("toggleVertexAutoAlignment")({checked: autoAlignVertices});
         localSettings.set("autoAlignVertices", autoAlignVertices);

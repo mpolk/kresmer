@@ -95,7 +95,7 @@
             case BackgroundImageAlignment.CENTER: return i18next.t("drawing-props-sidebar.background-image-alignment.center", "center");
             case BackgroundImageAlignment.COVER: return i18next.t("drawing-props-sidebar.background-image-alignment.cover", "cover");
             case BackgroundImageAlignment.SCALE: return i18next.t("drawing-props-sidebar.background-image-alignment.scale", "scale");
-            case BackgroundImageAlignment.STRECH: return i18next.t("drawing-props-sidebar.background-image-alignment.strech", "strech");
+            case BackgroundImageAlignment.STRECH: return i18next.t("drawing-props-sidebar.background-image-alignment.stretch", "stretch");
             case BackgroundImageAlignment.TILE: return i18next.t("drawing-props-sidebar.background-image-alignment.tile", "tile");
         }//switch
     }//backgroundImageAlignmentDispl
