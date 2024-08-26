@@ -30,6 +30,7 @@ export interface IpcMainChannels {
     "grid-shown-or-hidden": (shown: boolean) => void;
     "rulers-shown-or-hidden": (shown: boolean) => void;
     "snapping-to-grid-toggled": (snapToGrid: boolean) => void;
+    "snapping-granularity-changed": (granularity: number) => void;
     "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
     "load-library-file": (libName: string, fileName?: string) => string|undefined;
     "load-library-translation": (libName: string, language: string) => string|undefined;

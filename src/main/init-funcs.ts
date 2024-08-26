@@ -189,6 +189,10 @@ export function initIpcMainHooks()
         localSettings.set("snapToGrid", snapToGrid);
     });
 
+    IpcMainHooks.on("snapping-granularity-changed", granularity => {
+        localSettings.set("snappingGranularity", granularity);
+    });
+
     IpcMainHooks.on("vertex-auto-alignment-toggled", autoAlignVertices => {
         changeMenuItems("toggleVertexAutoAlignment")({checked: autoAlignVertices});
         localSettings.set("autoAlignVertices", autoAlignVertices);

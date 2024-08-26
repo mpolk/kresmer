@@ -32,6 +32,7 @@ export interface ElectronAPI {
     rulersShownOrHidden: (shown: boolean) => void,
     gridShownOrHidden: (shown: boolean) => void,
     snappingToGridToggled: (snapToGrid: boolean) => void,
+    snappingGranularityChanged: (granularity: number) => void,
     autoAlignmentToggled: (autoAlignVertices: boolean) => void,
     loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
     loadLibraryTranslation: (libName: string, language: string) => Promise<string|undefined>,

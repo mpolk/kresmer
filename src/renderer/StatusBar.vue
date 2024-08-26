@@ -8,7 +8,7 @@
 
 <script lang="ts">
     import { computed, onMounted, PropType, ref } from 'vue';
-    import {StatusBarDisplayData, vueToastPane, toggleAutoAlignment, toggleSnappingToGrid} from './renderer-main';
+    import {StatusBarDisplayData, vueToastPane, toggleAutoAlignment, toggleSnappingToGrid, setSnappingGranularity} from './renderer-main';
     import i18next from 'i18next';
 
     export default {
@@ -67,6 +67,27 @@
         return i18next.t("status-bar.snap-to-grid", {defaultValue: "Snap to grid", state});
     });
 
+    
+    function onGridControlClick(event: MouseEvent)
+    {
+        if (!event.ctrlKey)
+            // eslint-disable-next-line vue/no-mutating-props
+            props.displayData.snappingSliderVisible = !props.displayData.snappingSliderVisible;
+        else {
+            toggleSnappingToGrid();
+            // eslint-disable-next-line vue/no-mutating-props
+            props.displayData.snappingSliderVisible = false;
+        }//if
+    }//onGridControlClick
+    
+    function onSnapGranularityChange(event: Event)
+    {
+        const newValue = Number((event.target as HTMLInputElement).value);
+        // eslint-disable-next-line vue/no-mutating-props
+        props.displayData.snappingGranularity = newValue;
+        setSnappingGranularity(newValue);
+    }//onSnapGranularityChange
+
     defineExpose({getHeight});
 </script>
 
@@ -89,9 +110,23 @@
                 <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.autoAlignVertices}"
                     >hdr_auto</span>
             </div>
-            <div class="pane" :title="snappingToGridTitle" style="cursor: pointer" @click="toggleSnappingToGrid">
-                <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.snapToGrid}"
+            <div class="pane" :title="snappingToGridTitle" style="cursor: pointer; overflow: visible;">
+                <span class="material-symbols-outlined align-bottom" :class="{disabled: !displayData.snapToGrid}" 
+                    @click="onGridControlClick($event)"
                     >grid_4x4</span>
+                <datalist id="snappingValues">
+                    <option value="0" label="0"></option>
+                    <option value="5" label="5"></option>
+                    <option value="10" label="10"></option>
+                    <option value="15" label="15"></option>
+                    <option value="20" label="20"></option>
+                </datalist>
+                <input type="range" v-show="displayData.snappingSliderVisible"
+                    style="writing-mode: vertical-lr; position: absolute; 
+                           top: -10.5rem; left: 0.3rem; height: 10rem; width: 2rem" 
+                    min="1" max="20" step="1" list="snappingValues"
+                    :title="String(displayData.snappingGranularity)"
+                    :value="displayData.snappingGranularity" @change="onSnapGranularityChange($event)"/>
             </div>
             <div class="pane" :title="drawingScaleTitle">
                 <span class="align-bottom">{{drawingScaleDisplay}}</span>

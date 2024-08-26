@@ -203,6 +203,11 @@
         model.emit("mode-reset");
     }//onMouseDownOnCanvas
 
+    function onCanvasClick(event: MouseEvent)
+    {
+        model.emit("canvas-click", event);
+    }//onCanvasClick
+
     function onCanvasRightClick(event: MouseEvent)
     {
         model.emit("canvas-right-click", event);
@@ -236,6 +241,7 @@
         class="kresmer" ref="rootSVG" 
         :style="rootSVGStyle" v-bind="mountingDims" :viewBox="viewBox"
         @mousedown.self="onMouseDownOnCanvas($event)"
+        @click.self="onCanvasClick($event)"
         @contextmenu.self="onCanvasRightClick($event)"
         @mousemove.prevent.self="onMouseMove"
         @wheel.ctrl.prevent="onMouseWheel($event)"
@@ -274,6 +280,7 @@
                 :key="`x-grid${x}`">
                 <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"
                     @mousedown.self="onMouseDownOnCanvas($event)"
+                    @click.self="onCanvasClick($event)"
                     @contextmenu.self="onCanvasRightClick($event)"
                     @mousemove.prevent.self=""
                     />
@@ -282,6 +289,7 @@
                 :key="`y-grid${y}`">
                 <line class="grid" :x1="rulerBox.x" :y1="y" :x2="rulerBox.x + rulerBox.width" :y2="y"
                     @mousedown.self="onMouseDownOnCanvas($event)"
+                    @click.self="onCanvasClick($event)"
                     @contextmenu.self="onCanvasRightClick($event)"
                     @mousemove.prevent.self=""
                     />

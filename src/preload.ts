@@ -116,6 +116,10 @@ exposeToRenderer({
         sendToMain("snapping-to-grid-toggled", snapToGrid)
     },
 
+    snappingGranularityChanged: (granularity: number) => {
+        sendToMain("snapping-granularity-changed", granularity)
+    },
+
     autoAlignmentToggled: (autoAlignVertices: boolean) => {
         sendToMain("vertex-auto-alignment-toggled", autoAlignVertices)
     },

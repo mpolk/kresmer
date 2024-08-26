@@ -68,6 +68,8 @@ export type StatusBarDisplayData = {
     notificationsCount: number,
     autoAlignVertices: boolean,
     snapToGrid: boolean,
+    snappingGranularity: number,
+    snappingSliderVisible: boolean,
     backendRequested: boolean,
 };
 
@@ -79,6 +81,8 @@ export const statusBarData: StatusBarDisplayData = reactive({
     notificationsCount: 0,
     autoAlignVertices: true,
     snapToGrid: true,
+    snappingGranularity: 1,
+    snappingSliderVisible: false,
     backendRequested: false,
 })//statusBarData
 
@@ -102,6 +106,7 @@ window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 statusBarData.autoAlignVertices = kresmer.autoAlignVertices;
 statusBarData.snapToGrid = kresmer.snapToGrid;
+statusBarData.snappingGranularity = kresmer.snappingGranularity;
 
 function calcKresmerSize()
 {
@@ -246,11 +251,16 @@ kresmer.on("backend-request", state => {
     statusBarData.backendRequested = state === "started";
 });
 
+kresmer.on("canvas-click", (/* mouseEvent: MouseEvent */) =>
+{
+    statusBarData.snappingSliderVisible = false;
+});
+
 kresmer.on("canvas-right-click", (mouseEvent: MouseEvent) =>
 {
     window.electronAPI.showContextMenu("drawing", {x: mouseEvent.clientX, y: mouseEvent.clientY});
 });
-
+    
 kresmer.on("component-double-click", (controller: NetworkComponentController) =>
 {
     vueComponentPropsSidebar.show(controller.component);
@@ -646,6 +656,12 @@ export function toggleSnappingToGrid()
     kresmer.snapToGrid = statusBarData.snapToGrid = !kresmer.snapToGrid;
     window.electronAPI.snappingToGridToggled(kresmer.snapToGrid);
 }//toggleSnappingToGrid
+
+export function setSnappingGranularity(granularity: number)
+{
+    kresmer.snappingGranularity = granularity;
+    window.electronAPI.snappingGranularityChanged(granularity);
+}//setSnappingGranularity
 
 appCommandExecutor.on("toggle-vertex-auto-alignment", toggleAutoAlignment);
 export function toggleAutoAlignment()

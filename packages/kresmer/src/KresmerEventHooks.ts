@@ -31,6 +31,7 @@ class KresmerEventFormats  {
     "drawing-scale":                    (newScaleFactor: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
+    "canvas-click":                     (nativeEvent: MouseEvent) => void;
     "canvas-right-click":               (nativeEvent: MouseEvent) => void;
     "component-loaded":                 (component: NetworkComponent) => boolean;
     "component-added":                  (controller: NetworkComponentController) => void;
@@ -226,6 +227,12 @@ export default class KresmerEventHooks {
 
     /**
      * Is called on mouse click on the drawing canvas
+     */
+    @overridableHandler("canvas-click")
+    protected onCanvasClick() {}
+
+    /**
+     * Is called on mouse right click on the drawing canvas
      */
     @overridableHandler("canvas-right-click")
     protected onCanvasRightClick() {}
