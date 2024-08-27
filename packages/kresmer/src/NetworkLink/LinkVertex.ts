@@ -563,7 +563,7 @@ export default class LinkVertex extends Vertex {
         }//if
 
         let shouldMove = Boolean(newAnchor);
-        const outOfLimits = newAnchor?.pos && (
+        const outOfLimits = newAnchor?.isPinnedUp && (
             newAnchor.pos.x <= 0 || newAnchor.pos.x >= this.parentElement.kresmer.logicalWidth ||
             newAnchor.pos.y <= 0 || newAnchor.pos.y >= this.parentElement.kresmer.logicalHeight);
         if (outOfLimits) {
@@ -573,8 +573,8 @@ export default class LinkVertex extends Vertex {
             shouldMove = false;
             this.blink();
         }//if
-        const hitToNeighbour = newAnchor?.pos && ((newAnchor.pos.x == prePos?.x && newAnchor.pos.y == prePos.y) || 
-                                                  (newAnchor.pos.x == sucPos?.x && newAnchor.pos.y == sucPos.y));
+        const hitToNeighbour = newAnchor?.isPinnedUp && ((newAnchor.pos.x == prePos?.x && newAnchor.pos.y == prePos.y) || 
+            (newAnchor.pos.x == sucPos?.x && newAnchor.pos.y == sucPos.y));
         if (hitToNeighbour) {
             if (Math.abs(newAnchor!.pos!.x - x0) <= Math.abs(newAnchor!.pos!.y - y0))
                 newAnchor!.pos!.y = y0;
@@ -716,8 +716,7 @@ export default class LinkVertex extends Vertex {
                 d1 = d0 * (1 + deltaX / (x0 - bx1));
             else
                 d1 = deltaX;
-        }//if
-        else if (deltaY && (deltaX == undefined || Math.abs(deltaY ?? Number.POSITIVE_INFINITY) <= deltaX)) {
+        } else if (deltaY && (deltaX == undefined || Math.abs(deltaY ?? Number.POSITIVE_INFINITY) <= deltaX)) {
             if (d0)
                 d1 = d0 * (1 + deltaY / (y0 - by1));
             else
