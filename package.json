@@ -31,7 +31,11 @@
     "cypress:run": "npm run cypress:run -w kresmer",
     "cypress:open": "npm run cypress:open -w kresmer",
     "typedoc": "typedoc --tsconfig packages/kresmer/tsconfig.json packages/kresmer/src/Kresmer.ts",
-    "i18n": "i18next -c i18next-parser.main.config.mjs && i18next -c i18next-parser.renderer.config.mjs"
+    "i18n": "i18next -c i18next-parser.main.config.mjs && i18next -c i18next-parser.renderer.config.mjs",
+    "version:minor": "npm version minor --workspaces --include-workspace-root",
+    "postversion:minor": "git commit -a --amend && git tag -f $(git tag --sort=v:refname | tail -1)",
+    "version:patch": "npm version patch --workspaces --include-workspace-root",
+    "postversion:patch": "git commit -a --amend && git tag -f $(git tag --sort=v:refname | tail -1)"
   },
   "build": {
     "appId": "kresmer",
