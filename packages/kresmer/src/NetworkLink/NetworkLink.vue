@@ -176,17 +176,17 @@
                v-bind:href="model.kresmer.makeHref(startLabelHref)">
                 <text>
                     <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? '100%' : undefined">
-                        <template v-if="startMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                        <template v-if="startMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                             {{startLabel}}
-                        <template v-if="startMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                        <template v-if="startMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                     </textPath>
                 </text>
             </a>
             <text v-else class="link label" :class="mirrorLabels ? 'end' : 'start'">
                 <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? '100%' : undefined">
-                    <template v-if="startMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                    <template v-if="startMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                         {{startLabel}}
-                    <template v-if="startMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                    <template v-if="startMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                 </textPath>
             </text>
         </template>
@@ -195,17 +195,17 @@
                v-bind:href="model.kresmer.makeHref(endLabelHref)">
                 <text>
                     <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? undefined : '100%'">
-                        <template v-if="endMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                        <template v-if="endMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                             {{endLabel}}
-                        <template v-if="endMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                        <template v-if="endMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                     </textPath>
                 </text>
             </a>
             <text v-else class="link label" :class="mirrorLabels ? 'start' : 'end'">
                 <textPath :href="`#${labelPathID}`" :startOffset="mirrorLabels ? undefined : '100%'">
-                    <template v-if="endMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                    <template v-if="endMarker && mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                         {{endLabel}}
-                    <template v-if="endMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;</template>
+                    <template v-if="endMarker && !mirrorLabels">&nbsp;&nbsp;&nbsp;&nbsp;</template>
                 </textPath>
             </text>
         </template>
