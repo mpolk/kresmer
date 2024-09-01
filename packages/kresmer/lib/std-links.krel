@@ -36,7 +36,6 @@
             </marker>
             <marker id="kre:link-marker-canalization" markerWidth="8" markerHeight="8" refX="5" refY="9" viewBox="0 0 10 12">
                 <ellipse rx="4" ry="2" cx="5" cy="9" fill="black" stroke="gray" />
-                <!-- <ellipse rx="4" ry="1.5" cx="5" cy="8.5" fill="#406687" stroke="#657f95" transform="rotate(-30 0 8.5)"/> -->
                 <path d="M1,8.5 A 3,1.5 -30 0 1 8,5" fill="#718ea8" stroke="#6087a9" stroke-width="0.5"/>
                 <path d="M1,8.5 A 3,1.5 -30 1 0 8,5" fill="#718ea8" stroke="#21425f" stroke-width="0.5"/>
             </marker>

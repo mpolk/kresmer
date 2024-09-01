@@ -46,7 +46,7 @@ export default class LinkVertex extends Vertex {
     declare protected savedAnchor?: LinkVertexAnchor;
 
 
-    /** Postponned part of the initialization delayed until all components are mounted.
+    /** Postponed part of the initialization delayed until all components are mounted.
      *  It takes internally saved "initParams" and converts it to the "real" anchor data.
     */
     override init(): LinkVertex
