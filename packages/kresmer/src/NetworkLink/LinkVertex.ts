@@ -733,7 +733,10 @@ export default class LinkVertex extends Vertex {
     {
         const c = connected.coords;
         const p = positioned.coords;
-        const dir = connected._anchor.conn!.dir % 360;
+        let dir = connected._anchor.conn!.dir;
+        while (dir < 0)
+            dir += 360;
+        dir %= 360;
         let newPos: Position | null;
         switch (dir) {
             case 0:
