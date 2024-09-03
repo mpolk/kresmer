@@ -8,6 +8,9 @@
  *                        Patch-panels library
  *         This library contains graphics for various fiber optics closures.
 <*************************************************************************** -->
+
+<!DOCTYPE inline_dtd[<!ENTITY nbsp "&#160;">]>
+
 <kresmer-library name="fiber-optics-closures" xmlns="kresmer-library" xmlns:kre="kresmer-builtin-elements" xmlns:Kre="kresmer-user-defined-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
@@ -32,9 +35,14 @@
             <kre:connection-indicator v-for="i in nFibers" v-bind:connection-id="connID(i)">
                 <rect v-bind="cellBgPos(i)" class="fiber-label background" />
                 <line v-if="i &lt; nFibers" v-bind="cellSepPos(i)" v-bind:stroke="strokeColor"/>
-                <text v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize"
+                <text v-if="labels &amp;&amp; labels[i]"
+                      v-bind="cellLabelPos(i)" v-bind:font-size="fiberFontSize"
+                      v-bind:transform="labelTransform" v-bind:transform-origin="`${cellLabelPos(i).x} ${cellLabelPos(i).y}`"
+                      class="fiber-label">&nbsp;{{i}}: {{labels[i]}}</text>
+                <text v-else=""
+                      v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize"
                       v-bind:transform="labelTransform" v-bind:transform-origin="`${cellCenter(i).x} ${cellCenter(i).y}`"
-                      class="fiber-label">{{labels &amp;&amp; labels[i] ? `${i}: ${labels[i]}` : i}}</text>
+                      class="fiber-label centered">{{i}}</text>
                 <kre:connection-point v-bind:name="connID(i)" v-bind="cellCPPos(i)" v-bind:connection-id="connID(i)"/>
             </kre:connection-indicator>
             <kre:adjustment-ruler target-prop="captionHeight" v-bind="captionHeightRulerPos"/>
@@ -198,9 +206,21 @@
                 pos.d = computedProps.cellStep/2;
                 return pos;
             </function>
+            <function name="cellLabelPos" params="i">
+                const c = fn$.cellCenter(i);
+                const pos =
+                    props.orientation === "left"  ? {x: c.x + computedProps.cellWidth/2, y: c.y} :
+                    props.orientation === "right" ? {x: c.x - computedProps.cellWidth/2, y: c.y} :
+                    props.orientation === "up"    ? {x: c.x, y: c.y + computedProps.cellWidth/2} :
+                        {x: c.x,  y: c.y - computedProps.cellWidth/2};
+                pos.d = computedProps.cellStep/2;
+                return pos;
+            </function>
         </functions>
         <style>
-            .fiber-label, .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; dominant-baseline: central}
+            .fiber-label {fill: #333333; font-family: sans-serif; dominant-baseline: central}
+            .fiber-label.centered {text-anchor: middle;}
+            .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; dominant-baseline: central}
             .caption.href {text-decoration: none}
             .caption.href:hover {text-decoration: underline}
             .fiber-label.background {fill: transparent}
