@@ -22,8 +22,10 @@
             <prop ref="endLabel" name="кінцева мітка" description="кінцева мітка"/>
             <prop ref="endLabelHref" name="посилання кінцевої мітки" description="Посилання кінцевої мітки"/>
             <prop ref="mirrorLabels" name="відзеркалити мітки" description="Відзеркалити мітки відносно лінії з'єднання" />
-            <prop ref="startMarker" name="початковий маркер" description="Початковий маркер" choices="стрілка, вхідна-стрілка, коло, квадрат, ромб, хрестик"/>
-            <prop ref="endMarker" name="кінцевий маркер" description="Кінцевий маркер" choices="стрілка, вхідна-стрілка, коло, квадрат, ромб, хрестик"/>
+            <prop ref="startMarker" name="початковий маркер" description="Початковий маркер" 
+                choices="стрілка, вхідна-стрілка, коло, квадрат, ромб, хрестик, червоний-хрестик"/>
+            <prop ref="endMarker" name="кінцевий маркер" description="Кінцевий маркер" 
+                choices="стрілка, вхідна-стрілка, коло, квадрат, ромб, хрестик, червоний-хрестик"/>
             <prop ref="color" name="колір" description="Колір лінії за замовчуванням"/>
             <prop ref="highlightColor" name="колір виділення" description="Колір виділеної лінії"/>
             <prop ref="thickness" name="товщина" choices="тонкий,нормальний,товстий" />

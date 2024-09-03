@@ -13,7 +13,7 @@
 
     <!-- *********************************************** Links ********************************************************* -->
 
-    <link-class name="_abstract-link" category=".abstract-links" version="2024090200">
+    <link-class name="_abstract-link" category=".abstract-links" version="2024090300">
         <defs>
             <marker id="kre:link-marker-circle" markerWidth="4.5" markerHeight="4.5" refX="5" refY="5" viewBox="0 0 10 10">
                 <circle r="4.5" cx="5" cy="5" fill="context-stroke" stroke="context-stroke" />
@@ -36,8 +36,13 @@
             </marker>
             <marker id="kre:link-marker-cross" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10"
                     orient="auto-start-reverse">
-                <line x1="0" y1="0" x2="10" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="3"/>
-                <line x1="10" y1="0" x2="0" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="3"/>
+                <line x1="0" y1="0" x2="10" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="2"/>
+                <line x1="10" y1="0" x2="0" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="2"/>
+            </marker>
+            <marker id="kre:link-marker-red-cross" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10"
+                    orient="auto-start-reverse">
+                <line x1="0" y1="0" x2="10" y2="10" fill="red" stroke="red" stroke-width="2"/>
+                <line x1="10" y1="0" x2="0" y2="10" fill="red" stroke="red" stroke-width="2"/>
             </marker>
             <marker id="kre:link-marker-canalization" markerWidth="8" markerHeight="8" refX="5" refY="9" viewBox="0 0 10 12">
                 <ellipse rx="4" ry="2" cx="5" cy="9" fill="black" stroke="gray" />
@@ -66,8 +71,10 @@
             <prop name="endLabel" type="string"/>
             <prop name="endLabelHref" type="string"/>
             <prop name="mirrorLabels" type="Boolean" />
-            <prop name="startMarker" type="string" choices="arrow,incoming-arrow,circle,square,diamond,cross" category="Presentation"/>
-            <prop name="endMarker" type="string" choices="arrow,incoming-arrow,circle,square,diamond,cross" category="Presentation"/>
+            <prop name="startMarker" type="string" 
+                choices="arrow,incoming-arrow,circle,square,diamond,cross,red-cross" category="Presentation"/>
+            <prop name="endMarker" type="string" 
+                choices="arrow,incoming-arrow,circle,square,diamond,cross,red-cross" category="Presentation"/>
             <prop name="color" type="Color" category="Presentation"/>
             <prop name="highlightColor" type="Color" category="Presentation"/>
             <prop name="thickness" type="string" choices="thin,normal,thick" category="Presentation"/>
