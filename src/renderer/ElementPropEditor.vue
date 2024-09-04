@@ -274,7 +274,7 @@
                         >
                         {{ propToEdit.localizedName || propToEdit.name }}
                     </label>
-                    <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
+                    <button type="button" class="btn btn-sm" v-if="propToEdit!.type === Object || propToEdit.type === Array"
                             @click="isExpanded = !isExpanded">
                         <span class="material-symbols-outlined">
                             {{`expand_${isExpanded ? "less" : "more"}`}}
