@@ -110,7 +110,7 @@
     "presentation": "Presentation"
   },
   "hints": {
-    "drag-component": "Drag the component to move it, \"ctrl-click\" to transform or \"ctrl-shift-click\" to adjust",
+    "drag-component": "Drag the component to move it, \"ctrl-click\" to transform or \"alt-click\" to adjust",
     "drop-component": "Drop the component where you want to leave it...",
     "rotate-component": "Rotate the component around the center mark or click to switch to the scaling mode",
     "scale-component": "Drag any handle to scale, drag the center to move or click to switch to the rotation mode",

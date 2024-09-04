@@ -49,10 +49,10 @@ export default class Hints {
     }//reset
 
     // Specific hints
-    onComponentMouseEnter = i18next.t("hints.drag-component", "Drag the component to move it, \"ctrl-click\" to transform or \"ctrl-shift-click\" to adjust");
+    onComponentMouseEnter = i18next.t("hints.drag-component", "Drag the component to move it, \"ctrl-click\" to transform or \"alt-click\" to adjust");
     onDrag = i18next.t("hints.drop-component", "Drop the component where you want to leave it...");
     onRotation = i18next.t("hints.rotate-component", "Rotate the component around the center mark or click to switch to the scaling mode");
-    onScaling = i18next.t("hints.scale-component", "Drag any handle to scale, drag the center to move or click to switch to the rotaion mode");
+    onScaling = i18next.t("hints.scale-component", "Drag any handle to scale, drag the center to move or click to switch to the rotation mode");
     onAdjustment = i18next.t("hints.adjust-component", "Click on any adjustment tool to adjust (edit) the corresponding component prop");
     onAdjustmentHandleSelected = i18next.t("hints.adjust-component-prop", "Drag any free (green) handle to adjust the corresponding component prop");
 }//Hints
