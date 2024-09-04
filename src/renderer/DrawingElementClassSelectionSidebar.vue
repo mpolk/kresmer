@@ -109,7 +109,7 @@
 
     function submit()
     {
-        close(result.value);
+        close(result.value as DrawingElementClass|null);
     }//submit
 
 
