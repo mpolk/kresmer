@@ -14,7 +14,7 @@
 <kresmer-library name="fiber-optics-closures" xmlns="kresmer-library" xmlns:kre="kresmer-builtin-elements" xmlns:Kre="kresmer-user-defined-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024090300">
+    <component-class name="CableAttachmentTable" category="Passive equipment" version="2024090400">
         <template>
             <title v-if="comment">{{comment}}</title>
             <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
@@ -38,7 +38,7 @@
                 <text v-if="labels &amp;&amp; labels[i]"
                       v-bind="cellLabelPos(i)" v-bind:font-size="fiberFontSize"
                       v-bind:transform="labelTransform" v-bind:transform-origin="`${cellLabelPos(i).x} ${cellLabelPos(i).y}`"
-                      class="fiber-label">&nbsp;{{i}}: {{labels[i]}}</text>
+                      class="fiber-label">&nbsp;{{i}}: <tspan class="description">{{labels[i]}}</tspan></text>
                 <text v-else=""
                       v-bind="cellCenter(i)" v-bind:font-size="fiberFontSize"
                       v-bind:transform="labelTransform" v-bind:transform-origin="`${cellCenter(i).x} ${cellCenter(i).y}`"
@@ -127,23 +127,23 @@
             </computed-prop>
             <computed-prop name="captionHeightRulerPos">
                 props.orientation === "left" ? {
-                    x1: computedProps.width/(1+props.captionHeight), y1: 0,
-                    x2: computedProps.width, y2: 0,
-                    fixedEnd: 1,
+                    x1: computedProps.width/(1+props.captionHeight), y1: computedProps.height,
+                    x2: computedProps.width, y2: computedProps.height,
+                    fixedEnd: 2,
                 } :
                 props.orientation === "right" ? {
-                    x1: 0, y1: 0, 
-                    x2: computedProps.width*props.captionHeight/(1+props.captionHeight), y2: 0,
+                    x1: 0, y1: computedProps.height, 
+                    x2: computedProps.width*props.captionHeight/(1+props.captionHeight), y2: computedProps.height,
                     fixedEnd: 1,
                 } :
                 props.orientation === "up" ? {
-                    x2: 0, y2: computedProps.height, 
-                    x1: 0, y1: computedProps.height/(1+props.captionHeight),
+                    x2: computedProps.width, y2: computedProps.height, 
+                    x1: computedProps.width, y1: computedProps.height/(1+props.captionHeight),
                     fixedEnd: 2,
                 } :
                 {
-                    x1: 0, y1: 0, 
-                    x2: 0, y2: computedProps.height*props.captionHeight/(1+props.captionHeight),
+                    x1: computedProps.width, y1: 0, 
+                    x2: computedProps.width, y2: computedProps.height*props.captionHeight/(1+props.captionHeight),
                     fixedEnd: 1,
                 }
             </computed-prop>
@@ -209,7 +209,7 @@
             <function name="cellLabelPos" params="i">
                 const c = fn$.cellCenter(i);
                 const pos =
-                    props.orientation === "left"  ? {x: c.x + computedProps.cellWidth/2, y: c.y} :
+                    props.orientation === "left"  ? {x: c.x - computedProps.cellWidth/2, y: c.y} :
                     props.orientation === "right" ? {x: c.x - computedProps.cellWidth/2, y: c.y} :
                     props.orientation === "up"    ? {x: c.x, y: c.y + computedProps.cellWidth/2} :
                         {x: c.x,  y: c.y - computedProps.cellWidth/2};
@@ -224,6 +224,7 @@
             .caption.href {text-decoration: none}
             .caption.href:hover {text-decoration: underline}
             .fiber-label.background {fill: transparent}
+            .fiber-label tspan.description {fill: #675137;}
             .highlighted .fiber-label.background {fill: lightblue}
         </style>
     </component-class>

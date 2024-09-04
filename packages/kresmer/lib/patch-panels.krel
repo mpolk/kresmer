@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024080100"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024090400"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -33,10 +33,16 @@
                             <line class="frame" x1="100%" y1="100%" x2="100%" y2="0"/>
                         </template>
                         <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.4" v-bind:y="labelHeight*0.5" 
-                            v-bind:font-size="labelFontSize"><tspan>{{i}}: </tspan><tspan class="description">{{portLabels[i]}}</tspan></text>
+                            v-bind:font-size="labelFontSize">
+                            <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                            <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                        </text>
                         <text v-else="" v-bind:x="labelHeight*0.5" v-bind:y="labelWidth - labelHeight*0.4" 
                             v-bind:transform="`rotate(-90, ${labelHeight*0.5}, ${labelWidth - labelHeight*0.4})`" 
-                            v-bind:font-size="labelFontSize"><tspan>{{i}}: </tspan><tspan class="description">{{portLabels[i]}}</tspan></text>
+                            v-bind:font-size="labelFontSize">
+                            <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                            <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                        </text>
                     </svg>
                     <kre:connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" 
                         v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
