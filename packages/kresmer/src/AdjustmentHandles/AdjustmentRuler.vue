@@ -21,19 +21,19 @@
 
 <script setup lang="ts">
 
-    const props = defineProps({
-        targetProp: {type: String, required: true},
-        x1: {type: Number, required: true},
-        y1: {type: Number, required: true},
-        x2: {type: Number, required: true},
-        y2: {type: Number, required: true},
-        fixedEnd: {type: [Number, String]},
-    });//props
+    const {targetProp, x1, y1, x2, y2, fixedEnd} = defineProps<{
+        targetProp: string,
+        x1: number
+        y1: number,
+        x2: number,
+        y2: number,
+        fixedEnd?: number | string,
+    }>();//props
 
     const hostComponent = inject(NetworkComponent.injectionKey)!;
     const isEmbedded = inject(Kresmer.ikIsEmbedded, false);
     const isBaseObject = inject(Kresmer.ikIsBaseObject, false);
-    const proxy = reactive(new AdjustmentRuler(hostComponent, props.targetProp)) as unknown as AdjustmentRuler;
+    const proxy = reactive(new AdjustmentRuler(hostComponent, targetProp)) as unknown as AdjustmentRuler;
     hostComponent.addAdjustmentHandle(proxy);
     const kresmer = inject(Kresmer.ikKresmer)!;
     const drawingOrigin = inject(Kresmer.ikDrawingOrigin)!;
@@ -41,23 +41,23 @@
 
     function markerID(forEnd: 1 | 2)
     {
-        return `kre:adjustment-ruler-marker${forEnd == props.fixedEnd ? "-fixed" : ""}`;
+        return `kre:adjustment-ruler-marker${forEnd == fixedEnd ? "-fixed" : ""}`;
     }//markerID
 
     function markerCenter(forEnd: 1 | 2)
     {
-        return forEnd === 1 ? {cx: props.x1, cy: props.y1} : {cx: props.x2, cy: props.y2};
+        return forEnd === 1 ? {cx: x1, cy: y1} : {cx: x2, cy: y2};
     }//markerCenter
 
     function markerPaddingStyle(forEnd: 1 | 2)
     {
-        return forEnd != props.fixedEnd && proxy.isSelected ? "cursor: move" : "";
+        return forEnd != fixedEnd && proxy.isSelected ? "cursor: move" : "";
     }//markerPaddingStyle
 
 
     function onMouseDownInMarker(event: MouseEvent, forEnd: 1 | 2)
     {
-        if (forEnd == props.fixedEnd || !proxy.isSelected)
+        if (forEnd == fixedEnd || !proxy.isSelected)
             return;
 
         event.preventDefault();
@@ -65,7 +65,7 @@
 
         const drawingRect = kresmer.drawingRect;
         const mountingRect = kresmer.mountPoint.getBoundingClientRect();
-        const ends: [Position, Position] = [{x: props.x1, y: props.y1}, {x: props.x2, y: props.y2}];
+        const ends: [Position, Position] = [{x: x1, y: y1}, {x: x2, y: y2}];
         for (const i of [0,1]) {
             const mp = markerPadding.value![i];
             if (mp.ownerSVGElement != kresmer.rootSVG) {
@@ -86,7 +86,7 @@
 
     function onMouseMoveInMarker(event: MouseEvent, forEnd: 1 | 2)
     {
-        if (forEnd == props.fixedEnd || !(event.buttons & 1))
+        if (forEnd == fixedEnd || !(event.buttons & 1))
             return;
 
         event.preventDefault();
@@ -97,7 +97,7 @@
 
     function onMouseUpInMarker(event: MouseEvent, forEnd: 1 | 2)
     {
-        if (forEnd == props.fixedEnd || !proxy.isDragged)
+        if (forEnd == fixedEnd || !proxy.isDragged)
             return;
 
         event.preventDefault();
