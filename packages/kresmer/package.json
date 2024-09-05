@@ -48,7 +48,7 @@
     "lodash": "^4.17.21",
     "postcss": "^8.4.21",
     "uuid": "^10.0.0",
-    "vue": "^3.2.37"
+    "vue": "^3.5.1"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",

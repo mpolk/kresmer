@@ -8,7 +8,7 @@
 
 <script lang="ts">
     /* eslint-disable vue/no-mutating-props */
-    import { PropType, computed, inject, ref, watch } from 'vue';
+    import { computed, inject, ref, watch } from 'vue';
     import { Modal } from 'bootstrap';
     import { ElementPropDescriptor, ikClipboardContent, ikExpansionTrigger } from './ElementPropsSidebar.vue';
     import { URLType, getURLType, urlTypeDescription } from './URLType';
@@ -35,12 +35,12 @@
 </script>
 
 <script setup lang="ts">
-    const props = defineProps({
-        propToEdit: {type: Object as PropType<ElementPropDescriptor>, required: true},
-        dlgNewSubprop: {type: Object as PropType<Modal>, required: true},
-        subpropLevel: {type: Number, default: 0},
-        subpropIndex: {type: Number, default: 0},
-    });
+    const {propToEdit, dlgNewSubprop, subpropLevel = 0, subpropIndex = 0} = defineProps<{
+        propToEdit: ElementPropDescriptor,
+        dlgNewSubprop: Modal,
+        subpropLevel?: number,
+        subpropIndex?: number,
+    }>();
 
     const isExpanded = ref(false);
     const expansionTrigger = inject(ikExpansionTrigger);
@@ -58,7 +58,7 @@
             return comparePropDescriptors(d1!.parentPropDescriptor, d2!.parentPropDescriptor);
         }//comparePropDescriptors
         
-        if (comparePropDescriptors(expansionTrigger?.value, props.propToEdit)) {
+        if (comparePropDescriptors(expansionTrigger?.value, propToEdit)) {
             isExpanded.value = true;
         }//if
     });
@@ -109,22 +109,22 @@
      * Builds an array of the subproperty descriptors of the specified (sub)prop
      */
     const childSubpropDescriptors = computed((): ElementPropDescriptor[] => {
-        const parentPropValue = props.propToEdit.value as Record<string, unknown>;
-        const descriptors: ElementPropDescriptor[] = "elements" in props.propToEdit.typeDescriptor! ? 
+        const parentPropValue = propToEdit.value as Record<string, unknown>;
+        const descriptors: ElementPropDescriptor[] = "elements" in propToEdit.typeDescriptor! ? 
                 Object.entries(parentPropValue).map(([key, value]) => 
                 {
                     return {
-                        ...(props.propToEdit.typeDescriptor! as Extract<PropTypeDescriptor, {elements: unknown}>).elements,
+                        ...(propToEdit.typeDescriptor! as Extract<PropTypeDescriptor, {elements: unknown}>).elements,
                         name: key, 
                         value, 
                         required: false,
                         isExpanded: false,
-                        parentPropDescriptor: props.propToEdit,
+                        parentPropDescriptor: propToEdit,
                         isDeletable: true,
                     }
                 }).sort((p1, p2) => collateSubprops(p1.name, p2.name))
             :
-                Object.entries(props.propToEdit.typeDescriptor!.subprops).map(([name, type]) => 
+                Object.entries(propToEdit.typeDescriptor!.subprops).map(([name, type]) => 
                 {
                     return {
                         ...type,
@@ -132,7 +132,7 @@
                         value: parentPropValue[name], 
                         required: false,
                         isExpanded: false,
-                        parentPropDescriptor: props.propToEdit,
+                        parentPropDescriptor: propToEdit,
                         isDeletable: false,
                     }
                 })
@@ -141,37 +141,37 @@
     })//childSubpropDescriptors
 
 
-    const withDynamicChildren = props.propToEdit.typeDescriptor && "elements" in props.propToEdit.typeDescriptor;
+    const withDynamicChildren = propToEdit.typeDescriptor && "elements" in propToEdit.typeDescriptor;
 
 
     /** Builds the model object for the value of the prop being edited  */
     const editorModel = computed({
         get() {
             if (!modelParent) {
-                let value = props.propToEdit.value;
-                if (props.propToEdit.subtype === 'color' && props.propToEdit.value === undefined)
-                    value = props.propToEdit.default;
+                let value = propToEdit.value;
+                if (propToEdit.subtype === 'color' && propToEdit.value === undefined)
+                    value = propToEdit.default;
                 return value;
             } else
-                return modelParent[props.propToEdit.name];
+                return modelParent[propToEdit.name];
         },
         set(newValue) {
             if (!modelParent)
-                props.propToEdit.value = newValue;
+                propToEdit.value = newValue;
             else
-                modelParent[props.propToEdit.name] = newValue;
+                modelParent[propToEdit.name] = newValue;
         }
     })//editorModel
 
     // /**  The root (the ultimate parent) of the (sub)property being edited */
-    // let rootProp = props.propToEdit;
+    // let rootProp = propToEdit;
     // const rootPath: string[] = [];
     // while (rootProp.parentPropDescriptor) {
     //     rootPath.unshift(rootProp.name);
     //     rootProp = rootProp.parentPropDescriptor;
     // }//while
 
-    const modelParent = props.propToEdit.parentPropDescriptor?.value as Record<string, unknown>|undefined;
+    const modelParent = propToEdit.parentPropDescriptor?.value as Record<string, unknown>|undefined;
     // const modelParent = rootPath.slice(0, rootPath.length-1).reduce((acc, pathSeg) => acc[pathSeg], rootProp.value as Record<string, any>);
 
     /**
@@ -179,8 +179,8 @@
      * @param index Subprop index within the subprop list
      */
     function subpropNameCellStyle(index: number) {
-        let style = `padding-left: ${props.subpropLevel + 0.25}rem;`;
-        if (typeof props.propToEdit.value === "object" && index < Object.keys(props.propToEdit.value!).length-1)
+        let style = `padding-left: ${subpropLevel + 0.25}rem;`;
+        if (typeof propToEdit.value === "object" && index < Object.keys(propToEdit.value!).length-1)
             style += ' border-bottom-style: dotted!important;';
         return style;
     }//subpropNameCellStyle
@@ -206,14 +206,14 @@
     const cbColorDefined = ref<HTMLInputElement>();
     function onColorDefUndef()
     {
-        props.propToEdit.value = cbColorDefined.value?.checked ? (props.propToEdit.default ?? "#ffffff") : undefined;
+        propToEdit.value = cbColorDefined.value?.checked ? (propToEdit.default ?? "#ffffff") : undefined;
     }//onColorDefUndef
 
     const valueCellClass = computed(() => {
-        return {"text-center": props.propToEdit.type === Boolean};
+        return {"text-center": propToEdit.type === Boolean};
     })//valueCellClass
 
-    const urlType = ref(getURLType(props.propToEdit.subtype === "image-url" ? props.propToEdit.value as string: undefined));
+    const urlType = ref(getURLType(propToEdit.subtype === "image-url" ? propToEdit.value as string: undefined));
 
     function setUrlType(newType: URLType)
     {
@@ -222,7 +222,7 @@
 
     async function setGraphicsURL()
     {
-        props.propToEdit.value = await selectOrLoadGraphicsFile(urlType.value);
+        propToEdit.value = await selectOrLoadGraphicsFile(urlType.value);
     }//setGraphicsURL
 
 
@@ -230,7 +230,7 @@
 
     function copyColorToClipboard()
     {
-        const color = String(props.propToEdit.value);
+        const color = String(propToEdit.value);
         navigator.clipboard.writeText(color);
         emit("copy-to-clipboard", color)
     }//copyColorToClipboard
@@ -239,7 +239,7 @@
     {
         const color = await navigator.clipboard.readText()
         if (color.match(/#[0-9a-fA-F]{6}/))
-            props.propToEdit.value = color;
+            propToEdit.value = color;
     }//pasteColorFromClipboard
 
     const pasteColorButtonStyle = computed(() => {
@@ -256,9 +256,9 @@
 
     function localizedChoice(i: number)
     {
-        if (!props.propToEdit.validator?.localizedValidValues)
-            return props.propToEdit.validator!.validValues![i];
-        return props.propToEdit.validator.localizedValidValues[i] ?? props.propToEdit.validator.validValues![i];
+        if (!propToEdit.validator?.localizedValidValues)
+            return propToEdit.validator!.validValues![i];
+        return propToEdit.validator.localizedValidValues[i] ?? propToEdit.validator.validValues![i];
     }//localizedChoice
 </script>
 
@@ -274,7 +274,7 @@
                         >
                         {{ propToEdit.localizedName || propToEdit.name }}
                     </label>
-                    <button type="button" class="btn btn-sm" v-if="propToEdit!.type === Object || propToEdit.type === Array"
+                    <button type="button" class="btn btn-sm" v-if="propToEdit.type === Object || propToEdit.type === Array"
                             @click="isExpanded = !isExpanded">
                         <span class="material-symbols-outlined">
                             {{`expand_${isExpanded ? "less" : "more"}`}}
