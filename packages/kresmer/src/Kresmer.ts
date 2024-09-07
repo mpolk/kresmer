@@ -200,7 +200,7 @@ export default class Kresmer extends KresmerEventHooks {
         return `${this.hrefBase.value.replace(/\/$/, '')}/${tail}`;
     }//makeHref
 
-    /** A set of functions we make available in the templates */
+    // A set of functions we make available in the templates
     private readonly injectedTemplateFunctions = {
         ...TransformFunctons,
         ...NetworkComponentFunctions,
@@ -212,7 +212,6 @@ export default class Kresmer extends KresmerEventHooks {
 
     // Drawing geometry parameters
     /** Sets the drawing width within the browser client area */
-    protected readonly mountingBox: {width: number|string, height: number|string} = reactive({width: "100%", height: "100%"});
     get mountingWidth() {return this.mountingBox.width}
     set mountingWidth(newWidth) {
         this.mountingBox.width = newWidth;
@@ -223,10 +222,10 @@ export default class Kresmer extends KresmerEventHooks {
         this.mountingBox.height = newHeight;
         nextTick(this.notifyOfScaleChange);
     }
+    protected readonly mountingBox: {width: number|string, height: number|string} = reactive({width: "100%", height: "100%"});
 
     /** Sets the drawing area dimensions in SVG logical units 
      * (component sizes are measuring relative to this sizes) */
-    protected readonly logicalBox = reactive({width: 1000, height: 1000});
     get logicalWidth() {return this.logicalBox.width}
     set logicalWidth(newWidth) {
         this.logicalBox.width = newWidth;
@@ -237,23 +236,20 @@ export default class Kresmer extends KresmerEventHooks {
         this.logicalBox.height = newHeight;
         nextTick(this.notifyOfScaleChange);
     }
+    protected readonly logicalBox = reactive({width: 1000, height: 1000});
 
-    /** Sets or returns the drawing background image (if exists) */
+    // Sets or returns the drawing background image (if exists)
     readonly backgroundImage = reactive(new BackgroundImageData);
 
-    private readonly _backgroundColor = ref("#ffffff");
     /** Sets or returns the drawing background color */
     get backgroundColor() {return this._backgroundColor.value}
     set backgroundColor(newColor: string) {this._backgroundColor.value = newColor}
+    private readonly _backgroundColor = ref("#ffffff");
 
     /** Drawing scale (visual) */
     get drawingScale() {
         return this.baseScale * this.zoomFactor;
     }//drawingScale
-
-    private _zoomFactor = ref(0.999999999); 
-    // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
-    // it somehow helps to initialize the drawing dimensions (who knows why?)
 
     /** A zoom factor for visual scaling*/
     get zoomFactor() {return this._zoomFactor.value}
@@ -261,6 +257,10 @@ export default class Kresmer extends KresmerEventHooks {
         this._zoomFactor.value = newScale;
         nextTick(this.notifyOfScaleChange);
     }
+    private _zoomFactor = ref(0.999999999); 
+    // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
+    // it somehow helps to initialize the drawing dimensions (who knows why?)
+
     protected notifyOfScaleChange = () =>
     {
         this.emit("drawing-scale", this.drawingScale);
