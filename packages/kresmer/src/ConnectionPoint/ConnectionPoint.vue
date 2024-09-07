@@ -8,28 +8,27 @@
 <*************************************************************************** -->
 
 <script setup lang="ts">
-    import { inject, onMounted, ref, watch, nextTick, computed, PropType, onBeforeUnmount } from 'vue';
+    import { inject, onMounted, ref, watch, nextTick, computed, onBeforeUnmount } from 'vue';
     import Kresmer from '../Kresmer';
     import DrawingElement from '../DrawingElement/DrawingElement';
     import NetworkLink from '../NetworkLink/NetworkLink';
     import ConnectionPoint from './ConnectionPoint';
 
-    const props = defineProps({
-        name: {type: [String, Number], required: true},
-        x: {type: Number, default: 0}, 
-        y: {type: Number, default: 0}, 
-        d: {type: Number, default: 10}, 
-        dir: {type: [Number, String], default: 90},
-        proxy: {type: Object as PropType<ConnectionPoint>},
-        showTooltip: {type: Boolean, default: true},
-        connectionId: {type: String},
-    });
+    const {name, x = 0, y = 0, d = 10, dir = 90, proxy, showTooltip = true, connectionId} = defineProps<{
+        name: string | number,
+        x?: number, 
+        y?: number, 
+        d?: number, 
+        dir?: number | string,
+        proxy?: ConnectionPoint,
+        showTooltip?: boolean,
+        connectionId?: string,
+    }>();
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
-    const proxy = props.proxy ?? new ConnectionPoint(hostElement, props.name, props.dir, props.connectionId);
-    if (!props.proxy)
-        // eslint-disable-next-line vue/no-setup-props-destructure
-        hostElement.addConnectionPoint(props.name, proxy);
+    const modelObject = proxy ?? new ConnectionPoint(hostElement, name, dir, connectionId);
+    if (!proxy)
+        hostElement.addConnectionPoint(name, modelObject);
 
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
@@ -37,10 +36,10 @@
     const thisCP = ref<SVGCircleElement>();
 
     const dataAttr = computed(() => {
-        if (!proxy.isActive)
+        if (!modelObject.isActive)
             return undefined;
         const hostName = hostElement instanceof NetworkLink ? `-${hostElement.name}` : hostElement.name;
-        return `${hostName}:${props.name}`;
+        return `${hostName}:${name}`;
     });
 
     function updatePos()
@@ -49,42 +48,42 @@
             return;
         const drawingRect = kresmer.drawingRect;
         const mountingRect = kresmer.mountPoint.getBoundingClientRect();
-        let coords = {x: props.x, y: props.y};
+        let coords = {x, y};
         let rot = 0;
         if (thisCP.value.ownerSVGElement != kresmer.rootSVG) {
             const matrix = thisCP.value.getCTM()!;
             coords = {
-                x: (matrix.a * props.x) + (matrix.c * props.y) + matrix.e - 
+                x: (matrix.a * x) + (matrix.c * y) + matrix.e - 
                     drawingRect.left + mountingRect.left + drawingOrigin.x,
-                y: (matrix.b * props.x) + (matrix.d * props.y) + matrix.f - 
+                y: (matrix.b * x) + (matrix.d * y) + matrix.f - 
                     drawingRect.top + mountingRect.top + drawingOrigin.y,
             };        
             rot = Math.atan2(matrix.b, matrix.a) / Math.PI * 180;
         }//if
-        proxy._setPos(coords, proxy.dir0 + rot);
+        modelObject._setPos(coords, modelObject.dir0 + rot);
     }//updatePos
 
     onMounted(() => {
-        proxy.restoreConnectedVertices();
+        modelObject.restoreConnectedVertices();
         updatePos();
     });
 
     onBeforeUnmount(() => {
-        proxy.saveConnectedVertices();
+        modelObject.saveConnectedVertices();
     });
 
     function onRightClick()
     {
         if (isEditable) {
-            proxy.hostElement.kresmer.emit("connection-point-right-click", proxy);
+            modelObject.hostElement.kresmer.emit("connection-point-right-click", modelObject);
         }//if
     }//onRightClick
 
-    watch(proxy.posUpdateTrigger, () => {nextTick(updatePos)});
+    watch(modelObject.posUpdateTrigger, () => {nextTick(updatePos)});
 </script>
 
 <template>
-    <g v-if="proxy.isActive" @contextmenu.stop="onRightClick()">
+    <g v-if="modelObject.isActive" @contextmenu.stop="onRightClick()">
         <title v-if="showTooltip">{{ String(name).replace(/@[a-z0-9]+$/, "") }}</title>
         <circle :cx="x" :cy="y" :r="d/2"
             class="connection-point-padding" 

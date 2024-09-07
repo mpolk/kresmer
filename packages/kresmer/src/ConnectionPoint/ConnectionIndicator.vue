@@ -18,26 +18,26 @@
 
 <script setup lang="ts">
 
-    const props = defineProps({
-        connectionId: {type: [String, Number], required: true},
-    });
+    const {connectionId} = defineProps<{
+        connectionId: string | number,
+    }>();
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
     const highlightedConnection = inject(DrawingElement.ikHighlightedConnection)!;
 
     const clazz = computed(() => {
         return {
-            highlighted: highlightedConnection.includes(String(props.connectionId)),
+            highlighted: highlightedConnection.includes(String(connectionId)),
         }
     })//clazz
 
 
     function onMouseEnter() {
-        hostElement.propagateLinkHighlighting(String(props.connectionId), true);
+        hostElement.propagateLinkHighlighting(String(connectionId), true);
     }//onMouseEnter
 
     function onMouseLeave() {
-        hostElement.propagateLinkHighlighting(String(props.connectionId), false);
+        hostElement.propagateLinkHighlighting(String(connectionId), false);
     }//onMouseLeave
 
 </script>
