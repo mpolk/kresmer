@@ -93,6 +93,15 @@ export default class Kresmer extends KresmerEventHooks {
             this.app = mountPointOrApp as App;
         }//if
 
+        if (options?.backendServerURL)
+            this.connectToBackend(options.backendServerURL, options.backendConnectionPassword);
+
+        // Load initial libraries and a drawing (if given)
+        if (options?.libData)
+            this.loadLibraries(options.libData, options.libTranslationData);
+        if (options?.drawingData)
+            this.loadDrawing(options.drawingData);
+
         // and somehow awake its scaling mechanism (workaround for something beyond understanding)
         this.zoomFactor = 1;
     }//ctor
@@ -619,7 +628,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @param libs Mapping libName => libData
      * @param translations Optional translations for the libs
      */
-    public async loadLibraries(libs: Map<string, string>, translations?: Map<string, Map<string, string>>): Promise<number>
+    public async loadLibraries(libs: LibData, translations?: LibTranslationData): Promise<number>
     {
         return await this.libraryLoader.loadLibraries(libs, translations);
     }//loadLibraries
@@ -1414,8 +1423,10 @@ export const kresmerPlugin = {
 }//kresmerPlugin
 
 
+/** The name of the drawing to use when no explicit name is given */
 const UNNAMED_DRAWING = "?unnamed?";
 
+/** The set of optional values used for the Kresmer core- and Vue-components initialization */
 export type KresmerInitOptions = {
     mountingWidth?: number | string,
     mountingHeight?: number | string,
@@ -1437,7 +1448,23 @@ export type KresmerInitOptions = {
     hrefBase?: string,
     streetAddressFormat?: StreetAddressFormat,
     uiLanguage?: string,
+    libData?: LibData,
+    libTranslationData?: LibTranslationData,
+    drawingData?: string,
+    backendServerURL?: string, 
+    backendConnectionPassword?: string
 }//KresmerInitOptions
+
+/** 
+ * A data collection for loading multiple libraries at a time.
+ * The format is Map<libName => xmlData>
+ */
+export type LibData = Map<string, string>;
+/** 
+ * A data collection for loading multiple library translations at a time.
+ * The format is Map<libName => languageCode => xmlData>
+ */
+export type LibTranslationData = Map<string, Map<string, string>>;
 
 export type DrawingProps = {
     /** The drawing name */

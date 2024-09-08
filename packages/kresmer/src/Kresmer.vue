@@ -7,8 +7,8 @@
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, ref, computed, provide, watch, nextTick, StyleValue, inject, onMounted } from 'vue';
-    import Kresmer, {BackgroundImageData, KresmerException, KresmerInitOptions} from './Kresmer';
+    import { ref, computed, provide, watch, nextTick, StyleValue, inject, onMounted } from 'vue';
+    import Kresmer, {KresmerException, KresmerInitOptions} from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
@@ -26,68 +26,19 @@
 
 <script setup lang="ts">
 
-    const props = defineProps({
-        model: {type: Object as PropType<Kresmer>},
-
-        mountingWidth: {type: [Number, String]},
-        mountingHeight: {type: [Number, String]},
-        logicalWidth: {type: Number},
-        logicalHeight: {type: Number},
-        backgroundImage: {type: Object as PropType<typeof BackgroundImageData>},
-        backgroundColor: {type: String},
-        isEditable: {type: Boolean},
-        showRulers: {type: Boolean},
-        showGrid: {type: Boolean},
-        snapToGrid: {type: Boolean},
-        snappingGranularity: {type: Number},
-        saveDynamicPropValuesWithDrawing: {type: Boolean},
-        embedLibDataInDrawing: {type: Boolean},
-        libDataPriority: {type: String},
-        autoAlignVertices: {type: Boolean},
-        animateComponentDragging: {type: Boolean},
-        animateLinkBundleDragging: {type: Boolean},
-        hrefBase: {type: String},
-        streetAddressFormat: {type: String},
-        uiLanguage: {type: String},
-    });
-
+    const props = defineProps<{model?: Kresmer} & KresmerInitOptions>();
     const app = inject(Kresmer.ikApp);
 
     if (!props.model && !app) {
         throw new KresmerException("Kresmer Vue-component must be either given \"model\" prop or provided with \"app\" injected value");
     }//if
 
+    const model = props.model || new Kresmer(app!, props);
     const rootSVG = ref<SVGSVGElement>()!;
 
     onMounted(() => {
         model._setRoot(rootSVG.value!, rootSVG.value!.parentElement!);
     });
-
-    const model = props.model || new Kresmer(
-        app!,
-        {
-            mountingWidth: props.mountingWidth,
-            mountingHeight: props.mountingHeight,
-            logicalWidth: props.logicalWidth,
-            logicalHeight: props.logicalHeight,
-            backgroundImage: props.backgroundImage,
-            backgroundColor: props.backgroundColor,
-            isEditable: props.isEditable,
-            showRulers: props.showRulers,
-            showGrid: props.showGrid,
-            snapToGrid: props.snapToGrid,
-            snappingGranularity: props.snappingGranularity,
-            saveDynamicPropValuesWithDrawing: props.saveDynamicPropValuesWithDrawing,
-            embedLibDataInDrawing: props.embedLibDataInDrawing,
-            libDataPriority: props.libDataPriority,
-            autoAlignVertices: props.autoAlignVertices,
-            animateComponentDragging: props.animateComponentDragging,
-            animateLinkBundleDragging: props.animateLinkBundleDragging,
-            hrefBase: props.hrefBase,
-            streetAddressFormat: props.streetAddressFormat,
-            uiLanguage: props.uiLanguage,
-        } as KresmerInitOptions
-    );//autoCreatedModel
 
     provide(Kresmer.ikKresmer, model);
     provide(Kresmer.ikIsEditable, model.isEditable);

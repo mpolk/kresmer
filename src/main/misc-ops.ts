@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *        Miscelaneous operations for the Electron node.js main script
+ *        Miscellaneous operations for the Electron node.js main script
  ***************************************************************************/
 
 import { shell } from 'electron';
