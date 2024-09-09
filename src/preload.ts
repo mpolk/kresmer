@@ -21,7 +21,7 @@ function sendToMain(channel: IpcMainChannel, ...args: unknown[])
 }//sendToMain
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function invokeFromMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): Promise<any>;
+async function invokeFromMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): Promise<ReturnType<H>>;
 async function invokeFromMain(channel: IpcMainChannel, ...args: unknown[])
 {
     return await ipcRenderer.invoke(channel, ...args);
@@ -134,6 +134,10 @@ exposeToRenderer({
 
     loadLibraryTranslation: (libName: string, language: string) => {
         return invokeFromMain("load-library-translation", libName, language);
+    },
+
+    loadInitialDrawing: () => {
+        return invokeFromMain("load-initial-drawing");
     },
 
     isReloadInProgress: () => {

@@ -38,6 +38,7 @@ export interface ElectronAPI {
     loadInitialLibraries: () => Promise<LibData>,
     loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
     loadLibraryTranslation: (libName: string, language: string) => Promise<string|undefined>,
+    loadInitialDrawing: () => Promise<string|undefined>,
     isReloadInProgress: () => Promise<boolean>,
     reloadContent: () => void,
     selectOrLoadFile: (requiredResultType: UrlType, filters: FileFilter[]) => Promise<fileSelectOrLoadResult>,

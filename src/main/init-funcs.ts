@@ -10,13 +10,14 @@ import path from "path";
 import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
-import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, loadInitialLibraries,
+import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad,
          AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent, recentDrawings} from "./main";
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/renderer-main';
 import { IpcMainHooks } from './IpcMainHooks';
 import { loadLibraryFile, loadLibraryTranslation, saveDrawing, selectOrLoadFile } from './file-ops';
 import { openUrlWithSystemBrowser } from './misc-ops';
+import { LibData } from "kresmer";
 
 export let defaultDrawingFileName: string|undefined;
 export let drawingToAutoload: string;
@@ -210,6 +211,10 @@ export function initIpcMainHooks()
         return loadLibraryTranslation(libName, language);
     });
 
+    IpcMainHooks.onInvokation("load-initial-drawing", () => {
+        return loadInitialDrawing();
+    });
+
     IpcMainHooks.onInvokation("save-drawing", (dwgData: string) => {
         return saveDrawing(dwgData);
     });
@@ -239,6 +244,30 @@ function modifyMenuItemFlags(...ids: string[])
         }//for
     }
 }//modifyMenuItemFlags
+
+
+/** Loads all the libraries found in the library directories */
+export function loadInitialLibraries(): LibData
+{
+    const libData: LibData = new Map();
+    for (const libPath of libsToLoad) {
+        libData.set(path.basename(libPath, ".krel"), fs.readFileSync(libPath, "utf8"));
+    }//for
+    return libData;
+}//loadInitialLibraries
+
+
+/** Loads all the libraries found in the library directories */
+export function loadInitialDrawing(): string | undefined
+{
+    if (!drawingToAutoload && localSettings.get("autoloadLastDrawing")) {
+        drawingToAutoload = recentDrawings.last;
+    }//if
+    if (fs.existsSync(drawingToAutoload)) {
+        defaultDrawingFileName = drawingToAutoload;
+        return fs.readFileSync(drawingToAutoload, "utf-8");
+    }//if
+}//loadInitialDrawing
 
 
 /** Perform a single step of the App initialization in response to the signals received from the renderer process.

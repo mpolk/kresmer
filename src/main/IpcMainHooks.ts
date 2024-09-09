@@ -18,7 +18,7 @@ export interface IpcMainChannels {
     "renderer-ready": (stage: AppInitStage) => void;
     "set-default-drawing-filename": (fileName: string) => void;
     "complete-drawing-saving": (dwgData: string) => void;
-    "save-drawing": (dwgData: string) => Promise<boolean>;
+    "save-drawing": (dwgData: string) => boolean;
     "complete-drawing-export-to-SVG": (svgData: string) => void;
     "enable-delete-selected-element-menu-item": (enable: boolean) => void;
     "enable-component-op-menu-items": (enable: boolean) => void;
@@ -36,7 +36,8 @@ export interface IpcMainChannels {
     "load-initial-libraries": () => LibData;
     "load-library-file": (libName: string, fileName?: string) => string|undefined;
     "load-library-translation": (libName: string, language: string) => string|undefined;
-    "check-reload-status": () => void;
+    "load-initial-drawing": () => string | undefined;
+    "check-reload-status": () => boolean;
     "reload-content": () => void;
     "select-or-load-file": (requiredResultType: URLType, filters: FileFilter[]) => fileSelectOrLoadResult;
 }//IpcMainChannels
