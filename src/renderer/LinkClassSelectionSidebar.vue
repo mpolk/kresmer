@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *  A sidebar for link class selection wnen creating a new link
+ *  A sidebar for link class selection when creating a new link
 <*************************************************************************** -->
 
 <script lang="ts">

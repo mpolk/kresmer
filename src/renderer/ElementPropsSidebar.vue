@@ -362,7 +362,7 @@ Continue?`))) {
     }//makeInitialSubpropValue
 
     
-    function propCategoryDispl(category: DrawingElementPropCategory)
+    function propCategoryDisplay(category: DrawingElementPropCategory)
     {
         switch (category) {
             case DrawingElementPropCategory.Construction: return i18next.t("element-prop-category.construction", "Construction");
@@ -374,7 +374,7 @@ Continue?`))) {
             case DrawingElementPropCategory.Optics: return i18next.t("element-prop-category.optics", "Optics");
             case DrawingElementPropCategory.Presentation: return i18next.t("element-prop-category.presentation", "Presentation");
         }//switch
-    }//propCategoryDispl
+    }//propCategoryDisplay
 
 
     let dlgNewSubprop!: Modal;
@@ -424,7 +424,7 @@ Continue?`))) {
                     </tr>
                     <!-- Element DB identifier -->
                     <tr>
-                        <td class="align-middle p-1"><label class="form-lable mb-0" for="inpDbID">dbID</label></td>
+                        <td class="align-middle p-1"><label class="form-label mb-0" for="inpDbID">dbID</label></td>
                         <td class="p-1">
                             <input id="inpDbID" class="form-control form-control-sm border-0" v-model="dbID"/>
                         </td>
@@ -433,7 +433,7 @@ Continue?`))) {
                     <template v-for="(prop, i) in elementPropDescriptors" :key="`prop[${prop.name}]`">
                         <tr v-if="prop.category && (i === 0 || prop.category !== elementPropDescriptors[i-1].category)">
                             <td colspan="2" class="border-0 text-primary text-opacity-75">
-                                {{ propCategoryDispl(prop.category) }}
+                                {{ propCategoryDisplay(prop.category) }}
                             </td>
                         </tr>
                         <ElementPropEditor :prop-to-edit="prop" :dlg-new-subprop="dlgNewSubprop" 

@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *  A sidebar for component class selection wnen creating a new component
+ *  A sidebar for component class selection when creating a new component
 <*************************************************************************** -->
 
 <script lang="ts">

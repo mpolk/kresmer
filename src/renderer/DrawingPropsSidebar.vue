@@ -89,16 +89,16 @@
 
     const bgImageVisibilityTitle = computed(() => i18next.t('drawing-props-sidebar.background-image-visibility', 'Background image visibility'));
 
-    function backgroundImageAlignmentDispl(alignment: BackgroundImageAlignment)
+    function backgroundImageAlignmentDisplay(alignment: BackgroundImageAlignment)
     {
         switch (alignment) {
             case BackgroundImageAlignment.CENTER: return i18next.t("drawing-props-sidebar.background-image-alignment.center", "center");
             case BackgroundImageAlignment.COVER: return i18next.t("drawing-props-sidebar.background-image-alignment.cover", "cover");
             case BackgroundImageAlignment.SCALE: return i18next.t("drawing-props-sidebar.background-image-alignment.scale", "scale");
-            case BackgroundImageAlignment.STRECH: return i18next.t("drawing-props-sidebar.background-image-alignment.stretch", "stretch");
+            case BackgroundImageAlignment.STRETCH: return i18next.t("drawing-props-sidebar.background-image-alignment.stretch", "stretch");
             case BackgroundImageAlignment.TILE: return i18next.t("drawing-props-sidebar.background-image-alignment.tile", "tile");
         }//switch
-    }//backgroundImageAlignmentDispl
+    }//backgroundImageAlignmentDisplay
 
     defineExpose({show});
 </script>
@@ -169,12 +169,12 @@
                                 </div>
                                 <div class="input-group input-group-sm flex-nowrap">
                                     <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        {{ backgroundImageAlignmentDispl(backgroundImage.alignment) }}
+                                        {{ backgroundImageAlignmentDisplay(backgroundImage.alignment) }}
                                     </button>
                                     <ul class="dropdown-menu">
                                         <li v-for="alignment in BackgroundImageAlignment" :key="alignment">
                                             <a class="dropdown-item" href="#" @click="backgroundImage.alignment = alignment">
-                                                {{ backgroundImageAlignmentDispl(alignment) }}
+                                                {{ backgroundImageAlignmentDisplay(alignment) }}
                                             </a>
                                         </li>
                                     </ul>
