@@ -20,7 +20,7 @@ export type BackendConnectionTestResult = {
 export default class BackendConnection {
 
     constructor (private readonly kresmer: Kresmer, 
-                 private serverURL: string, 
+                 readonly serverURL: string, 
                  private password?: string) {}
 
     private static makeHeaders(password: string|undefined)

@@ -93,19 +93,24 @@ export default class Kresmer extends KresmerEventHooks {
             this.app = mountPointOrApp as App;
         }//if
 
+        // and somehow awake its scaling mechanism (workaround for something beyond understanding)
+        this.zoomFactor = 1;
+
         if (options?.backendServerURL)
             this.connectToBackend(options.backendServerURL, options.backendConnectionPassword);
 
         // Load initial libraries and a drawing (if given)
+        this.initializationCompleted = Promise.resolve();
         if (options?.libData)
-            this.loadLibraries(options.libData, options.libTranslationData);
+            this.initializationCompleted = this.initializationCompleted
+                .then(() => this.loadLibraries(options.libData!, options.libTranslationData));
         if (options?.drawingData)
-            this.loadDrawing(options.drawingData);
-
-        // and somehow awake its scaling mechanism (workaround for something beyond understanding)
-        this.zoomFactor = 1;
+            this.initializationCompleted = this.initializationCompleted
+                .then(() => this.loadDrawing(options.drawingData!));
     }//ctor
 
+    /** A promise that that completes at the same time when when the constructor's async part is completed */
+    readonly initializationCompleted: Promise<unknown>;
 
     /*
      * Auxiliary function for registering global Kresmer components and properties in the Vue application
@@ -1456,12 +1461,12 @@ export type KresmerInitOptions = {
 }//KresmerInitOptions
 
 /** 
- * A data collection for loading multiple libraries at a time.
+ * A data collection for loading multiple libraries at once.
  * The format is Map<libName => xmlData>
  */
 export type LibData = Map<string, string>;
 /** 
- * A data collection for loading multiple library translations at a time.
+ * A data collection for loading multiple library translations at once.
  * The format is Map<libName => languageCode => xmlData>
  */
 export type LibTranslationData = Map<string, Map<string, string>>;
