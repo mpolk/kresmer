@@ -705,12 +705,13 @@ appCommandExecutor.on("show-about-dialog", (appVersion, electronVersion) => {
 
 // -------------------------------------------------------------------------------------------------
 // Let's go forward and do our work...
+
 window.electronAPI.loadInitialLibraries().then(libData => {
-    kresmer.loadLibraries(libData);
-}).then(async() => {
-    const dwgData = await window.electronAPI.loadInitialDrawing();
-    if (dwgData)
-        kresmer.loadDrawing(dwgData);
+    return kresmer.loadLibraries(libData);
+}).then(() => {
+    return window.electronAPI.loadInitialDrawing();
+}).then(dwgData => {
+    return dwgData ? kresmer.loadDrawing(dwgData) : Promise.resolve(false);
 }).then(() => {
     window.electronAPI.signalReadiness();
 });
