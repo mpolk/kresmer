@@ -93,7 +93,7 @@ app.whenReady().then(() => {
         backend: {
             loadPath: path.join(localesPath!, '{{lng}}/{{ns}}.json'),
         },
-        debug: true,
+        // debug: true,
         initImmediate: false,
         ns: "main",
         defaultNS: "main",
