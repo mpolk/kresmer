@@ -211,23 +211,23 @@ export function loadLibraryFile(libName: string, fileName?: string)
 
 export function loadLibraryTranslation(libName: string, language: string)
 {
-    console.debug(`Trying to load library "${libName}" translation`);
+    // console.debug(`Trying to load library "${libName}" translation`);
     const libTransFile = `${libName}.${language}.krelt`;
     for (const libDir of libDirs) {
         const libTransPath = path.resolve(libDir, libTransFile);
         if (fs.existsSync(libTransPath)) {
             try {
                 const libTransData = fs.readFileSync(libTransPath, "utf-8");
-                console.debug(`Library translation "${libTransPath}" loaded`);
+                // console.debug(`Library translation "${libTransPath}" loaded`);
                 return libTransData;
             } catch {
-                console.debug(`Error loading library "${libTransPath}"`);
+                console.debug(`Error loading library translation "${libTransPath}"`);
                 return undefined;
             }
         }//if
     }//for
 
-    console.debug(`Could not load library "${libName}" translation`);
+    // console.debug(`Could not load library "${libName}" translation`);
     return undefined;
 }//loadLibraryTranslation
 
