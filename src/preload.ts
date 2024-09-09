@@ -124,6 +124,10 @@ exposeToRenderer({
         sendToMain("vertex-auto-alignment-toggled", autoAlignVertices)
     },
 
+    loadInitialLibraries: () => {
+        return invokeFromMain("load-initial-libraries");
+    },
+
     loadLibraryFile: (libName: string, fileName?: string) => {
         return invokeFromMain("load-library-file", libName, fileName);
     },

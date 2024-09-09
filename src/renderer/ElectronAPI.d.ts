@@ -9,7 +9,8 @@
 import {FileFilter, IpcRendererEvent} from 'electron';
 import { ContextMenus, ContextMenuID } from './main/menus';
 import { AppSettings } from '../main/main';
-import { AppInitStage, fileSelectOrLoadResult, UrlType } from './renderer-main';
+import { AppInitStage, fileSelectOrLoadResult, UrlType } from './renderer-main.mts';
+import { LibData } from 'kresmer';
 
 export interface ElectronAPI {
     signalReadiness: (stage: AppInitStage) => void,
@@ -34,6 +35,7 @@ export interface ElectronAPI {
     snappingToGridToggled: (snapToGrid: boolean) => void,
     snappingGranularityChanged: (granularity: number) => void,
     autoAlignmentToggled: (autoAlignVertices: boolean) => void,
+    loadInitialLibraries: () => Promise<LibData>,
     loadLibraryFile: (libName: string, fileName?: string) => Promise<string|undefined>,
     loadLibraryTranslation: (libName: string, language: string) => Promise<string|undefined>,
     isReloadInProgress: () => Promise<boolean>,

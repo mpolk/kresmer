@@ -90,17 +90,16 @@ export const vueStatusBar = createApp(StatusBar, {
     displayData: statusBarData,
 }).mount("#statusBar") as InstanceType<typeof StatusBar>;
 
-// const app = createApp(KresmerVue, {
-//     ...window.electronAPI.initialAppSettings, 
-//     ...calcKresmerSize(),
-//     isEditable: true,
-// }).use(kresmerPlugin);
-// export const kresmer = (app.mount("#kresmer") as InstanceType<typeof KresmerVue>).model as Kresmer;
+const appInitData = window.electronAPI.initialAppSettings;
 export const kresmer = new Kresmer("#kresmer", {
-    ...window.electronAPI.initialAppSettings, 
+    ...appInitData, 
     ...calcKresmerSize(),
     isEditable: true,
+    backendServerURL: appInitData.server.autoConnect && appInitData.server.url || undefined,
+    backendConnectionPassword: appInitData.server.password,
 });
+
+statusBarData.serverURL = kresmer.backendConnection?.serverURL || "";
 statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
@@ -738,4 +737,11 @@ appCommandExecutor.on("show-about-dialog", (appVersion, electronVersion) => {
 
 // -------------------------------------------------------------------------------------------------
 // Let's go forward and do our work...
-window.electronAPI.signalReadiness(AppInitStage.HANDLERS_INITIALIZED);
+window.electronAPI.loadInitialLibraries()
+    .then(libData => {
+        kresmer.loadLibraries(libData);
+    })
+    .then(() => {
+        window.electronAPI.signalReadiness(AppInitStage.LIBS_LOADED);
+    });
+

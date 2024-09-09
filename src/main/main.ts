@@ -14,7 +14,7 @@ import Menus from "./Menus";
 import { AppCommand, AppCommandFormats } from '../renderer/AppCommands';
 import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols, parseCommandLine, setDefaultDrawingFileName } from './init-funcs';
 import { RecentDrawings } from './file-ops';
-import { StreetAddressFormat, LibDataPriority } from 'kresmer';
+import { StreetAddressFormat, LibDataPriority, LibData } from 'kresmer';
 import i18next from 'i18next';
 import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
 
@@ -137,8 +137,6 @@ export function addLibDir(libDir: string)
     fs.readdirSync(libDir).forEach(file => {
         if (file.endsWith(".krel")) {
             addLib(path.resolve(libDir!, file));
-        } else if (file.endsWith(".krelt")) {
-            addLibTranslation(path.resolve(libDir!, file));
         }//if
     });
 }//addLibDir
@@ -150,12 +148,15 @@ export function addLib(libPath: string)
         libsToLoad.push(libPath);
 }//addLib
 
-/** Adds a specified library translation file path to the global list */
-export function addLibTranslation(libPath: string)
+/** Loads all the libraries found in the library directories */
+export function loadInitialLibraries(): LibData
 {
-    if (!libTranslationsToLoad.includes(libPath))
-        libTranslationsToLoad.push(libPath);
-}//addLibTranslation
+    const libData: LibData = new Map();
+    for (const libPath of libsToLoad) {
+        libData.set(path.basename(libPath, ".krel"), fs.readFileSync(libPath, "utf8"));
+    }//for
+    return libData;
+}//loadInitialLibraries
 
 
 export function sendAppCommand<Command extends AppCommand>(command: Command, ...args: Parameters<AppCommandFormats[Command]>): void;

@@ -10,13 +10,13 @@ import path from "path";
 import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
-import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, 
+import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad, loadInitialLibraries,
          AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent, recentDrawings} from "./main";
 import { ContextMenuID } from "./Menus";
 import { AppInitStage } from '../renderer/renderer-main';
 import { IpcMainHooks } from './IpcMainHooks';
 import { loadLibraryFile, loadLibraryTranslation, saveDrawing, selectOrLoadFile } from './file-ops';
-import { openUrlWithSystemBrowser, requestConnectToServer } from './misc-ops';
+import { openUrlWithSystemBrowser } from './misc-ops';
 
 export let defaultDrawingFileName: string|undefined;
 export let drawingToAutoload: string;
@@ -44,7 +44,7 @@ export function parseCommandLine()
                     else
                         libPath = argv.shift();
                     if (!libPath)
-                        console.error("-l command line options should have an argument!");
+                        console.error('"-l" command line options should have an argument!');
                     else 
                         addLib(libPath);
                     break;
@@ -56,7 +56,7 @@ export function parseCommandLine()
                     else
                         libDir = argv.shift();
                     if (!libDir) {
-                        console.error("-L command line options should have an argument!");
+                        console.error('"-L" command line options should have an argument!');
                     } else 
                         addLibDir(libDir);
                     break;
@@ -135,11 +135,11 @@ export function initIpcMainHooks()
     });
 
     IpcMainHooks.on('enable-delete-selected-element-menu-item', (enabled: boolean) => {
-        changeMenuItems("delete-selected-element")({enabled});
+        modifyMenuItemFlags("delete-selected-element")({enabled});
     });
 
     IpcMainHooks.on('enable-component-op-menu-items', (enabled: boolean) => {
-        changeMenuItems(/* "delete-component", */ "duplicate-component", "transform-component")({enabled});
+        modifyMenuItemFlags(/* "delete-component", */ "duplicate-component", "transform-component")({enabled});
     });
 
     // IpcMainHooks.on('enable-link-op-menu-items', (enable: boolean) => {
@@ -147,23 +147,23 @@ export function initIpcMainHooks()
     // });
 
     IpcMainHooks.on('enable-move-component-up-menu-items', (enabled: boolean) => {
-        changeMenuItems("move-component-up", "move-component-to-top")({enabled});
+        modifyMenuItemFlags("move-component-up", "move-component-to-top")({enabled});
     });
 
     IpcMainHooks.on('enable-move-component-down-menu-items', (enabled: boolean) => {
-        changeMenuItems("move-component-down", "move-component-to-bottom")({enabled});
+        modifyMenuItemFlags("move-component-down", "move-component-to-bottom")({enabled});
     });
 
     IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
         localSettings.set("server", {url, password, autoConnect});
-        changeMenuItems("connectToServer")({visible: false, enabled: false});
-        changeMenuItems("disconnectFromServer")({visible: true, enabled: true});
+        modifyMenuItemFlags("connectToServer")({visible: false, enabled: false});
+        modifyMenuItemFlags("disconnectFromServer")({visible: true, enabled: true});
     });
 
     IpcMainHooks.on("backend-server-disconnected", () => {
         localSettings.set("server", "autoConnect", false);
-        changeMenuItems("connectToServer")({visible: true, enabled: true});
-        changeMenuItems("disconnectFromServer")({visible: false, enabled: false});
+        modifyMenuItemFlags("connectToServer")({visible: true, enabled: true});
+        modifyMenuItemFlags("disconnectFromServer")({visible: false, enabled: false});
     });
 
     IpcMainHooks.on("open-url", openUrlWithSystemBrowser);
@@ -177,15 +177,15 @@ export function initIpcMainHooks()
     });
 
     IpcMainHooks.on("grid-shown-or-hidden", shown => {
-        changeMenuItems("toggleGrid")({checked: shown});
+        modifyMenuItemFlags("toggleGrid")({checked: shown});
     });
 
     IpcMainHooks.on("rulers-shown-or-hidden", shown => {
-        changeMenuItems("toggleRulers")({checked: shown});
+        modifyMenuItemFlags("toggleRulers")({checked: shown});
     });
 
     IpcMainHooks.on("snapping-to-grid-toggled", snapToGrid => {
-        changeMenuItems("toggleSnappingToGrid")({checked: snapToGrid});
+        modifyMenuItemFlags("toggleSnappingToGrid")({checked: snapToGrid});
         localSettings.set("snapToGrid", snapToGrid);
     });
 
@@ -194,8 +194,12 @@ export function initIpcMainHooks()
     });
 
     IpcMainHooks.on("vertex-auto-alignment-toggled", autoAlignVertices => {
-        changeMenuItems("toggleVertexAutoAlignment")({checked: autoAlignVertices});
+        modifyMenuItemFlags("toggleVertexAutoAlignment")({checked: autoAlignVertices});
         localSettings.set("autoAlignVertices", autoAlignVertices);
+    });
+
+    IpcMainHooks.onInvokation("load-initial-libraries", () => {
+        return loadInitialLibraries();
     });
 
     IpcMainHooks.onInvokation("load-library-file", (libName: string, fileName?: string) => {
@@ -222,7 +226,7 @@ export function initIpcMainHooks()
 }//initIpcMainHooks
 
 
-function changeMenuItems(...ids: string[])
+function modifyMenuItemFlags(...ids: string[])
 {
     return function(options: {enabled?: boolean, visible?: boolean, checked?: boolean}) {
         for (const id of ids) {
@@ -234,7 +238,7 @@ function changeMenuItems(...ids: string[])
                 Menu.getApplicationMenu()!.getMenuItemById(id)!.checked = options.checked;
         }//for
     }
-}//changeMenuItems
+}//modifyMenuItemFlags
 
 
 /** Perform a single step of the App initialization in response to the signals received from the renderer process.
@@ -247,10 +251,10 @@ export function initApp(stage: AppInitStage)
     console.debug(`We've heard that the main window renderer is now ready (stage ${stage})`);
     switch (stage) {
         case AppInitStage.HANDLERS_INITIALIZED: 
-            if (localSettings.get("server", "autoConnect")) {
-                requestConnectToServer(false, AppInitStage.CONNECTED_TO_BACKEND);
-                break
-            }//if
+            // if (localSettings.get("server", "autoConnect")) {
+            //     requestConnectToServer(false, AppInitStage.CONNECTED_TO_BACKEND);
+            //     break
+            // }//if
         // eslint-disable-next-line no-fallthrough
         case AppInitStage.CONNECTED_TO_BACKEND:
             console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`);

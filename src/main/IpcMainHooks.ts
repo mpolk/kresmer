@@ -10,6 +10,7 @@ import { ContextMenuID } from "./Menus";
 import { AppSettings } from "./main";
 import type { URLType } from '../renderer/URLType';
 import type { AppInitStage, fileSelectOrLoadResult } from '../renderer/renderer-main';
+import { LibData } from "kresmer";
 
 export interface IpcMainChannels {
     "update-app-settings": (newAppSettings: AppSettings) => void;
@@ -32,6 +33,7 @@ export interface IpcMainChannels {
     "snapping-to-grid-toggled": (snapToGrid: boolean) => void;
     "snapping-granularity-changed": (granularity: number) => void;
     "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
+    "load-initial-libraries": () => LibData;
     "load-library-file": (libName: string, fileName?: string) => string|undefined;
     "load-library-translation": (libName: string, language: string) => string|undefined;
     "check-reload-status": () => void;
