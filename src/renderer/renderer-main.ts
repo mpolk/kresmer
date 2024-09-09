@@ -18,7 +18,7 @@ import AppSettingsSidebar from './AppSettingsSidebar.vue';
 import DrawingPropsSidebar from './DrawingPropsSidebar.vue';
 import ComponentPropsSidebar from './ElementPropsSidebar.vue';
 import Kresmer, { 
-    Position, KresmerException, KresmerParsingException, LibraryImportException,
+    Position, KresmerException, KresmerParsingException,
     NetworkComponentController, NetworkComponent,
     NetworkLink, DrawingElement, Vertex,
     TransformMode, ConnectionPointProxy,
@@ -49,14 +49,6 @@ i18next.init({
     ns: "renderer",
     defaultNS: "renderer",
 });
-
-export const enum AppInitStage {
-    HANDLERS_INITIALIZED = 0,
-    CONNECTED_TO_BACKEND = 1,
-    LIBS_LOADED = 2,
-    DRAWING_LOADED = 3,
-}//AppInitStage
-  
 
 export const hints = new Hints;
 
@@ -396,21 +388,6 @@ appCommandExecutor.on("load-library", async(libData: string, options?: LoadLibra
     }//catch
 });//loadLibrary
 
-
-appCommandExecutor.on("load-initial-libraries", async(libPaths: string[]) =>
-{ 
-    for (const libPath of libPaths) {
-        const libData = await window.electronAPI.loadLibraryFile("", libPath);
-        if (libData)
-            await kresmer.loadLibrary(libData);
-        else
-            kresmer.raiseError(new LibraryImportException({fileName: libPath}));
-    }//for
-
-    window.electronAPI.signalReadiness(AppInitStage.LIBS_LOADED);
-});//loadLibrary
-
-
 appCommandExecutor.on("create-new-drawing", async() => {
     if (kresmer.isDirty) {
         const reply = await vueMessageBox.ask("The drawing is modified. Save it before replacing with a new one?", 
@@ -461,9 +438,6 @@ appCommandExecutor.on("load-drawing", async (drawingData: string, options?: Load
     }//catch
 
     updateWindowTitle();
-    if (options?.completionSignal) {
-        window.electronAPI.signalReadiness(options.completionSignal);
-    }//if
 });//loadDrawing
 
 
@@ -678,7 +652,7 @@ export type BackendConnectionParams = {
 
 
 appCommandExecutor.on("connect-to-server", 
-    async (serverURL, password, forceUI, completionSignal?: AppInitStage) => {
+    async (serverURL, password, forceUI) => {
     let connectionParams: BackendConnectionParams | null = {
         serverURL,
         password,
@@ -699,9 +673,6 @@ appCommandExecutor.on("connect-to-server",
     if (forceUI) {
         connectionParams = await vueBackendConnectionDialog.show(connectionParams, message);
         if (!connectionParams) {
-            if (completionSignal) {
-                window.electronAPI.signalReadiness(completionSignal);
-            }//if
             return;
         }//if
     }//if
@@ -711,9 +682,6 @@ appCommandExecutor.on("connect-to-server",
                                               connectionParams.password, 
                                               connectionParams.autoConnect);
     statusBarData.serverURL = connectionParams.serverURL;
-    if (completionSignal) {
-        window.electronAPI.signalReadiness(completionSignal);
-    }//if
 });
 
 
@@ -743,4 +711,6 @@ window.electronAPI.loadInitialLibraries().then(libData => {
     const dwgData = await window.electronAPI.loadInitialDrawing();
     if (dwgData)
         kresmer.loadDrawing(dwgData);
+}).then(() => {
+    window.electronAPI.signalReadiness();
 });

@@ -8,7 +8,6 @@
 
 import { contextBridge, FileFilter, ipcRenderer, IpcRendererEvent } from 'electron';
 import { ContextMenuID } from './main/Menus';
-import { AppInitStage } from './renderer/renderer-main';
 import { ElectronAPI } from './renderer/ElectronAPI';
 import { IpcMainChannel, IpcMainChannels } from './main/IpcMainHooks';
 import { AppSettings } from './main/main';
@@ -37,9 +36,9 @@ const initialAppSettings = JSON.parse(process.argv.find(arg => arg.startsWith("-
 console.debug("Setting up electron API for the renderer...");
 exposeToRenderer({
 
-    signalReadiness: (stage: AppInitStage) => {
-        console.debug(`Main window renderer: I am ready (stage ${stage})`);
-        sendToMain('renderer-ready', stage);
+    signalReadiness: () => {
+        console.debug(`Main window renderer: I am ready`);
+        sendToMain('renderer-ready');
     },
 
     initialAppSettings,

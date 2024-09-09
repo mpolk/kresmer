@@ -9,13 +9,13 @@ import { FileFilter, ipcMain, IpcMainEvent, IpcMainInvokeEvent } from "electron"
 import { ContextMenuID } from "./Menus";
 import { AppSettings } from "./main";
 import type { URLType } from '../renderer/URLType';
-import type { AppInitStage, fileSelectOrLoadResult } from '../renderer/renderer-main';
+import type { fileSelectOrLoadResult } from '../renderer/renderer-main';
 import { LibData } from "kresmer";
 
 export interface IpcMainChannels {
     "update-app-settings": (newAppSettings: AppSettings) => void;
     "context-menu": (menuID: ContextMenuID, ...args: unknown[]) => void;
-    "renderer-ready": (stage: AppInitStage) => void;
+    "renderer-ready": () => void;
     "set-default-drawing-filename": (fileName: string) => void;
     "complete-drawing-saving": (dwgData: string) => void;
     "save-drawing": (dwgData: string) => boolean;

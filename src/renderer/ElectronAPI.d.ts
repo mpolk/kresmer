@@ -9,11 +9,11 @@
 import {FileFilter, IpcRendererEvent} from 'electron';
 import { ContextMenus, ContextMenuID } from './main/menus';
 import { AppSettings } from '../main/main';
-import { AppInitStage, fileSelectOrLoadResult, UrlType } from './renderer-main.mts';
+import { fileSelectOrLoadResult, UrlType } from './renderer-main.mts';
 import { LibData } from 'kresmer';
 
 export interface ElectronAPI {
-    signalReadiness: (stage: AppInitStage) => void,
+    signalReadiness: () => void,
     initialAppSettings: AppSettings,
     updateAppSettings: (newAppSettings: AppSettings) => void,
     onCommand: (callback: (event: IpcRendererEvent, command: string, ...args: unknown[]) => void) => void,

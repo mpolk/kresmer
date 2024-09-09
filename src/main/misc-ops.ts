@@ -8,7 +8,6 @@
 
 import { shell } from 'electron';
 import { sendAppCommand, localSettings } from './main';
-import { AppInitStage } from '../renderer/renderer-main';
 
 
 /**
@@ -22,10 +21,9 @@ export function openUrlWithSystemBrowser(url: string)
 }//openUrlWithSystemBrowser
 
 
-export function requestConnectToServer(forceUI: boolean, completionSignal?: AppInitStage)
+export function requestConnectToServer(forceUI: boolean)
 {
-    sendAppCommand("connect-to-server", localSettings.get("server", "url"), 
-                    localSettings.get("server", "password"), forceUI, completionSignal);
+    sendAppCommand("connect-to-server", localSettings.get("server", "url"), localSettings.get("server", "password"), forceUI);
 }//requestConnectToServer
 
 export function requestDisconnectFromServer()

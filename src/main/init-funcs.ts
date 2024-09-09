@@ -10,10 +10,9 @@ import path from "path";
 import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
-import { localSettings, menus, isDev, packageJson, sendAppCommand, libsToLoad,
+import { localSettings, menus, isDev, packageJson, libsToLoad,
          AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent, recentDrawings} from "./main";
 import { ContextMenuID } from "./Menus";
-import { AppInitStage } from '../renderer/renderer-main';
 import { IpcMainHooks } from './IpcMainHooks';
 import { loadLibraryFile, loadLibraryTranslation, saveDrawing, selectOrLoadFile } from './file-ops';
 import { openUrlWithSystemBrowser } from './misc-ops';
@@ -128,8 +127,6 @@ export function initIpcMainHooks()
         // console.debug("main: Context menu '%s'", menuID);
         menus.contextMenu(menuID, ...args);
     });
-
-    IpcMainHooks.on('renderer-ready', (stage: number) => {initApp(stage)});
 
     IpcMainHooks.on('set-default-drawing-filename', (fileName: string) => {
         defaultDrawingFileName = fileName;
@@ -268,44 +265,6 @@ export function loadInitialDrawing(): string | undefined
         return fs.readFileSync(drawingToAutoload, "utf-8");
     }//if
 }//loadInitialDrawing
-
-
-/** Perform a single step of the App initialization in response to the signals received from the renderer process.
- *  Acts as an coroutine together with the renderer initialization procedure. When the renderer completes
- *  the next stage of its initialization it signals about its readiness with the corresponding AppInitStage.* code.
- * @param stage The ID of the initialization stage just completed by the renderer process
- */
-export function initApp(stage: AppInitStage)
-{
-    console.debug(`We've heard that the main window renderer is now ready (stage ${stage})`);
-    switch (stage) {
-        case AppInitStage.HANDLERS_INITIALIZED: 
-            // if (localSettings.get("server", "autoConnect")) {
-            //     requestConnectToServer(false, AppInitStage.CONNECTED_TO_BACKEND);
-            //     break
-            // }//if
-        // eslint-disable-next-line no-fallthrough
-        case AppInitStage.CONNECTED_TO_BACKEND:
-            console.log(`process.env.npm_lifecycle_event="${process.env.npm_lifecycle_event}"`);
-            sendAppCommand("load-initial-libraries", libsToLoad);
-            break;
-        case AppInitStage.LIBS_LOADED: {
-            if (!drawingToAutoload && localSettings.get("autoloadLastDrawing")) {
-                drawingToAutoload = recentDrawings.last;
-            }//if
-            if (fs.existsSync(drawingToAutoload)) {
-                defaultDrawingFileName = drawingToAutoload;
-                const dwgData = fs.readFileSync(drawingToAutoload, "utf-8");
-                sendAppCommand("load-drawing", dwgData, 
-                                {
-                                    drawingFileName: drawingToAutoload, 
-                                    completionSignal: AppInitStage.DRAWING_LOADED, 
-                                });
-            }//if
-            break;
-        }
-    }//switch
-}//initApp
 
 
 /** Register custom management protocols for network devices 
