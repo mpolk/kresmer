@@ -81,7 +81,6 @@ export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
 export const recentDrawings = new RecentDrawings();
 export const libDirs: string[] = [];
 export const libsToLoad: string[] = [];
-export const libTranslationsToLoad: string[] = [];
 export let mainWindow: BrowserWindow;
 export let menus: Menus;
 

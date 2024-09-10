@@ -359,15 +359,14 @@ kresmer.on("library-translation-requested", async(libName: string, language: str
 
 // Processing application command (coming from the main process)
 const appCommandExecutor = new AppCommandExecutor;
-appCommandExecutor
-    .on("undo", () => {kresmer.undo()})
-    .on("redo", () => {kresmer.redo()})
-    ;
-
 window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
     appCommandExecutor.execute(command, ...args);
 });
 
+appCommandExecutor
+    .on("undo", () => {kresmer.undo()})
+    .on("redo", () => {kresmer.redo()})
+    ;
 
 appCommandExecutor.on("load-library", async(libData: string, options?: LoadLibraryOptions) =>
 { 
