@@ -352,23 +352,6 @@ class AreaMoveOp extends EditorOperation {
 }//AreaMoveOp
 
 
-// export class AreaAddOp extends EditorOperation {
-
-//     constructor(private controller: NetworkComponentController) 
-//     {
-//         super();
-//     }//ctor
-
-//     override exec(): void {
-//         this.controller.kresmer.addPositionedNetworkComponent(this.controller);
-//     }//exec
-
-//     override undo(): void {
-//         this.controller.kresmer.deleteArea(this.controller);
-//     }//undo
-// }//AreaAddOp
-
-
 // export class AreaDeleteOp extends EditorOperation {
 
 //     constructor(private controller: NetworkComponentController) 

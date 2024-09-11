@@ -35,7 +35,7 @@ import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVerti
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
-import DrawingArea, { DrawingAreaMap } from "./DrawingArea/DrawingArea";
+import DrawingArea, { DrawingAreaMap, AddAreaOp } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
@@ -1164,6 +1164,12 @@ export default class Kresmer extends KresmerEventHooks {
             this.undoStack.execAndCommit(new UpdateDrawingPropsOp(this, props));
         },//updateDrawingProperties
 
+        /**
+         * Creates a new network component and places it ont the drawing
+         * @param componentClass The class of the component to be created
+         * @param position A position where the new component's origin should be placed
+         * @param coordSystem A coord system type for the position
+         */
         createComponent: (componentClass: NetworkComponentClass, position?: Position, coordSystem?: "screen"|"drawing") =>
         {
             const newComponent = new NetworkComponent(this, componentClass);
@@ -1378,6 +1384,30 @@ export default class Kresmer extends KresmerEventHooks {
             this.emit("link-vertex-deleted", vertex);
         },//deleteLinkVertex
 
+        /**
+         * Creates a new drawing area and places it ont the drawing
+         * @param componentClass The class of the area to be created
+         * @param position A position where the new area's origin should be placed
+         * @param coordSystem A coord system type for the position
+         */
+        createArea: (areaClass: DrawingAreaClass, position?: Position, coordSystem?: "screen"|"drawing") =>
+        {
+            const origin = !position ? {x: this.logicalBox.width/2, y: this.logicalBox.height/2} :
+                coordSystem !== "drawing" ? this.applyScreenCTM(position) : 
+                {...position};
+            const oppositeCorner = {
+                x: origin.x > this.logicalWidth/2 ? this.logicalWidth*0.2 : this.logicalWidth*0.8,
+                y: origin.y > this.logicalHeight/2 ? this.logicalHeight*0.2 : this.logicalHeight*0.8,
+            }
+            const newArea = new DrawingArea(this, areaClass, {vertices: [
+                {pos: origin},
+                {pos: {x: origin.x, y: oppositeCorner.y}},
+                {pos: oppositeCorner},
+                {pos: {x: oppositeCorner.x, y: origin.y}},
+            ]});
+            this.undoStack.execAndCommit(new AddAreaOp(newArea));
+        },//createArea
+    
         /**
          * Adds an area vertex
          * @param areaID The area this vertex belongs
@@ -1672,6 +1702,8 @@ export {default as NetworkComponentController, type TransformMode} from "./Netwo
 export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
+export {default as DrawingArea} from "./DrawingArea/DrawingArea";
+export {default as DrawingAreaClass} from "./DrawingArea/DrawingAreaClass";
 export {default as LinkBundle} from "./NetworkLink/LinkBundle";
 export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
 export {default as Vertex} from "./Vertex/Vertex";

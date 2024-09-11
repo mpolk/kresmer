@@ -37,6 +37,7 @@ import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
 import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 import { URLType } from './URLType';
 import LinkClassSelectionSidebar from './LinkClassSelectionSidebar.vue';
+import AreaClassSelectionSidebar from './AreaClassSelectionSidebar.vue';
 
 // if (process.env.NODE_ENV === 'development') {
 //     vueDevtools.connect(/* host, port */)
@@ -152,10 +153,12 @@ const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsS
     InstanceType<typeof AppSettingsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
-const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).use(kresmerPlugin).mount("#linkClassSelectionSidebar") as
-    InstanceType<typeof LinkClassSelectionSidebar>;
 const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionSidebar).use(kresmerPlugin).mount("#componentClassSelectionSidebar") as
     InstanceType<typeof ComponentClassSelectionSidebar>;
+const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).use(kresmerPlugin).mount("#linkClassSelectionSidebar") as
+    InstanceType<typeof LinkClassSelectionSidebar>;
+const vueAreaClassSelectionSidebar = createApp(AreaClassSelectionSidebar).use(kresmerPlugin).mount("#areaClassSelectionSidebar") as
+    InstanceType<typeof AreaClassSelectionSidebar>;
 const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMerge") as 
     InstanceType<typeof DrawingMergeDialog>;
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
@@ -583,7 +586,7 @@ appCommandExecutor.on("connect-connection-point", async (fromElementID: number, 
         const conn = hostElement.getConnectionPoint(fromConnectionPointName)!;
         kresmer.edAPI.startLinkCreation(linkClass, {conn});
     }//if
-});//startLinkCreation
+});
 
 appCommandExecutor.on("create-link", async (mousePos?: Position) =>
 {
@@ -592,7 +595,7 @@ appCommandExecutor.on("create-link", async (mousePos?: Position) =>
         const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
         kresmer.edAPI.startLinkCreation(linkClass, {pos});
     }//if
-});//startLinkCreation
+});
 
 appCommandExecutor.on("create-link-bundle", async (mousePos?: Position) =>
 {
@@ -601,8 +604,16 @@ appCommandExecutor.on("create-link-bundle", async (mousePos?: Position) =>
         const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
         kresmer.edAPI.startLinkCreation(linkClass, {pos});
     }//if
-});//startLinkCreation
+});
 
+appCommandExecutor.on("create-area", async (mousePos?: Position) =>
+{
+    const areaClass = await vueAreaClassSelectionSidebar.show(false);
+    if (areaClass) {
+        kresmer.edAPI.createArea(areaClass, mousePos, "screen");
+    }//if
+});
+    
 appCommandExecutor.on("scale-drawing", direction => {
     switch (direction) {
         case "-": kresmer.zoomFactor *= Math.SQRT1_2; break;

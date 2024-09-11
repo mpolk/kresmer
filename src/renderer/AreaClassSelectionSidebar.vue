@@ -3,17 +3,17 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
- *  A sidebar for link class selection when creating a new link
+ *  A sidebar for area class selection when creating a new area
 <*************************************************************************** -->
 
 <script lang="ts">
     import { onMounted, ref } from 'vue';
-    import Kresmer, { NetworkLink, NetworkLinkClass, LinkBundleClass } from 'kresmer';
+    import Kresmer, { DrawingArea, DrawingAreaClass } from 'kresmer';
     import DrawingElementClassSelectionSidebar from './DrawingElementClassSelectionSidebar.vue';
     import { kresmer } from './renderer-main';
 
     export default {
-        name: "LinkClassSelectionSidebar",
+        name: "AreaClassSelectionSidebar",
         components: {DrawingElementClassSelectionSidebar},
     }
 </script>
@@ -37,27 +37,17 @@
         krePreview.logicalHeight = base.previewHeight;
 
         if (base.result) {
-            const _class = base.result as NetworkLinkClass;
-            const link1 = new NetworkLink(krePreview, _class, {
-                from: {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.2}},
+            const _class = base.result as DrawingAreaClass;
+            const area = new DrawingArea(krePreview, _class, {
                 vertices: [
+                    {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.2}},
                     {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.2}},
                     {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.6}},
+                    {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.2}},
                 ],
-                to:   {pos: {x: base.previewWidth*0.8, y: base.previewHeight*0.6}},
             });
-            const link2 = new NetworkLink(krePreview, _class, {
-                from: {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.4}},
-                vertices: [
-                    {pos: {x: base.previewWidth*0.4, y: base.previewHeight*0.4}},
-                    {pos: {x: base.previewWidth*0.4, y: base.previewHeight*0.8}},
-                ],
-                to:   {pos: {x: base.previewWidth*0.8, y: base.previewHeight*0.8}},
-            });
-            link1.name = _class.name;
-            krePreview.addLink(link1);
-            krePreview.addLink(link2);
-            link2.selectThis();
+            area.name = _class.name;
+            krePreview.addArea(area);
         }//if
     }//showPreview
 
@@ -65,9 +55,8 @@
     async function show(forBundle: boolean)
     {
         krePreview = base.init();
-        const classes = Array.from([...kresmer.getRegisteredLinkClasses()]
-            .filter(([name, _class]) => !_class.isAbstract && (_class instanceof LinkBundleClass == forBundle)));
-        return base.show(classes) as Promise<NetworkLinkClass>;
+        const classes = Array.from([...kresmer.getRegisteredAreaClasses()]);
+        return base.show(classes) as Promise<DrawingAreaClass>;
     }//show
 
     defineExpose({show});
