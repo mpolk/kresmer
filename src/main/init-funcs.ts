@@ -10,7 +10,7 @@ import path from "path";
 import fs from "fs";
 import { exec } from 'child_process';
 import { BrowserWindow, Menu, protocol } from "electron";
-import { localSettings, menus, isDev, packageJson, libsToLoad,
+import { localSettings, menus, isDev, libsToLoad,
          AppSettings, addLib, addLibDir, isReloadInProgress, reloadContent, recentDrawings} from "./main";
 import { ContextMenuID } from "./Menus";
 import { IpcMainHooks } from './IpcMainHooks';
@@ -26,8 +26,7 @@ export function parseCommandLine()
 {
     const argv = [...process.argv];
     console.debug(`argv=${argv}`);
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const exePath = argv.shift();
+    /* const exePath =  */argv.shift();
     if (argv[0] == ".")
         argv.shift();
 
@@ -69,7 +68,7 @@ export function parseCommandLine()
 }//parseCommandLine
 
 /** Create the main app window */
-export function createMainWindow() {
+export async function createMainWindow() {
     // Create the browser window
     const windowOptions = {
         ...localSettings.get("window"),
@@ -84,6 +83,7 @@ export function createMainWindow() {
 
     // and load the index page of the app
     const indexPage = "index.electron.html";
+    const packageJson = await import("../../package.json");
     const url = isDev ?
         `http://localhost:${packageJson.config.port}/${indexPage}` :
         'file://' + path.join(__dirname, `../${indexPage}`);

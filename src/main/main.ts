@@ -75,8 +75,6 @@ let localesPath: string;
     return !fs.statSync(localesPath, {throwIfNoEntry: false});
 })//every
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-export const packageJson = require("../../package.json");
 export const isDev = process.env.npm_lifecycle_event?.startsWith("app:dev");
 export const recentDrawings = new RecentDrawings();
 export const libDirs: string[] = [];
@@ -87,7 +85,7 @@ export let menus: Menus;
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.whenReady().then(() => {
+app.whenReady().then(async() => {
     i18next.use(FsBackend).init<FsBackendOptions>({
         backend: {
             loadPath: path.join(localesPath!, '{{lng}}/{{ns}}.json'),
@@ -103,7 +101,7 @@ app.whenReady().then(() => {
     const libDirs = localSettings.get("libDirs");
     libDirs.forEach(libDir => addLibDir(libDir));
     parseCommandLine();
-    mainWindow = createMainWindow();
+    mainWindow = await createMainWindow();
     menus = new Menus(mainWindow);
     menus.buildRecentDrawingsSubmenu();
     initIpcMainHooks();
