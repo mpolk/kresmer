@@ -86,7 +86,7 @@ export async function createMainWindow() {
     const packageJson = await import("../../package.json");
     const url = isDev ?
         `http://localhost:${packageJson.config.port}/${indexPage}` :
-        'file://' + path.join(__dirname, `../${indexPage}`);
+        `file://${path.join(__dirname, `../${indexPage}`)}`;
     mainWindow.loadURL(url);
 
     if (isDev) {
