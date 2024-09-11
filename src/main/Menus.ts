@@ -17,7 +17,9 @@ export interface ContextMenus {
     "component": (componentID?: number) => void,
     "link": (linkID?: number, segmentNumber?: number, mousePos?: Position) => void,
     "link-vertex": (linkID: number, vertexNumber: number) => void,
-    "connection-point": (componentID: number, connectionPointName: number) => void,
+    "connection-point": (componentID: number, connectionPointName: number) => void, 
+    "area": (areaID?: number, segmentNumber?: number, mousePos?: Position) => void,
+    "area-vertex": (areaID: number, vertexNumber: number) => void,
 }//ContextMenus
 
 export type ContextMenuID = keyof ContextMenus;
@@ -28,6 +30,7 @@ export interface ContextMenuCommands {
     "edit-drawing-properties": ContextMenuHandler<"drawing">,
     "create-link": ContextMenuHandler<"drawing">,
     "create-link-bundle": ContextMenuHandler<"drawing">,
+    "create-area": ContextMenuHandler<"drawing">,
 
     "transform-component": ContextMenuHandler<"component">,
     "delete-component": ContextMenuHandler<"component">,
@@ -39,7 +42,7 @@ export interface ContextMenuCommands {
     "move-component-to-bottom": ContextMenuHandler<"component">,
 
     "align-vertices": ContextMenuHandler<"link">,
-    "add-vertex": ContextMenuHandler<"link">,
+    "add-link-vertex": ContextMenuHandler<"link">,
     "delete-link": ContextMenuHandler<"link">,
     "edit-link-properties": ContextMenuHandler<"link">,
 
@@ -47,6 +50,10 @@ export interface ContextMenuCommands {
     "delete-vertex": ContextMenuHandler<"link-vertex">,
 
     "connect-connection-point": ContextMenuHandler<"connection-point">,
+
+    "add-area-vertex": ContextMenuHandler<"area">,
+    "delete-area": ContextMenuHandler<"area">,
+    "edit-area-properties": ContextMenuHandler<"area">,
 }//ContextMenuCommands
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
@@ -133,6 +140,7 @@ export default class Menus {
                     { label: t("menu.element.add.component", "Component..."), accelerator: "insert", id: "add-component", click: () => sendAppCommand("add-component") },
                     { label: t("menu.element.add.link", "Link..."), accelerator: "Alt+l", id: "create-link", click: () => sendAppCommand("create-link") },
                     { label: t("menu.element.add.bundle", "Bundle..."), accelerator: "Alt+b", id: "create-link-bundle", click: () => sendAppCommand("create-link-bundle") },
+                    { label: t("menu.element.add.area", "Area..."), accelerator: "Alt+a", id: "create-area", click: () => sendAppCommand("create-area") },
                     ]},
                 { label: t("menu.element.transform", "Transform"), id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
                 {
@@ -167,6 +175,7 @@ export default class Menus {
                     { label: t("ctx-menu.drawing.add.component", "Component..."), id: "add-component" },
                     { label: t("ctx-menu.drawing.add.link", "Link..."), id: "create-link" },
                     { label: t("ctx-menu.drawing.add.bundle", "Bundle..."), id: "create-link-bundle" },
+                    { label: t("ctx-menu.drawing.add.area", "Area..."), id: "create-area" },
                 ]},
                 { label: t("ctx-menu.drawing.properties", "Drawing properties..."), id: "edit-drawing-properties" },
             ],
@@ -184,7 +193,7 @@ export default class Menus {
             ],
             "link": [
                 { label: t("ctx-menu.link.align-vertices", "Align Vertices"), id: "align-vertices" },
-                { label: t("ctx-menu.link.add-vertex", "Add Vertex"), id: "add-vertex" },
+                { label: t("ctx-menu.link.add-vertex", "Add Vertex"), id: "add-link-vertex" },
                 { type: 'separator' },
                 { label: t("ctx-menu.link.delete", "Delete Link"), id: "delete-link" },
                 { type: 'separator' },
@@ -196,6 +205,16 @@ export default class Menus {
             ],
             "connection-point": [
                 { label: t("ctx-menu.connection-point.connect", "Connect..."), id: "connect-connection-point" },
+            ],
+            "area": [
+                { label: t("ctx-menu.area.add-vertex", "Add Vertex"), id: "add-area-vertex" },
+                { type: 'separator' },
+                { label: t("ctx-menu.area.delete", "Delete Area"), id: "delete-area" },
+                { type: 'separator' },
+                { label: t("ctx-menu.area.properties", "Area Properties..."), id: "edit-area-properties" },
+            ],
+            "area-vertex": [
+                { label: t("ctx-menu.area-vertex.delete", "Delete Vertex"), id: "delete-vertex" },
             ],
         }
 

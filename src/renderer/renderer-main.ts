@@ -553,7 +553,7 @@ appCommandExecutor.on("edit-link-properties", (linkID?: number) =>
     vueComponentPropsSidebar.show(link);
 });//editLinkProperties
 
-appCommandExecutor.on("add-vertex", (linkID?: number, segmentNumber?: number, mousePos?: Position) =>
+appCommandExecutor.on("add-link-vertex", (linkID?: number, segmentNumber?: number, mousePos?: Position) =>
 {
     kresmer.edAPI.addLinkVertex(linkID!, segmentNumber!, mousePos!);
 });//addLinkVertex

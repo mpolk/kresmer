@@ -41,7 +41,8 @@
         "_": "Add",
         "component": "Component...",
         "link": "Link...",
-        "bundle": "Bundle..."
+        "bundle": "Bundle...",
+        "area": "Area..."
       },
       "transform": "Transform",
       "duplicate": "Duplicate",
@@ -62,7 +63,8 @@
         "_": "Add",
         "component": "Component...",
         "link": "Link...",
-        "bundle": "Bundle..."
+        "bundle": "Bundle...",
+        "area": "Area..."
       },
       "properties": "Drawing properties..."
     },
@@ -88,6 +90,14 @@
     },
     "connection-point": {
       "connect": "Connect..."
+    },
+    "area": {
+      "add-vertex": "Add Vertex",
+      "delete": "Delete Area",
+      "properties": "Area Properties..."
+    },
+    "area-vertex": {
+      "delete": "Delete Vertex"
     }
   }
 }
