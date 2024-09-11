@@ -14,7 +14,7 @@
              NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException } from 'kresmer';
     import { kresmer, updateWindowTitle } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
-    import { DrawingElementClassProp, PropTypeDescriptor } from 'kresmer/dist/DrawingElement/DrawingElementClass';
+    import { DrawingElementClassProp, PropTypeDescriptor } from 'kresmer';
     import i18next from 'i18next';
 
     export interface ElementPropDescriptor extends DrawingElementClassProp {
