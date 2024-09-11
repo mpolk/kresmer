@@ -561,17 +561,17 @@ appCommandExecutor.on("add-link-vertex", (linkID?: number, segmentNumber?: numbe
     kresmer.edAPI.addLinkVertex(linkID!, segmentNumber!, mousePos!);
 });//addLinkVertex
 
-appCommandExecutor.on("delete-vertex", (linkID: number, vertexNumber: number) =>
+appCommandExecutor.on("delete-link-vertex", (linkID: number, vertexNumber: number) =>
 {
     kresmer.edAPI.deleteLinkVertex({linkID, vertexNumber});
 });//deleteLinkVertex
 
-appCommandExecutor.on("align-vertex", (parentID: number, vertexNumber: number) =>
+appCommandExecutor.on("align-link-vertex", (parentID: number, vertexNumber: number) =>
 {
     kresmer.edAPI.alignVertex({parentID, vertexNumber});
 });//alignLinkVertex
 
-appCommandExecutor.on("align-vertices", (linkID?: number) =>
+appCommandExecutor.on("align-link-vertices", (linkID?: number) =>
 {
     kresmer.edAPI.alignLinkVertices({linkID: linkID!});
 });//alignLinkVertices

@@ -92,11 +92,13 @@
       "connect": "Connect..."
     },
     "area": {
+      "align-vertices": "Align Vertices",
       "add-vertex": "Add Vertex",
       "delete": "Delete Area",
       "properties": "Area Properties..."
     },
     "area-vertex": {
+      "align": "Align Vertex",
       "delete": "Delete Vertex"
     }
   }

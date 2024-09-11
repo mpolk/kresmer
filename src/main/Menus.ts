@@ -41,19 +41,23 @@ export interface ContextMenuCommands {
     "move-component-to-top": ContextMenuHandler<"component">,
     "move-component-to-bottom": ContextMenuHandler<"component">,
 
-    "align-vertices": ContextMenuHandler<"link">,
+    "align-link-vertices": ContextMenuHandler<"link">,
     "add-link-vertex": ContextMenuHandler<"link">,
     "delete-link": ContextMenuHandler<"link">,
     "edit-link-properties": ContextMenuHandler<"link">,
 
-    "align-vertex": ContextMenuHandler<"link-vertex">,
-    "delete-vertex": ContextMenuHandler<"link-vertex">,
+    "align-link-vertex": ContextMenuHandler<"link-vertex">,
+    "delete-link-vertex": ContextMenuHandler<"link-vertex">,
 
     "connect-connection-point": ContextMenuHandler<"connection-point">,
 
     "add-area-vertex": ContextMenuHandler<"area">,
     "delete-area": ContextMenuHandler<"area">,
+    "align-area-vertices": ContextMenuHandler<"area">,
     "edit-area-properties": ContextMenuHandler<"area">,
+
+    "align-area-vertex": ContextMenuHandler<"area-vertex">,
+    "delete-area-vertex": ContextMenuHandler<"area-vertex">,
 }//ContextMenuCommands
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
@@ -192,7 +196,7 @@ export default class Menus {
                 { label: t("ctx-menu.component.properties", "Component Properties..."), id: "edit-component-properties" },
             ],
             "link": [
-                { label: t("ctx-menu.link.align-vertices", "Align Vertices"), id: "align-vertices" },
+                { label: t("ctx-menu.link.align-vertices", "Align Vertices"), id: "align-link-vertices" },
                 { label: t("ctx-menu.link.add-vertex", "Add Vertex"), id: "add-link-vertex" },
                 { type: 'separator' },
                 { label: t("ctx-menu.link.delete", "Delete Link"), id: "delete-link" },
@@ -200,13 +204,14 @@ export default class Menus {
                 { label: t("ctx-menu.link.properties", "Link Properties..."), id: "edit-link-properties" },
             ],
             "link-vertex": [
-                { label: t("ctx-menu.link-vertex.align", "Align Vertex"), id: "align-vertex" },
-                { label: t("ctx-menu.link-vertex.delete", "Delete Vertex"), id: "delete-vertex" },
+                { label: t("ctx-menu.link-vertex.align", "Align Vertex"), id: "align-link-vertex" },
+                { label: t("ctx-menu.link-vertex.delete", "Delete Vertex"), id: "delete-link-vertex" },
             ],
             "connection-point": [
                 { label: t("ctx-menu.connection-point.connect", "Connect..."), id: "connect-connection-point" },
             ],
             "area": [
+                { label: t("ctx-menu.area.align-vertices", "Align Vertices"), id: "align-area-vertices" },
                 { label: t("ctx-menu.area.add-vertex", "Add Vertex"), id: "add-area-vertex" },
                 { type: 'separator' },
                 { label: t("ctx-menu.area.delete", "Delete Area"), id: "delete-area" },
@@ -214,7 +219,8 @@ export default class Menus {
                 { label: t("ctx-menu.area.properties", "Area Properties..."), id: "edit-area-properties" },
             ],
             "area-vertex": [
-                { label: t("ctx-menu.area-vertex.delete", "Delete Vertex"), id: "delete-vertex" },
+                { label: t("ctx-menu.area-vertex.align", "Align Vertex"), id: "align-area-vertex" },
+                { label: t("ctx-menu.area-vertex.delete", "Delete Vertex"), id: "delete-area-vertex" },
             ],
         }
 
