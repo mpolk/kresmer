@@ -826,6 +826,8 @@ export default class Kresmer extends KresmerEventHooks {
                 this.componentsByName.delete(name);
             }//if
         });
+        this.areasByName.clear();
+        this.areas.clear();
         this.zoomFactor = 1;
     }//eraseContent
 
@@ -1396,14 +1398,14 @@ export default class Kresmer extends KresmerEventHooks {
                 coordSystem !== "drawing" ? this.applyScreenCTM(position) : 
                 {...position};
             const oppositeCorner = {
-                x: origin.x > this.logicalWidth/2 ? this.logicalWidth*0.2 : this.logicalWidth*0.8,
-                y: origin.y > this.logicalHeight/2 ? this.logicalHeight*0.2 : this.logicalHeight*0.8,
+                x: origin.x + Math.min(this.logicalWidth/2, this.logicalWidth - origin.x) * 0.8,
+                y: origin.y + Math.min(this.logicalHeight/2, this.logicalHeight - origin.y) * 0.8,
             }
             const newArea = new DrawingArea(this, areaClass, {vertices: [
                 {pos: origin},
-                {pos: {x: origin.x, y: oppositeCorner.y}},
-                {pos: oppositeCorner},
                 {pos: {x: oppositeCorner.x, y: origin.y}},
+                {pos: oppositeCorner},
+                {pos: {x: origin.x, y: oppositeCorner.y}},
             ]});
             this.undoStack.execAndCommit(new AddAreaOp(newArea));
         },//createArea

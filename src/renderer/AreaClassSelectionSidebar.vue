@@ -41,9 +41,9 @@
             const area = new DrawingArea(krePreview, _class, {
                 vertices: [
                     {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.2}},
-                    {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.2}},
-                    {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.6}},
-                    {pos: {x: base.previewWidth*0.6, y: base.previewHeight*0.2}},
+                    {pos: {x: base.previewWidth*0.8, y: base.previewHeight*0.2}},
+                    {pos: {x: base.previewWidth*0.8, y: base.previewHeight*0.8}},
+                    {pos: {x: base.previewWidth*0.2, y: base.previewHeight*0.8}},
                 ],
             });
             area.name = _class.name;
