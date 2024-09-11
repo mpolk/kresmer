@@ -1,3 +1,14 @@
+## 0.16.0
+
+Now Kresmer core-component can connect to the backend server and load the libraries and the drawing upon construction if the corresponding initialization parameters are provided, i.e.:
+```typescript
+new Kresmer("#mountPoint", {
+    backendServerURL: url, backendServerPassword: password, 
+    libData: {stdlib: stdlibXML, lib1: "lib1XML"},
+    drawingData: drawingXML,
+})
+```
+
 ## 0.15.3
 
 - Fixed an error in SVG exporting, which made exported SVG-files unreadable by some SVG-manipulating software because of wrong XML-namespace usage. The error was introduced in the 0.15.0 release, where the whole XML-namespace hierarchy was reorganized.
