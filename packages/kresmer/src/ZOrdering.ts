@@ -138,6 +138,13 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
 
         item.zIndex = maxZIndex;
     }//moveItemUpTo
+
+    get topmostItem(): T|undefined
+    {
+        const lastItem = this.sorted.at(-1);
+        if (lastItem?.zIndex == Z_INDEX_INF)
+            return lastItem;
+    }//topmostItem
 }//MapWithZOrder
 
 /**
@@ -166,6 +173,11 @@ export function withZOrder<TBase extends abstract new(...args: any[]) => object>
                 this.zIndex = this._savedZIndex;
             }//if
         }//returnFromTop
+
+        public get isTopmost()
+        {
+            return this.zIndex === Z_INDEX_INF;
+        }//isTopmost
     }//class
 
     return BaseWithZOrder;

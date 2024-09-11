@@ -140,6 +140,10 @@
         return Array.from(model.globalDefs.values()).map(({data}) => data);
     });
 
+    const topmostArea = computed(() => {
+        return model.areas.topmostItem;
+    });
+
 
     // Event handlers
 
@@ -295,21 +299,25 @@
             </g>
         </template>
 
-        <!-- Areas -->
-        <DrawingAreaVue v-for="area in model.areas.sorted" v-bind="area.syntheticProps" :key="`area${area.id}`" 
-            :model="area" />
+        <!-- Areas (except the topmost one)-->
+        <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
+            <DrawingAreaVue v-if="!area.isTopmost" v-bind="area.syntheticProps" :model="area" />
+        </template>
 
         <!-- Components -->
         <NetworkComponentHolder 
             v-for="componentController in model.networkComponents.sorted" 
             :key="`networkComponent${componentController.component.id}`" :controller="componentController"
-                >
+            >
             <component :is="componentController.component.vueName" v-bind="componentController.component.syntheticProps"
                    :component-id="componentController.component.id" :name="componentController.component.name"
                 >
                 {{componentController.component.content}}
             </component>
         </NetworkComponentHolder>
+
+        <!-- The topmost (selected) area (if any)-->
+        <DrawingAreaVue v-if="topmostArea" v-bind="topmostArea.syntheticProps" :model="topmostArea" />
 
         <!-- Links -->
         <NetworkLinkVue v-for="link in model.links.sorted" v-bind="link.syntheticProps" :key="`link${link.id}`" 
