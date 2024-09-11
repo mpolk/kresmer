@@ -115,7 +115,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
         xml.push(...this.propsToXML(indentLevel));
 
-        for (let i = 1; i <= this.vertices.length - 1; i++) {
+        for (let i = 0; i <= this.vertices.length - 1; i++) {
             xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
         }//for
 

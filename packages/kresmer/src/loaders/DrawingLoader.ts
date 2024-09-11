@@ -162,6 +162,10 @@ export default class DrawingLoader {
         if (this.kresmer.embedLibDataInDrawing)
             xml += this.saveLibraryData(1) + "\n";
 
+        for (const area of this.kresmer.areas.sorted.values()) {
+            xml += area.toXML(1) + "\n\n";
+        }//for
+
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
             xml += controller.toXML(1) + "\n\n";
         }//for
