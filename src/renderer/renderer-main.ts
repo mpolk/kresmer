@@ -33,7 +33,7 @@ import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import AboutDialog from './AboutDialog.vue';
 import { AppSettings } from '../main/main';
-import kresmerCSS from '../../packages/kresmer/dist/style.css?inline';
+import kresmerCSS from 'kresmer/style?inline';
 import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 import { URLType } from './URLType';
 import LinkClassSelectionSidebar from './LinkClassSelectionSidebar.vue';
