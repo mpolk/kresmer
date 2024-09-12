@@ -8,7 +8,9 @@ export default defineConfig({
   // https://vitejs.dev/config/
     plugins: [
       vue(), 
-      dts(), 
+      dts({
+        insertTypesEntry: true,
+      }), 
       // cssInjectedByJsPlugin({topExecutionPriority: false}),
     ],
     base: './',
@@ -27,12 +29,14 @@ export default defineConfig({
         },
       sourcemap: true,
       rollupOptions: {
-        external: ['vue'],
+        external: ['vue', 'uuid', 'postcss'],
         output: {
           // Provide global variables to use in the UMD build
           // Add external deps here
           globals: {
             vue: 'Vue',
+            uuid: "UUID",
+            postcss: "PostCSS",
           },
           exports: "named",
         },

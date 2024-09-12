@@ -5,15 +5,16 @@
   "author": "Dmitriy Stepanenko",
   "description": "Network drawing and diagram editor: the core web-component",
   "repository": "https://github.com/mpolk/kresmer",
+  "type": "module",
   "module": "dist/kresmer.es.js",
   "main": "dist/kresmer.umd.js",
-  "types": "dist/Kresmer.d.ts",
+  "types": "dist/kresmer.d.ts",
   "style": "dist/style.css",
   "exports": {
     ".": {
       "import": "./dist/kresmer.es.js",
       "require": "./dist/kresmer.umd.js",
-      "types": "./dist/Kresmer.d.ts"
+      "types": "./dist/kresmer.d.ts"
     },
     "./style": {
       "import": "./dist/style.css"
@@ -45,14 +46,12 @@
     ]
   },
   "dependencies": {
-    "lodash": "^4.17.21",
     "postcss": "^8.4.21",
     "uuid": "^10.0.0",
     "vue": "^3.5.1"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
-    "@types/lodash": "^4.17.5",
     "@types/node": "^20.9.3",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-vue": "^5.0.0",
