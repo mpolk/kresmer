@@ -28,10 +28,13 @@ export default class XMLFormatter {
         this.lines.push([line, indent ?? this.currentIndentLevel]);
     }//addLine
 
-    public addLines(...lines: [string, number?][])
+    public addLines(...lines: ([string, number?] | string)[])
     {
-        for (const [line, indent] of lines) {
-            this.addLine(line, indent);
+        for (const l of lines) {
+            if (Array.isArray(l))
+                this.addLine(l[0], l[1]);
+            else
+                this.addLine(l);
         }//for
     }//addLines
 
