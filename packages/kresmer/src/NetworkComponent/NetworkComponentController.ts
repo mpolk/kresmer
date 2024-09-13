@@ -244,7 +244,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
         xml.push(`${indent(indentLevel+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
 
         if (this.component.propCount)
-            xml.push(...this.component.propsToXML(indentLevel));
+            xml.push(...this.component.propsToXMLOld(indentLevel));
 
         if (this.component.content)
             xml.push(`${indent(indentLevel+1)}<content>${this.component.content}</content>`)

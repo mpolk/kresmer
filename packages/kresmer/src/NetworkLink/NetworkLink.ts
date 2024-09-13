@@ -172,7 +172,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         } else {
             const xml = [`${indent(indentLevel)}<${this.outerXMLTag} ${attrStr}>`];
 
-            xml.push(...this.propsToXML(indentLevel));
+            xml.push(...this.propsToXMLOld(indentLevel));
     
             for (let i = 1; i <= n - 1; i++) {
                 xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);

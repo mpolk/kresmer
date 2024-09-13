@@ -23,9 +23,9 @@ export default class XMLFormatter {
     public unindent(): XMLFormatter {this.currentIndentLevel--; return this;}
     public u(): XMLFormatter {return this.unindent()}
 
-    public addLine(line: string, indent?: number): XMLFormatter
+    public addLine(line?: string, indent?: number): XMLFormatter
     {
-        this.lines.push([line, indent ?? this.currentIndentLevel]);
+        this.lines.push([line ?? "", line ? this.currentIndentLevel + (indent ?? 0) : 0]);
         return this;
     }//addLine
 

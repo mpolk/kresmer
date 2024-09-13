@@ -11,6 +11,7 @@ import DrawingParser, { DrawingHeaderData } from "./DrawingParser";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import DrawingArea from "../DrawingArea/DrawingArea";
+import { XMLTag, XMLTagFormatting } from "../XMLFormatter";
 
 
 export default class DrawingLoader {
@@ -143,27 +144,26 @@ export default class DrawingLoader {
     {
         this.kresmer.deselectAllElements();
 
-        const attrs: Record<string, unknown> = {
-            xmlns: "kresmer-drawing",
-            name: this.kresmer.drawingName,
-            width: this.kresmer.logicalWidth, 
-            height: this.kresmer.logicalHeight,
-            "background-color": this.kresmer.backgroundColor,
-        };
+        const outerTag = new XMLTag("kresmer-drawing",
+            ["xmlns", "kresmer-drawing"],
+            ["name", this.kresmer.drawingName],
+            ["width", this.kresmer.logicalWidth], 
+            ["height", this.kresmer.logicalHeight],
+            ["background-color", this.kresmer.backgroundColor],
+        );
 
         if (this.kresmer.hrefBase.value) 
-            attrs["href-base"] = this.kresmer.hrefBase.value;
+            outerTag.addAttrib("href-base", this.kresmer.hrefBase.value);
         if (this.kresmer.backgroundImage.nonEmpty) {
             Object.entries(this.kresmer.backgroundImage.toMarkupAttrs()).forEach(([key, value]) => {
-                attrs[key] = value;
+                outerTag.addAttrib(key, value);
             })
         }//if
 
         let xml = `\
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing 
-    ${Object.entries(attrs).map(([key, value]) => `${key}="${value}"`).join("\n\t")}>
+${outerTag.opening(XMLTagFormatting.multiline)}
 
 `;
 
