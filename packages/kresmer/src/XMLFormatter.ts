@@ -53,7 +53,7 @@ export default class XMLFormatter {
         if (!(tag instanceof XMLTag))
             tag = new XMLTag(tag, ...attribs);
         this.tagStack.push(tag);
-        this.addLine(tag.xml);
+        this.addLine(tag.opening());
         this.indent();
         return this;
     }//pushTag
@@ -62,7 +62,7 @@ export default class XMLFormatter {
     {
         console.assert(this.tagStack.length > 0);
         this.unindent();
-        this.addLine(this.tagStack.pop()!.closing);
+        this.addLine(this.tagStack.pop()!.closing());
         return this;
     }//popTag
 
@@ -81,19 +81,36 @@ export class XMLTag {
 
     private attribs: [string, unknown][];
 
+    private attribStr(formatting?: XMLTagFormatting)
+    {
+        return this.attribs.map(([name, value]) => ` ${name}="${value ?? ''}"`)
+            .join(formatting === XMLTagFormatting.multiline ? "\n   " : "");
+    }//attribStr
+
     public addAttrib(name: string, value?: unknown): XMLTag
     {
         this.attribs.push([name, value]);
         return this;
     }//addAttrib
 
-    public get xml()
+    public opening(formatting?: XMLTagFormatting)
     {
-        return `<${this.tagName}${this.attribs.map(([name, value]) => ` ${name}="${value ?? ''}"`).join('')}>`
-    }//xml
+        return `<${this.tagName}${this.attribStr(formatting)}>`;
+    }//opening
 
-    public get closing()
+    public selfClosing(formatting?: XMLTagFormatting)
+    {
+        return `<${this.tagName}${this.attribStr(formatting)}/>`;
+    }//opening
+
+    public closing()
     {
         return `</${this.tagName}>`;
     }//closing
 }//XMLTag
+
+
+export const enum XMLTagFormatting {
+    inline = "inline",
+    multiline = "multiline",
+}//XMLTagFormatting
