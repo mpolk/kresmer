@@ -21,6 +21,9 @@ import KresmerException, { KresmerExceptionSeverity } from "../KresmerException"
 import {toCamelCase} from "../Utils";
 import LinkBundle from "../NetworkLink/LinkBundle";
 import LibraryLoader from "./LibraryLoader";
+import DrawingArea from '../DrawingArea/DrawingArea';
+import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
+import { AreaVertexInitParams } from "../DrawingArea/AreaVertex";
 
 /**
  * Drawing file parser
@@ -74,6 +77,16 @@ export default class DrawingParser {
                 case "component":
                     try {
                         yield this.parseComponentNode(node);
+                    } catch (exc) {
+                        if (exc instanceof ParsingException)
+                            yield exc;
+                        else
+                            throw exc;
+                    }//catch
+                    break;
+                case "area":
+                    try {
+                        yield this.parseAreaNode(node);
                     } catch (exc) {
                         if (exc instanceof ParsingException)
                             yield exc;
@@ -268,29 +281,29 @@ export default class DrawingParser {
     }//parseLinkEndpoint
 
 
-    private parseLinkVertex(node: Element): LinkVertexInitParams
+    private parseLinkVertex(element: Element): LinkVertexInitParams
     {
-        const x = node.getAttribute("x");
-        const y = node.getAttribute("y");
-        const connect = node.getAttribute("connect");
-        const bundleName = node.getAttribute("bundle");
-        const afterVertex = node.getAttribute("after");
-        const distance = node.getAttribute("distance");
+        const x = element.getAttribute("x");
+        const y = element.getAttribute("y");
+        const connect = element.getAttribute("connect");
+        const bundleName = element.getAttribute("bundle");
+        const afterVertex = element.getAttribute("after");
+        const distance = element.getAttribute("distance");
         if ((x === null && y) || (y === null && x)) {
             throw new ParsingException(`"x" and "y" attributes should present together \
-                                        in Vertex: ${node.parentElement?.toString()}`);
+                                        in Vertex: ${element.parentElement?.toString()}`);
         }//if
         if (x !== null && connect) {
             throw new ParsingException(`Position and connection attributes cannot present together \
-                                        in Vertex: ${node.parentElement?.toString()}`);
+                                        in Vertex: ${element.parentElement?.toString()}`);
         }//if
         if (bundleName && (!afterVertex || !distance)) {
             throw new ParsingException(`"Bundle", "after" and "distance" attributes should present together \
-                                        in Vertex: ${node.parentElement?.toString()}`);
+                                        in Vertex: ${element.parentElement?.toString()}`);
         }//if
         if (x === null && !connect && !bundleName) {
             throw new ParsingException(`Either position, bundle or connection attributes should present \
-                                        in Vertex: ${node.parentElement?.toString()}`);
+                                        in Vertex: ${element.parentElement?.toString()}`);
         }//if
         if (bundleName)
             return {bundleData: {bundleName, baseVertex: Number(afterVertex), distance: Number(distance)}}
@@ -303,6 +316,74 @@ export default class DrawingParser {
         }//if
         return {cpData: {cpHostElement: component, connectionPoint}};
     }//parseLinkVertex
+
+
+    private parseAreaNode(node: Element): DrawingArea
+    {
+        const className = node.getAttribute("class");
+        const dbID = node.getAttribute("db-id");
+        if (!className) 
+            throw new DrawingParsingException("Area without the class");
+        const areaClass = DrawingAreaClass.getClass(className);
+        if (!areaClass) 
+            throw new DrawingParsingException(`Unknown area class "${className}"`);
+
+        const propsFromAttributes: DrawingElementRawProps = {};
+        for (const attrName of node.getAttributeNames()) {
+            switch (attrName) {
+                case "class": case "db-id":
+                    break;
+                default:
+                    propsFromAttributes[attrName] = node.getAttribute(attrName)!;
+            }//switch
+        }//for
+
+        let propsFromChildNodes: DrawingElementRawProps = {};
+        const vertices: AreaVertexInitParams[] = [];
+        for (let i = 0; i < node.children.length; i++) {
+            const child = node.children[i];
+            switch (child.nodeName) {
+                case "props":
+                    propsFromChildNodes = this.parseProps(child);
+                    break;
+                case "vertices":
+                    vertices.push(...this.parseAreaVertices(child));
+                    break;
+            }//switch
+        }//for
+
+        const props = this._normalizeProps({...propsFromAttributes, ...propsFromChildNodes}, node, areaClass);
+        let areaName: string|undefined|null = node.getAttribute("name");
+        if ("name" in props) {
+            areaName = props["name"].toString();
+        } else if (!areaName) {
+            areaName = undefined;
+        }//if
+        const area = new DrawingArea(this.kresmer, className, {name: areaName, dbID, props, vertices});
+        return area;
+    }//parseAreaNode
+
+
+    private *parseAreaVertices(element: Element)
+    {
+        for (let i = 0; i < element.childElementCount; i++) {
+            const child = element.children[i];
+            if (child.nodeName === "vertex")
+                yield this.parseAreaVertex(child);
+        }//for
+    }//parseAreaVertices
+
+
+    private parseAreaVertex(element: Element)
+    {
+        const x = element.getAttribute("x");
+        const y = element.getAttribute("y");
+        if (x === null || y === null) {
+            throw new ParsingException(`"x" and "y" attributes should present \
+                                        in AreaVertex: ${element.parentElement?.toString()}`);
+        }//if
+        return {pos: {x: parseFloat(x), y: parseFloat(y)}};
+    }//parseAreaVertex
 
 
     private parseProps(node: Element): DrawingElementRawProps
@@ -500,6 +581,7 @@ export type ParsedNode =
     DrawingHeaderData |
     NetworkComponentController |
     NetworkLink |
+    DrawingArea |
     ParsingException
     ;
 

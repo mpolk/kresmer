@@ -10,6 +10,7 @@ import KresmerException from "./KresmerException";
 import DrawingElement, {DrawingElementData} from "./DrawingElement/DrawingElement";
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
+import DrawingArea from "./DrawingArea/DrawingArea";
 import Kresmer from "Kresmer";
 
 export type BackendConnectionTestResult = {
@@ -59,7 +60,7 @@ export default class BackendConnection {
     }//testConnection
 
 
-    private async onDrawingElementLoaded(element: DrawingElement, type: "component"|"link")
+    private async onDrawingElementLoaded(element: DrawingElement, type: "component"|"link"|"area")
     {
         const headers = BackendConnection.makeHeaders(this.password);
         const data = JSON.stringify(element.getData());
@@ -107,5 +108,11 @@ export default class BackendConnection {
     {
         return this.onDrawingElementLoaded(link, "link");
     }//onNetworkLinkLoaded
+
+
+    async onDrawingAreaLoaded(area: DrawingArea)
+    {
+        return this.onDrawingElementLoaded(area, "area");
+    }//onDrawingAreaLoaded
 
 }//BackendConnection

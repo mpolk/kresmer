@@ -10,6 +10,7 @@ import Kresmer, { DrawingElementClass } from "../Kresmer";
 import DrawingParser, { DrawingHeaderData } from "./DrawingParser";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
 import NetworkLink from "../NetworkLink/NetworkLink";
+import DrawingArea from "../DrawingArea/DrawingArea";
 
 
 export default class DrawingLoader {
@@ -102,6 +103,13 @@ export default class DrawingLoader {
                     }//switch
                 }//if
                 this.kresmer.addLink(link);
+            } else if (element instanceof DrawingArea) {
+                const area = element;
+                this.kresmer.emit("area-loaded", area);
+                if (area.dbID !== undefined) {
+                    await this.kresmer.backendConnection?.onDrawingAreaLoaded(area);
+                }//if
+                this.kresmer.addArea(area);
             } else {
                 this.kresmer.raiseError(element);
                 wereErrors = true;

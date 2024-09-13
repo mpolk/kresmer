@@ -15,8 +15,8 @@ import NetworkComponentController, { TransformMode } from "./NetworkComponent/Ne
 import LinkVertex from "./NetworkLink/LinkVertex";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import {toCamelCase} from "./Utils";
-import DrawingArea from "DrawingArea/DrawingArea";
-import AreaVertex from "DrawingArea/AreaVertex";
+import DrawingArea from "./DrawingArea/DrawingArea";
+import AreaVertex from "./DrawingArea/AreaVertex";
 import { ParsedLibraryNode } from "./loaders/LibraryParser";
 
 /** A list of Kresmer events along with corresponding handler definitions */
@@ -70,7 +70,7 @@ class KresmerEventFormats  {
     "link-vertex-right-click":          (vertex: LinkVertex, mouseEvent: MouseEvent) => void;
     "link-vertex-connected":            (vertex: LinkVertex) => void;
     "link-vertex-disconnected":         (vertex: LinkVertex, connectionPoint: ConnectionPoint) => void;
-    "area-loaded":                      (component: NetworkLink) => boolean;
+    "area-loaded":                      (area: DrawingArea) => boolean;
     "area-added":                       (area: DrawingArea) => void;
     "area-deleted":                     (area: DrawingArea) => void;
     "area-selected":                    (area: DrawingArea, isSelected: boolean) => void;
