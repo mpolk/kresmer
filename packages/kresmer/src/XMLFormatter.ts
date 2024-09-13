@@ -81,10 +81,12 @@ export class XMLTag {
 
     private attribs: [string, unknown][];
 
-    private attribStr(formatting?: XMLTagFormatting)
+    private attribStr(sep?: string)
     {
-        return this.attribs.map(([name, value]) => ` ${name}="${value ?? ''}"`)
-            .join(formatting === XMLTagFormatting.multiline ? "\n   " : "");
+        if (this.attribs.length === 0)
+            return "";
+        return " " + this.attribs.map(([name, value]) => `${name}="${value ?? ''}"`)
+            .join(sep ?? " ");
     }//attribStr
 
     public addAttrib(name: string, value?: unknown): XMLTag
@@ -93,14 +95,14 @@ export class XMLTag {
         return this;
     }//addAttrib
 
-    public opening(formatting?: XMLTagFormatting)
+    public opening(sep?: string)
     {
-        return `<${this.tagName}${this.attribStr(formatting)}>`;
+        return `<${this.tagName}${this.attribStr(sep)}>`;
     }//opening
 
-    public selfClosing(formatting?: XMLTagFormatting)
+    public selfClosing(sep?: string)
     {
-        return `<${this.tagName}${this.attribStr(formatting)}/>`;
+        return `<${this.tagName}${this.attribStr(sep)}/>`;
     }//opening
 
     public closing()
@@ -108,9 +110,3 @@ export class XMLTag {
         return `</${this.tagName}>`;
     }//closing
 }//XMLTag
-
-
-export const enum XMLTagFormatting {
-    inline = "inline",
-    multiline = "multiline",
-}//XMLTagFormatting

@@ -11,7 +11,7 @@ import DrawingParser, { DrawingHeaderData } from "./DrawingParser";
 import NetworkComponentController from "../NetworkComponent/NetworkComponentController";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import DrawingArea from "../DrawingArea/DrawingArea";
-import { XMLTag, XMLTagFormatting } from "../XMLFormatter";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 
 export default class DrawingLoader {
@@ -160,31 +160,34 @@ export default class DrawingLoader {
             })
         }//if
 
-        let xml = `\
-<?xml version="1.0" encoding="utf-8"?>
-<?xml-model href="xsd/kresmer-drawing.xsd"?>
-${outerTag.opening(XMLTagFormatting.multiline)}
+        const formatter = new XMLFormatter();
+        formatter
+            .addLine('<?xml version="1.0" encoding="utf-8"?>')
+            .addLine('<?xml-model href="xsd/kresmer-drawing.xsd"?>')
+            .addLine(outerTag.opening("\n    ")).i()
+            .addLine()
+            .addLine()
+            ;
 
-`;
-
-        if (this.kresmer.embedLibDataInDrawing)
-            xml += this.saveLibraryData(1) + "\n";
+        if (this.kresmer.embedLibDataInDrawing) {
+            formatter.addLine(this.saveLibraryData(1)).addLine();
+        }//if
 
         for (const area of this.kresmer.areas.sorted.values()) {
-            xml += area.toXML(1) + "\n\n";
+            formatter.addLine(area.toXML(1)).addLine().addLine();
         }//for
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
-            xml += controller.toXML(1) + "\n\n";
+            formatter.addLine(controller.toXML(1)).addLine().addLine();
         }//for
 
         for (const link of this.kresmer.links.sorted.values()) {
-            xml += link.toXML(1) + "\n\n";
+            formatter.addLine(link.toXML(1)).addLine().addLine();
         }//for
 
-        xml += "</kresmer-drawing>\n"
+        formatter.u().addLine(outerTag.closing());
         this.kresmer.isDirty = false;
-        return xml;
+        return formatter.xml;
     }//saveDrawing
 
 
@@ -234,7 +237,7 @@ ${"\t".repeat(indentLevel+1)}${Object.entries(attrs).map(([key, value]) => `${ke
 
         xml += `${"\t".repeat(indentLevel)}</library>\n`;
         return xml;
-}//saveLibraryData
+    }//saveLibraryData
 
 }//DrawingLoader
 
