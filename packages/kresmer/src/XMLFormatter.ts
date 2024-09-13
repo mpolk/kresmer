@@ -16,6 +16,7 @@ export default class XMLFormatter {
 
     private currentIndentLevel: number;
     private lines: [string, number][] = [];
+    private tagStack: XMLTag[] = [];
 
     public indent() {this.currentIndentLevel++}
     public i() {this.indent()}
@@ -39,6 +40,24 @@ export default class XMLFormatter {
         this.lines.push(...anotherFormatter.lines);
     }//append
 
+    public pushTag(tag: XMLTag): void;
+    public pushTag(tagName: string, ...attribs: [string, unknown?][]): void;
+    public pushTag(tag: string|XMLTag, ...attribs: [string, unknown?][]): void
+    {
+        if (!(tag instanceof XMLTag))
+            tag = new XMLTag(tag, ...attribs);
+        this.tagStack.push(tag);
+        this.addLine(tag.xml);
+        this.indent();
+    }//pushTag
+
+    public popTag()
+    {
+        console.assert(this.tagStack.length > 0);
+        this.unindent();
+        this.addLine(this.tagStack.pop()!.closing);
+    }//popTag
+
     public get xml()
     {
         return this.lines.map(([line, indent]) => `${' '.repeat(indent * 4)}${line}`).join("\n");
@@ -47,7 +66,7 @@ export default class XMLFormatter {
 
 
 export class XMLTag {
-    constructor(readonly tag: string, ...attribs: [string, unknown?][])
+    constructor(readonly tagName: string, ...attribs: [string, unknown?][])
     {
         this.attribs = attribs.map(([name, value]) => [name, value]);
     }//ctor
@@ -61,11 +80,11 @@ export class XMLTag {
 
     public get xml()
     {
-        return `<${this.tag}${this.attribs.map(([name, value]) => ` ${name}="${value ?? ''}"`).join('')}>`
+        return `<${this.tagName}${this.attribs.map(([name, value]) => ` ${name}="${value ?? ''}"`).join('')}>`
     }//xml
 
     public get closing()
     {
-        return `</${this.tag}>`;
+        return `</${this.tagName}>`;
     }//closing
 }//XMLTag
