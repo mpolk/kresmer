@@ -18,17 +18,18 @@ export default class XMLFormatter {
     private lines: [string, number][] = [];
     private tagStack: XMLTag[] = [];
 
-    public indent() {this.currentIndentLevel++}
-    public i() {this.indent()}
-    public unindent() {this.currentIndentLevel--}
-    public u() {this.unindent()}
+    public indent(): XMLFormatter {this.currentIndentLevel++; return this;}
+    public i(): XMLFormatter {return this.indent()}
+    public unindent(): XMLFormatter {this.currentIndentLevel--; return this;}
+    public u(): XMLFormatter {return this.unindent()}
 
-    public addLine(line: string, indent?: number)
+    public addLine(line: string, indent?: number): XMLFormatter
     {
         this.lines.push([line, indent ?? this.currentIndentLevel]);
+        return this;
     }//addLine
 
-    public addLines(...lines: ([string, number?] | string)[])
+    public addLines(...lines: ([string, number?] | string)[]): XMLFormatter
     {
         for (const l of lines) {
             if (Array.isArray(l))
@@ -36,22 +37,25 @@ export default class XMLFormatter {
             else
                 this.addLine(l);
         }//for
+        return this;
     }//addLines
 
-    public append(anotherFormatter: XMLFormatter)
+    public append(anotherFormatter: XMLFormatter): XMLFormatter
     {
         this.lines.push(...anotherFormatter.lines);
+        return this;
     }//append
 
-    public pushTag(tag: XMLTag): void;
-    public pushTag(tagName: string, ...attribs: [string, unknown?][]): void;
-    public pushTag(tag: string|XMLTag, ...attribs: [string, unknown?][]): void
+    public pushTag(tag: XMLTag): XMLFormatter;
+    public pushTag(tagName: string, ...attribs: [string, unknown?][]): XMLFormatter;
+    public pushTag(tag: string|XMLTag, ...attribs: [string, unknown?][]): XMLFormatter
     {
         if (!(tag instanceof XMLTag))
             tag = new XMLTag(tag, ...attribs);
         this.tagStack.push(tag);
         this.addLine(tag.xml);
         this.indent();
+        return this;
     }//pushTag
 
     public popTag()
@@ -59,6 +63,7 @@ export default class XMLFormatter {
         console.assert(this.tagStack.length > 0);
         this.unindent();
         this.addLine(this.tagStack.pop()!.closing);
+        return this;
     }//popTag
 
     public get xml()
@@ -76,9 +81,10 @@ export class XMLTag {
 
     private attribs: [string, unknown][];
 
-    public addAttrib(name: string, value?: unknown)
+    public addAttrib(name: string, value?: unknown): XMLTag
     {
         this.attribs.push([name, value]);
+        return this;
     }//addAttrib
 
     public get xml()
