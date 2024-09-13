@@ -155,6 +155,10 @@ describe('DrawingArea object test', () => {
         expect(isInTheSwamp(p4)).to.be.true;
     })
 
+    it("Click on the swamp surface to bring it to top for the next test...", () => {
+        cy.get("path.Swamp.area").click();
+    })
+
     const delta2 = {x: 100, y: 0};
     it(`Move the swamp by (${delta2.x}, ${delta2.y})`, () => {
         cy.get(".Swamp.area").eq(1).drag(delta2.x, delta2.y);
