@@ -14,10 +14,10 @@ import AreaVertex, { AreaVertexGeometry, AreaVertexInitParams } from "./AreaVert
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
-import { indent } from "../Utils";
 import { MapWithZOrder, withZOrder } from "../ZOrdering";
 import { draggable } from "../Draggable";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 /**
  * Drawing Area 
@@ -105,22 +105,22 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
     public toXML(indentLevel: number): string 
     {
-        const attrs = new Map<string, string>();
-        attrs.set("class", this.getClass().name);
-        attrs.set("name", this.name);
-        this.dbID && attrs.set("db-id", this.dbID.toString());
+        const outerTag = new XMLTag("area",["class", this.getClass().name], ["name", this.name]);
+        this.dbID && outerTag.addAttrib("db-id", this.dbID.toString());
 
-        const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
-        const xml = [`${indent(indentLevel)}<area ${attrStr}>`];
+        const formatter = new XMLFormatter(indentLevel);
+        formatter.addLine(outerTag.xml);
 
-        xml.push(...this.propsToXML(indentLevel));
+        formatter.addLines(...this.propsXML(indentLevel));
 
+        formatter.addLine("<vertices>", indentLevel+1);
         for (let i = 0; i <= this.vertices.length - 1; i++) {
-            xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
+            formatter.addLine(this.vertices[i].toXML(), indentLevel+2);
         }//for
+        formatter.addLine("</vertices>", indentLevel+1);
 
-        xml.push(`${indent(indentLevel)}</area>`);
-        return xml.join("\n");
+        formatter.addLine(outerTag.closing);
+        return formatter.xml;
     }//toXML
 
     override selectThis()

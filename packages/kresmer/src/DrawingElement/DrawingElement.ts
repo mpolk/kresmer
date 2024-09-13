@@ -202,8 +202,8 @@ export default abstract class DrawingElement {
         this._dbID = newDbID;
     }//dbID
 
-    /** Returns the XML representation of the element */
-    public *propsToXML(indentLevel: number)
+    /** Returns the XML representation of the element props */
+    public *propsToXML(indentLevel: number): Generator<string>
     {
         if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
             yield `${indent(indentLevel+1)}<props>`;
@@ -223,6 +223,27 @@ export default abstract class DrawingElement {
             yield `${indent(indentLevel+1)}</props>`;
         }//if
     }//propsToXML
+
+    public *propsXML(indentLevel: number): Generator<[string, number]>
+    {
+        if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
+            yield ["<props>", indentLevel+1];
+            const props = this.kresmer.saveDynamicPropValuesWithDrawing ? this.syntheticProps : this.props;
+            for (const propName in props) {
+                let propValue: string;
+                if (typeof props[propName] === "object") {
+                    propValue = JSON.stringify(props[propName], undefined, 2).split("\n")
+                        .map((line, i) => i ? `${indent(indentLevel+3)}${line}` : line).join("\n");
+                } else {
+                    propValue = String(props[propName]);
+                }//if
+                if (propName !== "name" && typeof propValue !== "undefined") {
+                    yield [`<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(propValue)}</prop>`, indentLevel+2];
+                }//if
+            }//for
+            yield ["</props>", indentLevel+1];
+        }//if
+    }//propsXML
 
     /** A counter, which increment indicates that some props were changed and which may trigger some derived data updates*/
     propsUpdateIndicator = 0;
@@ -290,7 +311,7 @@ export default abstract class DrawingElement {
             if (i >= 0)
                 this.highlightedConnections.splice(i, 1);
         }//if
-    }//propagateLinkHighlghting
+    }//propagateLinkHighlighting
 }//DrawingElement
 
 
