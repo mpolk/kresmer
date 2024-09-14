@@ -110,7 +110,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
         formatter
             .pushTag(outerTag);
-                this.propsXML(formatter);
+                this.propsToXML(formatter);
                 formatter.pushTag("vertices")
                     .addLines(...this.vertices.map(v => v.toXML()))
                 .popTag()

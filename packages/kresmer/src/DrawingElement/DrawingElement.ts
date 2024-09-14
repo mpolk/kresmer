@@ -225,7 +225,7 @@ export default abstract class DrawingElement {
         }//if
     }//propsToXMLOld
 
-    public propsXML(formatter: XMLFormatter)
+    public propsToXML(formatter: XMLFormatter)
     {
         if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
             formatter.pushTag(new XMLTag("props"));
@@ -244,7 +244,7 @@ export default abstract class DrawingElement {
             }//for
             formatter.popTag();
         }//if
-    }//propsXML
+    }//propsToXML
 
     /** A counter, which increment indicates that some props were changed and which may trigger some derived data updates*/
     propsUpdateIndicator = 0;

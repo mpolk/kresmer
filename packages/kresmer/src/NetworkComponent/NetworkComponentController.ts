@@ -243,7 +243,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
             .addTag(new XMLTag("origin", ["x", this.origin.x], ["y", this.origin.y]));
 
         if (this.component.propCount)
-            formatter.addLines(...this.component.propsToXMLOld(0));
+            this.component.propsToXML(formatter);
 
         if (this.component.content)
             formatter.addLine(`<content>${this.component.content}</content>`);
