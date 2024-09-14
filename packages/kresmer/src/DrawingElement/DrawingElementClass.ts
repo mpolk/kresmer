@@ -14,6 +14,7 @@ import { clone } from "../Utils";
 import { DrawingElementProps } from "../loaders/DrawingParser";
 import { toCamelCase } from "../Utils";
 import { DrawingElementClassTranslation, PropTranslation } from "loaders/LibraryParser";
+import XMLFormatter from "XMLFormatter";
 
 /**
  * DrawingElement Class - a generic drawing element class
@@ -168,41 +169,39 @@ export default abstract class DrawingElementClass {
     abstract get defsVueName(): string;
 
     /** Makes XML-representation  of the class */
-    toXML(indent: number, alreadySerialized: Set<DrawingElementClass>): string
+    toXML(formatter: XMLFormatter, alreadySerialized: Set<DrawingElementClass>)
     {
         if (alreadySerialized.has(this) || !this.sourceCode)
-            return "";
+            return;
 
-        let xml = "";
         for (const embedded of this.referencedClasses) {
-            xml += embedded.toXML(indent, alreadySerialized);
+            embedded.toXML(formatter, alreadySerialized);
         }//for
         if (this.baseClass)
-            xml += this.baseClass.toXML(indent, alreadySerialized);
+            this.baseClass.toXML(formatter, alreadySerialized);
         if (this.styleBaseClasses) {
             for (const base of this.styleBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized);
+                base.toXML(formatter, alreadySerialized);
             }//for
         }//if
         if (this.propsBaseClasses) {
             for (const base of this.propsBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized);
+                base.toXML(formatter, alreadySerialized);
             }//for
         }//if
         if (this.computedPropsBaseClasses) {
             for (const base of this.computedPropsBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized);
+                base.toXML(formatter, alreadySerialized);
             }//for
         }//if
         if (this.functionsBaseClasses) {
             for (const base of this.functionsBaseClasses) {
-                xml += base.toXML(indent, alreadySerialized);
+                base.toXML(formatter, alreadySerialized);
             }//for
         }//if
 
-        xml += "\t" + this.sourceCode.split("\n").map(line => `\t${line}`).join("\n") + "\n";
+        this.sourceCode.split("\n").forEach(line => formatter.addLine(line));
         alreadySerialized.add(this);
-        return xml;
     }//toXML
 
 

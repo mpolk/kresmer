@@ -225,15 +225,15 @@ export default class DrawingLoader {
         }//for
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
-            formatter.addLine(controller.component.getClass().toXML(1, alreadySerialized));
+            controller.component.getClass().toXML(formatter, alreadySerialized);
         }//for
 
         for (const link of this.kresmer.links.sorted.values()) {
-            formatter.addLine(link.getClass().toXML(1, alreadySerialized));
+            link.getClass().toXML(formatter, alreadySerialized);
         }//for
 
         for (const area of this.kresmer.areas.sorted.values()) {
-            formatter.addLine(area.getClass().toXML(1, alreadySerialized));
+            area.getClass().toXML(formatter, alreadySerialized);
         }//for
 
         formatter.u().addLine(outerTag.closing());
@@ -241,52 +241,9 @@ export default class DrawingLoader {
     }//libraryToXML
 
 
-    public saveLibraryData(indentLevel: number): string
+    public saveLibraryData(indentLevel?: number): string
     {
-        let xml = ""
-        const alreadySerialized = new Set<DrawingElementClass>();
-
-        const attrs: Record<string, unknown> = {
-            "xmlns:kre": "kresmer-builtin-elements",
-            "xmlns:Kre": "kresmer-user-defined-elements",
-            "xmlns:v-bind": "v-bind",
-            "xmlns:v-on": "v-on",
-            "xmlns:v-slot": "v-slot",
-        };
-        xml += `${"\t".repeat(indentLevel)}<library
-${"\t".repeat(indentLevel+1)}${Object.entries(attrs).map(([key, value]) => `${key}="${value}"`).join(`\n${"\t".repeat(indentLevel+1)}`)}>
-`;
-
-        for (const def of this.kresmer.globalDefs.values()) {
-            let i = indentLevel+1;
-            for (const line of def.sourceCode.split("\n")) {
-                xml += `${"\t".repeat(i)}${line}\n`;
-                i = 1;
-            }//for
-        }//for
-
-        for (const style of this.kresmer.globalStyles.values()) {
-            let i = indentLevel+1;
-            for (const line of style.sourceCode.split("\n")) {
-                xml += `${"\t".repeat(i)}${line}\n`;
-                i = 1;
-            }//for
-        }//for
-
-        for (const controller of this.kresmer.networkComponents.sorted.values()) {
-            xml += controller.component.getClass().toXML(indentLevel+1, alreadySerialized);
-        }//for
-
-        for (const link of this.kresmer.links.sorted.values()) {
-            xml += link.getClass().toXML(indentLevel+1, alreadySerialized);
-        }//for
-
-        for (const area of this.kresmer.areas.sorted.values()) {
-            xml += area.getClass().toXML(indentLevel+1, alreadySerialized);
-        }//for
-
-        xml += `${"\t".repeat(indentLevel)}</library>\n`;
-        return xml;
+        return this.libraryToXML(new XMLFormatter(indentLevel)).xml;
     }//saveLibraryData
 
 }//DrawingLoader
