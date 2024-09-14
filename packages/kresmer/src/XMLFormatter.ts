@@ -97,6 +97,13 @@ export class XMLTag {
 
     private attribs: ([string, unknown?]|string)[];
 
+    private attribSeparator = " ";
+    public setAttribSeparator(newSep: string)
+    {
+        this.attribSeparator = newSep;
+        return this;
+    }//setAttribSeparator
+
     private attribStr(sep?: string)
     {
         if (this.attribs.length === 0)
@@ -109,7 +116,7 @@ export class XMLTag {
                 const [name, value] = attr;
                 return `${name}="${value ?? ''}"`
             }//if
-        }).join(sep ?? " ");
+        }).join(sep ?? this.attribSeparator);
 
         return " " + s;
     }//attribStr

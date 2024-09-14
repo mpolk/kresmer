@@ -164,7 +164,7 @@ export default class DrawingLoader {
         formatter
             .addLine('<?xml version="1.0" encoding="utf-8"?>')
             .addLine('<?xml-model href="xsd/kresmer-drawing.xsd"?>')
-            .addLine(outerTag.opening("\n    ")).i()
+            .pushTag(outerTag.setAttribSeparator("\n    "))
             .addLine()
             ;
 
@@ -188,7 +188,7 @@ export default class DrawingLoader {
             formatter.addLine();
         }//for
 
-        formatter.u().addLine(outerTag.closing());
+        formatter.popTag();
         this.kresmer.isDirty = false;
         return formatter.xml;
     }//saveDrawing
@@ -208,8 +208,7 @@ export default class DrawingLoader {
             ["xmlns:v-slot", "v-slot"],
         );
 
-        formatter.addLine(outerTag.opening("\n" + formatter.indentation(1)))
-            .i();
+        formatter.pushTag(outerTag.setAttribSeparator("\n" + formatter.indentation(1)));
 
         for (const def of this.kresmer.globalDefs.values()) {
             formatter.addLine();
@@ -241,7 +240,7 @@ export default class DrawingLoader {
             area.getClass().toXML(formatter, alreadySerialized);
         }//for
 
-        formatter.u().addLine(outerTag.closing());
+        formatter.popTag();
         return formatter;
     }//libraryToXML
 
