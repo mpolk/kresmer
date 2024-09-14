@@ -13,12 +13,12 @@ import NetworkComponent from "./NetworkComponent";
 import { Position, Transform, ITransform } from "../Transform/Transform";
 import { TransformBoxZone } from "../Transform/TransformBox";
 import { EditorOperation } from "../UndoStack";
-import { indent } from "../Utils";
 import MouseEventCapture from "../MouseEventCapture";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { nextTick } from "vue";
 import { withZOrder  } from "../ZOrdering";
 import { draggable } from "../Draggable";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 export type TransformMode = undefined | "scaling" | "rotation";
 
@@ -231,30 +231,27 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
     }//onTransformBoxClick
 
 
-    public toXML(indentLevel: number): string 
+    public toXML(formatter: XMLFormatter)
     {
-        const attrs = new Map<string, string>();
-        attrs.set("class", this.component.getClass().name);
-        attrs.set("name", this.component.name);
-        this.component.dbID && attrs.set("db-id", this.component.dbID.toString());
+        const outerTag = new XMLTag("component",
+            ["class", this.component.getClass().name],
+            ["name", this.component.name],
+        );
+        this.component.dbID && outerTag.addAttrib("db-id", this.component.dbID.toString());
 
-        const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
-        const xml = [`${indent(indentLevel)}<component ${attrStr}>`];
-
-        xml.push(`${indent(indentLevel+1)}<origin x="${this.origin.x}" y="${this.origin.y}"/>`);
+        formatter.pushTag(outerTag)
+            .addTag(new XMLTag("origin", ["x", this.origin.x], ["y", this.origin.y]));
 
         if (this.component.propCount)
-            xml.push(...this.component.propsToXMLOld(indentLevel));
+            formatter.addLines(...this.component.propsToXMLOld(0));
 
         if (this.component.content)
-            xml.push(`${indent(indentLevel+1)}<content>${this.component.content}</content>`)
+            formatter.addLine(`<content>${this.component.content}</content>`);
 
         if (this.transform.nonEmpty)
-            xml.push(this.transform.toXML(indentLevel+1));
+            formatter.addLine(this.transform.toXML(1));
 
-        xml.push(`${indent(indentLevel)}</component>`);
-
-        return xml.join("\n");
+        formatter.popTag();
     }//toXML
 
 

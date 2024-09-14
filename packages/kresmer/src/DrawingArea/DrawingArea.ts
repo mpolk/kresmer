@@ -109,9 +109,9 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         this.dbID && outerTag.addAttrib("db-id", this.dbID.toString());
 
         formatter
-            .pushTag(outerTag)
-                .addLines(...this.propsXML())
-                .pushTag("vertices")
+            .pushTag(outerTag);
+                this.propsXML(formatter);
+                formatter.pushTag("vertices")
                     .addLines(...this.vertices.map(v => v.toXML()))
                 .popTag()
             .popTag();

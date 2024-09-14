@@ -179,7 +179,8 @@ export default class DrawingLoader {
         }//for
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
-            formatter.addLine(controller.toXML(1)).addLine().addLine();
+            controller.toXML(formatter);
+            formatter.addLine();
         }//for
 
         for (const link of this.kresmer.links.sorted.values()) {
@@ -207,24 +208,24 @@ export default class DrawingLoader {
         );
 
         formatter.addLine(outerTag.opening("\n" + formatter.indentation(1)))
-            .addLine().i();
+            .i();
 
         for (const def of this.kresmer.globalDefs.values()) {
+            formatter.addLine();
             let i = 0;
             for (const line of def.sourceCode.split("\n")) {
                 formatter.addLine(line, i);
                 i = -1;
             }//for
-            formatter.addLine();
         }//for
 
         for (const style of this.kresmer.globalStyles.values()) {
+            formatter.addLine();
             let i = 0;
             for (const line of style.sourceCode.split("\n")) {
                 formatter.addLine(line, i);
                 i = -1;
             }//for
-            formatter.addLine();
         }//for
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {

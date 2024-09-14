@@ -16,6 +16,7 @@ import { EditorOperation } from "../UndoStack";
 import KresmerException from "../KresmerException";
 import { encodeHtmlEntities, indent, toKebabCase } from "../Utils";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 export default abstract class DrawingElement {
     /**
@@ -224,10 +225,10 @@ export default abstract class DrawingElement {
         }//if
     }//propsToXMLOld
 
-    public *propsXML(): Generator<[string, number]>
+    public propsXML(formatter: XMLFormatter)
     {
         if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
-            yield ["<props>", 1];
+            formatter.pushTag(new XMLTag("props"));
             const props = this.kresmer.saveDynamicPropValuesWithDrawing ? this.syntheticProps : this.props;
             for (const propName in props) {
                 let propValue: string;
@@ -238,10 +239,10 @@ export default abstract class DrawingElement {
                     propValue = String(props[propName]);
                 }//if
                 if (propName !== "name" && typeof propValue !== "undefined") {
-                    yield [`<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(propValue)}</prop>`, 2];
+                    formatter.addLine(`<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(propValue)}</prop>`);
                 }//if
             }//for
-            yield ["</props>", 1];
+            formatter.popTag();
         }//if
     }//propsXML
 

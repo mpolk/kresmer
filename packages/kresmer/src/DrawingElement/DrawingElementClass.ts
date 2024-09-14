@@ -200,12 +200,12 @@ export default abstract class DrawingElementClass {
             }//for
         }//if
 
+        formatter.addLine();
         let i = 0;
         for (const line of this.sourceCode.split("\n")) {
             formatter.addLine(line, i);
             i = -1;
         }//for
-        formatter.addLine();
 
         alreadySerialized.add(this);
     }//toXML

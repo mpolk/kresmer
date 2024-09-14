@@ -52,9 +52,19 @@ export default class XMLFormatter {
         return this;
     }//append
 
+    public addTag(tag: XMLTag): XMLFormatter;
+    public addTag(tagName: string, ...attribs: ([string, unknown?]|string)[]): XMLFormatter;
+    public addTag(tag: string|XMLTag, ...attribs: ([string, unknown?]|string)[]): XMLFormatter
+    {
+        if (!(tag instanceof XMLTag))
+            tag = new XMLTag(tag, ...attribs);
+        this.addLine(tag.selfClosing());
+        return this;
+    }//addTag
+
     public pushTag(tag: XMLTag): XMLFormatter;
-    public pushTag(tagName: string, ...attribs: [string, unknown?][]): XMLFormatter;
-    public pushTag(tag: string|XMLTag, ...attribs: [string, unknown?][]): XMLFormatter
+    public pushTag(tagName: string, ...attribs: ([string, unknown?]|string)[]): XMLFormatter;
+    public pushTag(tag: string|XMLTag, ...attribs: ([string, unknown?]|string)[]): XMLFormatter
     {
         if (!(tag instanceof XMLTag))
             tag = new XMLTag(tag, ...attribs);
@@ -80,19 +90,28 @@ export default class XMLFormatter {
 
 
 export class XMLTag {
-    constructor(readonly tagName: string, ...attribs: [string, unknown?][])
+    constructor(readonly tagName: string, ...attribs: ([string, unknown?]|string)[])
     {
         this.attribs = attribs;
     }//ctor
 
-    private attribs: [string, unknown?][];
+    private attribs: ([string, unknown?]|string)[];
 
     private attribStr(sep?: string)
     {
         if (this.attribs.length === 0)
             return "";
-        return " " + this.attribs.map(([name, value]) => `${name}="${value ?? ''}"`)
-            .join(sep ?? " ");
+
+        const s = this.attribs.map(attr => {
+            if (!Array.isArray(attr))
+                return attr;
+            else {
+                const [name, value] = attr;
+                return `${name}="${value ?? ''}"`
+            }//if
+        }).join(sep ?? " ");
+
+        return " " + s;
     }//attribStr
 
     public addAttrib(name: string, value?: unknown): XMLTag
