@@ -166,11 +166,10 @@ export default class DrawingLoader {
             .addLine('<?xml-model href="xsd/kresmer-drawing.xsd"?>')
             .addLine(outerTag.opening("\n    ")).i()
             .addLine()
-            .addLine()
             ;
 
         if (this.kresmer.embedLibDataInDrawing) {
-            formatter.addLine(this.saveLibraryData(1)).addLine();
+            formatter.append(this.libraryToXML(1)).addLine();
         }//if
 
         for (const area of this.kresmer.areas.sorted.values()) {
@@ -189,6 +188,54 @@ export default class DrawingLoader {
         this.kresmer.isDirty = false;
         return formatter.xml;
     }//saveDrawing
+
+
+    private libraryToXML(indentLevel: number): XMLFormatter
+    {
+        const formatter = new XMLFormatter(indentLevel);
+        const alreadySerialized = new Set<DrawingElementClass>();
+
+        const outerTag = new XMLTag("library",
+            ["xmlns:kre", "kresmer-builtin-elements"],
+            ["xmlns:Kre", "kresmer-user-defined-elements"],
+            ["xmlns:v-bind", "v-bind"],
+            ["xmlns:v-on", "v-on"],
+            ["xmlns:v-slot", "v-slot"],
+        );
+
+        formatter.addLine(outerTag.opening("\n" + " ".repeat(4*(indentLevel+1)))).addLine().i();
+
+        for (const def of this.kresmer.globalDefs.values()) {
+            let i = 0;
+            for (const line of def.sourceCode.split("\n")) {
+                formatter.addLine(line, i);
+                i = -1;
+            }//for
+        }//for
+
+        for (const style of this.kresmer.globalStyles.values()) {
+            let i = 0;
+            for (const line of style.sourceCode.split("\n")) {
+                formatter.addLine(line, i);
+                i = -1;
+            }//for
+        }//for
+
+        for (const controller of this.kresmer.networkComponents.sorted.values()) {
+            formatter.addLine(controller.component.getClass().toXML(1, alreadySerialized));
+        }//for
+
+        for (const link of this.kresmer.links.sorted.values()) {
+            formatter.addLine(link.getClass().toXML(1, alreadySerialized));
+        }//for
+
+        for (const area of this.kresmer.areas.sorted.values()) {
+            formatter.addLine(area.getClass().toXML(1, alreadySerialized));
+        }//for
+
+        formatter.u().addLine(outerTag.closing());
+        return formatter;
+    }//libraryToXML
 
 
     public saveLibraryData(indentLevel: number): string
