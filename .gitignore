@@ -27,6 +27,7 @@ dist-ssr
 
 # debug files
 xxx.kre
+xxx.kre.0
 yyy.kre
 
 # XML schemas actually belong to Kresmer component

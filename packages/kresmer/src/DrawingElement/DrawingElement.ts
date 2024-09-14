@@ -14,7 +14,7 @@ import DrawingElementClass from "./DrawingElementClass";
 import NetworkLink from "../NetworkLink/NetworkLink";
 import { EditorOperation } from "../UndoStack";
 import KresmerException from "../KresmerException";
-import { encodeHtmlEntities, indent, toKebabCase } from "../Utils";
+import { encodeHtmlEntities, toKebabCase } from "../Utils";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
@@ -204,27 +204,6 @@ export default abstract class DrawingElement {
     }//dbID
 
     /** Returns the XML representation of the element props */
-    public *propsToXMLOld(indentLevel: number): Generator<string>
-    {
-        if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
-            yield `${indent(indentLevel+1)}<props>`;
-            const props = this.kresmer.saveDynamicPropValuesWithDrawing ? this.syntheticProps : this.props;
-            for (const propName in props) {
-                let propValue: string;
-                if (typeof props[propName] === "object") {
-                    propValue = JSON.stringify(props[propName], undefined, 2).split("\n")
-                        .map((line, i) => i ? `${indent(indentLevel+3)}${line}` : line).join("\n");
-                } else {
-                    propValue = String(props[propName]);
-                }//if
-                if (propName !== "name" && typeof propValue !== "undefined") {
-                    yield `${indent(indentLevel+2)}<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(propValue)}</prop>`;
-                }//if
-            }//for
-            yield `${indent(indentLevel+1)}</props>`;
-        }//if
-    }//propsToXMLOld
-
     public propsToXML(formatter: XMLFormatter)
     {
         if (Object.getOwnPropertyNames(this.props).some(prop => prop !== "name")) {
