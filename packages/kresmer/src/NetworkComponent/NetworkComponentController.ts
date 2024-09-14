@@ -249,7 +249,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
             formatter.addLine(`<content>${this.component.content}</content>`);
 
         if (this.transform.nonEmpty)
-            formatter.addLine(this.transform.toXML(1));
+            this.transform.toXML(formatter);
 
         formatter.popTag();
     }//toXML

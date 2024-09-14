@@ -7,7 +7,7 @@
  * applied to the Network Component images
  ***************************************************************************/
 
-import { indent } from "../Utils";
+import XMLFormatter from "../XMLFormatter";
 
 // Utility types for some geometry objects and transformations
  export type Position = {x: number, y: number};
@@ -100,20 +100,19 @@ import { indent } from "../Utils";
         return chunks.join(' ');
     }//toAttr
 
-    public toXML(indentLevel: number)
+    public toXML(formatter: XMLFormatter)
     {
-        let xml = `${indent(indentLevel)}<transform>\n`;
+        formatter.pushTag("transform");
         if (this.scale.x !== 1 || this.scale.y !== 1) {
-            xml += `${indent(indentLevel+1)}<scale x="${this.scale.x}" y="${this.scale.y}"/>\n`;
+            formatter.addTag("scale", ["x", this.scale.x], ["y", this.scale.y]);
         }//if
         if (this.rotation.angle) {
             if (this.rotation.x || this.rotation.y)
-                xml += `${indent(indentLevel+1)}<rotate angle="${this.rotation.angle}" x="${this.rotation.x}" y="${this.rotation.y}"/>\n`;
+                formatter.addTag("rotate", ["angle", this.rotation.angle], ["x", this.rotation.x], ["y", this.rotation.y]);
             else
-            xml += `${indent(indentLevel+1)}<rotate angle="${this.rotation.angle}"/>\n`;
+                formatter.addTag("rotate", ["angle", this.rotation.angle]);
         }//if
-        xml += `${indent(indentLevel)}</transform>`;
-        return xml;
+        formatter.popTag();
     }//toXML
 
     /** A transform state snapshot used as a starting point for the additional transformations */
