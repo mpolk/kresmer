@@ -231,16 +231,14 @@ export default abstract class DrawingElement {
             formatter.pushTag(new XMLTag("props"));
             const props = this.kresmer.saveDynamicPropValuesWithDrawing ? this.syntheticProps : this.props;
             for (const propName in props) {
-                let propValue: string;
-                if (typeof props[propName] === "object") {
-                    propValue = JSON.stringify(props[propName], undefined, 2).split("\n")
-                        .map((line, i) => i ? `      ${line}` : line).join("\n");
-                } else {
-                    propValue = String(props[propName]);
-                }//if
-                if (propName !== "name" && typeof propValue !== "undefined") {
-                    formatter.addLine(`<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(propValue)}</prop>`);
-                }//if
+                if (propName === "name")
+                    continue;
+                const propValue = props[propName];
+                if (typeof propValue === "undefined")
+                    continue;
+                const valueStr = typeof propValue === "object" ? JSON.stringify(propValue, undefined, 2) : String(propValue);
+                const lines = `<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(valueStr)}</prop>`;
+                lines.split("\n").forEach(line => formatter.addLine(line));
             }//for
             formatter.popTag();
         }//if
