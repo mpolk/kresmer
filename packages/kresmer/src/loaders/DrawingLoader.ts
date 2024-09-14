@@ -174,7 +174,8 @@ export default class DrawingLoader {
         }//if
 
         for (const area of this.kresmer.areas.sorted.values()) {
-            formatter.addLine(area.toXML(1)).addLine().addLine();
+            area.toXML(formatter);
+            formatter.addLine();
         }//for
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
@@ -251,9 +252,8 @@ export default class DrawingLoader {
 }//DrawingLoader
 
 /** The options to perform drawing merge upon its loading */
-export const enum DrawingMergeOptions {
-    erasePreviousContent = "erase-previous-content",
-    mergeDuplicates = "merge-duplicates",
-    renameDuplicates = "rename-duplicates"
-}//DrawingMergeOptions
-
+export type DrawingMergeOptions = 
+    "erase-previous-content" | 
+    "merge-duplicates" |
+    "rename-duplicates"
+    ;

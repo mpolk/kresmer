@@ -9,7 +9,7 @@
 <script lang="ts">
     import { onMounted, reactive, ref } from 'vue';
     import {Modal} from 'bootstrap';
-    import { DrawingMergeOptions } from 'kresmer';
+    import { type DrawingMergeOptions } from 'kresmer';
     import { kresmer } from '../renderer/renderer-main';
     import {DrawingMergeDialogResult} from './DrawingMergeDialog';
     import i18next from 'i18next';
@@ -105,21 +105,21 @@
                 <div class="modal-body">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbErasePreviousContent" name="mergeOptions"
-                            @click="setMergeOption(DrawingMergeOptions.erasePreviousContent)">
+                            @click="setMergeOption('erase-previous-content')">
                         <label class="form-check-label" for="rbErasePreviousContent">
                             {{ i18next.t("drawing-merge-dialog.erase-previous-content", "Erase previous content") }}
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbMergeDuplicates" name="mergeOptions"
-                            @click="setMergeOption(DrawingMergeOptions.mergeDuplicates)">
+                            @click="setMergeOption('merge-duplicates')">
                         <label class="form-check-label" for="rbMergeDuplicates">
                             {{ i18next.t("drawing-merge-dialog.merge-duplicates", "Merge duplicates") }}
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbRenameDuplicates" name="mergeOptions"
-                            @click="setMergeOption(DrawingMergeOptions.renameDuplicates)">
+                            @click="setMergeOption('rename-duplicates')">
                         <label class="form-check-label" for="rbRenameDuplicates">
                             {{ i18next.t("drawing-merge-dialog.rename-duplicates", "Rename duplicates") }}
                         </label>

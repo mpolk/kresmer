@@ -103,10 +103,8 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         return this.toString();
     }//displayString
 
-    public toXML(indentLevel: number): string 
+    public toXML(formatter: XMLFormatter)
     {
-        const formatter = new XMLFormatter(indentLevel);
-
         const outerTag = new XMLTag("area", ["class", this.getClass().name], ["name", this.name]);
         this.dbID && outerTag.addAttrib("db-id", this.dbID.toString());
 
@@ -117,7 +115,6 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
                     .addLines(...this.vertices.map(v => v.toXML()))
                 .popTag()
             .popTag();
-        return formatter.xml;
     }//toXML
 
     override selectThis()
