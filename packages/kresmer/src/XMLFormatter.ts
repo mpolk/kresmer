@@ -11,21 +11,27 @@ export default class XMLFormatter {
 
     constructor(initialIndentLevel?: number)
     {
-        this.currentIndentLevel = initialIndentLevel ?? 0;
+        this._currentIndentLevel = initialIndentLevel ?? 0;
     }//ctor
 
-    private currentIndentLevel: number;
+    get currentIndentLevel() {return this._currentIndentLevel}
+    private _currentIndentLevel: number;
     private lines: [string, number][] = [];
     private tagStack: XMLTag[] = [];
 
-    public indent(): XMLFormatter {this.currentIndentLevel++; return this;}
+    public indent(): XMLFormatter {this._currentIndentLevel++; return this;}
     public i(): XMLFormatter {return this.indent()}
-    public unindent(): XMLFormatter {this.currentIndentLevel--; return this;}
+    public unindent(): XMLFormatter {this._currentIndentLevel--; return this;}
     public u(): XMLFormatter {return this.unindent()}
+
+    public indentation(indentDelta: number = 0)
+    {
+        return ' '.repeat(4 * (this._currentIndentLevel + indentDelta));
+    }//indentation
 
     public addLine(line?: string, indent?: number): XMLFormatter
     {
-        this.lines.push([line ?? "", line ? this.currentIndentLevel + (indent ?? 0) : 0]);
+        this.lines.push([line ?? "", line ? this._currentIndentLevel + (indent ?? 0) : 0]);
         return this;
     }//addLine
 
@@ -76,10 +82,10 @@ export default class XMLFormatter {
 export class XMLTag {
     constructor(readonly tagName: string, ...attribs: [string, unknown?][])
     {
-        this.attribs = attribs.map(([name, value]) => [name, value]);
+        this.attribs = attribs;
     }//ctor
 
-    private attribs: [string, unknown][];
+    private attribs: [string, unknown?][];
 
     private attribStr(sep?: string)
     {

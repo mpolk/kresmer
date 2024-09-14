@@ -169,7 +169,8 @@ export default class DrawingLoader {
             ;
 
         if (this.kresmer.embedLibDataInDrawing) {
-            formatter.append(this.libraryToXML(1)).addLine();
+            this.libraryToXML(formatter);
+            formatter.addLine();
         }//if
 
         for (const area of this.kresmer.areas.sorted.values()) {
@@ -190,9 +191,10 @@ export default class DrawingLoader {
     }//saveDrawing
 
 
-    private libraryToXML(indentLevel: number): XMLFormatter
+    private libraryToXML(formatter?: XMLFormatter): XMLFormatter
     {
-        const formatter = new XMLFormatter(indentLevel);
+        if (!formatter)
+            formatter = new XMLFormatter();
         const alreadySerialized = new Set<DrawingElementClass>();
 
         const outerTag = new XMLTag("library",
@@ -203,7 +205,8 @@ export default class DrawingLoader {
             ["xmlns:v-slot", "v-slot"],
         );
 
-        formatter.addLine(outerTag.opening("\n" + " ".repeat(4*(indentLevel+1)))).addLine().i();
+        formatter.addLine(outerTag.opening("\n" + formatter.indentation(1)))
+            .addLine().i();
 
         for (const def of this.kresmer.globalDefs.values()) {
             let i = 0;
