@@ -14,6 +14,7 @@ import ConnectionPointProxy, { parseConnectionPointData } from "../ConnectionPoi
 import MouseEventCapture from "../MouseEventCapture";
 import type LinkBundle from "./LinkBundle";
 import Vertex, { VertexAnchor, VertexMoveOp, VertexAlignmentMode } from "../Vertex/Vertex";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 /** Link Vertex (either connected or free) */
 
@@ -258,19 +259,22 @@ export default class LinkVertex extends Vertex {
         return this._anchor.conn?.displayString ?? this.toString();
     }//displayString
 
-    override toXML()
+    override toXML(formatter: XMLFormatter)
     {
+        const tag = new XMLTag("vertex");
         if (this._anchor.conn) {
             const elementName =  this._anchor.conn.hostElement instanceof NetworkLink ? 
                 `-${this._anchor.conn.hostElement.name}`: this._anchor.conn.hostElement.name;
-            return `<vertex connect="${elementName}:${this._anchor.conn.name}"/>`;
+            tag.addAttrib("connect", `${elementName}:${this._anchor.conn.name}`);
         } else if (this._anchor.bundle) {
-            return `<vertex bundle="${this._anchor.bundle.baseVertex.parentElement.name}" after="${this._anchor.bundle.baseVertex.vertexNumber}" distance="${this._anchor.bundle.distance}"/>`;
+            tag.addAttrib("bundle", this._anchor.bundle.baseVertex.parentElement.name)
+               .addAttrib("after", this._anchor.bundle.baseVertex.vertexNumber)
+               .addAttrib("distance", this._anchor.bundle.distance);
         } else if (this._anchor.pos) {
-            return `<vertex x="${this._anchor.pos.x}" y="${this._anchor.pos.y}"/>`;
-        } else {
-            return `<vertex/>`;
+            tag.addAttrib("x", this._anchor.pos.x)
+               .addAttrib("y", this._anchor.pos.y);
         }//if
+        formatter.addTag(tag);
     }//toXML
 
 

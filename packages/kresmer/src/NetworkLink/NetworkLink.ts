@@ -174,7 +174,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
             this.propsToXML(formatter);
     
             for (let i = 1; i <= n - 1; i++) {
-                formatter.addLine(this.vertices[i].toXML());
+                this.vertices[i].toXML(formatter);
             }//for
 
             formatter.popTag();

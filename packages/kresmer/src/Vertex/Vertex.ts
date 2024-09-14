@@ -13,6 +13,7 @@ import { Position } from "../Transform/Transform";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 import { EditorOperation } from "../UndoStack";
 import MouseEventCapture from "../MouseEventCapture";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 /** Generic Vertex - the base class for vertices used in Links and Areas */
 
@@ -134,13 +135,14 @@ export default abstract class Vertex {
         return this.toString();
     }//displayString
 
-    public toXML()
+    public toXML(formatter: XMLFormatter)
     {
+        const tag = new XMLTag("vertex");
         if (this._anchor.pos) {
-            return `<vertex x="${this._anchor.pos.x}" y="${this._anchor.pos.y}"/>`;
-        } else {
-            return `<vertex/>`;
+            tag.addAttrib("x", this._anchor.pos.x)
+               .addAttrib("y", this._anchor.pos.y);
         }//if
+        formatter.addTag(tag);
     }//toXML
 
     protected getMousePosition(event: MouseEvent) {
