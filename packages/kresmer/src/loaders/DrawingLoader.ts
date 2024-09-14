@@ -184,7 +184,8 @@ export default class DrawingLoader {
         }//for
 
         for (const link of this.kresmer.links.sorted.values()) {
-            formatter.addLine(link.toXML(1)).addLine().addLine();
+            link.toXML(formatter);
+            formatter.addLine();
         }//for
 
         formatter.u().addLine(outerTag.closing());

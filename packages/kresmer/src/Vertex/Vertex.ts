@@ -36,7 +36,7 @@ export default abstract class Vertex {
     get parentElement() {return this._parentElement.deref()!}
     private readonly _parentElement: WeakRef<DrawingElementWithVertices>
 
-    /** Postponned part of the initialization delayed until all components are mounted.
+    /** Postponed part of the initialization delayed until all components are mounted.
      *  It takes internally saved "initParams" and converts it to the "real" anchor data.
      */
     init(): Vertex

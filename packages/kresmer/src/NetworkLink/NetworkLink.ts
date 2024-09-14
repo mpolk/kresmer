@@ -14,9 +14,9 @@ import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "Transform/Transform";
-import { indent } from "../Utils";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 /**
  * Network Link 
@@ -154,32 +154,30 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
 
     protected readonly outerXMLTag: string = "link";
 
-    public toXML(indentLevel: number): string 
+    public toXML(formatter: XMLFormatter)
     {
-        const attrs = new Map<string, string>();
-        attrs.set("class", this.getClass().name);
-        attrs.set("name", this.name);
-        this.dbID && attrs.set("db-id", this.dbID.toString());
+        const outerTag = new XMLTag(this.outerXMLTag,
+            ["class", this.getClass().name],
+            ["name", this.name],
+        );
+        this.dbID && outerTag.addAttrib("db-id", this.dbID.toString());
         (this.head.isConnected || this.head.isAttachedToBundle || this.head.anchor.pos) && 
-            attrs.set("from", this.vertices[0].toString());
+            outerTag.addAttrib("from", this.vertices[0].toString());
         const n = this.vertices.length - 1;
         (this.tail.isConnected || this.tail.isAttachedToBundle || this.tail.anchor.pos) && 
-            attrs.set("to", this.vertices[n].toString());
+            outerTag.addAttrib("to", this.vertices[n].toString());
 
-        const attrStr = Array.from(attrs, attr => `${attr[0]}="${attr[1]}"`).join(' ');
         if (this.vertices.length <= 2 && this.propCount == 0) {
-            return `${indent(indentLevel)}<${this.outerXMLTag} ${attrStr}/>`;
+            formatter.addTag(outerTag);
         } else {
-            const xml = [`${indent(indentLevel)}<${this.outerXMLTag} ${attrStr}>`];
-
-            xml.push(...this.propsToXMLOld(indentLevel));
+            formatter.pushTag(outerTag)
+                .addLines(...this.propsToXMLOld(0));
     
             for (let i = 1; i <= n - 1; i++) {
-                xml.push(`${indent(indentLevel+1)}${this.vertices[i].toXML()}`);
+                formatter.addLine(this.vertices[i].toXML());
             }//for
 
-            xml.push(`${indent(indentLevel)}</${this.outerXMLTag}>`);
-            return xml.join("\n");
+            formatter.popTag();
         }//if
     }//toXML
 
