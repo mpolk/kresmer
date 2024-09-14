@@ -105,21 +105,21 @@
                 <div class="modal-body">
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbErasePreviousContent" name="mergeOptions"
-                            @click="setMergeOption('erase-previous-content')">
+                            @click="setMergeOption(DrawingMergeOptions.erasePreviousContent)">
                         <label class="form-check-label" for="rbErasePreviousContent">
                             {{ i18next.t("drawing-merge-dialog.erase-previous-content", "Erase previous content") }}
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbMergeDuplicates" name="mergeOptions"
-                            @click="setMergeOption('merge-duplicates')">
+                            @click="setMergeOption(DrawingMergeOptions.mergeDuplicates)">
                         <label class="form-check-label" for="rbMergeDuplicates">
                             {{ i18next.t("drawing-merge-dialog.merge-duplicates", "Merge duplicates") }}
                         </label>
                     </div>
                     <div class="form-check">
                         <input class="form-check-input" type="radio" id="rbRenameDuplicates" name="mergeOptions"
-                            @click="setMergeOption('rename-duplicates')">
+                            @click="setMergeOption(DrawingMergeOptions.renameDuplicates)">
                         <label class="form-check-label" for="rbRenameDuplicates">
                             {{ i18next.t("drawing-merge-dialog.rename-duplicates", "Rename duplicates") }}
                         </label>

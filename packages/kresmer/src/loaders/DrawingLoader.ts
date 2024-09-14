@@ -251,8 +251,9 @@ export default class DrawingLoader {
 }//DrawingLoader
 
 /** The options to perform drawing merge upon its loading */
-export type DrawingMergeOptions = 
-    "erase-previous-content" | 
-    "merge-duplicates" |
-    "rename-duplicates"
-    ;
+export const enum DrawingMergeOptions {
+    erasePreviousContent = "erase-previous-content",
+    mergeDuplicates = "merge-duplicates",
+    renameDuplicates = "rename-duplicates"
+}//DrawingMergeOptions
+
