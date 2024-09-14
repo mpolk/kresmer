@@ -214,6 +214,7 @@ export default class DrawingLoader {
                 formatter.addLine(line, i);
                 i = -1;
             }//for
+            formatter.addLine();
         }//for
 
         for (const style of this.kresmer.globalStyles.values()) {
@@ -222,6 +223,7 @@ export default class DrawingLoader {
                 formatter.addLine(line, i);
                 i = -1;
             }//for
+            formatter.addLine();
         }//for
 
         for (const controller of this.kresmer.networkComponents.sorted.values()) {
