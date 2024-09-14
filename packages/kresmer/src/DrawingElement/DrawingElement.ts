@@ -215,7 +215,7 @@ export default abstract class DrawingElement {
                 const propValue = props[propName];
                 if (typeof propValue === "undefined")
                     continue;
-                const valueStr = typeof propValue === "object" ? JSON.stringify(propValue, undefined, 2) : String(propValue);
+                const valueStr = typeof propValue === "object" ? JSON.stringify(propValue, undefined, 4) : String(propValue);
                 const lines = `<prop name="${toKebabCase(propName)}">${encodeHtmlEntities(valueStr)}</prop>`;
                 lines.split("\n").forEach(line => formatter.addLine(line));
             }//for

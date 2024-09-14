@@ -224,6 +224,9 @@ export default class DrawingParser {
                 case "props":
                     propsFromChildNodes = this.parseProps(child);
                     break;
+                case "vertices":
+                    vertices.push(...this.parseLinkVertices(child));
+                    break;
                 case "vertex":
                     vertices.push(this.parseLinkVertex(child));
                     break;
@@ -242,6 +245,16 @@ export default class DrawingParser {
         const link = new (isBundle ? LinkBundle : NetworkLink)(this.kresmer, className, {name: linkName, dbID, props, from, to, vertices});
         return link;
     }//parseLinkNode
+
+
+    private *parseLinkVertices(element: Element)
+    {
+        for (let i = 0; i < element.childElementCount; i++) {
+            const child = element.children[i];
+            if (child.nodeName === "vertex")
+                yield this.parseLinkVertex(child);
+        }//for
+    }//parseLinkVertices
 
 
     private parseLinkEndpoint(strData: string|null): LinkVertexInitParams

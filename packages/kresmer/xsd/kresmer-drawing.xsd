@@ -77,17 +77,14 @@
     <xs:complexType name="link-base">
         <xs:sequence>
             <xs:element name="props" type="drawing-element-props" minOccurs="0" maxOccurs="unbounded"/>
-
-            <xs:element name="vertex" minOccurs="0" maxOccurs="unbounded">
+            <xs:element name="vertices">
                 <xs:complexType>
-                    <xs:attribute name="x" type="xs:float"/>
-                    <xs:attribute name="y" type="xs:float"/>
-                    <xs:attribute name="connect" type="xs:string"/>
-                    <xs:attribute name="bundle" type="xs:string"/>
-                    <xs:attribute name="after" type="xs:string"/>
-                    <xs:attribute name="distance" type="xs:string"/>
+                    <xs:sequence>
+                        <xs:element name="vertex" type="link-vertex" minOccurs="0" maxOccurs="unbounded"/>
+                    </xs:sequence>
                 </xs:complexType>
             </xs:element>
+            <xs:element name="vertex" type="link-vertex" minOccurs="0" maxOccurs="unbounded"/>
         </xs:sequence>
         
         <xs:anyAttribute processContents="lax"/>
@@ -99,6 +96,15 @@
                 <xs:attribute name="class" use="required" />
             </xs:extension>
         </xs:complexContent>
+    </xs:complexType>
+
+    <xs:complexType name="link-vertex">
+        <xs:attribute name="x" type="xs:float"/>
+        <xs:attribute name="y" type="xs:float"/>
+        <xs:attribute name="connect" type="xs:string"/>
+        <xs:attribute name="bundle" type="xs:string"/>
+        <xs:attribute name="after" type="xs:string"/>
+        <xs:attribute name="distance" type="xs:string"/>
     </xs:complexType>
 
     <xs:complexType name="drawing-element-props">

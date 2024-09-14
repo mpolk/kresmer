@@ -171,12 +171,13 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
             formatter.addTag(outerTag);
         } else {
             formatter.pushTag(outerTag)
-            this.propsToXML(formatter);
-    
-            for (let i = 1; i <= n - 1; i++) {
-                this.vertices[i].toXML(formatter);
-            }//for
+                this.propsToXML(formatter);
 
+                formatter.pushTag("vertices");
+                    for (let i = 1; i <= n - 1; i++) {
+                        this.vertices[i].toXML(formatter);
+                    }//for
+                formatter.popTag();
             formatter.popTag();
         }//if
     }//toXML
