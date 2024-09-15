@@ -1,11 +1,1174 @@
 <?xml version="1.0" encoding="utf-8"?>
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
-<kresmer-drawing 
-    xmlns="kresmer-drawing"
-	name="example-network-core"
-	width="1500"
-	height="1200"
-	background-color="#ffffff">
+<kresmer-drawing xmlns="kresmer-drawing"
+    name="example-network-core"
+    width="1500"
+    height="1200"
+    background-color="#ffffff">
+
+    <library xmlns:kre="kresmer-builtin-elements"
+        xmlns:Kre="kresmer-user-defined-elements"
+        xmlns:v-bind="v-bind"
+        xmlns:v-on="v-on"
+        xmlns:v-slot="v-slot">
+
+        <defs xmlns="kresmer-library" name="AdjustmentHandles" version="2024062500">
+            <g id="kre:adjustment-ruler-marker-common">
+                <polygon points="0,5 5,0 10,5 5,10"/>
+                <circle cx="5" cy="5" r="2" style="filter: brightness(0.25) invert(100%)"/>
+            </g>
+            <marker id="kre:adjustment-ruler-marker" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker"/>
+            </marker>
+            <marker id="kre:adjustment-ruler-marker-fixed" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker fixed"/>
+            </marker>
+        </defs>
+
+        <style xmlns="kresmer-library" name="AdjustmentHandles" version="2024062500">
+            .adjustment-ruler {
+                stroke: brown;
+                stroke-width: 3px;
+                opacity: 0.5;
+                cursor: pointer;
+            }
+            .adjustment-ruler.selected, .adjustment-ruler:hover { opacity: 1; }
+            .adjustment-ruler-marker { fill: green; }
+            .adjustment-ruler-marker.fixed { fill: red; }
+            .adjustment-ruler .marker-padding { r: 3px; }
+        </style>
+
+        <component-class xmlns="kresmer-library" name="ManagedDevice" category=".general">
+            <props>
+                <prop name="ip-address" type="String" default="" pattern="\d+\.\d+\.\d+\.\d+(/\d+)?" category="Network" description="Device management ip-address"/>
+                <prop name="management-protocol" type="String" category="Network" description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
+                <prop name="management-ref-target" type="String" choices="_self,_blank" category="Network" description="Target for on-drawing hyperlinks"/>
+                <prop name="comment" type="String" description="Device general info"/>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RackMountDevice" category=".general" version="2024081900">
+            <template>
+                <title v-if="comment">{{comment}}</title>
+                <template v-for="i in nUnits">
+                    <rect x="0" v-bind:y="(i-1)*(unitHeight+interUnitGap)" v-bind:width="width" v-bind:height="unitHeight" class="facet front"/>
+                    <template v-if="i &amp;&amp; i &lt; nUnits">
+                        <line v-if="!interUnitGap" x1="0" v-bind:y1="i*unitHeight" v-bind:x2="width" v-bind:y2="i*unitHeight" class="unit-boundary"/>
+                        <rect v-else="" x="1" v-bind:y="i*unitHeight+(i-1)*interUnitGap" v-bind:width="width-2" v-bind:height="interUnitGap" class="facet top inter-unit-gap"/>
+                    </template>
+                </template>
+                <slot name="frontFacet"/>
+                <g v-if="perspective === 'center'" v-bind:transform="`scale(${width} ${-topFacetSize*unitHeight})`">
+                    <polyline v-bind:points="kre$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})                                                            ([0,0], [0,1], [1,1], [1,0]))" class="top facet"/>
+                    <slot name="topFacetC"/>
+                </g>
+                <template v-if="perspective === 'right'">
+                    <g v-bind:transform="`skewX(${-topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
+                        <polyline v-bind:points="`0,0 ${(1-perspCorrection)*0.4},1 1,1 1,0`" class="top facet"/>
+                        <g v-bind:transform="`translate(${perspCorrection*0.025}, 0)`">
+                            <slot name="topFacetLR"/>
+                        </g>
+                    </g>
+                    <template v-for="i in nUnits">
+                        <polygon class="side facet" v-bind:points="`${width},${(i-1)*(unitHeight+interUnitGap)} ${width},${i*unitHeight+(i-1)*interUnitGap}                                          ${width+topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}                                          ${width+topFacetSkewShift},${((i-1)*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}`"/>
+                        <polygon class="side facet inter-unit-gap" v-if="i &lt; nUnits" v-bind:points="`${width},${i*unitHeight+(i-1)*interUnitGap} ${width},${i*(unitHeight+interUnitGap)}                                         ${width+topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+i*perspCorrection*interUnitGap}                                          ${width+topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}`"/>
+                    </template>
+                </template>
+                <template v-if="perspective === 'left'">
+                    <g v-bind:transform="`skewX(${topFacetSkew}) scale(${width} ${-topFacetSize*unitHeight})`">
+                        <polyline v-bind:points="`0,0 0,1 ${1-(1-perspCorrection)*0.4},1 1,0`" class="top facet"/>
+                        <g v-bind:transform="`translate(${-perspCorrection*0.025}, 0)`">
+                            <slot name="topFacetLR"/>
+                        </g>
+                    </g>
+                    <template v-for="i in nUnits">
+                        <polygon class="side facet" v-bind:points="`0,${(i-1)*(unitHeight+interUnitGap)} 0,${i*unitHeight+(i-1)*interUnitGap}                                          ${-topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}                                          ${-topFacetSkewShift},${((i-1)*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}`"/>
+                        <polygon class="side facet inter-unit-gap" v-if="i &lt; nUnits" v-bind:points="`0,${i*unitHeight+(i-1)*interUnitGap} 0,${i*(unitHeight+interUnitGap)}                                         ${-topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+i*perspCorrection*interUnitGap}                                          ${-topFacetSkewShift},${(i*perspCorrection-topFacetSize)*unitHeight+(i-1)*perspCorrection*interUnitGap}`"/>
+                    </template>
+                </template>
+                <template v-if="showDeviceName">
+                    <text v-if="perspective !== 'none'" v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.75" text-anchor="middle" class="device-name">{{name}}<title v-if="comment">{{comment}}</title></text>
+                    <a v-else-if="ipAddress &amp;&amp; managementProtocol" v-bind:href="managementProtocol + ipAddress" v-bind:target="managementRefTarget" class="no-persp">
+                        <text v-bind:x="nameX" v-bind:y="nameY" text-anchor="middle">
+                            <tspan v-bind:font-size="unitHeight*0.4" class="device-name no-persp">{{name}}</tspan>
+                            <tspan v-bind:font-size="unitHeight*0.25" class="ip-address no-persp" dx="0.5rem"> {{ipAddress}}</tspan>
+                        </text>
+                    </a>
+                    <text v-else="" v-bind:x="nameX" v-bind:y="nameY" v-bind:font-size="unitHeight*0.4" text-anchor="middle" class="device-name no-persp">{{name}}</text>
+                    </template>
+                <template v-if="ipAddress &amp;&amp; showIpAddress &amp;&amp; perspective !== 'none'">
+                    <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" v-bind:target="managementRefTarget">
+                        <text v-bind:x="nameX" v-bind:y="nameY + unitHeight*0.25" v-bind:font-size="unitHeight*0.25" text-anchor="middle" class="ip-address href">
+                            {{ipAddress}}
+                        </text>
+                    </a>
+                    <text v-else="" v-bind:x="nameX" v-bind:y="nameY + unitHeight*0.25" v-bind:font-size="unitHeight*0.25" text-anchor="middle" class="ip-address">
+                        {{ipAddress}}
+                    </text>
+                </template>
+                <kre:adjustment-ruler target-prop="nameVerticalPos" v-bind:x1="width/2" v-bind:y1="unitHeight" v-bind:x2="width/2" v-bind:y2="nameY" fixed-end="1"/>
+            </template>
+            <style>
+                .device-name { font-family: sans-serif; fill: black; text-shadow: none}
+                .device-name.no-persp { font-family: sans-serif!important; fill: #474747!important; text-shadow: none!important; }
+                .ip-address { font-family: sans-serif; }
+                .ip-address.no-persp { fill: gray; text-shadow: none!important; }
+                a { text-decoration: none; }
+                a:hover { text-decoration: underline; }
+                a.no-persp:hover { text-decoration: underline solid 1px!important; text-decoration-thickness: 1px!important; }
+                .port-icon { fill: #404040; }
+                .facet {
+                    --facet-color: #e6e6e6;
+                    fill: var(--facet-color); stroke: var(--facet-color); stroke-width: 0;
+                }
+                .top.facet { filter: brightness(0.7); }
+                .side.facet { filter: brightness(0.5); }
+                .unit-boundary { stroke: black; stroke-opacity: 0.3; stroke-width: 2px; }
+                .inter-unit-gap { fill-opacity: 0.1; stroke-opacity: 0.5; stroke-width: 1px }
+            </style>
+            <props extend="ManagedDevice">
+                <prop name="n-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
+                <prop name="unit-height" type="Number" default="75" category="Geometry" description="The height of a single unit"/>
+                <prop name="inter-unit-gap" type="Number" default="0" category="Geometry" description="The visual gap between the units"/>
+                <prop name="width" type="Number" required="true" default="312.5" category="Geometry"/>
+                <prop name="perspective" type="String" choices="left,right,center,none" default="center" category="Presentation" description="Visual perspective of the device image"/>
+                <prop name="top-facet-size" type="Number" default="1.4" category="Geometry"/>
+                <prop name="top-facet-skew" type="Number" default="60" category="Geometry"/>
+                <prop name="show-device-name" type="boolean" default="true" category="Presentation"/>
+                <prop name="show-ip-address" type="boolean" default="true" category="Presentation"/>
+                <prop name="name-vertical-pos" type="Number" default="0.3" category="Presentation" description="Device name offset from the device top edge (relative to unitHeight)"/>
+            </props>
+            <computed-props>
+                <computed-prop name="perspCorrection">0.85</computed-prop>
+                <computed-prop name="topFacetSkewShift">
+                    props.unitHeight * props.topFacetSize * Math.tan(props.topFacetSkew * Math.PI/180)
+                </computed-prop>
+                <computed-prop name="nameX">
+                    props.perspective === 'right' ? props.width/2 + computedProps.topFacetSkewShift*0.393 :
+                    props.perspective === 'left' ? props.width/2 - computedProps.topFacetSkewShift*0.393 :
+                    props.width*0.5
+                </computed-prop>
+                <computed-prop name="nameY">
+                    props.perspective === "none" ? -props.unitHeight*props.nameVerticalPos : -props.unitHeight*props.topFacetSize*0.393
+                </computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="MultiFiberPort" category=".port-abstractions">
+            <computed-props>
+                <computed-prop name="nFibers">props.fiberInfo?.nFibers ?? props.portInfo?.nFibers ?? 1</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="Port" category=".ports" version="2024071400">
+            <template>
+                <kre:connection-indicator  v-bind:connection-id="connectionId">
+                    <rect v-bind:width="w" v-bind:height="h" class="port-icon body"/>
+                    <slot/>
+                    <rect v-if="portInfo?.operStatus" v-bind:width="h*0.25" v-bind:height="h*0.25" class="status-indicator"/>
+                    <text v-bind:x="w/2" v-bind:y="labelY" text-anchor="middle" v-bind:font-size="fontSize*h" class="port-name" v-bind:class="{disabled: !(portInfo?.adminStatus ?? true)}">{{label}}</text>
+                    <title>{{title}}</title>
+                    <kre:connection-point v-if="isActive &amp;&amp; nFibers == 1" v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
+                    <kre:connection-point v-else-if="isActive" v-for="({x, y}, dir) in {                         up1: {x: w*0.4, y: 0}, up2: {x: w*0.6, y: 0},                          right1: {x: w, y: h*0.4}, right2: {x: w, y: h*0.6},                          down1: {x: w*0.4, y: h}, down2: {x: w*0.6, y: h},                          left1: {x: 0, y: h*0.4}, left2: {x: 0, y: h*0.6}                     }" v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
+                </kre:connection-indicator>
+            </template>
+            <style>
+                .port-name {font-family: sans-serif; fill: white;}
+                .port-name.disabled {fill: lightgray; opacity: 0.75;}
+                .port-icon.body {stroke: white;}
+                .highlighted .port-icon.body {outline: white 4px solid;}
+                .status-indicator {fill: #b7f598; stroke: green; stroke-width: 1px}
+                .connection-point-marker {fill: yellow; stroke: rgb(184, 169, 0);}
+            </style>
+            <props>
+                <prop name="w" type="Number" required="true" default="25" category="Geometry" description="Port icon width"/>
+                <prop name="h" type="Number" required="true" default="25" category="Geometry" description="Port icon height"/>
+                <prop name="labelY" type="Number" category="Geometry" description="Port label vertical poisition"/>
+                <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
+                <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
+                <prop name="port-info" type="object" description="Various port configuration and state parameters">
+                    <subprop name="description" type="String"/>
+                    <subprop name="media" type="String" choices="copper,fiber" description="The media type for the combo-port"/>
+                    <subprop name="speed" type="String" description="The current physical port speed"/>
+                    <subprop name="maxSpeed" type="String" description="The maximum physical port speed"/>
+                    <subprop name="operStatus" type="Boolean" description="The current port status"/>
+                    <subprop name="adminStatus" type="Boolean" description="The administrative port status"/>
+                    <subprop name="statusMonitoring" type="Boolean" description="Is the port status monitoring turned on?"/>
+                    <subprop name="speedMonitoring" type="Boolean" description="Is the port speed monitoring turned on?"/>
+                </prop>
+                <prop name="fiber-info" type="object" description="Various optical parameters of the individual fiber connected to the port">
+                    <subprop name="nFibers" type="Number" description="The number of fibers that may be connected to this port"/>
+                    <subprop name="wavelength" type="Number" description="The wave length of the beam transmitted from this port"/>
+                    <subprop name="signalDirection" type="String" choices="rx,tx" description="The direction of the signal in this fiber (transmit/receive)"/>
+                </prop>
+                <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
+                <prop name="is-active" type="Boolean" default="true" category="Network" description="Indicates whether this part (media) of the combo port is active"/>
+                <prop name="connection-id" type="[String,Number]"/>
+            </props>
+            <computed-props extend="MultiFiberPort">
+                <computed-prop name="label0">props.combo ? String(props.name ?? "").replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name ?? "")</computed-prop>
+                <computed-prop name="label">computedProps.label0.replace(new RegExp('^'+props.prefix), '')</computed-prop>
+                <computed-prop name="labelY">props.labelY ?? props.h * 0.8</computed-prop>
+                <computed-prop name="title">
+                    props.name + 
+                        (props.portInfo?.description ? ` ${props.portInfo.description}` : '') +
+                        (props.portInfo?.speed ? ` (${props.portInfo.speed})` : '')
+                </computed-prop>
+                <computed-prop name="connectionId">props.connectionId ? String(props.connectionId) : String(props.name)</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DeviceWithManagedPorts" category=".general" version="2024070300">
+            <props>
+                <prop name="ports-info" type="object" default="{}" category="Network" description="Ports info for displaying in tooltips and similar">
+                    <elements type="Object" type-ref="Port.port-info"/>
+                </prop>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DeviceWithOpticalPorts" category=".general" version="2024070300">
+            <props>
+                <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers connected to the port">
+                    <elements type="Object" type-ref="Port.fiber-info"/>
+                </prop>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="CrossArrows" category=".Graphics">
+            <computed-props>
+                <computed-prop name="crossArrows">
+                    [ 
+                        [0.1,0.5], [0.2,0.7], [0.2,0.6], [0.4,0.6], [0.4,0.8],
+                        [0.3,0.8], [0.5,0.9], [0.7,0.8], [0.6,0.8], [0.6,0.6], [0.8,0.6], [0.8,0.7], [0.9,0.5],
+                        [0.8,0.3], [0.8,0.4], [0.6,0.4], [0.6,0.2], [0.7,0.2], [0.5,0.1], [0.3,0.2], [0.4,0.2],
+                        [0.4,0.4], [0.2,0.4], [0.2,0.3] 
+                    ]                
+                </computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="SwitchBody" category=".switch-parts" version="2024070300">
+            <extends base="RackMountDevice" v-bind:n-units="nStackUnits">
+                <template v-slot:frontFacet="{}">
+                    <slot name="frontFacet"/>
+                </template>
+                <template v-slot:topFacetC="{}">
+                    <polyline v-bind:points="kre$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet"/>
+                    <slot name="topFacetC"/>
+                </template>
+                <template v-slot:topFacetLR="{}">
+                    <polyline v-bind:points="kre$p([...crossArrows])" class="facet"/>
+                    <slot name="topFacetLR"/>
+                </template>
+            </extends>
+            <style>
+                .facet { --facet-color: lightgray; }
+            </style>
+            <props extend="DeviceWithManagedPorts, DeviceWithOpticalPorts" except="n-units">
+                <prop name="n-stack-units" type="Number" default="1" category="Hardware" description="The number of units (devices) in the stack"/>
+            </props>
+            <computed-props extend="CrossArrows"/>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="ExtremeSwitchBody" category=".switch-parts">
+            <extends base="SwitchBody"/>
+            <style>
+                .device-name { fill: white; text-shadow: 3px 3px 3px black; }
+                .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
+                .model-name { fill: white; font-family: sans-serif; }
+                .facet { --facet-color: #cf34fe;  }
+                .port-icon { fill: #520f75; }
+                .port-icon.body { stroke: #fde3fd; }
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="StackUnitBadge" category=".switch-parts">
+            <template>
+                <rect x="0" y="0" v-bind:width="width" v-bind:height="height" class="unit-badge"/>
+                <text v-bind:x="width/2" v-bind:y="height*0.75" v-bind:font-size="height*0.75" text-anchor="middle" class="unit-badge-text">{{unit}}</text>
+            </template>
+            <style>
+                .unit-badge { fill: lightgray; rx: 3px; stroke: white; stroke-width: 2px}
+                .unit-badge-text { font-family: sans-serif; fill: black; vertical-align: middle;}
+            </style>
+            <props>
+                <prop name="unit" type="Number" required="true"/>
+                <prop name="width" type="Number" required="true" category="Geometry"/>
+                <prop name="height" type="Number" required="true" category="Geometry"/>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="KeyedConnector" category=".ports">
+            <props>
+                <prop name="key-position" type="String" choices="top,bottom,left,right" default="top" category="Geometry" description="Key groove position"/>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RectangularConnector" category=".ports">
+            <template>
+                <polyline v-if="nFibers === 1" v-bind:points="                 keyPosition === 'top' ?                     `${cx+h*0.2},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}                      ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`                 : keyPosition === 'bottom' ?                     `${cx+h*0.2},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}                      ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`                 : keyPosition === 'left' ?                     `${cy-h*q},${cx+h*0.2} ${cy-h*q},${cx+w*q} ${cy+h*q},${cx+w*q}                      ${cy+h*q},${cx-w*q}    ${cy-h*q},${cx-w*q} ${cy-h*q},${cx-h*0.2}`                 :                     `${-cy+h*q+w},${cx+h*0.2} ${-cy+h*q+w},${cx+w*q}  ${-cy-h*q+w},${cx+w*q}                      ${-cy-h*q+w},${cx-w*q}    ${-cy+h*q+w},${cx-w*q}  ${-cy+h*q+w},${cx-h*0.2}`                 " class="border" v-bind:stroke-width="strokeWidth"/>
+                <template v-else="">
+                    <polyline v-bind:points="                     keyPosition === 'top' ?                         `${cx+h*0.25},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}                          ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.25},${cy-h*q}`                     : keyPosition === 'bottom' ?                         `${cx+h*0.25},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}                          ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.25},${cy+h*q}`                     : keyPosition === 'left' ?                         `${cy-h*q},${cx+h*0.25} ${cy-h*q},${cx+w*q} ${cy+h*q},${cx+w*q}                          ${cy+h*q},${cx-w*q}    ${cy-h*q},${cx-w*q} ${cy-h*q},${cx-h*0.25}`                     :                         `${-cy+h*q+w},${cx+h*0.25} ${-cy+h*q+w},${cx+w*q}  ${-cy-h*q+w},${cx+w*q}                          ${-cy-h*q+w},${cx-w*q}    ${-cy+h*q+w},${cx-w*q}  ${-cy+h*q+w},${cx-h*0.25}`                     " class="border" v-bind:stroke-width="strokeWidth"/>
+                    <polyline v-bind:points="                     keyPosition === 'top' ?                         `${cx+h*0.1},${cy-h*q} ${cx-h*0.1},${cy-h*q}`                     : keyPosition === 'bottom' ?                         `${cx+h*0.1},${cy+h*q} ${cx-h*0.1},${cy+h*q}`                     : keyPosition === 'left' ?                         `${cy-h*q},${cx+h*0.1} ${cy-h*q},${cx-h*0.1}`                     :                         `${-cy+h*q+w},${cx+h*0.1} ${-cy+h*q+w},${cx-h*0.1}`                     " class="border" v-bind:stroke-width="strokeWidth"/>
+                </template>
+            </template>
+            <props extend="KeyedConnector">
+                <prop name="cx" type="Number" required="true" default="0" category="Geometry"/>
+                <prop name="cy" type="Number" required="true" default="0" category="Geometry"/>
+                <prop name="w" type="Number" required="true" default="25" category="Geometry"/>
+                <prop name="h" type="Number" required="true" default="25" category="Geometry"/>
+                <prop name="strokeWidth" type="number" category="Geometry"/>
+                <prop name="nFibers" type="Number" choices="1,2" default="1" category="Optics" description="The number of optical fibers"/>
+            </props>
+            <computed-props>
+                <computed-prop name="q">0.4</computed-prop>
+                <computed-prop name="strokeWidth">props.strokeWidth ?? Math.min(props.w, props.h)*0.12</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="PluginModule" category=".ports">
+            <extends base="RectangularConnector"/>
+            <style>
+                .border {fill: none; stroke: #8998a9;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="SFP-Port" category=".ports">
+            <extends base="Port" v-bind:w="d" v-bind:h="d">
+                <Kre:PluginModule v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers"/>
+            </extends>
+            <props extend="KeyedConnector" except="w,h">
+                <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            </props>
+            <computed-props extend="MultiFiberPort">
+                <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="QSFP-Port" category=".ports">
+            <extends base="Port" v-bind:w="h*2">
+                <Kre:PluginModule v-bind:cx="h" v-bind:cy="h/2" v-bind:w="h*2.3" v-bind:h="h" v-bind:key-position="keyPosition" v-bind:n-fibers="nFibers"/>
+            </extends>
+            <props extend="KeyedConnector" except="w"/>
+            <computed-props extend="MultiFiberPort"/>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="ExtremeSwitchStack" category=".switch-parts">
+            <style>
+                .unit-badge { fill: #7e0133; stroke: #e0d900; }
+                .unit-badge-text { fill: white; }
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="Extreme-X590-24x-Stack" category="Switches/Extreme">
+            <extends base="ExtremeSwitchBody" v-bind:top-facet-size="1"/>
+            <template>
+                <template v-for="unit in nStackUnits">
+                    <Kre:StackUnitBadge v-if="nStackUnits &gt; 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)" v-bind:width="unitHeight*0.25" v-bind:height="unitHeight*0.25" v-bind:unit="unit"/>
+                    <text v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.67)+interUnitGap*(unit-1)" v-bind:font-size="unitHeight*0.25" class="model-name">X590</text>
+                      <template v-for="i in 12">
+                        <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[kre$portName(i*2-1, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2-1, unit, nStackUnits)]"/>
+                        <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[kre$portName(i*2, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2, unit, nStackUnits)]" key-position="bottom"/>
+                    </template>
+                    <Kre:QSFP-Port  v-bind:x="unitHeight*6.8" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="kre$portName(25, unit, nStackUnits)" v-bind:port-info="portsInfo[kre$portName(25, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(25, unit, nStackUnits)]"/>
+                    <Kre:QSFP-Port  v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="kre$portName(26, unit, nStackUnits)" v-bind:port-info="portsInfo[kre$portName(26, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(26, unit, nStackUnits)]"/>
+                    <Kre:QSFP-Port  v-bind:x="unitHeight*7.7" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:h="unitHeight/3" v-bind:name="kre$portName(27, unit, nStackUnits)" v-bind:port-info="portsInfo[kre$portName(27, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(27, unit, nStackUnits)]"/>
+                </template>
+            </template>
+            <style extends="StackUnitBadge, ExtremeSwitchStack"/>
+            <props>
+                <prop name="width" type="Number" default="none"/>
+            </props>
+            <computed-props>
+                <computed-prop name="width">props.width ?? props.unitHeight * 8.6</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="Extreme-X670-48x-Stack" category="Switches/Extreme">
+            <extends base="ExtremeSwitchBody" v-bind:top-facet-size="1"/>
+            <template>
+                <template v-for="unit in nStackUnits">
+                    <Kre:StackUnitBadge v-if="nStackUnits &gt; 1" v-bind:x="unitHeight*0.125" v-bind:y="unitHeight*(-0.85 + unit)+interUnitGap*(unit-1)" v-bind:width="unitHeight*0.25" v-bind:height="unitHeight*0.25" v-bind:unit="unit"/>
+                    <template v-for="i in 24">
+                        <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.85)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2-1, unit, nStackUnits)" v-bind:prefix="`${unit}:`" v-bind:port-info="portsInfo[kre$portName(i*2-1, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2-1, unit, nStackUnits)]"/>
+                        <Kre:SFP-Port  v-bind:x="unitHeight*(i*0.5)" v-bind:y="unitHeight*(unit-0.47)+interUnitGap*(unit-1)" v-bind:d="unitHeight/3" v-bind:name="kre$portName(i*2, unit, nStackUnits)" v-bind:prefix="`${unit}:`" key-position="bottom" v-bind:port-info="portsInfo[kre$portName(i*2, unit, nStackUnits)]" v-bind:fiber-info="fibersInfo[kre$portName(i*2, unit, nStackUnits)]"/>
+                        </template>
+                </template>
+            </template>
+            <style extends="StackUnitBadge, ExtremeSwitchStack"/>
+            <props>
+                <prop name="width" type="Number" default="none"/>
+            </props>
+            <computed-props>
+                <computed-prop name="width">props.width ?? props.unitHeight * 12.51</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RouterBody" category=".router-parts" embeds="CrossArrows" version="2024070301">
+            <extends base="RackMountDevice">
+                <template v-slot:frontFacet="{}">
+                    <slot name="frontFacet"/>
+                </template>
+                <template v-slot:topFacetC="{}">
+                    <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015"/>
+                    <polyline v-bind:points="kre$p(kre$threeVectorTransform({u:[1,0], v:[0.2,1], w:[-0.4,0]})(...crossArrows))" class="facet"/>
+                    <slot name="topFacetC"/>
+                </template>
+                <template v-slot:topFacetLR="{}">
+                    <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015"/>
+                    <polyline v-bind:points="kre$p([...crossArrows])" class="facet"/>
+                    <slot name="topFacetLR"/>
+                </template>
+            </extends>
+            <props extend="DeviceWithManagedPorts, DeviceWithOpticalPorts"/>
+            <computed-props extend="CrossArrows"/>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="Juniper-MX204" category="Routers/Juniper">
+            <extends base="RouterBody" v-bind:top-facet-size="1"/>
+            <template>
+                <defs>
+                    <pattern v-bind:id="`kre:std:Juniper-MX204-front-grid-${componentId}`" patternUnits="userSpaceOnUse" v-bind:width="height*0.057866906" v-bind:height="height*0.1" viewBox="0 0 29 50.115">
+                        <rect x="0" y="0" width="100%" height="100%" fill="#454545"/>
+                        <path d="M14.498 16.858L0 8.488.002-8.257l14.5-8.374L29-8.26l-.002 16.745zm0 50.06L0 58.548l.002-16.745 14.5-8.373L29 41.8l-.002 16.744zM28.996 41.8l-14.498-8.37.002-16.744L29 8.312l14.498 8.37-.002 16.745zm-29 0l-14.498-8.37.002-16.744L0 8.312l14.498 8.37-.002 16.745z" style="stroke-width: 8.5; stroke: #b8b8b8; fill: none;"/>
+                    </pattern>
+                </defs>
+                <rect v-bind:x="height*0.08" v-bind:y="height*0.08" v-bind:height="height*0.84" v-bind:width="width-height*0.16" v-bind:fill="`url(#kre:std:Juniper-MX204-front-grid-${componentId})`"/>
+                <rect v-bind:x="height*0.07" v-bind:y="height*0.07" v-bind:height="height*0.25" v-bind:width="height*1.1" class="facet"/>
+                <text v-bind:x="height*0.18" v-bind:y="height*0.25" v-bind:font-size="height*0.25" class="model-name">Juniper</text>
+                <rect v-bind:x="height*8.1" v-bind:y="height*0.07" v-bind:height="height*0.25" v-bind:width="height" class="facet"/>
+                <text v-bind:x="height*9" v-bind:y="height*0.25" text-anchor="end" v-bind:font-size="height*0.25" class="model-name">MX204</text>
+                <rect v-bind:x="height*0.3" v-bind:y="height*0.45" v-bind:height="height*0.5" v-bind:width="height*4.1" class="facet"/>
+                <Kre:QSFP-Port v-for="i in 4" v-bind:x="height*(i-0.5)" v-bind:y="height*0.53" v-bind:h="height/3" v-bind:name="`et0/0/${i-1}`" prefix="et0/" v-bind:port-info="portsInfo[`et0/0/${i-1}`]"/>
+                <rect v-bind:x="height*4.85" v-bind:y="height*0.07" v-bind:height="height*0.9" v-bind:width="height*2.2" class="facet"/>
+                <template v-for="i in 4">
+                    <Kre:SFP-Port  v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.15" v-bind:d="height/3" v-bind:name="`xe0/1/${i*2-2}`" prefix="xe0/" v-bind:font-size="0.7" v-bind:port-info="portsInfo[`xe0/1/${i*2-2}`]" v-bind:fiber-info="fibersInfo[`xe0/1/${i*2-2}`]"/>
+                    <Kre:SFP-Port  v-bind:x="height*(i*0.5+4.53)" v-bind:y="height*0.53" v-bind:d="height/3" v-bind:name="`xe0/1/${i*2-1}`" prefix="xe0/" v-bind:font-size="0.7" key-position="bottom" v-bind:port-info="portsInfo[`xe0/1/${i*2-1}`]" v-bind:fiber-info="fibersInfo[`xe0/1/${i*2-1}`]"/>
+                </template>
+                <rect v-bind:x="height*7.35" v-bind:y="height*0.45" v-bind:height="height*0.5" v-bind:width="height*0.5" class="facet"/>
+                <template v-for="i in 2">
+                    <circle v-for="j in 2" v-bind:cx="height*(7.3+i*0.2)" v-bind:cy="height*(0.4+j*0.2)" v-bind:r="height*0.05" class="sync-port"/>
+                </template>
+            </template>
+            <style>
+                .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
+                .ip-address { fill: #faffd6; text-shadow: 1px 1px 1px black;}
+                .model-name { fill: #ffffff; font-family: sans-serif; }
+                .facet {--facet-color: #b8b8b8;}
+                .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
+            </style>
+            <props except="unit-height">
+                <prop name="height" type="Number" required="true" default="75" category="Geometry"/>
+                <prop name="width" type="Number" default="none"/>
+            </props>
+            <computed-props>
+                <computed-prop name="width">props.width || props.height * 9.1</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="ServerBody" category=".server-parts">
+            <extends base="RackMountDevice" v-bind:top-facet-size="0.8" v-bind:show-device-name="false" v-bind:show-ip-address="false">
+                <template v-slot:frontFacet="{}">
+                    <slot name="frontFacet"/>
+                </template>
+                <template v-slot:topFacetC="{}">
+                    <ellipse cx="0.5" cy="0.48" rx="0.35" ry="0.45" class="facet" style="fill: none; stroke-width: 0.015"/>
+                    <slot name="topFacetC"/>
+                </template>
+                <template v-slot:topFacetLR="{}">
+                    <circle cx="0.5" cy="0.5" r="0.45" class="facet" style="fill: none; stroke-width: 0.015"/>
+                    <slot name="topFacetLR"/>
+                </template>
+            </extends>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="Server" category="Servers" version="2024070300">
+            <extends base="ServerBody"/>
+            <template>
+                <defs>
+                    <pattern v-bind:id="`kre:std:server-front-grid-${componentId}`" patternUnits="userSpaceOnUse" v-bind:width="unitHeight*0.08" v-bind:height="unitHeight*0.08" viewBox="0 0 10 10">
+                        <rect x="2" y="2" width="6" height="6" fill="#1f1f1f"/>
+                    </pattern>
+                </defs>
+                <rect v-bind:x="unitHeight*0.08" v-bind:y="unitHeight*0.08" v-bind:height="unitHeight*0.84" v-bind:width="width-unitHeight*0.16" v-bind:fill="`url(#kre:std:server-front-grid-${componentId})`"/>
+                <rect v-bind:x="unitHeight*0.08" v-bind:y="unitHeight*0.08" v-bind:height="unitHeight*0.45" v-bind:width="unitHeight*0.15*Math.max(name.length, 8)" class="facet"/>
+                <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.25" v-bind:font-size="unitHeight*0.2" class="device-name">{{name}}<title v-if="comment">{{comment}}</title></text>
+                <template v-if="ipAddress">
+                    <a v-if="managementProtocol" v-bind:href="managementProtocol + ipAddress" v-bind:target="managementRefTarget">
+                        <text v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.42" v-bind:font-size="unitHeight*0.15" class="ip-address">{{ipAddress}}</text>
+                    </a>
+                    <text v-else="" v-bind:x="unitHeight*0.18" v-bind:y="unitHeight*0.42" v-bind:font-size="unitHeight*0.15" class="ip-address">{{ipAddress}}</text>
+                </template>
+                <rect v-bind:x="width - unitHeight" v-bind:y="unitHeight*0.08" v-bind:height="unitHeight*0.25" v-bind:width="unitHeight" class="facet"/>
+                <rect v-bind:x="width - unitHeight*0.95" v-bind:y="unitHeight*0.085" v-bind:height="unitHeight*0.2" v-bind:width="unitHeight*0.86" class="facet top"/>
+                <circle v-bind:cx="width - unitHeight*0.83" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03" class="green led"/>
+                <circle v-bind:cx="width - unitHeight*0.63" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03" class="dark-green led"/>
+                <circle v-bind:cx="width - unitHeight*0.43" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03" class="green led"/>
+                <circle v-bind:cx="width - unitHeight*0.23" v-bind:cy="unitHeight*0.18" v-bind:r="unitHeight*0.05" v-bind:stroke-width="unitHeight*0.03" class="red led"/>
+                <rect v-bind:x="(width - uplinkPortPanelWidth)/2" v-bind:y="unitHeight*0.08" v-bind:height="unitHeight*0.45" v-bind:width="uplinkPortPanelWidth" class="facet"/>
+                <rect v-bind:x="(width - downlinkPortPanelWidth)/2" v-bind:y="unitHeight*0.45" v-bind:height="unitHeight*0.5" v-bind:width="downlinkPortPanelWidth" class="facet"/>
+                <component v-bind:is="interface.media == 'copper' ? 'Kre:RJ45-Port' : `Kre:SFP-Port`" v-for="([name, interface], i) in uplinks" v-bind:x="firstUplinkX + unitHeight*i*0.4" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7" v-bind:port-info="interface"/>
+                <component v-bind:is="interface.media == 'copper' ? 'Kre:RJ45-Port' : `Kre:SFP-Port`" v-for="([name, interface], i) in downlinks" v-bind:x="firstDownlinkX + unitHeight*i*0.4" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" v-bind:name="name" v-bind:prefix="name.replace(/\d+$/, '')" v-bind:font-size="0.7" key-position="bottom" v-bind:port-info="interface"/>
+            </template>
+            <style>
+                .device-name { fill: #ffffff; text-shadow: 3px 3px 3px black; }
+                .ip-address { fill: #faffd6; text-shadow: 1px 1px 1px black;}
+                .model-name { fill: #ffffff; font-family: sans-serif; }
+                .facet {--facet-color: #545454;}
+                .sync-port {fill: #8f6b00; stroke: #ffce1f; stroke-width: 2px;}
+                .led.green {stroke: #009900; fill: #1fd11f}
+                .led.dark-green {stroke: #007a00; fill: #16b616}
+                .led.red {stroke: #ad0101; fill: #d50101}
+            </style>
+            <props except="top-facet-size, top-facet-skew">
+                <prop name="width" type="Number" default="none"/>
+                <prop name="perspective" type="String" choices="left,right,center,none" default="none" category="Presentation" description="Visual perspective of the device image"/>
+                <prop name="interfaces" type="Object" category="Network" default="{}">
+                    <elements type="Object" type-ref="Port.port-info"/>
+                </prop>
+            </props>
+            <computed-props>
+                <computed-prop name="width">props.width || props.unitHeight * 9.1</computed-prop>
+                <computed-prop name="uplinks">Object.entries(props.interfaces).filter(([_, int]) =&gt; int.direction === "uplink")</computed-prop>
+                <computed-prop name="nUplinks">computedProps.uplinks.length</computed-prop>
+                <computed-prop name="uplinkPortRowLength">(computedProps.nUplinks*0.4-1/15)*props.unitHeight</computed-prop>
+                <computed-prop name="firstUplinkX">(computedProps.width - computedProps.uplinkPortRowLength)/2</computed-prop>
+                <computed-prop name="downlinks">Object.entries(props.interfaces).filter(([_, int]) =&gt; int.direction === "downlink")</computed-prop>
+                <computed-prop name="nDownlinks">computedProps.downlinks.length</computed-prop>
+                <computed-prop name="downlinkPortRowLength">(computedProps.nDownlinks*0.4-1/15)*props.unitHeight</computed-prop>
+                <computed-prop name="firstDownlinkX">(computedProps.width - computedProps.downlinkPortRowLength)/2</computed-prop>
+                <computed-prop name="uplinkPortPanelWidth">computedProps.uplinkPortRowLength + props.unitHeight*0.15</computed-prop>
+                <computed-prop name="downlinkPortPanelWidth">computedProps.downlinkPortRowLength + props.unitHeight*0.15</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RJ45" category=".ports">
+            <extends base="RectangularConnector" v-bind:stroke-width="Math.min(w, h)*0.16"/>
+            <defs>
+                <pattern id="kre:std:rj45-contacts-v" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" preserveAspectRatio="none">
+                    <rect x="2" y="0" width="6" height="10" fill="#b28e01"/>
+                </pattern>
+                <pattern id="kre:std:rj45-contacts-h" patternUnits="objectBoundingBox" width="1" height="0.125" viewBox="0 0 10 10" preserveAspectRatio="none">
+                    <rect x="0" y="2" width="10" height="6" fill="#b28e01"/>
+                </pattern>
+            </defs>
+            <template>
+                <rect v-bind:x="keyPosition === 'left' ? w*0.5 : w*0.2" v-bind:y="keyPosition === 'top' ? h*0.5 : h*0.2" v-bind:width="orientation === 'v' ? w*0.6 : h*0.3" v-bind:height="orientation === 'v' ? h*0.3 : w*0.6" v-bind:fill="`url(#kre:std:rj45-contacts-${orientation})`"/>
+            </template>
+            <computed-props>
+                <computed-prop name="orientation">props.keyPosition === "top" || props.keyPosition === "bottom" ? "v" : "h"</computed-prop>
+            </computed-props>
+            <style>
+                .border {fill: none; stroke: #597865;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RJ45-Port" category=".ports">
+            <extends base="Port" v-bind:w="d" v-bind:h="d">
+                <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+            </extends>
+            <props extend="KeyedConnector" except="w,h">
+                <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            </props>
+            <computed-props>
+                <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="WDM-Port" category=".port-abstractions">
+            <computed-props>
+                <computed-prop name="beamColor">
+                    props.fiberInfo?.wavelength === 1470 ? "#949494" :
+                    props.fiberInfo?.wavelength === 1490 ? "#6B0094" :
+                    props.fiberInfo?.wavelength === 1510 ? "#0d4be7" :
+                    props.fiberInfo?.wavelength === 1530 ? "#01df01" :
+                    props.fiberInfo?.wavelength === 1550 ? "#fffc57" :
+                    props.fiberInfo?.wavelength === 1570 ? "#FF950E" :
+                    props.fiberInfo?.wavelength === 1590 ? "#ff0f0f" :
+                    props.fiberInfo?.wavelength === 1610 ? "#CC6633" :
+                        undefined
+                </computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="FC-Port" category=".ports">
+            <extends base="Port" v-bind:w="d" v-bind:h="d">
+                <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" v-bind:stroke="beamColor ?? 'white'" v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}                                 0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`"/>
+                <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
+                <circle v-if="fiberInfo &amp;&amp; false" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.55" fill="none" v-bind:stroke-width="r*0.2" v-bind:stroke="beamColor"/>
+            </extends>
+            <template>
+                <template v-if="fiberInfo">
+                    <text v-bind:x="r" v-bind:y="0" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
+                        {{fiberInfo.signalDirection}}
+                    </text>
+                    <text v-bind:x="r" v-bind:y="d*1.1" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
+                        {{fiberInfo.wavelength}}
+                    </text>
+                </template>
+            </template>
+            <props except="w,h">
+                <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+                <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
+            </props>
+            <computed-props extend="WDM-Port">
+                <computed-prop name="labelY">props.d*0.67</computed-prop>
+                <computed-prop name="r">props.d*0.5</computed-prop>
+                <computed-prop name="rNut">props.d*0.5</computed-prop>
+                <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
+                <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
+            </computed-props>
+            <style>
+                .port-icon.body {fill: transparent; stroke: transparent;}
+                .port-name {fill: white; font-weight: bold}
+                .nut {fill: silver; }
+                .cap {fill: #3d3d3d; stroke: #d00101; stroke-width: 2px}
+                .fiber-info {fill: #3d3d3d;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="FC-APC-Port" category=".ports">
+            <extends base="FC-Port"/>
+            <style>
+                .cap {stroke: #18b933;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="SC-Port" category=".ports">
+            <extends base="Port" v-bind:w="d" v-bind:h="d">
+                <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+                <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8"/>
+            </extends>
+            <props extend="KeyedConnector" except="w,h">
+                <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+                <prop name="ferruleVisible" type="Boolean" default="false"/>
+            </props>
+            <computed-props>
+                <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+            </computed-props>
+            <style>
+                .RectangularConnector .border {fill: none; stroke: #057aff;}
+                .ferrule {fill: #ababab; stroke: #707070; stroke-width: 1px;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="SC-APC-Port" category=".ports">
+            <extends base="SC-Port"/>
+            <style>
+                .RectangularConnector .border {fill: none; stroke: #18b933;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="PatchPanel" category="Passive equipment" version="2024091100" embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
+            <template>
+                <title v-if="comment">{{comment}}</title>
+                <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
+                <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
+                    <kre:connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
+                            <svg class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}" v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight" v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight" v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth">
+                            <rect class="pad" x="0" y="0" width="100%" height="100%"/>
+                            <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
+                            <template v-else-if="orientation === 'vertical'">
+                                <line class="frame" x1="0" y1="0" x2="0" y2="100%"/>
+                                <line class="frame" x1="0" y1="100%" x2="100%" y2="100%"/>
+                                <line class="frame" x1="100%" y1="100%" x2="100%" y2="0"/>
+                            </template>
+                            <template v-else="orientation === 'horizontal'">
+                                <line class="frame" x1="0" y1="0" x2="100%" y2="0"/>
+                                <line class="frame" x1="100%" y1="0" x2="100%" y2="100%"/>
+                                <line class="frame" x1="100%" y1="100%" x2="0" y2="100%"/>
+                            </template>
+                            <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.4" v-bind:y="labelHeight*0.5" v-bind:font-size="labelFontSize">
+                                <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                                <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                            </text>
+                            <text v-else="" v-bind:x="labelHeight*0.5" v-bind:y="labelWidth - labelHeight*0.4" v-bind:transform="`rotate(-90, ${labelHeight*0.5}, ${labelWidth - labelHeight*0.4})`" v-bind:font-size="labelFontSize">
+                                <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                                <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                            </text>
+                        </svg>
+                        <kre:connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
+                    </kre:connection-indicator>
+                    <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
+                </template>
+                <template v-for="i in nPorts/nPortRows">
+                    <component v-for="j in nPortRows" v-bind:is="portClass" v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" v-bind:d="portSize*height" v-bind:name="firstPort - 1 + (i-1)*nPortRows + j" v-bind:key="firstPort - 1 + (i-1)*nPortRows + j" v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined" v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'"/>
+                </template>
+                <kre:connection-point v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" connection-id="out:*"/>
+                <template v-if="caption">
+                    <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)">
+                        <text v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
+                    </a>
+                    <text v-else="" class="caption" v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">
+                        {{caption}}
+                    </text>
+                </template>
+            </template>
+            <props extend="DeviceWithOpticalPorts">
+                <prop name="comment" type="String" description="Device general info"/>
+                <prop name="caption" type="String" description="Device picture caption"/>
+                <prop name="caption-href" type="String" description="Optional hyperlink for the caption"/>
+                <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
+                <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
+                <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open in"/>
+                <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
+                <prop name="firstPort" type="Number" default="1" category="Network" description="The base number of the whole port range"/>
+                <prop name="portType" type="String" choices="RJ45, FC, FC-APC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
+                <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
+                <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry"/>
+                <prop name="portLabelPosition" type="String" choices="above,below,before,after,none" category="Presentation" description="Position of the port labels (if any)"/>
+                <prop name="portLabels" type="Object" default="{}" category="Network" description="Port (fiber) labels">
+                    <elements type="String"/>
+                </prop>
+                <prop name="portLabelWidth" type="Number" default="0.65" category="Presentation" description="The width of the port label table (relative)"/>
+                <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
+                <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
+            </props>
+            <computed-props>
+                <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
+                <computed-prop name="interPortGap">0.2</computed-prop><!-- relative to portSize -->
+                <computed-prop name="portLayout">props.portLayout ?? (props.portType.startsWith("FC") ? "zigzag" : "in-line")</computed-prop>
+                <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
+                <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop><!-- relative to height -->
+                <computed-prop name="height">props.height ?? 25 * (props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
+                <computed-prop name="width">
+                    props.width ?? computedProps.height * computedProps.portSize * 
+                        (props.nPorts/props.nPortRows + (props.nPorts/props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding 
+                         + (computedProps.portLayout === 'zigzag' &amp;&amp; props.nPortRows &gt; 1 ? 0.5 : 0))
+                </computed-prop>
+                <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
+                <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
+                <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
+                <computed-prop name="labelWidth">
+                    props.portLabelWidth * (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 3)*computedProps.labelFontSize
+                </computed-prop>
+                <computed-prop name="labelH">props.orientation === "vertical" ? computedProps.labelHeight : computedProps.labelWidth</computed-prop>
+                <computed-prop name="labelW">props.orientation === "vertical" ? computedProps.labelWidth : computedProps.labelHeight</computed-prop>
+                <computed-prop name="firstLabelX">
+                    props.portLabelPosition==="before" ? -computedProps.labelWidth :
+                    props.portLabelPosition==="after" ? computedProps.height :
+                        (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                          * computedProps.portSize * computedProps.height
+                </computed-prop>
+                <computed-prop name="firstLabelY">
+                    props.portLabelPosition==="below" ? computedProps.height :
+                    props.portLabelPosition==="above" ? -computedProps.labelWidth :
+                        (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                          * computedProps.portSize * computedProps.height
+                </computed-prop>
+                <computed-prop name="labelFontSize">props.portRows === 1 ? computedProps.labelHeight*0.6 : computedProps.labelHeight*0.8</computed-prop>
+                <computed-prop name="captionX">
+                    props.portLabelPosition==="before" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                    props.portLabelPosition==="after" ? computedProps.height*1.1 + computedProps.labelWidth :
+                        computedProps.width / 2
+                </computed-prop>
+                <computed-prop name="captionY">
+                    props.portLabelPosition==="below" ? computedProps.height + computedProps.labelWidth + computedProps.captionFontSize :
+                    props.portLabelPosition==="above" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                        computedProps.width / 2
+                </computed-prop>
+                <computed-prop name="captionRotation">
+                    props.portLabelPosition==="before" ? -90 :
+                    props.portLabelPosition==="after" ? 90 :
+                        0
+                </computed-prop>
+                <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
+                <computed-prop name="labelAdjRulerPos">
+                    props.portLabelPosition==="after" ? {
+                        x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                        x2: computedProps.firstLabelX + computedProps.labelWidth, y2: computedProps.firstLabelY
+                    } : props.portLabelPosition==="before" ? {
+                        x1: computedProps.firstLabelX + computedProps.labelWidth, y1: computedProps.firstLabelY,
+                        x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                    } : props.portLabelPosition==="above" ? {
+                        x1: computedProps.firstLabelX, y1: computedProps.firstLabelY + computedProps.labelWidth,
+                        x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                    } : {
+                        x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                        x2: computedProps.firstLabelX, y2: computedProps.firstLabelY + computedProps.labelWidth,
+                    }
+                </computed-prop>
+            </computed-props>
+            <functions>
+                <function name="labelCPPos" params="i">
+                    const pos = 
+                        props.portLabelPosition==="before" ? {x: 0, y: computedProps.labelH*0.5, dir: 180} :
+                        props.portLabelPosition==="after" ?  {x: computedProps.labelW, y: computedProps.labelH*0.5, dir: 0} :
+                        props.portLabelPosition==="above" ?  {x: computedProps.labelW*0.5, y: 0, dir: -90} :
+                        props.portLabelPosition==="below" ?  {x: computedProps.labelW*0.5, y: computedProps.labelH, dir: 90} :
+                            {};
+                        pos.x += computedProps.firstLabelX + Number(props.orientation==='horizontal')*(i-1)*computedProps.labelHeight;
+                        pos.y += computedProps.firstLabelY + Number(props.orientation==='vertical')*(i-1)*computedProps.labelHeight;
+                        return pos;
+                </function>
+            </functions>
+            <style>
+                .port-label .pad {/*fill-opacity: 0.75;*/ fill: #e8f7f7; }
+                .port-label.row3 .pad {filter: saturate(0.85) brightness(0.85)}
+                .port-label.row2 .pad {filter: saturate(0.9) brightness(0.9)}
+                .port-label.row1 .pad {filter: saturate(0.95) brightness(0.95)}
+                .highlighted .port-label .pad {fill: lightblue}
+                .port-label .frame {stroke: #9fd8e5; fill: none}
+                .port-label text {fill: #333333; font-family: sans-serif; dominant-baseline: central; }
+                .port-label text tspan.description {fill: #675137;}
+                .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; text-decoration: none; }
+                .caption.href:hover {text-decoration: underline !important}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="OpticalMultiplexer" category=".optical-equipment" version="2024070300">
+            <props extend="DeviceWithOpticalPorts">
+                <prop name="division-mode" type="String" choices="CWDM, DWDM" category="Optics" description="Multiplexer signal division mode"/>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="MuxPatchPanel" category="OpticalEquipment">
+            <extends base="PatchPanel"/>
+            <props extend="OpticalMultiplexer"/>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DLinkSwitchBody" category=".switch-parts">
+            <extends base="SwitchBody"/>
+            <style>
+                .device-name { fill: white; text-shadow: 3px 3px 3px black; }
+                .ip-address { fill: #f7ffb8; text-shadow: 1px 1px 1px black;}
+                .model-name { fill: #383838; font-family: sans-serif; }
+                .facet { --facet-color: #bfbfbf;  }
+                .facet.front { stroke: #808689; stroke-width: 3; fill: #e7e7e7; }
+                .port-icon { fill: #303030; }
+                .port-icon.body { stroke: #efeedc; }
+            </style>
+            <props>
+                <prop name="management-protocol" type="String" category="Network" default="telnet:" description="Device management protocol (to open management sessions from the on-drawing hyperlinks)"/>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DLinkSwitch" category="Switches/DLink" version="2024080100">
+            <extends base="DLinkSwitchBody"/>
+            <template>
+                <template v-for="i in Math.ceil(nPorts/2)">
+                    <Kre:RJ45-Port  v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" v-bind:name="i*2-1" v-bind:port-info="portsInfo[i*2-1]"/>
+                    <Kre:RJ45-Port v-if="i &lt;= nPorts/2 || nPorts%2 == 0" v-bind:x="unitHeight*(i*0.5-0.25)" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" v-bind:name="i*2" v-bind:port-info="portsInfo[i*2]" key-position="bottom"/>
+                </template>
+            </template>
+            <props except="interUnitGap">
+                <prop name="width" type="Number" default="none"/>
+                <prop name="n-ports" type="Number" default="24" category="Hardware" description="The number of ports"/>
+            </props>
+            <computed-props>
+                <computed-prop name="width">
+                    props.width ?? props.unitHeight * (Math.ceil(props.nPorts/2) * 0.5 + 0.33)
+                </computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="SwitchWithComboPorts" category=".Switches">
+            <props>
+                <prop name="first-combo-media" type="string" choices="fiber,copper" category="Network" description="First combo port media type"/>
+                <prop name="second-combo-media" type="string" choices="fiber,copper" category="Network" description="Second combo port media type"/>
+                <prop name="third-combo-media" type="string" choices="fiber,copper" category="Network" description="Third combo port media type"/>
+                <prop name="fourth-combo-media" type="string" choices="fiber,copper" category="Network" description="Fourth combo port media type"/>
+            </props>
+            <computed-props>
+                <computed-prop name="firstComboPort">24</computed-prop>
+                <computed-prop name="firstComboMedia">props.firstComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort)</computed-prop>
+                <computed-prop name="secondComboMedia">props.secondComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort+1)</computed-prop>
+                <computed-prop name="thirdComboMedia">props.thirdComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort+2)</computed-prop>
+                <computed-prop name="fourthComboMedia">props.fourthComboMedia ?? fn$.comboPortMedia(computedProps.firstComboPort+3)</computed-prop>
+            </computed-props>
+            <functions>
+                <function name="comboPortMedia" params="n">
+                    return props.portsInfo[n]?.media ?? "fiber";
+                </function>
+                <function name="comboPortData" params="n, physPortMedia, logPortMedia">
+                    return physPortMedia === logPortMedia ?
+                        {
+                            name: `${n}`,
+                            "port-info": props.portsInfo[n],
+                            "fiber-info": props.fibersInfo[n],
+                            combo: physPortMedia,
+                            "is-active": true,
+                        }
+                    :
+                        {
+                            name: `${n}(${physPortMedia[0]})`,
+                            "port-info": undefined,
+                            "fiber-info": undefined,
+                            combo: physPortMedia,
+                            "is-active": false,
+                        }
+                </function>
+            </functions>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DLink4ComboPortsSwitch" category=".Switches/DLink" version="2024070100">
+            <extends base="DLinkSwitch" v-bind:n-ports="nCopperPorts"/>
+            <template>
+                <text v-for="(line, i) in modelNameLines" v-bind:x="width - unitHeight*2.15" v-bind:y="unitHeight*(0.25 + 0.15*i)" v-bind:font-size="unitHeight*0.15" text-anchor="middle" dominant-baseline="hanging" class="model-name">{{line}}</text>
+                <Kre:SFP-Port  v-bind:x="width - unitHeight*1.86" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort, 'fiber', firstComboMedia)"/>
+                <Kre:SFP-Port  v-bind:x="width - unitHeight*1.86" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort+1, 'fiber', secondComboMedia)" key-position="bottom"/>
+                <Kre:RJ45-Port  v-bind:x="width - unitHeight*1.46" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort, 'copper', firstComboMedia)"/>
+                <Kre:RJ45-Port  v-bind:x="width - unitHeight*1.46" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort+1, 'copper', secondComboMedia)" key-position="bottom"/>
+                <Kre:RJ45-Port  v-bind:x="width - unitHeight*0.96" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort+2, 'copper', thirdComboMedia)"/>
+                <Kre:RJ45-Port  v-bind:x="width - unitHeight*0.96" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort+3, 'copper', fourthComboMedia)" key-position="bottom"/>
+                <Kre:SFP-Port  v-bind:x="width - unitHeight*0.56" v-bind:y="unitHeight*0.15" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort+2, 'fiber', thirdComboMedia)"/>
+                <Kre:SFP-Port  v-bind:x="width - unitHeight*0.56" v-bind:y="unitHeight*0.53" v-bind:d="unitHeight/3" v-bind="comboPortData(firstComboPort+3, 'fiber', fourthComboMedia)" key-position="bottom"/>
+            </template>
+            <props extend="SwitchWithComboPorts">
+                <prop name="n-ports" type="Number" default="28" category="Hidden" description="Fictive property to avoid warnings when loading this param from the DB"/>
+                <prop name="n-copper-ports" type="Number" default="24" category="Hardware" description="The number of copper ports"/>
+                <prop name="model-name" type="String"/>
+            </props>
+            <computed-props extend="SwitchWithComboPorts">
+                <computed-prop name="firstComboPort">props.nCopperPorts + 1</computed-prop>
+                <computed-prop name="width">props.width ?? props.unitHeight * ((props.nCopperPorts + 4) * 0.25 + 1.46)</computed-prop>
+                <computed-prop name="modelNameLines">props.modelName?.split(" ")</computed-prop>
+            </computed-props>
+            <functions extend="SwitchWithComboPorts"/>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DLink-DES-3200-28" category="Switches/DLink">
+            <extends base="DLink4ComboPortsSwitch"/>
+            <props>
+                <prop name="model-name" type="String" default="DES 3200 28" category="Hidden"/>
+                <prop name="n-copper-ports" type="Number" default="24" category="Hidden"/>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="CopperToOpticsMediaConverter" category="Media-converters" version="2024071400">
+            <template>
+                <title v-if="comment">{{comment}}</title>
+                <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
+                <component v-for="i in nFibers" v-bind:is="portClass" v-bind:x="width*3/14" v-bind:y="width*3/14 + portSize*(i-1)" v-bind:d="portSize" v-bind:fiber-info="{wavelength}" key-position="right" v-bind:ferrule-visible="true" v-bind:name="i&gt;1 ? 'rx' : nFibers&gt;1 ? 'tx' : 'f'" v-bind:prefix="i&gt;1 ? 'rx' : nFibers&gt;1 ? 'tx' : 'f'" connection-id="*"/>
+                <Kre:RJ45-Port  v-bind:x="width*3/14" v-bind:y="width*5/14 + portSize*nFibers" v-bind:d="portSize" key-position="right" name="c" prefix="c" connection-id="*"/>
+            </template>
+            <props>
+                <prop name="comment" type="String" description="Device general info"/>
+                <prop name="height" type="Number" category="Geometry"/>
+                <prop name="width" type="Number" category="Geometry"/>
+                <prop name="opticalPortType" type="String" choices="SC, SFP" default="SC" category="Hardware" description="The type of the optical port"/>
+                <prop name="nFibers" type="Number" choices="1,2" default="1" category="Optics" description="The number of optical fibers"/>
+                <prop name="wavelength" type="Number" choices="1310, 1550" category="Optics" description="Transmitted wawelength"/>
+                <prop name="speed" type="String" choices="100M, 1G" category="Network" description="Data transfer speed"/>
+                <prop name="color" type="Color" default="#1f1f1f" category="Presentation"/>
+                <prop name="strokeColor" type="Color" default="transparent" category="Presentation"/>
+            </props>
+            <computed-props>
+                <computed-prop name="height">props.height ?? (props.width ? props.width*(12 + 4*(props.nFibers-1))/7 : (75 + (props.nFibers-1)*25))</computed-prop>
+                <computed-prop name="width">props.width ?? computedProps.height/(12 + 4*(props.nFibers-1))*7</computed-prop>
+                <computed-prop name="portSize">computedProps.width*4/7</computed-prop>
+                <computed-prop name="portClass">`Kre:${props.opticalPortType}-Port`</computed-prop>
+            </computed-props>
+            <style>
+                .port-icon.body {fill: #212121;}
+                .port-label .frame {stroke: lightgray; fill: none}
+                .port-label text {fill: #333333; font-family: sans-serif;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="CopperToOpticsMultiplexer" category="Multiplexers" version="2024071400">
+            <template>
+                <title v-if="comment">{{comment}}</title>
+                <rect x="0" y="0" v-bind:width="width" v-bind:height="height" v-bind:fill="color" v-bind:stroke="strokeColor"/>
+                <component v-for="i in nFibers" v-bind:is="portClass" v-bind:x="height*3/14 + portSize*(i-1)" v-bind:y="height*3/14" v-bind:d="portSize" v-bind:ferrule-visible="true" v-bind:name="i&gt;1 ? 'rx' : nFibers&gt;1 ? 'tx' : 'f'" v-bind:prefix="i&gt;1 ? 'rx' : nFibers&gt;1 ? 'tx' : 'f'" connection-id="*"/>
+                <Kre:RJ45-Port v-for="i in nCopperPorts" v-bind:x="height*5/14 + portSize*(nFibers+i-1)" v-bind:y="height*3/14" v-bind:d="portSize" v-bind:name="`c${i}`" prefix="c"/>
+            </template>
+            <props>
+                <prop name="comment" type="String" description="Device general info"/>
+                <prop name="height" type="Number" category="Geometry"/>
+                <prop name="width" type="Number" category="Geometry"/>
+                <prop name="opticalPortType" type="String" choices="SC, LC" default="SC" category="Hardware" description="The type of the optical port"/>
+                <prop name="nFibers" type="Number" choices="1,2" default="1" category="Optics" description="The number of optical fibers"/>
+                <prop name="nCopperPorts" type="Number" default="1" category="Hardware" description="The number of copper ports"/>
+                <prop name="color" type="Color" default="#bfbfbf" category="Presentation"/>
+                <prop name="strokeColor" type="Color" default="#bfbfbf" category="Presentation"/>
+            </props>
+            <computed-props>
+                <computed-prop name="nPorts">props.nFibers + props.nCopperPorts - 2</computed-prop>
+                <computed-prop name="width">props.width ?? (props.height ? props.height*(12 + 4*computedProps.nPorts)/7 : (75 + computedProps.nPorts*25))</computed-prop>
+                <computed-prop name="height">props.height ?? computedProps.width/(12 + 4*computedProps.nPorts)*7</computed-prop>
+                <computed-prop name="portSize">computedProps.height*4/7</computed-prop>
+                <computed-prop name="portClass">`Kre:${props.opticalPortType}-Port`</computed-prop>
+            </computed-props>
+            <style>
+                .port-icon.body {fill: #212121;}
+                .port-label .frame {stroke: lightgray; fill: none}
+                .port-label text {fill: #333333; font-family: sans-serif;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DLink-DES-3052" category="Switches/DLink">
+            <extends base="DLink4ComboPortsSwitch"/>
+            <props>
+                <prop name="model-name" type="String" default="DES 3052" category="Hidden"/>
+                <prop name="n-copper-ports" type="Number" default="48" category="Hidden"/>
+            </props>
+        </component-class>
+
+        <link-class xmlns="kresmer-library" name="_abstract-link" category=".abstract-links" version="2024090300">
+            <defs>
+                <marker id="kre:link-marker-circle" markerWidth="4.5" markerHeight="4.5" refX="5" refY="5" viewBox="0 0 10 10">
+                    <circle r="4.5" cx="5" cy="5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-arrow" markerWidth="7.5" markerHeight="5" refX="9" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse" preserveAspectRatio="none">
+                    <polygon points="0.5,0.5 10,5 0.5,9.5 2,5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-incoming-arrow" markerWidth="7.5" markerHeight="5" refX="8" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse" preserveAspectRatio="none">
+                    <polygon points="9.5,0.5 0,5 9.5,9.5 8,5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-square" markerWidth="4.5" markerHeight="4.5" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <rect x="0" y="0" width="10" height="10" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-diamond" markerWidth="5" markerHeight="5" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <polygon points="0.5,5 5,0.5 9.5,5 5,9.5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-cross" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <line x1="0" y1="0" x2="10" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="2"/>
+                    <line x1="10" y1="0" x2="0" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="2"/>
+                </marker>
+                <marker id="kre:link-marker-red-cross" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <line x1="0" y1="0" x2="10" y2="10" fill="red" stroke="red" stroke-width="2"/>
+                    <line x1="10" y1="0" x2="0" y2="10" fill="red" stroke="red" stroke-width="2"/>
+                </marker>
+                <marker id="kre:link-marker-canalization" markerWidth="8" markerHeight="8" refX="5" refY="9" viewBox="0 0 10 12">
+                    <ellipse rx="4" ry="2" cx="5" cy="9" fill="black" stroke="gray"/>
+                    <path d="M1,8.5 A 3,1.5 -30 0 1 8,5" fill="#718ea8" stroke="#6087a9" stroke-width="0.5"/>
+                    <path d="M1,8.5 A 3,1.5 -30 1 0 8,5" fill="#718ea8" stroke="#21425f" stroke-width="0.5"/>
+                </marker>
+                <marker id="kre:link-marker-pole" markerWidth="8" markerHeight="10" refX="20" refY="37" viewBox="0 0 80 100">
+                    <line x1="40" y1="0" x2="40" y2="95" stroke="#754c1a" stroke-width="10"/>
+                    <line x1="10" y1="20" x2="70" y2="20" stroke="#3d3d3d" stroke-width="5"/>
+                    <line x1="13" y1="20" x2="40" y2="3" stroke="#6b6b6b" stroke-width="3"/>
+                    <line x1="67" y1="20" x2="40" y2="3" stroke="#6b6b6b" stroke-width="3"/>
+                    <line x1="15" y1="20" x2="15" y2="30" stroke="black" stroke-width="5"/>
+                    <line x1="25" y1="20" x2="25" y2="30" stroke="black" stroke-width="5"/>
+                    <line x1="55" y1="20" x2="55" y2="30" stroke="black" stroke-width="5"/>
+                    <line x1="65" y1="20" x2="65" y2="30" stroke="black" stroke-width="5"/>
+                </marker>
+                <marker id="kre:link-marker-roof" markerWidth="10" markerHeight="5" refX="10" refY="8" viewBox="0 0 20 16">
+                    <polygon points="0,14 10,0 20,14 17,16 10,6 3,16" fill="#5b3c15" stroke="white"/>
+                </marker>
+            </defs>
+            <props>
+                <prop name="mediaType" type="string" category="Network"/>
+                <prop name="acceptMediaTypes" type="string" category="Network"/>
+                <prop name="startLabel" type="string"/>
+                <prop name="startLabelHref" type="string"/>
+                <prop name="endLabel" type="string"/>
+                <prop name="endLabelHref" type="string"/>
+                <prop name="mirrorLabels" type="Boolean"/>
+                <prop name="startMarker" type="string" choices="arrow,incoming-arrow,circle,square,diamond,cross,red-cross" category="Presentation"/>
+                <prop name="endMarker" type="string" choices="arrow,incoming-arrow,circle,square,diamond,cross,red-cross" category="Presentation"/>
+                <prop name="color" type="Color" category="Presentation"/>
+                <prop name="highlightColor" type="Color" category="Presentation"/>
+                <prop name="thickness" type="string" choices="thin,normal,thick" category="Presentation"/>
+            </props>
+            <style>
+                .padding {stroke-width: 8px;}
+                .link {--link-color: #3b3b3b; --highlighted-link-color: #000000;}
+                .segment {stroke: var(--link-color); stroke-width: 2px; stroke-linecap: round; xx-filter: url(#kre:fltLinkFilter)}
+                .segment.highlighted, .segment.selected {stroke: var(--highlighted-link-color); stroke-width: 3px}
+                .vertex {stroke: var(--highlighted-link-color); stroke-width: 4px; fill: white; r: 6px}
+                .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
+                .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+                .connection-point-marker {r: 8px; fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;}
+                .label {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); text-decoration: none; }
+                .label.href:hover {text-decoration: underline}
+                .link-number {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
+                .blank.line {stroke: red; stroke-width: 2px;}
+                .blank.origin {stroke: orange; stroke-width: 2px; fill: orange; fill-opacity: 0.5;}
+                .blank.origin-center {fill: red;}
+                .blank.header {stroke: var(--link-color); stroke-width: 2px; fill: var(--link-color); fill-opacity: 0.5;}
+                .blank.header-center {fill: var(--link-color); filter: brightness(0.2);}
+                .seg-mark {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
+            </style>
+        </link-class>
+
+        <link-class xmlns="kresmer-library" name="twisted-pair" category="copper links" version="2024070800">
+            <extends base="_abstract-link" media-type="twisted-pair" accept-media-types="none"/>
+            <style>
+                .link {--link-color: #5e5e5e; --highlighted-link-color: #c22a00; }
+                .segment {stroke-width: 1px;}
+                .segment.highlighted, .segment.selected {stroke-width: 2px}
+                .blank.header {fill-opacity: 0.3;}
+            </style>
+        </link-class>
+
+        <link-class xmlns="kresmer-library" name="DAC" category="direct attached cables" version="2024070800">
+            <extends base="_abstract-link" media-type="DAC" accept-media-types="none"/>
+            <style>
+                .link {--link-color: #236e85; --highlighted-link-color: #23beb3; }
+                .padding {stroke-width: 10px;}
+                .vertex.padding {fill: #23beb3;}
+                .segment {stroke-width: 1.5px; stroke-linejoin: round;}
+                .segment.highlighted, .segment.selected {stroke-width: 2px;}
+                .vertex {stroke-width: 4px; r: 6px}
+                .blank.header {fill-opacity: 0.3;}
+            </style>
+        </link-class>
+
+        <link-class xmlns="kresmer-library" name="AOC" category="direct attached cables" version="2024070800">
+            <extends base="_abstract-link" media-type="AOC" accept-media-types="none"/>
+            <style>
+                .link {--link-color: #0098c7; --highlighted-link-color: #1de7e7; }
+                .padding {stroke-width: 10px;}
+                .vertex.padding {fill: #1de7e7;}
+                .segment {stroke-width: 1.5px; stroke-linejoin: round;}
+                .segment.highlighted, .segment.selected {stroke-width: 2px}
+                .vertex {stroke-width: 4px; r: 6px}
+                .blank.header {fill-opacity: 0.3;}
+            </style>
+        </link-class>
+
+        <link-class xmlns="kresmer-library" name="sm-patch-cord" category="optical links" version="2024070800">
+            <extends base="_abstract-link" media-type="sm-optics" accept-media-types="none"/>
+            <style>
+                .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
+                .segment {stroke-width: 1px;}
+                .segment.highlighted, .segment.selected {stroke-width: 2px}
+                .link-number {filter: brightness(0.6)}
+                .blank.header {fill-opacity: 0.3;}
+            </style>
+        </link-class>
+
+        <link-class xmlns="kresmer-library" name="multifiber-cable" category="optical links" version="2024070800">
+            <extends base="_abstract-link" media-type="multifiber-cable" accept-media-types="multifiber-cable"/>
+            <props>
+                <prop name="nFibers" type="Number" category="Hardware" description="The number of fibers in the cable"/>
+                <prop name="mode" type="String" category="Hardware" choices="single-mode, multi-mode" description="Optical mode use"/>
+                <prop name="laying-method" type="string" choices="by-the-poles, by-the-roofs, in-canalization" category="Construction"/>
+            </props>
+            <style>
+                .link {--link-color: black; --highlighted-link-color: #ff873d; }
+                .padding {stroke-width: 10px;}
+                .vertex.padding {fill: #ff873d;}
+                .segment {stroke-width: 2px; stroke-linejoin: round;}
+                .segment.thin {stroke-width: 1.5px;}
+                .segment.highlighted, .segment.selected, .segment.thick {stroke-width: 3px}
+                .segment.highlighted.thick, .segment.selected.thick {stroke-width: 3.5px}
+                .vertex {stroke-width: 4px; r: 6px}
+                .blank.header {fill-opacity: 0.3;}
+            </style>
+        </link-class>
+
+        <link-bundle-class xmlns="kresmer-library" name="link-bundle" category="general" version="2024070800">
+            <extends base="_abstract-link" accept-media-types="none"/>
+            <style>
+                .link {--highlighted-link-color: #c22a00; }
+                .segment, .segment.highlighted, segment.selected, .blank.line {stroke-width: 3px; stroke-linejoin: round; }
+            </style>
+        </link-bundle-class>
+
+        <link-bundle-class xmlns="kresmer-library" name="AOC-bundle" category="direct attached cables" version="2024070800">
+            <extends base="link-bundle"/>
+            <style extends="AOC"/>
+        </link-bundle-class>
+
+        <link-bundle-class xmlns="kresmer-library" name="DAC-bundle" category="direct attached cables" version="2024070800">
+            <extends base="link-bundle"/>
+            <style extends="DAC"/>
+        </link-bundle-class>
+    </library>
 
     <component class="Extreme-X590-24x-Stack" name="core">
         <origin x="332" y="218"/>
@@ -28,25 +1191,25 @@
             <prop name="management-protocol">ssh:</prop>
             <prop name="inter-unit-gap">20</prop>
             <prop name="fibers-info">{
-                  "1:3": {
+                "1:3": {
                     "nFibers": 2
-                  },
-                  "1:4": {
+                },
+                "1:4": {
                     "nFibers": 2
-                  },
-                  "2:1": {
+                },
+                "2:1": {
                     "nFibers": 2
-                  },
-                  "2:2": {
+                },
+                "2:2": {
                     "nFibers": 2
-                  },
-                  "2:3": {
+                },
+                "2:3": {
                     "nFibers": 2
-                  },
-                  "2:4": {
+                },
+                "2:4": {
                     "nFibers": 2
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="ip-address">10.1.1.3</prop>
         </props>
     </component>
@@ -60,35 +1223,35 @@
             <prop name="management-protocol">ssh:</prop>
             <prop name="comment">Border router</prop>
             <prop name="ports-info">{
-                  "et0/0/0": {
+                "et0/0/0": {
                     "description": "Uplink-provider-1",
                     "speed": "40G"
-                  },
-                  "et0/0/1": {
+                },
+                "et0/0/1": {
                     "description": "core-switch-1",
                     "speed": "40G"
-                  },
-                  "et0/0/2": {
+                },
+                "et0/0/2": {
                     "description": "core-switch-2",
                     "speed": "40G"
-                  },
-                  "xe0/1/0": {
+                },
+                "xe0/1/0": {
                     "description": "Uplink-provider-2",
                     "speed": "10G"
-                  },
-                  "xe0/1/1": {
+                },
+                "xe0/1/1": {
                     "description": "Uplink-provider-3",
                     "speed": "10G"
-                  },
-                  "xe0/1/3": {
+                },
+                "xe0/1/3": {
                     "description": "Uplink-provider-4-1",
                     "speed": "10G"
-                  },
-                  "xe0/1/4": {
+                },
+                "xe0/1/4": {
                     "description": "Uplink-provider-4-2",
                     "speed": "10G"
-                  }
-                }</prop>
+                }
+            }</prop>
         </props>
     </component>
 
@@ -98,52 +1261,52 @@
             <prop name="unit-height">75</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
-                  "xge0": {
+                "xge0": {
                     "direction": "uplink",
                     "speed": "10G",
                     "media": "sm-optics"
-                  },
-                  "eth0": {
+                },
+                "eth0": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth1": {
+                },
+                "eth1": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth2": {
+                },
+                "eth2": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth3": {
+                },
+                "eth3": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth4": {
+                },
+                "eth4": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth5": {
+                },
+                "eth5": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth6": {
+                },
+                "eth6": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth7": {
+                },
+                "eth7": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="width">280</prop>
         </props>
     </component>
@@ -154,52 +1317,52 @@
             <prop name="unit-height">75</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
-                  "xge0": {
+                "xge0": {
                     "direction": "uplink",
                     "speed": "10G",
                     "media": "sm-optics"
-                  },
-                  "eth0": {
+                },
+                "eth0": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth1": {
+                },
+                "eth1": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth2": {
+                },
+                "eth2": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth3": {
+                },
+                "eth3": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth4": {
+                },
+                "eth4": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth5": {
+                },
+                "eth5": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth6": {
+                },
+                "eth6": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth7": {
+                },
+                "eth7": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="width">280</prop>
         </props>
     </component>
@@ -210,52 +1373,52 @@
             <prop name="unit-height">75</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
-                  "xge0": {
+                "xge0": {
                     "direction": "uplink",
                     "speed": "10G",
                     "media": "sm-optics"
-                  },
-                  "eth0": {
+                },
+                "eth0": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth1": {
+                },
+                "eth1": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth2": {
+                },
+                "eth2": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth3": {
+                },
+                "eth3": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth4": {
+                },
+                "eth4": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth5": {
+                },
+                "eth5": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth6": {
+                },
+                "eth6": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  },
-                  "eth7": {
+                },
+                "eth7": {
                     "direction": "downlink",
                     "speed": "1G",
                     "media": "copper"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="width">280</prop>
         </props>
     </component>
@@ -266,17 +1429,17 @@
             <prop name="unit-height">75</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
-                  "xge0": {
+                "xge0": {
                     "direction": "uplink",
                     "speed": "10G",
                     "media": "sm-optics"
-                  },
-                  "xge1": {
+                },
+                "xge1": {
                     "direction": "downlink",
                     "media": "sm-optics",
                     "speed": "10G"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="width">280</prop>
         </props>
     </component>
@@ -287,17 +1450,17 @@
             <prop name="unit-height">75</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
-                  "xge0": {
+                "xge0": {
                     "direction": "uplink",
                     "speed": "10G",
                     "media": "sm-optics"
-                  },
-                  "xge1": {
+                },
+                "xge1": {
                     "direction": "downlink",
                     "media": "sm-optics",
                     "speed": "10G"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="width">280</prop>
         </props>
     </component>
@@ -308,17 +1471,17 @@
             <prop name="unit-height">75</prop>
             <prop name="management-protocol">ssh:</prop>
             <prop name="interfaces">{
-                  "xge0": {
+                "xge0": {
                     "direction": "uplink",
                     "speed": "10G",
                     "media": "sm-optics"
-                  },
-                  "xge1": {
+                },
+                "xge1": {
                     "direction": "downlink",
                     "media": "sm-optics",
                     "speed": "10G"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="width">280</prop>
             <prop name="comment">Dead!</prop>
         </props>
@@ -333,45 +1496,45 @@
             <prop name="port-label-position">before</prop>
             <prop name="port-type">FC</prop>
             <prop name="port-labels">{
-                  "1": "Prov1-trans",
-                  "2": "Prov1-trans",
-                  "3": "Telecom-1",
-                  "4": "Telecom-2",
-                  "5": "16Broadway",
-                  "6": "UplProv2",
-                  "7": "13,5thAve",
-                  "9": "7,Kram-blvd",
-                  "10": "MUX1 (u)",
-                  "11": "1,Cant-str",
-                  "12": "MUX2 (l)",
-                  "13": "4,Pal-str",
-                  "14": "95,Park-str",
-                  "15": "33,Khab-str",
-                  "16": "25,Bull-str",
-                  "17": "34,Pal-str",
-                  "18": "51,Park-str",
-                  "19": "51,Soc-str",
-                  "20": "4,Pal-str(-)",
-                  "21": "UplProv4-1",
-                  "22": "15,Khm-str",
-                  "23": "68,Acad-str-1",
-                  "24": "6,Mir-str",
-                  "25": "68,Acad-str-1",
-                  "26": "6,Mira-str",
-                  "27": "7,Mar-str",
-                  "28": "34,Fri-str",
-                  "29": "23,Voz-str (-)",
-                  "30": "19,Pal-str",
-                  "31": "MIT-1",
-                  "32": "Microsoft",
-                  "33": "CityBank (-)",
-                  "34": "2,Dnipr-str",
-                  "35": "17,South-str",
-                  "36": "2,Kite-str",
-                  "37": "UplProv3 (-)",
-                  "38": "2,Kite-str (-)",
-                  "41": "1,Centr-str"
-                }</prop>
+                "1": "Prov1-trans",
+                "2": "Prov1-trans",
+                "3": "Telecom-1",
+                "4": "Telecom-2",
+                "5": "16Broadway",
+                "6": "UplProv2",
+                "7": "13,5thAve",
+                "9": "7,Kram-blvd",
+                "10": "MUX1 (u)",
+                "11": "1,Cant-str",
+                "12": "MUX2 (l)",
+                "13": "4,Pal-str",
+                "14": "95,Park-str",
+                "15": "33,Khab-str",
+                "16": "25,Bull-str",
+                "17": "34,Pal-str",
+                "18": "51,Park-str",
+                "19": "51,Soc-str",
+                "20": "4,Pal-str(-)",
+                "21": "UplProv4-1",
+                "22": "15,Khm-str",
+                "23": "68,Acad-str-1",
+                "24": "6,Mir-str",
+                "25": "68,Acad-str-1",
+                "26": "6,Mira-str",
+                "27": "7,Mar-str",
+                "28": "34,Fri-str",
+                "29": "23,Voz-str (-)",
+                "30": "19,Pal-str",
+                "31": "MIT-1",
+                "32": "Microsoft",
+                "33": "CityBank (-)",
+                "34": "2,Dnipr-str",
+                "35": "17,South-str",
+                "36": "2,Kite-str",
+                "37": "UplProv3 (-)",
+                "38": "2,Kite-str (-)",
+                "41": "1,Centr-str"
+            }</prop>
             <prop name="comment">The main connection to the outer world</prop>
         </props>
     </component>
@@ -395,39 +1558,39 @@
             <prop name="first-port">9</prop>
             <prop name="division-mode">CWDM</prop>
             <prop name="fibers-info">{
-                  "9": {
+                "9": {
                     "signalDirection": "tx",
                     "wavelength": 1610
-                  },
-                  "10": {
+                },
+                "10": {
                     "signalDirection": "rx",
                     "wavelength": 1470
-                  },
-                  "11": {
+                },
+                "11": {
                     "signalDirection": "tx",
                     "wavelength": 1590
-                  },
-                  "12": {
+                },
+                "12": {
                     "signalDirection": "rx",
                     "wavelength": 1490
-                  },
-                  "13": {
+                },
+                "13": {
                     "signalDirection": "tx",
                     "wavelength": 1570
-                  },
-                  "14": {
+                },
+                "14": {
                     "signalDirection": "rx",
                     "wavelength": 1510
-                  },
-                  "15": {
+                },
+                "15": {
                     "signalDirection": "tx",
                     "wavelength": 1550
-                  },
-                  "16": {
+                },
+                "16": {
                     "signalDirection": "rx",
                     "wavelength": 1530
-                  }
-                }</prop>
+                }
+            }</prop>
         </props>
     </component>
 
@@ -441,39 +1604,39 @@
             <prop name="first-port">17</prop>
             <prop name="division-mode">CWDM</prop>
             <prop name="fibers-info">{
-                  "17": {
+                "17": {
                     "signalDirection": "tx",
                     "wavelength": 1610
-                  },
-                  "18": {
+                },
+                "18": {
                     "signalDirection": "rx",
                     "wavelength": 1470
-                  },
-                  "19": {
+                },
+                "19": {
                     "signalDirection": "tx",
                     "wavelength": 1590
-                  },
-                  "20": {
+                },
+                "20": {
                     "signalDirection": "rx",
                     "wavelength": 1490
-                  },
-                  "21": {
+                },
+                "21": {
                     "signalDirection": "tx",
                     "wavelength": 1570
-                  },
-                  "22": {
+                },
+                "22": {
                     "signalDirection": "rx",
                     "wavelength": 1510
-                  },
-                  "23": {
+                },
+                "23": {
                     "signalDirection": "tx",
                     "wavelength": 1550
-                  },
-                  "24": {
+                },
+                "24": {
                     "signalDirection": "rx",
                     "wavelength": 1530
-                  }
-                }</prop>
+                }
+            }</prop>
         </props>
     </component>
 
@@ -525,15 +1688,15 @@
             <prop name="ip-address">192.168.1.254</prop>
             <prop name="width">280</prop>
             <prop name="interfaces">{
-                  "eth0": {
+                "eth0": {
                     "direction": "downlink",
                     "media": "copper"
-                  },
-                  "eth1": {
+                },
+                "eth1": {
                     "direction": "uplink",
                     "media": "copper"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="management-protocol">ssh:</prop>
         </props>
     </component>
@@ -545,18 +1708,18 @@
             <prop name="ip-address">192.168.1.223</prop>
             <prop name="width">280</prop>
             <prop name="interfaces">{
-                  "eth0": {
+                "eth0": {
                     "direction": "downlink",
                     "w1g1": {
-                      "direction": ""
+                        "direction": ""
                     },
                     "media": "copper"
-                  },
-                  "w1g1": {
+                },
+                "w1g1": {
                     "direction": "uplink",
                     "media": "copper"
-                  }
-                }</prop>
+                }
+            }</prop>
             <prop name="management-protocol">ssh:</prop>
         </props>
     </component>
@@ -565,41 +1728,55 @@
         <props>
             <prop name="start-label"></prop>
         </props>
-        <vertex bundle="core-lower-bundle" after="0" distance="62.00000000000001"/>
-        <vertex bundle="core-lower-bundle" after="0" distance="0"/>
-        <vertex x="282" y="400"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="18"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="395.5"/>
+        <vertices>
+            <vertex bundle="core-lower-bundle" after="0" distance="62.00000000000001"/>
+            <vertex bundle="core-lower-bundle" after="0" distance="0"/>
+            <vertex x="282" y="400"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="18"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="395.5"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-stacking-1" from="core:1:26@r" to="core:2:27@r">
-        <vertex x="48" y="0"/>
-        <vertex x="48" y="123.5"/>
+        <vertices>
+            <vertex x="48" y="0"/>
+            <vertex x="48" y="123.5"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-stacking-2" from="core:1:27@r" to="core:2:26@r">
-        <vertex x="32" y="0"/>
-        <vertex x="32" y="66.5"/>
+        <vertices>
+            <vertex x="32" y="0"/>
+            <vertex x="32" y="66.5"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="metro-stacking-1" from="metro-switch:1:47@r" to="metro-switch:2:48@r">
-        <vertex x="44" y="0"/>
-        <vertex x="44" y="123.5"/>
+        <vertices>
+            <vertex x="44" y="0"/>
+            <vertex x="44" y="123.5"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="metro-stacking-2" from="metro-switch:1:48@r" to="metro-switch:2:47@r">
-        <vertex x="28" y="0"/>
-        <vertex x="28" y="66.5"/>
+        <vertices>
+            <vertex x="28" y="0"/>
+            <vertex x="28" y="66.5"/>
+        </vertices>
     </link>
 
     <link class="AOC" name="core-border-1" from="border:et0/0/1@d" to="core:1:25@l">
-        <vertex bundle="core-border-bundle" after="0" distance="0"/>
-        <vertex bundle="core-border-bundle" after="1" distance="116.44145883000142"/>
+        <vertices>
+            <vertex bundle="core-border-bundle" after="0" distance="0"/>
+            <vertex bundle="core-border-bundle" after="1" distance="116.44145883000142"/>
+        </vertices>
     </link>
 
     <link class="AOC" name="core-border-2" from="border:et0/0/2@d" to="core:2:25@l">
-        <vertex bundle="core-border-bundle" after="0" distance="75.00000000000003"/>
-        <vertex bundle="core-border-bundle" after="2" distance="0"/>
+        <vertices>
+            <vertex bundle="core-border-bundle" after="0" distance="75.00000000000003"/>
+            <vertex bundle="core-border-bundle" after="2" distance="0"/>
+        </vertices>
     </link>
 
     <link class="AOC" name="uplink-prov1-0" from="@prov1-uplink-fan:0:0" to="(1220, 70)">
@@ -607,8 +1784,10 @@
             <prop name="end-label">to Prov-1 switch (port 9)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
-        <vertex x="1064" y="70"/>
+        <vertices>
+            <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
+            <vertex x="1064" y="70"/>
+        </vertices>
     </link>
 
     <link class="AOC" name="uplink-prov1-1" from="@prov1-uplink-fan:0:0" to="(1220, 84)">
@@ -616,16 +1795,20 @@
             <prop name="end-label">to Prov-1 switch (port 10)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
-        <vertex x="1064" y="84"/>
+        <vertices>
+            <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
+            <vertex x="1064" y="84"/>
+        </vertices>
     </link>
 
     <link class="AOC" name="uplink-prov1-3" from="@prov1-uplink-fan:0:0" to="(1220, 112)">
         <props>
             <prop name="end-marker">circle</prop>
         </props>
-        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
-        <vertex x="1064" y="112"/>
+        <vertices>
+            <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
+            <vertex x="1064" y="112"/>
+        </vertices>
     </link>
 
     <link class="AOC" name="uplink-prov1-2" from="@prov1-uplink-fan:0:0" to="(1220, 98)">
@@ -633,368 +1816,472 @@
             <prop name="end-label">to Prov-1 switch (port 11)</prop>
             <prop name="end-marker">arrow</prop>
         </props>
-        <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
-        <vertex x="1064" y="98"/>
+        <vertices>
+            <vertex bundle="prov1-uplink-fan" after="4" distance="0"/>
+            <vertex x="1064" y="98"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-kamakura" from="core:1:9@u" to="BRAS-1:xge0@u">
-        <vertex bundle="core-upper-bundle" after="2" distance="0"/>
-        <vertex bundle="core-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="0" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="2" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="2" distance="162.00000000000003"/>
+        <vertices>
+            <vertex bundle="core-upper-bundle" after="2" distance="0"/>
+            <vertex bundle="core-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="brases-core-bundle" after="0" distance="0"/>
+            <vertex bundle="brases-core-bundle" after="2" distance="0"/>
+            <vertex bundle="brases-core-bundle" after="2" distance="162.00000000000003"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-0" from="BRAS-1:eth0@d" to="metro-switch:1:26@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="46.99999999999999"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="508"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="46.99999999999999"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="508"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-1" from="BRAS-1:eth1@d" to="metro-switch:1:27@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="77"/>
-        <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="543.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="77"/>
+            <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="543.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-2" from="BRAS-1:eth2@d" to="metro-switch:2:26@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="106.99999999999999"/>
-        <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="507"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="106.99999999999999"/>
+            <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="507"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-3" from="BRAS-1:eth3@d" to="metro-switch:2:27@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="137"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="545.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="137"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="545.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-4" from="BRAS-1:eth4@d" to="metro-switch:1:43@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="167"/>
-        <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="4" distance="0"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="167"/>
+            <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="4" distance="0"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-5" from="BRAS-1:eth5@d" to="metro-switch:1:44@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="197"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="4" distance="0"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="197"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="4" distance="0"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-6" from="BRAS-1:eth6@d" to="metro-switch:2:43@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="227.00000000000003"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="4" distance="0"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="227.00000000000003"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="4" distance="0"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kamakura-7" from="BRAS-1:eth7@d" to="metro-switch:2:44@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="256.99999999999994"/>
-        <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="4" distance="0"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="256.99999999999994"/>
+            <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="4" distance="0"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-1" from="BRAS-2:eth0@d" to="metro-switch:1:31@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="341"/>
-        <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="618.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="341"/>
+            <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="618.5"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-kusay" from="core:1:1@u" to="BRAS-2:xge0@u">
-        <vertex bundle="core-upper-bundle" after="1" distance="68"/>
-        <vertex bundle="core-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="0" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="2" distance="456"/>
+        <vertices>
+            <vertex bundle="core-upper-bundle" after="1" distance="68"/>
+            <vertex bundle="core-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="brases-core-bundle" after="0" distance="0"/>
+            <vertex bundle="brases-core-bundle" after="2" distance="456"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-2" from="BRAS-2:eth1@d" to="metro-switch:1:32@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="370.99999999999994"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="620.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="370.99999999999994"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="620.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-3" from="BRAS-2:eth2@d" to="metro-switch:2:31@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="401"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="620.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="401"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="620.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-4" from="BRAS-2:eth3@d" to="metro-switch:2:32@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="431"/>
-        <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="619.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="431"/>
+            <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="619.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-5" from="BRAS-2:eth4@d" to="metro-switch:1:29@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="461"/>
-        <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="581"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="461"/>
+            <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="581"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-6" from="BRAS-2:eth5@d" to="metro-switch:2:29@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="491"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="583"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="491"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="583"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-7" from="BRAS-2:eth6@d" to="metro-switch:1:35@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="521"/>
-        <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="693.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="521"/>
+            <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="693.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-kusay-8" from="BRAS-2:eth7@d" to="metro-switch:2:35@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="551"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="695.5000000000001"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="551"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="695.5000000000001"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-rugay" from="core:2:1@u" to="BRAS-3:xge0@u">
-        <vertex bundle="core-middle-bundle" after="1" distance="66.00000000000001"/>
-        <vertex bundle="core-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle" after="3" distance="0"/>
+        <vertices>
+            <vertex bundle="core-middle-bundle" after="1" distance="66.00000000000001"/>
+            <vertex bundle="core-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="brases-core-bundle" after="1" distance="0"/>
+            <vertex bundle="brases-core-bundle" after="3" distance="0"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-1" from="BRAS-3:eth0@d" to="metro-switch:1:33@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="635"/>
-        <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="656.0000000000001"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="635"/>
+            <vertex bundle="brases-metro-u-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="656.0000000000001"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-2" from="BRAS-3:eth1@d" to="metro-switch:1:34@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="665"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="658"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="665"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="658"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-3" from="BRAS-3:eth2@d" to="metro-switch:2:33@u">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="695"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="658.0000000000001"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="695"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="658.0000000000001"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-4" from="BRAS-3:eth3@d" to="metro-switch:2:34@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="724.9999999999999"/>
-        <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="657"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="724.9999999999999"/>
+            <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="657"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-5" from="BRAS-3:eth4@d" to="metro-switch:1:30@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="754.9999999999999"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="583"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="754.9999999999999"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="583"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-6" from="BRAS-3:eth5@d" to="metro-switch:1:28@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="785"/>
-        <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="545.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="785"/>
+            <vertex bundle="brases-metro-u-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="545.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-7" from="BRAS-3:eth6@d" to="metro-switch:2:30@d">
-        <vertex bundle="brases-metro-u-bundle" after="3" distance="815"/>
-        <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="582"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="3" distance="815"/>
+            <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="582"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="metro-rugay-8" from="BRAS-3:eth7@d" to="metro-switch:2:28@d">
-        <vertex bundle="brases-metro-u-bundle" after="4" distance="0"/>
-        <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="544.5"/>
+        <vertices>
+            <vertex bundle="brases-metro-u-bundle" after="4" distance="0"/>
+            <vertex bundle="brases-metro-u-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="544.5"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="metro-vasilisk" from="BRAS-5:xge1@d" to="metro-switch:1:25@u">
-        <vertex bundle="brases-metro-l-bundle" after="3" distance="420"/>
-        <vertex bundle="brases-metro-l-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="506"/>
+        <vertices>
+            <vertex bundle="brases-metro-l-bundle" after="3" distance="420"/>
+            <vertex bundle="brases-metro-l-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="506"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-vasilisk" from="core:2:3@u" to="BRAS-5:xge0@u">
-        <vertex bundle="core-middle-bundle" after="1" distance="103.5"/>
-        <vertex bundle="core-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="2" distance="482"/>
+        <vertices>
+            <vertex bundle="core-middle-bundle" after="1" distance="103.5"/>
+            <vertex bundle="core-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="brases-core-bundle-2" after="1" distance="0"/>
+            <vertex bundle="brases-core-bundle-2" after="2" distance="482"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-manticor" from="core:1:3@u" to="BRAS-6:xge0@u">
-        <vertex bundle="core-upper-bundle" after="1" distance="105.5"/>
-        <vertex bundle="core-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="0" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="3" distance="0"/>
+        <vertices>
+            <vertex bundle="core-upper-bundle" after="1" distance="105.5"/>
+            <vertex bundle="core-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="brases-core-bundle-2" after="0" distance="0"/>
+            <vertex bundle="brases-core-bundle-2" after="3" distance="0"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="metro-manticor" from="BRAS-6:xge1@d" to="metro-switch:2:25@u">
-        <vertex bundle="brases-metro-l-bundle" after="4" distance="0"/>
-        <vertex bundle="brases-metro-l-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="508"/>
+        <vertices>
+            <vertex bundle="brases-metro-l-bundle" after="4" distance="0"/>
+            <vertex bundle="brases-metro-l-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="508"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="core-khvatay" from="core:1:2@d" to="BRAS-4:xge0@u">
-        <vertex bundle="core-middle-bundle" after="1" distance="66"/>
-        <vertex bundle="core-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="1" distance="0"/>
-        <vertex bundle="brases-core-bundle-2" after="2" distance="188.00000000000006"/>
+        <vertices>
+            <vertex bundle="core-middle-bundle" after="1" distance="66"/>
+            <vertex bundle="core-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="brases-core-bundle-2" after="1" distance="0"/>
+            <vertex bundle="brases-core-bundle-2" after="2" distance="188.00000000000006"/>
+        </vertices>
     </link>
 
     <link class="DAC" name="metro-khvatay" from="BRAS-4:xge1@d" to="metro-switch:2:36@d">
-        <vertex bundle="brases-metro-l-bundle" after="3" distance="126.00000000000001"/>
-        <vertex bundle="brases-metro-l-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="694.4999999999999"/>
+        <vertices>
+            <vertex bundle="brases-metro-l-bundle" after="3" distance="126.00000000000001"/>
+            <vertex bundle="brases-metro-l-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="694.4999999999999"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="Rostnet-uplink" from="border:xe0/1/0@u" to="metro-net-patch-panel:6@r">
-        <vertex bundle="border-upper-bundle" after="0" distance="407.75000000000006"/>
-        <vertex bundle="border-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="107.5"/>
+        <vertices>
+            <vertex bundle="border-upper-bundle" after="0" distance="407.75000000000006"/>
+            <vertex bundle="border-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="107.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-rum13" from="metro-switch:1:17@u" to="metro-net-patch-panel:7@r">
-        <vertex bundle="metro-upper-bundle" after="3" distance="356"/>
-        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="122.5"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="356"/>
+            <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="122.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-kram-7" from="metro-switch:1:1@u" to="metro-net-patch-panel:9@r">
-        <vertex bundle="metro-upper-bundle" after="3" distance="55.99999999999998"/>
-        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="152.5"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="55.99999999999998"/>
+            <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="152.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-kant1" from="metro-switch:1:2@d" to="metro-net-patch-panel:11@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="58.000000000000014"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="182.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="58.000000000000014"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="182.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-dvor40" from="metro-switch:1:5@u" to="metro-net-patch-panel:13@r">
-        <vertex bundle="metro-upper-bundle" after="3" distance="131"/>
-        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="212.5"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="131"/>
+            <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="212.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-park59" from="metro-switch:2:5@u" to="metro-net-patch-panel:14@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="133.00000000000003"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="227.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="133.00000000000003"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="227.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-hab32" from="metro-switch:1:12@d" to="metro-net-patch-panel:15@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="245.49999999999994"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="1.073579700837854"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="242.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="245.49999999999994"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="1.073579700837854"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="242.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-byk25" from="metro-switch:2:12@d" to="metro-net-patch-panel:16@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="244.49999999999997"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="257.5"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="244.49999999999997"/>
+            <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="257.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-dvor34" from="metro-switch:1:9@u" to="metro-net-patch-panel:17@r">
-        <vertex bundle="metro-upper-bundle" after="3" distance="206.00000000000003"/>
-        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="272.5"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="206.00000000000003"/>
+            <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="272.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-park51" from="metro-switch:2:9@u" to="metro-net-patch-panel:18@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="208.00000000000003"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="287.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="208.00000000000003"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="287.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-soc51" from="metro-switch:1:10@d" to="metro-net-patch-panel:19@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="207.99999999999997"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="302.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="207.99999999999997"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="302.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="elitline-uplink-1" from="border:xe0/1/3@d" to="metro-net-patch-panel:21@r">
-        <vertex bundle="border-lower-bundle" after="0" distance="445.25"/>
-        <vertex bundle="border-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="106.67177061120124"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="332.5"/>
+        <vertices>
+            <vertex bundle="border-lower-bundle" after="0" distance="445.25"/>
+            <vertex bundle="border-lower-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="106.67177061120124"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="332.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-khmel15" from="metro-switch:1:6@d" to="metro-net-patch-panel:22@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="133"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="347.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="133"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="347.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="Elitline-uplink-2" from="border:xe0/1/4@u" to="ElitLine-patch-panel:3@l">
-        <vertex bundle="border-upper-bundle" after="0" distance="482.75"/>
-        <vertex bundle="border-upper-bundle" after="1" distance="0"/>
-        <vertex x="982" y="32"/>
-        <vertex x="982" y="124"/>
-        <vertex x="1070" y="124"/>
-        <vertex x="1070" y="266.5"/>
+        <vertices>
+            <vertex bundle="border-upper-bundle" after="0" distance="482.75"/>
+            <vertex bundle="border-upper-bundle" after="1" distance="0"/>
+            <vertex x="982" y="32"/>
+            <vertex x="982" y="124"/>
+            <vertex x="1070" y="124"/>
+            <vertex x="1070" y="266.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="Eurotel-uplink" from="border:xe0/1/1@d" to="ElitLine-patch-panel:4@l">
-        <vertex bundle="border-lower-bundle" after="0" distance="407.74999999999994"/>
-        <vertex bundle="border-lower-bundle" after="1" distance="0"/>
-        <vertex x="1048" y="138"/>
-        <vertex x="1048" y="296.5"/>
+        <vertices>
+            <vertex bundle="border-lower-bundle" after="0" distance="407.74999999999994"/>
+            <vertex bundle="border-lower-bundle" after="1" distance="0"/>
+            <vertex x="1048" y="138"/>
+            <vertex x="1048" y="296.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-shkad68-1" from="metro-switch:2:6@d" to="metro-net-patch-panel:23@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="131.99999999999994"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="362.5"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="131.99999999999994"/>
+            <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="362.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-mira6" from="metro-switch:1:7@u" to="metro-net-patch-panel:24@r">
-        <vertex bundle="metro-upper-bundle" after="3" distance="168.49999999999997"/>
-        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="377.5"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="168.49999999999997"/>
+            <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="377.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-shkad68-2" from="metro-switch:2:7@u" to="metro-net-patch-panel:25@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="170.50000000000003"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="392.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="170.50000000000003"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="392.5"/>
+        </vertices>
     </link>
 
     <link class="multifiber-cable" name="metro-net-cable" from="(32, 18)" to="metro-net-patch-panel:u">
@@ -1005,7 +2292,9 @@
             <prop name="start-label">Outer world</prop>
             <prop name="start-marker">arrow</prop>
         </props>
-        <vertex x="187.5" y="18"/>
+        <vertices>
+            <vertex x="187.5" y="18"/>
+        </vertices>
     </link>
 
     <link class="multifiber-cable" name="elitline-cable" from="ElitLine-patch-panel:u" to="(1218, 162)">
@@ -1015,303 +2304,397 @@
             <prop name="mode">single-mode</prop>
             <prop name="n-fibers">4</prop>
         </props>
-        <vertex x="1118.5" y="162"/>
+        <vertices>
+            <vertex x="1118.5" y="162"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-mira9" from="metro-switch:2:8@d" to="metro-net-patch-panel:26@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="169.49999999999994"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="407.5"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="169.49999999999994"/>
+            <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="407.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-marata7" from="metro-switch:1:8@d" to="metro-net-patch-panel:27@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="170.50000000000003"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="422.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="170.50000000000003"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="422.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-len34" from="metro-switch:2:10@d" to="metro-net-patch-panel:28@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="207"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="437.5"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="207"/>
+            <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="437.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-dvor19" from="metro-switch:2:11@u" to="metro-net-patch-panel:30@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="245.49999999999997"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="467.50000000000006"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="245.49999999999997"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="467.50000000000006"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-dnepro2" from="metro-switch:1:13@u" to="metro-net-patch-panel:34@r">
-        <vertex bundle="metro-upper-bundle" after="3" distance="281"/>
-        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="527.5"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="281"/>
+            <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="527.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-yuzh17" from="metro-switch:2:13@u" to="metro-net-patch-panel:35@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="283.00000000000006"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="542.5"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="283.00000000000006"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="542.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-17part2" from="metro-switch:2:14@d" to="metro-net-patch-panel:36@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="282"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="557.5"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="282"/>
+            <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="557.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-centr1" from="metro-switch:1:14@d" to="metro-net-patch-panel:41@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="283.00000000000006"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="22.499999999999947"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="283.00000000000006"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="22.499999999999947"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="upper-mux-common" from="upper-mux:r" to="metro-net-patch-panel:10@r">
-        <vertex bundle="metro-net-bundle" after="2" distance="90.49999999999997"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="167.5"/>
+        <vertices>
+            <vertex bundle="metro-net-bundle" after="2" distance="90.49999999999997"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="167.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="lower-mux-common" from="lower-mux:r" to="metro-net-patch-panel:12@r">
-        <vertex bundle="metro-net-bundle" after="4" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="197.5"/>
+        <vertices>
+            <vertex bundle="metro-net-bundle" after="4" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="197.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-kram27-1" from="metro-switch:2:1@u1" to="upper-mux:11@d">
-        <vertex bundle="metro-middle-bundle" after="3" distance="55.50000000000001"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="30"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="55.50000000000001"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="30"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-kram27-2" from="metro-switch:2:1@u2" to="upper-mux:12@d">
-        <vertex bundle="metro-middle-bundle" after="3" distance="60.500000000000014"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="44.99999999999999"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="60.500000000000014"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="44.99999999999999"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-kram44-1" from="metro-switch:2:4@d1" to="upper-mux:13@d">
-        <vertex bundle="metro-lower-bundle" after="3" distance="91.99999999999999"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="2" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="60.000000000000014"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="91.99999999999999"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="2" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="60.000000000000014"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-kram44-2" from="metro-switch:2:4@d2" to="upper-mux:14@d">
-        <vertex bundle="metro-lower-bundle" after="3" distance="97.00000000000003"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="2" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="75"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="97.00000000000003"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="2" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="75"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-park50-1" from="metro-switch:1:3@u1" to="upper-mux:15@d">
-        <vertex bundle="metro-upper-bundle" after="3" distance="90.99999999999997"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="4" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="89.99999999999999"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="90.99999999999997"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="4" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="89.99999999999999"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-park50-2" from="metro-switch:1:3@u2" to="upper-mux:16@d">
-        <vertex bundle="metro-upper-bundle" after="3" distance="96"/>
-        <vertex bundle="metro-upper-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="4" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="105"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="96"/>
+            <vertex bundle="metro-upper-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="4" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="105"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-park91-1" from="metro-switch:2:2@d1" to="lower-mux:17@u">
-        <vertex bundle="metro-lower-bundle" after="3" distance="54.50000000000002"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="2" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="0"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="54.50000000000002"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="2" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="0"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-park91-2" from="metro-switch:2:2@d2" to="lower-mux:18@u">
-        <vertex bundle="metro-lower-bundle" after="3" distance="59.50000000000002"/>
-        <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="2" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="14.999999999999995"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="59.50000000000002"/>
+            <vertex bundle="metro-lower-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="2" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="14.999999999999995"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-yub23-1" from="metro-switch:2:3@u1" to="lower-mux:19@u">
-        <vertex bundle="metro-middle-bundle" after="3" distance="92.99999999999997"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="30.000000000000007"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="92.99999999999997"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="30.000000000000007"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-yub23-2" from="metro-switch:2:3@u2" to="lower-mux:20@u">
-        <vertex bundle="metro-middle-bundle" after="3" distance="98"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="45.00000000000001"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="98"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="45.00000000000001"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-yub25-1" from="metro-switch:1:4@d1" to="lower-mux:21@u">
-        <vertex bundle="metro-middle-bundle" after="3" distance="93.00000000000001"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="60.000000000000014"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="93.00000000000001"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="60.000000000000014"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-yub25-2" from="metro-switch:1:4@d2" to="lower-mux:22@u">
-        <vertex bundle="metro-middle-bundle" after="3" distance="98"/>
-        <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="3" distance="0"/>
-        <vertex bundle="mux-bundle" after="0" distance="75"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="98"/>
+            <vertex bundle="metro-middle-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="3" distance="0"/>
+            <vertex bundle="mux-bundle" after="0" distance="75"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-x-mit5" from="mit4-media-converter:f@u" to="metro-net-patch-panel:32@r">
-        <vertex bundle="metro-lower-bundle" after="3" distance="715.875"/>
-        <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="497.5"/>
+        <vertices>
+            <vertex bundle="metro-lower-bundle" after="3" distance="715.875"/>
+            <vertex bundle="metro-lower-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="497.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-metrox" from="metro-switch:2:20@d" to="metro-x:26@l">
-        <vertex x="779.5" y="882"/>
-        <vertex x="889" y="882"/>
-        <vertex x="889" y="962.25"/>
+        <vertices>
+            <vertex x="779.5" y="882"/>
+            <vertex x="889" y="882"/>
+            <vertex x="889" y="962.25"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-mit1" from="metro-switch:1:15@u" to="metro-net-patch-panel:31@r">
-        <vertex bundle="metro-upper-bundle" after="3" distance="318.5"/>
-        <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="1" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="482.5"/>
+        <vertices>
+            <vertex bundle="metro-upper-bundle" after="3" distance="318.5"/>
+            <vertex bundle="metro-upper-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="1" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="482.5"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="metro-vozn16" from="metro-switch:2:15@u" to="metro-net-patch-panel:5@r">
-        <vertex bundle="metro-middle-bundle" after="3" distance="320.5"/>
-        <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="2" distance="0"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="92.49999999999999"/>
+        <vertices>
+            <vertex bundle="metro-middle-bundle" after="3" distance="320.5"/>
+            <vertex bundle="metro-middle-bundle" after="0" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="2" distance="0"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="92.49999999999999"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-277195c6-1afd-46c1-b81f-f923cef33fa8" from="metro-x:21@r" to="mit4-media-converter:c@d">
-        <vertex x="853" y="933.75"/>
-        <vertex x="853" y="996"/>
-        <vertex x="1100.875" y="996"/>
+        <vertices>
+            <vertex x="853" y="933.75"/>
+            <vertex x="853" y="996"/>
+            <vertex x="1100.875" y="996"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="sm-patch-cord-60268641-91c8-4b05-a034-dad3f1187980" from="Telecom-E1-Multiplexer:tx@u" to="metro-net-patch-panel:3@r">
-        <vertex x="305.875" y="933.6938696744514"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="79.69386967445146"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="62.50000000000001"/>
+        <vertices>
+            <vertex x="305.875" y="933.6938696744514"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="79.69386967445146"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="62.50000000000001"/>
+        </vertices>
     </link>
 
     <link class="sm-patch-cord" name="sm-patch-cord-8929a7b8-818a-4f77-87e4-86248aa3d7f1" from="Telecom-E1-Multiplexer:rx@u" to="metro-net-patch-panel:4@r">
-        <vertex x="330.875" y="915.3634369207979"/>
-        <vertex bundle="metro-net-bundle" after="3" distance="61.36343692079783"/>
-        <vertex bundle="metro-net-bundle" after="0" distance="77.5"/>
+        <vertices>
+            <vertex x="330.875" y="915.3634369207979"/>
+            <vertex bundle="metro-net-bundle" after="3" distance="61.36343692079783"/>
+            <vertex bundle="metro-net-bundle" after="0" distance="77.5"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-7cac6b33-ead9-4ff9-b305-f36b53b2cc9a" from="office-switch:50@r" to="metro-x:25@r">
-        <vertex x="1036" y="1089.25"/>
-        <vertex x="1036" y="1011"/>
-        <vertex x="985" y="1011"/>
-        <vertex x="985" y="933.75"/>
+        <vertices>
+            <vertex x="1036" y="1089.25"/>
+            <vertex x="1036" y="1011"/>
+            <vertex x="985" y="1011"/>
+            <vertex x="985" y="933.75"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-79862d29-452d-4400-8760-4f86e64528f6" from="MailServer:eth0@d" to="office-switch:51@u">
-        <vertex x="1279" y="1011"/>
-        <vertex x="1055" y="1011"/>
+        <vertices>
+            <vertex x="1279" y="1011"/>
+            <vertex x="1055" y="1011"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-b16e0050-cff4-4c86-b027-07d0a4786fd9" from="core:1:10@d" to="MailServer:eth1@u">
-        <vertex bundle="core-middle-bundle" after="1" distance="215.99999999999997"/>
-        <vertex bundle="core-middle-bundle" after="2" distance="0"/>
-        <vertex x="1026" y="388"/>
-        <vertex x="1196" y="388"/>
-        <vertex x="1196" y="652"/>
-        <vertex x="1378" y="652"/>
-        <vertex x="1378" y="889"/>
-        <vertex x="1279" y="889"/>
+        <vertices>
+            <vertex bundle="core-middle-bundle" after="1" distance="215.99999999999997"/>
+            <vertex bundle="core-middle-bundle" after="2" distance="0"/>
+            <vertex x="1026" y="388"/>
+            <vertex x="1196" y="388"/>
+            <vertex x="1196" y="652"/>
+            <vertex x="1378" y="652"/>
+            <vertex x="1378" y="889"/>
+            <vertex x="1279" y="889"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-77bb6218-256f-4ce8-9402-e879d3984353" from="VoIP-Server:eth0@d" to="office-switch:52@d">
-        <vertex x="1279" y="1131"/>
-        <vertex x="1055" y="1131"/>
+        <vertices>
+            <vertex x="1279" y="1131"/>
+            <vertex x="1055" y="1131"/>
+        </vertices>
     </link>
 
     <link class="twisted-pair" name="twisted-pair-39785ac6-fdfe-4e6c-acb6-2fb2e9ea035c" from="VoIP-Server:w1g1@u" to="Telecom-E1-Multiplexer:c1@d">
-        <vertex x="1279" y="1026"/>
-        <vertex x="831" y="1026"/>
-        <vertex x="831" y="997"/>
-        <vertex x="362.125" y="997"/>
+        <vertices>
+            <vertex x="1279" y="1026"/>
+            <vertex x="831" y="1026"/>
+            <vertex x="831" y="997"/>
+            <vertex x="362.125" y="997"/>
+        </vertices>
     </link>
 
     <link-bundle class="link-bundle" name="metro-upper-bundle" from="(264, 672)" to="(1230, 672)">
-        <vertex x="322" y="672"/>
-        <vertex x="350" y="672"/>
-        <vertex x="386" y="672"/>
+        <vertices>
+            <vertex x="322" y="672"/>
+            <vertex x="350" y="672"/>
+            <vertex x="386" y="672"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="metro-middle-bundle" from="(264, 774)" to="(1230, 774)">
-        <vertex x="323" y="774"/>
-        <vertex x="350" y="774"/>
-        <vertex x="384" y="774"/>
+        <vertices>
+            <vertex x="323" y="774"/>
+            <vertex x="350" y="774"/>
+            <vertex x="384" y="774"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="metro-lower-bundle" from="(264, 873)" to="(1230, 873)">
-        <vertex x="323" y="873"/>
-        <vertex x="350" y="873"/>
-        <vertex x="385" y="873"/>
+        <vertices>
+            <vertex x="323" y="873"/>
+            <vertex x="350" y="873"/>
+            <vertex x="385" y="873"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="brases-metro-u-bundle" from="(306, 855)" to="(1151, 520)">
-        <vertex x="306" y="754"/>
-        <vertex x="306" y="656"/>
-        <vertex x="306" y="520"/>
+        <vertices>
+            <vertex x="306" y="754"/>
+            <vertex x="306" y="656"/>
+            <vertex x="306" y="520"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="AOC-bundle" name="core-border-bundle" from="(422, 154)" to="(820, 365)">
-        <vertex x="820" y="154"/>
+        <vertices>
+            <vertex x="820" y="154"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="core-upper-bundle" from="(284, 200)" to="(532, 200)">
-        <vertex x="314" y="200"/>
+        <vertices>
+            <vertex x="314" y="200"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="core-lower-bundle" from="(320, 400)" to="(384, 400)"/>
 
     <link-bundle class="AOC-bundle" name="prov1-uplink-fan" from="border:et0/0/0@d" to="(1042, 90)">
-        <vertex x="346.5" y="166"/>
-        <vertex x="1026" y="166"/>
-        <vertex x="1026" y="90"/>
+        <vertices>
+            <vertex x="346.5" y="166"/>
+            <vertex x="1026" y="166"/>
+            <vertex x="1026" y="90"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="DAC-bundle" name="brases-core-bundle" from="(296, 216)" to="(1046, 412)">
-        <vertex x="296" y="322"/>
-        <vertex x="296" y="412"/>
+        <vertices>
+            <vertex x="296" y="322"/>
+            <vertex x="296" y="412"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="core-middle-bundle" from="(284, 302)" to="(1026, 302)">
-        <vertex x="316" y="302"/>
+        <vertices>
+            <vertex x="316" y="302"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="DAC-bundle" name="brases-metro-l-bundle" from="(332, 855)" to="(1046, 636)">
-        <vertex x="332" y="754"/>
-        <vertex x="332" y="654"/>
-        <vertex x="332" y="636"/>
+        <vertices>
+            <vertex x="332" y="754"/>
+            <vertex x="332" y="654"/>
+            <vertex x="332" y="636"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="DAC-bundle" name="brases-core-bundle-2" from="(270, 214)" to="(1046, 530)">
-        <vertex x="270" y="320"/>
-        <vertex x="270" y="530"/>
+        <vertices>
+            <vertex x="270" y="320"/>
+            <vertex x="270" y="530"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="metro-net-bundle" from="(250, 46)" to="(250, 946)">
-        <vertex x="250" y="656"/>
-        <vertex x="250" y="759"/>
-        <vertex x="250" y="854"/>
+        <vertices>
+            <vertex x="250" y="656"/>
+            <vertex x="250" y="759"/>
+            <vertex x="250" y="854"/>
+        </vertices>
     </link-bundle>
 
     <link-bundle class="link-bundle" name="border-upper-bundle" from="(266, 32)" to="(982, 32)"/>
@@ -1319,9 +2702,11 @@
     <link-bundle class="link-bundle" name="border-lower-bundle" from="(266, 138)" to="(1048, 138)"/>
 
     <link-bundle class="link-bundle" name="mux-bundle" from="(53, 898)" to="(368, 688)">
-        <vertex x="368" y="898"/>
-        <vertex x="368" y="888"/>
-        <vertex x="368" y="788"/>
+        <vertices>
+            <vertex x="368" y="898"/>
+            <vertex x="368" y="888"/>
+            <vertex x="368" y="788"/>
+        </vertices>
     </link-bundle>
 
 </kresmer-drawing>

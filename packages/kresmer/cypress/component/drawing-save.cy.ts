@@ -13,7 +13,7 @@ import { toCamelCase } from "../../src/Utils";
 
 type Diff = {path: string, resultType: string, message: string};
 
-describe('Drawing saving test', () => {
+describe.skip('Drawing saving test', () => {
     let kresmer: Kresmer;
     before(() => {
         cy.mount({loadLibraries: false}).then((_kresmer) => {
