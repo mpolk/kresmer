@@ -38,6 +38,7 @@
     "postversion:patch": "export TAG=$(git tag --sort=v:refname | tail -1) && git commit -a --amend -m $TAG && git tag -f $TAG"
   },
   "build": {
+    "extraMetadata": {"name": "kresmer"},
     "appId": "kresmer",
     "productName": "Kresmer",
     "asar": true,

@@ -1,3 +1,7 @@
+## 0.16.2
+
+Another "private" release. Linux packages renamed from "e-kresmer" to just "kresmer".
+
 ## 0.16.1
 
 This is a "private" release, which is not intended to be published. It contains a breaking change (see below), which will be published with the next quasi-major release (0.17) together with the Drawing Areas implementation.
