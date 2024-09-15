@@ -19,6 +19,8 @@ import { StreetAddressFormat, LibDataPriority } from 'kresmer';
 import i18next from 'i18next';
 import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
 
+app.setName("kresmer");
+
 export type AppSettings = {
     server: {url: string, password: string, autoConnect: boolean},
     libDirs: string[],

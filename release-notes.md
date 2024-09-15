@@ -1,3 +1,7 @@
+## 0.16.3
+
+One more "private" release. Electron app also renamed from "e-kresmer" to just "kresmer".
+
 ## 0.16.2
 
 Another "private" release. Linux packages renamed from "e-kresmer" to just "kresmer".
