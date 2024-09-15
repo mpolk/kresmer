@@ -1,7 +1,7 @@
 {
   "name": "e-kresmer",
   "private": true,
-  "version": "0.16.1",
+  "version": "0.16.2",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "main": "dist/main/main.js",
@@ -38,7 +38,9 @@
     "postversion:patch": "export TAG=$(git tag --sort=v:refname | tail -1) && git commit -a --amend -m $TAG && git tag -f $TAG"
   },
   "build": {
-    "extraMetadata": {"name": "kresmer"},
+    "extraMetadata": {
+      "name": "kresmer"
+    },
     "appId": "kresmer",
     "productName": "Kresmer",
     "asar": true,
