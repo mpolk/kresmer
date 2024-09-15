@@ -1,3 +1,13 @@
+## 0.16.1
+
+This is a "private" release, which is not intended to be published. It contains a breaking change (see below), which will be published with the next quasi-major release (0.17) together with the Drawing Areas implementation.
+
+- ***Breaking change***: The format of the link objects in the drawing (.kre) files changed. Now ```<vertex>``` tags are not scattered directly in the ```<link>``` container, but are grouped in the ```<vertices>``` container element. Kresmer still accepts the old format, but the drawings saved with the version will be read incorrectly by the previous versions (all inner vertices will be lost).
+
+- Drawing Areas implementation in progress
+
+- "Library data priority" switch, which determines the choice between the system-provided library element and the similar embedded one when both exists, is now actually implemented.
+
 ## 0.16.0
 
 Now Kresmer core-component can connect to the backend server and load the libraries and the drawing upon construction if the corresponding initialization parameters are provided, i.e.:
