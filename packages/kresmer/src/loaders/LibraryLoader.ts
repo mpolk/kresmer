@@ -6,7 +6,7 @@
  *        A loader for drawing element class libraries
 \**************************************************************************/
 
-import Kresmer from "../Kresmer";
+import Kresmer, { LibDataPriority } from "../Kresmer";
 import {Root as PostCSSRoot, Rule as PostCSSRule} from 'postcss';
 import LibraryParser, { DefsLibNode, ImportStatement, LibParams, LibraryParsingException, 
     NetworkComponentClassTranslation, NetworkLinkClassTranslation, DrawingAreaClassTranslation, StyleLibNode } from "./LibraryParser";
@@ -147,22 +147,25 @@ export default class LibraryLoader
         for (const element of parser.parseLibraryNode(root)) {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
-                this.kresmer.registerNetworkComponentClass(element);
+                if (this.shouldOverrideWithEmbedded(NetworkComponentClass.getClass(element.name), element))
+                    this.kresmer.registerNetworkComponentClass(element);
 
             } else if (element instanceof NetworkLinkClass) {
-                this.kresmer.registerLinkClass(element);
+                if (this.shouldOverrideWithEmbedded(NetworkLinkClass.getClass(element.name), element))
+                    this.kresmer.registerLinkClass(element);
 
             } else if (element instanceof DrawingAreaClass) {
-                this.kresmer.registerAreaClass(element);
+                if (this.shouldOverrideWithEmbedded(DrawingAreaClass.getClass(element.name), element))
+                    this.kresmer.registerAreaClass(element);
 
             } else if (element instanceof DefsLibNode) {
-                if (!this.kresmer.globalDefs.has(element.name) || this.kresmer.globalDefs.get(element.name)!.version < element.version) {
+                if (this.shouldOverrideWithEmbedded(this.kresmer.globalDefs.get(element.name), element)) {
                     this.kresmer.globalDefs.set(element.name, element);
                     this.kresmer.app.component(`GlobalDefs${this.kresmer.globalDefs.size - 1}`, {template: element.data});
                 }//if
 
             } else if (element instanceof StyleLibNode) {
-                if (!this.kresmer.globalStyles.has(element.name) || this.kresmer.globalStyles.get(element.name)!.version < element.version) {
+                if (this.shouldOverrideWithEmbedded(this.kresmer.globalStyles.get(element.name), element)) {
                     this.kresmer.globalStyles.set(element.name, 
                         {data: this.scopeStyles(element.data, undefined, false), version: element.version, sourceCode: element.sourceCode});
                 }//if
@@ -172,6 +175,18 @@ export default class LibraryLoader
             }//if
         }//for
     }//loadEmbeddedLibrary
+
+
+    /** Checks whether the existing library element should be overridden with the similar element from the embedded library */
+    private shouldOverrideWithEmbedded(oldLibElement: {version: number}|undefined, newLibElement: {version: number}): boolean
+    {
+        if (!oldLibElement || this.kresmer.libDataPriority === LibDataPriority.preferEmbedded)
+            return true;
+        if (this.kresmer.libDataPriority === LibDataPriority.preferSystem)
+            return false;
+        return newLibElement.version > oldLibElement.version;
+    }//shouldOverrideWithEmbedded
+
 
     /**
      * Loads library translation data from XML and applies the translation to the registered classes
