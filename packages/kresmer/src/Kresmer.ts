@@ -35,7 +35,7 @@ import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVerti
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
-import DrawingArea, { DrawingAreaMap, AddAreaOp } from "./DrawingArea/DrawingArea";
+import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
@@ -1409,7 +1409,23 @@ export default class Kresmer extends KresmerEventHooks {
             ]});
             this.undoStack.execAndCommit(new AddAreaOp(newArea));
         },//createArea
-    
+
+        /**
+         * Deletes an Area using an undoable editor operation
+         * @param areaID A an ID of the Area to delete
+         */
+        deleteArea: (areaID: number) =>
+        {
+            const area = this.getAreaById(areaID);
+            if (!area) {
+                console.error(`Attempt to delete non-existent area (id=${areaID})`);
+                return;
+            }//if
+            area.isSelected = false;
+            area.returnFromTop();
+            this.undoStack.execAndCommit(new DeleteAreaOp(area));
+        },//deleteArea
+        
         /**
          * Adds an area vertex
          * @param areaID The area this vertex belongs

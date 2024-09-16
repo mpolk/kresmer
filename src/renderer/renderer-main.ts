@@ -24,6 +24,7 @@ import Kresmer, {
     TransformMode, ConnectionPointProxy,
     // KresmerVue,
     kresmerPlugin,
+    DrawingArea,
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
 import MessageBox from './message-box.vue';
@@ -308,6 +309,13 @@ kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) =>
     // window.electronAPI.enableLinkOpMenuItems(isSelected);
 });//onLinkSelected
 
+kresmer.on("area-selected", (area: DrawingArea, isSelected: boolean) => 
+{
+    statusBarData.selectedElement = isSelected ? area : null;
+    window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
+    // window.electronAPI.enableLinkOpMenuItems(isSelected);
+});//onAreaSelected
+    
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>
 {
     window.electronAPI.showContextMenu("link", link.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
@@ -494,6 +502,8 @@ appCommandExecutor.on("delete-selected-element", () =>
         kresmer.edAPI.deleteComponent(kresmer.selectedElement.id);
     } else if (kresmer.selectedElement instanceof NetworkLink) {
         kresmer.edAPI.deleteLink(kresmer.selectedElement.id);
+    } else if (kresmer.selectedElement instanceof DrawingArea) {
+        kresmer.edAPI.deleteArea(kresmer.selectedElement.id);
     }//if
 });//deleteSelectedElement
 
