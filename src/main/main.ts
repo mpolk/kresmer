@@ -19,6 +19,9 @@ import { StreetAddressFormat, LibDataPriority } from 'kresmer';
 import i18next from 'i18next';
 import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
 
+// We should set the app name explicitly to override the name "e-kresmer" specified in "package.json".
+// Which in turn should be set to differentiate the root package from the core-component package
+// that is also name "kresmer".
 app.setName("kresmer");
 
 export type AppSettings = {

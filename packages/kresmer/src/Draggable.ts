@@ -82,8 +82,10 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
             const effectiveMove = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
     
             if (this.isGoingToBeDragged) {
-                if (Math.hypot(effectiveMove.x, effectiveMove.y) < 2)
+                if (Math.hypot(effectiveMove.x, effectiveMove.y) < 2) {
+                    MouseEventCapture.release();
                     return false;
+                }//if
                 this.isGoingToBeDragged = false;
                 this.isDragged = true;
                 this.kresmer._allLinksFreezed = true;

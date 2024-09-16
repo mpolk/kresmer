@@ -13,6 +13,7 @@
     import DrawingElement from '../DrawingElement/DrawingElement';
     import DrawingVertexVue from './AreaVertex.vue';
     import AreaVertex from './AreaVertex';
+    import MouseEventCapture from '../MouseEventCapture';
     
     export default {
         components: { DrawingVertexVue }
@@ -27,7 +28,7 @@
         highlightColor: {type: String, required: false},
     });
 
-    const mouseCaptureTaget = ref<SVGElement>();
+    const mouseCaptureTarget = ref<SVGElement>();
 
     // eslint-disable-next-line vue/no-setup-props-destructure
     provide(DrawingElement.ikHostElement, props.model);
@@ -37,7 +38,7 @@
     onBeforeMount(props.model.initVertices);
     onMounted(() => {
         // eslint-disable-next-line vue/no-mutating-props
-        props.model.mouseCaptureTarget = mouseCaptureTaget.value!;
+        props.model.mouseCaptureTarget = mouseCaptureTarget.value!;
         props.model.updateConnectionPoints();
     });
 
@@ -134,6 +135,9 @@
             props.model.returnFromTop();
             return;
         }//if
+
+        MouseEventCapture.release();
+        props.model.selectThis();
     }//onMouseUp
 
     function onMouseMove(event: MouseEvent)
@@ -146,7 +150,7 @@
 
 <template>
     <g :class="areaClass">
-        <path :d="path" :class="areaClass" :style="areaStyle" ref="mouseCaptureTaget"
+        <path :d="path" :class="areaClass" :style="areaStyle" ref="mouseCaptureTarget"
             @mousedown.stop="onMouseDown($event)"
             @mouseup.stop="onMouseUp($event)"
             @mousemove.stop.prevent="onMouseMove($event)"
