@@ -346,121 +346,86 @@ class AreaMoveOp extends EditorOperation {
 }//AreaMoveOp
 
 
-// export class AreaDeleteOp extends EditorOperation {
+export class AreaMoveUpOp extends EditorOperation {
 
-//     constructor(private controller: NetworkComponentController) 
-//     {
-//         super();
-//     }//ctor
+    constructor(private area: DrawingArea) 
+    {
+        super();
+    }//ctor
 
-//     private detachedVertices = new Map<LinkVertex, string|number>();
+    override exec(): void {
+        this.area.returnFromTop();
+        this.area.kresmer.areas.moveItemUp(this.area);
+    }//exec
 
-//     override exec(): void {
-//         this.controller.kresmer.links.forEach(link => {
-//             link.vertices.forEach(vertex => {
-//                 if (vertex.isConnected && vertex.anchor.conn!.hostElement === this.controller.component) {
-//                     this.detachedVertices.set(vertex, vertex.anchor.conn!.name);
-//                     vertex.detach();
-//                 }//if
-//             })//vertices
-//         })//links
+    override undo(): void {
+        this.area.returnFromTop();
+        this.area.kresmer.areas.moveItemDown(this.area);
+    }//undo
 
-//         this.controller.kresmer.deleteArea(this.controller);
-//     }//exec
-
-//     override undo(): void {
-//         this.controller.kresmer.addPositionedNetworkComponent(this.controller);
-//         nextTick(() => {
-//             this.controller.updateConnectionPoints();
-//             this.detachedVertices.forEach((connectionPointName, vertex) => {
-//                 vertex.connect(this.controller.component.getConnectionPoint(connectionPointName)!);
-//             });
-//         });
-//     }//undo
-
-// }//AreaDeleteOp
+}//AreaMoveUpOp
 
 
-// export class AreaMoveUpOp extends EditorOperation {
+export class AreaMoveToTopOp extends EditorOperation {
 
-//     constructor(private controller: NetworkComponentController) 
-//     {
-//         super();
-//     }//ctor
+    constructor(private area: DrawingArea) 
+    {
+        super();
+    }//ctor
 
-//     override exec(): void {
-//         this.controller.returnFromTop();
-//         this.controller.kresmer.networkComponents.moveItemUp(this.controller);
-//     }//exec
+    private savedZIndex = 0;
 
-//     override undo(): void {
-//         this.controller.returnFromTop();
-//         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
-//     }//undo
+    override exec(): void {
+        this.area.returnFromTop();
+        this.savedZIndex = this.area.zIndex;
+        this.area.kresmer.areas.moveItemToTop(this.area);
+    }//exec
 
-// }//AreaMoveUpOp
+    override undo(): void {
+        this.area.returnFromTop();
+        this.area.kresmer.areas.moveItemTo(this.area, this.savedZIndex);
+    }//undo
 
+}//AreaMoveToTopOp
 
-// export class AreaMoveToTopOp extends EditorOperation {
+export class AreaMoveDownOp extends EditorOperation {
 
-//     constructor(private controller: NetworkComponentController) 
-//     {
-//         super();
-//     }//ctor
+    constructor(private area: DrawingArea) 
+    {
+        super();
+    }//ctor
 
-//     private savedZIndex = 0;
+    override exec(): void {
+        this.area.returnFromTop();
+        this.area.kresmer.areas.moveItemDown(this.area);
+    }//exec
 
-//     override exec(): void {
-//         this.controller.returnFromTop();
-//         this.savedZIndex = this.controller.zIndex;
-//         this.controller.kresmer.networkComponents.moveItemToTop(this.controller);
-//     }//exec
+    override undo(): void {
+        this.area.returnFromTop();
+        this.area.kresmer.areas.moveItemUp(this.area);
+    }//undo
 
-//     override undo(): void {
-//         this.controller.returnFromTop();
-//         this.controller.kresmer.networkComponents.moveItemTo(this.controller, this.savedZIndex);
-//     }//undo
-
-// }//AreaMoveToTopOp
-
-// export class AreaMoveDownOp extends EditorOperation {
-
-//     constructor(private controller: NetworkComponentController) 
-//     {
-//         super();
-//     }//ctor
-
-//     override exec(): void {
-//         this.controller.returnFromTop();
-//         this.controller.kresmer.networkComponents.moveItemDown(this.controller);
-//     }//exec
-
-//     override undo(): void {
-//         this.controller.returnFromTop();
-//         this.controller.kresmer.networkAreas.moveItemUp(this.controller);
-//     }//undo
-
-// }//AreaMoveDownOp
+}//AreaMoveDownOp
 
 
-// export class AreaMoveToBottomOp extends EditorOperation {
+export class AreaMoveToBottomOp extends EditorOperation {
 
-//     constructor(private controller: NetworkAreaController) 
-//     {
-//         super();
-//     }//ctor
+    constructor(private area: DrawingArea) 
+    {
+        super();
+    }//ctor
 
-//     private savedZIndex = 0;
+    private savedZIndex = 0;
 
-//     override exec(): void {
-//         this.controller.returnFromTop();
-//         this.savedZIndex = this.controller.zIndex;
-//         this.controller.kresmer.networkAreas.moveItemToBottom(this.controller);
-//     }//exec
+    override exec(): void {
+        this.area.returnFromTop();
+        this.savedZIndex = this.area.zIndex;
+        this.area.kresmer.areas.moveItemToBottom(this.area);
+    }//exec
 
-//     override undo(): void {
-//         this.controller.returnFromTop();
-//         this.controller.kresmer.networkComponents.moveItemTo(this.controller, this.savedZIndex);
-//     }//undo
+    override undo(): void {
+        this.area.returnFromTop();
+        this.area.kresmer.areas.moveItemTo(this.area, this.savedZIndex);
+    }//undo
 
-// }//AreaMoveToBottomOp
+}//AreaMoveToBottomOp

@@ -137,19 +137,23 @@ export function initIpcMainHooks()
     });
 
     IpcMainHooks.on('enable-component-op-menu-items', (enabled: boolean) => {
-        modifyMenuItemFlags(/* "delete-component", */ "duplicate-component", "transform-component")({enabled});
+        modifyMenuItemFlags(/* "delete-component", */ "duplicate-selected-element", "transform-component")({enabled});
     });
 
     // IpcMainHooks.on('enable-link-op-menu-items', (enable: boolean) => {
     //     // Menu.getApplicationMenu()!.getMenuItemById("delete-link")!.enabled = enable;
     // });
 
-    IpcMainHooks.on('enable-move-component-up-menu-items', (enabled: boolean) => {
-        modifyMenuItemFlags("move-component-up", "move-component-to-top")({enabled});
+    IpcMainHooks.on('enable-area-op-menu-items', (enabled: boolean) => {
+        modifyMenuItemFlags(/* "delete-area", */ "duplicate-selected-element")({enabled});
     });
 
-    IpcMainHooks.on('enable-move-component-down-menu-items', (enabled: boolean) => {
-        modifyMenuItemFlags("move-component-down", "move-component-to-bottom")({enabled});
+    IpcMainHooks.on('enable-move-element-up-menu-items', (enabled: boolean) => {
+        modifyMenuItemFlags("move-selected-element-up", "move-selected-element-to-top")({enabled});
+    });
+
+    IpcMainHooks.on('enable-move-element-down-menu-items', (enabled: boolean) => {
+        modifyMenuItemFlags("move-selected-element-down", "move-selected-element-to-bottom")({enabled});
     });
 
     IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {

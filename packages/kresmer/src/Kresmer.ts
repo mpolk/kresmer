@@ -35,7 +35,7 @@ import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVerti
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
-import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp } from "./DrawingArea/DrawingArea";
+import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
@@ -1182,6 +1182,10 @@ export default class Kresmer extends KresmerEventHooks {
             this.undoStack.execAndCommit(new ComponentAddOp(controller));
         },//createComponent
 
+        /**
+         * Creates a new component using the original as a prototype
+         * @param original The component to duplicate
+         */
         duplicateComponent: (original: NetworkComponentController) =>
         {
             let name: string;
@@ -1410,6 +1414,54 @@ export default class Kresmer extends KresmerEventHooks {
             this.undoStack.execAndCommit(new AddAreaOp(newArea));
         },//createArea
 
+        /**
+         * Creates a new area using the original as a prototype
+         * @param original The area to duplicate
+         */
+        duplicateArea: (original: DrawingArea) =>
+        {
+            let name: string;
+            for (let n = 1; (name = `${original.name}.${n}`) && this.areasByName.has(name); n++) {/**/}
+            const props = clone(original.props);
+            const vertices = original.vertices.map(v => {
+                return {pos: {x: v.anchor.pos.x + 20, y: v.anchor.pos.y + 20}, geometry: v.geometry}
+            });
+            const newArea = new DrawingArea(this, original.getClass(), {name, props, vertices});
+            this.undoStack.execAndCommit(new AddAreaOp(newArea));
+        },//duplicateArea
+
+        /**
+         * Move area one step up in z-order
+         * @param area An area to move
+         */
+        moveAreaUp: (area: DrawingArea) => {
+            this.undoStack.execAndCommit(new AreaMoveUpOp(area));
+        },//moveAreaUp
+
+        /**
+         * Move area to the top in z-order
+         * @param area An area to move
+         */
+        moveAreaToTop: (area: DrawingArea) => {
+            this.undoStack.execAndCommit(new AreaMoveToTopOp(area));
+        },//moveAreaToTop
+
+        /**
+         * Move area one step down in z-order
+         * @param area An area to move
+         */
+        moveAreaDown: (area: DrawingArea) => {
+            this.undoStack.execAndCommit(new AreaMoveDownOp(area));
+        },//moveAreaUp
+
+        /**
+         * Move area to the bottom in z-order
+         * @param area An area to move
+         */
+        moveAreaToBottom: (area: DrawingArea) => {
+            this.undoStack.execAndCommit(new AreaMoveToBottomOp(area));
+        },//moveAreaToBottom
+    
         /**
          * Deletes an Area using an undoable editor operation
          * @param areaID A an ID of the Area to delete
@@ -1732,3 +1784,4 @@ export {default as KresmerParsingException} from "./loaders/ParsingException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPoint";
 export type {DrawingMergeOptions} from "./loaders/DrawingLoader";
 export {BackgroundImageData, BackgroundImageAlignment} from "./BackgroundImageData";
+export {type KresmerEvent} from "./KresmerEventHooks";

@@ -298,8 +298,8 @@ kresmer.on("component-selected", (component: NetworkComponent, isSelected: boole
     statusBarData.selectedElement = isSelected ? component : null;
     window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
     window.electronAPI.enableComponentOpMenuItems(isSelected);
-    window.electronAPI.enableMoveComponentUpMenuItems(isSelected && !kresmer.networkComponents.isOnTop(component.controller!));
-    window.electronAPI.enableMoveComponentDownMenuItems(isSelected && !kresmer.networkComponents.isOnBottom(component.controller!));
+    window.electronAPI.enableMoveElementUpMenuItems(isSelected && !kresmer.networkComponents.isOnTop(component.controller!));
+    window.electronAPI.enableMoveElementDownMenuItems(isSelected && !kresmer.networkComponents.isOnBottom(component.controller!));
 });//onComponentSelected
 
 kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) => 
@@ -313,7 +313,9 @@ kresmer.on("area-selected", (area: DrawingArea, isSelected: boolean) =>
 {
     statusBarData.selectedElement = isSelected ? area : null;
     window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
-    // window.electronAPI.enableLinkOpMenuItems(isSelected);
+    window.electronAPI.enableAreaOpMenuItems(isSelected);
+    window.electronAPI.enableMoveElementUpMenuItems(isSelected && !kresmer.areas.isOnTop(area));
+    window.electronAPI.enableMoveElementDownMenuItems(isSelected && !kresmer.areas.isOnBottom(area));
 });//onAreaSelected
     
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>
@@ -518,13 +520,40 @@ appCommandExecutor.on("duplicate-component", (componentID?: number) =>
     kresmer.edAPI.duplicateComponent(controller);
 });//duplicateComponent
 
+appCommandExecutor.on("duplicate-selected-element", (elementID?: number) =>
+{
+    if (kresmer.selectedElement instanceof NetworkComponent) {
+        const controller = kresmer.getComponentControllerById(elementID ?? kresmer.selectedElement!.id)!;
+        kresmer.edAPI.duplicateComponent(controller);
+    } else if (kresmer.selectedElement instanceof DrawingArea) {
+        const area = kresmer.getAreaById(elementID ?? kresmer.selectedElement!.id)!;
+        kresmer.edAPI.duplicateArea(area);
+    }//if
+});//duplicateComponent
+    
+function moveSelectedElementInZOrder(direction: string)
+{
+    return () => {
+        if (kresmer.selectedElement instanceof NetworkComponent) {
+            appCommandExecutor.execute(`move-component-${direction}`);
+        } else if (kresmer.selectedElement instanceof DrawingArea) {
+            appCommandExecutor.execute(`move-area-${direction}`);
+        }//if
+    }
+}//moveSelectedElementInZOrder
+
+appCommandExecutor.on("move-selected-element-down", moveSelectedElementInZOrder("down"));
+appCommandExecutor.on("move-selected-element-to-bottom", moveSelectedElementInZOrder("to-bottom"));
+appCommandExecutor.on("move-selected-element-up", moveSelectedElementInZOrder("up"));
+appCommandExecutor.on("move-selected-element-to-top", moveSelectedElementInZOrder("to-top"));
+    
 function moveComponentInZOrder(moveMethod: (controller: NetworkComponentController) => void)
 {
     return (componentID?: number) => {
         const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
         moveMethod(controller);
-        window.electronAPI.enableMoveComponentUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
-        window.electronAPI.enableMoveComponentDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
+        window.electronAPI.enableMoveElementUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
+        window.electronAPI.enableMoveElementDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
     }
 }//moveComponentInZOrder
 
@@ -623,6 +652,21 @@ appCommandExecutor.on("create-area", async (mousePos?: Position) =>
         kresmer.edAPI.createArea(areaClass, mousePos, "screen");
     }//if
 });
+    
+function moveAreaInZOrder(moveMethod: (area: DrawingArea) => void)
+{
+    return (areaID?: number) => {
+        const area = kresmer.getAreaById(areaID ?? kresmer.selectedElement!.id)!;
+        moveMethod(area);
+        window.electronAPI.enableMoveElementUpMenuItems(!kresmer.areas.isOnTop(area));
+        window.electronAPI.enableMoveElementDownMenuItems(!kresmer.areas.isOnBottom(area));
+    }
+}//moveAreaInZOrder
+
+appCommandExecutor.on("move-area-down", moveAreaInZOrder(kresmer.edAPI.moveAreaDown));
+appCommandExecutor.on("move-area-to-bottom", moveAreaInZOrder(kresmer.edAPI.moveAreaToBottom));
+appCommandExecutor.on("move-area-up", moveAreaInZOrder(kresmer.edAPI.moveAreaUp));
+appCommandExecutor.on("move-area-to-top", moveAreaInZOrder(kresmer.edAPI.moveAreaToTop));
     
 appCommandExecutor.on("scale-drawing", direction => {
     switch (direction) {

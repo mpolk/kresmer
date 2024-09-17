@@ -247,7 +247,7 @@ class Geometry {
     }//move
 }//Geometry
 
-export type AreaVertexInitParams = VertexInitParams & {geometry?: AreaVertexGeometry};
+export type AreaVertexInitParams = VertexInitParams & {geometry?: AreaVertexGeometry|Geometry};
 
 // Editor operations
 export class VertexGeomChangeOp extends EditorOperation {

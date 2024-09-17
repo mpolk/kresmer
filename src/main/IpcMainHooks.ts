@@ -22,9 +22,10 @@ export interface IpcMainChannels {
     "complete-drawing-export-to-SVG": (svgData: string) => void;
     "enable-delete-selected-element-menu-item": (enable: boolean) => void;
     "enable-component-op-menu-items": (enable: boolean) => void;
-    "enable-move-component-up-menu-items": (enable: boolean) => void;
-    "enable-move-component-down-menu-items": (enable: boolean) => void;
+    "enable-move-element-up-menu-items": (enable: boolean) => void;
+    "enable-move-element-down-menu-items": (enable: boolean) => void;
     // "enable-link-op-menu-items": (enable: boolean) => void;
+    "enable-area-op-menu-items": (enable: boolean) => void;
     "backend-server-connected": (url: string, password: string, autoConnect: boolean) => void;
     "backend-server-disconnected": () => void;
     "open-url": (url: string) => void;

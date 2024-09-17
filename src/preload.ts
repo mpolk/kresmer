@@ -83,12 +83,16 @@ exposeToRenderer({
     //     sendToMain("enable-link-op-menu-items", enable);
     // },
 
-    enableMoveComponentUpMenuItems: (enable: boolean) => {
-        sendToMain("enable-move-component-up-menu-items", enable);
+    enableAreaOpMenuItems: (enable: boolean) => {
+        sendToMain("enable-area-op-menu-items", enable);
     },
 
-    enableMoveComponentDownMenuItems: (enable: boolean) => {
-        sendToMain("enable-move-component-down-menu-items", enable);
+    enableMoveElementUpMenuItems: (enable: boolean) => {
+        sendToMain("enable-move-element-up-menu-items", enable);
+    },
+
+    enableMoveElementDownMenuItems: (enable: boolean) => {
+        sendToMain("enable-move-element-down-menu-items", enable);
     },
 
     backendServerConnected: (url: string, password: string, autoConnect: boolean) => {

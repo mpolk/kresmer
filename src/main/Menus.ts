@@ -53,6 +53,10 @@ export interface ContextMenuCommands {
 
     "add-area-vertex": ContextMenuHandler<"area">,
     "delete-area": ContextMenuHandler<"area">,
+    "move-area-up": ContextMenuHandler<"area">,
+    "move-area-down": ContextMenuHandler<"area">,
+    "move-area-to-top": ContextMenuHandler<"area">,
+    "move-area-to-bottom": ContextMenuHandler<"area">,
     "align-area-vertices": ContextMenuHandler<"area">,
     "edit-area-properties": ContextMenuHandler<"area">,
 
@@ -148,18 +152,18 @@ export default class Menus {
                     ]},
                 { label: t("menu.element.transform", "Transform"), id: "transform-component", enabled: false, click: () => sendAppCommand("transform-component") },
                 {
-                    label: t("menu.element.duplicate", "Duplicate"), accelerator: "Control+D", enabled: false, id: "duplicate-component",
-                    click: () => sendAppCommand("duplicate-component")
+                    label: t("menu.element.duplicate", "Duplicate"), accelerator: "Control+D", enabled: false, id: "duplicate-selected-element",
+                    click: () => sendAppCommand("duplicate-selected-element")
                 },
                 {
                     label:  t("menu.element.delete", 'Delete selected element'), accelerator: "delete", enabled: false,
                     id: "delete-selected-element", click: () => sendAppCommand("delete-selected-element")
                 },
                 { type: 'separator' },
-                { label: t("menu.element.move-to-top", "Move to Top"), accelerator: "Control+PageUp", id: "move-component-to-top", enabled: false, click: () => sendAppCommand("move-component-to-top") },
-                { label: t("menu.element.move-up", "Move Up"), accelerator: "PageUp", id: "move-component-up", enabled: false, click: () => sendAppCommand("move-component-up") },
-                { label: t("menu.element.move-down", "Move Down"), accelerator: "PageDown", id: "move-component-down", enabled: false, click: () => sendAppCommand("move-component-down") },
-                { label: t("menu.element.move-to-bottom", "Move to Bottom"), accelerator: "Control+PageDown", id: "move-component-to-bottom", enabled: false, click: () => sendAppCommand("move-component-to-bottom") },
+                { label: t("menu.element.move-to-top", "Move to Top"), accelerator: "Control+PageUp", id: "move-selected-element-to-top", enabled: false, click: () => sendAppCommand("move-selected-element-to-top") },
+                { label: t("menu.element.move-up", "Move Up"), accelerator: "PageUp", id: "move-selected-element-up", enabled: false, click: () => sendAppCommand("move-selected-element-up") },
+                { label: t("menu.element.move-down", "Move Down"), accelerator: "PageDown", id: "move-selected-element-down", enabled: false, click: () => sendAppCommand("move-selected-element-down") },
+                { label: t("menu.element.move-to-bottom", "Move to Bottom"), accelerator: "Control+PageDown", id: "move-selected-element-to-bottom", enabled: false, click: () => sendAppCommand("move-selected-element-to-bottom") },
             ]
         },
         {
@@ -215,6 +219,11 @@ export default class Menus {
                 { label: t("ctx-menu.area.add-vertex", "Add Vertex"), id: "add-area-vertex" },
                 { type: 'separator' },
                 { label: t("ctx-menu.area.delete", "Delete Area"), id: "delete-area" },
+                { type: 'separator' },
+                { label: t("ctx-menu.area.move-to-top", "Move to Top"), id: "move-area-to-top" },
+                { label: t("ctx-menu.area.move-up", "Move Up"), id: "move-area-up" },
+                { label: t("ctx-menu.area.move-down", "Move Down"), id: "move-area-down" },
+                { label: t("ctx-menu.area.move-to-bottom", "Move to Bottom"), id: "move-area-to-bottom" },
                 { type: 'separator' },
                 { label: t("ctx-menu.area.properties", "Area Properties..."), id: "edit-area-properties" },
             ],
