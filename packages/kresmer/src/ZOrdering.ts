@@ -43,9 +43,9 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
         const zIndex = item.zIndex == Z_INDEX_INF ? item._savedZIndex : item.zIndex;
         for (const [,item1] of this) {
             if (item1.zIndex > zIndex)
-                return false;
+                return true;
         }//for
-        return true;
+        return false;
     }//canMoveUp
 
     public isOnBottom(item: T)

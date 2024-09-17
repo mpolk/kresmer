@@ -298,8 +298,8 @@ kresmer.on("component-selected", (component: NetworkComponent, isSelected: boole
     statusBarData.selectedElement = isSelected ? component : null;
     window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
     window.electronAPI.enableComponentOpMenuItems(isSelected);
-    window.electronAPI.enableMoveElementUpMenuItems(isSelected && !kresmer.networkComponents.isOnTop(component.controller!));
-    window.electronAPI.enableMoveElementDownMenuItems(isSelected && !kresmer.networkComponents.isOnBottom(component.controller!));
+    window.electronAPI.enableMoveElementUpMenuItems(isSelected && kresmer.networkComponents.canMoveUp(component.controller!));
+    window.electronAPI.enableMoveElementDownMenuItems(isSelected && kresmer.networkComponents.canMoveDown(component.controller!));
 });//onComponentSelected
 
 kresmer.on("link-selected", (link: NetworkLink, isSelected: boolean) => 
@@ -314,8 +314,8 @@ kresmer.on("area-selected", (area: DrawingArea, isSelected: boolean) =>
     statusBarData.selectedElement = isSelected ? area : null;
     window.electronAPI.enableDeleteSelectedElementMenuItem(isSelected);
     window.electronAPI.enableAreaOpMenuItems(isSelected);
-    window.electronAPI.enableMoveElementUpMenuItems(isSelected && !kresmer.areas.isOnTop(area));
-    window.electronAPI.enableMoveElementDownMenuItems(isSelected && !kresmer.areas.isOnBottom(area));
+    window.electronAPI.enableMoveElementUpMenuItems(isSelected && kresmer.areas.canMoveUp(area));
+    window.electronAPI.enableMoveElementDownMenuItems(isSelected && kresmer.areas.canMoveDown(area));
 });//onAreaSelected
     
 kresmer.on("link-right-click", (link: NetworkLink, segmentNumber: number, mouseEvent: MouseEvent) =>
