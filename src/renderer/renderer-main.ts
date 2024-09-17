@@ -552,8 +552,8 @@ function moveComponentInZOrder(moveMethod: (controller: NetworkComponentControll
     return (componentID?: number) => {
         const controller = kresmer.getComponentControllerById(componentID ?? kresmer.selectedElement!.id)!;
         moveMethod(controller);
-        window.electronAPI.enableMoveElementUpMenuItems(!kresmer.networkComponents.isOnTop(controller));
-        window.electronAPI.enableMoveElementDownMenuItems(!kresmer.networkComponents.isOnBottom(controller));
+        window.electronAPI.enableMoveElementUpMenuItems(kresmer.networkComponents.canMoveUp(controller));
+        window.electronAPI.enableMoveElementDownMenuItems(kresmer.networkComponents.canMoveDown(controller));
     }
 }//moveComponentInZOrder
 
@@ -658,8 +658,8 @@ function moveAreaInZOrder(moveMethod: (area: DrawingArea) => void)
     return (areaID?: number) => {
         const area = kresmer.getAreaById(areaID ?? kresmer.selectedElement!.id)!;
         moveMethod(area);
-        window.electronAPI.enableMoveElementUpMenuItems(!kresmer.areas.isOnTop(area));
-        window.electronAPI.enableMoveElementDownMenuItems(!kresmer.areas.isOnBottom(area));
+        window.electronAPI.enableMoveElementUpMenuItems(kresmer.areas.canMoveUp(area));
+        window.electronAPI.enableMoveElementDownMenuItems(kresmer.areas.canMoveDown(area));
     }
 }//moveAreaInZOrder
 
