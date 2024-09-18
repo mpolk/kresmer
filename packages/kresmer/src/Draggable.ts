@@ -52,7 +52,7 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
     
         public startDrag(event: MouseEvent)
         {
-            this.kresmer.resetAllComponentMode(this);
+            this.kresmer.resetAllComponentModes(this);
             if (event.shiftKey)
                 this.dragConstraint = "unknown";
             this._startDrag();

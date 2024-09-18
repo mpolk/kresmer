@@ -353,7 +353,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @returns boolean True if an operation was undone, else false
      */
     public undo(): boolean {
-        this.resetAllComponentMode();
+        this.resetAllComponentModes();
         return this.undoStack.undo();
     }//undo
     /**
@@ -361,7 +361,7 @@ export default class Kresmer extends KresmerEventHooks {
      * @returns boolean True if an operation was redone, else false
      */
     public redo(): boolean {
-        this.resetAllComponentMode();
+        this.resetAllComponentModes();
         return this.undoStack.redo();
     }//redo
 
@@ -970,7 +970,7 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Resets the mode (transform etc.) for all network component modes except the one specified
      */
-    public resetAllComponentMode(except?: unknown)
+    public resetAllComponentModes(except?: unknown)
     {
         for (const controller of this.networkComponents.values()) {
             if (controller !== except)
@@ -990,7 +990,7 @@ export default class Kresmer extends KresmerEventHooks {
 
         newSelectedElement?._onSelection(true) || this._selectedElement?._onSelection(false);
         this._selectedElement = newSelectedElement;
-        this.resetAllComponentMode();
+        this.resetAllComponentModes();
     }//set selectedElement
 
 

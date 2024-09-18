@@ -154,7 +154,7 @@
         }//if
 
         model.deselectAllElements();
-        model.resetAllComponentMode();
+        model.resetAllComponentModes();
         model.emit("mode-reset");
     }//onMouseDownOnCanvas
 

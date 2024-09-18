@@ -96,7 +96,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
     
     public startRotate(event: MouseEvent)
     {
-        this.kresmer.resetAllComponentMode(this);
+        this.kresmer.resetAllComponentModes(this);
         this.savedMousePos = this.getMousePosition(event);
         this.transform.makeSnapshot();
         this.isBeingTransformed = true;
@@ -131,7 +131,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
 
     public startScale(event: MouseEvent)
     {
-        this.kresmer.resetAllComponentMode(this);
+        this.kresmer.resetAllComponentModes(this);
         this.transform.makeSnapshot();
         this.savedMousePos = this.getMousePosition(event);
         this.isBeingTransformed = true;
@@ -186,7 +186,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
     public enterTransformMode(_event:  MouseEvent)
     {
         // this.isBeingTransformed = true;
-        this.kresmer.resetAllComponentMode(this);
+        this.kresmer.resetAllComponentModes(this);
         this.kresmer.deselectAllElements();
         this.isInAdjustmentMode = false;
         this.transformMode = "scaling";
@@ -197,7 +197,7 @@ export default class NetworkComponentController extends draggable(withZOrder(cla
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public enterAdjustmentMode(_event:  MouseEvent)
     {
-        this.kresmer.resetAllComponentMode(this);
+        this.kresmer.resetAllComponentModes(this);
         this.kresmer.deselectAllElements();
         this.transformMode = undefined;
         this.isInAdjustmentMode = true;
