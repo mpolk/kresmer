@@ -1,4 +1,4 @@
-## 0.16.4
+## 0.16.5
 
 One more "private" release. Fixed an error in library data priority handling.
 
