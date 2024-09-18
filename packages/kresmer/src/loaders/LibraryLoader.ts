@@ -147,16 +147,16 @@ export default class LibraryLoader
         for (const element of parser.parseLibraryNode(root)) {
             //console.debug(element);
             if (element instanceof NetworkComponentClass) {
-                if (this.shouldOverrideWithEmbedded(NetworkComponentClass.getClass(element.name), element))
-                    this.kresmer.registerNetworkComponentClass(element);
+                if (this.shouldOverrideWithEmbedded(this.kresmer.registeredComponentClasses.get(element.name), element))
+                    this.kresmer.registerNetworkComponentClass(element, {force: true});
 
             } else if (element instanceof NetworkLinkClass) {
-                if (this.shouldOverrideWithEmbedded(NetworkLinkClass.getClass(element.name), element))
-                    this.kresmer.registerLinkClass(element);
+                if (this.shouldOverrideWithEmbedded(this.kresmer.registeredLinkClasses.get(element.name), element))
+                    this.kresmer.registerLinkClass(element, {force: true});
 
             } else if (element instanceof DrawingAreaClass) {
-                if (this.shouldOverrideWithEmbedded(DrawingAreaClass.getClass(element.name), element))
-                    this.kresmer.registerAreaClass(element);
+                if (this.shouldOverrideWithEmbedded(this.kresmer.registeredAreaClasses.get(element.name), element))
+                    this.kresmer.registerAreaClass(element, {force: true});
 
             } else if (element instanceof DefsLibNode) {
                 if (this.shouldOverrideWithEmbedded(this.kresmer.globalDefs.get(element.name), element)) {

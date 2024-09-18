@@ -405,12 +405,16 @@ export default class Kresmer extends KresmerEventHooks {
      * the corresponding new component in the Vue application
      * 
      * @param componentClass A Network Component Class to register
+     * @param options.force Forces the unconditional class registration, regardless to its version
+     * @returns Kresmer itself
      */
-    public registerNetworkComponentClass(componentClass: NetworkComponentClass): Kresmer
+    public registerNetworkComponentClass(componentClass: NetworkComponentClass, options?: {force?: boolean}): Kresmer
     {
-        const existingClass = this.registeredComponentClasses.get(componentClass.name);
-        if (existingClass && existingClass.version >= componentClass.version) {
-            return this;
+        if (!options?.force) {
+            const existingClass = this.registeredComponentClasses.get(componentClass.name);
+            if (existingClass && existingClass.version >= componentClass.version) {
+                return this;
+            }//if
         }//if
 
         function patchBody(body: string) {
@@ -513,13 +517,16 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Register a Link Class in Kresmer
      * @param linkClass A class to register
+     * @param options.force Forces the unconditional class registration, regardless to its version
      * @returns Kresmer itself
      */
-    public registerLinkClass(linkClass: NetworkLinkClass): Kresmer
+    public registerLinkClass(linkClass: NetworkLinkClass, options?: {force?: boolean}): Kresmer
     {
-        const existingClass = this.registeredLinkClasses.get(linkClass.name);
-        if (existingClass && existingClass.version >= linkClass.version) {
-            return this;
+        if (!options?.force) {
+            const existingClass = this.registeredLinkClasses.get(linkClass.name);
+            if (existingClass && existingClass.version >= linkClass.version) {
+                return this;
+            }//if
         }//if
 
         // Register class's svg-definitions
@@ -552,13 +559,16 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Register an Area Class in Kresmer
      * @param areaClass A class to register
+     * @param options.force Forces the unconditional class registration, regardless to its version
      * @returns Kresmer itself
      */
-    public registerAreaClass(areaClass: DrawingAreaClass): Kresmer
+    public registerAreaClass(areaClass: DrawingAreaClass, options?: {force?: boolean}): Kresmer
     {
-        const existingClass = this.registeredAreaClasses.get(areaClass.name);
-        if (existingClass && existingClass.version >= areaClass.version) {
-            return this;
+        if (!options?.force) {
+            const existingClass = this.registeredAreaClasses.get(areaClass.name);
+            if (existingClass && existingClass.version >= areaClass.version) {
+                return this;
+            }//if
         }//if
 
         // Register class's svg-definitions
