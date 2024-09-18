@@ -79,8 +79,8 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
         public drag(event: MouseEvent)
         {
             if (!this.savedMousePos)
-                return;
-            
+                this.startDrag(event);
+
             const mousePos = this.getMousePosition(event);
             const effectiveMove = {x: mousePos.x - this.savedMousePos!.x, y: mousePos.y - this.savedMousePos!.y};
     
