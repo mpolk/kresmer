@@ -344,7 +344,12 @@ kresmer.on("connection-point-right-click", (connectionPoint: ConnectionPointProx
 {
     window.electronAPI.showContextMenu("connection-point", connectionPoint.hostElement.id, connectionPoint.name);
 });//onConnectionPointRightClick
-
+    
+kresmer.on("area-right-click", (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) =>
+{
+    window.electronAPI.showContextMenu("area", area.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+});//onAreaRightClick
+    
 kresmer.on("error", (error: KresmerException) => 
 {
     vueToastPane.show({
@@ -369,8 +374,9 @@ kresmer.on("library-translation-requested", async(libName: string, language: str
 });//onLibraryImportRequested
 
 
-
+// ----------------------------------------------------------------------------------------------------
 // Processing application command (coming from the main process)
+
 const appCommandExecutor = new AppCommandExecutor;
 window.electronAPI.onCommand((_event: IpcRendererEvent, command: string, ...args: unknown[]) => {
     appCommandExecutor.execute(command, ...args);
