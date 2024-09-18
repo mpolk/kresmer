@@ -1,3 +1,7 @@
+## 0.16.4
+
+One more "private" release. Fixed an error in library data priority handling.
+
 ## 0.16.3
 
 One more "private" release. Electron app also renamed from "e-kresmer" to just "kresmer".
