@@ -658,7 +658,13 @@ appCommandExecutor.on("create-area", async (mousePos?: Position) =>
         kresmer.edAPI.createArea(areaClass, mousePos, "screen");
     }//if
 });
-    
+
+appCommandExecutor.on("duplicate-area", (areaID?: number) =>
+{
+    const area = kresmer.getAreaById(areaID ?? kresmer.selectedElement!.id)!;
+    kresmer.edAPI.duplicateArea(area);
+});//duplicateArea
+        
 function moveAreaInZOrder(moveMethod: (area: DrawingArea) => void)
 {
     return (areaID?: number) => {
@@ -673,7 +679,17 @@ appCommandExecutor.on("move-area-down", moveAreaInZOrder(kresmer.edAPI.moveAreaD
 appCommandExecutor.on("move-area-to-bottom", moveAreaInZOrder(kresmer.edAPI.moveAreaToBottom));
 appCommandExecutor.on("move-area-up", moveAreaInZOrder(kresmer.edAPI.moveAreaUp));
 appCommandExecutor.on("move-area-to-top", moveAreaInZOrder(kresmer.edAPI.moveAreaToTop));
-    
+
+appCommandExecutor.on("edit-area-properties", (areaID?: number) =>
+{
+    const area = kresmer.getAreaById(areaID ?? kresmer.selectedElement!.id);
+    if (!area) {
+        console.error(`No such area (id=${areaID})`);
+        return;
+    }//if
+    vueComponentPropsSidebar.show(area);
+});//editAreaProperties
+
 appCommandExecutor.on("scale-drawing", direction => {
     switch (direction) {
         case "-": kresmer.zoomFactor *= Math.SQRT1_2; break;

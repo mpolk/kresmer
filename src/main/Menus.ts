@@ -52,6 +52,7 @@ export interface ContextMenuCommands {
     "connect-connection-point": ContextMenuHandler<"connection-point">,
 
     "add-area-vertex": ContextMenuHandler<"area">,
+    "duplicate-area": ContextMenuHandler<"area">,
     "delete-area": ContextMenuHandler<"area">,
     "move-area-up": ContextMenuHandler<"area">,
     "move-area-down": ContextMenuHandler<"area">,
@@ -218,6 +219,7 @@ export default class Menus {
                 { label: t("ctx-menu.area.align-vertices", "Align Vertices"), id: "align-area-vertices" },
                 { label: t("ctx-menu.area.add-vertex", "Add Vertex"), id: "add-area-vertex" },
                 { type: 'separator' },
+                { label: t("ctx-menu.area.duplicate", "Duplicate"), id: "duplicate-area" },
                 { label: t("ctx-menu.area.delete", "Delete Area"), id: "delete-area" },
                 { type: 'separator' },
                 { label: t("ctx-menu.area.move-to-top", "Move to Top"), id: "move-area-to-top" },
