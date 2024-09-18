@@ -125,6 +125,7 @@
     {
         if (event.buttons === 1 && isEditable) {
             event.preventDefault();
+            props.model.kresmer.deselectAllElements(props.model).resetAllComponentModes();
             props.model.startDrag(event);
         }//if
     }//onMouseDown
@@ -160,11 +161,13 @@
             />
         <path v-for="(border, i) in model.borders" :key="`border${i}`" 
             :d="borderPathData(border)" :class="border.clazz" style="fill: none;" />
-        <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
-            <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
-            <text class="area seg-mark" :style="segMarkStyle">
-                <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
-            </text>
+        <template v-if="model.isSelected">
+            <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
+                <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
+                <text class="area seg-mark" :style="segMarkStyle">
+                    <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
+                </text>
+            </template>
         </template>
         <template v-for="vertex in model.vertices" :key="`vertex${vertex.key}`">
             <DrawingVertexVue :model="vertex"/>

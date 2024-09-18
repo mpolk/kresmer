@@ -781,7 +781,7 @@ appCommandExecutor.on("disconnect-from-server", async () => {
 appCommandExecutor.on("escape", () => {
     console.debug("Escape pressed");
     kresmer.deselectAllElements();
-    kresmer.resetAllComponentMode();
+    kresmer.resetAllComponentModes();
 });
 
 

@@ -970,12 +970,13 @@ export default class Kresmer extends KresmerEventHooks {
     /**
      * Resets the mode (transform etc.) for all network component modes except the one specified
      */
-    public resetAllComponentModes(except?: unknown)
+    public resetAllComponentModes(except?: unknown): Kresmer
     {
         for (const controller of this.networkComponents.values()) {
             if (controller !== except)
                 controller.resetMode();
         }//for
+        return this;
     }//resetAllComponentMode
 
 
@@ -995,7 +996,7 @@ export default class Kresmer extends KresmerEventHooks {
 
 
     /** Deselects all components (probably except the one specified) */
-    public deselectAllElements(except?: unknown)
+    public deselectAllElements(except?: unknown): Kresmer
     {
         [this.networkComponents, this.links, this.areas].forEach(map => map.forEach(element => {
             if (element !== except && element.isSelected) {
@@ -1008,6 +1009,7 @@ export default class Kresmer extends KresmerEventHooks {
             this._abortLinkCreation();
         }//if
         this.selectedElement = undefined;
+        return this;
     }//deselectAllElements
 
 

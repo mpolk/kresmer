@@ -147,9 +147,11 @@ export class MapWithZOrder<ID, T extends ZOrderable<ID>> extends Map<ID, T> {
 
     get topmostItem(): T|undefined
     {
-        const lastItem = this.sorted.at(-1);
-        if (lastItem?.zIndex == Z_INDEX_INF)
-            return lastItem;
+        for (const v of this.values()) {
+            if (v.zIndex === Z_INDEX_INF)
+                return v;
+        }//for
+        return undefined;
     }//topmostItem
 }//MapWithZOrder
 

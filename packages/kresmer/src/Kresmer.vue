@@ -27,7 +27,7 @@
 <script setup lang="ts">
 
     const props = defineProps<{model?: Kresmer} & KresmerInitOptions>();
-    const app = inject(Kresmer.ikApp);
+    const app = inject(Kresmer.ikApp, undefined);
 
     if (!props.model && !app) {
         throw new KresmerException("Kresmer Vue-component must be either given \"model\" prop or provided with \"app\" injected value");
