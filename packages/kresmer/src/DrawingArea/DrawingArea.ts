@@ -158,7 +158,6 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         }//if
     }//alignConnectedLinks
 
-
     public onClick(event: MouseEvent, segmentNumber?: number)
     {
         if (event.ctrlKey && segmentNumber) {
@@ -168,13 +167,11 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         }//if
     }//onClick
 
-
     public onRightClick(event: MouseEvent, segmentNumber?: number)
     {
         this.selectThis();
         this.kresmer.emit("area-right-click", this, event, segmentNumber);
     }//onRightClick
-
 
     public onDoubleClick(event: MouseEvent, segmentNumber?: number)
     {

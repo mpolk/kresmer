@@ -347,7 +347,10 @@ kresmer.on("connection-point-right-click", (connectionPoint: ConnectionPointProx
     
 kresmer.on("area-right-click", (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) =>
 {
-    window.electronAPI.showContextMenu("area", area.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+    if (segmentNumber === undefined)
+        window.electronAPI.showContextMenu("area", area.id, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+    else
+        window.electronAPI.showContextMenu("area-segment", area.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 });//onAreaRightClick
     
 kresmer.on("error", (error: KresmerException) => 

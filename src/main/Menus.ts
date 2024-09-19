@@ -18,7 +18,8 @@ export interface ContextMenus {
     "link": (linkID?: number, segmentNumber?: number, mousePos?: Position) => void,
     "link-vertex": (linkID: number, vertexNumber: number) => void,
     "connection-point": (componentID: number, connectionPointName: number) => void, 
-    "area": (areaID?: number, segmentNumber?: number, mousePos?: Position) => void,
+    "area": (areaID?: number, mousePos?: Position) => void,
+    "area-segment": (areaID: number, segmentNumber: number, mousePos?: Position) => void,
     "area-vertex": (areaID: number, vertexNumber: number) => void,
 }//ContextMenus
 
@@ -51,7 +52,6 @@ export interface ContextMenuCommands {
 
     "connect-connection-point": ContextMenuHandler<"connection-point">,
 
-    "add-area-vertex": ContextMenuHandler<"area">,
     "duplicate-area": ContextMenuHandler<"area">,
     "delete-area": ContextMenuHandler<"area">,
     "move-area-up": ContextMenuHandler<"area">,
@@ -61,8 +61,15 @@ export interface ContextMenuCommands {
     "align-area-vertices": ContextMenuHandler<"area">,
     "edit-area-properties": ContextMenuHandler<"area">,
 
+    "add-area-vertex": ContextMenuHandler<"area-segment">,
+
     "align-area-vertex": ContextMenuHandler<"area-vertex">,
     "delete-area-vertex": ContextMenuHandler<"area-vertex">,
+    "set-area-vertex-type-to-L": ContextMenuHandler<"area-vertex">,
+    "set-area-vertex-type-to-C": ContextMenuHandler<"area-vertex">,
+    "set-area-vertex-type-to-S": ContextMenuHandler<"area-vertex">,
+    "set-area-vertex-type-to-Q": ContextMenuHandler<"area-vertex">,
+    "set-area-vertex-type-to-T": ContextMenuHandler<"area-vertex">,
 }//ContextMenuCommands
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
@@ -217,7 +224,6 @@ export default class Menus {
             ],
             "area": [
                 { label: t("ctx-menu.area.align-vertices", "Align Vertices"), id: "align-area-vertices" },
-                { label: t("ctx-menu.area.add-vertex", "Add Vertex"), id: "add-area-vertex" },
                 { type: 'separator' },
                 { label: t("ctx-menu.area.duplicate", "Duplicate"), id: "duplicate-area" },
                 { label: t("ctx-menu.area.delete", "Delete Area"), id: "delete-area" },
@@ -229,9 +235,19 @@ export default class Menus {
                 { type: 'separator' },
                 { label: t("ctx-menu.area.properties", "Area Properties..."), id: "edit-area-properties" },
             ],
+            "area-segment": [
+                { label: t("ctx-menu.area.add-vertex", "Add Vertex"), id: "add-area-vertex" },
+            ],
             "area-vertex": [
                 { label: t("ctx-menu.area-vertex.align", "Align Vertex"), id: "align-area-vertex" },
                 { label: t("ctx-menu.area-vertex.delete", "Delete Vertex"), id: "delete-area-vertex" },
+                { label: t("ctx-menu.area-vertex.set-type", "Set Vertex Type to"), submenu: [
+                    {label: t("ctx-menu.area-vertex.set-type-to-L", "L (straight line)"), id: "set-area-vertex-type-to-L"},
+                    {label: t("ctx-menu.area-vertex.set-type-to-C", "C (cubic Bezier curve)"), id: "set-area-vertex-type-to-C"},
+                    {label: t("ctx-menu.area-vertex.set-type-to-S", "S (cubic Bezier curve continuation)"), id: "set-area-vertex-type-to-S"},
+                    {label: t("ctx-menu.area-vertex.set-type-to-Q", "Q (quadratic Bezier curve)"), id: "set-area-vertex-type-to-Q"},
+                    {label: t("ctx-menu.area-vertex.set-type-to-T", "T (quadratic Bezier curve continuation)"), id: "set-area-vertex-type-to-T"},
+                ]}
             ],
         }
 

@@ -167,6 +167,7 @@
                 <text class="area seg-mark" :style="segMarkStyle">
                     <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
                 </text>
+                <path :d="segMarkPathData(i)" class="segment-padding" @contextmenu.stop="model.onRightClick($event, i)"/>
             </template>
         </template>
         <template v-for="vertex in model.vertices" :key="`vertex${vertex.key}`">
@@ -188,10 +189,14 @@
     }
 
     .segment {
-        fill: none; stroke: none;
+        //fill: transparent; stroke: transparent;
         &.selected {
-            stroke: darkred !important;
+            stroke: darkred;
             // stroke-width: 4px !important;
         }
+    }
+
+    .segment-padding {
+            fill: transparent; stroke: transparent; stroke-width: 4px;
     }
 </style>
