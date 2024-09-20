@@ -205,6 +205,9 @@ export type AreaVertexGeometry =
     | {type: "Q", cp: Position}
     | {type: "T"}
     ;
+
+export type AreaVertexType = AreaVertexGeometry["type"];
+
 class Geometry {
     constructor(init?: AreaVertexGeometry|Geometry)
     {

@@ -168,7 +168,7 @@
                     <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
                 </text>
                 <text class="area seg-mark start" :style="segMarkStyle">
-                    <textPath :href="`#${segmentPathID(i)}`">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ model.vertices[i].geometry.type }}</textPath>
+                    <textPath :href="`#${segmentPathID(i)}`">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ model.vertices[i].geometry.type }}</textPath>
                 </text>
                 <path :d="segMarkPathData(i)" class="segment-padding" @contextmenu.stop="model.onRightClick($event, i)"/>
             </template>
@@ -198,7 +198,7 @@
     }
 
     .segment {
-        //fill: transparent; stroke: transparent;
+        fill: none; //stroke: transparent;
         &.selected {
             stroke: darkred;
             // stroke-width: 4px !important;

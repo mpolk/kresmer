@@ -40,6 +40,7 @@ import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
 import SVGExporter from "./SVGExporter";
+import { AreaVertexType, VertexGeomChangeOp } from "./DrawingArea/AreaVertex";
 
 
 /**
@@ -1507,7 +1508,49 @@ export default class Kresmer extends KresmerEventHooks {
             this.emit("area-vertex-added", vertex);
             return vertex;
         },//addAreaVertex
-    
+        
+        /**
+         * Sets an area vertex type
+         * @param areaID The area this vertex belongs
+         * @param vertexNumber The seq number of the segment where tne vertex should be added
+         * @param type The new type of the vertex
+         */
+        setAreaVertexType: (areaID: number, vertexNumber: number, type: AreaVertexType) =>
+        {
+            const area = this.getAreaById(areaID);
+            if (!area) {
+                throw new KresmerException(`Attempt to set the type of the vertex of the non-existent area (id=${areaID})`);
+            }//if
+            const vertex = area.vertices[vertexNumber];
+            if (!area) {
+                throw new KresmerException(`Attempt to set the type of the non-existent vertex (areaID=${areaID},vertex=${vertexNumber})`);
+            }//if
+            const op = new VertexGeomChangeOp(vertex);
+            this.undoStack.startOperation(op);
+            let prevVertexNumber= vertexNumber - 1;
+            if (prevVertexNumber < 0)
+                prevVertexNumber += area.vertices.length;
+            const prevVertex = area.vertices[prevVertexNumber];
+            switch (type) {
+                case "C":
+                    vertex.geometry = {type, cp1: prevVertex.coords, cp2: vertex.coords};
+                    break;
+                case "S":
+                    vertex.geometry = {type, cp2: vertex.coords};
+                    break;
+                case "Q":
+                    vertex.geometry = {type, cp: {x: (vertex.coords.x + prevVertex.coords.x) / 2, y: (vertex.coords.y + prevVertex.coords.y) / 2}};
+                    break;
+                case "L":
+                    vertex.geometry = {type};
+                    break;
+                case "T":
+                    vertex.geometry = {type};
+                }//switch
+            this.undoStack.commitOperation();
+            this.emit("area-vertex-type-changed", vertex);
+        },//setAreaVertexType
+        
         /**
          * Update the specified drawing element props and name (if required)
          * @param element The element to update

@@ -28,7 +28,7 @@
             .vertex.first-vertex {fill: #ffd000}
             .connection-point-marker {r: 8px; fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;}
             .label {font-family: sans-serif; font-size: 0.75rem; fill: var(--border-color);}
-            .seg-mark {font-family: sans-serif; font-size: 0.75rem; fill: var(--border-color); filter: brightness(0.8);}
+            .seg-mark {font-family: sans-serif; font-size: 1rem; fill: var(--border-color); filter: brightness(0.5);}
         </style>
     </area-class>
 

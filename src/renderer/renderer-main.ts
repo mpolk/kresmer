@@ -698,6 +698,36 @@ appCommandExecutor.on("edit-area-properties", (areaID?: number) =>
     vueComponentPropsSidebar.show(area);
 });//editAreaProperties
 
+appCommandExecutor.on("add-area-vertex", (areaID: number, segmentNumber: number, mousePos: Position) =>
+{
+    kresmer.edAPI.addAreaVertex(areaID, segmentNumber, mousePos);
+});//addAreaVertex
+
+appCommandExecutor.on("set-area-vertex-type-to-L", (areaID: number, vertexNumber: number) =>
+{
+    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "L");
+});//addAreaVertex
+
+appCommandExecutor.on("set-area-vertex-type-to-C", (areaID: number, vertexNumber: number) =>
+{
+    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "C");
+});//addAreaVertex
+
+appCommandExecutor.on("set-area-vertex-type-to-S", (areaID: number, vertexNumber: number) =>
+{
+    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "S");
+});//addAreaVertex
+
+appCommandExecutor.on("set-area-vertex-type-to-Q", (areaID: number, vertexNumber: number) =>
+{
+    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "Q");
+});//addAreaVertex
+
+appCommandExecutor.on("set-area-vertex-type-to-T", (areaID: number, vertexNumber: number) =>
+{
+    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "T");
+});//addAreaVertex
+                
 appCommandExecutor.on("scale-drawing", direction => {
     switch (direction) {
         case "-": kresmer.zoomFactor *= Math.SQRT1_2; break;

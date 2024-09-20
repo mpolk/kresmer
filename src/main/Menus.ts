@@ -19,7 +19,7 @@ export interface ContextMenus {
     "link-vertex": (linkID: number, vertexNumber: number) => void,
     "connection-point": (componentID: number, connectionPointName: number) => void, 
     "area": (areaID?: number, mousePos?: Position) => void,
-    "area-segment": (areaID: number, segmentNumber: number, mousePos?: Position) => void,
+    "area-segment": (areaID: number, segmentNumber: number, mousePos: Position) => void,
     "area-vertex": (areaID: number, vertexNumber: number) => void,
 }//ContextMenus
 

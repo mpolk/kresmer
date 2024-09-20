@@ -80,6 +80,7 @@ class KresmerEventFormats  {
     "area-right-click":                 (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) => void;
     "area-double-click":                (area: DrawingArea, mouseEvent: MouseEvent, segmentNumber?: number) => void;
     "area-vertex-added":                (vertex: AreaVertex) => void;
+    "area-vertex-type-changed":         (vertex: AreaVertex) => void;
     "area-vertex-deleted":              (vertex: AreaVertex) => void;
     "area-move-started":                (area: DrawingArea) => void;
     "area-being-moved":                 (area: DrawingArea) => void;
@@ -541,6 +542,13 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("area-vertex-added")
     protected onAreaVertexAdded(vertex: AreaVertex) {}
+ 
+    /**
+     * Is called when a vertex type had been changed
+     * @param controller The vertex, which type has been added
+     */
+    @overridableHandler("area-vertex-type-changed")
+    protected onAreaVertexTypeChanged(vertex: AreaVertex) {}
  
     /**
      * Is called when a vertex had been deleted
