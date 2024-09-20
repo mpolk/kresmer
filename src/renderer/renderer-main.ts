@@ -24,7 +24,7 @@ import Kresmer, {
     TransformMode, ConnectionPointProxy,
     // KresmerVue,
     kresmerPlugin,
-    DrawingArea,
+    DrawingArea, AreaVertex,
  } from 'kresmer';
 import { AppCommandExecutor, LoadDrawingOptions, LoadLibraryOptions } from './AppCommands';
 import MessageBox from './message-box.vue';
@@ -353,6 +353,11 @@ kresmer.on("area-right-click", (area: DrawingArea, mouseEvent: MouseEvent, segme
         window.electronAPI.showContextMenu("area-segment", area.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 });//onAreaRightClick
     
+kresmer.on("area-vertex-right-click", (vertex: AreaVertex, mouseEvent: MouseEvent) =>
+{
+    window.electronAPI.showContextMenu("area-vertex", vertex.parentElement.id, vertex.vertexNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
+});//onAreaRightClick
+        
 kresmer.on("error", (error: KresmerException) => 
 {
     vueToastPane.show({

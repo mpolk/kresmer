@@ -93,18 +93,24 @@
     },
     "area": {
       "align-vertices": "Align Vertices",
-      "add-vertex": "Add Vertex",
       "duplicate": "Duplicate",
       "delete": "Delete Area",
       "move-to-top": "Move to Top",
       "move-up": "Move Up",
       "move-down": "Move Down",
       "move-to-bottom": "Move to Bottom",
-      "properties": "Area Properties..."
+      "properties": "Area Properties...",
+      "add-vertex": "Add Vertex"
     },
     "area-vertex": {
       "align": "Align Vertex",
-      "delete": "Delete Vertex"
+      "delete": "Delete Vertex",
+      "set-type": "Set Vertex Type to",
+      "set-type-to-L": "L (straight line)",
+      "set-type-to-C": "C (cubic Bezier curve)",
+      "set-type-to-S": "S (cubic Bezier curve continuation)",
+      "set-type-to-Q": "Q (quadratic Bezier curve)",
+      "set-type-to-T": "T (quadratic Bezier curve continuation)"
     }
   }
 }

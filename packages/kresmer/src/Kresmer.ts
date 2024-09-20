@@ -1785,6 +1785,7 @@ export type { Position } from "./Transform/Transform";
 export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
 export {default as DrawingArea} from "./DrawingArea/DrawingArea";
+export {default as AreaVertex} from "./DrawingArea/AreaVertex";
 export {default as DrawingAreaClass} from "./DrawingArea/DrawingAreaClass";
 export {default as LinkBundle} from "./NetworkLink/LinkBundle";
 export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
