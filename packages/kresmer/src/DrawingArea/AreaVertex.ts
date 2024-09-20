@@ -12,6 +12,7 @@ import { Position, Shift } from "../Transform/Transform";
 import DrawingArea from "./DrawingArea";
 import MouseEventCapture from "../MouseEventCapture";
 import { EditorOperation } from "../UndoStack";
+import XMLFormatter, { XMLTag } from "../XMLFormatter";
 
 /** Drawing Area Vertex */
 
@@ -176,6 +177,16 @@ export default class AreaVertex extends Vertex {
         this.parentElement.kresmer.emit("area-vertex-right-click", this, event);
     }//onRightClick
 
+    override toXML(formatter: XMLFormatter)
+    {
+        const tag = new XMLTag("vertex");
+        if (this._anchor.pos) {
+            tag.addAttrib("x", this._anchor.pos.x)
+               .addAttrib("y", this._anchor.pos.y);
+        }//if
+        this.geometry.toXML(tag);
+        formatter.addTag(tag);
+    }//toXML
 
     toPath(prevVertex?: AreaVertex)
     {
@@ -239,6 +250,13 @@ class Geometry {
         chunks.push(`${pos.x},${pos.y}`);
         return chunks.join(" ");
     }//toPath
+
+    toXML(tag: XMLTag)
+    {
+        let v = this.type;
+        this.controlPoints.forEach(cp => { v += ` ${cp.x},${cp.y}` });
+        tag.addAttrib("geometry", v);
+    }//toXML
 
     copy() {return new Geometry(this)}
 

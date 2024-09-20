@@ -244,9 +244,9 @@ export default class Menus {
                 { label: t("ctx-menu.area-vertex.set-type", "Set Vertex Type to"), submenu: [
                     {label: t("ctx-menu.area-vertex.set-type-to-L", "L (straight line)"), id: "set-area-vertex-type-to-L"},
                     {label: t("ctx-menu.area-vertex.set-type-to-C", "C (cubic Bezier curve)"), id: "set-area-vertex-type-to-C"},
-                    {label: t("ctx-menu.area-vertex.set-type-to-S", "S (cubic Bezier curve continuation)"), id: "set-area-vertex-type-to-S"},
+                    {label: t("ctx-menu.area-vertex.set-type-to-S", "S (smooth cubic Bezier curve)"), id: "set-area-vertex-type-to-S"},
                     {label: t("ctx-menu.area-vertex.set-type-to-Q", "Q (quadratic Bezier curve)"), id: "set-area-vertex-type-to-Q"},
-                    {label: t("ctx-menu.area-vertex.set-type-to-T", "T (quadratic Bezier curve continuation)"), id: "set-area-vertex-type-to-T"},
+                    {label: t("ctx-menu.area-vertex.set-type-to-T", "T (smooth quadratic Bezier curve)"), id: "set-area-vertex-type-to-T"},
                 ]}
             ],
         }

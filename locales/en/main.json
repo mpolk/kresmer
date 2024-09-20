@@ -108,9 +108,9 @@
       "set-type": "Set Vertex Type to",
       "set-type-to-L": "L (straight line)",
       "set-type-to-C": "C (cubic Bezier curve)",
-      "set-type-to-S": "S (cubic Bezier curve continuation)",
+      "set-type-to-S": "S (smooth cubic Bezier curve)",
       "set-type-to-Q": "Q (quadratic Bezier curve)",
-      "set-type-to-T": "T (quadratic Bezier curve continuation)"
+      "set-type-to-T": "T (smooth quadratic Bezier curve)"
     }
   }
 }
