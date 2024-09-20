@@ -164,8 +164,11 @@
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
                 <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
-                <text class="area seg-mark" :style="segMarkStyle">
+                <text class="area seg-mark middle" :style="segMarkStyle">
                     <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
+                </text>
+                <text class="area seg-mark start" :style="segMarkStyle">
+                    <textPath :href="`#${segmentPathID(i)}`">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ model.vertices[i].geometry.type }}</textPath>
                 </text>
                 <path :d="segMarkPathData(i)" class="segment-padding" @contextmenu.stop="model.onRightClick($event, i)"/>
             </template>
@@ -184,8 +187,14 @@
     }
 
     .seg-mark {
-        dominant-baseline: ideographic; text-anchor: middle;
+        dominant-baseline: ideographic;
         cursor: default;
+        &.middle {
+            text-anchor: middle;
+        }
+        &.end {
+            text-anchor: end;
+        }
     }
 
     .segment {

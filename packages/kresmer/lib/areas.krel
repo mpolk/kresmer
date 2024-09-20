@@ -25,6 +25,7 @@
             .vertex {stroke: var(--highlighted-border-color); stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+            .vertex.first-vertex {fill: #ffd000}
             .connection-point-marker {r: 8px; fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;}
             .label {font-family: sans-serif; font-size: 0.75rem; fill: var(--border-color);}
             .seg-mark {font-family: sans-serif; font-size: 0.75rem; fill: var(--border-color); filter: brightness(0.8);}

@@ -6,7 +6,7 @@
  * Network Link Vertex - presentation code 
 <*************************************************************************** -->
 <script lang="ts">
-    import { PropType, onUpdated, toRef } from 'vue';
+    import { PropType, computed, onUpdated, toRef } from 'vue';
     import Vertex from './Vertex';
     import ConnectionPointVue from '../ConnectionPoint/ConnectionPoint.vue';
     import useVertex from '../Vertex/useVertex';
@@ -40,6 +40,8 @@
         onDoubleClick
      } = props.base ?? useVertex(toRef(props, "model"));
 
+     const vertexClass = computed(() => { return {"first-vertex": props.model.vertexNumber == 0, ...props.additionalClasses}});
+
      const emit = defineEmits<{
         (event: "updated"): void
      }>();
@@ -71,7 +73,7 @@
         />
     <circle v-if="model.parentElement.isSelected" ref="circle"
         :cx="model.coords.x" :cy="model.coords.y" 
-        class="vertex" :class="additionalClasses"
+        class="vertex" :class="vertexClass"
         :style="draggingCursor"
         :is-editable="isEditable"
         v-bind="additionalAttrs"
@@ -96,7 +98,7 @@
     }
 
     .vertex.selected-vertex {
-        fill: wheat!important;
+        fill: rgb(255, 91, 50)!important;
     }
 
     .v-enter-active {
