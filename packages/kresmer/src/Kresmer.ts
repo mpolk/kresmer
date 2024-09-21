@@ -20,7 +20,7 @@ import NetworkComponentClass from "./NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "./NetworkLink/NetworkLinkClass";
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
-import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, DeleteVertexOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
+import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
 import KresmerException, { UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import DrawingElement, { UpdateElementOp } from "./DrawingElement/DrawingElement";
@@ -31,7 +31,7 @@ import BackendConnection, { BackendConnectionTestResult } from "./BackendConnect
 import LinkBundle, { CreateBundleOp } from "./NetworkLink/LinkBundle";
 import LinkVertex, { LinkVertexInitParams, LinkVertexSpec } from "./NetworkLink/LinkVertex";
 import Vertex, { VertexSpec, VertexAlignmentMode, VertexMoveOp, VerticesMoveOp } from "./Vertex/Vertex";
-import DrawingElementWithVertices, { AddVertexOp } from "./DrawingElement/DrawingElementWithVertices";
+import DrawingElementWithVertices, { AddVertexOp, DeleteVertexOp } from "./DrawingElement/DrawingElementWithVertices";
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
@@ -1317,6 +1317,7 @@ export default class Kresmer extends KresmerEventHooks {
                 throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
             }//if
             const vertex = link.createVertex(segmentNumber, this.applyScreenCTM(mousePos));
+            this.undoStack.execAndCommit(new AddVertexOp(vertex));
             this.emit("link-vertex-added", vertex);
             return vertex;
         },//addLinkVertex

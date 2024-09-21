@@ -230,7 +230,6 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
             pos = this.absPosToRel(pos);
         }//if
         const vertex = new LinkVertex(this, vertexNumber, {pos}).init();
-        this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
         return vertex;
     }//createVertex
 
@@ -375,42 +374,3 @@ export class ChangeLinkClassOp extends EditorOperation {
         this.link.changeClass(this.oldClass);
     }//undo
 }//ChangeLinkClassOp
-
-export class AddVertexOp extends EditorOperation {
-
-    constructor(protected vertex: LinkVertex)
-    {
-        super();
-    }//ctor
-
-    exec() {
-        const link = this.vertex.parentElement;
-        const vertexNumber = this.vertex.vertexNumber;
-        link.vertices.splice(vertexNumber, 0, this.vertex);
-        for (let i = vertexNumber + 1; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber = i;
-        }//for
-        nextTick(() => {
-            this.vertex.ownConnectionPoint.updatePos();
-        });
-    }//exec
-
-    undo() {
-        const link = this.vertex.parentElement;
-        const vertexNumber = this.vertex.vertexNumber;
-        link.vertices.splice(vertexNumber, 1);
-        for (let i = vertexNumber; i < link.vertices.length; i++) {
-            link.vertices[i].vertexNumber = i;
-        }//for
-    }//undo
-}//AddVertexOp
-
-export class DeleteVertexOp extends AddVertexOp {
-    exec() {
-        super.undo();
-    }//exec
-
-    undo() {
-        super.exec();
-    }//undo
-}//DeleteVertexOp

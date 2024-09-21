@@ -46,16 +46,14 @@ export class AddVertexOp<V extends Vertex> extends EditorOperation {
     }//ctor
 
     exec() {
-        const area = this.vertex.parentElement;
-        area.addVertex(this.vertex);
+        this.vertex.parentElement.addVertex(this.vertex);
         nextTick(() => {
             this.vertex.ownConnectionPoint.updatePos();
         });
     }//exec
 
     undo() {
-        const area = this.vertex.parentElement;
-        area.deleteVertex(this.vertex);
+        this.vertex.parentElement.deleteVertex(this.vertex);
     }//undo
 }//AddVertexOp
 
