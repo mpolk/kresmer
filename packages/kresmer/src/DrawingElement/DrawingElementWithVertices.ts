@@ -6,9 +6,12 @@
  * DrawingElementWithVertices - a generic element, which host vertices
  ***************************************************************************/
 
+import { nextTick } from "vue";
 import DrawingElement from "./DrawingElement";
+import Vertex from "../Vertex/Vertex";
 import withVertices from "../Vertex/withVertices";
 import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
+import { EditorOperation } from "../UndoStack";
 
 export default abstract class DrawingElementWithVertices extends withVertices(DrawingElement) {
 
@@ -34,4 +37,35 @@ export default abstract class DrawingElementWithVertices extends withVertices(Dr
     }//updateConnectionPoints()
 
 }//DrawingElementWithVertices
+
+export class AddVertexOp<V extends Vertex> extends EditorOperation {
+
+    constructor(protected vertex: V)
+    {
+        super();
+    }//ctor
+
+    exec() {
+        const area = this.vertex.parentElement;
+        area.addVertex(this.vertex);
+        nextTick(() => {
+            this.vertex.ownConnectionPoint.updatePos();
+        });
+    }//exec
+
+    undo() {
+        const area = this.vertex.parentElement;
+        area.deleteVertex(this.vertex);
+    }//undo
+}//AddVertexOp
+
+export class DeleteVertexOp<V extends Vertex> extends AddVertexOp<V> {
+    exec() {
+        super.undo();
+    }//exec
+
+    undo() {
+        super.exec();
+    }//undo
+}//DeleteVertexOp
 

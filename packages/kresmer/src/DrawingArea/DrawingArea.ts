@@ -275,37 +275,6 @@ export class ChangeAreaClassOp extends EditorOperation {
     }//undo
 }//ChangeAreaClassOp
 
-export class AddAreaVertexOp extends EditorOperation {
-
-    constructor(protected vertex: AreaVertex)
-    {
-        super();
-    }//ctor
-
-    exec() {
-        const area = this.vertex.parentElement;
-        area.addVertex(this.vertex);
-        nextTick(() => {
-            this.vertex.ownConnectionPoint.updatePos();
-        });
-    }//exec
-
-    undo() {
-        const area = this.vertex.parentElement;
-        area.deleteVertex(this.vertex);
-    }//undo
-}//AddAreaVertexOp
-
-export class DeleteVertexOp extends AddAreaVertexOp {
-    exec() {
-        super.undo();
-    }//exec
-
-    undo() {
-        super.exec();
-    }//undo
-}//DeleteVertexOp
-
 
 class AreaMoveOp extends EditorOperation {
 
