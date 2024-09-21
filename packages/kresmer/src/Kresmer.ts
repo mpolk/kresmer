@@ -21,7 +21,7 @@ import NetworkLinkClass, { LinkBundleClass } from "./NetworkLink/NetworkLinkClas
 import NetworkComponentAdapterVue from "./NetworkComponent/NetworkComponentAdapter.vue";
 import ConnectionPointVue from "./ConnectionPoint/ConnectionPoint.vue";
 import NetworkLink, { AddLinkOp, ChangeLinkClassOp, DeleteLinkOp, LinkSpec, NetworkLinkMap } from "./NetworkLink/NetworkLink";
-import KresmerException, { UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
+import KresmerException, { UndefinedAreaException, UndefinedLinkException, UndefinedVertexException } from "./KresmerException";
 import UndoStack, { EditorOperation } from "./UndoStack";
 import DrawingElement, { UpdateElementOp } from "./DrawingElement/DrawingElement";
 import NetworkLinkBlank from "./NetworkLink/NetworkLinkBlank";
@@ -40,7 +40,7 @@ import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
 import SVGExporter from "./SVGExporter";
-import { AreaVertexType, VertexGeomChangeOp } from "./DrawingArea/AreaVertex";
+import AreaVertex, { AreaVertexSpec, AreaVertexType, VertexGeomChangeOp } from "./DrawingArea/AreaVertex";
 
 
 /**
@@ -1389,8 +1389,7 @@ export default class Kresmer extends KresmerEventHooks {
          */
         deleteLinkVertex: (vertexSpec: LinkVertexSpec) =>
         {
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            let vertex: LinkVertex = (vertexSpec as any).vertex;
+            let {vertex} = vertexSpec as {vertex: LinkVertex};
             if (!vertex) {
                 const {linkID, vertexNumber} = vertexSpec as {linkID: number, vertexNumber: number};
                 const link = this.getLinkById(linkID);
@@ -1405,7 +1404,7 @@ export default class Kresmer extends KresmerEventHooks {
         },//deleteLinkVertex
 
         /**
-         * Creates a new drawing area and places it ont the drawing
+         * Creates a new drawing area and places it on the drawing
          * @param componentClass The class of the area to be created
          * @param position A position where the new area's origin should be placed
          * @param coordSystem A coord system type for the position
@@ -1552,7 +1551,27 @@ export default class Kresmer extends KresmerEventHooks {
             this.undoStack.commitOperation();
             this.emit("area-vertex-type-changed", vertex);
         },//setAreaVertexType
-        
+
+        /**
+         * Deletes a area vertex
+         * @param vertexSpec The specifier of the vertex to delete (either direct ref or (areaID, vertexNumber) pair)
+         */
+        deleteAreaVertex: (vertexSpec: AreaVertexSpec) =>
+        {
+            let {vertex} = vertexSpec as {vertex: AreaVertex};
+            if (!vertex) {
+                const {areaID, vertexNumber} = vertexSpec as {areaID: number, vertexNumber: number};
+                const area = this.getAreaById(areaID);
+                if (!area) 
+                    throw new UndefinedAreaException({message: `Attempt to delete a vertex of the non-existent area (id=${areaID})`});
+                vertex = area.vertices[vertexNumber];
+                if (!vertex) 
+                    throw new UndefinedVertexException({message: `Attempt to delete a non-existent vertex (id=${areaID})`});
+            }//if
+            this.undoStack.execAndCommit(new DeleteVertexOp(vertex));
+            this.emit("area-vertex-deleted", vertex);
+        },//deleteAreaVertex
+            
         /**
          * Update the specified drawing element props and name (if required)
          * @param element The element to update

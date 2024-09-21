@@ -288,6 +288,7 @@ export class AreaVertexGeometry {
 }//AreaVertexGeometry
 
 export type AreaVertexInitParams = VertexInitParams & {geometry?: AreaVertexGeometryRaw|AreaVertexGeometry};
+export type AreaVertexSpec = {vertex: AreaVertex}|{areaID: number, vertexNumber: number};
 
 // Editor operations
 export class VertexGeomChangeOp extends EditorOperation {

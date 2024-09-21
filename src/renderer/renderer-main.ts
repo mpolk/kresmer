@@ -703,6 +703,11 @@ appCommandExecutor.on("add-area-vertex", (areaID: number, segmentNumber: number,
     kresmer.edAPI.addAreaVertex(areaID, segmentNumber, mousePos);
 });//addAreaVertex
 
+appCommandExecutor.on("delete-area-vertex", (areaID: number, vertexNumber: number) =>
+{
+    kresmer.edAPI.deleteAreaVertex({areaID, vertexNumber});
+});//deleteAreaVertex
+    
 appCommandExecutor.on("set-area-vertex-type-to-L", (areaID: number, vertexNumber: number) =>
 {
     kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "L");

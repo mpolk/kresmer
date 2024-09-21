@@ -30,7 +30,7 @@ Now Kresmer core-component can connect to the backend server and load the librar
 ```typescript
 new Kresmer("#mountPoint", {
     backendServerURL: url, backendServerPassword: password, 
-    libData: {stdlib: stdlibXML, lib1: "lib1XML"},
+    libData: {stdlib: stdlibXML, lib1: lib1XML},
     drawingData: drawingXML,
 })
 ```
