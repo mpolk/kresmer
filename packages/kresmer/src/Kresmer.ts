@@ -1526,29 +1526,13 @@ export default class Kresmer extends KresmerEventHooks {
             if (!area) {
                 throw new KresmerException(`Attempt to set the type of the non-existent vertex (areaID=${areaID},vertex=${vertexNumber})`);
             }//if
+            if (vertex.geometry.type === type)
+                return;
             const op = new VertexGeomChangeOp(vertex);
             this.undoStack.startOperation(op);
-            let prevVertexNumber= vertexNumber - 1;
-            if (prevVertexNumber < 0)
-                prevVertexNumber += area.vertices.length;
-            const prevVertex = area.vertices[prevVertexNumber];
-            switch (type) {
-                case "C":
-                    vertex.geometry = {type, cp1: prevVertex.coords, cp2: vertex.coords};
-                    break;
-                case "S":
-                    vertex.geometry = {type, cp2: vertex.coords};
-                    break;
-                case "Q":
-                    vertex.geometry = {type, cp: {x: (vertex.coords.x + prevVertex.coords.x) / 2, y: (vertex.coords.y + prevVertex.coords.y) / 2}};
-                    break;
-                case "L":
-                    vertex.geometry = {type};
-                    break;
-                case "T":
-                    vertex.geometry = {type};
-                }//switch
+            vertex.setType(type);
             this.undoStack.commitOperation();
+            vertex.isSelected = true;
             this.emit("area-vertex-type-changed", vertex);
         },//setAreaVertexType
 

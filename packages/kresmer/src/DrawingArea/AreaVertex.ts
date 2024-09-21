@@ -49,6 +49,37 @@ export default class AreaVertex extends Vertex {
     get geometry(): AreaVertexGeometry {return this._geometry}
     set geometry(newValue: AreaVertexGeometryRaw|AreaVertexGeometry) {this._geometry = new AreaVertexGeometry(newValue)}
 
+    setType(newType: AreaVertexType)
+    {
+        const prevVertex = this.prevNeighbour!;
+        switch (newType) {
+            case "C":
+                this.geometry = {
+                    type: newType, 
+                    cp1: {x: this.coords.x/3 + prevVertex.coords.x*2/3, y: this.coords.y/3 + prevVertex.coords.y*2/3}, 
+                    cp2: {x: this.coords.x*2/3 + prevVertex.coords.x/3, y: this.coords.y*2/3 + prevVertex.coords.y/3}, 
+                };
+                break;
+            case "S":
+                this.geometry = {
+                    type: newType, 
+                    cp2: {x: this.coords.x*2/3 + prevVertex.coords.x/3, y: this.coords.y*2/3 + prevVertex.coords.y/3}, 
+                };
+                break;
+            case "Q":
+                this.geometry = {
+                    type: newType, 
+                    cp: {x: (this.coords.x + prevVertex.coords.x) / 2, y: (this.coords.y + prevVertex.coords.y) / 2}
+                };
+                break;
+            case "L":
+                this.geometry = {type: newType};
+                break;
+            case "T":
+                this.geometry = {type: newType};
+        }//switch
+    }//setType
+
     readonly handleCaptureTargets: SVGElement[] = [];
     isGoingToDragHandle?: 1|2;
     handleDragged?: 1|2;
