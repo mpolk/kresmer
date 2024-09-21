@@ -23,7 +23,7 @@ import LinkBundle from "../NetworkLink/LinkBundle";
 import LibraryLoader from "./LibraryLoader";
 import DrawingArea from '../DrawingArea/DrawingArea';
 import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
-import { AreaVertexInitParams } from "../DrawingArea/AreaVertex";
+import { AreaVertexGeometry, AreaVertexInitParams } from "../DrawingArea/AreaVertex";
 
 /**
  * Drawing file parser
@@ -395,7 +395,19 @@ export default class DrawingParser {
             throw new ParsingException(`"x" and "y" attributes should present \
                                         in AreaVertex: ${element.parentElement?.toString()}`);
         }//if
-        return {pos: {x: parseFloat(x), y: parseFloat(y)}};
+        const geometryStr = element.getAttribute("geometry");
+        let geometry: AreaVertexGeometry;
+        if (geometryStr === null) 
+            geometry = new AreaVertexGeometry();
+        else {
+            const [type, ...cps] = geometryStr.split(" ");
+            const controlPoints = cps.map(cp => {
+                const [x, y] = cp.split(",").map(n => parseFloat(n));
+                return {x, y};
+            });
+            geometry = new AreaVertexGeometry(type, ...controlPoints);
+        }//if
+        return {pos: {x: parseFloat(x), y: parseFloat(y)}, geometry};
     }//parseAreaVertex
 
 

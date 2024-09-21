@@ -10,7 +10,7 @@ import { InjectionKey, nextTick } from "vue";
 import Kresmer from "../Kresmer";
 import { UndefinedAreaClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
-import AreaVertex, { AreaVertexGeometry, AreaVertexInitParams } from "./AreaVertex";
+import AreaVertex, { AreaVertexGeometryRaw, AreaVertexInitParams } from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { EditorOperation } from "../UndoStack";
 import { Position } from "../Transform/Transform";
@@ -135,7 +135,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         return this.kresmer.areasByName;
     }//_byNameIndex
 
-    override addVertex(segmentNumber: number, pos: Position, geometry?: AreaVertexGeometry)
+    override addVertex(segmentNumber: number, pos: Position, geometry?: AreaVertexGeometryRaw)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${pos.x}, ${pos.y})`);
         const vertexNumber = segmentNumber + 1;

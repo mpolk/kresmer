@@ -13,6 +13,7 @@ import DrawingArea from "./DrawingArea";
 import MouseEventCapture from "../MouseEventCapture";
 import { EditorOperation } from "../UndoStack";
 import XMLFormatter, { XMLTag } from "../XMLFormatter";
+import { KresmerException } from "../Kresmer";
 
 /** Drawing Area Vertex */
 
@@ -27,7 +28,7 @@ export default class AreaVertex extends Vertex {
     constructor(parentElement: DrawingArea, vertexNumber: number, initParams?: AreaVertexInitParams) 
     {
         super(parentElement, vertexNumber, initParams);
-        this._geometry = new Geometry(initParams?.geometry);
+        this._geometry = new AreaVertexGeometry(initParams?.geometry);
     }//ctor
 
     get parentElement() {return super.parentElement as DrawingArea}
@@ -44,9 +45,9 @@ export default class AreaVertex extends Vertex {
         this._isSelected = newValue;
     }//isSelected
 
-    private _geometry: Geometry;
-    get geometry(): Geometry {return this._geometry}
-    set geometry(newValue: AreaVertexGeometry|Geometry) {this._geometry = new Geometry(newValue)}
+    private _geometry: AreaVertexGeometry;
+    get geometry(): AreaVertexGeometry {return this._geometry}
+    set geometry(newValue: AreaVertexGeometryRaw|AreaVertexGeometry) {this._geometry = new AreaVertexGeometry(newValue)}
 
     readonly handleCaptureTargets: SVGElement[] = [];
     isGoingToDragHandle?: 1|2;
@@ -196,10 +197,10 @@ export default class AreaVertex extends Vertex {
             const cp1 = {x: 2 * prevVertex.coords.x - cp0.x, y: 2 * prevVertex.coords.y - cp0.y};
             switch (this._geometry.type) {
                 case "S": 
-                    g = new Geometry({type:"C", cp1, cp2: this._geometry.controlPoints[0]!});
+                    g = new AreaVertexGeometry({type:"C", cp1, cp2: this._geometry.controlPoints[0]!});
                     break;
                 case "T": 
-                    g = new Geometry({type:"Q", cp: cp1});
+                    g = new AreaVertexGeometry({type:"Q", cp: cp1});
                     break;
             }//switch
         }//if
@@ -209,7 +210,7 @@ export default class AreaVertex extends Vertex {
 
 }//AreaVertex
 
-export type AreaVertexGeometry =
+export type AreaVertexGeometryRaw =
     | {type: "L"}
     | {type: "C", cp1: Position, cp2: Position}
     | {type: "S", cp2: Position}
@@ -217,14 +218,32 @@ export type AreaVertexGeometry =
     | {type: "T"}
     ;
 
-export type AreaVertexType = AreaVertexGeometry["type"];
+export type AreaVertexType = AreaVertexGeometryRaw["type"];
 
-class Geometry {
-    constructor(init?: AreaVertexGeometry|Geometry)
+export class AreaVertexGeometry {
+    constructor();
+    constructor(init: AreaVertexGeometryRaw|AreaVertexGeometry|undefined);
+    constructor(type: string, ...controlPoints: Position[]);
+    constructor(init?: AreaVertexGeometryRaw|AreaVertexGeometry|string|undefined, ...controlPoints: Position[])
     {
-        if (init instanceof Geometry) {
+        if (init instanceof AreaVertexGeometry) {
             this.type = init.type;
             init.controlPoints.forEach(cp => {this.controlPoints.push({...cp})});
+        } else if (typeof init === "string") {
+            switch (init) {
+                case "L": case "C": case "S": case "Q": case "T":
+                    this.type = init;
+                    controlPoints.forEach(cp => {this.controlPoints.push({...cp})});
+                    break;
+                default:
+                    throw new KresmerException(`Invalid area vertex type: ${init}`);
+            }//switch
+            if ((this.type === "L" && this.controlPoints.length !== 0) ||
+                (this.type === "C" && this.controlPoints.length !== 2) ||
+                (this.type === "S" && this.controlPoints.length !== 1) ||
+                (this.type === "Q" && this.controlPoints.length !== 1) ||
+                (this.type === "T" && this.controlPoints.length !== 0))
+                throw new KresmerException(`Invalid area vertex geometry: ${this.type}(${this.controlPoints.length})`);
         } else if (init) {
             this.type = init.type;
             if ("cp" in init)
@@ -238,7 +257,7 @@ class Geometry {
         }//if
     }//ctor
 
-    readonly type: AreaVertexGeometry["type"];
+    readonly type: AreaVertexGeometryRaw["type"];
     readonly controlPoints: Position[] = [];
 
     toPath(pos: Position)
@@ -258,7 +277,7 @@ class Geometry {
         tag.addAttrib("geometry", v);
     }//toXML
 
-    copy() {return new Geometry(this)}
+    copy() {return new AreaVertexGeometry(this)}
 
     move(delta: Shift)
     {
@@ -266,9 +285,9 @@ class Geometry {
             this.controlPoints[i] = {x: this.controlPoints[i].x + delta.x, y: this.controlPoints[i].y + delta.y};
         }//for
     }//move
-}//Geometry
+}//AreaVertexGeometry
 
-export type AreaVertexInitParams = VertexInitParams & {geometry?: AreaVertexGeometry|Geometry};
+export type AreaVertexInitParams = VertexInitParams & {geometry?: AreaVertexGeometryRaw|AreaVertexGeometry};
 
 // Editor operations
 export class VertexGeomChangeOp extends EditorOperation {
@@ -278,8 +297,8 @@ export class VertexGeomChangeOp extends EditorOperation {
         this.oldGeometry = vertex.geometry.copy();
     }//ctor
 
-    private oldGeometry: Geometry;
-    private newGeometry?: Geometry;
+    private oldGeometry: AreaVertexGeometry;
+    private newGeometry?: AreaVertexGeometry;
 
     override onCommit()
     {
