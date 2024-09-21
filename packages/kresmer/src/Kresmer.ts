@@ -35,7 +35,7 @@ import DrawingElementWithVertices from "./DrawingElement/DrawingElementWithVerti
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
-import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp } from "./DrawingArea/DrawingArea";
+import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp, AddAreaVertexOp } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
@@ -1316,7 +1316,7 @@ export default class Kresmer extends KresmerEventHooks {
             if (!link) {
                 throw new KresmerException(`Attempt to add a vertex to the non-existent link (id=${linkID})`);
             }//if
-            const vertex = link.addVertex(segmentNumber, this.applyScreenCTM(mousePos));
+            const vertex = link.createVertex(segmentNumber, this.applyScreenCTM(mousePos));
             this.emit("link-vertex-added", vertex);
             return vertex;
         },//addLinkVertex
@@ -1504,7 +1504,8 @@ export default class Kresmer extends KresmerEventHooks {
             if (!area) {
                 throw new KresmerException(`Attempt to add a vertex to the non-existent area (id=${areaID})`);
             }//if
-            const vertex = area.addVertex(segmentNumber, this.applyScreenCTM(mousePos));
+            const vertex = area.createVertex(segmentNumber, this.applyScreenCTM(mousePos));
+            this.undoStack.execAndCommit(new AddAreaVertexOp(vertex));
             this.emit("area-vertex-added", vertex);
             return vertex;
         },//addAreaVertex

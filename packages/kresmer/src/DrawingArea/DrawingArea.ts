@@ -135,14 +135,13 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         return this.kresmer.areasByName;
     }//_byNameIndex
 
-    override addVertex(segmentNumber: number, pos: Position, geometry?: AreaVertexGeometryRaw)
+    override createVertex(segmentNumber: number, pos: Position, geometry?: AreaVertexGeometryRaw)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${pos.x}, ${pos.y})`);
         const vertexNumber = segmentNumber + 1;
         const vertex: AreaVertex = new AreaVertex(this, vertexNumber, {pos, geometry}).init();
-        this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
         return vertex;
-    }//addVertex
+    }//createVertex
 
     public get wouldAlignVertices() {return new Set(this.vertices);}
 
@@ -276,7 +275,7 @@ export class ChangeAreaClassOp extends EditorOperation {
     }//undo
 }//ChangeAreaClassOp
 
-export class AddVertexOp extends EditorOperation {
+export class AddAreaVertexOp extends EditorOperation {
 
     constructor(protected vertex: AreaVertex)
     {
@@ -285,11 +284,7 @@ export class AddVertexOp extends EditorOperation {
 
     exec() {
         const area = this.vertex.parentElement;
-        const vertexNumber = this.vertex.vertexNumber;
-        area.vertices.splice(vertexNumber, 0, this.vertex);
-        for (let i = vertexNumber + 1; i < area.vertices.length; i++) {
-            area.vertices[i].vertexNumber = i;
-        }//for
+        area.addVertex(this.vertex);
         nextTick(() => {
             this.vertex.ownConnectionPoint.updatePos();
         });
@@ -305,7 +300,7 @@ export class AddVertexOp extends EditorOperation {
     }//undo
 }//AddVertexOp
 
-export class DeleteVertexOp extends AddVertexOp {
+export class DeleteVertexOp extends AddAreaVertexOp {
     exec() {
         super.undo();
     }//exec

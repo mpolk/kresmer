@@ -222,7 +222,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         }
     }//relPosToAbs
 
-    override addVertex(segmentNumber: number, pos: Position)
+    override createVertex(segmentNumber: number, pos: Position)
     {
         console.debug(`Add vertex: ${this.name}:${segmentNumber} (${pos.x}, ${pos.y})`);
         const vertexNumber = segmentNumber + 1;
@@ -232,7 +232,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         const vertex = new LinkVertex(this, vertexNumber, {pos}).init();
         this.kresmer.undoStack.execAndCommit(new AddVertexOp(vertex));
         return vertex;
-    }//addVertex
+    }//createVertex
 
     public get wouldAlignVertices()
     {
