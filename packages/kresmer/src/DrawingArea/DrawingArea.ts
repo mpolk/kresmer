@@ -292,13 +292,9 @@ export class AddAreaVertexOp extends EditorOperation {
 
     undo() {
         const area = this.vertex.parentElement;
-        const vertexNumber = this.vertex.vertexNumber;
-        area.vertices.splice(vertexNumber, 1);
-        for (let i = vertexNumber; i < area.vertices.length; i++) {
-            area.vertices[i].vertexNumber = i;
-        }//for
+        area.deleteVertex(this.vertex);
     }//undo
-}//AddVertexOp
+}//AddAreaVertexOp
 
 export class DeleteVertexOp extends AddAreaVertexOp {
     exec() {

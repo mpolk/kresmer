@@ -34,6 +34,7 @@ export default function withVertices
         get tail() {return this.vertices[this.vertices.length-1];}
     
         abstract createVertex(segmentNumber: number, position: Position): Vertex;
+
         addVertex(vertex: Vertex): ObjectWithVertices
         {
             this.vertices.splice(vertex.vertexNumber, 0, vertex);
@@ -43,7 +44,14 @@ export default function withVertices
             return this;
         }//addVertex
 
-        // abstract deleteVertex(vertex: Vertex): Vertex;
+        deleteVertex(vertex: Vertex): ObjectWithVertices
+        {
+            this.vertices.splice(vertex.vertexNumber, 1);
+            for (let i = vertex.vertexNumber; i < this.vertices.length; i++) {
+                this.vertices[i].vertexNumber = i;
+            }//for
+            return this;
+        }//deleteVertex
     
         abstract get wouldAlignVertices(): Set<Vertex>;
     

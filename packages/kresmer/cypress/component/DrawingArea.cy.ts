@@ -89,14 +89,14 @@ describe('DrawingArea object test', () => {
     })
 
     it("Add one more vertex", () => {
-        swamp.addVertex(1, {x: 800, y: 800});
+        swamp.addVertex(swamp.createVertex(1, {x: 800, y: 800}));
     })
     specify("...and now the triangular swamp is actually quadrangular and has 4 vertices", () => {
         cy.get(".area.vertex").should("have.length", 4);
     })
 
     specify("...and even pentangular after adding yet one more vertex", () => {
-        swamp.addVertex(3, {x: 150, y: 400});
+        swamp.addVertex(swamp.createVertex(3, {x: 150, y: 400}));
         cy.get(".area.vertex").should("have.length", 5);
     })
 

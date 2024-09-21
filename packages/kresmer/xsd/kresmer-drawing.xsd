@@ -127,6 +127,13 @@
     <xs:complexType name="area-vertex">
         <xs:attribute name="x" type="xs:float"/>
         <xs:attribute name="y" type="xs:float"/>
+        <xs:attribute name="geometry">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[L|C|S|Q|T]( \d+,\d+)*"></xs:pattern>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
     </xs:complexType>
 
     <xs:complexType name="drawing-element-props">
