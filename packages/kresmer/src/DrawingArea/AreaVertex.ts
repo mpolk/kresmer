@@ -51,25 +51,30 @@ export default class AreaVertex extends Vertex {
 
     setType(newType: AreaVertexType)
     {
+        if (newType === this.geometry.type)
+            return;
         const prevVertex = this.prevNeighbour!;
         switch (newType) {
             case "C":
                 this.geometry = {
                     type: newType, 
                     cp1: {x: this.coords.x/3 + prevVertex.coords.x*2/3, y: this.coords.y/3 + prevVertex.coords.y*2/3}, 
-                    cp2: {x: this.coords.x*2/3 + prevVertex.coords.x/3, y: this.coords.y*2/3 + prevVertex.coords.y/3}, 
+                    cp2: this.geometry.controlPoints[0] ?? 
+                        {x: this.coords.x*2/3 + prevVertex.coords.x/3, y: this.coords.y*2/3 + prevVertex.coords.y/3}, 
                 };
                 break;
             case "S":
                 this.geometry = {
                     type: newType, 
-                    cp2: {x: this.coords.x*2/3 + prevVertex.coords.x/3, y: this.coords.y*2/3 + prevVertex.coords.y/3}, 
+                    cp2: this.geometry.controlPoints[1] ?? this.geometry.controlPoints[0] ?? 
+                        {x: this.coords.x*2/3 + prevVertex.coords.x/3, y: this.coords.y*2/3 + prevVertex.coords.y/3}, 
                 };
                 break;
             case "Q":
                 this.geometry = {
                     type: newType, 
-                    cp: {x: (this.coords.x + prevVertex.coords.x) / 2, y: (this.coords.y + prevVertex.coords.y) / 2}
+                    cp: this.geometry.controlPoints[1] ?? this.geometry.controlPoints[0] ?? 
+                        {x: (this.coords.x + prevVertex.coords.x) / 2, y: (this.coords.y + prevVertex.coords.y) / 2}
                 };
                 break;
             case "L":
