@@ -1,3 +1,7 @@
+## 0.16.6
+
+Yet one more "private" release. Drawing area implementation in progress.
+
 ## 0.16.5
 
 One more "private" release. Fixed an error in library data priority handling.
