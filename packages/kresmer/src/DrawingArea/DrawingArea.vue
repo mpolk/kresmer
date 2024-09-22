@@ -147,6 +147,15 @@
             props.model.drag(event);
         }//if
     }//onMouseMove
+
+    function onSegmentClick(event: MouseEvent, segmentNumber: number)
+    {
+        if (event.ctrlKey)
+            props.model.kresmer.edAPI.addAreaVertex(props.model.id, segmentNumber, event);
+        else
+            // eslint-disable-next-line vue/no-mutating-props
+            props.model.vertices[(segmentNumber + 1)%props.model.vertices.length].isSelected = true;
+    }//onSegmentClick
 </script>
 
 <template>
@@ -167,7 +176,10 @@
                 <text class="area seg-mark middle" :style="segMarkStyle">
                     <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i+1 }}({{ model.vertices[(i+1)%props.model.vertices.length].geometry.type }})</textPath>
                 </text>
-                <path :d="segMarkPathData(i)" class="segment-padding" @contextmenu.stop="model.onRightClick($event, i)"/>
+                <path :d="segMarkPathData(i)" class="segment-padding" 
+                    @click="onSegmentClick($event, i)"
+                    @contextmenu.stop="model.onRightClick($event, i)"
+                    />
             </template>
         </template>
         <template v-for="vertex in model.vertices" :key="`vertex${vertex.key}`">
