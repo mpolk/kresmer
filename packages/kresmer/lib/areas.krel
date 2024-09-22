@@ -21,7 +21,7 @@
             .padding {stroke-width: 8px;}
             .area {--area-color: #3b3b3b; --highlighted-area-color: #000000;}
             .segment {stroke: var(--area-color); stroke-width: 2px; stroke-linecap: round; xx-filter: url(#kre:fltLinkFilter)}
-            .segment.highlighted, .segment.selected {stroke: var(--highlighted-area-color); stroke-width: 3px}
+            .segment.highlighted, .segment.selected {stroke: red; stroke-width: 4px}
             .vertex {stroke: var(--highlighted-border-color); stroke-width: 4px; fill: white; r: 6px}
             .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
             .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}

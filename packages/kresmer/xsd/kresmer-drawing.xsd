@@ -130,7 +130,7 @@
         <xs:attribute name="geometry">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:pattern value="[L|C|S|Q|T]( \d+,\d+)*"></xs:pattern>
+                    <xs:pattern value="[L|C|S|Q|T]( \d+(\.\d+)?,\d+(\.\d+)?)*"></xs:pattern>
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>

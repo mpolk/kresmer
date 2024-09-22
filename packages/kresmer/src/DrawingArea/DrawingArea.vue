@@ -95,7 +95,7 @@
         const v = props.model.vertices[i1];
         return {
             segment: true, 
-            selected: v.isSelected && v.geometry.type !== "S" && v.geometry.type !== "T",
+            selected: v.isSelected,
         };
     }//segmentPathClass
 
@@ -165,10 +165,7 @@
             <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
                 <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
                 <text class="area seg-mark middle" :style="segMarkStyle">
-                    <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i }}</textPath>
-                </text>
-                <text class="area seg-mark start" :style="segMarkStyle">
-                    <textPath :href="`#${segmentPathID(i)}`">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ model.vertices[i].geometry.type }}</textPath>
+                    <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i+1 }}({{ model.vertices[(i+1)%props.model.vertices.length].geometry.type }})</textPath>
                 </text>
                 <path :d="segMarkPathData(i)" class="segment-padding" @contextmenu.stop="model.onRightClick($event, i)"/>
             </template>
