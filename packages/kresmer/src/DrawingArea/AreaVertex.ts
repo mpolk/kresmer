@@ -49,7 +49,7 @@ export default class AreaVertex extends Vertex {
     get geometry(): AreaVertexGeometry {return this._geometry}
     set geometry(newValue: AreaVertexGeometryRaw|AreaVertexGeometry) {this._geometry = new AreaVertexGeometry(newValue)}
 
-    setType(newType: AreaVertexType)
+    changeType(newType: AreaVertexType)
     {
         if (newType === this.geometry.type)
             return;
@@ -83,7 +83,7 @@ export default class AreaVertex extends Vertex {
             case "T":
                 this.geometry = {type: newType};
         }//switch
-    }//setType
+    }//changeType
 
     readonly handleCaptureTargets: SVGElement[] = [];
     isGoingToDragHandle?: 1|2;

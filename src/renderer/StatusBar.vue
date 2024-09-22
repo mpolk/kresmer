@@ -153,7 +153,7 @@
         font: status-bar; 
         font-size: 0.85rem;
         color: white;
-        background-color: rgb(52, 122, 250);
+        background-color: rgb(53, 127, 223);
 
         .pane {
             position:relative;

@@ -1530,7 +1530,7 @@ export default class Kresmer extends KresmerEventHooks {
                 return;
             const op = new VertexGeomChangeOp(vertex);
             this.undoStack.startOperation(op);
-            vertex.setType(type);
+            vertex.changeType(type);
             this.undoStack.commitOperation();
             vertex.isSelected = true;
             this.emit("area-vertex-type-changed", vertex);
