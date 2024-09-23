@@ -208,13 +208,13 @@
 
     .segment {
         fill: none; //stroke: transparent;
-        &.selected {
-            stroke: darkred;
-            // stroke-width: 4px !important;
-        }
+        // &.selected {
+        //     stroke: darkred;
+        //     stroke-width: 4px !important;
+        // }
     }
 
     .segment-padding {
-            fill: transparent; stroke: transparent; stroke-width: 4px;
+        fill: transparent; stroke: transparent; stroke-width: 8px;
     }
 </style>
