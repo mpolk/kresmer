@@ -107,7 +107,7 @@
     "area-vertex": {
       "align": "Align Vertex",
       "delete": "Delete Vertex",
-      "set-type": "Set Vertex Type to",
+      "set-type": "Set Segment Type to",
       "set-type-to-L": "L (straight line)",
       "set-type-to-C": "C (cubic Bezier curve)",
       "set-type-to-S": "S (smooth cubic Bezier curve)",

@@ -237,7 +237,7 @@ export default class Menus {
             ],
             "area-segment": [
                 { label: t("ctx-menu.area-segment.add-vertex", "Add Vertex"), id: "add-area-vertex" },
-                { label: t("ctx-menu.area-segment.set-type", "Set Vertex Type to"), submenu: [
+                { label: t("ctx-menu.area-segment.set-type", "Set Segment Type to"), submenu: [
                     {label: t("ctx-menu.area-segment.set-type-to-L", "L (straight line)"), id: "set-area-segment-type-to-L"},
                     {label: t("ctx-menu.area-segment.set-type-to-C", "C (cubic Bezier curve)"), id: "set-area-segment-type-to-C"},
                     {label: t("ctx-menu.area-segment.set-type-to-S", "S (smooth cubic Bezier curve)"), id: "set-area-segment-type-to-S"},

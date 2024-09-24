@@ -352,7 +352,12 @@ kresmer.on("area-right-click", (area: DrawingArea, mouseEvent: MouseEvent, segme
     else
         window.electronAPI.showContextMenu("area-segment", area.id, segmentNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
 });//onAreaRightClick
-    
+
+kresmer.on("area-double-click", (area: DrawingArea, /* segmentNumber: number,  mouseEvent: MouseEvent */) =>
+{
+    vueComponentPropsSidebar.show(area);
+});//onAreaDoubleClick
+        
 kresmer.on("area-vertex-right-click", (vertex: AreaVertex, mouseEvent: MouseEvent) =>
 {
     window.electronAPI.showContextMenu("area-vertex", vertex.parentElement.id, vertex.vertexNumber, {x: mouseEvent.clientX, y: mouseEvent.clientY});
@@ -672,7 +677,12 @@ appCommandExecutor.on("duplicate-area", (areaID?: number) =>
     const area = kresmer.getAreaById(areaID ?? kresmer.selectedElement!.id)!;
     kresmer.edAPI.duplicateArea(area);
 });//duplicateArea
-        
+
+appCommandExecutor.on("delete-area", (areaID?: number) =>
+{
+    kresmer.edAPI.deleteArea(areaID ?? kresmer.selectedElement!.id);
+});//duplicateArea
+            
 function moveAreaInZOrder(moveMethod: (area: DrawingArea) => void)
 {
     return (areaID?: number) => {
