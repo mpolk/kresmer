@@ -329,6 +329,7 @@ export class AreaVertexGeometry {
         for (let i = 0; i < this.controlPoints.length; i++) {
             this.controlPoints[i] = {x: this.controlPoints[i].x + delta.x, y: this.controlPoints[i].y + delta.y};
         }//for
+        return this;
     }//move
 }//AreaVertexGeometry
 

@@ -1436,11 +1436,16 @@ export default class Kresmer extends KresmerEventHooks {
             let name: string;
             for (let n = 1; (name = `${original.name}.${n}`) && this.areasByName.has(name); n++) {/**/}
             const props = clone(original.props);
+            const shift = {x: 20, y: 20};
             const vertices = original.vertices.map(v => {
-                return {pos: {x: v.anchor.pos.x + 20, y: v.anchor.pos.y + 20}, geometry: v.geometry}
+                return {
+                    pos: {x: v.anchor.pos.x + shift.x, y: v.anchor.pos.y + shift.y}, 
+                    geometry: v.geometry.copy().move(shift),
+                }
             });
             const newArea = new DrawingArea(this, original.getClass(), {name, props, vertices});
             this.undoStack.execAndCommit(new AddAreaOp(newArea));
+            nextTick(() => newArea.selectThis());
         },//duplicateArea
 
         /**
