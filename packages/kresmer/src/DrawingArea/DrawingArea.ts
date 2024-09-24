@@ -117,7 +117,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
     completeSettingBorder()
     {
         if (this.borderBeingCreated.value)
-            this.setBorder(this.borderBeingCreated.value)
+            this.kresmer.undoStack.execAndCommit(new SetAreaBorderOp(this, this.borderBeingCreated.value));
     }//cancelSettingBorder
 
     cancelSettingBorder()
