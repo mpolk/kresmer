@@ -40,7 +40,7 @@ import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
 import SVGExporter from "./SVGExporter";
-import AreaVertex, { AreaVertexSpec, AreaVertexType, VertexGeomChangeOp } from "./DrawingArea/AreaVertex";
+import AreaVertex, { AreaVertexSpec, AreaSegmentType, VertexGeomChangeOp } from "./DrawingArea/AreaVertex";
 
 
 /**
@@ -1511,20 +1511,20 @@ export default class Kresmer extends KresmerEventHooks {
         },//addAreaVertex
         
         /**
-         * Sets an area vertex type
-         * @param areaID The area this vertex belongs
-         * @param vertexNumber The seq number of the segment where tne vertex should be added
-         * @param type The new type of the vertex
+         * Sets an area segment type
+         * @param areaID The area this segment belongs
+         * @param segmentNumber The seq number of the segment where tne segment should be added
+         * @param type The new type of the segment
          */
-        setAreaVertexType: (areaID: number, vertexNumber: number, type: AreaVertexType) =>
+        setAreaSegmentType: (areaID: number, segmentNumber: number, type: AreaSegmentType) =>
         {
             const area = this.getAreaById(areaID);
             if (!area) {
-                throw new KresmerException(`Attempt to set the type of the vertex of the non-existent area (id=${areaID})`);
+                throw new KresmerException(`Attempt to set the type of the segment of the non-existent area (id=${areaID})`);
             }//if
-            const vertex = area.vertices[vertexNumber];
+            const vertex = area.vertices[segmentNumber].nextNeighbour;
             if (!area) {
-                throw new KresmerException(`Attempt to set the type of the non-existent vertex (areaID=${areaID},vertex=${vertexNumber})`);
+                throw new KresmerException(`Attempt to set the type of the non-existent segment (areaID=${areaID},segment=${segmentNumber})`);
             }//if
             if (vertex.geometry.type === type)
                 return;
@@ -1534,7 +1534,7 @@ export default class Kresmer extends KresmerEventHooks {
             this.undoStack.commitOperation();
             vertex.isSelected = true;
             this.emit("area-vertex-type-changed", vertex);
-        },//setAreaVertexType
+        },//setAreaSegmentType
 
         /**
          * Deletes a area vertex

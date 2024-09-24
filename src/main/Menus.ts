@@ -62,14 +62,14 @@ export interface ContextMenuCommands {
     "edit-area-properties": ContextMenuHandler<"area">,
 
     "add-area-vertex": ContextMenuHandler<"area-segment">,
+    "set-area-segment-type-to-L": ContextMenuHandler<"area-segment">,
+    "set-area-segment-type-to-C": ContextMenuHandler<"area-segment">,
+    "set-area-segment-type-to-S": ContextMenuHandler<"area-segment">,
+    "set-area-segment-type-to-Q": ContextMenuHandler<"area-segment">,
+    "set-area-segment-type-to-T": ContextMenuHandler<"area-segment">,
 
     "align-area-vertex": ContextMenuHandler<"area-vertex">,
     "delete-area-vertex": ContextMenuHandler<"area-vertex">,
-    "set-area-vertex-type-to-L": ContextMenuHandler<"area-vertex">,
-    "set-area-vertex-type-to-C": ContextMenuHandler<"area-vertex">,
-    "set-area-vertex-type-to-S": ContextMenuHandler<"area-vertex">,
-    "set-area-vertex-type-to-Q": ContextMenuHandler<"area-vertex">,
-    "set-area-vertex-type-to-T": ContextMenuHandler<"area-vertex">,
 }//ContextMenuCommands
 
 export type ContextMenuCommandID = keyof ContextMenuCommands;
@@ -236,18 +236,18 @@ export default class Menus {
                 { label: t("ctx-menu.area.properties", "Area Properties..."), id: "edit-area-properties" },
             ],
             "area-segment": [
-                { label: t("ctx-menu.area.add-vertex", "Add Vertex"), id: "add-area-vertex" },
+                { label: t("ctx-menu.area-segment.add-vertex", "Add Vertex"), id: "add-area-vertex" },
+                { label: t("ctx-menu.area-segment.set-type", "Set Vertex Type to"), submenu: [
+                    {label: t("ctx-menu.area-segment.set-type-to-L", "L (straight line)"), id: "set-area-segment-type-to-L"},
+                    {label: t("ctx-menu.area-segment.set-type-to-C", "C (cubic Bezier curve)"), id: "set-area-segment-type-to-C"},
+                    {label: t("ctx-menu.area-segment.set-type-to-S", "S (smooth cubic Bezier curve)"), id: "set-area-segment-type-to-S"},
+                    {label: t("ctx-menu.area-segment.set-type-to-Q", "Q (quadratic Bezier curve)"), id: "set-area-segment-type-to-Q"},
+                    {label: t("ctx-menu.area-segment.set-type-to-T", "T (smooth quadratic Bezier curve)"), id: "set-area-segment-type-to-T"},
+                ]}
             ],
             "area-vertex": [
                 { label: t("ctx-menu.area-vertex.align", "Align Vertex"), id: "align-area-vertex" },
                 { label: t("ctx-menu.area-vertex.delete", "Delete Vertex"), id: "delete-area-vertex" },
-                { label: t("ctx-menu.area-vertex.set-type", "Set Vertex Type to"), submenu: [
-                    {label: t("ctx-menu.area-vertex.set-type-to-L", "L (straight line)"), id: "set-area-vertex-type-to-L"},
-                    {label: t("ctx-menu.area-vertex.set-type-to-C", "C (cubic Bezier curve)"), id: "set-area-vertex-type-to-C"},
-                    {label: t("ctx-menu.area-vertex.set-type-to-S", "S (smooth cubic Bezier curve)"), id: "set-area-vertex-type-to-S"},
-                    {label: t("ctx-menu.area-vertex.set-type-to-Q", "Q (quadratic Bezier curve)"), id: "set-area-vertex-type-to-Q"},
-                    {label: t("ctx-menu.area-vertex.set-type-to-T", "T (smooth quadratic Bezier curve)"), id: "set-area-vertex-type-to-T"},
-                ]}
             ],
         }
 

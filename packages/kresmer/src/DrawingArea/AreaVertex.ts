@@ -45,6 +45,14 @@ export default class AreaVertex extends Vertex {
         this._isSelected = newValue;
     }//isSelected
 
+    override get nextNeighbour(): AreaVertex {return this.parentElement.vertices[(this.vertexNumber + 1) % this.parentElement.vertices.length]}
+    override get prevNeighbour(): AreaVertex {
+        let i = this.vertexNumber - 1;
+        if (i < 0)
+            i += this.parentElement.vertices.length;
+        return this.parentElement.vertices[i];
+    }//prevNeighbor
+
     private _geometry: AreaVertexGeometry;
     get geometry(): AreaVertexGeometry {return this._geometry}
     set geometry(newValue: AreaVertexGeometryRaw|AreaVertexGeometry) {this._geometry = new AreaVertexGeometry(newValue)}
@@ -255,6 +263,7 @@ export type AreaVertexGeometryRaw =
     ;
 
 export type AreaVertexType = AreaVertexGeometryRaw["type"];
+export type AreaSegmentType = AreaVertexType;
 
 export class AreaVertexGeometry {
     constructor();

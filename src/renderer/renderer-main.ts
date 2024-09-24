@@ -708,30 +708,30 @@ appCommandExecutor.on("delete-area-vertex", (areaID: number, vertexNumber: numbe
     kresmer.edAPI.deleteAreaVertex({areaID, vertexNumber});
 });//deleteAreaVertex
     
-appCommandExecutor.on("set-area-vertex-type-to-L", (areaID: number, vertexNumber: number) =>
+appCommandExecutor.on("set-area-segment-type-to-L", (areaID: number, segmentNumber: number) =>
 {
-    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "L");
-});//addAreaVertex
+    kresmer.edAPI.setAreaSegmentType(areaID, segmentNumber, "L");
+});//set-area-segment-type-to-L
 
-appCommandExecutor.on("set-area-vertex-type-to-C", (areaID: number, vertexNumber: number) =>
+appCommandExecutor.on("set-area-segment-type-to-C", (areaID: number, segmentNumber: number) =>
 {
-    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "C");
-});//addAreaVertex
+    kresmer.edAPI.setAreaSegmentType(areaID, segmentNumber, "C");
+});//set-area-segment-type-to-C
 
-appCommandExecutor.on("set-area-vertex-type-to-S", (areaID: number, vertexNumber: number) =>
+appCommandExecutor.on("set-area-segment-type-to-S", (areaID: number, segmentNumber: number) =>
 {
-    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "S");
-});//addAreaVertex
+    kresmer.edAPI.setAreaSegmentType(areaID, segmentNumber, "S");
+});//set-area-segment-type-to-S
 
-appCommandExecutor.on("set-area-vertex-type-to-Q", (areaID: number, vertexNumber: number) =>
+appCommandExecutor.on("set-area-segment-type-to-Q", (areaID: number, segmentNumber: number) =>
 {
-    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "Q");
-});//addAreaVertex
+    kresmer.edAPI.setAreaSegmentType(areaID, segmentNumber, "Q");
+});//set-area-segment-type-to-Q
 
-appCommandExecutor.on("set-area-vertex-type-to-T", (areaID: number, vertexNumber: number) =>
+appCommandExecutor.on("set-area-segment-type-to-T", (areaID: number, segmentNumber: number) =>
 {
-    kresmer.edAPI.setAreaVertexType(areaID, vertexNumber, "T");
-});//addAreaVertex
+    kresmer.edAPI.setAreaSegmentType(areaID, segmentNumber, "T");
+});//set-area-segment-type-to-T
                 
 appCommandExecutor.on("scale-drawing", direction => {
     switch (direction) {

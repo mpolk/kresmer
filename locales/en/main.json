@@ -99,7 +99,9 @@
       "move-up": "Move Up",
       "move-down": "Move Down",
       "move-to-bottom": "Move to Bottom",
-      "properties": "Area Properties...",
+      "properties": "Area Properties..."
+    },
+    "area-segment": {
       "add-vertex": "Add Vertex"
     },
     "area-vertex": {
