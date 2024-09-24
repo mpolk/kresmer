@@ -79,6 +79,7 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
         public drag(event: MouseEvent)
         {
             if (!this.savedMousePos) {
+                this.startDrag(event);
                 return;
             }//if
 

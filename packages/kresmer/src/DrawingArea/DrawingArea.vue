@@ -137,6 +137,8 @@
             return;
         }//if
 
+        // eslint-disable-next-line vue/no-mutating-props
+        props.model.isGoingToBeDragged = false;
         MouseEventCapture.release();
         props.model.selectThis();
     }//onMouseUp
