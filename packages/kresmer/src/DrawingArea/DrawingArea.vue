@@ -152,7 +152,9 @@
 
     function onSegmentClick(event: MouseEvent, segmentNumber: number)
     {
-        if (event.ctrlKey)
+        if (props.model.borderBeingCreated.value)
+            props.model.completeSettingBorder();
+        else if (event.ctrlKey)
             props.model.kresmer.edAPI.addAreaVertex(props.model.id, segmentNumber, event);
         else
             // eslint-disable-next-line vue/no-mutating-props
@@ -163,7 +165,7 @@
     {
         if (props.model.borderBeingCreated.value) {
             // eslint-disable-next-line vue/no-mutating-props
-            props.model.borderBeingCreated.value.to = segmentNumber;
+            props.model.borderBeingCreated.value.to = (segmentNumber+ 1)%props.model.vertices.length;
         }//if
     }//onMouseEnterSegment
 
@@ -171,7 +173,7 @@
     {
         if (props.model.borderBeingCreated.value) {
             // eslint-disable-next-line vue/no-mutating-props
-            props.model.borderBeingCreated.value.to = props.model.borderBeingCreated.value.from;
+            props.model.borderBeingCreated.value.to = (props.model.borderBeingCreated.value.from + 1)%props.model.vertices.length;
         }//if
     }//onMouseLeaveSegment
 </script>

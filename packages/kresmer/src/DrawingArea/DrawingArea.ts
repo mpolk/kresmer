@@ -72,7 +72,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
     setBorder(border: AreaBorder)
     {
-        this.borders.push(border);
+        this.borders.push({...border});
         return this;
     }//setBorder
 
@@ -111,8 +111,20 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
     startSettingBorder(segmentNumber: number, borderClass: string)
     {
-        this.borderBeingCreated.value = {clazz: borderClass, from: segmentNumber, to: segmentNumber};
+        this.borderBeingCreated.value = {clazz: borderClass, from: segmentNumber, to: (segmentNumber + 1)%this.vertices.length};
     }//startSettingBorder
+
+    completeSettingBorder()
+    {
+        if (this.borderBeingCreated.value)
+            this.setBorder(this.borderBeingCreated.value)
+    }//cancelSettingBorder
+
+    cancelSettingBorder()
+    {
+        this.borderBeingCreated.value = undefined;
+    }//cancelSettingBorder
+
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<DrawingArea>;
@@ -129,7 +141,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
             for (const v of this.vertices) {
                 v.isSelected = false;
             }//for
-            this.borderBeingCreated.value = undefined;
+            this.cancelSettingBorder();
         }//if
     }//isSelected
 
