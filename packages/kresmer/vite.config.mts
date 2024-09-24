@@ -21,12 +21,20 @@ export default defineConfig({
       }
     },
 
+    css: {
+      preprocessorOptions: {
+        scss: {
+          api: "modern-compiler"
+        }
+      }
+    },
+
     build: {
       lib: {
         entry: path.resolve(__dirname, 'src/Kresmer.ts'),
         name: 'Kresmer',
         fileName: (format) => `kresmer.${format}.js`,
-        },
+      },
       sourcemap: true,
       rollupOptions: {
         external: ['vue', 'uuid', 'postcss'],
@@ -40,6 +48,6 @@ export default defineConfig({
           },
           exports: "named",
         },
-      }
-    }  
+      }//rollupOptions
+    }//build  
 });
