@@ -682,6 +682,14 @@ appCommandExecutor.on("delete-area", (areaID?: number) =>
 {
     kresmer.edAPI.deleteArea(areaID ?? kresmer.selectedElement!.id);
 });//duplicateArea
+
+appCommandExecutor.on("set-area-border", (areaID: number, segmentNumber: number) => {
+    kresmer.edAPI.startSettingAreaBorder(areaID, segmentNumber, kresmer.getAreaById(areaID)!.borderStyles[0]);
+});//set-area-border
+
+appCommandExecutor.on("remove-area-border", (areaID: number, segmentNumber: number) => {
+    kresmer.edAPI.removeAreaBorder(areaID, segmentNumber);
+});//set-area-border
             
 function moveAreaInZOrder(moveMethod: (area: DrawingArea) => void)
 {

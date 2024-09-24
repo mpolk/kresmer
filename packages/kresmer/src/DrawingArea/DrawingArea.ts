@@ -6,7 +6,7 @@
  * Drawing Area - data object 
  ***************************************************************************/
 
-import { InjectionKey, nextTick } from "vue";
+import { InjectionKey, nextTick, reactive } from "vue";
 import Kresmer from "../Kresmer";
 import { UndefinedAreaClassException } from "../KresmerException";
 import DrawingAreaClass from "./DrawingAreaClass";
@@ -18,6 +18,7 @@ import { MapWithZOrder, withZOrder } from "../ZOrdering";
 import { draggable } from "../Draggable";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import XMLFormatter, { XMLTag } from "../XMLFormatter";
+import { Rule } from "postcss";
 
 /**
  * Drawing Area 
@@ -67,11 +68,51 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
     }//set origin
 
     readonly borders: AreaBorder[] = [];
+    readonly borderBeingCreated: {value: AreaBorder|undefined} = reactive({value: undefined});
 
     setBorder(border: AreaBorder)
     {
         this.borders.push(border);
+        return this;
     }//setBorder
+
+    getBorder(segmentNumber: number): AreaBorder|undefined
+    {
+        const n = this.vertices.length;
+        return this.borders.findLast(border => {
+            return segmentNumber >= border.from && segmentNumber < border.to ||
+                segmentNumber + n >= border.from && segmentNumber < border.to + n;
+        });
+    }//getBorder
+
+    removeBorder(border: AreaBorder)
+    {
+        const i = this.borders.findIndex(b => b === border);
+        if (i >= 0)
+            this.borders.splice(i);
+    }//removeBorder
+
+    get borderStyles(): string[]
+    {
+        if (!this._class.style)
+            return [];
+
+        const styles: string[] = [];
+        for (const decl of this._class.style.nodes) {
+            if (decl.type === "rule") {
+                const selector = (decl as Rule).selectors[0];
+                if (selector.startsWith(".border"))
+                    styles.push(selector.split(".")[1]);
+            }//if
+        }//for
+
+        return styles;
+    }//borderStyles
+
+    startSettingBorder(segmentNumber: number, borderClass: string)
+    {
+        this.borderBeingCreated.value = {clazz: borderClass, from: segmentNumber, to: segmentNumber};
+    }//startSettingBorder
 
     /** A symbolic key for the component instance injection */
     static readonly injectionKey = Symbol() as InjectionKey<DrawingArea>;
@@ -156,6 +197,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
             }//for
         }//if
     }//alignConnectedLinks
+
 
     public onClick(event: MouseEvent, segmentNumber?: number)
     {
@@ -386,3 +428,38 @@ export class AreaMoveToBottomOp extends EditorOperation {
     }//undo
 
 }//AreaMoveToBottomOp
+
+
+export class SetAreaBorderOp extends EditorOperation {
+
+    constructor(protected area: DrawingArea, protected border: AreaBorder) 
+    {
+        super();
+    }//ctor
+
+    override exec(): void {
+        this.area.setBorder(this.border);
+    }//exec
+
+    override undo(): void {
+        this.area.removeBorder(this.border);
+    }//undo
+
+}//SetAreaBorderOp
+
+export class RemoveAreaBorderOp extends SetAreaBorderOp {
+
+    constructor(protected area: DrawingArea, protected border: AreaBorder) 
+    {
+        super(area, border);
+    }//ctor
+
+    override exec(): void {
+        super.undo();
+    }//exec
+
+    override undo(): void {
+        super.exec();
+    }//undo
+
+}//RemoveAreaBorderOp

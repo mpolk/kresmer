@@ -15,7 +15,7 @@ import NetworkComponentController, { TransformMode } from "./NetworkComponent/Ne
 import LinkVertex from "./NetworkLink/LinkVertex";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import {toCamelCase} from "./Utils";
-import DrawingArea from "./DrawingArea/DrawingArea";
+import DrawingArea, { AreaBorder } from "./DrawingArea/DrawingArea";
 import AreaVertex from "./DrawingArea/AreaVertex";
 import { ParsedLibraryNode } from "./loaders/LibraryParser";
 
@@ -91,6 +91,8 @@ class KresmerEventFormats  {
     "area-vertex-right-click":          (vertex: AreaVertex, mouseEvent: MouseEvent) => void;
     "area-vertex-connected":            (vertex: AreaVertex) => void;
     "area-vertex-disconnected":         (vertex: AreaVertex, connectionPoint: ConnectionPoint) => void;
+    "area-border-set":                  (area: DrawingArea, border: AreaBorder) => void;
+    "area-border-removed":              (area: DrawingArea, border: AreaBorder) => void;
     "connection-point-right-click":     (connectionPoint: ConnectionPoint) => void;
 }//KresmerEventFormats
 
@@ -619,6 +621,22 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("area-vertex-right-click")
     protected onAreaVertexRightClick(vertex: AreaVertex, mouseEvent: MouseEvent) {}
+
+    /**
+     * Is called when a new drawing area border is set
+     * @param area An area that the border was set for
+     * @param border A new border
+     */
+    @overridableHandler("area-border-set")
+    protected onAreaBorderSet(area: DrawingArea, border: AreaBorder) {}
+
+    /**
+     * Is called when a new drawing area border is removed
+     * @param area An area that the border was removed from
+     * @param border A border removed
+     */
+    @overridableHandler("area-border-removed")
+    protected onAreaBorderRemoved(area: DrawingArea, border: AreaBorder) {}
 
     /**
      * Is called upon right mouse click on the connection point

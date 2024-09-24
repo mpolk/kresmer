@@ -53,7 +53,7 @@
 
     const cursorStyle = computed(() => {
         return {
-            cursor: props.model.isDragged ? "move" : props.model.isSelected ? "default" : "pointer",
+            cursor: props.model.isDragged ? "move" : "default",
         }
     })//segmentStyle
 
@@ -171,7 +171,7 @@
             @dblclick.self="model.onDoubleClick($event)"
             />
         <path v-for="(border, i) in model.borders" :key="`border${i}`" 
-            :d="borderPathData(border)" :class="border.clazz" style="fill: none;" />
+            :d="borderPathData(border)" class="border" :class="border.clazz" style="fill: none;" />
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
                 <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
@@ -218,5 +218,6 @@
 
     .segment-padding {
         fill: transparent; stroke: transparent; stroke-width: 8px;
+        cursor: pointer;
     }
 </style>

@@ -57,7 +57,7 @@
                 stroke: var(--highlighted-border-color); 
                 stroke-width: 2px; 
             }
-            .coast {
+            .border.coast {
                 stroke: blue; 
             }
         </style>

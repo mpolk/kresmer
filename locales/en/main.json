@@ -102,17 +102,19 @@
       "properties": "Area Properties..."
     },
     "area-segment": {
-      "add-vertex": "Add Vertex"
-    },
-    "area-vertex": {
-      "align": "Align Vertex",
-      "delete": "Delete Vertex",
+      "add-vertex": "Add Vertex",
       "set-type": "Set Segment Type to",
       "set-type-to-L": "L (straight line)",
       "set-type-to-C": "C (cubic Bezier curve)",
       "set-type-to-S": "S (smooth cubic Bezier curve)",
       "set-type-to-Q": "Q (quadratic Bezier curve)",
-      "set-type-to-T": "T (smooth quadratic Bezier curve)"
+      "set-type-to-T": "T (smooth quadratic Bezier curve)",
+      "set-border": "Set Border",
+      "remove-border": "Set Border"
+    },
+    "area-vertex": {
+      "align": "Align Vertex",
+      "delete": "Delete Vertex"
     }
   }
 }

@@ -67,6 +67,8 @@ export interface ContextMenuCommands {
     "set-area-segment-type-to-S": ContextMenuHandler<"area-segment">,
     "set-area-segment-type-to-Q": ContextMenuHandler<"area-segment">,
     "set-area-segment-type-to-T": ContextMenuHandler<"area-segment">,
+    "set-area-border": ContextMenuHandler<"area-segment">,
+    "remove-area-border": ContextMenuHandler<"area-segment">,
 
     "align-area-vertex": ContextMenuHandler<"area-vertex">,
     "delete-area-vertex": ContextMenuHandler<"area-vertex">,
@@ -243,11 +245,15 @@ export default class Menus {
                     {label: t("ctx-menu.area-segment.set-type-to-S", "S (smooth cubic Bezier curve)"), id: "set-area-segment-type-to-S"},
                     {label: t("ctx-menu.area-segment.set-type-to-Q", "Q (quadratic Bezier curve)"), id: "set-area-segment-type-to-Q"},
                     {label: t("ctx-menu.area-segment.set-type-to-T", "T (smooth quadratic Bezier curve)"), id: "set-area-segment-type-to-T"},
-                ]}
+                ]},
+                { label: t("ctx-menu.area-segment.set-border", "Set Border"), id: "set-area-border" },
+                { label: t("ctx-menu.area-segment.remove-border", "Remove Border"), id: "remove-area-border" },
             ],
             "area-vertex": [
                 { label: t("ctx-menu.area-vertex.align", "Align Vertex"), id: "align-area-vertex" },
                 { label: t("ctx-menu.area-vertex.delete", "Delete Vertex"), id: "delete-area-vertex" },
+                { label: t("ctx-menu.area-segment.set-border", "Set Border"), id: "set-area-border" },
+                { label: t("ctx-menu.area-segment.remove-border", "Remove Border"), id: "remove-area-border" },
             ],
         }
 

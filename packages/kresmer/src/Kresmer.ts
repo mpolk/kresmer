@@ -35,7 +35,7 @@ import DrawingElementWithVertices, { AddVertexOp, DeleteVertexOp } from "./Drawi
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
-import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp } from "./DrawingArea/DrawingArea";
+import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp, RemoveAreaBorderOp } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
@@ -1518,7 +1518,7 @@ export default class Kresmer extends KresmerEventHooks {
         /**
          * Sets an area segment type
          * @param areaID The area this segment belongs
-         * @param segmentNumber The seq number of the segment where tne segment should be added
+         * @param segmentNumber The seq number of the segment, which should be set
          * @param type The new type of the segment
          */
         setAreaSegmentType: (areaID: number, segmentNumber: number, type: AreaSegmentType) =>
@@ -1528,7 +1528,7 @@ export default class Kresmer extends KresmerEventHooks {
                 throw new KresmerException(`Attempt to set the type of the segment of the non-existent area (id=${areaID})`);
             }//if
             const vertex = area.vertices[segmentNumber].nextNeighbour;
-            if (!area) {
+            if (!vertex) {
                 throw new KresmerException(`Attempt to set the type of the non-existent segment (areaID=${areaID},segment=${segmentNumber})`);
             }//if
             if (vertex.geometry.type === type)
@@ -1540,7 +1540,40 @@ export default class Kresmer extends KresmerEventHooks {
             vertex.isSelected = true;
             this.emit("area-vertex-type-changed", vertex);
         },//setAreaSegmentType
-
+        
+        /**
+         * Starts setting an area border beginning from the specified segment
+         * @param areaID The area, which border should be set
+         * @param segmentNumber The seq number of the segment where tne new border should begin
+         */
+        startSettingAreaBorder: (areaID: number, segmentNumber: number, borderClass: string) =>
+        {
+            const area = this.getAreaById(areaID);
+            if (!area) {
+                throw new KresmerException(`Attempt to set a border of the non-existent area (id=${areaID})`);
+            }//if
+            area.startSettingBorder(segmentNumber, borderClass);
+        },//startSettingAreaBorder
+        
+        /**
+         * Removes an area border
+         * @param areaID The area, which border should be removed
+         * @param segmentNumber The seq number of the segment the border covers
+         */
+        removeAreaBorder: (areaID: number, segmentNumber: number) =>
+        {
+            const area = this.getAreaById(areaID);
+            if (!area) {
+                throw new KresmerException(`Attempt to remove a border from the non-existent area (id=${areaID})`);
+            }//if
+            const border = area.getBorder(segmentNumber);
+            if (!border) {
+                throw new KresmerException(`Attempt to remove a non-existent area border area (id=${areaID},segment=${segmentNumber})`);
+            }//if
+            this.undoStack.execAndCommit(new RemoveAreaBorderOp(area, border));
+            this.emit("area-border-removed", area, border);
+        },//removeAreaBorder
+        
         /**
          * Deletes a area vertex
          * @param vertexSpec The specifier of the vertex to delete (either direct ref or (areaID, vertexNumber) pair)
