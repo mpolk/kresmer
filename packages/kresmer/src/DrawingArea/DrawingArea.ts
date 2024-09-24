@@ -129,6 +129,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
             for (const v of this.vertices) {
                 v.isSelected = false;
             }//for
+            this.borderBeingCreated.value = undefined;
         }//if
     }//isSelected
 

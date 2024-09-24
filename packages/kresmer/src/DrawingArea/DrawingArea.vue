@@ -46,7 +46,7 @@
         return {
             [props.model.getClass().name]: true,
             area: true,
-            selected: props.model.isSelected,
+            selected: props.model.isSelected && !props.model.borderBeingCreated.value,
             dragged: props.model.isDragged,
         }
     })//areaClass
@@ -158,6 +158,22 @@
             // eslint-disable-next-line vue/no-mutating-props
             props.model.vertices[(segmentNumber + 1)%props.model.vertices.length].isSelected = true;
     }//onSegmentClick
+
+    function onMouseEnterSegment(segmentNumber: number)
+    {
+        if (props.model.borderBeingCreated.value) {
+            // eslint-disable-next-line vue/no-mutating-props
+            props.model.borderBeingCreated.value.to = segmentNumber;
+        }//if
+    }//onMouseEnterSegment
+
+    function onMouseLeaveSegment(segmentNumber: number)
+    {
+        if (props.model.borderBeingCreated.value) {
+            // eslint-disable-next-line vue/no-mutating-props
+            props.model.borderBeingCreated.value.to = props.model.borderBeingCreated.value.from;
+        }//if
+    }//onMouseLeaveSegment
 </script>
 
 <template>
@@ -172,15 +188,22 @@
             />
         <path v-for="(border, i) in model.borders" :key="`border${i}`" 
             :d="borderPathData(border)" class="border" :class="border.clazz" style="fill: none;" />
+        <path v-if="model.borderBeingCreated.value"
+            :d="borderPathData(model.borderBeingCreated.value)" class="border" :class="model.borderBeingCreated.value.clazz" style="fill: none;" />
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
-                <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
-                <text class="area seg-mark middle" :style="segMarkStyle">
-                    <textPath :href="`#${segmentPathID(i)}`" startOffset="50%">{{ i+1 }}({{ model.vertices[(i+1)%props.model.vertices.length].geometry.type }})</textPath>
-                </text>
+                <template v-if="!model.borderBeingCreated.value">
+                    <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
+                    <text class="area seg-mark middle" :style="segMarkStyle">
+                        <textPath :href="`#${segmentPathID(i)}`" 
+                            startOffset="50%">{{ i+1 }}({{ model.vertices[(i+1)%props.model.vertices.length].geometry.type }})</textPath>
+                    </text>
+                </template>
                 <path :d="segMarkPathData(i)" class="segment-padding" 
                     @click="onSegmentClick($event, i)"
                     @contextmenu.stop="model.onRightClick($event, i)"
+                    @mouseenter="onMouseEnterSegment(i)"
+                    @mouseleave="onMouseLeaveSegment(i)"
                     />
             </template>
         </template>

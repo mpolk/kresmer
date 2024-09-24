@@ -684,7 +684,7 @@ appCommandExecutor.on("delete-area", (areaID?: number) =>
 });//duplicateArea
 
 appCommandExecutor.on("set-area-border", (areaID: number, segmentNumber: number) => {
-    kresmer.edAPI.startSettingAreaBorder(areaID, segmentNumber, kresmer.getAreaById(areaID)!.borderStyles[0]);
+    kresmer.edAPI.startSettingAreaBorder(areaID, segmentNumber, "coast");
 });//set-area-border
 
 appCommandExecutor.on("remove-area-border", (areaID: number, segmentNumber: number) => {
