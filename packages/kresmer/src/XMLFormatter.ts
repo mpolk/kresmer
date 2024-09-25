@@ -70,6 +70,7 @@ export default class XMLFormatter {
             tag = new XMLTag(tag, ...attribs);
         this.tagStack.push(tag);
         this.addLine(tag.opening());
+        tag.outputPositionMark = this.lines.length;
         this.indent();
         return this;
     }//pushTag
@@ -78,7 +79,12 @@ export default class XMLFormatter {
     {
         console.assert(this.tagStack.length > 0);
         this.unindent();
-        this.addLine(this.tagStack.pop()!.closing());
+        const tag = this.tagStack.pop()!;
+        if (tag.outputPositionMark !== this.lines.length  || tag.hasAttribs) {
+            this.addLine(tag.closing());
+        } else {
+            this.lines.pop();
+        }//if
         return this;
     }//popTag
 
@@ -95,7 +101,10 @@ export class XMLTag {
         this.attribs = attribs;
     }//ctor
 
+    public outputPositionMark: number|undefined;
     private attribs: ([string, unknown?]|string)[];
+
+    get hasAttribs() {return Boolean(this.attribs.length);}
 
     private attribSeparator = " ";
     public setAttribSeparator(newSep: string)
