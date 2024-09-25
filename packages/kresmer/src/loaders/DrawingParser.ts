@@ -21,7 +21,7 @@ import KresmerException, { KresmerExceptionSeverity } from "../KresmerException"
 import {toCamelCase} from "../Utils";
 import LinkBundle from "../NetworkLink/LinkBundle";
 import LibraryLoader from "./LibraryLoader";
-import DrawingArea from '../DrawingArea/DrawingArea';
+import DrawingArea, { AreaBorder } from '../DrawingArea/DrawingArea';
 import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
 import { AreaVertexGeometry, AreaVertexInitParams } from "../DrawingArea/AreaVertex";
 
@@ -353,6 +353,7 @@ export default class DrawingParser {
 
         let propsFromChildNodes: DrawingElementRawProps = {};
         const vertices: AreaVertexInitParams[] = [];
+        let borders: AreaBorder[] = [];
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -361,6 +362,9 @@ export default class DrawingParser {
                     break;
                 case "vertices":
                     vertices.push(...this.parseAreaVertices(child));
+                    break;
+                case "borders":
+                    borders = this.parseAreaBorders(child);
                     break;
             }//switch
         }//for
@@ -372,7 +376,7 @@ export default class DrawingParser {
         } else if (!areaName) {
             areaName = undefined;
         }//if
-        const area = new DrawingArea(this.kresmer, className, {name: areaName, dbID, props, vertices});
+        const area = new DrawingArea(this.kresmer, className, {name: areaName, dbID, props, vertices, borders});
         return area;
     }//parseAreaNode
 
@@ -393,7 +397,7 @@ export default class DrawingParser {
         const y = element.getAttribute("y");
         if (x === null || y === null) {
             throw new ParsingException(`"x" and "y" attributes should present \
-                                        in AreaVertex: ${element.parentElement?.toString()}`);
+                                        in AreaVertex: "${element.parentElement?.getAttribute("name")}"`);
         }//if
         const geometryStr = element.getAttribute("geometry");
         let geometry: AreaVertexGeometry;
@@ -409,6 +413,28 @@ export default class DrawingParser {
         }//if
         return {pos: {x: parseFloat(x), y: parseFloat(y)}, geometry};
     }//parseAreaVertex
+
+
+    private parseAreaBorders(element: Element)
+    {
+        const borders: AreaBorder[] = [];
+        for (let i = 0; i < element.childElementCount; i++) {
+            const child = element.children[i];
+            if (child.nodeName === "border") {
+                const clazz = child.getAttribute("class");
+                if (!clazz)
+                    throw new ParsingException(`Border without the class in the area "${element.parentElement?.getAttribute("name")}"`);
+                const from = child.getAttribute("from");
+                if (!from)
+                    throw new ParsingException(`Border without the "from" attribute in the area "${element.parentElement?.getAttribute("name")}"`);
+                const to = child.getAttribute("to");
+                if (!to)
+                    throw new ParsingException(`Border without the "to" attribute in the area "${element.parentElement?.getAttribute("name")}"`);
+                borders.push(new AreaBorder(clazz, parseInt(from), parseInt(to)))
+            }//if
+        }//for
+        return borders;
+    }//parseAreaBorders
 
 
     private parseProps(node: Element): DrawingElementRawProps

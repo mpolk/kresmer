@@ -63,11 +63,24 @@
                     <xs:element name="area">
                         <xs:complexType>
                             <xs:sequence>
-                                <xs:element name="props" type="drawing-element-props" minOccurs="0" maxOccurs="unbounded"/>
+                                <xs:element name="props" type="drawing-element-props" minOccurs="0" maxOccurs="1"/>
                                 <xs:element name="vertices">
                                     <xs:complexType>
                                         <xs:sequence>
                                             <xs:element name="vertex" type="area-vertex" minOccurs="0" maxOccurs="unbounded"/>
+                                        </xs:sequence>
+                                    </xs:complexType>
+                                </xs:element>
+                                <xs:element name="borders" minOccurs="0" maxOccurs="1">
+                                    <xs:complexType>
+                                        <xs:sequence>
+                                            <xs:element name="border">
+                                                <xs:complexType>
+                                                    <xs:attribute name="class" use="required"/>
+                                                    <xs:attribute name="from" use="required" type="xs:int"/>
+                                                    <xs:attribute name="to" use="required" type="xs:int"/>
+                                                </xs:complexType>
+                                            </xs:element>
                                         </xs:sequence>
                                     </xs:complexType>
                                 </xs:element>

@@ -49,7 +49,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         super(kresmer, clazz, args);
         let i = 0;
         args?.vertices?.forEach(initParams => this.vertices.push(new AreaVertex(this, i++, initParams)));
-        args?.borders?.forEach(this.setBorder);
+        args?.borders?.forEach(border => this.setBorder(border));
     }//ctor
 
     declare protected _class: DrawingAreaClass;
@@ -72,7 +72,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
     setBorder(border: AreaBorder)
     {
-        this.borders.push({...border});
+        this.borders.push(border);
         return this;
     }//setBorder
 
@@ -87,7 +87,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
     removeBorder(border: AreaBorder)
     {
-        const i = this.borders.findIndex(b => b === border);
+        const i = this.borders.findIndex(b => b.eq(border));
         if (i >= 0)
             this.borders.splice(i);
     }//removeBorder
@@ -111,13 +111,16 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
     startSettingBorder(segmentNumber: number, borderClass: string)
     {
-        this.borderBeingCreated.value = {clazz: borderClass, from: segmentNumber, to: (segmentNumber + 1)%this.vertices.length};
+        this.borderBeingCreated.value = new AreaBorder(borderClass, segmentNumber, (segmentNumber + 1)%this.vertices.length);
     }//startSettingBorder
 
     completeSettingBorder()
     {
-        if (this.borderBeingCreated.value)
+        if (this.borderBeingCreated.value) {
             this.kresmer.undoStack.execAndCommit(new SetAreaBorderOp(this, this.borderBeingCreated.value));
+            this.borderBeingCreated.value = undefined;
+            this.isSelected = false;
+        }//if
     }//cancelSettingBorder
 
     cancelSettingBorder()
@@ -167,6 +170,9 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
                 this.propsToXML(formatter);
                 formatter.pushTag("vertices")
                 this.vertices.forEach(v => v.toXML(formatter));
+                formatter.popTag()
+                formatter.pushTag("borders")
+                this.borders.forEach(b => b.toXML(formatter));
                 formatter.popTag()
             .popTag();
     }//toXML
@@ -254,10 +260,23 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 export class DrawingAreaMap extends MapWithZOrder<number, DrawingArea> {}
 export type AreaSpec = {area: DrawingArea}|{areaID: number};
 
-export interface AreaBorder {
-    from: number,
-    to: number,
-    clazz: string,
+export class AreaBorder {
+    constructor(
+        readonly clazz: string,
+        readonly from: number,
+        public to: number,
+    ) {}
+
+    public eq(anotherBorder: AreaBorder): boolean
+    {
+        return this.clazz === anotherBorder.clazz && this.from === anotherBorder.from && this.to === anotherBorder.to;
+    }//eq
+
+    public toXML(formatter: XMLFormatter)
+    {
+        const tag = new XMLTag("border", ["class", this.clazz], ["from", this.from], ["to", this.to]);
+        formatter.addTag(tag);
+    }//toXML
 }//AreaBorder
 
 
