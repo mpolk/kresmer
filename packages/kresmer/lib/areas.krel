@@ -50,7 +50,7 @@
         <style>
             /#kre\:std\:Swamp .strokes {stroke: blue; stroke-width: 1}
             .area {
-                --border-color: blue; --highlighted-border-color: darkblue; 
+                --border-color: blue; --highlighted-border-color: darkred; 
                 fill: url(#kre:std:Swamp); 
             }
             .area.selected { 

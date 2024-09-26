@@ -61,6 +61,7 @@
         return {
             stroke: props.model.isSelected ? props.highlightColor : props.color,
             cursor: cursorStyle.value.cursor,
+            strokeOpacity: props.model.isSelected ? 0.5 : 1,
         }
     })//areaStyle
 
@@ -195,7 +196,7 @@
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
                 <template v-if="!model.borderBeingCreated.value">
-                    <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)"/>
+                    <path :id="segmentPathID(i)" :d="segMarkPathData(i)" :class="segmentPathClass(i)" style="stroke-opacity: 0.2;"/>
                     <text class="area seg-mark middle" :style="segMarkStyle">
                         <textPath :href="`#${segmentPathID(i)}`" 
                             startOffset="50%">{{ i+1 }}({{ model.vertices[(i+1)%props.model.vertices.length].geometry.type }})</textPath>
@@ -220,29 +221,29 @@
         .label {
             cursor: default; dominant-baseline: ideographic;
         }
-    }
 
-    .seg-mark {
-        dominant-baseline: ideographic;
-        cursor: default;
-        &.middle {
-            text-anchor: middle;
+        .seg-mark {
+            dominant-baseline: ideographic;
+            cursor: default;
+            &.middle {
+                text-anchor: middle;
+            }
+            &.end {
+                text-anchor: end;
+            }
         }
-        &.end {
-            text-anchor: end;
+
+        .segment {
+            fill: none; //stroke: transparent;
+            // &.selected {
+            //     stroke: darkred;
+            //     stroke-width: 4px !important;
+            // }
         }
-    }
 
-    .segment {
-        fill: none; //stroke: transparent;
-        // &.selected {
-        //     stroke: darkred;
-        //     stroke-width: 4px !important;
-        // }
-    }
-
-    .segment-padding {
-        fill: transparent; stroke: transparent; stroke-width: 8px;
-        cursor: pointer;
+        .segment-padding {
+            fill: transparent; stroke: transparent; stroke-width: 8px;
+            cursor: pointer;
+        }
     }
 </style>
