@@ -132,6 +132,7 @@
     "vite-plugin-css-injected-by-js": "^3.0.1",
     "vite-plugin-dts": "^4.0.0-beta.0",
     "vite-plugin-i18next-loader": "^2.0.13",
+    "vite-plugin-vue-devtools": "^7.4.6",
     "vue-tsc": "^2.1.4"
   },
   "overrides": {
