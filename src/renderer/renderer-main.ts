@@ -694,7 +694,16 @@ appCommandExecutor.on("set-area-border", async(areaID: number, segmentNumber: nu
 appCommandExecutor.on("remove-area-border", (areaID: number, segmentNumber: number) => {
     kresmer.edAPI.removeAreaBorder(areaID, segmentNumber);
 });//set-area-border
-            
+
+appCommandExecutor.on("align-area-vertex", (parentID: number, vertexNumber: number) =>
+{
+    kresmer.edAPI.alignVertex({parentID, vertexNumber});
+});//alignAreaVertex
+    
+appCommandExecutor.on("align-area-vertices", (areaID?: number) => {
+    kresmer.edAPI.alignAreaVertices({areaID: areaID!});
+});//align-area-vertices
+
 function moveAreaInZOrder(moveMethod: (area: DrawingArea) => void)
 {
     return (areaID?: number) => {

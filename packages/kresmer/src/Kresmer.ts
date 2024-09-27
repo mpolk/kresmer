@@ -35,7 +35,7 @@ import DrawingElementWithVertices, { AddVertexOp, DeleteVertexOp } from "./Drawi
 import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
-import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp, RemoveAreaBorderOp } from "./DrawingArea/DrawingArea";
+import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp, RemoveAreaBorderOp, AreaSpec } from "./DrawingArea/DrawingArea";
 import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
@@ -1593,7 +1593,41 @@ export default class Kresmer extends KresmerEventHooks {
             this.undoStack.execAndCommit(new DeleteVertexOp(vertex));
             this.emit("area-vertex-deleted", vertex);
         },//deleteAreaVertex
-            
+
+        /**
+         * Aligns (or at least tries to) all area vertices to their neighbors
+         * @param areaSpec The specifier of the area (either direct ref or areaID)
+         */
+        alignAreaVertices: (areaSpec: AreaSpec) =>
+        {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            let area: DrawingArea|undefined = (areaSpec as any).area;
+            if (!area) {
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                const areaID = (areaSpec as any).areaID;
+                area = this.getAreaById(areaID);
+                if (!area) 
+                    throw new UndefinedAreaException({message: `Attempt to align a vertex of the non-existent area (id=${areaID})`});
+            }//if
+            const op = new VerticesMoveOp(area.wouldAlignVertices);
+            this.undoStack.startOperation(op);
+            const verticesAligned = area.alignVertices() as Set<Vertex>;
+            if (verticesAligned.size) {
+                for (const vertex of op.vertices) {
+                    if (!verticesAligned.has(vertex))
+                        op.vertices.delete(vertex);
+                }//for
+                this.undoStack.commitOperation();
+                for (const vertex of op.vertices) {
+                    vertex.notifyOnVertexMove();
+                }//for
+                return true;
+            } else {
+                this.undoStack.cancelOperation();
+                return false;
+            }//if
+        },//alignAreaVertices
+                
         /**
          * Update the specified drawing element props and name (if required)
          * @param element The element to update
