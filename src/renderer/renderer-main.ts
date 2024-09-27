@@ -10,7 +10,6 @@ import { IpcRendererEvent } from 'electron';
 import { createApp, reactive, toRaw } from 'vue';
 import i18next, {t} from 'i18next';
 import locales from 'virtual:i18next-loader';
-// import vueDevtools from '@vue/devtools';
 import Hints from './Hints';
 import StatusBar from './StatusBar.vue';
 import ToastPane from './ToastPane.vue';
@@ -39,10 +38,6 @@ import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 import { URLType } from './URLType';
 import LinkClassSelectionSidebar from './LinkClassSelectionSidebar.vue';
 import AreaClassSelectionSidebar from './AreaClassSelectionSidebar.vue';
-
-// if (process.env.NODE_ENV === 'development') {
-//     vueDevtools.connect(/* host, port */)
-// }//if
 
 i18next.init({
     resources: locales, 
