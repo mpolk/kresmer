@@ -7,7 +7,7 @@
  * (the word "class" here means a Kresmer class, not a Typescript one)
  ***************************************************************************/
 
-import {Root as PostCSSRoot} from 'postcss';
+import {Root as PostCSSRoot, Rule} from 'postcss';
 import { Template } from "../Kresmer";
 import DrawingElementClass, { ComputedProps, Functions, DrawingElementClassProps } from "../DrawingElement/DrawingElementClass";
 import { DrawingElementProps } from "../loaders/DrawingParser";
@@ -71,6 +71,24 @@ export default class DrawingAreaClass extends DrawingElementClass {
      * Returns the name of the vue-component for this class defs
      * @returns The vue-component name defs
      */
-     get defsVueName() {return "_Kre:area:" + this.name + ".defs"}
+    get defsVueName() {return "_Kre:area:" + this.name + ".defs"}
 
+    /** Returns all CSS-classes, which Kresmer interprets as border style classes */
+    get borderStyles(): string[]
+    {
+        if (!this.style)
+            return [];
+
+        const styles: string[] = [];
+        for (const decl of this.style.nodes) {
+            if (decl.type === "rule") {
+                const selector = (decl as Rule).selectors[0];
+                if (selector.startsWith(".border"))
+                    styles.push(selector.split(".")[2]);
+            }//if
+        }//for
+
+        return styles;
+    }//borderStyles
+ 
 }//DrawingAreaClass

@@ -49,6 +49,10 @@
     "cannot-connect": "Неможливо підключитися до серверної частини. Повідомлення наступне:",
     "cancel": "Скасувати"
   },
+  "border-class-selection-dialog": {
+    "title": "Виберіть клас межі...",
+    "cancel": "Скасувати"
+  },
   "class-selection-dialog": {
     "title": "Виберіть клас нового елемента...",
     "cancel": "Скасувати"
@@ -123,7 +127,8 @@
   "main": {
     "reload": "перезавантаження",
     "closing": "закриття",
-    "ask-for-unsaved-changes": "Поточне креслення містить незбережені зміни.\nВи хочете зберегти його до {{opName}}?"
+    "ask-for-unsaved-changes": "Поточне креслення містить незбережені зміни.\nВи хочете зберегти його до {{opName}}?",
+    "no-border-styles": "Клас областей \"{{className}}\" не визначає жодних стилів меж"
   },
   "status-bar": {
     "notifications": "Сповіщення ({{notificationCount}})",

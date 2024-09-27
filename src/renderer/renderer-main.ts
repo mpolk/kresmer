@@ -21,7 +21,6 @@ import Kresmer, {
     NetworkComponentController, NetworkComponent,
     NetworkLink, DrawingElement, Vertex,
     TransformMode, ConnectionPointProxy,
-    // KresmerVue,
     kresmerPlugin,
     DrawingArea, AreaVertex,
  } from 'kresmer';
@@ -38,6 +37,7 @@ import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 import { URLType } from './URLType';
 import LinkClassSelectionSidebar from './LinkClassSelectionSidebar.vue';
 import AreaClassSelectionSidebar from './AreaClassSelectionSidebar.vue';
+import BorderClassSelectionDialog from './BorderClassSelectionDialog.vue';
 
 i18next.init({
     resources: locales, 
@@ -149,7 +149,7 @@ const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsS
     InstanceType<typeof AppSettingsSidebar>;
 const vueComponentPropsSidebar = createApp(ComponentPropsSidebar).mount("#componentPropsSidebar") as 
     InstanceType<typeof ComponentPropsSidebar>;
-const vueComponentClassSelectionDialog = createApp(ComponentClassSelectionSidebar).use(kresmerPlugin).mount("#componentClassSelectionSidebar") as
+const vueComponentClassSelectionSidebar = createApp(ComponentClassSelectionSidebar).use(kresmerPlugin).mount("#componentClassSelectionSidebar") as
     InstanceType<typeof ComponentClassSelectionSidebar>;
 const vueLinkClassSelectionSidebar = createApp(LinkClassSelectionSidebar).use(kresmerPlugin).mount("#linkClassSelectionSidebar") as
     InstanceType<typeof LinkClassSelectionSidebar>;
@@ -159,6 +159,8 @@ const vueDrawingMergeDialog = createApp(DrawingMergeDialog).mount("#dlgDrawingMe
     InstanceType<typeof DrawingMergeDialog>;
 const vueBackendConnectionDialog = createApp(BackendConnectionDialog).mount("#dlgBackendConnection") as 
     InstanceType<typeof BackendConnectionDialog>;
+const vueBorderClassSelectionDialog = createApp(BorderClassSelectionDialog).mount("#dlgBorderClassSelection") as 
+    InstanceType<typeof BorderClassSelectionDialog>;
 const vueAboutDialog = createApp(AboutDialog).mount("#dlgAbout") as 
     InstanceType<typeof AboutDialog>;
 export const vueToastPane = createApp(ToastPane).mount("#divToastPane") as InstanceType<typeof ToastPane>;
@@ -504,7 +506,7 @@ export function updateAppSettings(newAppSettings: AppSettings)
 
 appCommandExecutor.on("add-component", async (position?: Position) =>
 {
-    const componentClass = await vueComponentClassSelectionDialog.show();
+    const componentClass = await vueComponentClassSelectionSidebar.show();
     console.debug(`component-class = ${componentClass?.name}`);
 
     if (componentClass) {
@@ -678,8 +680,15 @@ appCommandExecutor.on("delete-area", (areaID?: number) =>
     kresmer.edAPI.deleteArea(areaID ?? kresmer.selectedElement!.id);
 });//duplicateArea
 
-appCommandExecutor.on("set-area-border", (areaID: number, segmentNumber: number) => {
-    kresmer.edAPI.startSettingAreaBorder(areaID, segmentNumber, "coast");
+appCommandExecutor.on("set-area-border", async(areaID: number, segmentNumber: number) => {
+    const area = kresmer.getAreaById(areaID);
+    if (!area?.borderStyles.length) {
+        vueMessageBox.say(t("main.no-border-styles", "Area class \"{{className}}\" does not define any border styles", {className: area?.getClass().name}));
+        return;
+    }//if
+    const borderClassName = await vueBorderClassSelectionDialog.show(area.getClass());
+    if (borderClassName)
+        kresmer.edAPI.startSettingAreaBorder(areaID, segmentNumber, borderClassName);
 });//set-area-border
 
 appCommandExecutor.on("remove-area-border", (areaID: number, segmentNumber: number) => {

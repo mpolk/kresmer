@@ -18,7 +18,6 @@ import { MapWithZOrder, withZOrder } from "../ZOrdering";
 import { draggable } from "../Draggable";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import XMLFormatter, { XMLTag } from "../XMLFormatter";
-import { Rule } from "postcss";
 
 /**
  * Drawing Area 
@@ -94,19 +93,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
 
     get borderStyles(): string[]
     {
-        if (!this._class.style)
-            return [];
-
-        const styles: string[] = [];
-        for (const decl of this._class.style.nodes) {
-            if (decl.type === "rule") {
-                const selector = (decl as Rule).selectors[0];
-                if (selector.startsWith(".border"))
-                    styles.push(selector.split(".")[1]);
-            }//if
-        }//for
-
-        return styles;
+        return this._class.borderStyles;
     }//borderStyles
 
     startSettingBorder(segmentNumber: number, borderClass: string)

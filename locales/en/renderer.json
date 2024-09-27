@@ -49,6 +49,10 @@
     "cannot-connect": "Cannot connect to the backend. Message is following:",
     "cancel": "Cancel"
   },
+  "border-class-selection-dialog": {
+    "title": "Choose a border class...",
+    "cancel": "Cancel"
+  },
   "class-selection-dialog": {
     "title": "Choose a new element class...",
     "cancel": "Cancel"
@@ -123,7 +127,8 @@
   "main": {
     "reload": "reload",
     "closing": "closing",
-    "ask-for-unsaved-changes": "The current drawing has unsaved changes.\nDo you want to save it before {{opName}}?"
+    "ask-for-unsaved-changes": "The current drawing has unsaved changes.\nDo you want to save it before {{opName}}?",
+    "no-border-styles": "Area class \"{{className}}\" does not define any border styles"
   },
   "status-bar": {
     "notifications": "Notifications {{notificationCount}}",
