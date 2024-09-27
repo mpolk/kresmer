@@ -51,19 +51,19 @@
         }
     })//areaClass
 
+    const areaStyle = computed(() => {
+        return {
+            stroke: props.model.isSelected ? props.highlightColor : props.color,
+            cursor: cursorStyle.value.cursor,
+            strokeOpacity: props.model.isSelected ? 0.4 : 1,
+        }
+    })//areaStyle
+
     const cursorStyle = computed(() => {
         return {
             cursor: props.model.isDragged ? "move" : "default",
         }
     })//segmentStyle
-
-    const areaStyle = computed(() => {
-        return {
-            stroke: props.model.isSelected ? props.highlightColor : props.color,
-            cursor: cursorStyle.value.cursor,
-            strokeOpacity: props.model.isSelected ? 0.5 : 1,
-        }
-    })//areaStyle
 
     const segMarkStyle = computed(() => {
         return {
