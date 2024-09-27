@@ -850,7 +850,7 @@ export default class Kresmer extends KresmerEventHooks {
      */
     public getElementById(id: number): DrawingElement|undefined
     {
-        return this.networkComponents.get(id)?.component ?? this.links.get(id);
+        return this.networkComponents.get(id)?.component ?? this.links.get(id) ?? this.areas.get(id);
     }//getElementById
 
 
