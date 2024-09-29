@@ -1,8 +1,8 @@
 # Release Notes
 
-## 0.16.7
+## 0.17.0
 
-Yet one more "private" release. Drawing areas implementation in progress.
+One more kind of the drawing element introduced: *drawing areas* (or just *areas*). These are free-form shapes (closed paths), living on the lowest drawing layer. Areas can be used to represent urban development elements (streets, squares, parks, etc.), terrain elements (rivers, fields, forests) on topographic maps, or simply large parts of regular drawings.
 
 ## 0.16.6
 
