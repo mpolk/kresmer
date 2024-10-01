@@ -261,12 +261,13 @@ export function loadInitialLibraries(): LibData
 /** Loads all the libraries found in the library directories */
 export function loadInitialDrawing(): string | undefined
 {
-    if (!drawingToAutoload && localSettings.get("autoloadLastDrawing")) {
-        drawingToAutoload = recentDrawings.last;
+    let dwgFile = drawingToAutoload;
+    if (!dwgFile && localSettings.get("autoloadLastDrawing")) {
+        dwgFile = recentDrawings.last;
     }//if
-    if (fs.existsSync(drawingToAutoload)) {
-        defaultDrawingFileName = drawingToAutoload;
-        return fs.readFileSync(drawingToAutoload, "utf-8");
+    if (fs.existsSync(dwgFile)) {
+        defaultDrawingFileName = dwgFile;
+        return fs.readFileSync(dwgFile, "utf-8");
     }//if
 }//loadInitialDrawing
 

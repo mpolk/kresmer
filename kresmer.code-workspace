@@ -1,16 +1,16 @@
 {
 	"folders": [
 		{
+			"name": "kresmer",
 			"path": "."
 		},
 		{
-			"path": "../kresmer-server.adonis"
-		},
-		{
-			"path": "../Сетевые будни/Схемы сети"
-		},
-		{
+			"name": "kresmer.wiki",
 			"path": "../kresmer.wiki"
+		},
+		{
+			"name": "Схемы сети",
+			"path": "../Сетевые будни/Схемы сети"
 		}
 	],
 	"settings": {

@@ -79,8 +79,8 @@ export function saveDrawing(dwgData?: string): boolean
         return true;
     } else {
         IpcMainHooks.once("complete-drawing-saving", (dwgData: string) => {
-                console.debug(`About to save the drawing to the file "${defaultDrawingFileName}"`);
-                fs.writeFileSync(defaultDrawingFileName!, dwgData);
+            console.debug(`About to save the drawing to the file "${defaultDrawingFileName}"`);
+            fs.writeFileSync(defaultDrawingFileName!, dwgData);
         });
         sendAppCommand("save-drawing");
         return true;
