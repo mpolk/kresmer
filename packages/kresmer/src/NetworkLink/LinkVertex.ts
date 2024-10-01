@@ -633,7 +633,8 @@ export default class LinkVertex extends Vertex {
                 return newAnchor;
         }//if
 
-        return new LinkVertexAnchor(this, super.alignEndpoint(neighbor, mode));
+        const newAnchor = super.alignEndpoint(neighbor, mode);
+        return newAnchor ? new LinkVertexAnchor(this, newAnchor) : null;
     }//alignEndpoint
 
     private alignBundleEndpoint(mode: VertexAlignmentMode): LinkVertexAnchor|null
