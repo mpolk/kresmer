@@ -1,5 +1,11 @@
 # Release Notes
 
+## 0.17.1
+
+- Improve reloading the drawing from fresh with ctrl-R: now the last opened drawing is restored
+- Fix in link-end vertex alignment
+- Fix: avoid premature mouse release when dragging drawing elements
+
 ## 0.17.0
 
 One more kind of the drawing element introduced: *drawing areas* (or just *areas*). These are free-form shapes (closed paths), living on the lowest drawing layer. Areas can be used to represent urban development elements (streets, squares, parks, etc.), terrain elements (rivers, fields, forests) on topographic maps, or simply large parts of regular drawings.
