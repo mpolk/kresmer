@@ -88,7 +88,6 @@ export function draggable<TBase extends GConstructor>(Base: TBase)
     
             if (this.isGoingToBeDragged) {
                 if (Math.hypot(effectiveMove.x, effectiveMove.y) < 2) {
-                    MouseEventCapture.release();
                     return false;
                 }//if
                 this.isGoingToBeDragged = false;
