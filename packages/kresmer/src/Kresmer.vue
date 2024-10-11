@@ -316,13 +316,13 @@
             </component>
         </NetworkComponentHolder>
 
-        <!-- The topmost (selected) area (if any)-->
-        <DrawingAreaVue v-if="topmostArea" v-bind="topmostArea.syntheticProps" :model="topmostArea" />
-
         <!-- Links -->
         <NetworkLinkVue v-for="link in model.links.sorted" v-bind="link.syntheticProps" :key="`link${link.id}`" 
             :model="link" />
         <NetworkLinkBlankVue v-if="model.newLinkBlank.value" :model="model.newLinkBlank.value" />
+
+        <!-- The topmost (selected) area (if any)-->
+        <DrawingAreaVue v-if="topmostArea" v-bind="topmostArea.syntheticProps" :model="topmostArea" />
     </svg>
 </template>
 
