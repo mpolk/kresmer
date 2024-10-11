@@ -6,12 +6,11 @@
  *         Testing DrawingArea creation and basic functionality
  ***************************************************************************/
 
-import Kresmer, { Position } from "../../src/Kresmer";
+import Kresmer, { Position, AreaBorderClass } from "../../src/Kresmer";
 import { kresmerCoordsToGlobal, assertNoExceptions } from "../support/component";
-import DrawingArea from "../../src/DrawingArea/DrawingArea";
+import DrawingArea, { AreaBorder } from "../../src/DrawingArea/DrawingArea";
 // import DrawingAreaClass from "../../src/DrawingArea/DrawingAreaClass";
 import chaiColors from 'chai-colors';
-import { AreaVertexInitParams } from "DrawingArea/AreaVertex";
 chai.use(chaiColors);
 
 describe('DrawingArea object test', () => {
@@ -144,7 +143,7 @@ describe('DrawingArea object test', () => {
 
     it("Put a coastline between the 2nd and 4th vertices", () => {
         kresmer.deselectAllElements();
-        swamp.setBorder({clazz: "coast", from: 1, to: 3});
+        swamp.setBorder(new AreaBorder(new AreaBorderClass("coast"), 1, 3));
     })
     specify("...now we have a blue coastline", () => {
         cy.get(".Swamp.area path.coast").should("have.css", "stroke").and("be.colored", "blue");
