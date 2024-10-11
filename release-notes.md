@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.17.2
+
+Fixing and improving areas appearance and behavior
+
 ## 0.17.1
 
 - Improve reloading the drawing from fresh with ctrl-R: now the last opened drawing is restored
