@@ -682,13 +682,13 @@ appCommandExecutor.on("delete-area", (areaID?: number) =>
 
 appCommandExecutor.on("set-area-border", async(areaID: number, segmentNumber: number) => {
     const area = kresmer.getAreaById(areaID);
-    if (!area?.borderStyles.length) {
+    if (!area?.getClass().hasBorderClasses) {
         vueMessageBox.say(t("main.no-border-styles", "Area class \"{{className}}\" does not define any border styles", {className: area?.getClass().name}));
         return;
     }//if
-    const borderClassName = await vueBorderClassSelectionDialog.show(area.getClass());
-    if (borderClassName)
-        kresmer.edAPI.startSettingAreaBorder(areaID, segmentNumber, borderClassName);
+    const borderClass = await vueBorderClassSelectionDialog.show(area!.getClass());
+    if (borderClass)
+        kresmer.edAPI.startSettingAreaBorder(areaID, segmentNumber, borderClass);
 });//set-area-border
 
 appCommandExecutor.on("remove-area-border", (areaID: number, segmentNumber: number) => {

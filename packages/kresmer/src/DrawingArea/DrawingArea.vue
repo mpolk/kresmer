@@ -190,9 +190,10 @@
             @dblclick.self="model.onDoubleClick($event)"
             />
         <path v-for="(border, i) in model.borders" :key="`border${i}`" 
-            :d="borderPathData(border)" class="border" :class="border.clazz" style="fill: none;" />
+            :d="borderPathData(border)" class="border" :class="border.clazz.name" style="fill: none;" />
         <path v-if="model.borderBeingCreated.value"
-            :d="borderPathData(model.borderBeingCreated.value)" class="border" :class="model.borderBeingCreated.value.clazz" style="fill: none;" />
+            :d="borderPathData(model.borderBeingCreated.value)" class="border" :class="model.borderBeingCreated.value.clazz.name" 
+            style="fill: none;" />
         <template v-if="model.isSelected">
             <template v-for="(vertex, i) in model.vertices" :key="`segment${vertex.key}`">
                 <template v-if="!model.borderBeingCreated.value">

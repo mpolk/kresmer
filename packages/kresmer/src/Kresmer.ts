@@ -36,7 +36,7 @@ import { clone } from "./Utils";
 import AdjustmentRulerVue from "./AdjustmentHandles/AdjustmentRuler.vue";
 import { BackgroundImageData } from "./BackgroundImageData";
 import DrawingArea, { DrawingAreaMap, AddAreaOp, DeleteAreaOp, AreaMoveUpOp, AreaMoveToTopOp, AreaMoveDownOp, AreaMoveToBottomOp, RemoveAreaBorderOp, AreaSpec } from "./DrawingArea/DrawingArea";
-import DrawingAreaClass from "./DrawingArea/DrawingAreaClass";
+import DrawingAreaClass, { AreaBorderClass } from "./DrawingArea/DrawingAreaClass";
 import DrawingElementClass from "./DrawingElement/DrawingElementClass";
 import ConnectionIndicatorVue from "./ConnectionPoint/ConnectionIndicator.vue";
 import SVGExporter from "./SVGExporter";
@@ -1546,7 +1546,7 @@ export default class Kresmer extends KresmerEventHooks {
          * @param areaID The area, which border should be set
          * @param segmentNumber The seq number of the segment where tne new border should begin
          */
-        startSettingAreaBorder: (areaID: number, segmentNumber: number, borderClass: string) =>
+        startSettingAreaBorder: (areaID: number, segmentNumber: number, borderClass: AreaBorderClass) =>
         {
             const area = this.getAreaById(areaID);
             if (!area) {
@@ -1906,7 +1906,7 @@ export {default as NetworkLink} from "./NetworkLink/NetworkLink";
 export {default as NetworkLinkClass} from "./NetworkLink/NetworkLinkClass";
 export {default as DrawingArea} from "./DrawingArea/DrawingArea";
 export {default as AreaVertex} from "./DrawingArea/AreaVertex";
-export {default as DrawingAreaClass} from "./DrawingArea/DrawingAreaClass";
+export {default as DrawingAreaClass, AreaBorderClass} from "./DrawingArea/DrawingAreaClass";
 export {default as LinkBundle} from "./NetworkLink/LinkBundle";
 export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
 export {default as Vertex} from "./Vertex/Vertex";

@@ -21,7 +21,7 @@ import KresmerException, { KresmerExceptionSeverity } from "../KresmerException"
 import {toCamelCase} from "../Utils";
 import LinkBundle from "../NetworkLink/LinkBundle";
 import LibraryLoader from "./LibraryLoader";
-import DrawingArea, { AreaBorder } from '../DrawingArea/DrawingArea';
+import DrawingArea, { AreaBorderInitParams } from '../DrawingArea/DrawingArea';
 import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
 import { AreaVertexGeometry, AreaVertexInitParams } from "../DrawingArea/AreaVertex";
 
@@ -331,15 +331,15 @@ export default class DrawingParser {
     }//parseLinkVertex
 
 
-    private parseAreaNode(node: Element): DrawingArea
+    private parseAreaNode(node: Element): DrawingArea|ParsingException
     {
         const className = node.getAttribute("class");
         const dbID = node.getAttribute("db-id");
         if (!className) 
-            throw new DrawingParsingException("Area without the class");
+            return new DrawingParsingException("Area without the class");
         const areaClass = DrawingAreaClass.getClass(className);
         if (!areaClass) 
-            throw new DrawingParsingException(`Unknown area class "${className}"`);
+            return new DrawingParsingException(`Unknown area class "${className}"`);
 
         const propsFromAttributes: DrawingElementRawProps = {};
         for (const attrName of node.getAttributeNames()) {
@@ -353,7 +353,7 @@ export default class DrawingParser {
 
         let propsFromChildNodes: DrawingElementRawProps = {};
         const vertices: AreaVertexInitParams[] = [];
-        let borders: AreaBorder[] = [];
+        let borders: AreaBorderInitParams[] = [];
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -364,7 +364,14 @@ export default class DrawingParser {
                     vertices.push(...this.parseAreaVertices(child));
                     break;
                 case "borders":
-                    borders = this.parseAreaBorders(child);
+                    try {
+                        borders = this.parseAreaBorders(child);
+                    } catch (exc) {
+                        if (exc instanceof KresmerException)
+                            this.kresmer.raiseError(exc);
+                        else
+                            throw exc;
+                    }//catch
                     break;
             }//switch
         }//for
@@ -376,8 +383,16 @@ export default class DrawingParser {
         } else if (!areaName) {
             areaName = undefined;
         }//if
-        const area = new DrawingArea(this.kresmer, className, {name: areaName, dbID, props, vertices, borders});
-        return area;
+        
+        try {
+            const area = new DrawingArea(this.kresmer, className, {name: areaName, dbID, props, vertices, borders});
+            return area;
+        } catch (exc) {
+            if (exc instanceof KresmerException)
+                return new ParsingException(exc.message, {severity: exc.severity, source: exc.source});
+            else
+                throw exc;
+        }//catch
     }//parseAreaNode
 
 
@@ -417,12 +432,12 @@ export default class DrawingParser {
 
     private parseAreaBorders(element: Element)
     {
-        const borders: AreaBorder[] = [];
+        const borders: AreaBorderInitParams[] = [];
         for (let i = 0; i < element.childElementCount; i++) {
             const child = element.children[i];
             if (child.nodeName === "border") {
-                const clazz = child.getAttribute("class");
-                if (!clazz)
+                const className = child.getAttribute("class");
+                if (!className)
                     throw new ParsingException(`Border without the class in the area "${element.parentElement?.getAttribute("name")}"`);
                 const from = child.getAttribute("from");
                 if (!from)
@@ -430,7 +445,7 @@ export default class DrawingParser {
                 const to = child.getAttribute("to");
                 if (!to)
                     throw new ParsingException(`Border without the "to" attribute in the area "${element.parentElement?.getAttribute("name")}"`);
-                borders.push(new AreaBorder(clazz, parseInt(from), parseInt(to)))
+                borders.push({className, from: parseInt(from), to: parseInt(to)});
             }//if
         }//for
         return borders;

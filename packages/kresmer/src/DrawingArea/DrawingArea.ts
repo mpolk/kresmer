@@ -8,8 +8,8 @@
 
 import { InjectionKey, nextTick, reactive } from "vue";
 import Kresmer from "../Kresmer";
-import { UndefinedAreaClassException } from "../KresmerException";
-import DrawingAreaClass from "./DrawingAreaClass";
+import { UndefinedAreaClassException, UndefinedAreaBorderClassException } from "../KresmerException";
+import DrawingAreaClass, { AreaBorderClass } from "./DrawingAreaClass";
 import AreaVertex, { AreaVertexGeometryRaw, AreaVertexInitParams } from "./AreaVertex";
 import LinkVertex from "../NetworkLink/LinkVertex";
 import { EditorOperation } from "../UndoStack";
@@ -38,7 +38,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
             dbID?: number|string|null,
             props?: Record<string, unknown>,
             vertices?: AreaVertexInitParams[],
-            borders?: AreaBorder[],
+            borders?: AreaBorderInitParams[],
         }
     ) {
         const clazz = _class instanceof DrawingAreaClass ? _class : DrawingAreaClass.getClass(_class);
@@ -48,7 +48,12 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         super(kresmer, clazz, args);
         let i = 0;
         args?.vertices?.forEach(initParams => this.vertices.push(new AreaVertex(this, i++, initParams)));
-        args?.borders?.forEach(border => this.setBorder(border));
+        args?.borders?.forEach(initParams => {
+            const borderClass = this._class.borderClasses[initParams.className];
+            if (!borderClass)
+                throw new UndefinedAreaBorderClassException({className: initParams.className});
+            this.setBorder(new AreaBorder(borderClass, initParams.from, initParams.to));
+        });
     }//ctor
 
     declare protected _class: DrawingAreaClass;
@@ -91,12 +96,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
             this.borders.splice(i);
     }//removeBorder
 
-    get borderStyles(): string[]
-    {
-        return this._class.borderStyles;
-    }//borderStyles
-
-    startSettingBorder(segmentNumber: number, borderClass: string)
+    startSettingBorder(segmentNumber: number, borderClass: AreaBorderClass)
     {
         this.borderBeingCreated.value = new AreaBorder(borderClass, segmentNumber, (segmentNumber + 1)%this.vertices.length);
     }//startSettingBorder
@@ -106,6 +106,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
         if (this.borderBeingCreated.value) {
             this.kresmer.undoStack.execAndCommit(new SetAreaBorderOp(this, this.borderBeingCreated.value));
             this.borderBeingCreated.value = undefined;
+            this.returnFromTop();
             this.isSelected = false;
         }//if
     }//cancelSettingBorder
@@ -249,7 +250,7 @@ export type AreaSpec = {area: DrawingArea}|{areaID: number};
 
 export class AreaBorder {
     constructor(
-        readonly clazz: string,
+        readonly clazz: AreaBorderClass,
         readonly from: number,
         public to: number,
     ) {}
@@ -261,10 +262,12 @@ export class AreaBorder {
 
     public toXML(formatter: XMLFormatter)
     {
-        const tag = new XMLTag("border", ["class", this.clazz], ["from", this.from], ["to", this.to]);
+        const tag = new XMLTag("border", ["class", this.clazz.name], ["from", this.from], ["to", this.to]);
         formatter.addTag(tag);
     }//toXML
 }//AreaBorder
+
+export type AreaBorderInitParams = {className: string, from: number, to: number};
 
 
 // Editor operations

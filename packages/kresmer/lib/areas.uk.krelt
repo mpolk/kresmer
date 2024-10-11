@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-library-translation.xsd"?>
+<!-- **************************************************************************>
+ *                            👑 KresMer 👑
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ * ___________________________________________________________________________
+ *                            Areas library
+ *                This library contains area styles
+<*************************************************************************** -->
+
+<kresmer-library-translation name="areas" language="uk">
+
+    <area-class ref="_abstract-area">
+        <props>
+            <prop ref="color" name="колір"/>
+            <prop ref="highlightColor" name="колір виділення"/>
+        </props>
+    </area-class>
+
+    <area-class ref="Area" name="Область" category="Загальні">
+    </area-class>
+
+    <area-class ref="Swamp" name="Болото" category="Місцевісті">
+        <borders>
+            <border ref="coast" name="берег"/>
+        </borders>
+    </area-class>
+
+</kresmer-library-translation>

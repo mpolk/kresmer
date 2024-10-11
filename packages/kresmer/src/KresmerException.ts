@@ -148,6 +148,13 @@ export class DuplicateAreaClassException extends KresmerException {
     }//ctor
 }//DuplicateAreaClassException
 
+export class UndefinedAreaBorderClassException extends KresmerException {
+    constructor(options: KresmerExceptionOptions & RequireOnlyOne<{className?: string, message?: string}>)
+    {
+        super(options.message ?? `Undefined area border class "${options.className}"`, options);
+    }//ctor
+}//UndefinedBorderAreaClassException
+
 export class UndefinedVertexException extends KresmerException {
     constructor(options: KresmerExceptionOptions & {linkName?: string, vertexNumber?: number, message?: string})
     {

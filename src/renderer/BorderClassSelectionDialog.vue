@@ -10,7 +10,7 @@
     import { onMounted, ref, reactive } from 'vue';
     import {Modal} from 'bootstrap';
     import i18next from 'i18next';
-import { DrawingAreaClass } from 'kresmer';
+import { AreaBorderClass, DrawingAreaClass } from 'kresmer';
 
     export default {
         name: "BorderClassSelectionDialog",
@@ -23,11 +23,11 @@ import { DrawingAreaClass } from 'kresmer';
     const rootDiv = ref<HTMLDivElement>();
     const btnOk = ref<HTMLButtonElement>();
 
-    const borderClasses = reactive<string[]>([]);
+    const borderClasses = reactive<AreaBorderClass[]>([]);
     // eslint-disable-next-line prefer-const
-    let selectedBorderClass: string|null = null;
+    let selectedClassIndex: number|null = null;
 
-    let resolvePromise!: (result: string | null) => void;
+    let resolvePromise!: (result: AreaBorderClass | null) => void;
 
     onMounted(() =>
     {
@@ -37,12 +37,12 @@ import { DrawingAreaClass } from 'kresmer';
 
     async function show(areaClass: DrawingAreaClass)
     {
-        borderClasses.splice(0, borderClasses.length, ...areaClass.borderStyles);
+        borderClasses.splice(0, borderClasses.length, ...Object.values(areaClass.borderClasses));
 
         if (!modal)
             modal = new Modal(rootDiv.value!, {backdrop: 'static'});
         modal.show();
-        const promise = new Promise<string | null>((resolve) => {
+        const promise = new Promise<AreaBorderClass | null>((resolve) => {
             resolvePromise = resolve;
         })
         const result = await promise;
@@ -51,12 +51,12 @@ import { DrawingAreaClass } from 'kresmer';
 
     async function submit()
     {
-        if (selectedBorderClass)
-            close(selectedBorderClass);
+        if (typeof selectedClassIndex === "number")
+            close(borderClasses[selectedClassIndex]);
     }//submit
 
 
-    function close(result: string | null)
+    function close(result: AreaBorderClass | null)
     {
         modal!.hide();
         resolvePromise!(result);
@@ -77,8 +77,10 @@ import { DrawingAreaClass } from 'kresmer';
                     <button type="button" class="btn-close" @click="close(null)"></button>
                 </div>
                 <div class="modal-body">
-                    <select class="form-select" v-model="selectedBorderClass" size="5" @dblclick="submit">
-                        <option v-for="className in borderClasses" :key="className">{{ className }}</option>
+                    <select class="form-select" v-model="selectedClassIndex" size="5" @dblclick="submit">
+                        <option v-for="(borderClass, i) in borderClasses" :key="borderClass.name" :value="i">
+                            {{ borderClass.localizedName ?? borderClass.name }}
+                        </option>
                     </select>
                 </div>
                 <div class="modal-footer">

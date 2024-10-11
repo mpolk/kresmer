@@ -3,7 +3,7 @@
 ## 0.17.1
 
 - Improve reloading the drawing from fresh with ctrl-R: now the last opened drawing is restored
-- Fix in link-end vertex alignment
+- Fix in link-end vertex alignment procedure
 - Fix: avoid premature mouse release when dragging drawing elements
 
 ## 0.17.0

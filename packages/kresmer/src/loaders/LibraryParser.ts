@@ -16,7 +16,7 @@ import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedCompone
 import Kresmer from "../Kresmer";
 import DrawingParser, { DrawingElementProps, DrawingElementRawProps } from "./DrawingParser";
 import { toCamelCase } from "../Utils";
-import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
+import DrawingAreaClass, { AreaBorderClass } from '../DrawingArea/DrawingAreaClass';
 
 /**
  * Component library parser
@@ -106,23 +106,40 @@ export default class LibraryParser {
 
             for (let j = 0; j < rawNode.children.length; j++) {
                 const child = rawNode.children[j];
-                if (child.nodeName === "props") {
-                    for (let k = 0; k < child.children.length; k++) {
-                        const grandchild = child.children[k];
-                        if (grandchild.nodeName === "prop") {
-                            const ref = toCamelCase(grandchild.getAttribute("ref"));
-                            if (!ref) {
-                                yield new LibraryParsingException('Translation elements must have "ref" attribute');
-                                break;
+                switch (child.nodeName) {
+                    case "props": 
+                        for (let k = 0; k < child.children.length; k++) {
+                            const grandchild = child.children[k];
+                            if (grandchild.nodeName === "prop") {
+                                const ref = toCamelCase(grandchild.getAttribute("ref"));
+                                if (!ref) {
+                                    yield new LibraryParsingException('Translation elements must have "ref" attribute');
+                                    break;
+                                }//if
+                                const name = grandchild.getAttribute("name") ?? undefined;
+                                const description = grandchild.getAttribute("description") ?? undefined;
+                                const choices = grandchild.getAttribute("choices")?.split(/ *, */);
+                                parsedNode.props.push(new PropTranslation(ref, {name, description, choices}));
                             }//if
-                            const name = grandchild.getAttribute("name") ?? undefined;
-                            const description = grandchild.getAttribute("description") ?? undefined;
-                            const choices = grandchild.getAttribute("choices")?.split(/ *, */);
-                            parsedNode.props.push(new PropTranslation(ref, {name, description, choices}));
+                        }//for
+                        break;
+                    case "borders": 
+                        if (parsedNode instanceof DrawingAreaClassTranslation) {
+                            for (let k = 0; k < child.children.length; k++) {
+                                const grandchild = child.children[k];
+                                if (grandchild.nodeName === "border") {
+                                    const ref = toCamelCase(grandchild.getAttribute("ref"));
+                                    if (!ref) {
+                                        yield new LibraryParsingException('Translation elements must have "ref" attribute');
+                                        break;
+                                    }//if
+                                    const name = grandchild.getAttribute("name") ?? undefined;
+                                    parsedNode.borders.push(new AreaBorderClassTranslation(ref, {name}));
+                                }//if
+                            }//for
                         }//if
-                    }//for
-                    break;
-                }//if
+                        break;
+                }//switch
             }//for
 
             yield parsedNode;
@@ -443,6 +460,7 @@ export default class LibraryParser {
         let computedPropsBaseClasses: DrawingAreaClass[] | undefined;
         let functionsBaseClasses: DrawingAreaClass[] | undefined;
         let styleBaseClasses: DrawingAreaClass[] | undefined;
+        let borderClasses: AreaBorderClass[] | undefined;
         for (let i = 0; i < node.children.length; i++) {
             const child = node.children[i];
             switch (child.nodeName) {
@@ -480,6 +498,15 @@ export default class LibraryParser {
                     }//if
                     style = this.parseCSS(child.innerHTML, styleBaseClasses);
                     break;
+                case "borders":
+                    if (!borderClasses)
+                        borderClasses = [];
+                    for (const grandchild of child.children) {
+                        if (grandchild.nodeName === "border" && grandchild.hasAttribute("name")) {
+                            borderClasses?.push(new AreaBorderClass(grandchild.getAttribute("name")!));
+                        }//if
+                    }//for
+                    break;
             }//switch
         }//for
 
@@ -499,7 +526,7 @@ export default class LibraryParser {
                                                            exceptProps, referencedClasses,
                                                            baseClassPropBindings, computedProps, computedPropsBaseClasses,
                                                            functions, functionsBaseClasses,
-                                                           defs, style, category, 
+                                                           defs, style, category, borderClasses,
                                                            sourceCode: node.outerHTML,
                                                            localizedName, localizedCategory});
         return areaClass;
@@ -990,6 +1017,8 @@ export class PropTranslation extends TranslationNode {
     readonly choices: string[] = [];
 }//PropTranslation
 
+export class AreaBorderClassTranslation extends PropTranslation {}
+
 export abstract class DrawingElementClassTranslation extends TranslationNode {
     constructor(readonly ref: string, translations?: {name?: string, description?: string, category?: string})
     {
@@ -1003,7 +1032,9 @@ export abstract class DrawingElementClassTranslation extends TranslationNode {
 
 export class NetworkComponentClassTranslation extends DrawingElementClassTranslation {}
 export class NetworkLinkClassTranslation extends DrawingElementClassTranslation {}
-export class DrawingAreaClassTranslation extends DrawingElementClassTranslation {}
+export class DrawingAreaClassTranslation extends DrawingElementClassTranslation {
+    borders: AreaBorderClassTranslation[] = [];
+}//DrawingAreaClassTranslation
 
 export type ParsedTranslationNode =
     | NetworkComponentClassTranslation

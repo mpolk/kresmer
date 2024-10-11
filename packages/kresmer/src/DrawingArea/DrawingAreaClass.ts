@@ -7,10 +7,11 @@
  * (the word "class" here means a Kresmer class, not a Typescript one)
  ***************************************************************************/
 
-import {Root as PostCSSRoot, Rule} from 'postcss';
+import { Root as PostCSSRoot } from 'postcss';
 import { Template } from "../Kresmer";
 import DrawingElementClass, { ComputedProps, Functions, DrawingElementClassProps } from "../DrawingElement/DrawingElementClass";
 import { DrawingElementProps } from "../loaders/DrawingParser";
+import { DrawingAreaClassTranslation, DrawingElementClassTranslation } from 'loaders/LibraryParser';
  
 /**
  * Drawing Area Class - a generic drawing area class
@@ -42,14 +43,24 @@ export default class DrawingAreaClass extends DrawingElementClass {
         sourceCode?: string,
         localizedName?: string,
         localizedCategory?: string,
+        borderClasses?: AreaBorderClass[],
     })
     {
         super(name, params);
+        params?.borderClasses?.forEach(borderClass => {
+            this.borderClasses[borderClass.name] = borderClass;
+        });
 
         const existingClass = DrawingAreaClass.allClasses[name];
         if (!existingClass || existingClass.version < this.version)
             DrawingAreaClass.allClasses[name] = this;
     }//ctor
+
+    borderClasses: Record<string, AreaBorderClass> = {};
+    get hasBorderClasses(): boolean
+    {
+        return Boolean(Object.keys(this.borderClasses).length);
+    }//hasBorderClasses
 
     override readonly usesEmbedding = false;
 
@@ -72,23 +83,23 @@ export default class DrawingAreaClass extends DrawingElementClass {
      * @returns The vue-component name defs
      */
     get defsVueName() {return "_Kre:area:" + this.name + ".defs"}
-
-    /** Returns all CSS-classes, which Kresmer interprets as border style classes */
-    get borderStyles(): string[]
-    {
-        if (!this.style)
-            return [];
-
-        const styles: string[] = [];
-        for (const decl of this.style.nodes) {
-            if (decl.type === "rule") {
-                const selector = (decl as Rule).selectors[0];
-                if (selector.startsWith(".border"))
-                    styles.push(selector.split(".")[2]);
-            }//if
-        }//for
-
-        return styles;
-    }//borderStyles
  
+    override applyTranslation(translation: DrawingElementClassTranslation): void 
+    {
+        super.applyTranslation(translation);
+
+        for (const borderTranslation of (translation as DrawingAreaClassTranslation).borders) {
+            if (borderTranslation.ref in this.borderClasses)
+                this.borderClasses[borderTranslation.ref].localizedName = borderTranslation.name;
+        }//for
+    }//applyTranslation
 }//DrawingAreaClass
+
+/**
+ * A class for Drawing Area Border styles
+ */
+export class AreaBorderClass {
+    constructor(readonly name: string) {}
+
+    localizedName?: string;
+}//AreaBorderClass
