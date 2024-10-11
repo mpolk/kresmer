@@ -51,13 +51,22 @@
         }
     })//areaClass
 
+    const highlightColor = computed(() => {
+        return props.highlightColor ?? props.color;
+    })//highlightColor
+
+    const highlightFilter = computed(() => {
+        return props.highlightColor ? undefined : "brightness(0.95) saturate(3)";
+    })//highlightFilter
+
     const areaStyle = computed(() => {
         return {
             cursor: cursorStyle.value.cursor,
-            stroke: props.model.isSelected ? props.highlightColor : props.color,
+            stroke: props.model.isSelected ? highlightColor.value : props.color,
             strokeOpacity: props.model.isSelected ? 0.4 : 1,
-            fill: props.model.isSelected ? props.highlightColor : props.color,
+            fill: props.model.isSelected ? highlightColor.value : props.color,
             fillOpacity: props.model.isSelected ? 0.7 : 1,
+            filter: props.model.isSelected ? highlightFilter.value : undefined,
         }
     })//areaStyle
 
