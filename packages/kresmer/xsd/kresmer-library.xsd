@@ -73,6 +73,7 @@
                             <xs:element ref="functions" minOccurs="0"/>
                             <xs:element ref="defs" minOccurs="0"/>
                             <xs:element ref="style" minOccurs="0"/>
+                            <xs:element ref="borders" minOccurs="0"/>
                         </xs:all>
                 
                         <xs:attribute name="name" use="required" />
@@ -493,6 +494,19 @@
             </xs:sequence>
             <xs:attribute name="extend"/>
             <xs:attribute name="except"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Area borders -->
+    <xs:element name="borders">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="border" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="name" use="required"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 

@@ -32,6 +32,7 @@
                         <xs:complexType>
                             <xs:all>
                                 <xs:element ref="props" minOccurs="0"/>
+                                <xs:element ref="borders" minOccurs="0"/>
                             </xs:all>
                     
                             <xs:attribute name="ref" use="required" />
@@ -44,6 +45,20 @@
 
             <xs:attribute name="name"/>
             <xs:attribute name="language" use="required"/>
+        </xs:complexType>
+    </xs:element>
+
+    <!-- Area borders -->
+    <xs:element name="borders">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="border" minOccurs="1" maxOccurs="unbounded">
+                    <xs:complexType>
+                        <xs:attribute name="ref" use="required"/>
+                        <xs:attribute name="name"/>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 
