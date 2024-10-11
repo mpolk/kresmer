@@ -53,9 +53,11 @@
 
     const areaStyle = computed(() => {
         return {
-            stroke: props.model.isSelected ? props.highlightColor : props.color,
             cursor: cursorStyle.value.cursor,
+            stroke: props.model.isSelected ? props.highlightColor : props.color,
             strokeOpacity: props.model.isSelected ? 0.4 : 1,
+            fill: props.model.isSelected ? props.highlightColor : props.color,
+            fillOpacity: props.model.isSelected ? 0.7 : 1,
         }
     })//areaStyle
 
