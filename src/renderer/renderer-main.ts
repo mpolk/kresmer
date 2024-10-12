@@ -142,7 +142,7 @@ export async function selectOrLoadGraphicsFile(urlType: URLType)
     }//if
 }//selectOrLoadGraphicsFile
 
-const vueMessageBox = createApp(MessageBox).mount("#dlgMessageBox") as InstanceType<typeof MessageBox>;
+export const vueMessageBox = createApp(MessageBox).mount("#dlgMessageBox") as InstanceType<typeof MessageBox>;
 const vueDrawingPropsSidebar = createApp(DrawingPropsSidebar).mount("#drawingPropsSidebar") as 
     InstanceType<typeof DrawingPropsSidebar>;
 const vueAppSettingsSidebar = createApp(AppSettingsSidebar).mount("#appSettingsSidebar") as 

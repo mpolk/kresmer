@@ -12,7 +12,7 @@
     import { DrawingElement, DrawingElementClass, DrawingElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
              NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException } from 'kresmer';
-    import { kresmer, updateWindowTitle } from './renderer-main';
+    import { kresmer, updateWindowTitle, vueMessageBox } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
     import { DrawingElementClassProp, PropTypeDescriptor } from 'kresmer';
     import i18next from 'i18next';
@@ -293,7 +293,7 @@ Continue?`))) {
     }//addSubprop
 
     /** Callback for completing adding a new field or the Object-type prop */
-    function completeAddingSubprop()
+    async function completeAddingSubprop()
     {
         if (!newSubpropName) {
             alert(i18next.t("element-props-sidebar.name-is-required", "Element name is required!"));
@@ -306,19 +306,20 @@ Continue?`))) {
         const parentPropValue = propToAddSubpropTo.value!.value as Record<string, unknown>;
 
         if (Object.hasOwn(parentPropValue, newSubpropName)) {
-            alert(i18next.t("element-props-sidebar.duplicate-name", "Duplicate element name!"));
+            await vueMessageBox.say(i18next.t("element-props-sidebar.duplicate-name", "Duplicate element name!"));
+            inpNewSubpropName.value?.focus();
             return;
-        }//if
+        } else {
+            const newSubpropDef = (propToAddSubpropTo.value?.typeDescriptor as Extract<PropTypeDescriptor, {elements: unknown}>).elements;
+            parentPropValue[newSubpropName] = makeInitialSubpropValue(newSubpropDef);
 
-        const newSubpropDef = (propToAddSubpropTo.value?.typeDescriptor as Extract<PropTypeDescriptor, {elements: unknown}>).elements;
-        parentPropValue[newSubpropName] = makeInitialSubpropValue(newSubpropDef);
+            dlgNewSubprop.hide();
+            expansionTrigger.value = propToAddSubpropTo.value!;
+        }//id
 
-        dlgNewSubprop.hide();
-        expansionTrigger.value = propToAddSubpropTo.value!;
-        nextTick(() => {
-            const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName));
-            inpToFocus?.focus();
-        });
+        await nextTick();
+        const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName));
+        inpToFocus?.focus();
     }//completeAddingSubprop
 
     /**
