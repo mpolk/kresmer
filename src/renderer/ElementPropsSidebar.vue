@@ -11,7 +11,8 @@
     import { Modal, Offcanvas } from 'bootstrap';
     import { DrawingElement, DrawingElementClass, DrawingElementPropCategory,
              NetworkComponent, NetworkComponentClass, 
-             NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException } from 'kresmer';
+             NetworkLink, NetworkLinkClass, LinkBundle, LinkBundleClass, KresmerException, 
+             DrawingArea} from 'kresmer';
     import { kresmer, updateWindowTitle, vueMessageBox } from './renderer-main';
     import ElementPropEditor, {subpropInputID} from './ElementPropEditor.vue';
     import { DrawingElementClassProp, PropTypeDescriptor } from 'kresmer';
@@ -99,6 +100,8 @@
                 [...kresmer.getRegisteredLinkClasses()].filter(([, _class]) => !_class.isAbstract && _class instanceof LinkBundleClass) : 
             element instanceof NetworkLink ? 
                 [...kresmer.getRegisteredLinkClasses()].filter(([, _class]) => !_class.isAbstract && !(_class instanceof LinkBundleClass)) : 
+            element instanceof DrawingArea ? 
+                [...kresmer.getRegisteredAreaClasses()].filter(([, _class]) => !_class.isAbstract && !(_class instanceof LinkBundleClass)) : 
                 [...kresmer.getRegisteredComponentClasses()].filter(([name, _class]) => !_class.isAbstract);
         allClasses.value = classes
             .sort((c1, c2) => c1[0] < c2[0] ? -1 : c1[0] > c2[0] ? 1 : 0)
@@ -286,16 +289,19 @@ Continue?`))) {
      * Adds a new subprop (field) to the given pop
      * @param where A prop to add the subprop to
      */
-     function addSubprop(where: ElementPropDescriptor)
+    function addSubprop(where: ElementPropDescriptor)
     {
         propToAddSubpropTo.value = where;
+        const keys = Object.keys(where.value as object);
+        if (keys.every(key => !isNaN(key as unknown as number)))
+            newSubpropName.value = String(Math.max(...keys.map(key => Number(key))) + 1);
         dlgNewSubprop.show();
     }//addSubprop
 
     /** Callback for completing adding a new field or the Object-type prop */
     async function completeAddingSubprop()
     {
-        if (!newSubpropName) {
+        if (!newSubpropName.value) {
             alert(i18next.t("element-props-sidebar.name-is-required", "Element name is required!"));
             return;
         }//if
@@ -305,20 +311,20 @@ Continue?`))) {
         }//if
         const parentPropValue = propToAddSubpropTo.value!.value as Record<string, unknown>;
 
-        if (Object.hasOwn(parentPropValue, newSubpropName)) {
+        if (Object.hasOwn(parentPropValue, newSubpropName.value)) {
             await vueMessageBox.say(i18next.t("element-props-sidebar.duplicate-name", "Duplicate element name!"));
             inpNewSubpropName.value?.focus();
             return;
         } else {
             const newSubpropDef = (propToAddSubpropTo.value?.typeDescriptor as Extract<PropTypeDescriptor, {elements: unknown}>).elements;
-            parentPropValue[newSubpropName] = makeInitialSubpropValue(newSubpropDef);
+            parentPropValue[newSubpropName.value] = makeInitialSubpropValue(newSubpropDef);
 
             dlgNewSubprop.hide();
             expansionTrigger.value = propToAddSubpropTo.value!;
         }//id
 
         await nextTick();
-        const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName));
+        const inpToFocus = document.getElementById(subpropInputID(propToAddSubpropTo.value!, newSubpropName.value));
         inpToFocus?.focus();
     }//completeAddingSubprop
 
@@ -381,7 +387,7 @@ Continue?`))) {
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref<ElementPropDescriptor>();
     // eslint-disable-next-line prefer-const
-    let newSubpropName = "";
+    let newSubpropName = ref("");
     const inpNewSubpropName = ref<HTMLInputElement>();
 
     let dlgDelSubprop!: Modal;
