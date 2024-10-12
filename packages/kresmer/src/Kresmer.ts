@@ -74,6 +74,7 @@ export default class Kresmer extends KresmerEventHooks {
         this.autoAlignVertices = options?.autoAlignVertices ?? true;
         this.animateComponentDragging = Boolean(options?.animateComponentDragging);
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
+        this.selectAreasWithClick = Boolean(options?.selectAreasWithClick);
         options?.hrefBase && (this.hrefBase.value = options.hrefBase);
         options?.streetAddressFormat && (this.streetAddressFormat = options.streetAddressFormat);
         options?.backgroundImage && (this.backgroundImage.copy(options.backgroundImage));
@@ -173,6 +174,8 @@ export default class Kresmer extends KresmerEventHooks {
     animateComponentDragging = false;
     /** Specifies whether link bundle dragging should be animated */
     animateLinkBundleDragging = false;
+    /** Specifies whether areas can be selected with mouse left clicks */
+    selectAreasWithClick = false;
     /** The code of the language to use in UI */
     uiLanguage = new Intl.Locale(navigator.language).language;
 
@@ -1682,6 +1685,7 @@ export type KresmerInitOptions = {
     autoAlignVertices?: boolean,
     animateComponentDragging?: boolean,
     animateLinkBundleDragging?: boolean,
+    selectAreasWithClick?: boolean,
     hrefBase?: string,
     streetAddressFormat?: StreetAddressFormat,
     uiLanguage?: string,

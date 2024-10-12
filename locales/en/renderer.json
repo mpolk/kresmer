@@ -29,6 +29,7 @@
     },
     "animate-component-dragging": "Animate component dragging",
     "animate-bundle-dragging": "Animate link bundle dragging",
+    "select-areas-with-click": "Select drawing areas with the left mouse button",
     "street-address-format": {
       "_": "Street address format",
       "building-first": "building first",

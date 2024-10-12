@@ -135,7 +135,7 @@
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1 && isEditable) {
+        if (event.buttons === 1 && isEditable && (props.model.isSelected || props.model.kresmer.selectAreasWithClick)) {
             event.preventDefault();
             props.model.kresmer.deselectAllElements(props.model).resetAllComponentModes();
             props.model.startDrag(event);
@@ -149,6 +149,9 @@
             return;
         }//if
 
+        if (!props.model.isSelected && !props.model.kresmer.selectAreasWithClick)
+            return;
+
         // eslint-disable-next-line vue/no-mutating-props
         props.model.isGoingToBeDragged = false;
         MouseEventCapture.release();
@@ -157,7 +160,7 @@
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1 && isEditable) {
+        if (event.buttons & 1 && isEditable && (props.model.isSelected || props.model.kresmer.selectAreasWithClick)) {
             props.model.drag(event);
         }//if
     }//onMouseMove
