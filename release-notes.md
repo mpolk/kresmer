@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.17.3
+
+- Minor improvement and focus behavior fix in adding a new subprop in the editor
+- Switch off drawing area selection with left clicks by default
+
 ## 0.17.2
 
 Fixing and improving areas appearance and behavior
