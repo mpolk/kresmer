@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.17.4
+
+Fix selection of the correct library element version when processing multiple overlapping libraries
+
 ## 0.17.3
 
 - Minor improvement and focus behavior fix in adding a new subprop in the editor
