@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.17.5
+
+Further improve areas reaction on the clicks
+
 ## 0.17.4
 
 Fix selection of the correct library element version when processing multiple overlapping libraries

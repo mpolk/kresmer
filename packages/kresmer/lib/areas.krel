@@ -12,7 +12,7 @@
 <kresmer-library name="areas" xmlns="kresmer-library" xmlns:Kre="kresmer-user-defined-elements" xmlns:kre="kresmer-builtin-elements" xmlns:v-bind="v-bind" xmlns:v-on="v-on" xmlns:v-slot="v-slot">
     <import library="stdlib" />
 
-    <area-class name="_abstract-area" category=".abstract-areas">
+    <area-class name="_abstract-area" category=".abstract-areas" version="2024101300">
         <props>
             <prop name="color" type="Color" category="Presentation"/>
             <prop name="highlightColor" type="Color" category="Presentation"/>
@@ -38,8 +38,8 @@
     </area-class>
 
 
-    <area-class name="Swamp" category="Terrains" version="2024091100">
-        <extends base="_abstract-area"></extends>
+    <area-class name="Swamp" category="Terrains" version="2024101300">
+        <extends base="_abstract-area"/>
         <defs>
             <pattern id="kre:std:Swamp" patternUnits="userSpaceOnUse" width="20" height="20" viewBox="0 0 20 20" >
                 <rect x="0" y="0" width="100%" height="100%" fill="lightcyan"/>
@@ -56,6 +56,7 @@
         <borders>
             <border name="coast"/>
         </borders>
+        <props except="color, highlightColor"/>
         <style>
             /#kre\:std\:Swamp .strokes {stroke: blue; stroke-width: 1}
             .area {

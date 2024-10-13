@@ -158,6 +158,13 @@
         model.emit("mode-reset");
     }//onMouseDownOnCanvas
 
+    function onClickPassedThrough(event: MouseEvent)
+    {
+        model.deselectAllElements();
+        model.resetAllComponentModes();
+        model.emit("mode-reset");
+    }//onClickPassedThrough
+
     function onCanvasClick(event: MouseEvent)
     {
         model.emit("canvas-click", event);
@@ -301,7 +308,8 @@
 
         <!-- Areas (except the topmost one)-->
         <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
-            <DrawingAreaVue v-if="!area.isTopmost" v-bind="area.syntheticProps" :model="area" />
+            <DrawingAreaVue v-if="!area.isTopmost" v-bind="area.syntheticProps" :model="area" 
+                @click-passed-through="onClickPassedThrough"/>
         </template>
 
         <!-- Components -->

@@ -28,6 +28,10 @@
         highlightColor: {type: String, required: false},
     });
 
+    const emit = defineEmits<{
+        "click-passed-through": [event: MouseEvent],
+    }>();
+
     const mouseCaptureTarget = ref<SVGElement>();
 
     // eslint-disable-next-line vue/no-setup-props-destructure
@@ -158,6 +162,14 @@
         props.model.selectThis();
     }//onMouseUp
 
+    function onClick(event: MouseEvent)
+    {
+        if (props.model.kresmer.selectAreasWithClick || event.ctrlKey)
+            props.model.onClick(event);
+        else
+            emit("click-passed-through", event);
+    }//onClick
+
     function onMouseMove(event: MouseEvent)
     {
         if (event.buttons & 1 && isEditable && (props.model.isSelected || props.model.kresmer.selectAreasWithClick)) {
@@ -199,7 +211,7 @@
             @mousedown.stop="onMouseDown($event)"
             @mouseup.stop="onMouseUp($event)"
             @mousemove.stop.prevent="onMouseMove($event)"
-            @click.self="model.onClick($event)"
+            @click.self="onClick($event)"
             @contextmenu.self="model.onRightClick($event)"
             @dblclick.self="model.onDoubleClick($event)"
             />
