@@ -40,8 +40,10 @@ export default class LibraryLoader
 
 
     private async _loadLibrary(libData: string, 
-                               importHandler: (libName: string, fileName?: string) => Promise<string|undefined>,
-                               translationHandler: (libName: string, language: string, fileName?: string) => Promise<string|undefined>,
+                               importHandler: (libName: string, fileName?: string) 
+                                    => Promise<string|string[]|undefined>,
+                               translationHandler: (libName: string, language: string, fileName?: string) 
+                                    => Promise<string|string[]|undefined>,
                             ): Promise<number>
     {
         // console.debug("Loading library...");
@@ -54,8 +56,8 @@ export default class LibraryLoader
                 libName = element.name;
                 const alreadyLoaded = !this.kresmer._registerLibrary(libName);
                 if (alreadyLoaded) {
-                    console.debug(`Library "${libName}" - dup, ignored`);
-                    return -1;
+                    console.debug(`Library "${libName}" - dup, overlaying`);
+                    // return -1;
                 }//if
 
             } else if (element instanceof NetworkComponentClass) {
@@ -81,15 +83,19 @@ export default class LibraryLoader
 
             } else if (element instanceof ImportStatement) {
                 if (!this.kresmer.isLibraryLoaded(element.libName)) {
-                    const importedLibData = await importHandler(element.libName, element.fileName);
-                    if (!importedLibData)
+                    let importedLibsData = await importHandler(element.libName, element.fileName);
+                    if (!importedLibsData)
                         this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
                     else {
-                        const childLoader = new LibraryLoader(this.kresmer, this.propTypes, this.depth+1);
-                        const nImportErrors = await childLoader._loadLibrary(importedLibData, importHandler, translationHandler);
-                        if (nImportErrors > 0)
-                            nErrors += nImportErrors;
-                        console.debug(`${"  ".repeat(this.depth+1)}Library "${element.libName}" - imported`);
+                        if (!Array.isArray(importedLibsData))
+                            importedLibsData = [importedLibsData];
+                        for (const importedLibData of importedLibsData) {
+                            const childLoader = new LibraryLoader(this.kresmer, this.propTypes, this.depth+1);
+                            const nImportErrors = await childLoader._loadLibrary(importedLibData, importHandler, translationHandler);
+                            if (nImportErrors > 0)
+                                nErrors += nImportErrors;
+                            console.debug(`${"  ".repeat(this.depth+1)}Library "${element.libName}" - imported`);
+                        }//for
                     }//if
                 }//if
 
@@ -99,10 +105,14 @@ export default class LibraryLoader
             }//if
         }//for
 
-        const translation = await translationHandler(libName, this.kresmer.uiLanguage);
-        if (translation) {
-            this.loadLibraryTranslation(translation);
-            console.debug(`${"  ".repeat(this.depth)}Translation for the library "${libName}" loaded`);
+        let translations = await translationHandler(libName, this.kresmer.uiLanguage);
+        if (translations) {
+            if (!Array.isArray(translations))
+                translations = [translations];
+            translations.forEach(translation => {
+                this.loadLibraryTranslation(translation);
+                console.debug(`${"  ".repeat(this.depth)}Translation for the library "${libName}" loaded`);
+            });
         }//if
 
         console.debug(`${"  ".repeat(this.depth)}Library "${libName}" - loaded (${nErrors} errors)`);
@@ -116,17 +126,35 @@ export default class LibraryLoader
     public async loadLibraries(libs: Map<string, string>, translations?: Map<string, Map<string, string>>): Promise<number>
     {
         let nErrors = 0;
+        const libPathPattern = /.*[/\\](?<libName>[-_a-zA-Z0-9]+)(\.[-_a-zA-Z0-9]*$)/;
         for (const libData of libs.values()) {
             const rc = await this._loadLibrary(libData, 
                 (importedLibName: string) => {
                     const importedLibData = libs.get(importedLibName);
-                    return importedLibData ? Promise.resolve(importedLibData) : 
-                        this.kresmer.emit("library-import-requested", importedLibName );
+                    if (importedLibData) 
+                        return Promise.resolve(importedLibData);
+                    const importedLibsData = libs.entries()
+                        .filter(([path]) => path.match(libPathPattern)?.groups?.libName === importedLibName)
+                        .reduce((acc, [, libData]) => { acc.push(libData); return acc; }, [] as string[]);
+                    if (importedLibsData.length) 
+                        return Promise.resolve(importedLibsData);
+                    return this.kresmer.emit("library-import-requested", importedLibName );
                 },
                 (libName: string) => {
                     const transData = translations?.get(libName)?.get(this.kresmer.uiLanguage);
-                    return transData ? Promise.resolve(transData) : 
-                        this.kresmer.emit("library-translation-requested", libName, this.kresmer.uiLanguage);
+                    if (transData) 
+                        return Promise.resolve(transData);
+                    const translationsData = translations?.entries()
+                        .filter(([path]) => path.match(libPathPattern)?.groups?.libName === libName)
+                        .reduce((acc, [, langs]) => { 
+                                const transData = langs.get(this.kresmer.uiLanguage);
+                                if (transData)
+                                    acc.push(transData); 
+                                return acc; 
+                            }, [] as string[]);
+                    if (translationsData?.length) 
+                        return Promise.resolve(translationsData);
+                    return this.kresmer.emit("library-translation-requested", libName, this.kresmer.uiLanguage);
                 }
             );
             if (rc > 0)

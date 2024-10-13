@@ -252,7 +252,7 @@ export function loadInitialLibraries(): LibData
 {
     const libData: LibData = new Map();
     for (const libPath of libsToLoad) {
-        libData.set(path.basename(libPath, ".krel"), fs.readFileSync(libPath, "utf8"));
+        libData.set(libPath, fs.readFileSync(libPath, "utf8"));
     }//for
     return libData;
 }//loadInitialLibraries
