@@ -292,9 +292,11 @@ Continue?`))) {
     function addSubprop(where: ElementPropDescriptor)
     {
         propToAddSubpropTo.value = where;
-        const keys = Object.keys(where.value as object);
-        if (keys.every(key => !isNaN(key as unknown as number)))
-            newSubpropName.value = String(Math.max(...keys.map(key => Number(key))) + 1);
+        if (where.value) {
+            const keys = Object.keys(where.value);
+            if (keys.every(key => !isNaN(key as unknown as number)))
+                newSubpropName.value = String(Math.max(...keys.map(key => Number(key))) + 1);
+        }//if
         dlgNewSubprop.show();
     }//addSubprop
 
