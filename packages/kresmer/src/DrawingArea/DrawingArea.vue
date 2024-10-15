@@ -173,7 +173,7 @@
 
     function onRightClick(event: MouseEvent)
     {
-        if (props.model.kresmer.selectAreasWithClick || event.ctrlKey)
+        if (props.model.kresmer.selectAreasWithClick || event.ctrlKey || props.model.isSelected)
             props.model.onRightClick(event);
         else
             emit("right-click-passed-through", event);
