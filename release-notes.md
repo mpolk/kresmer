@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.17.6
+
+Fixes in global mouse movement processing
+
 ## 0.17.5
 
 Further improve areas reaction on the clicks
