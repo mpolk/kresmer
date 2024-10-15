@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.17.7
+
+Fix an error when adding a new subprop value to the currently empty prop
+
 ## 0.17.6
 
 - Fixes in global mouse movement processing
