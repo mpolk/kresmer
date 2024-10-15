@@ -42,9 +42,15 @@ export default abstract class DrawingElement {
         this._class = _class;
         this.props = args?.props ?? {};
         this.id = DrawingElement.nextID++;
-        this._name = args?.name ? args.name : `${this._class.name}-${uuidV4()}`;
+        this._name = args?.name ? args.name : this.defaultName;
         this.dbID = (args?.dbID !== null) ? args?.dbID : undefined;
     }//ctor
+
+    /** Generates a default name for the new DrawingElement if explicit name is not provided */
+    get defaultName()
+    {
+        return `${this._class.name}-${uuidV4()}`;
+    }//defaultName
 
     readonly _kresmer: WeakRef<Kresmer>;
     get kresmer() { return this._kresmer.deref()! }
@@ -163,7 +169,18 @@ export default abstract class DrawingElement {
         }//if
         return name;
     }//assertNameUniqueness
-
+    
+    /** Makes a unique name for the newly-created this element duplicate */
+    public makeNameForDuplicate(): string
+    {
+        if (this.name.match(`${this._class.name}-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}`))
+            return this.defaultName;
+        else {
+            let name: string;
+            for (let i=1; (name = `${this.name}.${i}`) && !this.checkNameUniqueness(name); i++) {/**/}
+            return name;
+        }//if
+    }//makeNameForDuplicate
 
     protected _dbID?: number|string;
     /** A unique element ID for binding to the matching database entity */

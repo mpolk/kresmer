@@ -1204,8 +1204,7 @@ export default class Kresmer extends KresmerEventHooks {
          */
         duplicateComponent: (original: NetworkComponentController) =>
         {
-            let name: string;
-            for (let n = 1; (name = `${original.component.name}.${n}`) && this.componentsByName.has(name); n++) {/**/}
+            const name = original.component.makeNameForDuplicate();
             const props = clone(original.component.props);
             const newComponent = new NetworkComponent(this, original.component.getClass(), {name, props});
             const origin = {x: original.origin.x + 10, y: original.origin.y + 10};
@@ -1436,8 +1435,7 @@ export default class Kresmer extends KresmerEventHooks {
          */
         duplicateArea: (original: DrawingArea) =>
         {
-            let name: string;
-            for (let n = 1; (name = `${original.name}.${n}`) && this.areasByName.has(name); n++) {/**/}
+            const name = original.makeNameForDuplicate();
             const props = clone(original.props);
             const shift = {x: 20, y: 20};
             const vertices = original.vertices.map(v => {
