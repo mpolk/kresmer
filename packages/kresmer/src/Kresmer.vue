@@ -240,21 +240,11 @@
         <template v-if="model.showGrid">
             <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, model.gridStep)" 
                 :key="`x-grid${x}`">
-                <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"
-                    @mousedown.self="onMouseDownOnCanvas($event)"
-                    @click.self="onCanvasClick($event)"
-                    @contextmenu.self="onCanvasRightClick($event)"
-                    @mousemove.prevent.self=""
-                    />
+                <line class="grid" :x1="x" :y1="rulerBox.y" :x2="x" :y2="rulerBox.y + rulerBox.height"/>
             </template>
             <template v-for="y in rulerMarkings(rulerBox.y, rulerBox.y + rulerBox.height, model.gridStep)" 
                 :key="`y-grid${y}`">
-                <line class="grid" :x1="rulerBox.x" :y1="y" :x2="rulerBox.x + rulerBox.width" :y2="y"
-                    @mousedown.self="onMouseDownOnCanvas($event)"
-                    @click.self="onCanvasClick($event)"
-                    @contextmenu.self="onCanvasRightClick($event)"
-                    @mousemove.prevent.self=""
-                    />
+                <line class="grid" :x1="rulerBox.x" :y1="y" :x2="rulerBox.x + rulerBox.width" :y2="y"/>
             </template>
         </template>
         <!-- Rulers -->
@@ -340,6 +330,7 @@
         background-color: white;
         box-shadow: 0.5rem 0.5rem 0.5rem lightgray;
         outline: thin darkgray dotted;
+        user-select: none;
 
         svg.network-component {
             overflow: visible;
@@ -347,6 +338,7 @@
         }
 
         .rulers {
+            pointer-events: none;
             .axis {
                 stroke: gray; stroke-width: 1px;
                 fill: none;
@@ -385,6 +377,7 @@
         }
 
         .grid {
+            pointer-events: none;
             stroke: lightgray; stroke-width: 1px;
             vector-effect: non-scaling-stroke;
         }
