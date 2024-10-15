@@ -210,7 +210,7 @@ export default class DrawingArea extends draggable(withZOrder(DrawingElementWith
     {
         if (event.ctrlKey && segmentNumber) {
             this.kresmer.edAPI.addAreaVertex(this.id, segmentNumber, event);
-        } else if (this.kresmer.selectAreasWithClick) {
+        } else {
             this.selectThis();
         }//if
     }//onClick

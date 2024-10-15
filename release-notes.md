@@ -2,7 +2,8 @@
 
 ## 0.17.6
 
-Fixes in global mouse movement processing
+- Fixes in global mouse movement processing
+- Further improve areas reaction on the clicks
 
 ## 0.17.5
 

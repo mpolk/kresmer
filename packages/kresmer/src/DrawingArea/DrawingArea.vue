@@ -30,6 +30,7 @@
 
     const emit = defineEmits<{
         "click-passed-through": [event: MouseEvent],
+        "right-click-passed-through": [event: MouseEvent],
     }>();
 
     const mouseCaptureTarget = ref<SVGElement>();
@@ -170,6 +171,14 @@
             emit("click-passed-through", event);
     }//onClick
 
+    function onRightClick(event: MouseEvent)
+    {
+        if (props.model.kresmer.selectAreasWithClick || event.ctrlKey)
+            props.model.onRightClick(event);
+        else
+            emit("right-click-passed-through", event);
+    }//onRightClick
+
     function onMouseMove(event: MouseEvent)
     {
         if (event.buttons & 1 && isEditable && (props.model.isSelected || props.model.kresmer.selectAreasWithClick)) {
@@ -212,7 +221,7 @@
             @mouseup.stop="onMouseUp($event)"
             @mousemove.stop.prevent="onMouseMove($event)"
             @click.self="onClick($event)"
-            @contextmenu.self="model.onRightClick($event)"
+            @contextmenu.self="onRightClick($event)"
             @dblclick.self="model.onDoubleClick($event)"
             />
         <path v-for="(border, i) in model.borders" :key="`border${i}`" 

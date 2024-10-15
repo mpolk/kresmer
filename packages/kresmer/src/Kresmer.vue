@@ -299,7 +299,7 @@
         <!-- Areas (except the topmost one)-->
         <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
             <DrawingAreaVue v-if="!area.isTopmost" v-bind="area.syntheticProps" :model="area" 
-                @click-passed-through="onClickPassedThrough"/>
+                @click-passed-through="onClickPassedThrough"  @right-click-passed-through="onCanvasRightClick"/>
         </template>
 
         <!-- Components -->
