@@ -1,5 +1,10 @@
 # Release Notes
 
+## 0.17.8
+
+- Add "Text" library component
+- Fix: move drawing areas down in the rendering order (behind the rulers/grid)
+
 ## 0.17.7
 
 Fix an error when adding a new subprop value to the currently empty prop
