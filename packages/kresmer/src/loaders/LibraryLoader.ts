@@ -56,7 +56,7 @@ export default class LibraryLoader
                 libName = element.name;
                 const alreadyLoaded = !this.kresmer._registerLibrary(libName);
                 if (alreadyLoaded) {
-                    console.debug(`Library "${libName}" - dup, overlaying`);
+                    console.debug(`Library "${libName}" - dup, merging`);
                     // return -1;
                 }//if
 

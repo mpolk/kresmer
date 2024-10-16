@@ -236,6 +236,12 @@
         <rect v-if="rootSVG" :style="backgroundMaskStyle" :fill="model.backgroundColor" 
             :opacity="1 - model.backgroundImage.visibility" />
 
+        <!-- Areas (except the topmost one)-->
+        <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
+            <DrawingAreaVue v-if="!area.isTopmost" v-bind="area.syntheticProps" :model="area" 
+                @click-passed-through="onClickPassedThrough"  @right-click-passed-through="onCanvasRightClick"/>
+        </template>
+
         <!-- Grid -->
         <template v-if="model.showGrid">
             <template v-for="x in rulerMarkings(rulerBox.x, rulerBox.x + rulerBox.width, model.gridStep)" 
@@ -294,12 +300,6 @@
                     <text class="marking-text right" :x="rulerBox.x + rulerBox.width - hundredsMarkingLength * 1.2" :y="y">{{ y }}</text>
                 </template>
             </g>
-        </template>
-
-        <!-- Areas (except the topmost one)-->
-        <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
-            <DrawingAreaVue v-if="!area.isTopmost" v-bind="area.syntheticProps" :model="area" 
-                @click-passed-through="onClickPassedThrough"  @right-click-passed-through="onCanvasRightClick"/>
         </template>
 
         <!-- Components -->
