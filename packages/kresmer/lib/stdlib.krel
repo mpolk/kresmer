@@ -19,6 +19,21 @@
     <import library="std-ports" />
     <import library="std-links" />
 
+    <component-class name="Text" category="General" version="2024101600">
+        <template>
+            <text x="0" y="0" v-bind:fill="color" v-bind:font-size="fontSize"
+                v-bind:font-family="fontFamily">
+                {{ content }}
+            </text>
+        </template>
+        <props>
+            <prop name="content" type="string" default="Text" required="true" />
+            <prop name="color" type="Color" default="#303030" />
+            <prop name="font-size" type="String" default="32" />
+            <prop name="font-family" type="String" />
+        </props>
+    </component-class>
+
     <!-- *************************************** General device prototypes ******************************************** -->
     
     <!-- Any device that has an ip-address and can be managed using some network protocol -->
