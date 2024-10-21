@@ -74,7 +74,6 @@ export default class Kresmer extends KresmerEventHooks {
         this.autoAlignVertices = options?.autoAlignVertices ?? true;
         this.animateComponentDragging = Boolean(options?.animateComponentDragging);
         this.animateLinkBundleDragging = Boolean(options?.animateLinkBundleDragging);
-        this.selectAreasWithClick = Boolean(options?.selectAreasWithClick);
         options?.hrefBase && (this.hrefBase.value = options.hrefBase);
         options?.streetAddressFormat && (this.streetAddressFormat = options.streetAddressFormat);
         options?.backgroundImage && (this.backgroundImage.copy(options.backgroundImage));
@@ -174,8 +173,6 @@ export default class Kresmer extends KresmerEventHooks {
     animateComponentDragging = false;
     /** Specifies whether link bundle dragging should be animated */
     animateLinkBundleDragging = false;
-    /** Specifies whether areas can be selected with mouse left clicks */
-    selectAreasWithClick = false;
     /** The code of the language to use in UI */
     uiLanguage = new Intl.Locale(navigator.language).language;
 
@@ -310,6 +307,11 @@ export default class Kresmer extends KresmerEventHooks {
     isEditable = true;
     /** A symbolic key for the editability flag injection */
     static readonly ikIsEditable = Symbol() as InjectionKey<boolean>;
+    /** Determines whether the drawing is in the background editing mode, 
+     * i.e. whether background objects (drawing areas) are editable instead of foreground ones (components and links) */
+    backgroundEditingMode = reactive({value: false});
+    /** A symbolic key for the background editing flag injection */
+    static readonly ikBackgroundEditingMode = Symbol() as InjectionKey<boolean>;
     /** Determines if components and link vertices should snap to the grid when being dragged and dropped */
     snapToGrid = true;
     /** A symbolic key for the snap-to-grid flag injection */

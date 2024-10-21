@@ -140,10 +140,6 @@
         return Array.from(model.globalDefs.values()).map(({data}) => data);
     });
 
-    const topmostArea = computed(() => {
-        return model.areas.topmostItem;
-    });
-
 
     // Event handlers
 
@@ -157,13 +153,6 @@
         model.resetAllComponentModes();
         model.emit("mode-reset");
     }//onMouseDownOnCanvas
-
-    function onClickPassedThrough(event: MouseEvent)
-    {
-        model.deselectAllElements();
-        model.resetAllComponentModes();
-        model.emit("mode-reset");
-    }//onClickPassedThrough
 
     function onCanvasClick(event: MouseEvent)
     {
@@ -236,10 +225,11 @@
         <rect v-if="rootSVG" :style="backgroundMaskStyle" :fill="model.backgroundColor" 
             :opacity="1 - model.backgroundImage.visibility" />
 
-        <!-- Areas (except the topmost one)-->
-        <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
-            <DrawingAreaVue v-if="!area.isTopmost" v-bind="area.syntheticProps" :model="area" 
-                @click-passed-through="onClickPassedThrough"  @right-click-passed-through="onCanvasRightClick"/>
+        <!-- Areas (when not in the background editing mode)-->
+        <template v-if="!model.backgroundEditingMode.value">
+            <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
+                <DrawingAreaVue v-bind="area.syntheticProps" :model="area" />
+            </template>
         </template>
 
         <!-- Grid -->
@@ -319,8 +309,12 @@
             :model="link" />
         <NetworkLinkBlankVue v-if="model.newLinkBlank.value" :model="model.newLinkBlank.value" />
 
-        <!-- The topmost (selected) area (if any)-->
-        <DrawingAreaVue v-if="topmostArea" v-bind="topmostArea.syntheticProps" :model="topmostArea" />
+        <!-- Areas (when in the background editing mode)-->
+        <template v-if="model.backgroundEditingMode.value">
+            <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
+                <DrawingAreaVue v-bind="area.syntheticProps" :model="area" />
+            </template>
+        </template>
     </svg>
 </template>
 

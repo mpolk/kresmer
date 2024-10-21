@@ -88,6 +88,10 @@ export const kresmer = new Kresmer("#kresmer", {
     backendConnectionPassword: appInitData.server.password,
 });
 
+if (kresmer.backendConnection) {
+    window.electronAPI.backendServerConnected();
+}//if
+
 statusBarData.serverURL = kresmer.backendConnection?.serverURL || "";
 statusBarData.drawingScale = kresmer.drawingScale;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
@@ -500,7 +504,6 @@ export function updateAppSettings(newAppSettings: AppSettings)
     kresmer.streetAddressFormat = newAppSettings.streetAddressFormat;
     kresmer.embedLibDataInDrawing = newAppSettings.embedLibDataInDrawing;
     kresmer.libDataPriority = newAppSettings.libDataPriority;
-    kresmer.selectAreasWithClick = newAppSettings.selectAreasWithClick;
     i18next.changeLanguage(newAppSettings.uiLanguage);
     window.electronAPI.updateAppSettings(toRaw(newAppSettings));
 }//updateAppSettings
@@ -660,6 +663,11 @@ appCommandExecutor.on("create-link-bundle", async (mousePos?: Position) =>
         const pos = mousePos ? kresmer.applyScreenCTM(mousePos) : {x: kresmer.logicalWidth/2, y: kresmer.logicalHeight/2}
         kresmer.edAPI.startLinkCreation(linkClass, {pos});
     }//if
+});
+
+appCommandExecutor.on("toggle-background-editing-mode", () => {
+    kresmer.backgroundEditingMode.value = !kresmer.backgroundEditingMode.value;
+    window.electronAPI.backgroundEditingModeToggled(kresmer.backgroundEditingMode.value);
 });
 
 appCommandExecutor.on("create-area", async (mousePos?: Position) =>

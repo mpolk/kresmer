@@ -26,13 +26,14 @@ export interface IpcMainChannels {
     "enable-move-element-down-menu-items": (enable: boolean) => void;
     // "enable-link-op-menu-items": (enable: boolean) => void;
     "enable-area-op-menu-items": (enable: boolean) => void;
-    "backend-server-connected": (url: string, password: string, autoConnect: boolean) => void;
+    "backend-server-connected": (url?: string, password?: string, autoConnect?: boolean) => void;
     "backend-server-disconnected": () => void;
     "open-url": (url: string) => void;
     "grid-shown-or-hidden": (shown: boolean) => void;
     "rulers-shown-or-hidden": (shown: boolean) => void;
     "snapping-to-grid-toggled": (snapToGrid: boolean) => void;
     "snapping-granularity-changed": (granularity: number) => void;
+    "background-editing-mode-toggled": (backgroundEditingMode: boolean) => void,
     "vertex-auto-alignment-toggled": (autoAlignVertices: boolean) => void;
     "load-initial-libraries": () => LibData;
     "load-library-file": (libName: string, fileName?: string) => string|undefined;

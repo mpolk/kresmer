@@ -95,7 +95,7 @@ exposeToRenderer({
         sendToMain("enable-move-element-down-menu-items", enable);
     },
 
-    backendServerConnected: (url: string, password: string, autoConnect: boolean) => {
+    backendServerConnected: (url?: string, password?: string, autoConnect?: boolean) => {
         sendToMain("backend-server-connected", url, password, autoConnect);
     },
 
@@ -121,6 +121,10 @@ exposeToRenderer({
 
     snappingGranularityChanged: (granularity: number) => {
         sendToMain("snapping-granularity-changed", granularity)
+    },
+
+    backgroundEditingModeToggled: (backgroundEditingMode: boolean) => {
+        sendToMain("background-editing-mode-toggled", backgroundEditingMode)
     },
 
     autoAlignmentToggled: (autoAlignVertices: boolean) => {

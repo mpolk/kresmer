@@ -28,11 +28,6 @@
         highlightColor: {type: String, required: false},
     });
 
-    const emit = defineEmits<{
-        "click-passed-through": [event: MouseEvent],
-        "right-click-passed-through": [event: MouseEvent],
-    }>();
-
     const mouseCaptureTarget = ref<SVGElement>();
 
     // eslint-disable-next-line vue/no-setup-props-destructure
@@ -66,11 +61,13 @@
 
     const areaStyle = computed(() => {
         return {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            pointerEvents: props.model.kresmer.backgroundEditingMode.value ? undefined : "none" as any,
             cursor: cursorStyle.value.cursor,
             stroke: props.model.isSelected ? highlightColor.value : props.color,
             strokeOpacity: props.model.isSelected ? 0.4 : 1,
             fill: props.model.isSelected ? highlightColor.value : props.color,
-            fillOpacity: props.model.isSelected ? 0.7 : 1,
+            fillOpacity: props.model.kresmer.backgroundEditingMode.value ? 0.7 : 1,
             filter: props.model.isSelected ? highlightFilter.value : undefined,
         }
     })//areaStyle
@@ -140,7 +137,7 @@
 
     function onMouseDown(event: MouseEvent)
     {
-        if (event.buttons === 1 && isEditable && (props.model.isSelected || props.model.kresmer.selectAreasWithClick)) {
+        if (event.buttons === 1 && isEditable) {
             event.preventDefault();
             props.model.kresmer.deselectAllElements(props.model).resetAllComponentModes();
             props.model.startDrag(event);
@@ -154,7 +151,7 @@
             return;
         }//if
 
-        if (!props.model.isSelected && !props.model.kresmer.selectAreasWithClick)
+        if (!props.model.isSelected)
             return;
 
         // eslint-disable-next-line vue/no-mutating-props
@@ -165,23 +162,17 @@
 
     function onClick(event: MouseEvent)
     {
-        if (props.model.kresmer.selectAreasWithClick || event.ctrlKey)
-            props.model.onClick(event);
-        else
-            emit("click-passed-through", event);
+        props.model.onClick(event);
     }//onClick
 
     function onRightClick(event: MouseEvent)
     {
-        if (props.model.kresmer.selectAreasWithClick || event.ctrlKey || props.model.isSelected)
-            props.model.onRightClick(event);
-        else
-            emit("right-click-passed-through", event);
+        props.model.onRightClick(event);
     }//onRightClick
 
     function onMouseMove(event: MouseEvent)
     {
-        if (event.buttons & 1 && isEditable && (props.model.isSelected || props.model.kresmer.selectAreasWithClick)) {
+        if (event.buttons & 1 && isEditable) {
             props.model.drag(event);
         }//if
     }//onMouseMove

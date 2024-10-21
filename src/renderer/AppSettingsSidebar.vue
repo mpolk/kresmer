@@ -291,16 +291,6 @@
                 </div>
                 <div class="row">
                     <div class="col">
-                        <div class="form-check">
-                            <label class="form-check-label" for="cbSelectAreasWithClick">
-                                {{ i18next.t("app-settings.select-areas-with-click", "Select drawing areas with the left mouse button") }}
-                            </label>
-                            <input type="checkbox" id="cbSelectAreasWithClick" class="form-check-input" v-model="appSettings!.selectAreasWithClick" />
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col">
                         <label class="form-label" for="selStreetAddressFormat">
                             {{ i18next.t("app-settings.street-address-format._", "Street address format") }}
                         </label>

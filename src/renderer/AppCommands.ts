@@ -33,6 +33,7 @@ export interface AppCommandFormats extends ContextMenuCommands {
     "escape": () => void,
     "undo": () => void,
     "redo": () => void,
+    "toggle-background-editing-mode": () => void,
     "delete-selected-element": () => void,
     "duplicate-selected-element": () => void,
     "move-selected-element-up": () => void,

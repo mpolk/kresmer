@@ -156,8 +156,9 @@ export function initIpcMainHooks()
         modifyMenuItemFlags("move-selected-element-down", "move-selected-element-to-bottom")({enabled});
     });
 
-    IpcMainHooks.on("backend-server-connected", (url: string, password: string, autoConnect: boolean) => {
-        localSettings.set("server", {url, password, autoConnect});
+    IpcMainHooks.on("backend-server-connected", (url?: string, password?: string, autoConnect?: boolean) => {
+        if (url && password !== undefined && autoConnect !== undefined)
+            localSettings.set("server", {url, password, autoConnect});
         modifyMenuItemFlags("connectToServer")({visible: false, enabled: false});
         modifyMenuItemFlags("disconnectFromServer")({visible: true, enabled: true});
     });
@@ -198,6 +199,10 @@ export function initIpcMainHooks()
     IpcMainHooks.on("vertex-auto-alignment-toggled", autoAlignVertices => {
         modifyMenuItemFlags("toggleVertexAutoAlignment")({checked: autoAlignVertices});
         localSettings.set("autoAlignVertices", autoAlignVertices);
+    });
+
+    IpcMainHooks.on("background-editing-mode-toggled", backgroundEditingMode => {
+        modifyMenuItemFlags("toggleBackgroundEditingMode")({checked: backgroundEditingMode});
     });
 
     IpcMainHooks.onInvokation("load-initial-libraries", () => {

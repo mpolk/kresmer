@@ -12,6 +12,11 @@ import { AppSettings } from '../main/main';
 import { fileSelectOrLoadResult, UrlType } from './renderer-main.mts';
 import { LibData } from 'kresmer';
 
+interface onBackendServerConnectedHandler {
+    (url: string, password: string, autoConnect: boolean): void;
+    (): void;
+}
+
 export interface ElectronAPI {
     signalReadiness: () => void,
     initialAppSettings: AppSettings,
@@ -28,12 +33,13 @@ export interface ElectronAPI {
     enableMoveElementDownMenuItems: (enable: boolean) => void,
     // enableLinkOpMenuItems: (enable: boolean) => void,
     enableAreaOpMenuItems: (enable: boolean) => void,
-    backendServerConnected: (url: string, password: string, autoConnect: boolean) => void,
+    backendServerConnected: onBackendServerConnectedHandler,
     backendServerDisconnected: () => void,
     openURL: (url: string) => void,
     rulersShownOrHidden: (shown: boolean) => void,
     gridShownOrHidden: (shown: boolean) => void,
     snappingToGridToggled: (snapToGrid: boolean) => void,
+    backgroundEditingModeToggled: (backgroundEditingMode: boolean) => void,
     snappingGranularityChanged: (granularity: number) => void,
     autoAlignmentToggled: (autoAlignVertices: boolean) => void,
     loadInitialLibraries: () => Promise<LibData>,

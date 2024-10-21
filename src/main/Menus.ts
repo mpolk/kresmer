@@ -102,12 +102,12 @@ export default class Menus {
                 { type: 'separator' },
                 {
                     label: t("menu.file.connect-to-server", "Connect to the backend server..."), 
-                    accelerator: "Control+B", id: "connectToServer",
+                    id: "connectToServer",
                     click: () => requestConnectToServer(true)
                 },
                 {
                     label: t("menu.file.disconnect-from-server", "Disconnect from the backend server"), 
-                    accelerator: "Shift+Control+B", id: "disconnectFromServer",
+                    id: "disconnectFromServer",
                     click: () => requestDisconnectFromServer(), visible: false, enabled: false
                 },
                 { type: 'separator' },
@@ -128,6 +128,10 @@ export default class Menus {
                 {
                     label:  t("menu.edit.snap-to-grid", 'Snap to grid'), type: "checkbox", checked: true, accelerator: "F3", id: "toggleSnappingToGrid",
                     click: () => sendAppCommand("toggle-snapping-to-grid")
+                },
+                { label: t("menu.edit.background-editing-mode", "Background Editing Mode"), 
+                    accelerator: "Control+B", checked: false,
+                    id: "toggleBackgroundEditingMode", click: () => sendAppCommand("toggle-background-editing-mode")
                 },
                 { label:  t("menu.edit.drawing-properties", "Drawing properties..."), click: () => sendAppCommand("edit-drawing-properties", { x: 0, y: 0 }) },
                 { label:  t("menu.edit.app-settings", "Application settings..."), click: () => sendAppCommand("edit-app-settings", localSettings.data) },
