@@ -29,7 +29,6 @@
     },
     "animate-component-dragging": "Анімувати перетягування компонентів",
     "animate-bundle-dragging": "Анімувати перетягування жмутів з'єднань",
-    "select-areas-with-click": "Виділяти області креслення лівою кнопкою миші",
     "street-address-format": {
       "_": "Формат адреси",
       "building-first": "спочатку номер будинку",

@@ -19,6 +19,7 @@
       "redo": "Redo",
       "auto-align-vertices": "Auto-align vertices",
       "snap-to-grid": "Snap to grid",
+      "background-editing-mode": "Background Editing Mode",
       "drawing-properties": "Drawing properties...",
       "app-settings": "Application settings..."
     },
