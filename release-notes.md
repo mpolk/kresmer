@@ -1,5 +1,9 @@
 # Release Notes
 
+## 0.17.9
+
+Introduced a separate background editing mode for performing all the operations with the drawing areas
+
 ## 0.17.8
 
 - Add "Text" library component
