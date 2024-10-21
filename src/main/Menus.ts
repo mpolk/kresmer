@@ -130,7 +130,7 @@ export default class Menus {
                     click: () => sendAppCommand("toggle-snapping-to-grid")
                 },
                 { label: t("menu.edit.background-editing-mode", "Background Editing Mode"), 
-                    accelerator: "Control+B", checked: false,
+                    accelerator: "Control+B", type: "checkbox", checked: false,
                     id: "toggleBackgroundEditingMode", click: () => sendAppCommand("toggle-background-editing-mode")
                 },
                 { label:  t("menu.edit.drawing-properties", "Drawing properties..."), click: () => sendAppCommand("edit-drawing-properties", { x: 0, y: 0 }) },
