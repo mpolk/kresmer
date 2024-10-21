@@ -61,7 +61,7 @@
 
     const linkStyle = computed(() => {
         return {
-            "pointer-events": props.model.kresmer._allLinksFreezed || props.model.kresmer.backgroundEditingMode.value ? "none" : "auto",
+            "pointer-events": props.model.kresmer._allLinksFreezed || props.model.kresmer.backgroundEditingMode ? "none" : "auto",
         } as CSSProperties
     })//linkStyle
 

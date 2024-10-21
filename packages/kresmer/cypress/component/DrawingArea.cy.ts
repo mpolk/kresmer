@@ -20,7 +20,7 @@ describe('DrawingArea object test', () => {
             kresmer = _kresmer;
             kresmer.showGrid = true;
             kresmer.showRulers = true;
-            kresmer.selectAreasWithClick = true;
+            kresmer.backgroundEditingMode = true;
         });
     })//before
     afterEach(assertNoExceptions);

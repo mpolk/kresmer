@@ -239,7 +239,7 @@
             y: controller.dragConstraint === 'y',
             beingTransformed: controller.isBeingTransformed
         }"
-        :style="{pointerEvents: kresmer.backgroundEditingMode.value ? 'none' : undefined}"
+        :style="{pointerEvents: kresmer.backgroundEditingMode ? 'none' : undefined}"
         >
         <g ref="trGroup" class="tr-group" 
             :transform="transformAttr" :transform-origin="transformOrigin"

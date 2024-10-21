@@ -309,7 +309,9 @@ export default class Kresmer extends KresmerEventHooks {
     static readonly ikIsEditable = Symbol() as InjectionKey<boolean>;
     /** Determines whether the drawing is in the background editing mode, 
      * i.e. whether background objects (drawing areas) are editable instead of foreground ones (components and links) */
-    backgroundEditingMode = reactive({value: false});
+    get backgroundEditingMode() { return this._backgroundEditingMode.value; }
+    set backgroundEditingMode(newValue: boolean) { this._backgroundEditingMode.value = newValue; }
+    protected _backgroundEditingMode = reactive({value: false});
     /** A symbolic key for the background editing flag injection */
     static readonly ikBackgroundEditingMode = Symbol() as InjectionKey<boolean>;
     /** Determines if components and link vertices should snap to the grid when being dragged and dropped */

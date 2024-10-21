@@ -666,8 +666,8 @@ appCommandExecutor.on("create-link-bundle", async (mousePos?: Position) =>
 });
 
 appCommandExecutor.on("toggle-background-editing-mode", () => {
-    kresmer.backgroundEditingMode.value = !kresmer.backgroundEditingMode.value;
-    window.electronAPI.backgroundEditingModeToggled(kresmer.backgroundEditingMode.value);
+    kresmer.backgroundEditingMode = !kresmer.backgroundEditingMode;
+    window.electronAPI.backgroundEditingModeToggled(kresmer.backgroundEditingMode);
 });
 
 appCommandExecutor.on("create-area", async (mousePos?: Position) =>

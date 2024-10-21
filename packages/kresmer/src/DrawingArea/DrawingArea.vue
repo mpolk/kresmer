@@ -62,12 +62,12 @@
     const areaStyle = computed(() => {
         return {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            pointerEvents: props.model.kresmer.backgroundEditingMode.value ? undefined : "none" as any,
+            pointerEvents: props.model.kresmer.backgroundEditingMode ? undefined : "none" as any,
             cursor: cursorStyle.value.cursor,
             stroke: props.model.isSelected ? highlightColor.value : props.color,
             strokeOpacity: props.model.isSelected ? 0.4 : 1,
             fill: props.model.isSelected ? highlightColor.value : props.color,
-            fillOpacity: props.model.kresmer.backgroundEditingMode.value ? 0.7 : 1,
+            fillOpacity: props.model.kresmer.backgroundEditingMode ? 0.7 : 1,
             filter: props.model.isSelected ? highlightFilter.value : undefined,
         }
     })//areaStyle

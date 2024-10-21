@@ -226,7 +226,7 @@
             :opacity="1 - model.backgroundImage.visibility" />
 
         <!-- Areas (when not in the background editing mode)-->
-        <template v-if="!model.backgroundEditingMode.value">
+        <template v-if="!model.backgroundEditingMode">
             <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
                 <DrawingAreaVue v-bind="area.syntheticProps" :model="area" />
             </template>
@@ -310,7 +310,7 @@
         <NetworkLinkBlankVue v-if="model.newLinkBlank.value" :model="model.newLinkBlank.value" />
 
         <!-- Areas (when in the background editing mode)-->
-        <template v-if="model.backgroundEditingMode.value">
+        <template v-if="model.backgroundEditingMode">
             <template v-for="area in model.areas.sorted" :key="`area${area.id}`">
                 <DrawingAreaVue v-bind="area.syntheticProps" :model="area" />
             </template>
