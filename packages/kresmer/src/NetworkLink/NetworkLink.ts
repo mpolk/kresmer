@@ -89,8 +89,8 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         else
             this.kresmer.highlightedLinks.delete(this);
         this.propagateHighlightingUp(newValue, false);
-        this.head.anchor.conn?.propagateLinkHighlightingIn(newValue);
-        this.tail.anchor.conn?.propagateLinkHighlightingIn(newValue);
+        // this.head.anchor.conn?.propagateLinkHighlightingIn(newValue);
+        // this.tail.anchor.conn?.propagateLinkHighlightingIn(newValue);
     }//set isHighlighted
 
     private propagateHighlightingUp(newValue: boolean, updateSelf = true)
@@ -205,6 +205,15 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     override get _byNameIndex(): Map<string, number> {
         return this.kresmer.linksByName;
     }//_byNameIndex
+
+    override propagateLinkHighlighting(connectionID: string, isHighlighted: boolean): void {
+        super.propagateLinkHighlighting(connectionID, isHighlighted);
+        for (const vertex of this.vertices) {
+            if (vertex.isConnected) {
+                vertex.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
+            }//if
+        }//for
+    }//propagateLinkHighlighting
 
     public absPosToRel(absPos: Position): Position
     {

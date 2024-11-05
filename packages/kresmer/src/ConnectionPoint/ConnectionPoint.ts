@@ -20,7 +20,7 @@ export default class ConnectionPoint {
      * Constructs a connection point
      * @param hostElement The drawing element this connection point belongs to
      * @param name The name of the connection point
-     * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
+     * @param dir Preferred direction for the link connected here (angle from x-axis, initial value)
      */
     constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string, connectionIDs?: string|undefined)
     {
@@ -38,20 +38,21 @@ export default class ConnectionPoint {
         connectionIDs?.split(/ *, */).map(cid => cid.trim()).forEach(cid => {
             cid = cid.trim();
             if (cid.startsWith("in:"))
-                this.connectionIDs.in = cid.slice(3);
+                this.connectionIDs.in.push(cid.slice(3));
             else if (cid.startsWith("out:"))
                 this.connectionIDs.out.push(cid.slice(4));
             else
-                this.connectionIDs.inout = cid;
+                this.connectionIDs.inout.push(cid);
         })
 
     }//ctor
 
-    private readonly _hostElement: WeakRef<DrawingElement>;
+    /** The drawing element this connection point belongs to */
     get hostElement() { return this._hostElement.deref()! }
+    private readonly _hostElement: WeakRef<DrawingElement>;
 
-    readonly connectionIDs: {in: string|undefined, out: string[], inout: string|undefined} = 
-        {in: undefined, out: [], inout: undefined};
+    readonly connectionIDs: {in: string[], out: string[], inout: string[]} = 
+        {in: [], out: [], inout: []};
 
     toString() { 
         const prefix = this.hostElement instanceof NetworkLink ? "-" : "";
@@ -60,9 +61,9 @@ export default class ConnectionPoint {
 
     get displayString() { return this.toString().replace(/@[a-z0-9]+$/, ""); }
 
-    /** The current value of the prefered direction */
+    /** The current value of the preferred direction */
     public dir: number;
-    /** The initial value of the prefered direction */
+    /** The initial value of the preferred direction */
     readonly dir0: number;
 
     /** Absolute coordinates of the connection point */
@@ -101,6 +102,7 @@ export default class ConnectionPoint {
             this.hostElement.saveDisconnectedVertices(...this.connectedVertices.values());
         }//if
     }//saveConnectedVertices
+
     /** Restores vertices that was temporarily disconnected (suspended) */
     restoreConnectedVertices()
     {
@@ -110,20 +112,18 @@ export default class ConnectionPoint {
     }//restoreConnectedVertices
 
 
-    propagateLinkHighlightingIn(isHighlighted: boolean)
+    propagateLinkHighlightingIn(connToPropagate: string, isHighlighted: boolean)
     {
-
-        const cid = this.connectionIDs.in ?? this.connectionIDs.inout;
-        if (cid)
-            this.hostElement.propagateLinkHighlighting(cid, isHighlighted);
+        const ourCIDs = [...this.connectionIDs.in, ...this.connectionIDs.inout];
+        if (ourCIDs.includes("*") || ourCIDs.includes(connToPropagate)) {
+            this.hostElement.propagateLinkHighlighting(connToPropagate, isHighlighted);
+        }//if
     }//propagateLinkHighlightingIn
 
 
     propagateLinkHighlightingOut(connToPropagate: string, isHighlighted: boolean)
     {
-        const ourCIDs = [...this.connectionIDs.out];
-        if (this.connectionIDs.inout)
-            ourCIDs.push(this.connectionIDs.inout);
+        const ourCIDs = [...this.connectionIDs.out, ...this.connectionIDs.inout];
         if (ourCIDs.includes("*") || ourCIDs.includes(connToPropagate)) {
             this.connectedVertices.forEach(v => {v.parentElement.isHighlighted = isHighlighted});
         }//if
