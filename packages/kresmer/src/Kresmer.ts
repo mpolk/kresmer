@@ -268,9 +268,13 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** A zoom factor for visual scaling*/
     get zoomFactor() {return this._zoomFactor.value}
-    set zoomFactor(newScale) {
-        this._zoomFactor.value = newScale;
-        nextTick(this.notifyOfScaleChange);
+    set zoomFactor(newValue: number) {
+        const prevZoom = this._zoomFactor.value;
+        this._zoomFactor.value = newValue;
+        nextTick(() => {
+            this.emit("drawing-zoom", newValue, prevZoom);
+            this.notifyOfScaleChange();
+        });
     }
     private _zoomFactor = ref(0.999999999); 
     // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically

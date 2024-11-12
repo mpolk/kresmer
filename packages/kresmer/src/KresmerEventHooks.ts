@@ -29,6 +29,7 @@ class KresmerEventFormats  {
     "library-translation-requested":    (libName: string, language: string) => Promise<string|undefined>;
     "library-element-loaded":           (libName: string, element: ParsedLibraryNode, sourceCode: string) => void;
     "drawing-scale":                    (newScaleFactor: number) => void;
+    "drawing-zoom":                     (newZoom: number, prevZoom: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
     "canvas-click":                     (nativeEvent: MouseEvent) => void;
@@ -215,6 +216,14 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("drawing-scale")
     protected onDrawingScale(newScale: number) {}
+
+    /**
+     * Is called when the drawing zoom factor change occurs
+     * @param newZoom A new zoom value
+     * @param prevZoom Zoom value before change
+     */
+    @overridableHandler("drawing-zoom")
+    protected onDrawingZoom(newZoom: number, prevZoom: number) {}
 
     /**
      * Is called when the mouse cursor enters a drawing visible area

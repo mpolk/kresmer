@@ -20,7 +20,7 @@ export default class ConnectionPoint {
      * Constructs a connection point
      * @param hostElement The drawing element this connection point belongs to
      * @param name The name of the connection point
-     * @param dir Prefered direction for the link connected here (angle from x-axis, initial value)
+     * @param dir Preferred direction for the link connected here (angle from x-axis, initial value)
      */
     constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string, connectionIDs?: string|undefined)
     {
@@ -60,9 +60,9 @@ export default class ConnectionPoint {
 
     get displayString() { return this.toString().replace(/@[a-z0-9]+$/, ""); }
 
-    /** The current value of the prefered direction */
+    /** The current value of the preferred direction */
     public dir: number;
-    /** The initial value of the prefered direction */
+    /** The initial value of the preferred direction */
     readonly dir0: number;
 
     /** Absolute coordinates of the connection point */
