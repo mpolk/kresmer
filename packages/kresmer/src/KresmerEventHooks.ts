@@ -251,7 +251,7 @@ export default class KresmerEventHooks {
 
     /**
      * Is called when a network component is loaded from the drawing file
-     * @param controller Th component been loaded
+     * @param controller The component been loaded
      */
     @overridableHandler("component-loaded")
     protected onComponentLoaded(component: NetworkComponent) {}
