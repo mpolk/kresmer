@@ -115,7 +115,7 @@ export default class ConnectionPoint {
     propagateLinkHighlightingIn(connToPropagate: string, isHighlighted: boolean)
     {
         const ourCIDs = [...this.connectionIDs.in, ...this.connectionIDs.inout];
-        if (ourCIDs.includes("*") || ourCIDs.includes(connToPropagate)) {
+        if (connToPropagate === "*" || ourCIDs.includes("*") || ourCIDs.includes(connToPropagate)) {
             this.hostElement.propagateLinkHighlighting(connToPropagate, isHighlighted);
         }//if
     }//propagateLinkHighlightingIn

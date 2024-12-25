@@ -89,8 +89,8 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         else
             this.kresmer.highlightedLinks.delete(this);
         this.propagateHighlightingUp(newValue, false);
-        // this.head.anchor.conn?.propagateLinkHighlightingIn(newValue);
-        // this.tail.anchor.conn?.propagateLinkHighlightingIn(newValue);
+        this.head.anchor.conn?.propagateLinkHighlightingIn("*", newValue);
+        this.tail.anchor.conn?.propagateLinkHighlightingIn("*", newValue);
     }//set isHighlighted
 
     private propagateHighlightingUp(newValue: boolean, updateSelf = true)
