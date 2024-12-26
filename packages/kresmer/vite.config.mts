@@ -30,6 +30,7 @@ export default defineConfig({
     },
 
     build: {
+      target: 'esnext',
       lib: {
         entry: path.resolve(__dirname, 'src/Kresmer.ts'),
         name: 'Kresmer',
@@ -49,5 +50,15 @@ export default defineConfig({
           exports: "named",
         },
       }//rollupOptions
-    }//build  
+    },//build  
+
+    esbuild: {
+        target: 'esnext',
+    },
+
+    optimizeDeps:{
+      esbuildOptions: {
+        target: "es2022",
+      }
+    },
 });
