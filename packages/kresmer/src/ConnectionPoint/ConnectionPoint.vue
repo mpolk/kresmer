@@ -23,10 +23,12 @@
         proxy?: ConnectionPoint,
         showTooltip?: boolean,
         connectionId?: string,
+        connectionMapIn?: Map<string, string>,
+        connectionMapOut?: Map<string, string>,
     }>();
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
-    const modelObject = proxy ?? new ConnectionPoint(hostElement, name, dir, connectionId);
+    const modelObject = proxy ?? new ConnectionPoint(hostElement, name, dir, {connectionId});
     if (!proxy)
         hostElement.addConnectionPoint(name, modelObject);
 

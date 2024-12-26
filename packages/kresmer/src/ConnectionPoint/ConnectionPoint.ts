@@ -22,7 +22,8 @@ export default class ConnectionPoint {
      * @param name The name of the connection point
      * @param dir Preferred direction for the link connected here (angle from x-axis, initial value)
      */
-    constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string, connectionIDs?: string|undefined)
+    constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string, 
+        connectionMappings?: {connectionId?: string|undefined, connectionMapIn?: Record<string, string>, connectionMapOut?: Record<string, string>})
     {
         this._hostElement = new WeakRef(hostElement);
         switch (dir0) {
@@ -35,7 +36,15 @@ export default class ConnectionPoint {
         }//switch
         this.dir = this.dir0;
 
-        connectionIDs?.split(/ *, */).map(cid => cid.trim()).forEach(cid => {
+        if (connectionMappings?.connectionMapIn) {
+            this.connectionMapIn = new Map(Object.entries(connectionMappings.connectionMapIn));
+        }//if
+
+        if (connectionMappings?.connectionMapOut) {
+            this.connectionMapOut = new Map(Object.entries(connectionMappings.connectionMapOut));
+        }//if
+
+        connectionMappings?.connectionId?.split(/ *, */).map(cid => cid.trim()).forEach(cid => {
             cid = cid.trim();
             if (cid.startsWith("in:"))
                 this.connectionMapIn.set('*', cid.slice(3));
