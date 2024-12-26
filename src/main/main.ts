@@ -17,7 +17,7 @@ import { createMainWindow, initIpcMainHooks, registerCustomManagementProtocols,
 import { RecentDrawings } from './file-ops';
 import { StreetAddressFormat, LibDataPriority } from 'kresmer';
 import i18next from 'i18next';
-import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend';
+import FsBackend, { FsBackendOptions }  from 'i18next-fs-backend/cjs';
 
 // We should set the app name explicitly to override the name "e-kresmer" specified in "package.json".
 // Which in turn should be set to differentiate the root package from the core-component package
