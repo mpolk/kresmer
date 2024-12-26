@@ -80,6 +80,10 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     get isHighlighted() {return this._isHighlighted || this.hasHighlightedUplinks}
 
     set isHighlighted(newValue: boolean) {
+        this.highlightConnection("*", newValue);
+    }//set isHighlighted
+
+    highlightConnection(connectionID: string, newValue: boolean) {
         if (this._isHighlighted === newValue)
             return;
         
@@ -88,10 +92,11 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
             this.kresmer.highlightedLinks.add(this);
         else
             this.kresmer.highlightedLinks.delete(this);
+
         this.propagateHighlightingUp(newValue, false);
-        this.head.anchor.conn?.propagateLinkHighlightingIn("*", newValue);
-        this.tail.anchor.conn?.propagateLinkHighlightingIn("*", newValue);
-    }//set isHighlighted
+        this.head.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
+        this.tail.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
+    }//highlightConnection
 
     private propagateHighlightingUp(newValue: boolean, updateSelf = true)
     {

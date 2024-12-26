@@ -38,21 +38,28 @@ export default class ConnectionPoint {
         connectionIDs?.split(/ *, */).map(cid => cid.trim()).forEach(cid => {
             cid = cid.trim();
             if (cid.startsWith("in:"))
-                this.connectionIDs.in.push(cid.slice(3));
+                this.connectionMapIn.set('*', cid.slice(3));
             else if (cid.startsWith("out:"))
-                this.connectionIDs.out.push(cid.slice(4));
-            else
-                this.connectionIDs.inout.push(cid);
-        })
+                this.connectionMapOut.set(cid.slice(4), cid.slice(4));
+            else {
+                this.connectionMapIn.set('*', cid);
+                this.connectionMapOut.set(cid, cid);
+            }//if
+        });
 
+        if (this.connectionMapIn.size && !this.connectionMapOut.size) {
+            for (const [extCID, intCID] of this.connectionMapIn.entries()) {
+                this.connectionMapOut.set(intCID, extCID);
+            }//for
+        }//if
     }//ctor
 
     /** The drawing element this connection point belongs to */
     get hostElement() { return this._hostElement.deref()! }
     private readonly _hostElement: WeakRef<DrawingElement>;
 
-    readonly connectionIDs: {in: string[], out: string[], inout: string[]} = 
-        {in: [], out: [], inout: []};
+    readonly connectionMapIn = new Map<string, string>();
+    readonly connectionMapOut = new Map<string, string>();
 
     toString() { 
         const prefix = this.hostElement instanceof NetworkLink ? "-" : "";
@@ -114,18 +121,20 @@ export default class ConnectionPoint {
 
     propagateLinkHighlightingIn(connToPropagate: string, isHighlighted: boolean)
     {
-        const ourCIDs = [...this.connectionIDs.in, ...this.connectionIDs.inout];
-        if (connToPropagate === "*" || ourCIDs.includes("*") || ourCIDs.includes(connToPropagate)) {
-            this.hostElement.propagateLinkHighlighting(connToPropagate, isHighlighted);
+        const intCID = this.connectionMapIn.get(connToPropagate) ?? this.connectionMapIn.get("*");
+        if (intCID) {
+            this.hostElement.propagateLinkHighlighting(intCID, isHighlighted);
         }//if
     }//propagateLinkHighlightingIn
 
 
     propagateLinkHighlightingOut(connToPropagate: string, isHighlighted: boolean)
     {
-        const ourCIDs = [...this.connectionIDs.out, ...this.connectionIDs.inout];
-        if (ourCIDs.includes("*") || ourCIDs.includes(connToPropagate)) {
-            this.connectedVertices.forEach(v => {v.parentElement.isHighlighted = isHighlighted});
+        const extCID = this.connectionMapOut.get(connToPropagate) ?? this.connectionMapOut.get("*");
+        if (extCID) {
+            this.connectedVertices.forEach(vertex => {
+                vertex.parentElement.highlightConnection(extCID, isHighlighted);
+            });
         }//if
     }//propagateLinkHighlightingOut
 }//ConnectionPoint
