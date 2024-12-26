@@ -53,7 +53,7 @@
 
 <template>
     <ConnectionPointVue v-if="hasConnectionPoint && model.parentElement.kresmer.isEditable" :name="model.vertexNumber" 
-        :x="model.coords.x" :y="model.coords.y" :proxy="model.ownConnectionPoint" :show-tooltip="showConnectionPointTooltips"
+        :x="model.coords.x" :y="model.coords.y" :model="model.ownConnectionPoint" :show-tooltip="showConnectionPointTooltips"
         @click="onClick" class="vertex-connection-point"
         />
     <slot/>

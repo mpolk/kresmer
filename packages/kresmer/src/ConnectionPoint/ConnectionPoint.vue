@@ -14,13 +14,13 @@
     import NetworkLink from '../NetworkLink/NetworkLink';
     import ConnectionPoint from './ConnectionPoint';
 
-    const {name, x = 0, y = 0, d = 10, dir = 90, proxy, showTooltip = true, connectionId} = defineProps<{
+    const {name, x = 0, y = 0, d = 10, dir = 90, model, showTooltip = true, connectionId} = defineProps<{
         name: string | number,
         x?: number, 
         y?: number, 
         d?: number, 
         dir?: number | string,
-        proxy?: ConnectionPoint,
+        model?: ConnectionPoint,
         showTooltip?: boolean,
         connectionId?: string,
         connectionMapIn?: Map<string, string>,
@@ -28,8 +28,8 @@
     }>();
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
-    const modelObject = proxy ?? new ConnectionPoint(hostElement, name, dir, {connectionId});
-    if (!proxy)
+    const modelObject = model ?? new ConnectionPoint(hostElement, name, dir, {connectionId});
+    if (!model)
         hostElement.addConnectionPoint(name, modelObject);
 
     const kresmer = inject(Kresmer.ikKresmer)!;
