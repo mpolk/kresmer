@@ -106,8 +106,8 @@
 
     <xs:complexType name="link-base">
         <xs:sequence>
-            <xs:element name="props" type="drawing-element-props" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="vertices">
+            <xs:element name="props" type="drawing-element-props" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="vertices" minOccurs="0" maxOccurs="1">
                 <xs:complexType>
                     <xs:sequence>
                         <xs:element name="vertex" type="link-vertex" minOccurs="0" maxOccurs="unbounded"/>
