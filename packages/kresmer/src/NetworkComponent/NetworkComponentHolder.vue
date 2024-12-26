@@ -155,7 +155,7 @@
         event.preventDefault();
         if (isEditable && transformStartEvent) {
             const handleRef = toCamelCase(zone) as keyof InstanceType<typeof TransformBox>;
-            props.controller._setMouseCaptureTarget(trBox.value![handleRef] as SVGElement);
+            props.controller._setMouseCaptureTarget(trBox.value![handleRef]);
             switch(zone) {
                 case "tr-box":
                     props.controller.startDrag(transformStartEvent);
