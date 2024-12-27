@@ -12,9 +12,9 @@
   "style": "dist/kresmer.css",
   "exports": {
     ".": {
+      "types": "./dist/kresmer.d.ts",
       "import": "./dist/kresmer.es.js",
-      "require": "./dist/kresmer.umd.js",
-      "types": "./dist/kresmer.d.ts"
+      "require": "./dist/kresmer.umd.js"
     },
     "./style": {
       "import": "./dist/kresmer.css"
