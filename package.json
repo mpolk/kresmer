@@ -101,7 +101,7 @@
     "@popperjs/core": "^2.11.6",
     "bootstrap": "^5.2.3",
     "date-fns": "^4.1.0",
-    "i18next": "^23.12.2",
+    "i18next": "^24.2.0",
     "i18next-fs-backend": "^2.3.1",
     "kresmer": "^0.0.0",
     "postcss": "^8.4.41",
