@@ -36,13 +36,7 @@ export default class ConnectionPoint {
         }//switch
         this.dir = this.dir0;
 
-        if (connectionMappings?.connectionMapIn) {
-            this.connectionMapIn = new Map(Object.entries(connectionMappings.connectionMapIn));
-        }//if
-
-        if (connectionMappings?.connectionMapOut) {
-            this.connectionMapOut = new Map(Object.entries(connectionMappings.connectionMapOut));
-        }//if
+        this._setConnectionMaps(connectionMappings?.connectionMapIn, connectionMappings?.connectionMapOut);
 
         connectionMappings?.connectionId?.split(/ *, */).map(cid => cid.trim()).forEach(cid => {
             cid = cid.trim();
@@ -55,12 +49,6 @@ export default class ConnectionPoint {
                 this.connectionMapOut.set(cid, cid);
             }//if
         });
-
-        if (this.connectionMapIn.size && !this.connectionMapOut.size) {
-            for (const [extCID, intCID] of this.connectionMapIn.entries()) {
-                this.connectionMapOut.set(intCID, extCID);
-            }//for
-        }//if
     }//ctor
 
     /** The drawing element this connection point belongs to */
@@ -69,6 +57,34 @@ export default class ConnectionPoint {
 
     readonly connectionMapIn = new Map<string, string>();
     readonly connectionMapOut = new Map<string, string>();
+
+    _setConnectionMaps(connectionMapIn: Record<string, string>|undefined, connectionMapOut: Record<string, string>|undefined)
+    {
+
+        this.connectionMapIn.clear();
+        if (connectionMapIn) {
+            Object.entries(connectionMapIn).forEach(([extCID, intCID]) => {
+                this.connectionMapIn.set(extCID, intCID);
+            });
+        }//if
+
+        this.connectionMapOut.clear();
+        if (connectionMapOut) {
+            Object.entries(connectionMapOut).forEach(([intCID, extCID]) => {
+                this.connectionMapIn.set(intCID, extCID);
+            });
+        }//if
+
+        if (this.connectionMapIn.size && !this.connectionMapOut.size) {
+            for (const [extCID, intCID] of this.connectionMapIn.entries()) {
+                this.connectionMapOut.set(intCID, extCID);
+            }//for
+        } else if (!this.connectionMapIn.size && this.connectionMapOut.size) {
+            for (const [intCID, extCID] of this.connectionMapOut.entries()) {
+                this.connectionMapIn.set(extCID, intCID);
+            }//for
+        }//if
+    }//_setConnectionMaps
 
     toString() { 
         const prefix = this.hostElement instanceof NetworkLink ? "-" : "";

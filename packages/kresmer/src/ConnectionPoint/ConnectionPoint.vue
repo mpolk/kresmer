@@ -32,6 +32,9 @@
     if (!model)
         hostElement.addConnectionPoint(name, modelObject);
 
+    watch(() => connectionMapIn, () => {modelObject._setConnectionMaps(connectionMapIn, connectionMapOut)});
+    watch(() => connectionMapOut, () => {modelObject._setConnectionMaps(connectionMapIn, connectionMapOut)});
+
     const kresmer = inject(Kresmer.ikKresmer)!;
     const isEditable = inject(Kresmer.ikIsEditable);
     const drawingOrigin = inject(Kresmer.ikDrawingOrigin)!;
