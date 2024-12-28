@@ -294,9 +294,11 @@ export default abstract class DrawingElement {
     static readonly ikHighlightedConnection = Symbol() as InjectionKey<string[]>;
     readonly highlightedConnections = reactive<string[]>([]);
 
-    propagateLinkHighlighting(connectionID: string, isHighlighted: boolean)
+    propagateLinkHighlighting(connectionID: string, isHighlighted: boolean, sourceCP?: ConnectionPoint)
     {
         for (const cp of this.getConnectionPoints()) {
+            if (cp === sourceCP)
+                continue;
             cp.propagateLinkHighlightingOut(connectionID, isHighlighted);
         }//for
         if (isHighlighted)

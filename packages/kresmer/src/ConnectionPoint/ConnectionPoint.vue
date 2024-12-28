@@ -14,7 +14,7 @@
     import NetworkLink from '../NetworkLink/NetworkLink';
     import ConnectionPoint from './ConnectionPoint';
 
-    const {name, x = 0, y = 0, d = 10, dir = 90, model, showTooltip = true, connectionId} = defineProps<{
+    const {name, x = 0, y = 0, d = 10, dir = 90, model, showTooltip = true, connectionId, connectionMapIn, connectionMapOut} = defineProps<{
         name: string | number,
         x?: number, 
         y?: number, 
@@ -23,12 +23,12 @@
         model?: ConnectionPoint,
         showTooltip?: boolean,
         connectionId?: string,
-        connectionMapIn?: Map<string, string>,
-        connectionMapOut?: Map<string, string>,
+        connectionMapIn?: Record<string, string>,
+        connectionMapOut?: Record<string, string>,
     }>();
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
-    const modelObject = model ?? new ConnectionPoint(hostElement, name, dir, {connectionId});
+    const modelObject = model ?? new ConnectionPoint(hostElement, name, dir, {connectionId, connectionMapIn, connectionMapOut});
     if (!model)
         hostElement.addConnectionPoint(name, modelObject);
 

@@ -17,6 +17,7 @@ import { Position } from "Transform/Transform";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import XMLFormatter, { XMLTag } from "../XMLFormatter";
+import ConnectionPoint from "../ConnectionPoint/ConnectionPoint";
 
 /**
  * Network Link 
@@ -211,8 +212,8 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         return this.kresmer.linksByName;
     }//_byNameIndex
 
-    override propagateLinkHighlighting(connectionID: string, isHighlighted: boolean): void {
-        super.propagateLinkHighlighting(connectionID, isHighlighted);
+    override propagateLinkHighlighting(connectionID: string, isHighlighted: boolean, sourceCP?: ConnectionPoint): void {
+        super.propagateLinkHighlighting(connectionID, isHighlighted, sourceCP);
         for (const vertex of this.vertices) {
             if (vertex.isConnected) {
                 vertex.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
