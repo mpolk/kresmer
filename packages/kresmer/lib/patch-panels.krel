@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024122700"
+    <component-class name="PatchPanel" category="Passive equipment" version="2024122900"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -67,7 +67,7 @@
             </template>
             <kre:connection-point
                 v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
-                v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" v-bind:connection-map-in="{'*': '*'}" v-bind:connection-map-out="{'*': '*'}"/>
+                v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" v-bind:connection-map-in="{'*': '*'}" />
             <template v-if="caption">
                 <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)">
                     <text v-bind:x="captionX" v-bind:y="captionY" 
@@ -175,9 +175,9 @@
                     props.portLabelPosition==="above" ?  {x: computedProps.labelW*0.5, y: 0, dir: -90} :
                     props.portLabelPosition==="below" ?  {x: computedProps.labelW*0.5, y: computedProps.labelH, dir: 90} :
                         {};
-                    pos.x += computedProps.firstLabelX + Number(props.orientation==='horizontal')*(i-1)*computedProps.labelHeight;
-                    pos.y += computedProps.firstLabelY + Number(props.orientation==='vertical')*(i-1)*computedProps.labelHeight;
-                    return pos;
+                pos.x += computedProps.firstLabelX + Number(props.orientation==='horizontal')*(i-1)*computedProps.labelHeight;
+                pos.y += computedProps.firstLabelY + Number(props.orientation==='vertical')*(i-1)*computedProps.labelHeight;
+                return pos;
             </function>
         </functions>
         <style>
