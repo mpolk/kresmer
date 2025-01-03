@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": true,
     "experimentalDecorators": true,
     "target": "esnext",
     "useDefineForClassFields": true,
@@ -16,4 +17,5 @@
     "allowSyntheticDefaultImports": true,
   },
   "include": ["src/**/*"],
+  "exclude": ["**/node_modules", "**/.*/"],
 }

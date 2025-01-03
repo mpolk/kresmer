@@ -60,7 +60,6 @@ export default class ConnectionPoint {
 
     _setConnectionMaps(connectionMapIn: Record<string, string>|undefined, connectionMapOut: Record<string, string>|undefined)
     {
-
         this.connectionMapIn.clear();
         if (connectionMapIn) {
             Object.entries(connectionMapIn).forEach(([extCID, intCID]) => {

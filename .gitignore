@@ -25,6 +25,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# TS compiler intermediate file
+**/tsconfig.tsbuildinfo
+
 # debug files
 xxx.kre
 xxx.kre.0

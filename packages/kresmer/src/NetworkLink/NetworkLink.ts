@@ -72,6 +72,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
             this.returnFromTop();
             this.isHighlighted = false;
         }//if
+        this.traceConnection("*", true);
     }//isSelected
 
     readonly isBundle: boolean = false;
@@ -94,10 +95,15 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         else
             this.kresmer.highlightedLinks.delete(this);
 
-        this.propagateHighlightingUp(newValue, false);
-        this.head.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
-        this.tail.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
+        this.traceConnection(connectionID, newValue);
     }//highlightConnection
+
+    private traceConnection(connectionID: string, isHighlighted: boolean)
+    {
+        this.propagateHighlightingUp(isHighlighted, false);
+        this.head.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
+        this.tail.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
+    }//traceConnection
 
     private propagateHighlightingUp(newValue: boolean, updateSelf = true)
     {
