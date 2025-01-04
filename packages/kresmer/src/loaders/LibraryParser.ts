@@ -640,8 +640,13 @@ export default class LibraryParser {
         Object.getOwnPropertyNames(allowedTypes).forEach(typeName => {
             if (type?.replaceAll('-', '').toLowerCase() === typeName) {
                 prop.type = allowedTypes[typeName].propType;
-                if (_default != null)
-                    prop.default = allowedTypes[typeName].makeDefault(_default);
+                if (_default != null) {
+                    try {
+                        prop.default = allowedTypes[typeName].makeDefault(_default);
+                    } catch (exc) {
+                        this.kresmer.raiseError(new ParsingException(`Invalid default value for the prop ${className}.${propName}`));
+                    }//try
+                }//if
                 prop.subtype = allowedTypes[typeName].subtype;
             }//if
         });

@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2024122900"
+    <component-class name="PatchPanel" category="Passive equipment" version="2025010400"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -20,11 +20,11 @@
             <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
                 <kre:connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
                         <svg class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}"
-                        v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
-                        v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight"
-                        v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" 
-                        v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth"
-                        >
+                            v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight"
+                            v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight"
+                            v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" 
+                            v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth"
+                            >
                         <rect class="pad" x="0" y="0" width="100%" height="100%"/>
                         <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
                         <template v-else-if="orientation === 'vertical'">
@@ -67,7 +67,7 @@
             </template>
             <kre:connection-point
                 v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
-                v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" v-bind:connection-map-in="{'*': '*'}" />
+                v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" v-bind:connection-map-in="cableConnectionMap(dir[0])" />
             <template v-if="caption">
                 <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)">
                     <text v-bind:x="captionX" v-bind:y="captionY" 
@@ -76,10 +76,7 @@
                 </a>
                 <text v-else="" class="caption" v-bind:x="captionX" v-bind:y="captionY" 
                     v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`"
-                    v-bind:font-size="captionFontSize"
-                    >
-                    {{caption}}
-                </text>
+                    v-bind:font-size="captionFontSize">{{caption}}</text>
             </template>
         </template>
         <props extend="DeviceWithOpticalPorts">
@@ -101,6 +98,10 @@
             <prop name="portLabelWidth" type="Number" default="0.65" category="Presentation" description="The width of the port label table (relative)"/>
             <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
             <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
+            <prop name="upperCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the upper cable connection point"><elements type="String"/></prop>
+            <prop name="lowerCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the lower cable connection point"><elements type="String"/></prop>
+            <prop name="leftCableConnMap"  type="Object" default="{&quot;*&quot;: &quot;*&quot;}"  description="Connection commutation map for the left cable connection point"><elements type="String"/></prop>
+            <prop name="rightCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the right cable connection point"><elements type="String"/></prop>
         </props>
         <computed-props>
             <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
@@ -178,6 +179,12 @@
                 pos.x += computedProps.firstLabelX + Number(props.orientation==='horizontal')*(i-1)*computedProps.labelHeight;
                 pos.y += computedProps.firstLabelY + Number(props.orientation==='vertical')*(i-1)*computedProps.labelHeight;
                 return pos;
+            </function>
+            <function name="cableConnectionMap" params="dir">
+                return dir === 'u' ? props.upperCableConnMap :
+                    dir === 'd' ? props.lowerCableConnMap :
+                    dir === 'l' ? props.leftCableConnMap :
+                        props.rightCableConnMap;
             </function>
         </functions>
         <style>
