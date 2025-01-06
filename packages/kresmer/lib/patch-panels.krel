@@ -12,7 +12,7 @@
     <import library="stdlib" />
     <import library="multiplexers" />
 
-    <component-class name="PatchPanel" category="Passive equipment" version="2025010400"
+    <component-class name="PatchPanel" category="Passive equipment" version="2025010600"
         embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
         <template>
             <title v-if="comment">{{comment}}</title>
@@ -50,7 +50,7 @@
                         </text>
                     </svg>
                     <kre:connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" 
-                        v-bind:name="`${i}@label`" v-bind:connection-id="`${i}`"/>
+                        v-bind:name="`${i}@label`" v-bind:connection-map-in="portConnectionMap(i)"/>
                 </kre:connection-indicator>
                 <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
             </template>
@@ -63,6 +63,7 @@
                     v-bind:key="firstPort - 1 + (i-1)*nPortRows + j"
                     v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined"
                     v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'"
+                    v-bind:connection-map-in="portConnectionMap(firstPort - 1 + (i-1)*nPortRows + j)"
                     />
             </template>
             <kre:connection-point
@@ -98,10 +99,17 @@
             <prop name="portLabelWidth" type="Number" default="0.65" category="Presentation" description="The width of the port label table (relative)"/>
             <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
             <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
-            <prop name="upperCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the upper cable connection point"><elements type="String"/></prop>
-            <prop name="lowerCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the lower cable connection point"><elements type="String"/></prop>
-            <prop name="leftCableConnMap"  type="Object" default="{&quot;*&quot;: &quot;*&quot;}"  description="Connection commutation map for the left cable connection point"><elements type="String"/></prop>
-            <prop name="rightCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the right cable connection point"><elements type="String"/></prop>
+            <prop name="upperCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" 
+                description="Connection commutation map for the upper cable connection point" category="Network"><elements type="String"/></prop>
+            <prop name="lowerCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" 
+                description="Connection commutation map for the lower cable connection point" category="Network"><elements type="String"/></prop>
+            <prop name="leftCableConnMap"  type="Object" default="{&quot;*&quot;: &quot;*&quot;}" 
+                description="Connection commutation map for the left cable connection point" category="Network"><elements type="String"/></prop>
+            <prop name="rightCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" 
+                description="Connection commutation map for the right cable connection point" category="Network"><elements type="String"/></prop>
+            <prop name="portConnectionMaps" type="Object" description="Connection commutation maps for the port connection points" default="{}" category="Network">
+                <elements type="Object"><elements type="String"/></elements>
+            </prop>
         </props>
         <computed-props>
             <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
@@ -185,6 +193,9 @@
                     dir === 'd' ? props.lowerCableConnMap :
                     dir === 'l' ? props.leftCableConnMap :
                         props.rightCableConnMap;
+            </function>
+            <function name="portConnectionMap" params="nPort">
+                return props.portConnectionMaps[String(nPort)] ?? {"*": String(nPort)};
             </function>
         </functions>
         <style>

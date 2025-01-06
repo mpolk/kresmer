@@ -18,7 +18,7 @@
         </computed-props>
     </component-class>
 
-    <component-class name="Port" category=".ports" version="2024071400">
+    <component-class name="Port" category=".ports" version="2025010600">
         <template>
             <kre:connection-indicator v-bind:connection-id="connectionId">
                 <rect v-bind:width="w" v-bind:height="h" class="port-icon body" />
@@ -30,7 +30,7 @@
                 <title>{{title}}</title>
                 <kre:connection-point v-if="isActive &amp;&amp; nFibers == 1"
                     v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" 
-                    v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId}"
+                    v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId, connectionMapIn, connectionMapOut}"
                     v-bind:show-tooltip="false"
                     />
                 <kre:connection-point v-else-if="isActive"
@@ -40,7 +40,7 @@
                         down1: {x: w*0.4, y: h}, down2: {x: w*0.6, y: h}, 
                         left1: {x: 0, y: h*0.4}, left2: {x: 0, y: h*0.6}
                     }" 
-                    v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId}"
+                    v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId, connectionMapIn, connectionMapOut}"
                     v-bind:show-tooltip="false"
                     />
             </kre:connection-indicator>
@@ -56,7 +56,7 @@
         <props>
             <prop name="w" type="Number" required="true" default="25" category="Geometry" description="Port icon width"/>
             <prop name="h" type="Number" required="true" default="25" category="Geometry" description="Port icon height"/>
-            <prop name="labelY" type="Number" category="Geometry" description="Port label vertical poisition"/>
+            <prop name="labelY" type="Number" category="Geometry" description="Port label vertical position"/>
             <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
             <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
             <prop name="port-info" type="object" description="Various port configuration and state parameters">
@@ -76,7 +76,9 @@
             </prop>
             <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
             <prop name="is-active" type="Boolean" default="true" category="Network" description="Indicates whether this part (media) of the combo port is active" />
-            <prop name="connection-id" type="[String,Number]"/>
+            <prop name="connection-id" type="[String,Number]" category="Network"/>
+            <prop name="connection-map-in" description="Inbound connection commutation map for the port connection points" category="Network" type="Object"><elements type="String"/></prop>
+            <prop name="connection-map-out" description="Outbound connection commutation map for the port connection points" category="Network" type="Object"><elements type="String"/></prop>
         </props>
         <computed-props extend="MultiFiberPort">
             <computed-prop name="label0">props.combo ? String(props.name ?? "").replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name ?? "")</computed-prop>
@@ -87,7 +89,9 @@
                     (props.portInfo?.description ? ` ${props.portInfo.description}` : '') +
                     (props.portInfo?.speed ? ` (${props.portInfo.speed})` : '')
             </computed-prop>
-            <computed-prop name="connectionId">props.connectionId ? String(props.connectionId) : String(props.name)</computed-prop>
+            <computed-prop name="connectionId">
+                props.connectionId ? String(props.connectionId) : (props.connectionMapIn || props.connectionMapOut) ? undefined : String(props.name)
+            </computed-prop>
         </computed-props>
     </component-class>
 
