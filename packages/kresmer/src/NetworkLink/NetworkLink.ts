@@ -65,14 +65,14 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     static readonly injectionKey = Symbol() as InjectionKey<NetworkLink>;
 
     override get isSelected() {return super.isSelected}
-    override set isSelected(reallyIs: boolean)
+    override set isSelected(newValue: boolean)
     {
-        super.isSelected = reallyIs;
-        if (this.isHighlighted && !reallyIs) {
+        super.isSelected = newValue;
+        if (this.isHighlighted && !newValue) {
             this.returnFromTop();
             this.isHighlighted = false;
         }//if
-        this.traceConnection("*", true);
+        this.traceConnection("*", newValue);
     }//isSelected
 
     readonly isBundle: boolean = false;
@@ -95,7 +95,8 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         else
             this.kresmer.highlightedLinks.delete(this);
 
-        this.traceConnection(connectionID, newValue);
+        if (newValue || !this.isSelected)
+            this.traceConnection(connectionID, newValue);
     }//highlightConnection
 
     private traceConnection(connectionID: string, isHighlighted: boolean)

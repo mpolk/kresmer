@@ -231,6 +231,7 @@
 <template>
     <svg ref="svg" v-bind="controller.origin" 
         class="network-component" 
+        :name="controller.component.name"
         :class="{
             [controller.component.getClass().name]: true,
             selected: controller.component.isSelected,

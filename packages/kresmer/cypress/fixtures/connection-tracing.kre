@@ -1,0 +1,599 @@
+<?xml version="1.0" encoding="utf-8"?>
+<?xml-model href="xsd/kresmer-drawing.xsd"?>
+<kresmer-drawing xmlns="kresmer-drawing"
+    name="connection-tracing"
+    width="1000"
+    height="1000"
+    background-color="#ffffff">
+
+    <library xmlns:kre="kresmer-builtin-elements"
+        xmlns:Kre="kresmer-user-defined-elements"
+        xmlns:v-bind="v-bind"
+        xmlns:v-on="v-on"
+        xmlns:v-slot="v-slot">
+
+        <defs xmlns="kresmer-library" name="AdjustmentHandles" version="2024062500">
+            <g id="kre:adjustment-ruler-marker-common">
+                <polygon points="0,5 5,0 10,5 5,10"/>
+                <circle cx="5" cy="5" r="2" style="filter: brightness(0.25) invert(100%)"/>
+            </g>
+            <marker id="kre:adjustment-ruler-marker" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker"/>
+            </marker>
+            <marker id="kre:adjustment-ruler-marker-fixed" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                <use href="#kre:adjustment-ruler-marker-common" class="adjustment-ruler-marker fixed"/>
+            </marker>
+        </defs>
+
+        <style xmlns="kresmer-library" name="AdjustmentHandles" version="2024062500">
+            .adjustment-ruler {
+                stroke: brown;
+                stroke-width: 3px;
+                opacity: 0.5;
+                cursor: pointer;
+            }
+            .adjustment-ruler.selected, .adjustment-ruler:hover { opacity: 1; }
+            .adjustment-ruler-marker { fill: green; }
+            .adjustment-ruler-marker.fixed { fill: red; }
+            .adjustment-ruler .marker-padding { r: 3px; }
+        </style>
+
+        <component-class xmlns="kresmer-library" name="MultiFiberPort" category=".port-abstractions">
+            <computed-props>
+                <computed-prop name="nFibers">props.fiberInfo?.nFibers ?? props.portInfo?.nFibers ?? 1</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="Port" category=".ports" version="2024071400">
+            <template>
+                <kre:connection-indicator  v-bind:connection-id="connectionId">
+                    <rect v-bind:width="w" v-bind:height="h" class="port-icon body"/>
+                    <slot/>
+                    <rect v-if="portInfo?.operStatus" v-bind:width="h*0.25" v-bind:height="h*0.25" class="status-indicator"/>
+                    <text v-bind:x="w/2" v-bind:y="labelY" text-anchor="middle" v-bind:font-size="fontSize*h" class="port-name" v-bind:class="{disabled: !(portInfo?.adminStatus ?? true)}">{{label}}</text>
+                    <title>{{title}}</title>
+                    <kre:connection-point v-if="isActive &amp;&amp; nFibers == 1" v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${name}@${dir[0]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
+                    <kre:connection-point v-else-if="isActive" v-for="({x, y}, dir) in {                         up1: {x: w*0.4, y: 0}, up2: {x: w*0.6, y: 0},                          right1: {x: w, y: h*0.4}, right2: {x: w, y: h*0.6},                          down1: {x: w*0.4, y: h}, down2: {x: w*0.6, y: h},                          left1: {x: 0, y: h*0.4}, left2: {x: 0, y: h*0.6}                     }" v-bind="{name: `${name}@${dir[0]}${dir[dir.length-1]}`, d: h*0.7, x, y, dir, connectionId}" v-bind:show-tooltip="false"/>
+                </kre:connection-indicator>
+            </template>
+            <style>
+                .port-name {font-family: sans-serif; fill: white;}
+                .port-name.disabled {fill: lightgray; opacity: 0.75;}
+                .port-icon.body {stroke: white;}
+                .highlighted .port-icon.body {outline: white 4px solid;}
+                .status-indicator {fill: #b7f598; stroke: green; stroke-width: 1px}
+                .connection-point-marker {fill: yellow; stroke: rgb(184, 169, 0);}
+            </style>
+            <props>
+                <prop name="w" type="Number" required="true" default="25" category="Geometry" description="Port icon width"/>
+                <prop name="h" type="Number" required="true" default="25" category="Geometry" description="Port icon height"/>
+                <prop name="labelY" type="Number" category="Geometry" description="Port label vertical poisition"/>
+                <prop name="prefix" type="String" default="" description="Port name prefix that may be stripped when displaying in the limited area"/>
+                <prop name="font-size" type="Number" default="0.8" category="Presentation"/>
+                <prop name="port-info" type="object" description="Various port configuration and state parameters">
+                    <subprop name="description" type="String"/>
+                    <subprop name="media" type="String" choices="copper,fiber" description="The media type for the combo-port"/>
+                    <subprop name="speed" type="String" description="The current physical port speed"/>
+                    <subprop name="maxSpeed" type="String" description="The maximum physical port speed"/>
+                    <subprop name="operStatus" type="Boolean" description="The current port status"/>
+                    <subprop name="adminStatus" type="Boolean" description="The administrative port status"/>
+                    <subprop name="statusMonitoring" type="Boolean" description="Is the port status monitoring turned on?"/>
+                    <subprop name="speedMonitoring" type="Boolean" description="Is the port speed monitoring turned on?"/>
+                </prop>
+                <prop name="fiber-info" type="object" description="Various optical parameters of the individual fiber connected to the port">
+                    <subprop name="nFibers" type="Number" description="The number of fibers that may be connected to this port"/>
+                    <subprop name="wavelength" type="Number" description="The wave length of the beam transmitted from this port"/>
+                    <subprop name="signalDirection" type="String" choices="rx,tx" description="The direction of the signal in this fiber (transmit/receive)"/>
+                </prop>
+                <prop name="combo" type="String" choices="copper,fiber" category="Hardware" description="Indicates that the port is a (specified) part of the combo-port"/>
+                <prop name="is-active" type="Boolean" default="true" category="Network" description="Indicates whether this part (media) of the combo port is active"/>
+                <prop name="connection-id" type="[String,Number]"/>
+            </props>
+            <computed-props extend="MultiFiberPort">
+                <computed-prop name="label0">props.combo ? String(props.name ?? "").replace(new RegExp(`\\(${props.combo[0]}\\)$`), '') : String(props.name ?? "")</computed-prop>
+                <computed-prop name="label">computedProps.label0.replace(new RegExp('^'+props.prefix), '')</computed-prop>
+                <computed-prop name="labelY">props.labelY ?? props.h * 0.8</computed-prop>
+                <computed-prop name="title">
+                    props.name + 
+                        (props.portInfo?.description ? ` ${props.portInfo.description}` : '') +
+                        (props.portInfo?.speed ? ` (${props.portInfo.speed})` : '')
+                </computed-prop>
+                <computed-prop name="connectionId">props.connectionId ? String(props.connectionId) : String(props.name)</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="KeyedConnector" category=".ports">
+            <props>
+                <prop name="key-position" type="String" choices="top,bottom,left,right" default="top" category="Geometry" description="Key groove position"/>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RectangularConnector" category=".ports">
+            <template>
+                <polyline v-if="nFibers === 1" v-bind:points="                 keyPosition === 'top' ?                     `${cx+h*0.2},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}                      ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.2},${cy-h*q}`                 : keyPosition === 'bottom' ?                     `${cx+h*0.2},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}                      ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.2},${cy+h*q}`                 : keyPosition === 'left' ?                     `${cy-h*q},${cx+h*0.2} ${cy-h*q},${cx+w*q} ${cy+h*q},${cx+w*q}                      ${cy+h*q},${cx-w*q}    ${cy-h*q},${cx-w*q} ${cy-h*q},${cx-h*0.2}`                 :                     `${-cy+h*q+w},${cx+h*0.2} ${-cy+h*q+w},${cx+w*q}  ${-cy-h*q+w},${cx+w*q}                      ${-cy-h*q+w},${cx-w*q}    ${-cy+h*q+w},${cx-w*q}  ${-cy+h*q+w},${cx-h*0.2}`                 " class="border" v-bind:stroke-width="strokeWidth"/>
+                <template v-else="">
+                    <polyline v-bind:points="                     keyPosition === 'top' ?                         `${cx+h*0.25},${cy-h*q} ${cx+w*q},${cy-h*q} ${cx+w*q},${cy+h*q}                          ${cx-w*q},${cy+h*q}    ${cx-w*q},${cy-h*q} ${cx-h*0.25},${cy-h*q}`                     : keyPosition === 'bottom' ?                         `${cx+h*0.25},${cy+h*q} ${cx+w*q},${cy+h*q} ${cx+w*q},${cy-h*q}                          ${cx-w*q},${cy-h*q}    ${cx-w*q},${cy+h*q} ${cx-h*0.25},${cy+h*q}`                     : keyPosition === 'left' ?                         `${cy-h*q},${cx+h*0.25} ${cy-h*q},${cx+w*q} ${cy+h*q},${cx+w*q}                          ${cy+h*q},${cx-w*q}    ${cy-h*q},${cx-w*q} ${cy-h*q},${cx-h*0.25}`                     :                         `${-cy+h*q+w},${cx+h*0.25} ${-cy+h*q+w},${cx+w*q}  ${-cy-h*q+w},${cx+w*q}                          ${-cy-h*q+w},${cx-w*q}    ${-cy+h*q+w},${cx-w*q}  ${-cy+h*q+w},${cx-h*0.25}`                     " class="border" v-bind:stroke-width="strokeWidth"/>
+                    <polyline v-bind:points="                     keyPosition === 'top' ?                         `${cx+h*0.1},${cy-h*q} ${cx-h*0.1},${cy-h*q}`                     : keyPosition === 'bottom' ?                         `${cx+h*0.1},${cy+h*q} ${cx-h*0.1},${cy+h*q}`                     : keyPosition === 'left' ?                         `${cy-h*q},${cx+h*0.1} ${cy-h*q},${cx-h*0.1}`                     :                         `${-cy+h*q+w},${cx+h*0.1} ${-cy+h*q+w},${cx-h*0.1}`                     " class="border" v-bind:stroke-width="strokeWidth"/>
+                </template>
+            </template>
+            <props extend="KeyedConnector">
+                <prop name="cx" type="Number" required="true" default="0" category="Geometry"/>
+                <prop name="cy" type="Number" required="true" default="0" category="Geometry"/>
+                <prop name="w" type="Number" required="true" default="25" category="Geometry"/>
+                <prop name="h" type="Number" required="true" default="25" category="Geometry"/>
+                <prop name="strokeWidth" type="number" category="Geometry"/>
+                <prop name="nFibers" type="Number" choices="1,2" default="1" category="Optics" description="The number of optical fibers"/>
+            </props>
+            <computed-props>
+                <computed-prop name="q">0.4</computed-prop>
+                <computed-prop name="strokeWidth">props.strokeWidth ?? Math.min(props.w, props.h)*0.12</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RJ45" category=".ports">
+            <extends base="RectangularConnector" v-bind:stroke-width="Math.min(w, h)*0.16"/>
+            <defs>
+                <pattern id="kre:std:rj45-contacts-v" patternUnits="objectBoundingBox" width="0.125" height="1" viewBox="0 0 10 10" preserveAspectRatio="none">
+                    <rect x="2" y="0" width="6" height="10" fill="#b28e01"/>
+                </pattern>
+                <pattern id="kre:std:rj45-contacts-h" patternUnits="objectBoundingBox" width="1" height="0.125" viewBox="0 0 10 10" preserveAspectRatio="none">
+                    <rect x="0" y="2" width="10" height="6" fill="#b28e01"/>
+                </pattern>
+            </defs>
+            <template>
+                <rect v-bind:x="keyPosition === 'left' ? w*0.5 : w*0.2" v-bind:y="keyPosition === 'top' ? h*0.5 : h*0.2" v-bind:width="orientation === 'v' ? w*0.6 : h*0.3" v-bind:height="orientation === 'v' ? h*0.3 : w*0.6" v-bind:fill="`url(#kre:std:rj45-contacts-${orientation})`"/>
+            </template>
+            <computed-props>
+                <computed-prop name="orientation">props.keyPosition === "top" || props.keyPosition === "bottom" ? "v" : "h"</computed-prop>
+            </computed-props>
+            <style>
+                .border {fill: none; stroke: #597865;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="RJ45-Port" category=".ports">
+            <extends base="Port" v-bind:w="d" v-bind:h="d">
+                <Kre:RJ45 v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+            </extends>
+            <props extend="KeyedConnector" except="w,h">
+                <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+            </props>
+            <computed-props>
+                <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="WDM-Port" category=".port-abstractions">
+            <computed-props>
+                <computed-prop name="beamColor">
+                    props.fiberInfo?.wavelength === 1470 ? "#949494" :
+                    props.fiberInfo?.wavelength === 1490 ? "#6B0094" :
+                    props.fiberInfo?.wavelength === 1510 ? "#0d4be7" :
+                    props.fiberInfo?.wavelength === 1530 ? "#01df01" :
+                    props.fiberInfo?.wavelength === 1550 ? "#fffc57" :
+                    props.fiberInfo?.wavelength === 1570 ? "#FF950E" :
+                    props.fiberInfo?.wavelength === 1590 ? "#ff0f0f" :
+                    props.fiberInfo?.wavelength === 1610 ? "#CC6633" :
+                        undefined
+                </computed-prop>
+            </computed-props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="FC-Port" category=".ports">
+            <extends base="Port" v-bind:w="d" v-bind:h="d">
+                <polygon class="nut" v-bind:transform="`translate(${r}, ${r})`" v-bind:stroke="beamColor ?? 'white'" v-bind:points="`0,${rNut}  ${rNut*cos60},${rNut/2}  ${rNut*cos60},${-rNut/2}                                 0,${-rNut} ${-rNut*cos60},${-rNut/2} ${-rNut*cos60},${rNut/2}`"/>
+                <circle class="cap" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.6"/>
+                <circle v-if="fiberInfo &amp;&amp; false" v-bind:cx="r" v-bind:cy="r" v-bind:r="r*0.55" fill="none" v-bind:stroke-width="r*0.2" v-bind:stroke="beamColor"/>
+            </extends>
+            <template>
+                <template v-if="fiberInfo">
+                    <text v-bind:x="r" v-bind:y="0" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
+                        {{fiberInfo.signalDirection}}
+                    </text>
+                    <text v-bind:x="r" v-bind:y="d*1.1" text-anchor="middle" dominant-baseline="middle" v-bind:font-size="fontSize*d*0.75" class="fiber-info">
+                        {{fiberInfo.wavelength}}
+                    </text>
+                </template>
+            </template>
+            <props except="w,h">
+                <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+                <prop name="font-size" type="Number" default="0.5" category="Presentation"/>
+            </props>
+            <computed-props extend="WDM-Port">
+                <computed-prop name="labelY">props.d*0.67</computed-prop>
+                <computed-prop name="r">props.d*0.5</computed-prop>
+                <computed-prop name="rNut">props.d*0.5</computed-prop>
+                <computed-prop name="cos60">Math.sqrt(3)/2</computed-prop>
+                <computed-prop name="fiberInfoPathID">`kre:port[${props.id},${props.name}]FiberInfoPath`</computed-prop>
+            </computed-props>
+            <style>
+                .port-icon.body {fill: transparent; stroke: transparent;}
+                .port-name {fill: white; font-weight: bold}
+                .nut {fill: silver; }
+                .cap {fill: #3d3d3d; stroke: #d00101; stroke-width: 2px}
+                .fiber-info {fill: #3d3d3d;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="FC-APC-Port" category=".ports">
+            <extends base="FC-Port"/>
+            <style>
+                .cap {stroke: #18b933;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="SC-Port" category=".ports">
+            <extends base="Port" v-bind:w="d" v-bind:h="d">
+                <Kre:RectangularConnector v-bind:cx="d/2" v-bind:cy="d/2" v-bind:w="d" v-bind:h="d" v-bind:key-position="keyPosition"/>
+                <circle v-if="ferruleVisible" class="ferrule" v-bind:cx="d/2" v-bind:cy="d/2" v-bind:r="d/8"/>
+            </extends>
+            <props extend="KeyedConnector" except="w,h">
+                <prop name="d" type="Number" required="true" default="25" category="Geometry" description="Port icon width and height"/>
+                <prop name="ferruleVisible" type="Boolean" default="false"/>
+            </props>
+            <computed-props>
+                <computed-prop name="labelY">props.keyPosition == 'top' ? props.d * 0.7 :  props.d * 0.8</computed-prop>
+            </computed-props>
+            <style>
+                .RectangularConnector .border {fill: none; stroke: #057aff;}
+                .ferrule {fill: #ababab; stroke: #707070; stroke-width: 1px;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="SC-APC-Port" category=".ports">
+            <extends base="SC-Port"/>
+            <style>
+                .RectangularConnector .border {fill: none; stroke: #18b933;}
+            </style>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="DeviceWithOpticalPorts" category=".general" version="2024070300">
+            <props>
+                <prop name="fibers-info" type="Object" default="{}" category="Optics" description="Various optical parameters of the individual fibers connected to the port">
+                    <elements type="Object" type-ref="Port.fiber-info"/>
+                </prop>
+            </props>
+        </component-class>
+
+        <component-class xmlns="kresmer-library" name="PatchPanel" category="Passive equipment" version="2025010600" embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
+                        <template>
+                            <title v-if="comment">{{comment}}</title>
+                            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
+                            <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
+                                <kre:connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
+                                        <svg class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}" v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight" v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight" v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth">
+                                        <rect class="pad" x="0" y="0" width="100%" height="100%"/>
+                                        <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
+                                        <template v-else-if="orientation === 'vertical'">
+                                            <line class="frame" x1="0" y1="0" x2="0" y2="100%"/>
+                                            <line class="frame" x1="0" y1="100%" x2="100%" y2="100%"/>
+                                            <line class="frame" x1="100%" y1="100%" x2="100%" y2="0"/>
+                                        </template>
+                                        <template v-else="orientation === 'horizontal'">
+                                            <line class="frame" x1="0" y1="0" x2="100%" y2="0"/>
+                                            <line class="frame" x1="100%" y1="0" x2="100%" y2="100%"/>
+                                            <line class="frame" x1="100%" y1="100%" x2="0" y2="100%"/>
+                                        </template>
+                                        <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.4" v-bind:y="labelHeight*0.5" v-bind:font-size="labelFontSize">
+                                            <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                                            <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                                        </text>
+                                        <text v-else="" v-bind:x="labelHeight*0.5" v-bind:y="labelWidth - labelHeight*0.4" v-bind:transform="`rotate(-90, ${labelHeight*0.5}, ${labelWidth - labelHeight*0.4})`" v-bind:font-size="labelFontSize">
+                                            <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                                            <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                                        </text>
+                                    </svg>
+                                    <kre:connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" v-bind:name="`${i}@label`" v-bind:connection-map-in="portConnectionMap(i)"/>
+                                </kre:connection-indicator>
+                                <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
+                            </template>
+                            <template v-for="i in nPorts/nPortRows">
+                                <component v-for="j in nPortRows" v-bind:is="portClass" v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" v-bind:d="portSize*height" v-bind:name="firstPort - 1 + (i-1)*nPortRows + j" v-bind:key="firstPort - 1 + (i-1)*nPortRows + j" v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined" v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'" v-bind:connection-map-in="portConnectionMap(firstPort - 1 + (i-1)*nPortRows + j)"/>
+                            </template>
+                            <kre:connection-point v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" v-bind:connection-map-in="cableConnectionMap(dir[0])"/>
+                            <template v-if="caption">
+                                <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)">
+                                    <text v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
+                                </a>
+                                <text v-else="" class="caption" v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
+                            </template>
+                        </template>
+                        <props extend="DeviceWithOpticalPorts">
+                            <prop name="comment" type="String" description="Device general info"/>
+                            <prop name="caption" type="String" description="Device picture caption"/>
+                            <prop name="caption-href" type="String" description="Optional hyperlink for the caption"/>
+                            <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
+                            <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
+                            <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open in"/>
+                            <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
+                            <prop name="firstPort" type="Number" default="1" category="Network" description="The base number of the whole port range"/>
+                            <prop name="portType" type="String" choices="RJ45, FC, FC-APC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
+                            <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
+                            <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry"/>
+                            <prop name="portLabelPosition" type="String" choices="above,below,before,after,none" category="Presentation" description="Position of the port labels (if any)"/>
+                            <prop name="portLabels" type="Object" default="{}" category="Network" description="Port (fiber) labels">
+                                <elements type="String"/>
+                            </prop>
+                            <prop name="portLabelWidth" type="Number" default="0.65" category="Presentation" description="The width of the port label table (relative)"/>
+                            <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
+                            <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
+                            <prop name="upperCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the upper cable connection point" category="Network"><elements type="String"/></prop>
+                            <prop name="lowerCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the lower cable connection point" category="Network"><elements type="String"/></prop>
+                            <prop name="leftCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the left cable connection point" category="Network"><elements type="String"/></prop>
+                            <prop name="rightCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the right cable connection point" category="Network"><elements type="String"/></prop>
+                            <prop name="portConnectionMaps" type="Object" description="Connection commutation maps for the port connection points" default="{}" category="Network">
+                                <elements type="Object"><elements type="String"/></elements>
+                            </prop>
+                        </props>
+                        <computed-props>
+                            <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
+                            <computed-prop name="interPortGap">0.2</computed-prop><!-- relative to portSize -->
+                            <computed-prop name="portLayout">props.portLayout ?? (props.portType.startsWith("FC") ? "zigzag" : "in-line")</computed-prop>
+                            <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
+                            <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop><!-- relative to height -->
+                            <computed-prop name="height">props.height ?? 25 * (props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
+                            <computed-prop name="width">
+                                props.width ?? computedProps.height * computedProps.portSize * 
+                                    (props.nPorts/props.nPortRows + (props.nPorts/props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding 
+                                     + (computedProps.portLayout === 'zigzag' &amp;&amp; props.nPortRows &gt; 1 ? 0.5 : 0))
+                            </computed-prop>
+                            <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
+                            <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
+                            <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
+                            <computed-prop name="labelWidth">
+                                props.portLabelWidth * (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 3)*computedProps.labelFontSize
+                            </computed-prop>
+                            <computed-prop name="labelH">props.orientation === "vertical" ? computedProps.labelHeight : computedProps.labelWidth</computed-prop>
+                            <computed-prop name="labelW">props.orientation === "vertical" ? computedProps.labelWidth : computedProps.labelHeight</computed-prop>
+                            <computed-prop name="firstLabelX">
+                                props.portLabelPosition==="before" ? -computedProps.labelWidth :
+                                props.portLabelPosition==="after" ? computedProps.height :
+                                    (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                                      * computedProps.portSize * computedProps.height
+                            </computed-prop>
+                            <computed-prop name="firstLabelY">
+                                props.portLabelPosition==="below" ? computedProps.height :
+                                props.portLabelPosition==="above" ? -computedProps.labelWidth :
+                                    (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                                      * computedProps.portSize * computedProps.height
+                            </computed-prop>
+                            <computed-prop name="labelFontSize">props.portRows === 1 ? computedProps.labelHeight*0.6 : computedProps.labelHeight*0.8</computed-prop>
+                            <computed-prop name="captionX">
+                                props.portLabelPosition==="before" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                                props.portLabelPosition==="after" ? computedProps.height*1.1 + computedProps.labelWidth :
+                                    computedProps.width / 2
+                            </computed-prop>
+                            <computed-prop name="captionY">
+                                props.portLabelPosition==="below" ? computedProps.height + computedProps.labelWidth + computedProps.captionFontSize :
+                                props.portLabelPosition==="above" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                                    computedProps.width / 2
+                            </computed-prop>
+                            <computed-prop name="captionRotation">
+                                props.portLabelPosition==="before" ? -90 :
+                                props.portLabelPosition==="after" ? 90 :
+                                    0
+                            </computed-prop>
+                            <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
+                            <computed-prop name="labelAdjRulerPos">
+                                props.portLabelPosition==="after" ? {
+                                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                                    x2: computedProps.firstLabelX + computedProps.labelWidth, y2: computedProps.firstLabelY
+                                } : props.portLabelPosition==="before" ? {
+                                    x1: computedProps.firstLabelX + computedProps.labelWidth, y1: computedProps.firstLabelY,
+                                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                                } : props.portLabelPosition==="above" ? {
+                                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY + computedProps.labelWidth,
+                                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                                } : {
+                                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY + computedProps.labelWidth,
+                                }
+                            </computed-prop>
+                        </computed-props>
+                        <functions>
+                            <function name="labelCPPos" params="i">
+                                const pos = 
+                                    props.portLabelPosition==="before" ? {x: 0, y: computedProps.labelH*0.5, dir: 180} :
+                                    props.portLabelPosition==="after" ?  {x: computedProps.labelW, y: computedProps.labelH*0.5, dir: 0} :
+                                    props.portLabelPosition==="above" ?  {x: computedProps.labelW*0.5, y: 0, dir: -90} :
+                                    props.portLabelPosition==="below" ?  {x: computedProps.labelW*0.5, y: computedProps.labelH, dir: 90} :
+                                        {};
+                                pos.x += computedProps.firstLabelX + Number(props.orientation==='horizontal')*(i-1)*computedProps.labelHeight;
+                                pos.y += computedProps.firstLabelY + Number(props.orientation==='vertical')*(i-1)*computedProps.labelHeight;
+                                return pos;
+                            </function>
+                            <function name="cableConnectionMap" params="dir">
+                                return dir === 'u' ? props.upperCableConnMap :
+                                    dir === 'd' ? props.lowerCableConnMap :
+                                    dir === 'l' ? props.leftCableConnMap :
+                                        props.rightCableConnMap;
+                            </function>
+                            <function name="portConnectionMap" params="nPort">
+                                return props.portConnectionMaps[String(nPort)] ?? {"*": String(nPort)};
+                            </function>
+                        </functions>
+                        <style>
+                            .port-label .pad {/*fill-opacity: 0.75;*/ fill: #e8f7f7; }
+                            .port-label.row3 .pad {filter: saturate(0.85) brightness(0.85)}
+                            .port-label.row2 .pad {filter: saturate(0.9) brightness(0.9)}
+                            .port-label.row1 .pad {filter: saturate(0.95) brightness(0.95)}
+                            .highlighted .port-label .pad {fill: lightblue}
+                            .port-label .frame {stroke: #9fd8e5; fill: none}
+                            .port-label text {fill: #333333; font-family: sans-serif; dominant-baseline: central; }
+                            .port-label text tspan.description {fill: #675137;}
+                            .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; text-decoration: none; }
+                            .caption.href:hover {text-decoration: underline !important}
+                        </style>
+                    </component-class>
+
+        <link-class xmlns="kresmer-library" name="_abstract-link" category=".abstract-links" version="2024090300">
+            <defs>
+                <marker id="kre:link-marker-circle" markerWidth="4.5" markerHeight="4.5" refX="5" refY="5" viewBox="0 0 10 10">
+                    <circle r="4.5" cx="5" cy="5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-arrow" markerWidth="7.5" markerHeight="5" refX="9" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse" preserveAspectRatio="none">
+                    <polygon points="0.5,0.5 10,5 0.5,9.5 2,5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-incoming-arrow" markerWidth="7.5" markerHeight="5" refX="8" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse" preserveAspectRatio="none">
+                    <polygon points="9.5,0.5 0,5 9.5,9.5 8,5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-square" markerWidth="4.5" markerHeight="4.5" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <rect x="0" y="0" width="10" height="10" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-diamond" markerWidth="5" markerHeight="5" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <polygon points="0.5,5 5,0.5 9.5,5 5,9.5" fill="context-stroke" stroke="context-stroke"/>
+                </marker>
+                <marker id="kre:link-marker-cross" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <line x1="0" y1="0" x2="10" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="2"/>
+                    <line x1="10" y1="0" x2="0" y2="10" fill="context-stroke" stroke="context-stroke" stroke-width="2"/>
+                </marker>
+                <marker id="kre:link-marker-red-cross" markerWidth="4" markerHeight="4" refX="5" refY="5" viewBox="0 0 10 10" orient="auto-start-reverse">
+                    <line x1="0" y1="0" x2="10" y2="10" fill="red" stroke="red" stroke-width="2"/>
+                    <line x1="10" y1="0" x2="0" y2="10" fill="red" stroke="red" stroke-width="2"/>
+                </marker>
+                <marker id="kre:link-marker-canalization" markerWidth="8" markerHeight="8" refX="5" refY="9" viewBox="0 0 10 12">
+                    <ellipse rx="4" ry="2" cx="5" cy="9" fill="black" stroke="gray"/>
+                    <path d="M1,8.5 A 3,1.5 -30 0 1 8,5" fill="#718ea8" stroke="#6087a9" stroke-width="0.5"/>
+                    <path d="M1,8.5 A 3,1.5 -30 1 0 8,5" fill="#718ea8" stroke="#21425f" stroke-width="0.5"/>
+                </marker>
+                <marker id="kre:link-marker-pole" markerWidth="8" markerHeight="10" refX="20" refY="37" viewBox="0 0 80 100">
+                    <line x1="40" y1="0" x2="40" y2="95" stroke="#754c1a" stroke-width="10"/>
+                    <line x1="10" y1="20" x2="70" y2="20" stroke="#3d3d3d" stroke-width="5"/>
+                    <line x1="13" y1="20" x2="40" y2="3" stroke="#6b6b6b" stroke-width="3"/>
+                    <line x1="67" y1="20" x2="40" y2="3" stroke="#6b6b6b" stroke-width="3"/>
+                    <line x1="15" y1="20" x2="15" y2="30" stroke="black" stroke-width="5"/>
+                    <line x1="25" y1="20" x2="25" y2="30" stroke="black" stroke-width="5"/>
+                    <line x1="55" y1="20" x2="55" y2="30" stroke="black" stroke-width="5"/>
+                    <line x1="65" y1="20" x2="65" y2="30" stroke="black" stroke-width="5"/>
+                </marker>
+                <marker id="kre:link-marker-roof" markerWidth="10" markerHeight="5" refX="10" refY="8" viewBox="0 0 20 16">
+                    <polygon points="0,14 10,0 20,14 17,16 10,6 3,16" fill="#5b3c15" stroke="white"/>
+                </marker>
+            </defs>
+            <props>
+                <prop name="mediaType" type="string" category="Network"/>
+                <prop name="acceptMediaTypes" type="string" category="Network"/>
+                <prop name="startLabel" type="string"/>
+                <prop name="startLabelHref" type="string"/>
+                <prop name="endLabel" type="string"/>
+                <prop name="endLabelHref" type="string"/>
+                <prop name="mirrorLabels" type="Boolean"/>
+                <prop name="startMarker" type="string" choices="arrow,incoming-arrow,circle,square,diamond,cross,red-cross" category="Presentation"/>
+                <prop name="endMarker" type="string" choices="arrow,incoming-arrow,circle,square,diamond,cross,red-cross" category="Presentation"/>
+                <prop name="color" type="Color" category="Presentation"/>
+                <prop name="highlightColor" type="Color" category="Presentation"/>
+                <prop name="thickness" type="string" choices="thin,normal,thick" category="Presentation"/>
+            </props>
+            <style>
+                .padding {stroke-width: 8px;}
+                .link {--link-color: #3b3b3b; --highlighted-link-color: #000000;}
+                .segment {stroke: var(--link-color); stroke-width: 2px; stroke-linecap: round; xx-filter: url(#kre:fltLinkFilter)}
+                .segment.highlighted, .segment.selected {stroke: var(--highlighted-link-color); stroke-width: 3px}
+                .vertex {stroke: var(--highlighted-link-color); stroke-width: 4px; fill: white; r: 6px}
+                .vertex.padding {r: 60px; fill: gray; fill-opacity: 0.3}
+                .vertex.blinker {r: 10px; stroke: red; stroke-width: 2px; fill: red; fill-opacity: 0.2;}
+                .connection-point-marker {r: 8px; fill: yellow; stroke: rgb(184, 169, 0); stroke-width: 1;}
+                .label {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); text-decoration: none; }
+                .label.href:hover {text-decoration: underline}
+                .link-number {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
+                .blank.line {stroke: red; stroke-width: 2px;}
+                .blank.origin {stroke: orange; stroke-width: 2px; fill: orange; fill-opacity: 0.5;}
+                .blank.origin-center {fill: red;}
+                .blank.header {stroke: var(--link-color); stroke-width: 2px; fill: var(--link-color); fill-opacity: 0.5;}
+                .blank.header-center {fill: var(--link-color); filter: brightness(0.2);}
+                .seg-mark {font-family: sans-serif; font-size: 0.75rem; fill: var(--link-color); filter: brightness(0.8);}
+            </style>
+        </link-class>
+
+        <link-class xmlns="kresmer-library" name="multifiber-cable" category="optical links" version="2024070800">
+            <extends base="_abstract-link" media-type="multifiber-cable" accept-media-types="multifiber-cable"/>
+            <props>
+                <prop name="nFibers" type="Number" category="Hardware" description="The number of fibers in the cable"/>
+                <prop name="mode" type="String" category="Hardware" choices="single-mode, multi-mode" description="Optical mode use"/>
+                <prop name="laying-method" type="string" choices="by-the-poles, by-the-roofs, in-canalization" category="Construction"/>
+            </props>
+            <style>
+                .link {--link-color: black; --highlighted-link-color: #ff873d; }
+                .padding {stroke-width: 10px;}
+                .vertex.padding {fill: #ff873d;}
+                .segment {stroke-width: 2px; stroke-linejoin: round;}
+                .segment.thin {stroke-width: 1.5px;}
+                .segment.highlighted, .segment.selected, .segment.thick {stroke-width: 3px}
+                .segment.highlighted.thick, .segment.selected.thick {stroke-width: 3.5px}
+                .vertex {stroke-width: 4px; r: 6px}
+                .blank.header {fill-opacity: 0.3;}
+            </style>
+        </link-class>
+
+        <link-class xmlns="kresmer-library" name="sm-patch-cord" category="optical links" version="2024070800">
+            <extends base="_abstract-link" media-type="sm-optics" accept-media-types="none"/>
+            <style>
+                .link {--link-color: #b39500; --highlighted-link-color: #f59300; }
+                .segment {stroke-width: 1px;}
+                .segment.highlighted, .segment.selected {stroke-width: 2px}
+                .link-number {filter: brightness(0.6)}
+                .blank.header {fill-opacity: 0.3;}
+            </style>
+        </link-class>
+    </library>
+
+    <component class="PatchPanel" name="PatchPanel-1">
+        <origin x="80" y="635"/>
+        <props>
+            <prop name="port-label-position">above</prop>
+        </props>
+    </component>
+
+    <component class="PatchPanel" name="PatchPanel-2">
+        <origin x="80" y="425"/>
+    </component>
+
+    <component class="PatchPanel" name="PatchPanel-3">
+        <origin x="80" y="305"/>
+        <props>
+            <prop name="lower-cable-conn-map">{
+                "1": "10",
+                "2": "11",
+                "3": "12"
+            }</prop>
+        </props>
+    </component>
+
+    <component class="PatchPanel" name="PatchPanel-3.1">
+        <origin x="80" y="200"/>
+    </component>
+
+    <link class="multifiber-cable" name="cable-1" from="PatchPanel-1:d" to="(268, 775)">
+        <props>
+            <prop name="start-marker">arrow</prop>
+            <prop name="n-fibers">12</prop>
+        </props>
+    </link>
+
+    <link class="multifiber-cable" name="cable-2" from="PatchPanel-2:u" to="PatchPanel-3:d">
+        <props>
+            <prop name="end-marker">arrow</prop>
+            <prop name="n-fibers">12</prop>
+        </props>
+    </link>
+
+    <link class="sm-patch-cord" name="patch-1" from="PatchPanel-1:1@label" to="PatchPanel-2:1@d"/>
+
+    <link class="sm-patch-cord" name="patch-2" from="PatchPanel-1:2@label" to="PatchPanel-2:2@d"/>
+
+    <link class="sm-patch-cord" name="patch-3" from="PatchPanel-1:3@label" to="PatchPanel-2:3@d"/>
+
+    <link class="sm-patch-cord" name="patch-10" from="PatchPanel-3:10@u" to="PatchPanel-3.1:10@d"/>
+
+    <link class="sm-patch-cord" name="patch-11" from="PatchPanel-3:11@u" to="PatchPanel-3.1:11@d"/>
+
+    <link class="sm-patch-cord" name="patch-12" from="PatchPanel-3:12@u" to="PatchPanel-3.1:12@d"/>
+
+    <link class="multifiber-cable" name="cable-3" from="PatchPanel-3.1:u" to="(268, 110)">
+        <props>
+            <prop name="n-fibers">12</prop>
+            <prop name="end-marker">arrow</prop>
+        </props>
+    </link>
+
+</kresmer-drawing>

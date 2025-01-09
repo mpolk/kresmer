@@ -9,7 +9,7 @@
 import Kresmer from "Kresmer";
 import { assertNoExceptions } from "../support/component";
 
-describe('Kresmer Art', () => {
+describe('Bundle dragging', () => {
     let kresmer: Kresmer;
     before(() => {
         cy.mount().then((_kresmer) => {
