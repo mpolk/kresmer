@@ -25,15 +25,16 @@ describe('Connection tracing', () => {
     });
 
     it("Select the first patch-cord", () => {
-        cy.get("g.sm-patch-cord[name=patch-1] line.padding").click();
+        cy.get(".sm-patch-cord[name=patch-1] line.padding").click();
     });
 
     it('All three multi-fiber cables and the 10th patch-cord are now selected', () => {
-        cy.get("g.multifiber-cable[name=cable-1]").should("have.class", "highlighted");
-        cy.get("g.multifiber-cable[name=cable-2]").should("have.class", "highlighted");
-        cy.get("g.multifiber-cable[name=cable-2]").should("have.class", "highlighted");
-        cy.get("g.sm-patch-cord[name=patch-1]").should("have.class", "highlighted");
-        cy.get("g.sm-patch-cord[name=patch-10]").should("have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-1]").should("have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-2]").should("have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-2]").should("have.class", "highlighted");
+        cy.get(".sm-patch-cord[name=patch-1]").should("have.class", "highlighted");
+        cy.get(".sm-patch-cord[name=patch-10]").should("have.class", "highlighted");
+        cy.get(".PatchPanel[name=PatchPanel-1] .ConnectionIndicator[data-connection-id=1]").should("have.class", "highlighted");
     });
 
     it("Deselect all", () => {
@@ -41,10 +42,11 @@ describe('Connection tracing', () => {
     });
 
     it('No links are now selected', () => {
-        cy.get("g.multifiber-cable[name=cable-1]").should("not.have.class", "highlighted");
-        cy.get("g.multifiber-cable[name=cable-2]").should("not.have.class", "highlighted");
-        cy.get("g.multifiber-cable[name=cable-2]").should("not.have.class", "highlighted");
-        cy.get("g.sm-patch-cord[name=patch-1]").should("not.have.class", "highlighted");
-        cy.get("g.sm-patch-cord[name=patch-10]").should("not.have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-1]").should("not.have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-2]").should("not.have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-2]").should("not.have.class", "highlighted");
+        cy.get(".sm-patch-cord[name=patch-1]").should("not.have.class", "highlighted");
+        cy.get(".sm-patch-cord[name=patch-10]").should("not.have.class", "highlighted");
+        cy.get(".PatchPanel[name=PatchPanel-1] .ConnectionIndicator[data-connection-id=1]").should("not.have.class", "highlighted");
     });
 })//describe
