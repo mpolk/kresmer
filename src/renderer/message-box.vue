@@ -11,6 +11,7 @@
     import { onMounted, ref, computed } from 'vue';
     import {Modal} from 'bootstrap';
     import { MessageBoxButtons, MessageBoxOptions, MessageBoxSeverity, MessageBoxResult } from './message-box.d';
+import i18next from 'i18next';
 
     export default {
         name: 'message-box',
@@ -145,7 +146,7 @@
                         :class="{'btn-primary': !options.defaultIsNo, 'btn-secondary': options.defaultIsNo}"
                         @click="close(MessageBoxResult.OK)"
                         >
-                        Ok
+                        {{ i18next.t("message-box.ok", "Ok") }}
                     </button>
                     <button type="button" v-if="showCancelButton"
                         id="btnMessageBoxCancel"
@@ -154,7 +155,7 @@
                         :class="{'btn-primary': options.defaultIsNo, 'btn-secondary': !options.defaultIsNo}"
                         @click="close(MessageBoxResult.CANCEL)"
                         >
-                        Отменить
+                        {{ i18next.t("message-box.cancel", "Cancel") }}
                     </button>
                     <button type="button" v-if="showYesButton"
                         id="btnMessageBoxYes"
@@ -163,7 +164,7 @@
                         :class="{'btn-primary': !options.defaultIsNo, 'btn-secondary': options.defaultIsNo}"
                         @click="close(MessageBoxResult.YES)"
                         >
-                        Да
+                        {{ i18next.t("message-box.yes", "Yes") }}
                     </button>
                     <button type="button" v-if="showNoButton"
                         id="btnMessageBoxNo"
@@ -172,7 +173,7 @@
                         :class="{'btn-primary': options.defaultIsNo, 'btn-secondary': !options.defaultIsNo}"
                         @click="close(MessageBoxResult.NO)"
                         >
-                        Нет
+                        {{ i18next.t("message-box.no", "No") }}
                     </button>
                 </div>
             </div>
