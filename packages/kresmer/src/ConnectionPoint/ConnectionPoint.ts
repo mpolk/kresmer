@@ -161,7 +161,7 @@ export default class ConnectionPoint {
             extCID = connToPropagate;
         if (extCID) {
             this.connectedVertices.forEach(vertex => {
-                vertex.parentElement.highlightConnection(extCID, isHighlighted);
+                vertex.parentElement.setLinkHighlighting(extCID, isHighlighted);
             });
         }//if
     }//propagateLinkHighlightingOut

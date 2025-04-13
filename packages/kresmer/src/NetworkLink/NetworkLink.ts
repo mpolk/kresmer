@@ -81,11 +81,13 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     private _highlightDownlinks = false;
     get isHighlighted() {return this._isHighlighted || this.hasHighlightedUplinks}
 
-    set isHighlighted(newValue: boolean) {
-        this.highlightConnection("*", newValue);
+    set isHighlighted(newValue: boolean) 
+    {
+        this.setLinkHighlighting("*", newValue);
     }//set isHighlighted
 
-    highlightConnection(connectionID: string, newValue: boolean) {
+    setLinkHighlighting(connectionID: string, newValue: boolean) 
+    {
         if (this._isHighlighted === newValue)
             return;
         
@@ -97,7 +99,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
 
         if (newValue || !this.isSelected)
             this.traceConnection(connectionID, newValue);
-    }//highlightConnection
+    }//setLinkHighlighting
 
     private traceConnection(connectionID: string, isHighlighted: boolean)
     {

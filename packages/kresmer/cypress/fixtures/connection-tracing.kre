@@ -2,7 +2,7 @@
 <?xml-model href="xsd/kresmer-drawing.xsd"?>
 <kresmer-drawing xmlns="kresmer-drawing"
     name="connection-tracing"
-    width="1000"
+    width="800"
     height="1000"
     background-color="#ffffff">
 
@@ -256,175 +256,175 @@
         </component-class>
 
         <component-class xmlns="kresmer-library" name="PatchPanel" category="Passive equipment" version="2025010600" embeds="RJ45-Port, FC-Port, FC-APC-Port, SC-Port, SC-APC-Port">
-                        <template>
-                            <title v-if="comment">{{comment}}</title>
-                            <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
-                            <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
-                                <kre:connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
-                                        <svg class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}" v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight" v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight" v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth">
-                                        <rect class="pad" x="0" y="0" width="100%" height="100%"/>
-                                        <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
-                                        <template v-else-if="orientation === 'vertical'">
-                                            <line class="frame" x1="0" y1="0" x2="0" y2="100%"/>
-                                            <line class="frame" x1="0" y1="100%" x2="100%" y2="100%"/>
-                                            <line class="frame" x1="100%" y1="100%" x2="100%" y2="0"/>
+                                    <template>
+                                        <title v-if="comment">{{comment}}</title>
+                                        <rect x="0" y="0" v-bind:width="w" v-bind:height="h" v-bind:fill="color" v-bind:stroke="strokeColor"/>
+                                        <template v-if="portLabelPosition &amp;&amp; portLabelPosition !== 'none'">
+                                            <kre:connection-indicator v-for="i in nPorts" v-bind:key="`portLabel${i}`" v-bind:connection-id="i">
+                                                    <svg class="port-label" v-bind:class="{[`row${(i-1)%nPortRows}`]: true}" v-bind:x="firstLabelX + Number(orientation==='horizontal')*(i-1)*labelHeight" v-bind:y="firstLabelY + Number(orientation==='vertical')*(i-1)*labelHeight" v-bind:width="orientation === 'vertical' ? labelWidth : labelHeight" v-bind:height="orientation === 'vertical' ? labelHeight : labelWidth">
+                                                    <rect class="pad" x="0" y="0" width="100%" height="100%"/>
+                                                    <rect v-if="i === 1" class="frame" x="0" y="0" width="100%" height="100%"/>
+                                                    <template v-else-if="orientation === 'vertical'">
+                                                        <line class="frame" x1="0" y1="0" x2="0" y2="100%"/>
+                                                        <line class="frame" x1="0" y1="100%" x2="100%" y2="100%"/>
+                                                        <line class="frame" x1="100%" y1="100%" x2="100%" y2="0"/>
+                                                    </template>
+                                                    <template v-else="orientation === 'horizontal'">
+                                                        <line class="frame" x1="0" y1="0" x2="100%" y2="0"/>
+                                                        <line class="frame" x1="100%" y1="0" x2="100%" y2="100%"/>
+                                                        <line class="frame" x1="100%" y1="100%" x2="0" y2="100%"/>
+                                                    </template>
+                                                    <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.4" v-bind:y="labelHeight*0.5" v-bind:font-size="labelFontSize">
+                                                        <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                                                        <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                                                    </text>
+                                                    <text v-else="" v-bind:x="labelHeight*0.5" v-bind:y="labelWidth - labelHeight*0.4" v-bind:transform="`rotate(-90, ${labelHeight*0.5}, ${labelWidth - labelHeight*0.4})`" v-bind:font-size="labelFontSize">
+                                                        <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
+                                                        <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
+                                                    </text>
+                                                </svg>
+                                                <kre:connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" v-bind:name="`${i}@label`" v-bind:connection-map-in="portConnectionMap(i)"/>
+                                            </kre:connection-indicator>
+                                            <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
                                         </template>
-                                        <template v-else="orientation === 'horizontal'">
-                                            <line class="frame" x1="0" y1="0" x2="100%" y2="0"/>
-                                            <line class="frame" x1="100%" y1="0" x2="100%" y2="100%"/>
-                                            <line class="frame" x1="100%" y1="100%" x2="0" y2="100%"/>
+                                        <template v-for="i in nPorts/nPortRows">
+                                            <component v-for="j in nPortRows" v-bind:is="portClass" v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" v-bind:d="portSize*height" v-bind:name="firstPort - 1 + (i-1)*nPortRows + j" v-bind:key="firstPort - 1 + (i-1)*nPortRows + j" v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined" v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'" v-bind:connection-map-in="portConnectionMap(firstPort - 1 + (i-1)*nPortRows + j)"/>
                                         </template>
-                                        <text v-if="orientation === 'vertical'" v-bind:x="labelHeight*0.4" v-bind:y="labelHeight*0.5" v-bind:font-size="labelFontSize">
-                                            <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
-                                            <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
-                                        </text>
-                                        <text v-else="" v-bind:x="labelHeight*0.5" v-bind:y="labelWidth - labelHeight*0.4" v-bind:transform="`rotate(-90, ${labelHeight*0.5}, ${labelWidth - labelHeight*0.4})`" v-bind:font-size="labelFontSize">
-                                            <tspan>{{i}}<template v-if="portLabels[i]">: </template></tspan>
-                                            <tspan v-if="portLabels[i]" class="description">{{portLabels[i]}}</tspan>
-                                        </text>
-                                    </svg>
-                                    <kre:connection-point v-bind="labelCPPos(i)" v-bind:d="labelHeight/2" v-bind:name="`${i}@label`" v-bind:connection-map-in="portConnectionMap(i)"/>
-                                </kre:connection-indicator>
-                                <kre:adjustment-ruler target-prop="portLabelWidth" v-bind="labelAdjRulerPos" fixed-end="1"/>
-                            </template>
-                            <template v-for="i in nPorts/nPortRows">
-                                <component v-for="j in nPortRows" v-bind:is="portClass" v-bind:x="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2)) : (j-1)))" v-bind:y="height * portSize * (padding + (1+interPortGap)*(orientation === 'horizontal' ? (j-1) : (i-1+(portLayout==='zigzag' ? 0.5 : 0)*(1-j%2))))" v-bind:d="portSize*height" v-bind:name="firstPort - 1 + (i-1)*nPortRows + j" v-bind:key="firstPort - 1 + (i-1)*nPortRows + j" v-bind:fiber-info="fibersInfo ? fibersInfo[firstPort - 1 + (i-1)*nPortRows + j] : undefined" v-bind:key-position="orientation === 'horizontal' ? 'top' : 'right'" v-bind:connection-map-in="portConnectionMap(firstPort - 1 + (i-1)*nPortRows + j)"/>
-                            </template>
-                            <kre:connection-point v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" v-bind:connection-map-in="cableConnectionMap(dir[0])"/>
-                            <template v-if="caption">
-                                <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)">
-                                    <text v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
-                                </a>
-                                <text v-else="" class="caption" v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
-                            </template>
-                        </template>
-                        <props extend="DeviceWithOpticalPorts">
-                            <prop name="comment" type="String" description="Device general info"/>
-                            <prop name="caption" type="String" description="Device picture caption"/>
-                            <prop name="caption-href" type="String" description="Optional hyperlink for the caption"/>
-                            <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
-                            <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
-                            <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open in"/>
-                            <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
-                            <prop name="firstPort" type="Number" default="1" category="Network" description="The base number of the whole port range"/>
-                            <prop name="portType" type="String" choices="RJ45, FC, FC-APC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
-                            <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
-                            <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry"/>
-                            <prop name="portLabelPosition" type="String" choices="above,below,before,after,none" category="Presentation" description="Position of the port labels (if any)"/>
-                            <prop name="portLabels" type="Object" default="{}" category="Network" description="Port (fiber) labels">
-                                <elements type="String"/>
-                            </prop>
-                            <prop name="portLabelWidth" type="Number" default="0.65" category="Presentation" description="The width of the port label table (relative)"/>
-                            <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
-                            <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
-                            <prop name="upperCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the upper cable connection point" category="Network"><elements type="String"/></prop>
-                            <prop name="lowerCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the lower cable connection point" category="Network"><elements type="String"/></prop>
-                            <prop name="leftCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the left cable connection point" category="Network"><elements type="String"/></prop>
-                            <prop name="rightCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the right cable connection point" category="Network"><elements type="String"/></prop>
-                            <prop name="portConnectionMaps" type="Object" description="Connection commutation maps for the port connection points" default="{}" category="Network">
-                                <elements type="Object"><elements type="String"/></elements>
-                            </prop>
-                        </props>
-                        <computed-props>
-                            <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
-                            <computed-prop name="interPortGap">0.2</computed-prop><!-- relative to portSize -->
-                            <computed-prop name="portLayout">props.portLayout ?? (props.portType.startsWith("FC") ? "zigzag" : "in-line")</computed-prop>
-                            <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
-                            <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop><!-- relative to height -->
-                            <computed-prop name="height">props.height ?? 25 * (props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
-                            <computed-prop name="width">
-                                props.width ?? computedProps.height * computedProps.portSize * 
-                                    (props.nPorts/props.nPortRows + (props.nPorts/props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding 
-                                     + (computedProps.portLayout === 'zigzag' &amp;&amp; props.nPortRows &gt; 1 ? 0.5 : 0))
-                            </computed-prop>
-                            <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
-                            <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
-                            <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
-                            <computed-prop name="labelWidth">
-                                props.portLabelWidth * (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 3)*computedProps.labelFontSize
-                            </computed-prop>
-                            <computed-prop name="labelH">props.orientation === "vertical" ? computedProps.labelHeight : computedProps.labelWidth</computed-prop>
-                            <computed-prop name="labelW">props.orientation === "vertical" ? computedProps.labelWidth : computedProps.labelHeight</computed-prop>
-                            <computed-prop name="firstLabelX">
-                                props.portLabelPosition==="before" ? -computedProps.labelWidth :
-                                props.portLabelPosition==="after" ? computedProps.height :
-                                    (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
-                                      * computedProps.portSize * computedProps.height
-                            </computed-prop>
-                            <computed-prop name="firstLabelY">
-                                props.portLabelPosition==="below" ? computedProps.height :
-                                props.portLabelPosition==="above" ? -computedProps.labelWidth :
-                                    (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
-                                      * computedProps.portSize * computedProps.height
-                            </computed-prop>
-                            <computed-prop name="labelFontSize">props.portRows === 1 ? computedProps.labelHeight*0.6 : computedProps.labelHeight*0.8</computed-prop>
-                            <computed-prop name="captionX">
-                                props.portLabelPosition==="before" ? -computedProps.labelWidth - computedProps.height*0.1 :
-                                props.portLabelPosition==="after" ? computedProps.height*1.1 + computedProps.labelWidth :
-                                    computedProps.width / 2
-                            </computed-prop>
-                            <computed-prop name="captionY">
-                                props.portLabelPosition==="below" ? computedProps.height + computedProps.labelWidth + computedProps.captionFontSize :
-                                props.portLabelPosition==="above" ? -computedProps.labelWidth - computedProps.height*0.1 :
-                                    computedProps.width / 2
-                            </computed-prop>
-                            <computed-prop name="captionRotation">
-                                props.portLabelPosition==="before" ? -90 :
-                                props.portLabelPosition==="after" ? 90 :
-                                    0
-                            </computed-prop>
-                            <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
-                            <computed-prop name="labelAdjRulerPos">
-                                props.portLabelPosition==="after" ? {
-                                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
-                                    x2: computedProps.firstLabelX + computedProps.labelWidth, y2: computedProps.firstLabelY
-                                } : props.portLabelPosition==="before" ? {
-                                    x1: computedProps.firstLabelX + computedProps.labelWidth, y1: computedProps.firstLabelY,
-                                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
-                                } : props.portLabelPosition==="above" ? {
-                                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY + computedProps.labelWidth,
-                                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
-                                } : {
-                                    x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
-                                    x2: computedProps.firstLabelX, y2: computedProps.firstLabelY + computedProps.labelWidth,
-                                }
-                            </computed-prop>
-                        </computed-props>
-                        <functions>
-                            <function name="labelCPPos" params="i">
-                                const pos = 
-                                    props.portLabelPosition==="before" ? {x: 0, y: computedProps.labelH*0.5, dir: 180} :
-                                    props.portLabelPosition==="after" ?  {x: computedProps.labelW, y: computedProps.labelH*0.5, dir: 0} :
-                                    props.portLabelPosition==="above" ?  {x: computedProps.labelW*0.5, y: 0, dir: -90} :
-                                    props.portLabelPosition==="below" ?  {x: computedProps.labelW*0.5, y: computedProps.labelH, dir: 90} :
-                                        {};
-                                pos.x += computedProps.firstLabelX + Number(props.orientation==='horizontal')*(i-1)*computedProps.labelHeight;
-                                pos.y += computedProps.firstLabelY + Number(props.orientation==='vertical')*(i-1)*computedProps.labelHeight;
-                                return pos;
-                            </function>
-                            <function name="cableConnectionMap" params="dir">
-                                return dir === 'u' ? props.upperCableConnMap :
-                                    dir === 'd' ? props.lowerCableConnMap :
-                                    dir === 'l' ? props.leftCableConnMap :
-                                        props.rightCableConnMap;
-                            </function>
-                            <function name="portConnectionMap" params="nPort">
-                                return props.portConnectionMaps[String(nPort)] ?? {"*": String(nPort)};
-                            </function>
-                        </functions>
-                        <style>
-                            .port-label .pad {/*fill-opacity: 0.75;*/ fill: #e8f7f7; }
-                            .port-label.row3 .pad {filter: saturate(0.85) brightness(0.85)}
-                            .port-label.row2 .pad {filter: saturate(0.9) brightness(0.9)}
-                            .port-label.row1 .pad {filter: saturate(0.95) brightness(0.95)}
-                            .highlighted .port-label .pad {fill: lightblue}
-                            .port-label .frame {stroke: #9fd8e5; fill: none}
-                            .port-label text {fill: #333333; font-family: sans-serif; dominant-baseline: central; }
-                            .port-label text tspan.description {fill: #675137;}
-                            .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; text-decoration: none; }
-                            .caption.href:hover {text-decoration: underline !important}
-                        </style>
-                    </component-class>
+                                        <kre:connection-point v-for="({x, y}, dir) in {up: {x: w/2, y: 0}, right: {x: w, y: h/2}, down: {x: w/2, y: h}, left: {x: 0, y: h/2}}" v-bind="{name: `${dir[0]}`, d: height*0.2, x, y, dir}" v-bind:connection-map-in="cableConnectionMap(dir[0])"/>
+                                        <template v-if="caption">
+                                            <a v-if="captionHref" class="caption href" v-bind:href="kre$href(captionHref)">
+                                                <text v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
+                                            </a>
+                                            <text v-else="" class="caption" v-bind:x="captionX" v-bind:y="captionY" v-bind:transform="`rotate(${captionRotation})`" v-bind:transform-origin="`${captionX} ${captionY}`" v-bind:font-size="captionFontSize">{{caption}}</text>
+                                        </template>
+                                    </template>
+                                    <props extend="DeviceWithOpticalPorts">
+                                        <prop name="comment" type="String" description="Device general info"/>
+                                        <prop name="caption" type="String" description="Device picture caption"/>
+                                        <prop name="caption-href" type="String" description="Optional hyperlink for the caption"/>
+                                        <prop name="height" type="Number" category="Geometry" description="Panel height - always perpendicular to the port row(s) regardless of orientation"/>
+                                        <prop name="width" type="Number" category="Geometry" description="Panel width - always parallel to the port row(s) regardless of orientation"/>
+                                        <prop name="orientation" type="String" choices="horizontal,vertical" required="true" default="horizontal" category="Geometry" description="Panel orientation: the direction ports are open in"/>
+                                        <prop name="nPorts" type="Number" required="true" default="12" category="Hardware" description="The number of ports (connectors)"/>
+                                        <prop name="firstPort" type="Number" default="1" category="Network" description="The base number of the whole port range"/>
+                                        <prop name="portType" type="String" choices="RJ45, FC, FC-APC, SC, SC-APC" default="FC" category="Hardware" description="The type of ports (connectors standard)"/>
+                                        <prop name="nPortRows" type="Number" default="1" category="Geometry" description="The number of port rows"/>
+                                        <prop name="portLayout" type="String" choices="in-line, zigzag" category="Geometry"/>
+                                        <prop name="portLabelPosition" type="String" choices="above,below,before,after,none" category="Presentation" description="Position of the port labels (if any)"/>
+                                        <prop name="portLabels" type="Object" default="{}" category="Network" description="Port (fiber) labels">
+                                            <elements type="String"/>
+                                        </prop>
+                                        <prop name="portLabelWidth" type="Number" default="0.65" category="Presentation" description="The width of the port label table (relative)"/>
+                                        <prop name="color" type="Color" default="#f0e8cb" category="Presentation"/>
+                                        <prop name="strokeColor" type="Color" default="#d3bc69" category="Presentation"/>
+                                        <prop name="upperCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the upper cable connection point" category="Network"><elements type="String"/></prop>
+                                        <prop name="lowerCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the lower cable connection point" category="Network"><elements type="String"/></prop>
+                                        <prop name="leftCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the left cable connection point" category="Network"><elements type="String"/></prop>
+                                        <prop name="rightCableConnMap" type="Object" default="{&quot;*&quot;: &quot;*&quot;}" description="Connection commutation map for the right cable connection point" category="Network"><elements type="String"/></prop>
+                                        <prop name="portConnectionMaps" type="Object" description="Connection commutation maps for the port connection points" default="{}" category="Network">
+                                            <elements type="Object"><elements type="String"/></elements>
+                                        </prop>
+                                    </props>
+                                    <computed-props>
+                                        <computed-prop name="padding">0.4</computed-prop><!-- relative to portSize -->
+                                        <computed-prop name="interPortGap">0.2</computed-prop><!-- relative to portSize -->
+                                        <computed-prop name="portLayout">props.portLayout ?? (props.portType.startsWith("FC") ? "zigzag" : "in-line")</computed-prop>
+                                        <computed-prop name="portClass">`Kre:${props.portType}-Port`</computed-prop>
+                                        <computed-prop name="portSize">1/(props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop><!-- relative to height -->
+                                        <computed-prop name="height">props.height ?? 25 * (props.nPortRows + (props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding)</computed-prop>
+                                        <computed-prop name="width">
+                                            props.width ?? computedProps.height * computedProps.portSize * 
+                                                (props.nPorts/props.nPortRows + (props.nPorts/props.nPortRows-1)*computedProps.interPortGap + 2*computedProps.padding 
+                                                 + (computedProps.portLayout === 'zigzag' &amp;&amp; props.nPortRows &gt; 1 ? 0.5 : 0))
+                                        </computed-prop>
+                                        <computed-prop name="w">props.orientation === "horizontal" ? computedProps.width : computedProps.height</computed-prop>
+                                        <computed-prop name="h">props.orientation === "horizontal" ? computedProps.height : computedProps.width</computed-prop>
+                                        <computed-prop name="labelHeight">computedProps.portSize * (1+computedProps.interPortGap) * computedProps.height / props.nPortRows</computed-prop>
+                                        <computed-prop name="labelWidth">
+                                            props.portLabelWidth * (Math.max(0, ...Object.values(props.portLabels).map(l =&gt; l.length)) + 3)*computedProps.labelFontSize
+                                        </computed-prop>
+                                        <computed-prop name="labelH">props.orientation === "vertical" ? computedProps.labelHeight : computedProps.labelWidth</computed-prop>
+                                        <computed-prop name="labelW">props.orientation === "vertical" ? computedProps.labelWidth : computedProps.labelHeight</computed-prop>
+                                        <computed-prop name="firstLabelX">
+                                            props.portLabelPosition==="before" ? -computedProps.labelWidth :
+                                            props.portLabelPosition==="after" ? computedProps.height :
+                                                (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                                                  * computedProps.portSize * computedProps.height
+                                        </computed-prop>
+                                        <computed-prop name="firstLabelY">
+                                            props.portLabelPosition==="below" ? computedProps.height :
+                                            props.portLabelPosition==="above" ? -computedProps.labelWidth :
+                                                (computedProps.padding + (computedProps.portLayout==="zigzag" &amp;&amp; props.nPortRows&gt;1 ? 0.25 : -0.125))
+                                                  * computedProps.portSize * computedProps.height
+                                        </computed-prop>
+                                        <computed-prop name="labelFontSize">props.portRows === 1 ? computedProps.labelHeight*0.6 : computedProps.labelHeight*0.8</computed-prop>
+                                        <computed-prop name="captionX">
+                                            props.portLabelPosition==="before" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                                            props.portLabelPosition==="after" ? computedProps.height*1.1 + computedProps.labelWidth :
+                                                computedProps.width / 2
+                                        </computed-prop>
+                                        <computed-prop name="captionY">
+                                            props.portLabelPosition==="below" ? computedProps.height + computedProps.labelWidth + computedProps.captionFontSize :
+                                            props.portLabelPosition==="above" ? -computedProps.labelWidth - computedProps.height*0.1 :
+                                                computedProps.width / 2
+                                        </computed-prop>
+                                        <computed-prop name="captionRotation">
+                                            props.portLabelPosition==="before" ? -90 :
+                                            props.portLabelPosition==="after" ? 90 :
+                                                0
+                                        </computed-prop>
+                                        <computed-prop name="captionFontSize">computedProps.portSize * computedProps.height * 0.8</computed-prop>
+                                        <computed-prop name="labelAdjRulerPos">
+                                            props.portLabelPosition==="after" ? {
+                                                x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                                                x2: computedProps.firstLabelX + computedProps.labelWidth, y2: computedProps.firstLabelY
+                                            } : props.portLabelPosition==="before" ? {
+                                                x1: computedProps.firstLabelX + computedProps.labelWidth, y1: computedProps.firstLabelY,
+                                                x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                                            } : props.portLabelPosition==="above" ? {
+                                                x1: computedProps.firstLabelX, y1: computedProps.firstLabelY + computedProps.labelWidth,
+                                                x2: computedProps.firstLabelX, y2: computedProps.firstLabelY,
+                                            } : {
+                                                x1: computedProps.firstLabelX, y1: computedProps.firstLabelY,
+                                                x2: computedProps.firstLabelX, y2: computedProps.firstLabelY + computedProps.labelWidth,
+                                            }
+                                        </computed-prop>
+                                    </computed-props>
+                                    <functions>
+                                        <function name="labelCPPos" params="i">
+                                            const pos = 
+                                                props.portLabelPosition==="before" ? {x: 0, y: computedProps.labelH*0.5, dir: 180} :
+                                                props.portLabelPosition==="after" ?  {x: computedProps.labelW, y: computedProps.labelH*0.5, dir: 0} :
+                                                props.portLabelPosition==="above" ?  {x: computedProps.labelW*0.5, y: 0, dir: -90} :
+                                                props.portLabelPosition==="below" ?  {x: computedProps.labelW*0.5, y: computedProps.labelH, dir: 90} :
+                                                    {};
+                                            pos.x += computedProps.firstLabelX + Number(props.orientation==='horizontal')*(i-1)*computedProps.labelHeight;
+                                            pos.y += computedProps.firstLabelY + Number(props.orientation==='vertical')*(i-1)*computedProps.labelHeight;
+                                            return pos;
+                                        </function>
+                                        <function name="cableConnectionMap" params="dir">
+                                            return dir === 'u' ? props.upperCableConnMap :
+                                                dir === 'd' ? props.lowerCableConnMap :
+                                                dir === 'l' ? props.leftCableConnMap :
+                                                    props.rightCableConnMap;
+                                        </function>
+                                        <function name="portConnectionMap" params="nPort">
+                                            return props.portConnectionMaps[String(nPort)] ?? {"*": String(nPort)};
+                                        </function>
+                                    </functions>
+                                    <style>
+                                        .port-label .pad {/*fill-opacity: 0.75;*/ fill: #e8f7f7; }
+                                        .port-label.row3 .pad {filter: saturate(0.85) brightness(0.85)}
+                                        .port-label.row2 .pad {filter: saturate(0.9) brightness(0.9)}
+                                        .port-label.row1 .pad {filter: saturate(0.95) brightness(0.95)}
+                                        .highlighted .port-label .pad {fill: lightblue}
+                                        .port-label .frame {stroke: #9fd8e5; fill: none}
+                                        .port-label text {fill: #333333; font-family: sans-serif; dominant-baseline: central; }
+                                        .port-label text tspan.description {fill: #675137;}
+                                        .caption {fill: #333333; font-family: sans-serif; text-anchor: middle; text-decoration: none; }
+                                        .caption.href:hover {text-decoration: underline !important}
+                                    </style>
+                                </component-class>
 
         <link-class xmlns="kresmer-library" name="_abstract-link" category=".abstract-links" version="2024090300">
             <defs>
@@ -567,6 +567,7 @@
         <props>
             <prop name="start-marker">arrow</prop>
             <prop name="n-fibers">12</prop>
+            <prop name="mirror-labels">true</prop>
         </props>
     </link>
 
