@@ -121,6 +121,12 @@
     "adjust-component": "Click on any adjustment tool to adjust (edit) the corresponding component prop",
     "adjust-component-prop": "Drag any free (green) handle to adjust the corresponding component prop"
   },
+  "message-box": {
+    "ok": "Ok",
+    "cancel": "Cancel",
+    "yes": "Yes",
+    "no": "No"
+  },
   "dialogs": {
     "graphics-files": "Graphics files"
   },
