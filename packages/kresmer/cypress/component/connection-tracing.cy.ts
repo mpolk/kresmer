@@ -28,25 +28,34 @@ describe('Connection tracing', () => {
         cy.get(".sm-patch-cord[name=patch-1] line.padding").click();
     });
 
-    it('All three multi-fiber cables and the 10th patch-cord are now selected', () => {
+    it('All three multi-fiber cables are now selected', () => {
         cy.get(".multifiber-cable[name=cable-1]").should("have.class", "highlighted");
         cy.get(".multifiber-cable[name=cable-2]").should("have.class", "highlighted");
-        cy.get(".multifiber-cable[name=cable-2]").should("have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-3]").should("have.class", "highlighted");
+    });
+
+    it('The 1st and the 10th patch-cord are now selected', () => {
         cy.get(".sm-patch-cord[name=patch-1]").should("have.class", "highlighted");
         cy.get(".sm-patch-cord[name=patch-10]").should("have.class", "highlighted");
+    });
+
+    it('Exactly one patch-panel label (the 1st one) is now selected', () => {
         cy.get(".PatchPanel[name=PatchPanel-1] .ConnectionIndicator[data-connection-id=1]").should("have.class", "highlighted");
+        for (let i = 2; i <= 10; i++) {
+            cy.get(`.PatchPanel[name=PatchPanel-1] .ConnectionIndicator[data-connection-id=${i}]`).should("not.have.class", "highlighted");
+        }//for
     });
 
     it("Deselect all", () => {
         cy.get("svg.kresmer").click();
     });
 
-    // it('No links are now selected', () => {
-    //     cy.get(".multifiber-cable[name=cable-1]").should("not.have.class", "highlighted");
-    //     cy.get(".multifiber-cable[name=cable-2]").should("not.have.class", "highlighted");
-    //     cy.get(".multifiber-cable[name=cable-3]").should("not.have.class", "highlighted");
-    //     cy.get(".sm-patch-cord[name=patch-1]").should("not.have.class", "highlighted");
-    //     cy.get(".sm-patch-cord[name=patch-10]").should("not.have.class", "highlighted");
-    //     cy.get(".PatchPanel[name=PatchPanel-1] .ConnectionIndicator[data-connection-id=1]").should("not.have.class", "highlighted");
-    // });
+    it('No links are now selected', () => {
+        cy.get(".multifiber-cable[name=cable-1]").should("not.have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-2]").should("not.have.class", "highlighted");
+        cy.get(".multifiber-cable[name=cable-3]").should("not.have.class", "highlighted");
+        cy.get(".sm-patch-cord[name=patch-1]").should("not.have.class", "highlighted");
+        cy.get(".sm-patch-cord[name=patch-10]").should("not.have.class", "highlighted");
+        cy.get(".PatchPanel[name=PatchPanel-1] .ConnectionIndicator[data-connection-id=1]").should("not.have.class", "highlighted");
+    });
 })//describe
