@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
-    "@types/node": "^20.9.3",
+    "@types/node": "^25.0.3",
     "@types/uuid": "^10.0.0",
     "@vitejs/plugin-vue": "^6.0.3",
     "@vue/eslint-config-typescript": "^13.0.0",

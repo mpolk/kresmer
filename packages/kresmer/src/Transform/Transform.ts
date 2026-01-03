@@ -135,7 +135,7 @@ import XMLFormatter from "../XMLFormatter";
      */
     public rotate(r1: RadiusVector, r0: RadiusVector)
     {
-        console.assert(this.operationStartTransform);
+        console.assert(Boolean(this.operationStartTransform));
         const angleDelta = Math.atan2(r0.x * r1.y - r0.y * r1.x, r0.x * r1.x + r0.y * r1.y) / 
                            Math.PI * 180;
         this.rotation.angle = this.operationStartTransform!.rotation.angle + angleDelta;
@@ -152,7 +152,7 @@ import XMLFormatter from "../XMLFormatter";
      */
     public changeScale(r1: RadiusVector, r0: RadiusVector, direction: string, bBoxSize: BoxSize)
     {
-        console.assert(this.operationStartTransform);
+        console.assert(Boolean(this.operationStartTransform));
         const dx0 = r1.x - r0.x;
         const dy0 = r1.y - r0.y;
         const fi = this.rotation.angle * Math.PI / 180;
