@@ -177,7 +177,7 @@ export default abstract class DrawingElement {
             return this.defaultName;
         else {
             let name: string;
-            for (let i=1; (name = `${this.name}.${i}`) && !this.checkNameUniqueness(name); i++) {/**/}
+            for (let i=1; (name = `${this.name}.${i}`), !this.checkNameUniqueness(name); i++) {/**/}
             return name;
         }//if
     }//makeNameForDuplicate

@@ -75,6 +75,7 @@ export default abstract class Vertex {
     /** Calculates "physical" coordinates */
     get coords(): Position
     {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.revision;
         if (this._anchor.pos) {
             return this._anchor.pos;

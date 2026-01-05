@@ -512,7 +512,7 @@ export default class DrawingParser {
                 continue;
             }//if
 
-            // eslint-disable-next-line @typescript-eslint/ban-types
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
             let propType: Function;
             if (propName === "name") {
                 propType = String;

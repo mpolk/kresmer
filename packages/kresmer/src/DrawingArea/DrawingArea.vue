@@ -30,11 +30,9 @@
 
     const mouseCaptureTarget = ref<SVGElement>();
 
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(DrawingElement.ikHostElement, props.model);
     const isEditable = inject(Kresmer.ikIsEditable);
 
-    // eslint-disable-next-line vue/no-setup-props-destructure
     onBeforeMount(props.model.initVertices);
     onMounted(() => {
         // eslint-disable-next-line vue/no-mutating-props

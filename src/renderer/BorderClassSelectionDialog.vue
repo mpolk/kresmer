@@ -24,7 +24,7 @@ import { AreaBorderClass, DrawingAreaClass } from 'kresmer';
     const btnOk = ref<HTMLButtonElement>();
 
     const borderClasses = reactive<AreaBorderClass[]>([]);
-    // eslint-disable-next-line prefer-const
+     
     let selectedClassIndex: number|null = null;
 
     let resolvePromise!: (result: AreaBorderClass | null) => void;

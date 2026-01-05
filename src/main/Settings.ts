@@ -26,7 +26,7 @@ export default class Settings<Registry extends RegData>
         
         try {
             this._data = JSON.parse(fs.readFileSync(this.fileName, "utf8"));
-        } catch (error) {
+        } catch {
             this._data = defaults;
         }//catch
 
