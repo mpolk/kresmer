@@ -164,7 +164,6 @@ export default class AreaVertex extends Vertex {
     }//dragHandle
 
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     public endHandleDrag(_event: MouseEvent, handleNumber: 1|2)
     {
         this.isGoingToDragHandle = undefined;

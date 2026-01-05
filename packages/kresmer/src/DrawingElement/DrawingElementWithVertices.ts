@@ -27,7 +27,6 @@ export default abstract class DrawingElementWithVertices extends withVertices(Dr
             return undefined;
     }//getConnectionPoint
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     override addConnectionPoint(name: string | number, connectionPoint: ConnectionPoint): void {
         console.error(`"addConnectionPoint(${connectionPoint.name})" can not be called for an element of type ${this.constructor.name}`, this);
     }//addConnectionPoint

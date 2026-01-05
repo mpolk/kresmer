@@ -57,7 +57,8 @@ export class BackgroundImageData {
 
 } //BackgroundImageData
 
-interface IBackgroundImageRawData extends BackgroundImageData {}
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+interface IBackgroundImageRawData extends BackgroundImageData {};
 export type BackgroundImageRawData = Partial<IBackgroundImageRawData>;
 
 export enum BackgroundImageAlignment {

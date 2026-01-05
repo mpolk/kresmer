@@ -107,9 +107,8 @@
     }, {immediate: true});
 
     const rulerBox = computed(() => {
-        model.mountingHeight;
-        model.mountingWidth;
-        model.zoomFactor;
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
+        model.mountingHeight; model.mountingWidth; model.zoomFactor;
         const drawingWidth = rootSVG.value!.width.baseVal.value;
         const drawingHeight = rootSVG.value!.height.baseVal.value;
         const aspectRatio = drawingWidth / drawingHeight * model.logicalHeight / model.logicalWidth;

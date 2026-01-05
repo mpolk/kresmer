@@ -39,10 +39,8 @@
         thickness: {type: String, required: false},
     });
 
-    // eslint-disable-next-line vue/no-setup-props-destructure
     provide(DrawingElement.ikHostElement, props.model);
 
-    // eslint-disable-next-line vue/no-setup-props-destructure
     onBeforeMount(props.model.initVertices);
     onMounted(() => {
         props.model.updateConnectionPoints();

@@ -163,6 +163,7 @@ export default class LinkVertex extends Vertex {
      *  attachment to the bundle or a plain {x,y} position */
     get coords(): Position
     {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.revision;
         if (this._anchor.conn) {
             return this._anchor.conn.coords;

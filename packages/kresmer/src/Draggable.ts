@@ -21,7 +21,6 @@ type GConstructor<T = object> = abstract new (...args: any[]) => T;
  * @param Base A base class to be augmented
  * @returns An augmented class
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/ban-types
 export function draggable<TBase extends GConstructor>(Base: TBase)
 {
     abstract class DraggableBase extends Base {

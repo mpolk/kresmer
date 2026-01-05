@@ -388,7 +388,7 @@ Continue?`))) {
 
     let dlgNewSubprop!: Modal;
     const propToAddSubpropTo = ref<ElementPropDescriptor>();
-    // eslint-disable-next-line prefer-const
+     
     let newSubpropName = ref("");
     const inpNewSubpropName = ref<HTMLInputElement>();
 

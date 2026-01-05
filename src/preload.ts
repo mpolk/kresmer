@@ -19,7 +19,7 @@ function sendToMain(channel: IpcMainChannel, ...args: unknown[])
     ipcRenderer.send(channel, ...args);
 }//sendToMain
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+ 
 async function invokeFromMain<C extends IpcMainChannel, H extends IpcMainChannels[C]>(channel: C, ...args: Parameters<H>): Promise<ReturnType<H>>;
 async function invokeFromMain(channel: IpcMainChannel, ...args: unknown[])
 {

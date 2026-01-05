@@ -43,7 +43,6 @@
         }//if
 
         if (props.transform?.rotation) {
-            // eslint-disable-next-line prefer-const
             let {angle, x, y} = props.transform.rotation;
             x || (x = 0);
             y || (y = 0);
