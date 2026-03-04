@@ -5,27 +5,26 @@ import parser from "vue-eslint-parser";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import js from "@eslint/js";
-import { FlatCompat } from "@eslint/eslintrc";
+import { defineConfig } from "eslint/config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
 
-export default [{
-    files: ["*.ts", "*.vue"],
-}, ...compat.extends(
-    "eslint:recommended",
-    "plugin:vue/essential",
-    "plugin:@typescript-eslint/recommended",
-), {
+export default defineConfig([{
+    files: ["**/*.ts", "**/*.vue"],
+    basePath: __dirname,
+
     plugins: {
+	js,
         vue,
-        "@typescript-eslint": typescriptEslint,
+        "@typescript-eslint": typescriptEslint
     },
+
+    extends: [
+	"js/recommended",
+	"vue/essential",
+	"@typescript-eslint/recommended",
+    ],
 
     languageOptions: {
         globals: {
@@ -51,4 +50,4 @@ export default [{
 
         "vue/no-multiple-template-root": "off",
     },
-}];
+}]);
