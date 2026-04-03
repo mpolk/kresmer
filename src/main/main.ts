@@ -96,7 +96,7 @@ app.whenReady().then(async() => {
             loadPath: path.join(localesPath!, '{{lng}}/{{ns}}.json'),
         },
         // debug: true,
-        initImmediate: false,
+        initAsync: false,
         ns: "main",
         defaultNS: "main",
         lng: localSettings.data.uiLanguage || app.getSystemLocale(),
