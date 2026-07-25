@@ -88,7 +88,7 @@
       "deleteAppDataOnUninstall": false
     },
     "linux": {
-      "icon": "logo.icns",
+      "icon": "logo.png",
       "category": "Graphics; Engineering",
       "target": [
         "deb",
@@ -119,7 +119,7 @@
     "@vue/tsconfig": "^0.9.0",
     "concurrently": "^9.0.0",
     "electron": "^41.0.3",
-    "electron-builder": "=26.6.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^10.0.2",
     "eslint-plugin-vue": "^10.6.2",
     "globals": "^17.4.0",
