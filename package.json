@@ -1,5 +1,6 @@
 {
   "name": "e-kresmer",
+  "desktopName": "kresmer.mpolk",
   "private": true,
   "version": "0.17.13",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
@@ -88,6 +89,7 @@
       "deleteAppDataOnUninstall": false
     },
     "linux": {
+      "syncDesktopName": true,
       "icon": "logo.png",
       "category": "Graphics; Engineering",
       "target": [
