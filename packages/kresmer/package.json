@@ -47,7 +47,7 @@
   },
   "dependencies": {
     "postcss": "^8.4.21",
-    "uuid": "^13.0.0",
+    "uuid": "^14.0.1",
     "vue": "^3.5.1"
   },
   "devDependencies": {
