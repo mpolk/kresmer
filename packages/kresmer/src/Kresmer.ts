@@ -824,10 +824,10 @@ export default class Kresmer extends KresmerEventHooks {
     libDataPriority: LibDataPriority = LibDataPriority.useVersioning;
 
 
-    public exportDrawingToSVG(styles: string): string
+    public exportDrawingToSVG(/* styles: string */): string
     {
         const exporter = new SVGExporter(this);
-        return exporter.export(styles);
+        return exporter.export(/* styles */);
     }//exportDrawingToSVG
 
 

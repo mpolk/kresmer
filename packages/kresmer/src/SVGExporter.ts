@@ -11,10 +11,11 @@ import Kresmer from "Kresmer";
 export default class SVGExporter {
     constructor(private kresmer: Kresmer) {}
 
-    public export(styles: string): string
+    public export(/* styles: string */): string
     {
         const svg = this.kresmer.rootSVG.cloneNode(true) as SVGElement;
         const defsElement = document.createElement("defs");
+        const styles = document.querySelector("#__kresmer-internal-styles")?.textContent ?? "";
         const styleElement = document.createElement("style");
         styleElement.textContent = styles;
         defsElement.appendChild(styleElement);
