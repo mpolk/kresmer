@@ -11,12 +11,12 @@
     "args": ""
   },
   "scripts": {
-    "build-only": "vite build",
+    "build-only": "vite --configLoader=native build",
     "build-component": "npm run vite:build -w kresmer",
     "type-check": "vue-tsc --noEmit",
-    "vite:dev": "vite --port ${npm_package_config_port}",
+    "vite:dev": "vite --configLoader=native --port ${npm_package_config_port}",
     "vite:build": "run-p type-check build-only",
-    "vite:preview": "vite preview --port ${npm_package_config_port}",
+    "vite:preview": "vite preview --configLoader=native --port ${npm_package_config_port}",
     "ts": "tsc",
     "watch": "tsc -w",
     "lint": "eslint ./src",
