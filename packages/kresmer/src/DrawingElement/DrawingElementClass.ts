@@ -13,8 +13,8 @@ import { Template } from "../Kresmer";
 import { clone } from "../Utils";
 import { DrawingElementProps } from "../loaders/DrawingParser";
 import { toCamelCase } from "../Utils";
-import { DrawingElementClassTranslation, PropTranslation } from "loaders/LibraryParser";
-import XMLFormatter from "XMLFormatter";
+import { DrawingElementClassTranslation, PropTranslation } from "../loaders/LibraryParser";
+import XMLFormatter from "../XMLFormatter";
 
 /**
  * DrawingElement Class - a generic drawing element class

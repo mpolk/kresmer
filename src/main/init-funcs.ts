@@ -85,7 +85,7 @@ export async function createMainWindow() {
     const indexPage = "index.electron.html";
     const packageJson = await import("../../package.json");
     const url = isDev ?
-        `http://localhost:${packageJson.config.port}/${indexPage}` :
+        `http://localhost:${packageJson.default.config.port}/${indexPage}` :
         `file://${path.join(__dirname, `../${indexPage}`)}`;
     mainWindow.loadURL(url);
 

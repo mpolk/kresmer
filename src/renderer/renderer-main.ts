@@ -32,7 +32,7 @@ import ComponentClassSelectionSidebar from './ComponentClassSelectionSidebar.vue
 import BackendConnectionDialog from './BackendConnectionDialog.vue';
 import AboutDialog from './AboutDialog.vue';
 import { AppSettings } from '../main/main';
-import kresmerCSS from 'kresmer/style?inline';
+// import kresmerCSS from 'kresmer/style?inline';
 import { MessageBoxButtons, MessageBoxResult } from './message-box.d';
 import { URLType } from './URLType';
 import LinkClassSelectionSidebar from './LinkClassSelectionSidebar.vue';
@@ -481,7 +481,7 @@ appCommandExecutor.on("save-drawing", () =>
 
 appCommandExecutor.on("export-drawing-to-SVG", () =>
 {
-    const svgData = kresmer.exportDrawingToSVG(kresmerCSS);
+    const svgData = kresmer.exportDrawingToSVG(/* kresmerCSS */);
     window.electronAPI.completeDrawingExportToSVG(svgData);
 });//saveDrawing
 

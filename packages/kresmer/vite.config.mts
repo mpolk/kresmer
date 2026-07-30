@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import dts from 'vite-plugin-dts';
-// import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
+import cssInjectedByJsPlugin from 'vite-plugin-css-injected-by-js';
 import path from 'path';
 
 export default defineConfig({
@@ -11,7 +11,12 @@ export default defineConfig({
       dts({
         insertTypesEntry: true,
       }), 
-      // cssInjectedByJsPlugin({topExecutionPriority: false}),
+      cssInjectedByJsPlugin({
+        topExecutionPriority: false,
+        attributes: {
+          id: "__kresmer-internal-styles",
+        }
+      }),
     ],
     base: './',
 
@@ -21,17 +26,9 @@ export default defineConfig({
       }
     },
 
-    css: {
-      preprocessorOptions: {
-        scss: {
-          api: "modern-compiler"
-        }
-      }
-    },
-
     build: {
       lib: {
-        entry: path.resolve(__dirname, 'src/Kresmer.ts'),
+        entry: path.resolve(import.meta.dirname, 'src/Kresmer.ts'),
         name: 'Kresmer',
         fileName: (format) => `kresmer.${format}.js`,
       },

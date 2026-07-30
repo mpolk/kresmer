@@ -11,7 +11,7 @@ import { Root as PostCSSRoot } from 'postcss';
 import { Template } from "../Kresmer";
 import DrawingElementClass, { ComputedProps, Functions, DrawingElementClassProps } from "../DrawingElement/DrawingElementClass";
 import { DrawingElementProps } from "../loaders/DrawingParser";
-import { DrawingAreaClassTranslation, DrawingElementClassTranslation } from 'loaders/LibraryParser';
+import { DrawingAreaClassTranslation, DrawingElementClassTranslation } from '../loaders/LibraryParser';
  
 /**
  * Drawing Area Class - a generic drawing area class
