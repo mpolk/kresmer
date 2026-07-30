@@ -7,7 +7,7 @@
  ***************************************************************************/
 
 import Vertex from "./Vertex";
-import { Position } from "Transform/Transform";
+import { Position } from "../Transform/Transform";
 
 /**
  * Mixin for the generic object containing vertices

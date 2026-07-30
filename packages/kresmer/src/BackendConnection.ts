@@ -11,7 +11,7 @@ import DrawingElement, {DrawingElementData} from "./DrawingElement/DrawingElemen
 import NetworkComponent from "./NetworkComponent/NetworkComponent";
 import NetworkLink from "./NetworkLink/NetworkLink";
 import DrawingArea from "./DrawingArea/DrawingArea";
-import Kresmer from "Kresmer";
+import Kresmer from "./Kresmer";
 
 export type BackendConnectionTestResult = {
     success: boolean,

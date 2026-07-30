@@ -7,13 +7,13 @@
  ***************************************************************************/
 
 import { InjectionKey, nextTick } from "vue";
-import Kresmer from "Kresmer";
+import Kresmer from "../Kresmer";
 import type LinkBundle from "./LinkBundle";
 import { UndefinedLinkClassException } from "../KresmerException";
 import NetworkLinkClass from "./NetworkLinkClass";
 import LinkVertex, { LinkVertexInitParams } from "./LinkVertex";
 import { EditorOperation } from "../UndoStack";
-import { Position } from "Transform/Transform";
+import { Position } from "../Transform/Transform";
 import { MapWithZOrder, Z_INDEX_INF, withZOrder } from "../ZOrdering";
 import DrawingElementWithVertices from "../DrawingElement/DrawingElementWithVertices";
 import XMLFormatter, { XMLTag } from "../XMLFormatter";

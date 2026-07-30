@@ -6,7 +6,7 @@
  *      A helper class for exporting the current drawing to SVG
  ***************************************************************************/
 
-import Kresmer from "Kresmer";
+import Kresmer from "./Kresmer";
 
 export default class SVGExporter {
     constructor(private kresmer: Kresmer) {}
