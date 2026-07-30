@@ -2,7 +2,7 @@
   "name": "e-kresmer",
   "desktopName": "kresmer.mpolk",
   "private": true,
-  "version": "0.17.13",
+  "version": "0.18.0",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "main": "dist/main/main.js",
