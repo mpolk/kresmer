@@ -8,7 +8,7 @@
   "main": "dist/main/main.js",
   "config": {
     "port": 5173,
-    "args": "--lang=uk"
+    "args": ""
   },
   "scripts": {
     "build-only": "vite build",
