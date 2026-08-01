@@ -6,7 +6,7 @@
  *                   Testing link bundle dragging
  ***************************************************************************/
 
-import Kresmer from "Kresmer";
+import Kresmer from "../../src/Kresmer";
 import { assertNoExceptions } from "../support/component";
 
 describe('Bundle dragging', () => {

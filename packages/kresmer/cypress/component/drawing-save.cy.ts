@@ -9,7 +9,6 @@
 import { diffAsXml } from "diff-js-xml";
 import Kresmer, { NetworkComponentClass } from "../../src/Kresmer";
 import { $libs, assertNoExceptions } from "../support/component";
-import { toCamelCase } from "../../src/Utils";
 
 type Diff = {path: string, resultType: string, message: string};
 

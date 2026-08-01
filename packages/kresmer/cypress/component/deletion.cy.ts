@@ -6,7 +6,7 @@
  *         Testing drawing merge and renaming on loading
  ***************************************************************************/
 
-import Kresmer from "Kresmer";
+import Kresmer from "../../src/Kresmer";
 import { assertNoExceptions } from "../support/component";
 
 describe('Deletion test', () => {

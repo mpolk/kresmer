@@ -6,7 +6,7 @@
  *         Testing DrawingArea creation and basic functionality
  ***************************************************************************/
 
-import Kresmer from "Kresmer";
+import Kresmer from "../../src/Kresmer";
 import NetworkComponentClass from "../../src/NetworkComponent/NetworkComponentClass";
 import NetworkComponent from "../../src/NetworkComponent/NetworkComponent";
 import { assertNoExceptions } from "../support/component";
