@@ -25,5 +25,27 @@
         },
         "args": ["."],
         "outputCapture": "std"
-    }]
+        },
+        {
+        "type": "chrome",
+        "request": "attach",
+        "name": "Attach to Cypress Chrome",
+        "port": 9222,
+        "urlFilter": "http://localhost*",
+        "webRoot": "${workspaceFolder}",
+        "sourceMaps": true,
+        "resolveSourceMapLocations": [
+            "${workspaceFolder}/**",
+            "!**/__cypress/**",
+            "!**/node_modules/**"
+        ],
+        "sourceMapPathOverrides": {
+            "http://localhost:5173/__cypress/src/src/*": "${workspaceFolder}/packages/kresmer/src/*",
+        },
+        "skipFiles": [
+            "**/__cypress/**",
+            "**/node_modules/**"
+            ]
+        }
+    ]
 }

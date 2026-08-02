@@ -31,6 +31,7 @@
     "test": "npm run test -w kresmer",
     "cypress:run": "npm run cypress:run -w kresmer",
     "cypress:open": "npm run cypress:open -w kresmer",
+    "cypress:debug": "npm run cypress:debug -w kresmer",
     "typedoc": "typedoc --tsconfig packages/kresmer/tsconfig.json packages/kresmer/src/Kresmer.ts",
     "i18n": "i18next -c i18next-parser.main.config.mjs && i18next -c i18next-parser.renderer.config.mjs",
     "version:minor": "npm version minor --workspaces --include-workspace-root",
