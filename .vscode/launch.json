@@ -40,7 +40,7 @@
             "!**/node_modules/**"
         ],
         "sourceMapPathOverrides": {
-            "http://localhost:5173/__cypress/src/src/*": "${workspaceFolder}/packages/kresmer/src/*",
+            "http://localhost:5173/__cypress/src/*": "${workspaceFolder}/packages/kresmer/*",
         },
         "skipFiles": [
             "<node_internals>/**",
