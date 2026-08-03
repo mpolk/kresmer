@@ -67,8 +67,9 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     override get isSelected() {return super.isSelected}
     override set isSelected(newValue: boolean)
     {
+        const wasSelected = super.isSelected;
         super.isSelected = newValue;
-        if (this.isHighlighted && !newValue) {
+        if ((wasSelected || this.isHighlighted) && !newValue) {
             this.returnFromTop();
             this.isHighlighted = false;
         }//if

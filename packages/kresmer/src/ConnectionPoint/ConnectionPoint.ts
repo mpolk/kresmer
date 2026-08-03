@@ -21,9 +21,18 @@ export default class ConnectionPoint {
      * @param hostElement The drawing element this connection point belongs to
      * @param name The name of the connection point
      * @param dir Preferred direction for the link connected here (angle from x-axis, initial value)
+     * @param connectionMappings The connection mappings for this connection point. It can contain the following properties:
+     * - connectionId: a string of comma-separated connection IDs. 
+     *      Each ID can be prefixed with "in:" or "out:" to indicate the direction of the connection. 
+     *      If no prefix is provided, the ID is used for both directions.
+     * - connectionMapIn: an object mapping external connection IDs to internal connection IDs for incoming connections.
+     * - connectionMapOut: an object mapping internal connection IDs to external connection IDs for outgoing connections. 
      */
     constructor(hostElement: DrawingElement, public name: string|number, dir0: number|string, 
-        connectionMappings?: {connectionId?: string|undefined, connectionMapIn?: Record<string, string>, connectionMapOut?: Record<string, string>})
+        connectionMappings?: {
+            connectionId?: string|undefined, 
+            connectionMapIn?: Record<string, string>, 
+            connectionMapOut?: Record<string, string>})
     {
         this._hostElement = new WeakRef(hostElement);
         switch (dir0) {
