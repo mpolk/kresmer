@@ -43,8 +43,9 @@
             "http://localhost:5173/__cypress/src/src/*": "${workspaceFolder}/packages/kresmer/src/*",
         },
         "skipFiles": [
-            "**/__cypress/**",
-            "**/node_modules/**"
+            "<node_internals>/**",
+            "**/node_modules/react/**", 
+            "**/node_modules/cypress/**"
             ]
         }
     ]
