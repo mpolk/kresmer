@@ -1,8 +1,8 @@
 {
   "name": "e-kresmer",
-  "desktopName": "kresmer.mpolk",
+  "desktopName": "kresmer",
   "private": true,
-  "version": "0.18.0",
+  "version": "0.18.1",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "main": "dist/main/main.js",
@@ -43,8 +43,24 @@
     "extraMetadata": {
       "name": "kresmer"
     },
-    "appId": "kresmer",
+    "appId": "x-kresmer",
     "productName": "Kresmer",
+    "fileAssociations": [
+      {
+        "ext": "kre",
+        "name": "Kresmer drawing",
+        "role": "Editor",
+        "mimeType": "application/x-kresmer-drawing",
+        "icon": "application-x-kresmer"
+      },
+      {
+        "ext": "krel",
+        "name": "Kresmer library",
+        "role": "None",
+        "mimeType": "application/x-kresmer-library",
+        "icon": "application-x-kresmer"
+      }
+    ],
     "asar": true,
     "directories": {
       "buildResources": "src/assets",
