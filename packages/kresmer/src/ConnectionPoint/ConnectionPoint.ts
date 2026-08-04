@@ -154,7 +154,9 @@ export default class ConnectionPoint {
 
     propagateLinkHighlightingIn(connectionID: string | null, isHighlighted: boolean)
     {
-        const intCID = this.connectionMapIn.get(connectionID ?? "*") ?? this.connectionMapIn.get("*");
+        let intCID = this.connectionMapIn.get(connectionID ?? "*") ?? this.connectionMapIn.get("*");
+        if (intCID === "*" && connectionID)
+            intCID = connectionID;
         if (intCID) {
             this.hostElement.propagateLinkHighlighting(intCID, isHighlighted, this);
         }//if
