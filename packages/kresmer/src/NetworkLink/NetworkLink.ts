@@ -85,7 +85,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
 
     setLinkHighlighting(connectionID: string | null, newValue: boolean) 
     {
-        if (this._setLinkHighlighting(connectionID, newValue) && connectionID !== null && (newValue || this.isSelected))
+        if (this._setLinkHighlighting(connectionID, newValue))
             this.traceConnection(connectionID, newValue);
     }//setLinkHighlighting
 
