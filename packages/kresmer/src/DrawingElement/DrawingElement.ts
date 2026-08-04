@@ -309,19 +309,19 @@ export default abstract class DrawingElement {
         }//if
     }//removeHighlightedConnection
 
-    propagateLinkHighlighting(connectionID: string, isHighlighted: boolean, sourceCP?: ConnectionPoint)
+    traceConnections(connectionID: string, isHighlighted: boolean, sourceCP?: ConnectionPoint)
     {
         for (const cp of this.getConnectionPoints()) {
             if (cp === sourceCP)
                 continue;
-            cp.propagateLinkHighlightingOut(connectionID, isHighlighted);
+            cp.traceConnectionsOut(connectionID, isHighlighted);
         }//for
         if (isHighlighted && !this.highlightedConnections.includes(connectionID))
             this.addHighlightedConnection(connectionID);
         else if (!isHighlighted && this.highlightedConnections.includes(connectionID)) {
             this.removeHighlightedConnection(connectionID);
         }//if
-    }//propagateLinkHighlighting
+    }//traceConnections
 }//DrawingElement
 
 

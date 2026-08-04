@@ -152,18 +152,18 @@ export default class ConnectionPoint {
     }//restoreConnectedVertices
 
 
-    propagateLinkHighlightingIn(connectionID: string | null, isHighlighted: boolean)
+    traceConnectionsInIn(connectionID: string | null, isHighlighted: boolean)
     {
         let intCID = this.connectionMapIn.get(connectionID ?? "*") ?? this.connectionMapIn.get("*");
         if (intCID === "*" && connectionID)
             intCID = connectionID;
         if (intCID) {
-            this.hostElement.propagateLinkHighlighting(intCID, isHighlighted, this);
+            this.hostElement.traceConnections(intCID, isHighlighted, this);
         }//if
-    }//propagateLinkHighlightingIn
+    }//traceConnectionsInIn
 
 
-    propagateLinkHighlightingOut(connectionID: string, isHighlighted: boolean)
+    traceConnectionsOut(connectionID: string, isHighlighted: boolean)
     {
         let extCID = this.connectionMapOut.get(connectionID) ?? this.connectionMapOut.get("*");
         if (extCID === "*")
@@ -173,7 +173,7 @@ export default class ConnectionPoint {
                 vertex.parentElement.setLinkHighlighting(extCID, isHighlighted);
             });
         }//if
-    }//propagateLinkHighlightingOut
+    }//traceConnectionsOut
 }//ConnectionPoint
 
 

@@ -95,13 +95,13 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         } else
             return;
 
-        this.propagateLinkHighlighting(connectionID, newValue);
+        this.traceConnections(connectionID, newValue);
         if (this.head.anchor.conn?.hostElement instanceof NetworkLink)
             this.head.anchor.conn.hostElement.setLinkHighlighting(connectionID, newValue);
         if (this.tail.anchor.conn?.hostElement instanceof NetworkLink)
             this.tail.anchor.conn.hostElement.setLinkHighlighting(connectionID, newValue);
-        this.head.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
-        this.tail.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
+        this.head.anchor.conn?.traceConnectionsInIn(connectionID, newValue);
+        this.tail.anchor.conn?.traceConnectionsInIn(connectionID, newValue);
     }//setLinkHighlighting
 
     get head() {return this.vertices[0];}
@@ -193,16 +193,16 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         return this.kresmer.linksByName;
     }//_byNameIndex
 
-    override propagateLinkHighlighting(connectionID: string|null, isHighlighted: boolean, sourceCP?: ConnectionPoint): void {
+    override traceConnections(connectionID: string|null, isHighlighted: boolean, sourceCP?: ConnectionPoint): void {
         if (connectionID !== null)
-            super.propagateLinkHighlighting(connectionID, isHighlighted, sourceCP);
+            super.traceConnections(connectionID, isHighlighted, sourceCP);
 
         for (const vertex of this.vertices) {
             if (vertex.isConnected) {
-                vertex.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
+                vertex.anchor.conn?.traceConnectionsInIn(connectionID, isHighlighted);
             }//if
         }//for
-    }//propagateLinkHighlighting
+    }//traceConnections
 
     public absPosToRel(absPos: Position): Position
     {

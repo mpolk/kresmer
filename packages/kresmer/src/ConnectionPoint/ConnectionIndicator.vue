@@ -34,12 +34,12 @@
 
     function onMouseEnter() {
         if (connectionId)
-            hostElement.propagateLinkHighlighting(String(connectionId), true);
+            hostElement.traceConnections(String(connectionId), true);
     }//onMouseEnter
 
     function onMouseLeave() {
         if (connectionId)
-            hostElement.propagateLinkHighlighting(String(connectionId), false);
+            hostElement.traceConnections(String(connectionId), false);
     }//onMouseLeave
 
 </script>
