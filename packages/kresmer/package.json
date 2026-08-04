@@ -20,9 +20,6 @@
       "import": "./dist/kresmer.css"
     }
   },
-  "config": {
-    "port": 5173
-  },
   "scripts": {
     "lint": "eslint ./src",
     "build-only": "vite build",
