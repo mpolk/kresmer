@@ -47,6 +47,50 @@
             "**/node_modules/react/**", 
             "**/node_modules/cypress/**"
             ]
+        },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Electron: Main",
+      "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+      // Укажите путь к скомпилированному main.js или точку входа, если используете ts-node/vite-electron-plugin
+      "args": [
+        // "${workspaceFolder}/dist/main/main.js", 
+        "${workspaceFolder}",
+        "--remote-debugging-port=9223"
+      ],
+      "windows": {
+        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+      },
+      "protocol": "inspector",
+      "sourceMaps": true,
+      "webRoot": "${workspaceFolder}"
+    },
+    {
+      "type": "chrome",
+      "request": "attach",
+      "name": "Electron: Renderer",
+      "port": 9223,
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "timeout": 30000,
+      // Используем ваш проверенный на предыдущем шаге трюк с sourceMapPathOverrides
+      // Подставьте сюда тот виртуальный путь, который выдает ваш Vite для Electron
+      "sourceMapPathOverrides": {
+        "http://localhost:5173/src/*": "${workspaceFolder}/src/*",
+        "vite:/*": "${workspaceFolder}/packages/kresmer/src/*"
+      },
+      "resolveSourceMapLocations": [
+        "${workspaceFolder}/**",
+        "!**/node_modules/**"
+      ],
+      
+    }
+    ],
+    "compounds": [
+        {
+        "name": "Electron: Full Debug",
+        "configurations": ["Electron: Main", "Electron: Renderer"]
         }
     ]
 }
