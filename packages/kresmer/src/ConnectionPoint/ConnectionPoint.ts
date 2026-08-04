@@ -152,20 +152,20 @@ export default class ConnectionPoint {
     }//restoreConnectedVertices
 
 
-    propagateLinkHighlightingIn(connToPropagate: string | null, isHighlighted: boolean)
+    propagateLinkHighlightingIn(connectionID: string | null, isHighlighted: boolean)
     {
-        const intCID = this.connectionMapIn.get(connToPropagate ?? "*") ?? this.connectionMapOut.get("*");
+        const intCID = this.connectionMapIn.get(connectionID ?? "*") ?? this.connectionMapIn.get("*");
         if (intCID) {
             this.hostElement.propagateLinkHighlighting(intCID, isHighlighted, this);
         }//if
     }//propagateLinkHighlightingIn
 
 
-    propagateLinkHighlightingOut(connToPropagate: string, isHighlighted: boolean)
+    propagateLinkHighlightingOut(connectionID: string, isHighlighted: boolean)
     {
-        let extCID = this.connectionMapOut.get(connToPropagate) ?? this.connectionMapOut.get("*");
+        let extCID = this.connectionMapOut.get(connectionID) ?? this.connectionMapOut.get("*");
         if (extCID === "*")
-            extCID = connToPropagate;
+            extCID = connectionID;
         if (extCID) {
             this.connectedVertices.forEach(vertex => {
                 vertex.parentElement.setLinkHighlighting(extCID, isHighlighted);

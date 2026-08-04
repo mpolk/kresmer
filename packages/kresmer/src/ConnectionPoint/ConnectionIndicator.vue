@@ -27,17 +27,19 @@
 
     const clazz = computed(() => {
         return {
-            highlighted: highlightedConnections.includes(String(connectionId ?? '')),
+            highlighted: highlightedConnections.includes(String(connectionId)),
         }
     })//clazz
 
 
     function onMouseEnter() {
-        hostElement.propagateLinkHighlighting(String(connectionId ?? ''), true);
+        if (connectionId)
+            hostElement.propagateLinkHighlighting(String(connectionId), true);
     }//onMouseEnter
 
     function onMouseLeave() {
-        hostElement.propagateLinkHighlighting(String(connectionId ?? ''), false);
+        if (connectionId)
+            hostElement.propagateLinkHighlighting(String(connectionId), false);
     }//onMouseLeave
 
 </script>
