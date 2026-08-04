@@ -95,19 +95,14 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
         } else
             return;
 
-        this.traceConnection(connectionID, newValue);
-    }//setLinkHighlighting
-
-    private traceConnection(connectionID: string | null, isHighlighted: boolean)
-    {
-        this.propagateLinkHighlighting(connectionID, isHighlighted);
+        this.propagateLinkHighlighting(connectionID, newValue);
         if (this.head.anchor.conn?.hostElement instanceof NetworkLink)
-            this.head.anchor.conn.hostElement.setLinkHighlighting(connectionID, isHighlighted);
+            this.head.anchor.conn.hostElement.setLinkHighlighting(connectionID, newValue);
         if (this.tail.anchor.conn?.hostElement instanceof NetworkLink)
-            this.tail.anchor.conn.hostElement.setLinkHighlighting(connectionID, isHighlighted);
-        this.head.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
-        this.tail.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
-    }//traceConnection
+            this.tail.anchor.conn.hostElement.setLinkHighlighting(connectionID, newValue);
+        this.head.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
+        this.tail.anchor.conn?.propagateLinkHighlightingIn(connectionID, newValue);
+    }//setLinkHighlighting
 
     get head() {return this.vertices[0];}
     get tail() {return this.vertices[this.vertices.length-1];}
