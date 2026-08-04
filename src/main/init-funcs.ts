@@ -27,8 +27,9 @@ export function parseCommandLine()
     const argv = [...process.argv];
     console.debug(`argv=${argv}`);
     /* const exePath =  */argv.shift();
-    if (argv[0] == ".")
-        argv.shift();
+    const argsToSkip = argv.indexOf("--");
+    if (argsToSkip >= 0)
+        argv.splice(0, argsToSkip + 1);
 
     while (argv.length) {
         const arg = argv.shift()!;
