@@ -69,69 +69,56 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
     {
         const wasSelected = super.isSelected;
         super.isSelected = newValue;
-        if ((wasSelected || this.isHighlighted) && !newValue) {
+        if (wasSelected && !newValue)
             this.returnFromTop();
-            this.isHighlighted = false;
-        }//if
-        this.traceConnection("*", newValue);
+        this.isHighlighted = newValue;
     }//isSelected
 
     readonly isBundle: boolean = false;
 
-    private _isHighlighted = false
-    private _highlightDownlinks = false;
-    get isHighlighted() {return this._isHighlighted || this.hasHighlightedUplinks}
+    get isHighlighted() {return this.highlightedConnections.length > 0}
 
     set isHighlighted(newValue: boolean) 
     {
-        this.setLinkHighlighting("*", newValue);
+        this.setLinkHighlighting(null, newValue);
     }//set isHighlighted
 
-    setLinkHighlighting(connectionID: string, newValue: boolean) 
+    setLinkHighlighting(connectionID: string | null, newValue: boolean) 
     {
-        if (this._isHighlighted === newValue)
-            return;
-        
-        this._highlightDownlinks = this._isHighlighted = newValue;
-        if (newValue)
-            this.kresmer.highlightedLinks.add(this);
-        else
-            this.kresmer.highlightedLinks.delete(this);
-
-        if (newValue || !this.isSelected)
+        if (this._setLinkHighlighting(connectionID, newValue) && connectionID !== null && (newValue || this.isSelected))
             this.traceConnection(connectionID, newValue);
     }//setLinkHighlighting
 
-    private traceConnection(connectionID: string, isHighlighted: boolean)
+    private _setLinkHighlighting(connectionID: string | null, newValue: boolean): boolean
     {
-        this.propagateHighlightingUp(isHighlighted, false);
+        if (newValue && !this.isConnectionHighlighted(connectionID)) {
+            this.addHighlightedConnection(connectionID);
+            this.kresmer.highlightedLinks.add(this);
+            return true;
+        } else if (!newValue && this.isConnectionHighlighted(connectionID)) {
+            this.removeHighlightedConnection(connectionID);
+            if (this.highlightedConnections.length === 0)
+                this.kresmer.highlightedLinks.delete(this);
+            return true;
+        }//if
+        return false;
+    }//setLinkHighlighting
+
+    private traceConnection(connectionID: string | null, isHighlighted: boolean)
+    {
+        super.propagateLinkHighlighting(connectionID ?? "*", isHighlighted);
+        this.propagateHighlightingUp(connectionID, isHighlighted);
         this.head.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
         this.tail.anchor.conn?.propagateLinkHighlightingIn(connectionID, isHighlighted);
     }//traceConnection
 
-    private propagateHighlightingUp(newValue: boolean, updateSelf = true)
+    private propagateHighlightingUp(connectionID: string | null, newValue: boolean)
     {
-        if (updateSelf) {
-            if (this._isHighlighted == newValue)
-                return;
-            this._isHighlighted = newValue;
-        }//if
-
         if (this.head.isConnected && this.head.anchor.conn!.hostElement instanceof NetworkLink)
-            this.head.anchor.conn!.hostElement.propagateHighlightingUp(newValue);
+            this.head.anchor.conn!.hostElement.setLinkHighlighting(connectionID, newValue);
         if (this.tail.isConnected && this.tail.anchor.conn!.hostElement instanceof NetworkLink)
-            this.tail.anchor.conn!.hostElement.propagateHighlightingUp(newValue);
+            this.tail.anchor.conn!.hostElement.setLinkHighlighting(connectionID, newValue);
     }//propagateHighlightingUp
-
-    private get hasHighlightedUplinks()
-    {
-        for (const vertex of this.vertices) {
-            const hostElement = vertex.anchor.conn?.hostElement;
-            if (hostElement instanceof NetworkLink && (hostElement._highlightDownlinks || hostElement.hasHighlightedUplinks)) 
-                return true;
-        }//for
-        return false;
-    }//hasHighlightedUplinks
 
     get head() {return this.vertices[0];}
     get tail() {return this.vertices[this.vertices.length-1];}

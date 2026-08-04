@@ -23,11 +23,11 @@
     }>();
 
     const hostElement = inject(DrawingElement.ikHostElement)!;
-    const highlightedConnection = inject(DrawingElement.ikHighlightedConnection)!;
+    const highlightedConnections = inject(DrawingElement.ikHighlightedConnections)!;
 
     const clazz = computed(() => {
         return {
-            highlighted: highlightedConnection.includes(String(connectionId ?? '')),
+            highlighted: highlightedConnections.includes(String(connectionId ?? '')),
         }
     })//clazz
 

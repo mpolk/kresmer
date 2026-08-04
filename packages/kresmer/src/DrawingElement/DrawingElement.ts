@@ -291,8 +291,23 @@ export default abstract class DrawingElement {
     /** References to the central collections of this type of elements (for internal use)*/
     abstract get _byNameIndex(): Map<string, number>;
 
-    static readonly ikHighlightedConnection = Symbol() as InjectionKey<string[]>;
-    readonly highlightedConnections = reactive<string[]>([]);
+    static readonly ikHighlightedConnections = Symbol() as InjectionKey<(string|null)[]>;
+    readonly highlightedConnections = reactive<(string|null)[]>([]);
+
+    isConnectionHighlighted(connectionID: string | null) {return this.highlightedConnections.includes(connectionID)}
+
+    addHighlightedConnection(connectionID: string | null) {
+        if (!this.isConnectionHighlighted(connectionID)) {
+            this.highlightedConnections.push(connectionID);
+        }//if
+    }//addHighlightedConnection
+
+    removeHighlightedConnection(connectionID: string | null) {
+        const index = this.highlightedConnections.indexOf(connectionID);
+        if (index >= 0) {
+            this.highlightedConnections.splice(index, 1);
+        }//if
+    }//removeHighlightedConnection
 
     propagateLinkHighlighting(connectionID: string, isHighlighted: boolean, sourceCP?: ConnectionPoint)
     {
@@ -301,12 +316,10 @@ export default abstract class DrawingElement {
                 continue;
             cp.propagateLinkHighlightingOut(connectionID, isHighlighted);
         }//for
-        if (isHighlighted)
-            this.highlightedConnections.push(connectionID);
-        else {
-            const i = this.highlightedConnections.indexOf(connectionID);
-            if (i >= 0)
-                this.highlightedConnections.splice(i, 1);
+        if (isHighlighted && !this.highlightedConnections.includes(connectionID))
+            this.addHighlightedConnection(connectionID);
+        else if (!isHighlighted && this.highlightedConnections.includes(connectionID)) {
+            this.removeHighlightedConnection(connectionID);
         }//if
     }//propagateLinkHighlighting
 }//DrawingElement
