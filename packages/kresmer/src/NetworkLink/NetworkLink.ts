@@ -76,7 +76,7 @@ export default class NetworkLink extends withZOrder(DrawingElementWithVertices) 
 
     readonly isBundle: boolean = false;
 
-    get isHighlighted() {return this.highlightedConnections.length > 0}
+    get isHighlighted() {return this.highlightedConnections.size > 0}
 
     set isHighlighted(newValue: boolean) 
     {

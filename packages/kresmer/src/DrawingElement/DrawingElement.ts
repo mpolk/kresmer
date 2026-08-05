@@ -291,22 +291,19 @@ export default abstract class DrawingElement {
     /** References to the central collections of this type of elements (for internal use)*/
     abstract get _byNameIndex(): Map<string, number>;
 
-    static readonly ikHighlightedConnections = Symbol() as InjectionKey<(string|null)[]>;
-    readonly highlightedConnections = reactive<(string|null)[]>([]);
+    static readonly ikHighlightedConnections = Symbol() as InjectionKey<Set<(string|null)>>;
+    readonly highlightedConnections = reactive(new Set<(string|null)>());
 
-    isConnectionHighlighted(connectionID: string | null) {return this.highlightedConnections.includes(connectionID)}
+    isConnectionHighlighted(connectionID: string | null) {return this.highlightedConnections.has(connectionID)}
 
     addHighlightedConnection(connectionID: string | null) {
         if (!this.isConnectionHighlighted(connectionID)) {
-            this.highlightedConnections.push(connectionID);
+            this.highlightedConnections.add(connectionID);
         }//if
     }//addHighlightedConnection
 
     removeHighlightedConnection(connectionID: string | null) {
-        const index = this.highlightedConnections.indexOf(connectionID);
-        if (index >= 0) {
-            this.highlightedConnections.splice(index, 1);
-        }//if
+        this.highlightedConnections.delete(connectionID);
     }//removeHighlightedConnection
 
     traceConnections(connectionID: string, isHighlighted: boolean, sourceCP?: ConnectionPoint)
@@ -316,9 +313,9 @@ export default abstract class DrawingElement {
                 continue;
             cp.traceConnectionsOut(connectionID, isHighlighted);
         }//for
-        if (isHighlighted && !this.highlightedConnections.includes(connectionID))
+        if (isHighlighted && !this.highlightedConnections.has(connectionID))
             this.addHighlightedConnection(connectionID);
-        else if (!isHighlighted && this.highlightedConnections.includes(connectionID)) {
+        else if (!isHighlighted && this.highlightedConnections.has(connectionID)) {
             this.removeHighlightedConnection(connectionID);
         }//if
     }//traceConnections

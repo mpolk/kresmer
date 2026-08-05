@@ -27,7 +27,7 @@
 
     const clazz = computed(() => {
         return {
-            highlighted: highlightedConnections.includes(String(connectionId)),
+            highlighted: highlightedConnections.has(String(connectionId)),
         }
     })//clazz
 
