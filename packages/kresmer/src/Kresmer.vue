@@ -1,8 +1,8 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 <!-- **************************************************************************>
- *                            👑 KresMer 👑
+ *                            🕸 KresMer 🕸
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
  * The main Kresmer Vue component acting as a container for the whole drawing
 <*************************************************************************** -->

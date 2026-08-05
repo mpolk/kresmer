@@ -1,7 +1,7 @@
 /****************************************************************************\
- *                            👑 KresMer 👑
+ *                            🕸 KresMer 🕸
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
  * Network Connection Point (the location for a Link-to-Component or 
  * Component-to-Component attachment) - a proxy object used to access

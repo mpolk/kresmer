@@ -1,9 +1,9 @@
 /* eslint "@typescript-eslint/no-unused-vars": [2, {"args": "none"}] */
 /* eslint "@typescript-eslint/no-empty-function": [0, "decoratedFunctions"] */
 /**************************************************************************\
- *                          👑 KresMer 👑
+ *                          🕸 KresMer 🕸
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
  * ------------------------------------------------------------------------
  *   Event-related features for incorporating to the main Kresmer class
 \**************************************************************************/

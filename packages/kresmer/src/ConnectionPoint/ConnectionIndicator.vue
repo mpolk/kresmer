@@ -1,7 +1,7 @@
 <!-- **************************************************************************>
- *                            👑 KresMer 👑
+ *                            🕸 KresMer 🕸
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
  * --------------------------------------------------------------------------
  * Connection Indicator - a child container that renders highlighting of
  * the link traversing a network component

@@ -1,7 +1,7 @@
 /**************************************************************************\
- *                          👑 KresMer 👑
+ *                          🕸 KresMer 🕸
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
  * ------------------------------------------------------------------------
  *        A "toast" pane for displaying messages to the user
 \**************************************************************************/

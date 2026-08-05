@@ -1,7 +1,7 @@
 /***************************************************************************\
- *                            👑 KresMer 👑
+ *                            🕸 KresMer 🕸
  *       "Kreslennya Merezh" - network diagram editor and viewer
- *      Copyright (C) 2022-2024 Dmitriy Stepanenko. All Rights Reserved.
+ *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
  *      A helper class for generating pretty formatted XML 
  *      for use in various object serialization
