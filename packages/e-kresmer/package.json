@@ -5,6 +5,7 @@
   "version": "0.19.1",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
+  "homepage": "https://github.com/mpolk/kresmer",
   "main": "dist/main/main.js",
   "config": {
     "port": 5173,
@@ -118,7 +119,7 @@
     "date-fns": "^4.1.0",
     "i18next": "^26.0.3",
     "i18next-fs-backend": "^2.3.1",
-    "kresmer": "^0.0.0",
+    "kresmer": "*",
     "postcss": "^8.4.41",
     "uuid": "^14.0.1",
     "vue": "^3.5.1"
@@ -133,7 +134,7 @@
     "@vue/eslint-config-typescript": "^14.6.0",
     "@vue/tsconfig": "^0.9.0",
     "concurrently": "^10.0.4",
-    "electron": "^43.2.0",
+    "electron": "43.2.0",
     "electron-builder": "^26.15.3",
     "eslint": "^10.0.2",
     "eslint-plugin-vue": "^10.6.2",

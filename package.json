@@ -4,6 +4,7 @@
   "version": "0.19.1",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
+  "homepage": "https://github.com/mpolk/kresmer",
   "scripts": {
     "component:build": "npm run vite:build -w kresmer",
     "app:dev": "npm run app:dev -w e-kresmer",

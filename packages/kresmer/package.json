@@ -4,6 +4,7 @@
   "version": "0.19.1",
   "author": "Dmitriy Stepanenko",
   "description": "Network drawing and diagram editor: the core web-component",
+  "homepage": "https://github.com/mpolk/kresmer",
   "repository": "https://github.com/mpolk/kresmer",
   "type": "module",
   "module": "dist/kresmer.es.js",
