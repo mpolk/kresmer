@@ -1922,8 +1922,8 @@ export {LinkBundleClass} from "./NetworkLink/NetworkLinkClass";
 export {default as Vertex} from "./Vertex/Vertex";
 export {default as LinkVertex} from "./NetworkLink/LinkVertex";
 export {LinkVertexAnchor} from "./NetworkLink/LinkVertex";
-export {default as KresmerException, LibraryImportException} from "./KresmerException";
-export {default as KresmerParsingException} from "./loaders/ParsingException";
+export {default as KresmerException, LibraryImportException, ParsingException as KresmerParsingException} 
+    from "./KresmerException";
 export {default as ConnectionPointProxy} from "./ConnectionPoint/ConnectionPoint";
 export type {DrawingMergeOptions} from "./loaders/DrawingLoader";
 export {BackgroundImageData, BackgroundImageAlignment} from "./BackgroundImageData";

@@ -11,8 +11,7 @@ import DrawingElementClass, { DrawingElementPropCategory, DrawingElementClassPro
 import NetworkComponentClass from "../NetworkComponent/NetworkComponentClass";
 import NetworkLinkClass, { LinkBundleClass } from "../NetworkLink/NetworkLinkClass";
 import {ComputedProps} from "../DrawingElement/DrawingElementClass";
-import ParsingException from "./ParsingException";
-import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedComponentClassException, UndefinedLinkClassException } from "../KresmerException";
+import { KresmerExceptionSeverity, UndefinedAreaClassException, UndefinedComponentClassException, UndefinedLinkClassException, ParsingException } from "../KresmerException";
 import Kresmer from "../Kresmer";
 import DrawingParser, { DrawingElementProps, DrawingElementRawProps } from "./DrawingParser";
 import { toCamelCase } from "../Utils";
@@ -643,6 +642,7 @@ export default class LibraryParser {
                 if (_default != null) {
                     try {
                         prop.default = allowedTypes[typeName].makeDefault(_default);
+                    // eslint-disable-next-line @typescript-eslint/no-unused-vars
                     } catch (exc) {
                         this.kresmer.raiseError(new ParsingException(`Invalid default value for the prop ${className}.${propName}`));
                     }//try

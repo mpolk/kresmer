@@ -6,7 +6,6 @@
  *           Exceptions originated from our application level 
 \**************************************************************************/
 
-import LinkVertex from "./NetworkLink/LinkVertex";
 import { RequireOnlyOne } from "./Utils";
 
 /** 
@@ -170,7 +169,7 @@ export class UndefinedConnectionPointException extends KresmerException {
 }//UndefinedConnectionPointException
 
 export class UnrealizableVertexAlignmentException extends KresmerException {
-    constructor(options: KresmerExceptionOptions & {vertex1?: LinkVertex, vertex2?: LinkVertex, message?: string})
+    constructor(options: KresmerExceptionOptions & {vertex1?: string, vertex2?: string, message?: string})
     {
         const message = options.message ?? 
             (options.vertex2 ? `Cannot align vertex ${options.vertex1} to vertex ${options.vertex2}` : 
@@ -178,3 +177,9 @@ export class UnrealizableVertexAlignmentException extends KresmerException {
         super(message, options);
     }//ctor
 }//UnrealizableVertexAlignmentException
+
+
+/**
+ * App level exceptions generated during library or drawing file parsing
+ */
+export class ParsingException extends KresmerException {}

@@ -537,7 +537,7 @@ export default class LinkVertex extends Vertex {
         const successor = this.nextNeighbour;
         const sucPos = successor?.coords;
 
-        let newAnchor: LinkVertexAnchor|null = null;
+        let newAnchor: LinkVertexAnchor|null;
         if (this.isConnected) {
             if (mode === "normal")
                 this.parentElement.kresmer.raiseError(new UnrealizableVertexAlignmentException(
