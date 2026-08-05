@@ -48,7 +48,7 @@
       "transform": "Transform",
       "duplicate": "Duplicate",
       "delete": "Delete selected element",
-      "move-to-top": "Move to Bottom",
+      "move-to-top": "Move to Top",
       "move-up": "Move Up",
       "move-down": "Move Down",
       "move-to-bottom": "Move to Bottom"
@@ -111,7 +111,7 @@
       "set-type-to-Q": "Q (quadratic Bezier curve)",
       "set-type-to-T": "T (smooth quadratic Bezier curve)",
       "set-border": "Set Border",
-      "remove-border": "Set Border"
+      "remove-border": "Remove Border"
     },
     "area-vertex": {
       "align": "Align Vertex",
