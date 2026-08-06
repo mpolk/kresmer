@@ -13,7 +13,8 @@
     "test": "npm run test -w kresmer",
     "cypress:run": "npm run cypress:run -w kresmer",
     "cypress:open": "npm run cypress:open -w kresmer",
-    "cypress:debug": "npm run cypress:debug -w kresmer"
+    "cypress:debug": "npm run cypress:debug -w kresmer",
+    "i18n": "npm run i18n -w e-kresmer"
   },
   "workspaces": [
     "./packages/*"
