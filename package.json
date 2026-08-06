@@ -15,6 +15,7 @@
     "cypress:open": "npm run cypress:open -w kresmer",
     "cypress:debug": "npm run cypress:debug -w kresmer",
     "i18n": "npm run i18n -w e-kresmer",
+    "lint": "npm run lint -w kresmer",
     "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts"
   },
   "workspaces": [
