@@ -15,12 +15,12 @@
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
     // "paths": {
-    //   "@kresmer": ["./packages/kresmer/dist"],
+    //   "kresmer": ["../core-component/dist"],
     // }
   },
   "include": ["src/**/*"],
   "exclude": ["**/node_modules", "**/.*/"],
   "references": [
-    { "path": "../kresmer" }
+    { "path": "../core-component" }
   ]
 }

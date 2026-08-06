@@ -29,7 +29,7 @@
     "app:build": "electron-builder -lw",
     "preapp:preview": "run-s build-component vite:build ts",
     "app:preview": "electron . -- ${npm_package_config_args}",
-    "typedoc": "typedoc --tsconfig packages/kresmer/tsconfig.json packages/kresmer/src/Kresmer.ts",
+    "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts",
     "i18n": "i18next-cli extract -c i18next.main.config.ts && i18next -c i18next-parser.renderer.config.mjs",
     "version:minor": "npm version minor --workspaces --include-workspace-root",
     "postversion:minor": "export TAG=$(git tag --sort=v:refname | tail -1) && git commit -a --amend -m $TAG && git tag -f $TAG",
