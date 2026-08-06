@@ -8,7 +8,7 @@ importers:
 
   .: {}
 
-  packages/e-kresmer:
+  packages/electron-app:
     dependencies:
       '@popperjs/core':
         specifier: ^2.11.6
