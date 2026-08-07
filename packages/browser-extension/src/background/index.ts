@@ -6,7 +6,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     browser.tabs.update(tabId, { url: 'about:blank' });
 
     // Открываем наш Vue-вьювер в этой же вкладке
-    const viewerUrl = browser.runtime.getURL(`src/viewer/viewer.html?file=${encodeURIComponent(changeInfo.url)}`);
+    const viewerUrl = browser.runtime.getURL(`index.html?file=${encodeURIComponent(changeInfo.url)}&no-infinite-loop=please`);
     browser.tabs.update(tabId, { url: viewerUrl });
   }
 });

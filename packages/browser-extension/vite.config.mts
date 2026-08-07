@@ -36,7 +36,11 @@ export default defineConfig({
   },
 
   server: {
-    watch: {awaitWriteFinish: {stabilityThreshold: 1000}}
-  },
-  
+    watch: {awaitWriteFinish: {stabilityThreshold: 1000}},
+    cors: {
+      origin: [
+        /chrome-extension:\/\//,
+      ],
+    },
+  },  
 })
