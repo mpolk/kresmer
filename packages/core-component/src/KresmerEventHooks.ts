@@ -21,6 +21,7 @@ import { ParsedLibraryNode } from "./loaders/LibraryParser";
 
 /** A list of Kresmer events along with corresponding handler definitions */
 class KresmerEventFormats  {
+    "mounted":                          () => void;
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
@@ -153,6 +154,12 @@ export default class KresmerEventHooks {
         }//if
     }//emit
 
+
+    /**
+     * Is called when the component is mounted and ready to use
+     */
+    @overridableHandler("mounted")
+    protected onMounted() {}
 
     /**
      * Is called when the error signal is emitted

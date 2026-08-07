@@ -35,14 +35,16 @@ window.addEventListener("resize", () => {
     kresmer.mountingHeight = mountingHeight;
 });
 
-export function updateWindowTitle()
-{
-    let title = "Kresmer";
-    if (kresmer.drawingName) {
-        title = `${kresmer.drawingName} - Kresmer`;
-    }//if
-    if (kresmer.isDirty) {
-        title = `*${title}`;
-    }//if
-    window.document.title = title;
-}//updateWindowTitle
+kresmer.on("mounted", async () => {
+  const urlParams = new URLSearchParams(window.location.search);
+  const fileUrl = urlParams.get('file');
+
+  if (fileUrl) {
+    try {
+      const response = await fetch(fileUrl);
+      kresmer.loadDrawing(await response.text());
+    } catch (error) {
+      console.error('Could not load the drawing:', error);
+    }
+  }
+});
