@@ -3,8 +3,7 @@
     "experimentalDecorators": true,
     "target": "esnext",
     "useDefineForClassFields": true,
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "module": "esnext",
     "strict": true,
     "sourceMap": true,
     "resolveJsonModule": true,
@@ -14,12 +13,12 @@
     "rootDir": "src",
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
+    "types": ["webextension-polyfill"],
     // "paths": {
     //   "kresmer": ["../core-component/dist"],
     // }
   },
   "include": ["src/**/*"],
-  "exclude": ["**/node_modules", "**/.*/"],
   "references": [
     { "path": "../core-component" }
   ]

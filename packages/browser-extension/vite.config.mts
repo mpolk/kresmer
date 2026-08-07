@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
+import { crx } from '@crxjs/vite-plugin';
+import manifest from './manifest.config.js';
 // import i18nextLoader from 'vite-plugin-i18next-loader';
 // import vueDevTools from 'vite-plugin-vue-devtools';
 
@@ -8,6 +10,7 @@ import path from 'path';
 export default defineConfig({
   plugins: [
     vue(),
+    crx({manifest}),
     // i18nextLoader({
     //   paths: ['./locales'], 
     //   namespaceResolution: 'basename',
