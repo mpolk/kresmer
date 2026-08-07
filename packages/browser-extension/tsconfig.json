@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "experimentalDecorators": true,
+    "target": "esnext",
+    "useDefineForClassFields": true,
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "strict": true,
+    "sourceMap": true,
+    "resolveJsonModule": true,
+    "isolatedModules": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rootDir": "src",
+    "outDir": "dist",
+    "allowSyntheticDefaultImports": true,
+    // "paths": {
+    //   "kresmer": ["../core-component/dist"],
+    // }
+  },
+  "include": ["src/**/*"],
+  "exclude": ["**/node_modules", "**/.*/"],
+  "references": [
+    { "path": "../core-component" }
+  ]
+}
