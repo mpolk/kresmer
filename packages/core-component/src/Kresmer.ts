@@ -453,29 +453,35 @@ export default class Kresmer extends KresmerEventHooks {
             setup(props: Record<string, Prop<unknown>>) {
 
                 const computedProps: Record<string, ComputedRef> = {};
+                const functions: Record<string, (...args: never) => unknown> = {};
+                const superFunctions: Record<string, (...args: never) => unknown> = {};
+                const cp$ = computedProps, fn$ = functions, tf$ = injectedTemplateFunctions // aliases for more convenient usage outside of templates
+                const super$ = computed(() => superFunctions);
+                const localEnv = {props, computedProps, cp$, functions, fn$, super$, tf$};
+
                 for (const name in componentClass.computedProps) {
                     const body = patchBody(componentClass.computedProps[name].body);
-                    computedProps[name] = computed(eval(`() => (${body})`));
+                    computedProps[name] = computed(() => (
+                        new Function(...Object.keys(localEnv), `return (${body})`)(...Object.values(localEnv))
+                    ));
                 }//for
 
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-                const functions: Record<string, Function> = {};
                 for (const name in componentClass.functions) {
                     const params = componentClass.functions[name].params;
                     const body = patchBody(componentClass.functions[name].body);
-                    eval(`functions.${name} = function ${name}(${params.join(",")}) {${body}}`);
+                    functions[name] = new Function(...Object.keys(localEnv), `
+                            return function ${name}(${params.join(",")}) {${body}};
+                        `)(...Object.values(localEnv));
                 }//for
 
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-                const superFunctions: Record<string, Function> = {};
                 for (const name in componentClass.baseClass?.functions) {
                     const params = componentClass.baseClass.functions[name].params;
                     const body = patchBody(componentClass.baseClass.functions[name].body);
-                    eval(`superFunctions.${name} = function ${name}(${params.join(",")}) {${body}}`);
+                    superFunctions[name] = new Function(...Object.keys(localEnv), `
+                            return function ${name}(${params.join(",")}) {${body}};
+                        `)(...Object.values(localEnv));
                 }//for
 
-                const cp$ = computedProps, fn$ = functions, tf$ = injectedTemplateFunctions // aliases for more convenient usage outside of templates
-                const super$ = computed(() => superFunctions);
 
                 return {...cp$, ...fn$, super$, tf$, ...tf$};
             },
