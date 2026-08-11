@@ -5,7 +5,10 @@ export default defineManifest({
   "name": "Kresmer",
   "version": "0.0.1",
   "permissions": ["declarativeNetRequest", "tabs"],
-  "host_permissions": ["<all_urls>"],
+  "host_permissions": [
+    "<all_urls>",
+    "file:///*"
+  ],
   "background": {
     "service_worker": "src/background/index.ts",
     "type": "module"

@@ -20,7 +20,7 @@ import AreaVertex from "./DrawingArea/AreaVertex";
 import { ParsedLibraryNode } from "./loaders/LibraryParser";
 
 /** A list of Kresmer events along with corresponding handler definitions */
-class KresmerEventFormats  {
+export class KresmerEventFormats  {
     "mounted":                          () => void;
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
