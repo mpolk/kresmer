@@ -38,6 +38,7 @@
 
     onMounted(() => {
         model._setRoot(rootSVG.value!, rootSVG.value!.parentElement!);
+        model.emit("mounted");
     });
 
     provide(Kresmer.ikKresmer, model);
