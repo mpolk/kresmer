@@ -8,7 +8,7 @@
 
 import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick, Prop, provide } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
-import KresmerEventHooks from "./KresmerEventHooks";
+import KresmerEventHooks, {KresmerEventFormats, KresmerEvent} from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
 import LibraryLoader from "./loaders/LibraryLoader";
 import DrawingLoader, {DrawingMergeOptions} from "./loaders/DrawingLoader";
@@ -79,7 +79,16 @@ export default class Kresmer extends KresmerEventHooks {
         options?.backgroundImage && (this.backgroundImage.copy(options.backgroundImage));
         options?.backgroundColor && (this.backgroundColor = options.backgroundColor);
         options?.uiLanguage && (this.uiLanguage = options.uiLanguage);
-        
+
+        if (options?.eventHandlers) {
+            for (const eventName in options.eventHandlers) {
+                const handler = options.eventHandlers[eventName as KresmerEvent];
+                if (handler) {
+                    this.on(eventName as KresmerEvent, handler);
+                }//if
+            }//for
+        }//if
+
         // if we received the mount-point from the calling site,
         // we create and mount the Kresmer app ourselves
         if (this.mountPoint) {
@@ -1699,7 +1708,8 @@ export type KresmerInitOptions = {
     libTranslationData?: LibTranslationData,
     drawingData?: string,
     backendServerURL?: string, 
-    backendConnectionPassword?: string
+    backendConnectionPassword?: string,
+    eventHandlers?: Partial<KresmerEventFormats>,
 }//KresmerInitOptions
 
 /** 
