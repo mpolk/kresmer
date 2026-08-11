@@ -12,5 +12,8 @@ export default defineManifest({
   "background": {
     "service_worker": "src/background/index.ts",
     "type": "module"
-  }
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self' 'unsafe-eval'; object-src 'self';"
+  },
 });
