@@ -9,7 +9,6 @@
 import browser from 'webextension-polyfill';
 
 const urlParams = new URLSearchParams(window.location.search);
-console.debug("URL Parameters:", Object.fromEntries(urlParams.entries())); // Log all URL parameters
 const fileUrl = urlParams.get('file');
 let drawingData: string | undefined;
 if (fileUrl) {
