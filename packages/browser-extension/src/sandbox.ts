@@ -3,7 +3,7 @@
  *       "Kreslennya Merezh" - network diagram editor and viewer
  *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
  * -----------------------------------------------------------------------
- *                    Browser extension main script
+ *                    Browser extension sandbox script
  ***************************************************************************/
 
 import Kresmer from 'kresmer';
@@ -11,6 +11,11 @@ import Kresmer from 'kresmer';
 export const kresmer = new Kresmer("#kresmer", {
     ...calcKresmerSize(),
     isEditable: false,
+    eventHandlers: {
+        "mounted": () => {
+            window.parent.postMessage({ status: 'kresmer-mounted' }, '*');
+        },
+    },
 });
 
 function calcKresmerSize()

@@ -22,6 +22,13 @@ if (fileUrl) {
 }//if
 
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
+window.addEventListener('message', (event) => {
+    if (event.data.status === 'kresmer-mounted') {
+        console.debug('KresMer in sandbox is mounted. Sending drawing data...');
+        sendDrawingDataToSandbox();
+        // setSandboxHeight();
+    }//if
+});//window.addEventListener
 
 function sendDrawingDataToSandbox() {
     sandboxIframe.contentWindow!.postMessage({
@@ -30,22 +37,22 @@ function sendDrawingDataToSandbox() {
     }, '*');
 }//sendDrawingDataToSandbox
 
-function setSandboxHeight() {
-    if (sandboxIframe.contentDocument) {
-        const iframeHeight = sandboxIframe.contentDocument.body.scrollHeight;
-        sandboxIframe.style.height = `${iframeHeight}px`;
-    }
-}//setSandboxHeight
+// function setSandboxHeight() {
+//     if (sandboxIframe.contentDocument) {
+//         const iframeHeight = sandboxIframe.contentDocument.body.scrollHeight;
+//         sandboxIframe.style.height = `${iframeHeight}px`;
+//     }
+// }//setSandboxHeight
 
 if (sandboxIframe.contentDocument?.readyState === 'complete') {
     sendDrawingDataToSandbox();
-    setSandboxHeight();
+    // setSandboxHeight();
 } else {
     // Wait for the iframe to load before sending the drawing data
     sandboxIframe.addEventListener('load', () => {
         sendDrawingDataToSandbox();
-        setSandboxHeight();
+        // setSandboxHeight();
     });
 }//if
 
-window.addEventListener('resize', setSandboxHeight);
+// window.addEventListener('resize', setSandboxHeight);

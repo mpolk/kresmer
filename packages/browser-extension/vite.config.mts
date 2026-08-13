@@ -53,6 +53,8 @@ export default defineConfig({
         sandbox: "src/sandbox.html",
       },
     },
+    sourcemap: true, 
+    // minify: false 
   },
 
   server: {
