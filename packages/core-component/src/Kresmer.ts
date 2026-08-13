@@ -80,9 +80,9 @@ export default class Kresmer extends KresmerEventHooks {
         options?.backgroundColor && (this.backgroundColor = options.backgroundColor);
         options?.uiLanguage && (this.uiLanguage = options.uiLanguage);
 
-        if (options?.eventHandlers) {
-            for (const eventName in options.eventHandlers) {
-                const handler = options.eventHandlers[eventName as KresmerEvent];
+        if (options?.on) {
+            for (const eventName in options.on) {
+                const handler = options.on[eventName as KresmerEvent];
                 if (handler) {
                     this.on(eventName as KresmerEvent, handler);
                 }//if
@@ -1715,7 +1715,7 @@ export type KresmerInitOptions = {
     drawingData?: string,
     backendServerURL?: string, 
     backendConnectionPassword?: string,
-    eventHandlers?: Partial<KresmerEventFormats>,
+    on?: Partial<KresmerEventFormats>,
 }//KresmerInitOptions
 
 /** 
