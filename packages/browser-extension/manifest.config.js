@@ -4,12 +4,16 @@ export default defineManifest({
   "manifest_version": 3,
   "name": "Kresmer",
   "version": "0.0.1",
+  "icons": {
+    "256": "logo.png",
+  },
   "permissions": ["declarativeNetRequest", "tabs"],
   "host_permissions": [
     "<all_urls>",
     "file:///*"
   ],
   "background": {
+    "scripts": ["src/background/service-worker.ts"],
     "service_worker": "src/background/service-worker.ts",
     "type": "module"
   },

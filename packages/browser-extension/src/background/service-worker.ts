@@ -14,7 +14,7 @@ browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     browser.tabs.update(tabId, { url: 'about:blank' });
 
     // Open the viewer page with the .kre file URL as a query parameter
-    const viewerUrl = browser.runtime.getURL(`index.html?file=${encodeURIComponent(changeInfo.url)}&in-brext`);
+    const viewerUrl = browser.runtime.getURL(`src/viewer.html?file=${encodeURIComponent(changeInfo.url)}&in-brext`);
     browser.tabs.update(tabId, { url: viewerUrl });
   }
 });
