@@ -6,12 +6,12 @@
  *                    Browser extension main script
  ***************************************************************************/
 
-import Kresmer from 'kresmer';
+export {};
 
 const urlParams = new URLSearchParams(window.location.search);
 console.debug("URL Parameters:", Object.fromEntries(urlParams.entries())); // Log all URL parameters
 const fileUrl = urlParams.get('file');
-let drawingData = undefined;
+let drawingData: string | undefined;
 if (fileUrl) {
     try {
         const response = await fetch(fileUrl);
@@ -21,24 +21,31 @@ if (fileUrl) {
     }
 }//if
 
+const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 
-export const kresmer = new Kresmer("#kresmer", {
-    ...calcKresmerSize(),
-    isEditable: false,
-    drawingData,
-});
+function sendDrawingDataToSandbox() {
+    sandboxIframe.contentWindow!.postMessage({
+        command: 'load-drawing',
+        drawingData,
+    }, '*');
+}//sendDrawingDataToSandbox
 
-function calcKresmerSize()
-{
-    const mountingBox = document.body.getBoundingClientRect();
-    return {
-        mountingWidth: mountingBox.width,
-        mountingHeight: mountingBox.height,
+function setSandboxHeight() {
+    if (sandboxIframe.contentDocument) {
+        const iframeHeight = sandboxIframe.contentDocument.body.scrollHeight;
+        sandboxIframe.style.height = `${iframeHeight}px`;
     }
-}//calcKresmerSize
+}//setSandboxHeight
 
-window.addEventListener("resize", () => {
-    const {mountingWidth, mountingHeight} = calcKresmerSize();
-    kresmer.mountingWidth = mountingWidth;
-    kresmer.mountingHeight = mountingHeight;
-});
+if (sandboxIframe.contentDocument?.readyState === 'complete') {
+    sendDrawingDataToSandbox();
+    setSandboxHeight();
+} else {
+    // Wait for the iframe to load before sending the drawing data
+    sandboxIframe.addEventListener('load', () => {
+        sendDrawingDataToSandbox();
+        setSandboxHeight();
+    });
+}//if
+
+window.addEventListener('resize', setSandboxHeight);

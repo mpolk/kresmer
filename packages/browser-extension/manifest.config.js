@@ -13,7 +13,11 @@ export default defineManifest({
     "service_worker": "src/background/index.ts",
     "type": "module"
   },
+  "sandbox": {
+    "pages": ["src/sandbox.html"],
+  },
   "content_security_policy": {
-    "extension_pages": "script-src 'self' 'unsafe-eval'; object-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self';",
+    "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval';"
   },
 });

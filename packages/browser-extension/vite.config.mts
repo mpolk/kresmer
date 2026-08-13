@@ -49,7 +49,8 @@ export default defineConfig({
   build: {
     rollupOptions: {
       input: {
-        app: "./index.html"
+        app: "./index.html",
+        sandbox: "src/sandbox.html",
       },
     },
   },
