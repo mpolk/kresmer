@@ -449,7 +449,6 @@ export default class Kresmer extends KresmerEventHooks {
         const injectedTemplateFunctions = this.injectedTemplateFunctions;
         this.app.component(componentClass.vueName, 
         {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             setup(props: Record<string, Prop<unknown>>) {
 
                 const computedProps: Record<string, ComputedRef> = {};

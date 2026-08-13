@@ -10,7 +10,7 @@ export default defineManifest({
     "file:///*"
   ],
   "background": {
-    "service_worker": "src/background/index.ts",
+    "service_worker": "src/background/service-worker.ts",
     "type": "module"
   },
   "sandbox": {

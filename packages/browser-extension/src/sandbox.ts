@@ -11,10 +11,8 @@ import Kresmer from 'kresmer';
 export const kresmer = new Kresmer("#kresmer", {
     ...calcKresmerSize(),
     isEditable: false,
-    eventHandlers: {
-        "mounted": () => {
-            window.parent.postMessage({ status: 'kresmer-mounted' }, '*');
-        },
+    on: {
+        "mounted": () => { window.parent.postMessage({ status: 'kresmer-mounted' }, '*'); },
     },
 });
 

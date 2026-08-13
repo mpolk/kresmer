@@ -6,7 +6,7 @@
  *                    Browser extension main script
  ***************************************************************************/
 
-export {};
+import browser from 'webextension-polyfill';
 
 const urlParams = new URLSearchParams(window.location.search);
 console.debug("URL Parameters:", Object.fromEntries(urlParams.entries())); // Log all URL parameters
@@ -19,6 +19,13 @@ if (fileUrl) {
     } catch (error) {
         console.error('Could not load the drawing:', error);
     }
+}//if
+
+if (!fileUrl) {
+    document.title = 'KresMer Viewer';
+} else {
+    const fileName = fileUrl.split('/').pop() || fileUrl;
+    document.title = fileName;
 }//if
 
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
@@ -44,15 +51,15 @@ function sendDrawingDataToSandbox() {
 //     }
 // }//setSandboxHeight
 
-if (sandboxIframe.contentDocument?.readyState === 'complete') {
-    sendDrawingDataToSandbox();
-    // setSandboxHeight();
-} else {
-    // Wait for the iframe to load before sending the drawing data
-    sandboxIframe.addEventListener('load', () => {
-        sendDrawingDataToSandbox();
-        // setSandboxHeight();
-    });
-}//if
+// if (sandboxIframe.contentDocument?.readyState === 'complete') {
+//     sendDrawingDataToSandbox();
+//     // setSandboxHeight();
+// } else {
+//     // Wait for the iframe to load before sending the drawing data
+//     sandboxIframe.addEventListener('load', () => {
+//         sendDrawingDataToSandbox();
+//         // setSandboxHeight();
+//     });
+// }//if
 
 // window.addEventListener('resize', setSandboxHeight);
