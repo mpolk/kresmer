@@ -41,8 +41,7 @@ export default defineConfig({
   resolve: {
     alias: {
       vue: "vue/dist/vue.esm-bundler.js",
-      // '~bootstrap': path.resolve('./', 'node_modules/bootstrap'),
-      '~kresmer': path.resolve('./', 'node_modules/kresmer'),
+      // '~kresmer': path.resolve('./', 'node_modules/kresmer'),
     }
   },
 

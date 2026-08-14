@@ -27,13 +27,21 @@ if (!fileUrl) {
     document.title = fileName;
 }//if
 
+let drawingZoomFactor = 1;
+
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
-    if (event.data.status === 'kresmer-mounted') {
-        console.debug('KresMer in sandbox is mounted. Sending drawing data...');
-        sendDrawingDataToSandbox();
-        // setSandboxHeight();
-    }//if
+    switch (event.data.message) {
+        case 'kresmer-mounted':
+            console.debug('KresMer in sandbox is mounted. Sending drawing data...');
+            sendDrawingDataToSandbox();
+            resizeKresmer();
+            drawingZoomFactor = event.data.kresmer._zoomFactor;
+            // setSandboxHeight();
+            break;
+        case 'drawing-scale':
+            scaleSandbox(event.data.newScaleFactor / drawingZoomFactor);
+    }//switch
 });//window.addEventListener
 
 function sendDrawingDataToSandbox() {
@@ -43,21 +51,43 @@ function sendDrawingDataToSandbox() {
     }, '*');
 }//sendDrawingDataToSandbox
 
-// function setSandboxHeight() {
-//     if (sandboxIframe.contentDocument) {
-//         const iframeHeight = sandboxIframe.contentDocument.body.scrollHeight;
-//         sandboxIframe.style.height = `${iframeHeight}px`;
-//     }
-// }//setSandboxHeight
+function resizeKresmer()
+{
+    setSandboxHeight();
+    const mountingBox = sandboxIframe.getBoundingClientRect();
+    sandboxIframe.contentWindow!.postMessage({
+        command: 'resize',
+        mountingBox,
+    }, '*');
+}//resizeKresmer
+
+window.addEventListener('resize', resizeKresmer);
+
+function setSandboxHeight() 
+{
+    // if (sandboxIframe.contentDocument) {
+        // const iframeHeight = sandboxIframe.contentDocument.body.scrollHeight;
+    //     sandboxIframe.style.height = `${iframeHeight}px`;
+    // }
+    const clientRect = document.body.getBoundingClientRect();
+    sandboxIframe.style.width = `${clientRect.width}px`;
+    sandboxIframe.style.height = `${clientRect.height}px`;
+}//setSandboxHeight
+
+function scaleSandbox(zoom: number) 
+{
+    const iframeHeight = sandboxIframe.contentDocument!.body.scrollHeight;
+    const iframeWidth = sandboxIframe.contentDocument!.body.scrollWidth;
+    sandboxIframe.style.width = `${iframeWidth * zoom}px`;
+    sandboxIframe.style.height = `${iframeHeight * zoom}px`;
+}//scaleSandbox
 
 // if (sandboxIframe.contentDocument?.readyState === 'complete') {
-//     sendDrawingDataToSandbox();
-//     // setSandboxHeight();
+//     setSandboxHeight();
 // } else {
 //     // Wait for the iframe to load before sending the drawing data
 //     sandboxIframe.addEventListener('load', () => {
-//         sendDrawingDataToSandbox();
-//         // setSandboxHeight();
+//         setSandboxHeight();
 //     });
 // }//if
 

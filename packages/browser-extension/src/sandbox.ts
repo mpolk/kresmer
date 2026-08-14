@@ -9,35 +9,35 @@
 import Kresmer from 'kresmer';
 
 export const kresmer = new Kresmer("#kresmer", {
-    ...calcKresmerSize(),
     isEditable: false,
     on: {
-        "mounted": () => { window.parent.postMessage({ status: 'kresmer-mounted' }, '*'); },
+        "mounted": onMount,
+        "drawing-scale": onDrawingScale,
     },
 });
 
-function calcKresmerSize()
-{
-    const mountingBox = document.body.getBoundingClientRect();
-    return {
-        mountingWidth: mountingBox.width,
-        mountingHeight: mountingBox.height,
-    }
-}//calcKresmerSize
+function onMount(kresmer: Kresmer) {
+    window.parent.postMessage({ message: 'kresmer-mounted', kresmer: kresmer.driedClone }, '*'); 
+}//onMount
 
-window.addEventListener("resize", () => {
-    const {mountingWidth, mountingHeight} = calcKresmerSize();
-    kresmer.mountingWidth = mountingWidth;
-    kresmer.mountingHeight = mountingHeight;
-});
+function onDrawingScale(newScaleFactor: number) { 
+    window.parent.postMessage({ message: "drawing-scale", newScaleFactor, drawingRect: kresmer.drawingRect }, '*');
+}//onDrawingScale
 
 window.addEventListener("message", (event) => {
-    if (event.data.command === 'load-drawing') {
-        const drawingData = event.data.drawingData;
-        if (drawingData) {
-            kresmer.loadDrawing(drawingData);
-        } else {
-            console.warn('No drawing data received.');
-        }
-    }
+    switch (event.data.command) {
+        case 'load-drawing':
+            const drawingData = event.data.drawingData;
+            if (drawingData) {
+                kresmer.loadDrawing(drawingData);
+            } else {
+                console.warn('No drawing data received.');
+            }
+            break;
+        case 'resize':
+            const mountingBox = event.data.mountingBox as DOMRect;
+            kresmer.mountingWidth = mountingBox.width;
+            kresmer.mountingHeight = mountingBox.height;
+            break;
+    }//switch
 });
