@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick, Prop, provide } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, isRef, nextTick, Prop, provide } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import KresmerEventHooks, {KresmerEventFormats, KresmerEvent} from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
@@ -121,6 +121,35 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** A promise that that completes at the same time when when the constructor's async part is completed */
     readonly initializationCompleted: Promise<unknown>;
+
+    /** Returns a dried clone of this object, where all the function properties are filtered out 
+     * and the depth is limited to 3 */
+    get driedClone(): Record<string, unknown>
+    {
+        function dry(obj: object, maxDepth: number): Record<string, unknown>
+        {
+            if (maxDepth <= 0)
+                return {};
+            const entries = Object.entries(obj).filter(([, value]) => {
+                return typeof value === "number" || 
+                    typeof value === "object" || 
+                    typeof value === "string" || 
+                    isRef(value);
+            }).map(([key, value]) => {
+                if (isRef(value))
+                    return [key, value.value];
+                else if (Array.isArray(value))
+                    return [key, value.map((e) => { return dry(e, maxDepth - 1); })];
+                else if (typeof value === "object" && value !== null)
+                    return [key, dry(value, maxDepth - 1)];
+                else
+                    return [key, value];
+            });
+            return Object.fromEntries(entries);
+        }//dry
+
+        return dry(this, 3);
+    }//driedClone
 
     /*
      * Auxiliary function for registering global Kresmer components and properties in the Vue application
