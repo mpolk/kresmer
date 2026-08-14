@@ -18,10 +18,11 @@ import {toCamelCase} from "./Utils";
 import DrawingArea, { AreaBorder } from "./DrawingArea/DrawingArea";
 import AreaVertex from "./DrawingArea/AreaVertex";
 import { ParsedLibraryNode } from "./loaders/LibraryParser";
+import Kresmer from "./Kresmer";
 
 /** A list of Kresmer events along with corresponding handler definitions */
 export class KresmerEventFormats  {
-    "mounted":                          () => void;
+    "mounted":                          (kresmer: Kresmer) => void;
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
