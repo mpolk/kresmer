@@ -33,7 +33,6 @@ window.addEventListener('message', (event) => {
         case 'kresmer-mounted':
             sendDrawingDataToSandbox();
             resizeSandboxToWindow();
-            resizeKresmerToSandbox();
             break;
         case 'drawing-zoom':
             scaleSandbox(event.data.newZoomFactor / event.data.prevZoomFactor);
@@ -57,13 +56,12 @@ function resizeKresmerToSandbox()
     }, '*');
 }//resizeKresmerToSandbox
 
-window.addEventListener('resize', () => {resizeSandboxToWindow(); resizeKresmerToSandbox(); });
-
 function resizeSandboxToWindow() 
 {
     const clientRect = document.body.getBoundingClientRect();
     sandboxIframe.style.width = `${clientRect.width}px`;
     sandboxIframe.style.height = `${clientRect.height}px`;
+    resizeKresmerToSandbox();
 }//resizeSandboxToWindow
 
 function scaleSandbox(zoom: number) 
@@ -72,3 +70,5 @@ function scaleSandbox(zoom: number)
     sandboxIframe.style.width = `${box.width * zoom}px`;
     sandboxIframe.style.height = `${box.height * zoom}px`;
 }//scaleSandbox
+
+window.addEventListener('resize', resizeSandboxToWindow);
