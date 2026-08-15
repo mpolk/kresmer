@@ -27,20 +27,17 @@ if (!fileUrl) {
     document.title = fileName;
 }//if
 
-let drawingZoomFactor = 1;
-
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
     switch (event.data.message) {
         case 'kresmer-mounted':
-            console.debug('KresMer in sandbox is mounted. Sending drawing data...');
             sendDrawingDataToSandbox();
-            resizeKresmer();
-            drawingZoomFactor = event.data.kresmer._zoomFactor;
-            // setSandboxHeight();
+            resizeSandboxToWindow();
+            resizeKresmerToSandbox();
             break;
-        case 'drawing-scale':
-            scaleSandbox(event.data.newScaleFactor / drawingZoomFactor);
+        case 'drawing-zoom':
+            scaleSandbox(event.data.newZoomFactor / event.data.prevZoomFactor);
+            break;
     }//switch
 });//window.addEventListener
 
@@ -51,44 +48,27 @@ function sendDrawingDataToSandbox() {
     }, '*');
 }//sendDrawingDataToSandbox
 
-function resizeKresmer()
+function resizeKresmerToSandbox()
 {
-    setSandboxHeight();
     const mountingBox = sandboxIframe.getBoundingClientRect();
     sandboxIframe.contentWindow!.postMessage({
         command: 'resize',
         mountingBox,
     }, '*');
-}//resizeKresmer
+}//resizeKresmerToSandbox
 
-window.addEventListener('resize', resizeKresmer);
+window.addEventListener('resize', () => {resizeSandboxToWindow(); resizeKresmerToSandbox(); });
 
-function setSandboxHeight() 
+function resizeSandboxToWindow() 
 {
-    // if (sandboxIframe.contentDocument) {
-        // const iframeHeight = sandboxIframe.contentDocument.body.scrollHeight;
-    //     sandboxIframe.style.height = `${iframeHeight}px`;
-    // }
     const clientRect = document.body.getBoundingClientRect();
     sandboxIframe.style.width = `${clientRect.width}px`;
     sandboxIframe.style.height = `${clientRect.height}px`;
-}//setSandboxHeight
+}//resizeSandboxToWindow
 
 function scaleSandbox(zoom: number) 
 {
-    const iframeHeight = sandboxIframe.contentDocument!.body.scrollHeight;
-    const iframeWidth = sandboxIframe.contentDocument!.body.scrollWidth;
-    sandboxIframe.style.width = `${iframeWidth * zoom}px`;
-    sandboxIframe.style.height = `${iframeHeight * zoom}px`;
+    const box = sandboxIframe.getBoundingClientRect();
+    sandboxIframe.style.width = `${box.width * zoom}px`;
+    sandboxIframe.style.height = `${box.height * zoom}px`;
 }//scaleSandbox
-
-// if (sandboxIframe.contentDocument?.readyState === 'complete') {
-//     setSandboxHeight();
-// } else {
-//     // Wait for the iframe to load before sending the drawing data
-//     sandboxIframe.addEventListener('load', () => {
-//         setSandboxHeight();
-//     });
-// }//if
-
-// window.addEventListener('resize', setSandboxHeight);

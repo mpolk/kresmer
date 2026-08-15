@@ -12,17 +12,17 @@ export const kresmer = new Kresmer("#kresmer", {
     isEditable: false,
     on: {
         "mounted": onMount,
-        "drawing-scale": onDrawingScale,
+        "drawing-zoom": onDrawingZoom,
     },
 });
 
 function onMount(kresmer: Kresmer) {
-    window.parent.postMessage({ message: 'kresmer-mounted', kresmer: kresmer.driedClone }, '*'); 
+    window.parent.postMessage({ message: 'kresmer-mounted', zoomFactor: kresmer.zoomFactor }, '*'); 
 }//onMount
 
-function onDrawingScale(newScaleFactor: number) { 
-    window.parent.postMessage({ message: "drawing-scale", newScaleFactor, drawingRect: kresmer.drawingRect }, '*');
-}//onDrawingScale
+function onDrawingZoom(newZoomFactor: number, prevZoomFactor: number) { 
+    window.parent.postMessage({ message: "drawing-zoom", newZoomFactor, prevZoomFactor }, '*');
+}//onDrawingZoom
 
 window.addEventListener("message", (event) => {
     switch (event.data.command) {
