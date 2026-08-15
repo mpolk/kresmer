@@ -6,7 +6,7 @@
  *    The main class implementing the most of the Kresmer public API
 \**************************************************************************/
 
-import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, isRef, nextTick, Prop, provide } from "vue";
+import { App, createApp, InjectionKey, reactive, PropType, computed, ComputedRef, ref, nextTick, Prop, provide } from "vue";
 import {Root as PostCSSRoot} from 'postcss';
 import KresmerEventHooks, {KresmerEventFormats, KresmerEvent} from "./KresmerEventHooks";
 import KresmerVue from "./Kresmer.vue";
@@ -121,35 +121,6 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** A promise that that completes at the same time when when the constructor's async part is completed */
     readonly initializationCompleted: Promise<unknown>;
-
-    /** Returns a dried clone of this object, where all the function properties are filtered out 
-     * and the depth is limited to 3 */
-    get driedClone(): Record<string, unknown>
-    {
-        function dry(obj: object, maxDepth: number): Record<string, unknown>
-        {
-            if (maxDepth <= 0)
-                return {};
-            const entries = Object.entries(obj).filter(([, value]) => {
-                return typeof value === "number" || 
-                    typeof value === "object" || 
-                    typeof value === "string" || 
-                    isRef(value);
-            }).map(([key, value]) => {
-                if (isRef(value))
-                    return [key, value.value];
-                else if (Array.isArray(value))
-                    return [key, value.map((e) => { return dry(e, maxDepth - 1); })];
-                else if (typeof value === "object" && value !== null)
-                    return [key, dry(value, maxDepth - 1)];
-                else
-                    return [key, value];
-            });
-            return Object.fromEntries(entries);
-        }//dry
-
-        return dry(this, 3);
-    }//driedClone
 
     /*
      * Auxiliary function for registering global Kresmer components and properties in the Vue application
@@ -267,13 +238,15 @@ export default class Kresmer extends KresmerEventHooks {
     /** Sets the drawing width within the browser client area */
     get mountingWidth() {return this.mountingBox.width}
     set mountingWidth(newWidth) {
+        const prevScale = this.drawingScale;
         this.mountingBox.width = newWidth;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     get mountingHeight() {return this.mountingBox.height}
     set mountingHeight(newHeight) {
+        const prevScale = this.drawingScale;
         this.mountingBox.height = newHeight;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     protected readonly mountingBox: {width: number|string, height: number|string} = reactive({width: "100%", height: "100%"});
 
@@ -281,13 +254,15 @@ export default class Kresmer extends KresmerEventHooks {
      * (component sizes are measuring relative to this sizes) */
     get logicalWidth() {return this.logicalBox.width}
     set logicalWidth(newWidth) {
+        const prevScale = this.drawingScale;
         this.logicalBox.width = newWidth;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     get logicalHeight() {return this.logicalBox.height}
     set logicalHeight(newHeight) {
+        const prevScale = this.drawingScale;
         this.logicalBox.height = newHeight;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     protected readonly logicalBox = reactive({width: 1000, height: 1000});
 
@@ -307,20 +282,21 @@ export default class Kresmer extends KresmerEventHooks {
     /** A zoom factor for visual scaling*/
     get zoomFactor() {return this._zoomFactor.value}
     set zoomFactor(newValue: number) {
+        const prevScale = this.drawingScale;
         const prevZoom = this._zoomFactor.value;
         this._zoomFactor.value = newValue;
         nextTick(() => {
             this.emit("drawing-zoom", newValue, prevZoom);
-            this.notifyOfScaleChange();
+            this.notifyOfScaleChange(prevScale);
         });
     }
     private _zoomFactor = ref(0.999999999); 
     // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
     // it somehow helps to initialize the drawing dimensions (who knows why?)
 
-    protected notifyOfScaleChange = () =>
+    protected notifyOfScaleChange = (prevScale: number) =>
     {
-        this.emit("drawing-scale", this.drawingScale);
+        this.emit("drawing-scale", this.drawingScale, prevScale);
     }//notifyOfScaleChange
 
     /** Base drawing scale (not taking into account the zoom factor) */

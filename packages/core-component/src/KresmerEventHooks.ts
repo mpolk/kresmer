@@ -30,7 +30,7 @@ export class KresmerEventFormats  {
     "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
     "library-translation-requested":    (libName: string, language: string) => Promise<string|undefined>;
     "library-element-loaded":           (libName: string, element: ParsedLibraryNode, sourceCode: string) => void;
-    "drawing-scale":                    (newScaleFactor: number) => void;
+    "drawing-scale":                    (newScale: number, prevScale: number) => void;
     "drawing-zoom":                     (newZoom: number, prevZoom: number) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
