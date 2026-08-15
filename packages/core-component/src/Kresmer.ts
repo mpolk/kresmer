@@ -266,20 +266,19 @@ export default class Kresmer extends KresmerEventHooks {
     }
     protected readonly logicalBox = reactive({width: 1000, height: 1000});
 
-    // Sets or returns the drawing background image (if exists)
-    readonly backgroundImage = reactive(new BackgroundImageData);
-
-    /** Sets or returns the drawing background color */
-    get backgroundColor() {return this._backgroundColor.value}
-    set backgroundColor(newColor: string) {this._backgroundColor.value = newColor}
-    private readonly _backgroundColor = ref("#ffffff");
+    /** Base drawing scale (not taking into account the zoom factor) */
+    get baseScale() {
+        const baseXScale = this.rootSVG.width.baseVal.value / this.logicalWidth / this.zoomFactor;
+        const baseYScale = this.rootSVG.height.baseVal.value / this.logicalHeight / this.zoomFactor;
+        return Math.min(baseXScale, baseYScale)
+    }//baseScale
 
     /** Drawing scale (visual) */
     get drawingScale() {
         return this.baseScale * this.zoomFactor;
     }//drawingScale
 
-    /** A zoom factor for visual scaling*/
+    /** A zoom factor for visual scaling */
     get zoomFactor() {return this._zoomFactor.value}
     set zoomFactor(newValue: number) {
         const prevScale = this.drawingScale;
@@ -299,12 +298,13 @@ export default class Kresmer extends KresmerEventHooks {
         this.emit("drawing-scale", this.drawingScale, prevScale);
     }//notifyOfScaleChange
 
-    /** Base drawing scale (not taking into account the zoom factor) */
-    get baseScale() {
-        const baseXScale = this.rootSVG.width.baseVal.value / this.logicalWidth / this.zoomFactor;
-        const baseYScale = this.rootSVG.height.baseVal.value / this.logicalHeight / this.zoomFactor;
-        return Math.min(baseXScale, baseYScale)
-    }//baseScale
+    // Sets or returns the drawing background image (if exists)
+    readonly backgroundImage = reactive(new BackgroundImageData);
+
+    /** Sets or returns the drawing background color */
+    get backgroundColor() {return this._backgroundColor.value}
+    set backgroundColor(newColor: string) {this._backgroundColor.value = newColor}
+    private readonly _backgroundColor = ref("#ffffff");
 
     /** Raised error counter */
     get errorCount() {return this._errorCount}
