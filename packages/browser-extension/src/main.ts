@@ -7,6 +7,7 @@
  ***************************************************************************/
 
 import browser from 'webextension-polyfill';
+import { CSSDims } from 'kresmer';
 
 const urlParams = new URLSearchParams(window.location.search);
 const fileUrl = urlParams.get('file');
@@ -27,15 +28,23 @@ if (!fileUrl) {
     document.title = fileName;
 }//if
 
+let zoomFactor = 1;
+
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
     switch (event.data.message) {
         case 'kresmer-mounted':
+            zoomFactor = event.data.zoomFactor;
             sendDrawingDataToSandbox();
             resizeSandboxToWindow();
+            resizeKresmerToSandbox();
             break;
         case 'drawing-zoom':
+            zoomFactor = event.data.newZoomFactor;
             scaleSandbox(event.data.newZoomFactor / event.data.prevZoomFactor);
+            break;
+        case "drawing-dims":
+            resizeSandboxToDrawingDims(event.data.newDims);
             break;
     }//switch
 });//window.addEventListener
@@ -59,16 +68,24 @@ function resizeKresmerToSandbox()
 function resizeSandboxToWindow() 
 {
     const clientRect = document.body.getBoundingClientRect();
-    sandboxIframe.style.width = `${clientRect.width}px`;
-    sandboxIframe.style.height = `${clientRect.height}px`;
-    resizeKresmerToSandbox();
+    sandboxIframe.style.width = `${clientRect.width * zoomFactor}px`;
+    sandboxIframe.style.height = `${clientRect.height * zoomFactor}px`;
+    // resizeKresmerToSandbox();
 }//resizeSandboxToWindow
+
+function resizeSandboxToDrawingDims(newDims: CSSDims)
+{
+    sandboxIframe.style.width = newDims.width;
+    sandboxIframe.style.height = newDims.height;
+}//resizeSandboxToDrawingDims
 
 function scaleSandbox(zoom: number) 
 {
-    const box = sandboxIframe.getBoundingClientRect();
-    sandboxIframe.style.width = `${box.width * zoom}px`;
-    sandboxIframe.style.height = `${box.height * zoom}px`;
+    resizeSandboxToWindow();
+    // const box = sandboxIframe.getBoundingClientRect();
+    // sandboxIframe.style.width = `${box.width * zoom}px`;
+    // sandboxIframe.style.height = `${box.height * zoom}px`;
+    // resizeKresmerToSandbox();
 }//scaleSandbox
 
-window.addEventListener('resize', resizeSandboxToWindow);
+window.addEventListener('resize', () => { resizeSandboxToWindow(); resizeKresmerToSandbox(); });

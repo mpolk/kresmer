@@ -6,13 +6,14 @@
  *                    Browser extension sandbox script
  ***************************************************************************/
 
-import Kresmer from 'kresmer';
+import Kresmer, { CSSDims } from 'kresmer';
 
 export const kresmer = new Kresmer("#kresmer", {
     isEditable: false,
     on: {
         "mounted": onMount,
-        "drawing-zoom": onDrawingZoom,
+        // "drawing-zoom": onDrawingZoom,
+        "drawing-dims": onDrawingDims,
     },
 });
 
@@ -23,6 +24,10 @@ function onMount(kresmer: Kresmer) {
 function onDrawingZoom(newZoomFactor: number, prevZoomFactor: number) { 
     window.parent.postMessage({ message: "drawing-zoom", newZoomFactor, prevZoomFactor }, '*');
 }//onDrawingZoom
+
+function onDrawingDims(newDims: CSSDims) { 
+    window.parent.postMessage({ message: "drawing-dims", newDims }, '*');
+}//onDrawingDims
 
 window.addEventListener("message", (event) => {
     switch (event.data.command) {

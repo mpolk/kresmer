@@ -1748,6 +1748,8 @@ export type DrawingProps = {
     backgroundColor?: string|undefined;
 }//DrawingProps
 
+export type CSSDims = {width: string, height: string}
+
 class UpdateDrawingPropsOp extends EditorOperation
 {
     constructor(private readonly kresmer: Kresmer, newProps: DrawingProps)
