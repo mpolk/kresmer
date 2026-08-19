@@ -37,39 +37,31 @@ window.addEventListener('message', (event) => {
             zoomFactor = event.data.zoomFactor;
             sendDrawingDataToSandbox();
             resizeSandboxToWindow();
-            resizeKresmerToSandbox();
-            break;
-        case 'drawing-zoom':
-            resizeSandboxToWindow();
             break;
         case "drawing-dims":
+            zoomFactor = event.data.zoomFactor;
             resizeSandboxToDrawingDims(event.data.newDims);
             break;
     }//switch
 });//window.addEventListener
 
-function sendDrawingDataToSandbox() {
+function sendDrawingDataToSandbox() 
+{
     sandboxIframe.contentWindow!.postMessage({
         command: 'load-drawing',
         drawingData,
     }, '*');
 }//sendDrawingDataToSandbox
 
-function resizeKresmerToSandbox()
-{
-    const mountingBox = sandboxIframe.getBoundingClientRect();
-    sandboxIframe.contentWindow!.postMessage({
-        command: 'resize',
-        mountingBox,
-    }, '*');
-}//resizeKresmerToSandbox
-
 function resizeSandboxToWindow() 
 {
-    const clientRect = document.body.getBoundingClientRect();
-    sandboxIframe.style.width = `${clientRect.width * zoomFactor}px`;
-    sandboxIframe.style.height = `${clientRect.height * zoomFactor}px`;
-    // resizeKresmerToSandbox();
+    const clientRect = {width: document.body.clientWidth, height: document.body.clientHeight};
+    sandboxIframe.style.width = `${clientRect.width /* * zoomFactor */}px`;
+    sandboxIframe.style.height = `${clientRect.height /* * zoomFactor */}px`;
+    sandboxIframe.contentWindow!.postMessage({
+        command: 'resize',
+        mountingBox: clientRect,
+    }, '*');
 }//resizeSandboxToWindow
 
 function resizeSandboxToDrawingDims(newDims: CSSDims)
@@ -78,4 +70,4 @@ function resizeSandboxToDrawingDims(newDims: CSSDims)
     sandboxIframe.style.height = newDims.height;
 }//resizeSandboxToDrawingDims
 
-window.addEventListener('resize', () => { resizeSandboxToWindow(); resizeKresmerToSandbox(); });
+window.addEventListener('resize', resizeSandboxToWindow);
