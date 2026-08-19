@@ -22,7 +22,7 @@
     "./packages/*"
   ],
   "devDependencies": {
-    "typedoc": "^0.28.15"
+    "typedoc": "^0.28.20"
   },
   "allowScripts": {
     "esbuild@0.25.12": true,
