@@ -268,6 +268,8 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Base drawing scale (not taking into account the zoom factor) */
     get baseScale() {
+        if (!this.rootSVG)
+            return undefined;
         const baseXScale = this.rootSVG.width.baseVal.value / this.logicalWidth / this.zoomFactor;
         const baseYScale = this.rootSVG.height.baseVal.value / this.logicalHeight / this.zoomFactor;
         return Math.min(baseXScale, baseYScale)
@@ -275,6 +277,8 @@ export default class Kresmer extends KresmerEventHooks {
 
     /** Drawing scale (visual) */
     get drawingScale() {
+        if (this.baseScale === undefined)
+            return undefined;
         return this.baseScale * this.zoomFactor;
     }//drawingScale
 
@@ -293,9 +297,10 @@ export default class Kresmer extends KresmerEventHooks {
     // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
     // it somehow helps to initialize the drawing dimensions (who knows why?)
 
-    protected notifyOfScaleChange = (prevScale: number) =>
+    protected notifyOfScaleChange = (prevScale: number|undefined) =>
     {
-        this.emit("drawing-scale", this.drawingScale, prevScale);
+        if (this.drawingScale !== undefined)
+            this.emit("drawing-scale", this.drawingScale, prevScale);
     }//notifyOfScaleChange
 
     // Sets or returns the drawing background image (if exists)

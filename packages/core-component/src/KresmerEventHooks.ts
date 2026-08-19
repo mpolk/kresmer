@@ -30,7 +30,7 @@ export class KresmerEventFormats  {
     "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
     "library-translation-requested":    (libName: string, language: string) => Promise<string|undefined>;
     "library-element-loaded":           (libName: string, element: ParsedLibraryNode, sourceCode: string) => void;
-    "drawing-scale":                    (newScale: number, prevScale: number) => void;
+    "drawing-scale":                    (newScale: number, prevScale: number|undefined) => void;
     "drawing-zoom":                     (newZoom: number, prevZoom: number) => void;
     "drawing-dims":                     (newDims: CSSDims, oldDims: CSSDims) => void;
     "drawing-mouse-enter":              () => void;
@@ -224,7 +224,7 @@ export default class KresmerEventHooks {
      * @param newScale A new scale value
      */
     @overridableHandler("drawing-scale")
-    protected onDrawingScale(newScale: number) {}
+    protected onDrawingScale(newScale: number, prevScale: number|undefined) {}
 
     /**
      * Is called when the drawing zoom factor change occurs

@@ -93,7 +93,7 @@ if (kresmer.backendConnection) {
 }//if
 
 statusBarData.serverURL = kresmer.backendConnection?.serverURL || "";
-statusBarData.drawingScale = kresmer.drawingScale;
+statusBarData.drawingScale = kresmer.drawingScale || 1;
 window.electronAPI.rulersShownOrHidden(kresmer.showRulers);
 window.electronAPI.gridShownOrHidden(kresmer.showGrid);
 statusBarData.autoAlignVertices = kresmer.autoAlignVertices;
@@ -778,7 +778,7 @@ appCommandExecutor.on("scale-drawing", direction => {
         case "-": kresmer.zoomFactor *= Math.SQRT1_2; break;
         case "+": kresmer.zoomFactor *= Math.SQRT2; break;
         case "0": kresmer.zoomFactor = 1; break;
-        case "1": kresmer.zoomFactor = 1 / kresmer.baseScale; break;
+        case "1": kresmer.zoomFactor = 1 / kresmer.baseScale!; break;
     }//switch
 });
 
