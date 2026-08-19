@@ -40,8 +40,7 @@ window.addEventListener('message', (event) => {
             resizeKresmerToSandbox();
             break;
         case 'drawing-zoom':
-            zoomFactor = event.data.newZoomFactor;
-            scaleSandbox(event.data.newZoomFactor / event.data.prevZoomFactor);
+            resizeSandboxToWindow();
             break;
         case "drawing-dims":
             resizeSandboxToDrawingDims(event.data.newDims);
@@ -78,14 +77,5 @@ function resizeSandboxToDrawingDims(newDims: CSSDims)
     sandboxIframe.style.width = newDims.width;
     sandboxIframe.style.height = newDims.height;
 }//resizeSandboxToDrawingDims
-
-function scaleSandbox(zoom: number) 
-{
-    resizeSandboxToWindow();
-    // const box = sandboxIframe.getBoundingClientRect();
-    // sandboxIframe.style.width = `${box.width * zoom}px`;
-    // sandboxIframe.style.height = `${box.height * zoom}px`;
-    // resizeKresmerToSandbox();
-}//scaleSandbox
 
 window.addEventListener('resize', () => { resizeSandboxToWindow(); resizeKresmerToSandbox(); });

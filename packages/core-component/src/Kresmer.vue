@@ -94,10 +94,10 @@
             height: zoomed(model.mountingHeight)
         }
     });
-    // watch(mountingDims, (newDims, oldDims) => {
-    //     if (newDims.width && newDims.height && oldDims.width && oldDims.height)
-    //         model.emit("drawing-dims", newDims as CSSDims, oldDims as CSSDims);
-    // });
+    watch(mountingDims, (newDims, oldDims) => {
+        if (newDims.width && newDims.height && oldDims.width && oldDims.height)
+            model.emit("drawing-dims", newDims as CSSDims, oldDims as CSSDims);
+    });
 
     const viewBox = computed(() => `0 0 ${model.logicalWidth} ${model.logicalHeight}`);
 
