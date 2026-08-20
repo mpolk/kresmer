@@ -1,7 +1,7 @@
 {
   "name": "kresmer-meta",
   "private": true,
-  "version": "0.19.4",
+  "version": "0.19.5",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "homepage": "https://github.com/mpolk/kresmer",
