@@ -1,7 +1,7 @@
 {
-  "name": "kresmer",
+  "name": "kresmer-meta",
   "private": true,
-  "version": "0.19.4",
+  "version": "0.19.5",
   "author": "Dmitriy Stepanenko <mpolk@sns.net.ua>",
   "description": "\"Kreslennya Merezh\" - network diagram editor and viewer: the standalone editor",
   "homepage": "https://github.com/mpolk/kresmer",
@@ -22,7 +22,7 @@
     "./packages/*"
   ],
   "devDependencies": {
-    "typedoc": "^0.28.15"
+    "typedoc": "^0.28.20"
   },
   "allowScripts": {
     "esbuild@0.25.12": true,
