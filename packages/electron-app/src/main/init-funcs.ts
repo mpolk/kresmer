@@ -267,7 +267,7 @@ export function loadInitialLibraries(): LibData
 /** Loads all the libraries found in the library directories */
 export function loadInitialDrawing(): string | undefined
 {
-    let dwgFile = drawingToAutoload;
+    let dwgFile = drawingToAutoload?.replace(/^file:\/\//, '');
     if (!dwgFile && localSettings.get("autoloadLastDrawing")) {
         dwgFile = recentDrawings.last;
     }//if
