@@ -7,7 +7,7 @@ export default defineManifest({
   "icons": {
     "256": "logo.png",
   },
-  "permissions": ["declarativeNetRequest", "tabs"],
+  "permissions": ["declarativeNetRequest", "declarativeNetRequestFeedback", "webRequest", "tabs"],
   "host_permissions": [
     "<all_urls>",
     "file:///*"
