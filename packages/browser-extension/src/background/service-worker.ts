@@ -8,9 +8,13 @@
 
 import browser from 'webextension-polyfill';
 
+const interceptionMarker = "in-brext";
+const ourMimeType = "application/x-kresmer-drawing";
+const ourFileType = ".kre";
+
 // Intercept opening files by their extension
 browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.url && changeInfo.url.endsWith('.kre') && !(new URL(changeInfo.url)).protocol.includes('-extension')) {
+    if (changeInfo.url && changeInfo.url.endsWith(ourFileType) && !(new URL(changeInfo.url)).protocol.includes('-extension')) {
         // Stop the current tab from loading the .kre file directly by navigating to a blank page first
         browser.tabs.update(tabId, { url: 'about:blank' });
 
@@ -34,7 +38,10 @@ browser.webRequest.onHeadersReceived.addListener(
 
         const mimeType = contentTypeHeader?.value?.split(';')[0].trim();
 
-        if (mimeType === 'application/x-kresmer-drawing') {
+        if (mimeType === ourMimeType) {
+            const cleanHeaders = details.responseHeaders?.filter(
+            (header) => header.name.toLowerCase() !== 'content-disposition'
+            ) || [];
 
             const viewerUrl = makeViewerURL(details.url);
             const ruleId = 2; // Unique ID for our rule
@@ -60,13 +67,37 @@ browser.webRequest.onHeadersReceived.addListener(
                 // Reload the tab with the original URL to make browser apply the new rule
                 browser.tabs.update(details.tabId, { url: details.url });
             });
-        }
+
+            return { responseHeaders: cleanHeaders };
+        }//if
     },
     { urls: ['<all_urls>'], types: ['main_frame'] }, // intercept only requests from the main frame
     ['responseHeaders']
 );
 
+
+(browser.downloads as any).onDeterminingFilename.addListener((downloadItem: browser.Downloads.DownloadItem, suggest: () => void) => {
+    // Проверяем, содержит ли URL маркер того, что файл уже открыт или должен быть открыт расширением
+    if (downloadItem.url.endsWith(ourFileType) || downloadItem.mime === ourMimeType) {
+
+        // Мгновенно отменяем загрузку. Окно ОС не успеет даже моргнуть!
+        browser.downloads.cancel(downloadItem.id).then(() => {
+            // Подчищаем историю, чтобы в списке загрузок не висел "сбой"
+            browser.downloads.erase({ id: downloadItem.id });
+        });
+
+        // Важно для API onDeterminingFilename: мы обязаны вызвать функцию suggest,
+        // чтобы разблокировать поток, даже если мы отменяем загрузку
+        suggest();
+        return;
+    }//if
+
+    // Если файл не наш, просто разрешаем browser продолжить стандартный процесс
+    suggest();
+});
+
+
 function makeViewerURL(url: string) {
-    return browser.runtime.getURL(`src/viewer.html?file=${encodeURIComponent(url)}&in-brext`);
+    return browser.runtime.getURL(`src/viewer.html?file=${encodeURIComponent(url)}&${interceptionMarker}`);
 }//makeViewerURL
 
