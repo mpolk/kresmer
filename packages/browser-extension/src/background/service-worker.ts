@@ -9,7 +9,7 @@
 import browser from 'webextension-polyfill';
 
 const interceptionMarker = "in-brext";
-const ourMimeType = "application/x-kresmer-drawing";
+const ourMimeTypes = ["application/x-kresmer-drawing", "image/kre+xml"];
 const ourFileType = ".kre";
 
 // Intercept opening files by their extension
@@ -38,7 +38,7 @@ browser.webRequest.onHeadersReceived.addListener(
 
         const mimeType = contentTypeHeader?.value?.split(';')[0].trim();
 
-        if (mimeType === ourMimeType) {
+        if (mimeType && ourMimeTypes.includes(mimeType)) {
             const cleanHeaders = details.responseHeaders?.filter(
             (header) => header.name.toLowerCase() !== 'content-disposition'
             ) || [];
@@ -76,23 +76,24 @@ browser.webRequest.onHeadersReceived.addListener(
 );
 
 
-(browser.downloads as any).onDeterminingFilename.addListener((downloadItem: browser.Downloads.DownloadItem, suggest: () => void) => {
-    // Проверяем, содержит ли URL маркер того, что файл уже открыт или должен быть открыт расширением
-    if (downloadItem.url.endsWith(ourFileType) || downloadItem.mime === ourMimeType) {
+(browser.downloads as any).onDeterminingFilename.addListener(
+    (downloadItem: browser.Downloads.DownloadItem, suggest: () => void) => 
+{
+    // Check that file is ours
+    if (downloadItem.url.endsWith(ourFileType) || (downloadItem.mime && ourMimeTypes.includes(downloadItem.mime))) {
 
-        // Мгновенно отменяем загрузку. Окно ОС не успеет даже моргнуть!
+        // Immediately cancel the download
         browser.downloads.cancel(downloadItem.id).then(() => {
             // Подчищаем историю, чтобы в списке загрузок не висел "сбой"
             browser.downloads.erase({ id: downloadItem.id });
         });
 
-        // Важно для API onDeterminingFilename: мы обязаны вызвать функцию suggest,
-        // чтобы разблокировать поток, даже если мы отменяем загрузку
+        // Unblock the process
         suggest();
         return;
     }//if
 
-    // Если файл не наш, просто разрешаем browser продолжить стандартный процесс
+    // If the file is not ours, just let the download continue
     suggest();
 });
 
