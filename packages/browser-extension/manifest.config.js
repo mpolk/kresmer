@@ -12,7 +12,8 @@ export default defineManifest({
         "declarativeNetRequestFeedback",
         "webRequest",
         "tabs",
-        "downloads"
+        "downloads",
+        "webNavigation"
     ],
     "host_permissions": [
         "<all_urls>",

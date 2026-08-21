@@ -13,16 +13,23 @@ const ourMimeTypes = ["application/x-kresmer-drawing", "image/kre+xml"];
 const ourFileType = ".kre";
 
 // Intercept opening files by their extension
-browser.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
-    if (changeInfo.url && changeInfo.url.endsWith(ourFileType) && !(new URL(changeInfo.url)).protocol.includes('-extension')) {
-        // Stop the current tab from loading the .kre file directly by navigating to a blank page first
-        browser.tabs.update(tabId, { url: 'about:blank' });
+browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
+    // Intercept the main frame only
+    if (details.frameId !== 0) return;
 
-        // Open the viewer page with the .kre file URL as a query parameter
-        const viewerUrl = makeViewerURL(changeInfo.url);
-        browser.tabs.update(tabId, { url: viewerUrl });
+    try {
+        const url = new URL(details.url);
+        if (url.searchParams.has(interceptionMarker)) return;
+
+        if (url.pathname.endsWith(ourFileType)) {
+            const viewerUrl = makeViewerURL(details.url);
+            await browser.tabs.update(details.tabId, { url: viewerUrl });
+        }//if
+    } catch (error) {
+        console.error('Error in webNavigation:', error);
     }
 });
+
 
 // Intercept opening files by their MIME-type
 browser.webRequest.onHeadersReceived.addListener(
@@ -55,7 +62,7 @@ browser.webRequest.onHeadersReceived.addListener(
                         priority: 2, // higher priority than for the common rules
                         action: {
                             type: 'redirect',
-                            redirect: { url: viewerUrl.toString() }
+                            redirect: { url: viewerUrl }
                         },
                         condition: {
                             urlFilter: details.url,
@@ -76,19 +83,23 @@ browser.webRequest.onHeadersReceived.addListener(
 );
 
 
+// Prevent browser from downloading our file
 (browser.downloads as any).onDeterminingFilename.addListener(
     (downloadItem: browser.Downloads.DownloadItem, suggest: () => void) => 
 {
-    // Check that file is ours
-    if (downloadItem.url.endsWith(ourFileType) || (downloadItem.mime && ourMimeTypes.includes(downloadItem.mime))) {
+    // Make sure that the file is ours
+    const shouldIntercept = 
+        (downloadItem.url.endsWith(ourFileType) || (downloadItem.mime && ourMimeTypes.includes(downloadItem.mime))) &&
+        downloadItem.state === "in_progress" && !downloadItem.url.startsWith("file://");
+    if (shouldIntercept) {
 
         // Immediately cancel the download
         browser.downloads.cancel(downloadItem.id).then(() => {
-            // Подчищаем историю, чтобы в списке загрузок не висел "сбой"
+            // Cleanup the history from the failed entry
             browser.downloads.erase({ id: downloadItem.id });
         });
 
-        // Unblock the process
+        // Unblock the thread
         suggest();
         return;
     }//if
