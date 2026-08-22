@@ -47,7 +47,7 @@ browser.webRequest.onHeadersReceived.addListener(
 
         if (mimeType && ourMimeTypes.includes(mimeType)) {
             const cleanHeaders = details.responseHeaders?.filter(
-            (header) => header.name.toLowerCase() !== 'content-disposition'
+                (header) => header.name.toLowerCase() !== 'content-disposition'
             ) || [];
 
             const viewerUrl = makeViewerURL(details.url);

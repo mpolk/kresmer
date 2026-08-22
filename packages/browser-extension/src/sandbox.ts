@@ -10,6 +10,7 @@ import Kresmer, { CSSDims } from 'kresmer';
 
 export const kresmer = new Kresmer("#kresmer", {
     isEditable: false,
+    snappingGranularity: 5,
     on: {
         "mounted": onMount,
         "drawing-dims": onDrawingDims,
@@ -38,6 +39,26 @@ window.addEventListener("message", (event) => {
             const mountingBox = event.data.mountingBox as DOMRect;
             kresmer.mountingWidth = mountingBox.width;
             kresmer.mountingHeight = mountingBox.height;
+            break;
+        case "toggle-grid":
+            kresmer.snappingGranularity = 5;
+            kresmer.showGrid = !kresmer.showGrid;
+            break;
+        case "toggle-rulers":
+            kresmer.showRulers = !kresmer.showRulers;
+            break;
+    }//switch
+});
+
+
+window.addEventListener("keypress", (event) => {
+    switch (event.key) {
+        case "g": case "G":
+            kresmer.snappingGranularity = 5;
+            kresmer.showGrid = !kresmer.showGrid;
+            break;
+        case "r": case "R":
+            kresmer.showRulers = !kresmer.showRulers;
             break;
     }//switch
 });

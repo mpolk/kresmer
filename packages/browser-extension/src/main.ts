@@ -71,3 +71,14 @@ function resizeSandboxToDrawingDims(newDims: CSSDims)
 }//resizeSandboxToDrawingDims
 
 window.addEventListener('resize', resizeSandboxToWindow);
+
+window.addEventListener("keypress", (event) => {
+    switch (event.key) {
+        case "g": case "G":
+            sandboxIframe.contentWindow?.postMessage({command: "toggle-grid"});
+            break;
+        case "r": case "R":
+            sandboxIframe.contentWindow?.postMessage({command: "toggle-rulers"});
+            break;
+    }//switch
+});
