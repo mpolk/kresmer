@@ -41,7 +41,6 @@ window.addEventListener("message", (event) => {
             kresmer.mountingHeight = mountingBox.height;
             break;
         case "toggle-grid":
-            kresmer.snappingGranularity = 5;
             kresmer.showGrid = !kresmer.showGrid;
             break;
         case "toggle-rulers":
@@ -54,7 +53,6 @@ window.addEventListener("message", (event) => {
 window.addEventListener("keypress", (event) => {
     switch (event.key) {
         case "g": case "G":
-            kresmer.snappingGranularity = 5;
             kresmer.showGrid = !kresmer.showGrid;
             break;
         case "r": case "R":
