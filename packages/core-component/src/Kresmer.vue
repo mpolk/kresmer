@@ -378,7 +378,7 @@
         .grid {
             pointer-events: none;
             stroke: lightgray; stroke-width: 1px;
-            vector-effect: non-scaling-stroke;
+            //vector-effect: non-scaling-stroke;
         }
     }
 </style>
