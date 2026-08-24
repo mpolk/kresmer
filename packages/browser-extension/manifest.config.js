@@ -31,4 +31,11 @@ export default defineManifest({
         "extension_pages": "script-src 'self'; object-src 'self';",
         "sandbox": "sandbox allow-scripts; script-src 'self' 'unsafe-eval';"
     },
+    web_accessible_resources: [
+        {
+          resources: ["src/viewer.html", "assets/*", "**/*.js", "**/*.css", "**/*.kre"],
+          matches: ["http://*/*", "https://*/*", "file:///*"],
+          use_dynamic_url: false
+        }
+      ],
 });

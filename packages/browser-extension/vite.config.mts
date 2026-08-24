@@ -3,37 +3,53 @@ import vue from '@vitejs/plugin-vue';
 import { crx } from '@crxjs/vite-plugin';
 import manifest from './manifest.config.js';
 // import i18nextLoader from 'vite-plugin-i18next-loader';
-// import vueDevTools from 'vite-plugin-vue-devtools';
 
-// const fixManifestPlugin = () => {
-//   return {
-//     name: 'fix-manifest-crxjs',
-//     transformCrxManifest(manifest: any) {
-//       if (manifest.web_accessible_resources) {
-//         manifest.web_accessible_resources = manifest.web_accessible_resources.map((resource: any) => {
-//           if (resource.matches && resource.matches.includes('<all_urls>')) {
-//             // Заменяем опасный <all_urls> на безопасные веб-протоколы
-//             resource.matches = ['http://*/*', 'https://*/*'];
-//           }
-//           return resource;
-//         });
-//       }
-//       return manifest;
-//     },
-//   };
-// }
+const fixManifestPlugin = (targetBrowser: string) => {
+  return {
+    name: 'fix-manifest-crxjs',
+    transformCrxManifest(manifest: any) {
+      // 1. Настройка фонового скрипта для Firefox
+      if (targetBrowser === 'firefox') {
+        if (manifest.background) {
+          // Firefox требует массив скриптов вместо service_worker
+          // manifest.background.scripts = ['src/background/index.ts'];
+          delete manifest.background.service_worker;
+          // manifest.background.type = 'module';
+        }
+        
+        // Firefox в MV3 требует явного указания ID расширения для некоторых функций
+        manifest.browser_specific_settings = {
+          gecko: {
+            id: "kresmer@mpolk.in.ua", // придумайте любой ID в формате email
+            strict_min_version: "109.0"
+          }
+        };
+      }
 
-// https://vitejs.dev/config/
+      // 2. Настройка веб-доступных ресурсов (наш старый фикс)
+      // manifest.web_accessible_resources = [
+      //   {
+      //     resources: ["src/viewer.html", "assets/*", "**/*.js", "**/*.css"],
+      //     matches: ["http://*/*", "https://*/*", "file:///*"],
+      //     use_dynamic_url: false
+      //   }
+      // ];
+
+      return manifest;
+    },
+  };
+}
+
+const targetBrowser = process.env.TARGET_BROWSER || 'chrome';
 export default defineConfig({
   plugins: [
     vue(),
     crx({manifest}),
-    // fixManifestPlugin(),
+    fixManifestPlugin(targetBrowser),
     // i18nextLoader({
     //   paths: ['./locales'], 
     //   namespaceResolution: 'basename',
     // }),
-    // vueDevTools(),
   ],
   base: './',
 
@@ -45,11 +61,15 @@ export default defineConfig({
   },
 
   build: {
+    outDir: `dist/${targetBrowser}`,
     rollupOptions: {
       input: {
         app: "src/viewer.html",
         sandbox: "src/sandbox.html",
       },
+      // output: {
+      //   dir: `dist/${targetBrowser}`,
+      // }
     },
     sourcemap: true, 
     // minify: false 

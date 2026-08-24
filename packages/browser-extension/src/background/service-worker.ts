@@ -84,29 +84,29 @@ browser.webRequest.onHeadersReceived.addListener(
 
 
 // Prevent browser from downloading our file
-(browser.downloads as any).onDeterminingFilename.addListener(
-    (downloadItem: browser.Downloads.DownloadItem, suggest: () => void) => 
-{
-    // Make sure that the file is ours
-    const shouldIntercept = 
-        (downloadItem.url.endsWith(ourFileType) || (downloadItem.mime && ourMimeTypes.includes(downloadItem.mime))) &&
-        downloadItem.state === "in_progress" && !downloadItem.url.startsWith("file://");
-    if (shouldIntercept) {
+(browser.downloads as any).onDeterminingFilename?.addListener(
+    (downloadItem: browser.Downloads.DownloadItem, suggest: ()=>void) => 
+    {
+        // Make sure that the file is ours
+        const shouldIntercept = 
+            (downloadItem.url.endsWith(ourFileType) || (downloadItem.mime && ourMimeTypes.includes(downloadItem.mime))) &&
+            downloadItem.state === "in_progress" && !downloadItem.url.startsWith("file://");
 
-        // Immediately cancel the download
-        browser.downloads.cancel(downloadItem.id).then(() => {
-            // Cleanup the history from the failed entry
-            browser.downloads.erase({ id: downloadItem.id });
-        });
+            if (shouldIntercept) {
+                // Immediately cancel the download
+                browser.downloads.cancel(downloadItem.id).then(() => {
+                    // Cleanup the history from the failed entry
+                    browser.downloads.erase({ id: downloadItem.id });
+                });
+                // Unblock the thread
+                suggest();
+                return;
+            }//if
 
-        // Unblock the thread
+        // If the file is not ours, just let the download continue
         suggest();
-        return;
-    }//if
-
-    // If the file is not ours, just let the download continue
-    suggest();
-});
+    }
+);
 
 
 function makeViewerURL(url: string) {
