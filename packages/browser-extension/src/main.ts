@@ -11,8 +11,16 @@ import { CSSDims } from 'kresmer';
 
 const urlParams = new URLSearchParams(window.location.search);
 const fileUrl = urlParams.get('file');
+const isFirefox = typeof browser.runtime.getBrowserInfo === 'function';
+// Firefox never allows an extension page (moz-extension://...) to fetch() a
+// file:// URL directly - not even with "Access local files" granted. For local
+// files there, content/injector.ts reads the already-rendered raw text itself
+// (same-origin) and pushes it to us via postMessage (command: 'load-drawing')
+// instead. So we must not attempt fetch() ourselves in that case.
+const isLocalFileInFirefox = isFirefox && fileUrl?.startsWith('file:');
+
 let drawingData: string | undefined;
-if (fileUrl) {
+if (fileUrl && !isLocalFileInFirefox) {
     try {
         const response = await fetch(fileUrl);
         drawingData = await response.text();
@@ -29,13 +37,25 @@ if (!fileUrl) {
 }//if
 
 let zoomFactor = 1;
+let sandboxIsMounted = false;
 
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
+    if (event.data.command === 'load-drawing') {
+        // Drawing text pushed by content/injector.ts for a local Firefox file.
+        drawingData = event.data.drawingData;
+        if (sandboxIsMounted) sendDrawingDataToSandbox();
+        return;
+    }//if
+
     switch (event.data.message) {
         case 'kresmer-mounted':
             zoomFactor = event.data.zoomFactor;
-            sendDrawingDataToSandbox();
+            sandboxIsMounted = true;
+            // If we're waiting on injector.ts, drawingData may not have arrived
+            // yet - sendDrawingDataToSandbox() will be called from the
+            // 'load-drawing' branch above once it does.
+            if (drawingData !== undefined || !isLocalFileInFirefox) sendDrawingDataToSandbox();
             resizeSandboxToWindow();
             break;
         case "drawing-dims":
