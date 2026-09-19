@@ -49,37 +49,44 @@ browser.webRequest.onHeadersReceived.addListener(
         const mimeType = contentTypeHeader?.value?.split(';')[0].trim();
 
         if (mimeType && ourMimeTypes.includes(mimeType)) {
+
+            const viewerUrl = makeViewerURL(details.url);
+
+            if (isFirefox) {
+                // Firefox поддерживает redirectUrl прямо из blocking onHeadersReceived.
+                // Это прерывает исходный канал ДО того, как браузер решит, что делать
+                // с неизвестным ему MIME-типом — поэтому диалог "Сохранить файл" уже
+                // не появляется.
+                return { redirectUrl: viewerUrl };
+            }//if
+
             const cleanHeaders = details.responseHeaders?.filter(
                 (header) => header.name.toLowerCase() !== 'content-disposition'
             ) || [];
             cleanHeaders.push({ name: 'Content-Disposition', value: 'inline' });
 
-            const viewerUrl = makeViewerURL(details.url);
-
             // Create a dynamic rule exactly for this request
-            if (!isFirefox) {
-                const ruleId = 2; // Unique ID for our rule
-                browser.declarativeNetRequest.updateDynamicRules({
-                    removeRuleIds: [ruleId],
-                    addRules: [
-                        {
-                            id: ruleId,
-                            priority: 2, // higher priority than for the common rules
-                            action: {
-                                type: 'redirect',
-                                redirect: { url: viewerUrl }
-                            },
-                            condition: {
-                                urlFilter: details.url,
-                                resourceTypes: ['main_frame']
-                            }
+            const ruleId = 2; // Unique ID for our rule
+            browser.declarativeNetRequest.updateDynamicRules({
+                removeRuleIds: [ruleId],
+                addRules: [
+                    {
+                        id: ruleId,
+                        priority: 2, // higher priority than for the common rules
+                        action: {
+                            type: 'redirect',
+                            redirect: { url: viewerUrl }
+                        },
+                        condition: {
+                            urlFilter: details.url,
+                            resourceTypes: ['main_frame']
                         }
-                    ]
-                }).then(() => {
-                    // Reload the tab with the original URL to make browser apply the new rule
-                    browser.tabs.update(details.tabId, { url: details.url });
-                });
-            }//if
+                    }
+                ]
+            }).then(() => {
+                // Reload the tab with the original URL to make browser apply the new rule
+                browser.tabs.update(details.tabId, { url: details.url });
+            });
 
             return { responseHeaders: cleanHeaders };
         }//if
