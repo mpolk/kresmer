@@ -16,6 +16,8 @@ const fixManifestPlugin = (targetBrowser: string) => {
           delete manifest.background.service_worker;
           // manifest.background.type = 'module';
         }
+
+        manifest.permissions.push("webRequestBlocking");
         
         // Firefox в MV3 требует явного указания ID расширения для некоторых функций
         manifest.browser_specific_settings = {
@@ -24,16 +26,25 @@ const fixManifestPlugin = (targetBrowser: string) => {
             strict_min_version: "109.0"
           }
         };
-      }
+
+        manifest.content_scripts = [
+            {
+                matches: ["file:///**/*.kre"],
+                js: ["src/content/injector.ts"],
+                run_at: "document_end"
+            }
+        ];
+
+      }//if Firefox
 
       // 2. Настройка веб-доступных ресурсов (наш старый фикс)
-      // manifest.web_accessible_resources = [
-      //   {
-      //     resources: ["src/viewer.html", "assets/*", "**/*.js", "**/*.css"],
-      //     matches: ["http://*/*", "https://*/*", "file:///*"],
-      //     use_dynamic_url: false
-      //   }
-      // ];
+      manifest.web_accessible_resources = [
+        {
+          resources: ["src/viewer.html", "assets/*", "**/*.js", "**/*.css"],
+          matches: ["http://*/*", "https://*/*", "file:///*"],
+          // use_dynamic_url: false
+        }
+      ];
 
       return manifest;
     },

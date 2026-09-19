@@ -7,18 +7,21 @@
  ***************************************************************************/
 
 import browser from 'webextension-polyfill';
+import { makeViewerURL, interceptionMarker } from '../utils';   
 
-const interceptionMarker = "in-brext";
 const ourMimeTypes = ["application/x-kresmer-drawing", "image/kre+xml"];
 const ourFileType = ".kre";
+const isFirefox = typeof browser.runtime.getBrowserInfo === 'function';
 
 // Intercept opening files by their extension
 browser.webNavigation.onBeforeNavigate.addListener(async (details) => {
     // Intercept the main frame only
     if (details.frameId !== 0) return;
+    const url = new URL(details.url);
+    if (url.protocol === "file:" && isFirefox)
+        return;
 
     try {
-        const url = new URL(details.url);
         if (url.searchParams.has(interceptionMarker)) return;
 
         if (url.pathname.endsWith(ourFileType)) {
@@ -49,37 +52,40 @@ browser.webRequest.onHeadersReceived.addListener(
             const cleanHeaders = details.responseHeaders?.filter(
                 (header) => header.name.toLowerCase() !== 'content-disposition'
             ) || [];
+            cleanHeaders.push({ name: 'Content-Disposition', value: 'inline' });
 
             const viewerUrl = makeViewerURL(details.url);
-            const ruleId = 2; // Unique ID for our rule
 
             // Create a dynamic rule exactly for this request
-            browser.declarativeNetRequest.updateDynamicRules({
-                removeRuleIds: [ruleId],
-                addRules: [
-                    {
-                        id: ruleId,
-                        priority: 2, // higher priority than for the common rules
-                        action: {
-                            type: 'redirect',
-                            redirect: { url: viewerUrl }
-                        },
-                        condition: {
-                            urlFilter: details.url,
-                            resourceTypes: ['main_frame']
+            if (!isFirefox) {
+                const ruleId = 2; // Unique ID for our rule
+                browser.declarativeNetRequest.updateDynamicRules({
+                    removeRuleIds: [ruleId],
+                    addRules: [
+                        {
+                            id: ruleId,
+                            priority: 2, // higher priority than for the common rules
+                            action: {
+                                type: 'redirect',
+                                redirect: { url: viewerUrl }
+                            },
+                            condition: {
+                                urlFilter: details.url,
+                                resourceTypes: ['main_frame']
+                            }
                         }
-                    }
-                ]
-            }).then(() => {
-                // Reload the tab with the original URL to make browser apply the new rule
-                browser.tabs.update(details.tabId, { url: details.url });
-            });
+                    ]
+                }).then(() => {
+                    // Reload the tab with the original URL to make browser apply the new rule
+                    browser.tabs.update(details.tabId, { url: details.url });
+                });
+            }//if
 
             return { responseHeaders: cleanHeaders };
         }//if
     },
     { urls: ['<all_urls>'], types: ['main_frame'] }, // intercept only requests from the main frame
-    ['responseHeaders']
+    isFirefox ? ['responseHeaders', 'blocking'] : ['responseHeaders']
 );
 
 
@@ -107,9 +113,4 @@ browser.webRequest.onHeadersReceived.addListener(
         suggest();
     }
 );
-
-
-function makeViewerURL(url: string) {
-    return browser.runtime.getURL(`src/viewer.html?file=${encodeURIComponent(url)}&${interceptionMarker}`);
-}//makeViewerURL
 
