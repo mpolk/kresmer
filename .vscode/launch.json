@@ -18,12 +18,12 @@
         "name": "Debug Main Process",
         "type": "node",
         "request": "launch", 
-        "cwd": "${workspaceFolder}",
-        "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron",
+        "cwd": "${workspaceFolder}/packages/electron-app",
+        "runtimeExecutable": "${workspaceFolder}/packages/electron-app/node_modules/.bin/electron",
         "windows": {
-            "runtimeExecutable": "${workspaceFolder}/node_modules/.bin/electron.cmd"
+            "runtimeExecutable": "${workspaceFolder}/packages/electron-app/node_modules/.bin/electron.cmd"
         },
-        "args": ["."],
+        "args": [".", "file://${workspaceFolder}/example.kre"],
         "outputCapture": "std"
         },
         {

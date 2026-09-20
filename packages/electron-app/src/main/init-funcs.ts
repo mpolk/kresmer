@@ -19,7 +19,7 @@ import { openUrlWithSystemBrowser } from './misc-ops';
 import { LibData } from "kresmer";
 
 export let defaultDrawingFileName: string|undefined;
-export let drawingToAutoload: string;
+let drawingToAutoload: string;
 
 /** Parses the command line and save its parameters to the global vars */
 export function parseCommandLine()
@@ -268,6 +268,7 @@ export function loadInitialLibraries(): LibData
 export function loadInitialDrawing(): string | undefined
 {
     let dwgFile = drawingToAutoload?.replace(/^file:\/\//, '');
+    console.debug(`loadInitialDrawing: drawingToAutoload=${drawingToAutoload}, dwgFile=${dwgFile}`);
     if (!dwgFile && localSettings.get("autoloadLastDrawing")) {
         dwgFile = recentDrawings.last;
     }//if
