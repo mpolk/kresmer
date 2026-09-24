@@ -10,6 +10,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:chrome": "tsc -b && vite build",
     "build:firefox": "tsc -b && cross-env TARGET_BROWSER=firefox vite build",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"

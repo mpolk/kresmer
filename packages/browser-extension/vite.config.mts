@@ -1,3 +1,11 @@
+/***************************************************************************\
+ *                            🕸 KresMer 🕸
+ *       "Kreslennya Merezh" - network diagram editor and viewer
+ *      Copyright (C) 2022-2026 Dmitriy Stepanenko. All Rights Reserved.
+ * -----------------------------------------------------------------------
+ *                  Browser extension build configuration
+ ***************************************************************************/
+
 import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { crx } from '@crxjs/vite-plugin';
@@ -8,21 +16,17 @@ const fixManifestPlugin = (targetBrowser: string) => {
   return {
     name: 'fix-manifest-crxjs',
     transformCrxManifest(manifest: any) {
-      // 1. Настройка фонового скрипта для Firefox
       if (targetBrowser === 'firefox') {
         if (manifest.background) {
-          // Firefox требует массив скриптов вместо service_worker
-          // manifest.background.scripts = ['src/background/index.ts'];
+          // Firefox requires an array of scripts instead of a service_worker
           delete manifest.background.service_worker;
-          // manifest.background.type = 'module';
-        }
+        }//if
 
         manifest.permissions.push("webRequestBlocking");
         
-        // Firefox в MV3 требует явного указания ID расширения для некоторых функций
         manifest.browser_specific_settings = {
           gecko: {
-            id: "kresmer@mpolk.in.ua", // придумайте любой ID в формате email
+            id: "kresmer@mpolk.in.ua",
             strict_min_version: "109.0"
           }
         };
@@ -34,17 +38,7 @@ const fixManifestPlugin = (targetBrowser: string) => {
                 run_at: "document_end"
             }
         ];
-
       }//if Firefox
-
-      // 2. Настройка веб-доступных ресурсов (наш старый фикс)
-      manifest.web_accessible_resources = [
-        {
-          resources: ["src/viewer.html", "assets/*", "**/*.js", "**/*.css"],
-          matches: ["http://*/*", "https://*/*", "file:///*"],
-          // use_dynamic_url: false
-        }
-      ];
 
       return manifest;
     },
@@ -78,16 +72,12 @@ export default defineConfig({
         app: "src/viewer.html",
         sandbox: "src/sandbox.html",
       },
-      // output: {
-      //   dir: `dist/${targetBrowser}`,
-      // }
     },
     sourcemap: true, 
     // minify: false 
   },
 
   server: {
-    // watch: {awaitWriteFinish: {stabilityThreshold: 1000}},
     cors: {
       origin: [
         /chrome-extension:\/\//,
