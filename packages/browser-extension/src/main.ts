@@ -41,13 +41,6 @@ let sandboxIsMounted = false;
 
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
-    if (event.data.command === 'load-drawing') {
-        // Drawing text pushed by content/injector.ts for a local Firefox file.
-        drawingData = event.data.drawingData;
-        if (sandboxIsMounted) sendDrawingDataToSandbox();
-        return;
-    }//if
-
     switch (event.data.message) {
         case 'kresmer-mounted':
             zoomFactor = event.data.zoomFactor;

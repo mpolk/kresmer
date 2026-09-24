@@ -30,14 +30,6 @@ const fixManifestPlugin = (targetBrowser: string) => {
             strict_min_version: "109.0"
           }
         };
-
-        manifest.content_scripts = [
-            {
-                matches: ["file:///**/*.kre"],
-                js: ["src/content/injector.ts"],
-                run_at: "document_end"
-            }
-        ];
       }//if Firefox
 
       return manifest;
