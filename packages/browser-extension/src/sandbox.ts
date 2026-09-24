@@ -18,11 +18,11 @@ export const kresmer = new Kresmer("#kresmer", {
 });
 
 function onMount(kresmer: Kresmer) {
-    window.parent.postMessage({ message: 'kresmer-mounted', zoomFactor: kresmer.zoomFactor }, '*'); 
+    window.parent.postMessage({ message: 'kresmer-mounted' }, '*'); 
 }//onMount
 
 function onDrawingDims(newDims: CSSDims) { 
-    window.parent.postMessage({ message: "drawing-dims", newDims, zoomFactor: kresmer.zoomFactor }, '*');
+    window.parent.postMessage({ message: "drawing-dims", newDims }, '*');
 }//onDrawingDims
 
 window.addEventListener("message", (event) => {

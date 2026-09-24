@@ -36,23 +36,21 @@ if (!fileUrl) {
     document.title = fileName;
 }//if
 
-let zoomFactor = 1;
 let sandboxIsMounted = false;
 
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
     switch (event.data.message) {
         case 'kresmer-mounted':
-            zoomFactor = event.data.zoomFactor;
             sandboxIsMounted = true;
             // If we're waiting on injector.ts, drawingData may not have arrived
             // yet - sendDrawingDataToSandbox() will be called from the
             // 'load-drawing' branch above once it does.
-            if (drawingData !== undefined || !isLocalFileInFirefox) sendDrawingDataToSandbox();
+            if (drawingData !== undefined || !isLocalFileInFirefox) 
+                sendDrawingDataToSandbox();
             resizeSandboxToWindow();
             break;
         case "drawing-dims":
-            zoomFactor = event.data.zoomFactor;
             resizeSandboxToDrawingDims(event.data.newDims);
             break;
     }//switch
