@@ -3,7 +3,8 @@ import tasks from "./cypress/tasks.config";
 
 export default defineConfig({
     projectId: "Kresmer",
-    allowCypressEnv: false,
+    visibilityStrategy: "legacy", // workaround for some bug here: 
+    // https://docs.cypress.io/guides/references/configuration#Visibility-Strategy
     component: {
         devServer: {
             framework: "vue",

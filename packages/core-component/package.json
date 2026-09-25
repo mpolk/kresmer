@@ -58,7 +58,7 @@
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
     "chai-colors": "^1.0.1",
-    "cypress": "^15.21.1",
+    "cypress": "^16.1.0",
     "diff-js-xml": "^1.0.8",
     "eslint": "^10.11.0",
     "eslint-plugin-vue": "^10.11.1",
