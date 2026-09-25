@@ -154,7 +154,7 @@ export default class LibraryParser {
     {
         for (let i = 0; i < root.children.length; i++) {
             const rawNode = root.children[i]
-            const parsedNode = this.parseLibrarySubnode(rawNode);
+            const parsedNode = this.parseLibrarySubnode(rawNode, libName ?? undefined);
             if (parsedNode) {
                 this.kresmer.emit("library-element-loaded", libName ?? "", parsedNode, rawNode.outerHTML)
                 yield parsedNode
@@ -163,12 +163,12 @@ export default class LibraryParser {
     }//parseLibraryNode
 
 
-    private parseLibrarySubnode(node: Element): ParsedLibraryNode
+    private parseLibrarySubnode(node: Element, libName: string|undefined): ParsedLibraryNode
     {
         switch (node.nodeName) {
             case "component-class":
                 try {
-                    return this.parseComponentClassNode(node);
+                    return this.parseComponentClassNode(node, libName);
                 } catch (exc) {
                     if (exc instanceof ParsingException)
                         return exc;
@@ -178,7 +178,7 @@ export default class LibraryParser {
                 break;
             case "link-class": case "link-bundle-class":
                 try {
-                    return this.parseLinkClassNode(node);
+                    return this.parseLinkClassNode(node, libName);
                 } catch (exc) {
                     if (exc instanceof ParsingException)
                         return exc;
@@ -188,7 +188,7 @@ export default class LibraryParser {
                 break;
             case "area-class":
                 try {
-                    return this.parseAreaClassNode(node);
+                    return this.parseAreaClassNode(node, libName);
                 } catch (exc) {
                     if (exc instanceof ParsingException)
                         return exc;
@@ -198,18 +198,20 @@ export default class LibraryParser {
                 break;
             case "defs": {
                     const name = node.getAttribute("name");
+                    const origin = libName ?? node.getAttribute("origin") ?? undefined;
                     if (!name)
                         return new LibraryParsingException("Defs should have name");
-                    return new DefsLibNode(node, name, this.getVersion(node), node.outerHTML);
+                    return new DefsLibNode(node, name, this.getVersion(node), origin, node.outerHTML);
                 }
                 break;
             case "style": {
                     const name = node.getAttribute("name");
+                    const origin = libName ?? node.getAttribute("origin") ?? undefined;
                     if (!name)
                         return new LibraryParsingException("Defs should have name");
                     const style = this.parseCSS(node.innerHTML);
                     if (style)
-                        return new StyleLibNode(style, name, this.getVersion(node), node.outerHTML);
+                        return new StyleLibNode(style, name, this.getVersion(node), origin, node.outerHTML);
                 }
                 break;
             case "import":
@@ -235,7 +237,7 @@ export default class LibraryParser {
         return node.hasAttribute("version") ? Number(node.getAttribute("version")) : 1;
     }//getVersion
 
-    private parseComponentClassNode(node: Element)
+    private parseComponentClassNode(node: Element, libName: string|undefined)
     {
         const className = node.getAttribute("name");
         const localizedName = node.getAttributeNS(this.kresmer.uiLanguage, "name") ?? undefined;
@@ -245,6 +247,7 @@ export default class LibraryParser {
             throw new LibraryParsingException("Component class without the name");
 
         const version = this.getVersion(node);
+        const origin = libName ?? node.getAttribute("origin") ?? undefined;
         let baseClass: NetworkComponentClass | undefined;
         let embeddedElementClasses: NetworkComponentClass[] | undefined;
         if (node.hasAttribute("embeds")) {
@@ -337,7 +340,8 @@ export default class LibraryParser {
         }//if
 
 
-        return new NetworkComponentClass(className, {version, baseClass, baseClassPropBindings, baseClassChildNodes, 
+        return new NetworkComponentClass(className, {version, origin, 
+                                                     baseClass, baseClassPropBindings, baseClassChildNodes, 
                                                      embeddedElementClasses, referencedClasses,
                                                      styleBaseClasses, propsBaseClasses, template, 
                                                      props, exceptProps, computedProps, computedPropsBaseClasses, 
@@ -347,7 +351,7 @@ export default class LibraryParser {
     }//parseComponentClassNode
 
 
-    private parseLinkClassNode(node: Element)
+    private parseLinkClassNode(node: Element, libName: string|undefined)
     {
         const className = node.getAttribute("name");
         const localizedName = node.getAttributeNS(this.kresmer.uiLanguage, "name") ?? undefined;
@@ -357,6 +361,7 @@ export default class LibraryParser {
             throw new LibraryParsingException("Link class without the name");
 
         const version = this.getVersion(node);
+        const origin = libName ?? node.getAttribute("origin") ?? undefined;
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptComputedProps: string[] | undefined;
@@ -425,7 +430,8 @@ export default class LibraryParser {
         }//if
 
         const ctor = node.nodeName === "link-bundle-class" ? LinkBundleClass : NetworkLinkClass;
-        const linkClass = new ctor(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
+        const linkClass = new ctor(className, {version, origin,
+                                               baseClass, styleBaseClasses, propsBaseClasses, props, exceptProps,
                                                referencedClasses, baseClassPropBindings, computedProps, computedPropsBaseClasses, 
                                                functions, functionsBaseClasses, defs, style, category, 
                                                sourceCode: node.outerHTML,
@@ -434,7 +440,7 @@ export default class LibraryParser {
     }//parseLinkClassNode
 
 
-    private parseAreaClassNode(node: Element)
+    private parseAreaClassNode(node: Element, libName: string|undefined)
     {
         const className = node.getAttribute("name");
         const localizedName = node.getAttributeNS(this.kresmer.uiLanguage, "name") ?? undefined;
@@ -444,6 +450,7 @@ export default class LibraryParser {
             throw new LibraryParsingException("Area class without the name");
 
         const version = this.getVersion(node);
+        const origin = libName ?? node.getAttribute("origin") ?? undefined;
         let props: DrawingElementClassProps = {};
         let exceptProps: string[] | undefined;
         let exceptComputedProps: string[] | undefined;
@@ -521,7 +528,8 @@ export default class LibraryParser {
             style = this.parseCSS("", [baseClass]);
         }//if
 
-        const areaClass = new DrawingAreaClass(className, {version, baseClass, styleBaseClasses, propsBaseClasses, props, 
+        const areaClass = new DrawingAreaClass(className, {version, origin, 
+                                                           baseClass, styleBaseClasses, propsBaseClasses, props, 
                                                            exceptProps, referencedClasses,
                                                            baseClassPropBindings, computedProps, computedPropsBaseClasses,
                                                            functions, functionsBaseClasses,
@@ -975,11 +983,13 @@ export class ImportStatement {
 }//importStatement
 
 export class DefsLibNode {
-    constructor(readonly data: Element, readonly name: string, readonly version: number, readonly sourceCode: string) {}
+    constructor(readonly data: Element, readonly name: string, readonly version: number, 
+        readonly origin: string|undefined, readonly sourceCode: string) {}
 }//DefsLibNode
 
 export class StyleLibNode {
-    constructor(readonly data: PostCSSRoot, readonly name: string, readonly version: number, readonly sourceCode: string) {}
+    constructor(readonly data: PostCSSRoot, readonly name: string, readonly version: number, 
+        readonly origin: string|undefined, readonly sourceCode: string) {}
 }//StyleLibNode
 
 export type ParsedLibraryNode =

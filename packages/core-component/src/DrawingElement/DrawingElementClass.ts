@@ -29,6 +29,7 @@ export default abstract class DrawingElementClass {
      */
     public constructor(name: string, params?: {
         version?: number,
+        origin?: string,
         baseClass?: DrawingElementClass,
         referencedClasses?: DrawingElementClass[],
         styleBaseClasses?: DrawingElementClass[],
@@ -51,6 +52,7 @@ export default abstract class DrawingElementClass {
         this.name = name;
         this.localizedName = params?.localizedName;
         this.version = params?.version ?? 1;
+        this.origin = params?.origin;
         this.baseClass = params?.baseClass;
         this.referencedClasses = new Set(params?.referencedClasses);
         this.styleBaseClasses = params?.styleBaseClasses;
@@ -115,6 +117,8 @@ export default abstract class DrawingElementClass {
     localizedName?: string;
     /** Class code version */
     readonly version: number;
+    /** Class origin (library name) */
+    readonly origin?: string;
     /** Base class (for the element as a whole) */
     readonly baseClass?: DrawingElementClass;
     /** Base class prop values set from the "extends" clause */
