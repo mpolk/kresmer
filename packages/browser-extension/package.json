@@ -1,6 +1,6 @@
 {
   "name": "kresmer-brext",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Kresmer browser extension",
   "main": "dist/index.js",
   "keywords": [],
