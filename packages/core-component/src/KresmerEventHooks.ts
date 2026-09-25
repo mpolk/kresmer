@@ -18,10 +18,11 @@ import {toCamelCase} from "./Utils";
 import DrawingArea, { AreaBorder } from "./DrawingArea/DrawingArea";
 import AreaVertex from "./DrawingArea/AreaVertex";
 import { ParsedLibraryNode } from "./loaders/LibraryParser";
+import Kresmer, {CSSDims} from "./Kresmer";
 
 /** A list of Kresmer events along with corresponding handler definitions */
 export class KresmerEventFormats  {
-    "mounted":                          () => void;
+    "mounted":                          (kresmer: Kresmer) => void;
     "error":                            (error: KresmerException) => void;
     "got-dirty":                        (isDirty: boolean) => void;
     "open-url":                         (url: string, target?: string) => boolean;
@@ -29,8 +30,9 @@ export class KresmerEventFormats  {
     "library-import-requested":         (libName: string, fileName?: string) => Promise<string|undefined>;
     "library-translation-requested":    (libName: string, language: string) => Promise<string|undefined>;
     "library-element-loaded":           (libName: string, element: ParsedLibraryNode, sourceCode: string) => void;
-    "drawing-scale":                    (newScaleFactor: number) => void;
+    "drawing-scale":                    (newScale: number, prevScale: number|undefined) => void;
     "drawing-zoom":                     (newZoom: number, prevZoom: number) => void;
+    "drawing-dims":                     (newDims: CSSDims, oldDims: CSSDims) => void;
     "drawing-mouse-enter":              () => void;
     "drawing-mouse-leave":              () => void;
     "canvas-click":                     (nativeEvent: MouseEvent) => void;
@@ -222,7 +224,7 @@ export default class KresmerEventHooks {
      * @param newScale A new scale value
      */
     @overridableHandler("drawing-scale")
-    protected onDrawingScale(newScale: number) {}
+    protected onDrawingScale(newScale: number, prevScale: number|undefined) {}
 
     /**
      * Is called when the drawing zoom factor change occurs
@@ -231,6 +233,14 @@ export default class KresmerEventHooks {
      */
     @overridableHandler("drawing-zoom")
     protected onDrawingZoom(newZoom: number, prevZoom: number) {}
+
+    /**
+     * Is called when the drawing dimensions changed
+     * @param newDims A new dimensions
+     * @param prevDims Dimensions before change
+     */
+    @overridableHandler("drawing-dims")
+    protected onDrawingDims(newDims: CSSDims, prevDims: CSSDims) {}
 
     /**
      * Is called when the mouse cursor enters a drawing visible area
@@ -662,7 +672,6 @@ export default class KresmerEventHooks {
     protected onConnectionPointRightClick(connectionPoint: ConnectionPoint) {}
 
 }//KresmerEventHooks
-
 
 // Decorator for the event handling methods defined in this class
 function overridableHandler<Event extends KresmerEvent>(event: Event)

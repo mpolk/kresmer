@@ -8,7 +8,7 @@
 <*************************************************************************** -->
 <script lang="ts">
     import { ref, computed, provide, watch, nextTick, StyleValue, inject, onMounted } from 'vue';
-    import Kresmer, {KresmerException, KresmerInitOptions} from './Kresmer';
+    import Kresmer, {KresmerException, KresmerInitOptions, CSSDims} from './Kresmer';
     import NetworkComponentHolder from './NetworkComponent/NetworkComponentHolder.vue';
     import TransformBoxFilters from './Transform/TransformBoxFilters.vue';
     import ConnectionPointFilters from './ConnectionPoint/ConnectionPointFilters.vue';
@@ -38,7 +38,7 @@
 
     onMounted(() => {
         model._setRoot(rootSVG.value!, rootSVG.value!.parentElement!);
-        model.emit("mounted");
+        model.emit("mounted", model);
     });
 
     provide(Kresmer.ikKresmer, model);
@@ -53,7 +53,8 @@
             return undefined;
 
         const n = parseFloat(matches[1]);
-        return `${n * model.zoomFactor}${matches[2]}`;
+        const units = matches[2] || "px";
+        return `${n * model.zoomFactor}${units}`;
     }//zoomed
 
     function zoomedOffset(size: string|number)
@@ -92,6 +93,10 @@
             width: zoomed(model.mountingWidth),
             height: zoomed(model.mountingHeight)
         }
+    });
+    watch(mountingDims, (newDims, oldDims) => {
+        if (newDims.width && newDims.height && oldDims.width && oldDims.height)
+            model.emit("drawing-dims", newDims as CSSDims, oldDims as CSSDims);
     });
 
     const viewBox = computed(() => `0 0 ${model.logicalWidth} ${model.logicalHeight}`);
@@ -373,7 +378,7 @@
         .grid {
             pointer-events: none;
             stroke: lightgray; stroke-width: 1px;
-            vector-effect: non-scaling-stroke;
+            //vector-effect: non-scaling-stroke;
         }
     }
 </style>

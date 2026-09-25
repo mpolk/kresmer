@@ -238,13 +238,15 @@ export default class Kresmer extends KresmerEventHooks {
     /** Sets the drawing width within the browser client area */
     get mountingWidth() {return this.mountingBox.width}
     set mountingWidth(newWidth) {
+        const prevScale = this.drawingScale;
         this.mountingBox.width = newWidth;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     get mountingHeight() {return this.mountingBox.height}
     set mountingHeight(newHeight) {
+        const prevScale = this.drawingScale;
         this.mountingBox.height = newHeight;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     protected readonly mountingBox: {width: number|string, height: number|string} = reactive({width: "100%", height: "100%"});
 
@@ -252,15 +254,54 @@ export default class Kresmer extends KresmerEventHooks {
      * (component sizes are measuring relative to this sizes) */
     get logicalWidth() {return this.logicalBox.width}
     set logicalWidth(newWidth) {
+        const prevScale = this.drawingScale;
         this.logicalBox.width = newWidth;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     get logicalHeight() {return this.logicalBox.height}
     set logicalHeight(newHeight) {
+        const prevScale = this.drawingScale;
         this.logicalBox.height = newHeight;
-        nextTick(this.notifyOfScaleChange);
+        nextTick(() => { this.notifyOfScaleChange(prevScale) });
     }
     protected readonly logicalBox = reactive({width: 1000, height: 1000});
+
+    /** Base drawing scale (not taking into account the zoom factor) */
+    get baseScale() {
+        if (!this.rootSVG)
+            return undefined;
+        const baseXScale = this.rootSVG.width.baseVal.value / this.logicalWidth / this.zoomFactor;
+        const baseYScale = this.rootSVG.height.baseVal.value / this.logicalHeight / this.zoomFactor;
+        return Math.min(baseXScale, baseYScale)
+    }//baseScale
+
+    /** Drawing scale (visual) */
+    get drawingScale() {
+        if (this.baseScale === undefined)
+            return undefined;
+        return this.baseScale * this.zoomFactor;
+    }//drawingScale
+
+    /** A zoom factor for visual scaling */
+    get zoomFactor() {return this._zoomFactor.value}
+    set zoomFactor(newValue: number) {
+        const prevScale = this.drawingScale;
+        const prevZoom = this._zoomFactor.value;
+        this._zoomFactor.value = newValue;
+        nextTick(() => {
+            this.emit("drawing-zoom", newValue, prevZoom);
+            this.notifyOfScaleChange(prevScale);
+        });
+    }
+    private _zoomFactor = ref(0.999999999); 
+    // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
+    // it somehow helps to initialize the drawing dimensions (who knows why?)
+
+    protected notifyOfScaleChange = (prevScale: number|undefined) =>
+    {
+        if (this.drawingScale !== undefined)
+            this.emit("drawing-scale", this.drawingScale, prevScale);
+    }//notifyOfScaleChange
 
     // Sets or returns the drawing background image (if exists)
     readonly backgroundImage = reactive(new BackgroundImageData);
@@ -269,37 +310,6 @@ export default class Kresmer extends KresmerEventHooks {
     get backgroundColor() {return this._backgroundColor.value}
     set backgroundColor(newColor: string) {this._backgroundColor.value = newColor}
     private readonly _backgroundColor = ref("#ffffff");
-
-    /** Drawing scale (visual) */
-    get drawingScale() {
-        return this.baseScale * this.zoomFactor;
-    }//drawingScale
-
-    /** A zoom factor for visual scaling*/
-    get zoomFactor() {return this._zoomFactor.value}
-    set zoomFactor(newValue: number) {
-        const prevZoom = this._zoomFactor.value;
-        this._zoomFactor.value = newValue;
-        nextTick(() => {
-            this.emit("drawing-zoom", newValue, prevZoom);
-            this.notifyOfScaleChange();
-        });
-    }
-    private _zoomFactor = ref(0.999999999); 
-    // initially zoomFactor set to some value near 1 and then is reset to exact "1" dynamically
-    // it somehow helps to initialize the drawing dimensions (who knows why?)
-
-    protected notifyOfScaleChange = () =>
-    {
-        this.emit("drawing-scale", this.drawingScale);
-    }//notifyOfScaleChange
-
-    /** Base drawing scale (not taking into account the zoom factor) */
-    get baseScale() {
-        const baseXScale = this.rootSVG.width.baseVal.value / this.logicalWidth / this.zoomFactor;
-        const baseYScale = this.rootSVG.height.baseVal.value / this.logicalHeight / this.zoomFactor;
-        return Math.min(baseXScale, baseYScale)
-    }//baseScale
 
     /** Raised error counter */
     get errorCount() {return this._errorCount}
@@ -449,7 +459,6 @@ export default class Kresmer extends KresmerEventHooks {
         const injectedTemplateFunctions = this.injectedTemplateFunctions;
         this.app.component(componentClass.vueName, 
         {
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
             setup(props: Record<string, Prop<unknown>>) {
 
                 const computedProps: Record<string, ComputedRef> = {};
@@ -1743,6 +1752,8 @@ export type DrawingProps = {
     /** The drawing background color */
     backgroundColor?: string|undefined;
 }//DrawingProps
+
+export type CSSDims = {width: string, height: string}
 
 class UpdateDrawingPropsOp extends EditorOperation
 {
