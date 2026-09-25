@@ -17,7 +17,10 @@
     "i18n": "npm run i18n -w e-kresmer",
     "lint-all": "pnpm run -r --no-bail lint",
     "lint": "echo There is nothing to lint in the root directory. Run lint-all instead",
-    "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts"
+    "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts",
+    "brext:chrome": "pnpm -C packages/browser-extension run build:chrome",
+    "brext:firefox": "pnpm -C packages/browser-extension run build:firefox",
+    "brext": "pnpm run brext:chrome && pnpm run brext:firefox"
   },
   "workspaces": [
     "./packages/*"
