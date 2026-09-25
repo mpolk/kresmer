@@ -22,8 +22,8 @@ importers:
         version: 0.12.0
     devDependencies:
       '@crxjs/vite-plugin':
-        specifier: ^2.7.1
-        version: 2.7.1(supports-color@10.2.2)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0)(sass@1.105.0)(yaml@2.9.1))
+        specifier: ^3.0.0
+        version: 3.0.0(supports-color@10.2.2)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0)(sass@1.105.0)(yaml@2.9.1))
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.11.0(jiti@2.7.0)(supports-color@10.2.2))
@@ -420,8 +420,8 @@ packages:
   '@croct/json@2.1.0':
     resolution: {integrity: sha512-UrWfjNQVlBxN+OVcFwHmkjARMW55MBN04E9KfGac8ac8z1QnFVuiOOFtMWXCk3UwsyRqhsNaFoYLZC+xxqsVjQ==}
 
-  '@crxjs/vite-plugin@2.7.1':
-    resolution: {integrity: sha512-mn77Lc1ilIvbO7ZqijjNy+AnRgc8srkfHOtV6HrGrYZgRe8YI3aIcSjHJCU5Kq75SejEZGrdAoHdn3gBGeKpEA==}
+  '@crxjs/vite-plugin@3.0.0':
+    resolution: {integrity: sha512-86InOwnuCC6WPAC6/fsZYAzrmxbWn4qLtrchA6iApJ+CoWugHbyWJlsav1ZH2quw+Laq+1T6LBHMjYwxEVtyEQ==}
     peerDependencies:
       vite: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0
 
@@ -5066,7 +5066,7 @@ snapshots:
 
   '@croct/json@2.1.0': {}
 
-  '@crxjs/vite-plugin@2.7.1(supports-color@10.2.2)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0)(sass@1.105.0)(yaml@2.9.1))':
+  '@crxjs/vite-plugin@3.0.0(supports-color@10.2.2)(vite@8.3.1(@types/node@26.6.2)(jiti@2.7.0)(sass@1.105.0)(yaml@2.9.1))':
     dependencies:
       '@webcomponents/custom-elements': 1.6.0
       acorn-walk: 8.3.5
