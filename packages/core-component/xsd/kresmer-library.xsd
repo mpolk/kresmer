@@ -39,6 +39,7 @@
                         <xs:group ref="svg-elements"/>
                         <xs:attribute name="name" use="required"/>
                         <xs:attribute name="version" />
+                        <xs:attribute name="origin" />
                     </xs:complexType>
                 </xs:element>
                             
@@ -56,6 +57,7 @@
 
                         <xs:attribute name="name" use="required" />
                         <xs:attribute name="version" />
+                        <xs:attribute name="origin" />
                         <xs:attribute name="category" />
                         <xs:attribute name="embeds"/>
                     </xs:complexType>
@@ -78,6 +80,7 @@
                 
                         <xs:attribute name="name" use="required" />
                         <xs:attribute name="version" />
+                        <xs:attribute name="origin" />
                         <xs:attribute name="category" />
                     </xs:complexType>
                 </xs:element>
@@ -88,6 +91,7 @@
                             <xs:extension base="xs:string">
                                 <xs:attribute name="name" use="required"/>
                                 <xs:attribute name="version" />
+                                <xs:attribute name="origin" />
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>
@@ -116,6 +120,7 @@
 
         <xs:attribute name="name" use="required" />
         <xs:attribute name="version" />
+        <xs:attribute name="origin" />
         <xs:attribute name="category" />
     </xs:complexType>
 
