@@ -14,6 +14,7 @@ export const kresmer = new Kresmer("#kresmer", {
     on: {
         "mounted": onMount,
         "drawing-dims": onDrawingDims,
+        "library-import-requested": onLibraryImportRequested,
     },
 });
 
@@ -24,6 +25,19 @@ function onMount(kresmer: Kresmer) {
 function onDrawingDims(newDims: CSSDims) { 
     window.parent.postMessage({ message: "drawing-dims", newDims }, '*');
 }//onDrawingDims
+
+async function onLibraryImportRequested(libraryName: string, fileName?: string|undefined): Promise<string | undefined> {
+    window.parent.postMessage({ message: "library-import-requested", libraryName, fileName }, '*');
+    return new Promise<string | undefined>((resolve) => {
+        const handleMessage = (event: MessageEvent) => {
+            if (event.data.message === "library-import-response") {
+                window.removeEventListener("message", handleMessage);
+                resolve(event.data.libraryData);
+            }//if
+        };
+        window.addEventListener("message", handleMessage);
+    });
+}//onLibraryImportRequested
 
 window.addEventListener("message", (event) => {
     switch (event.data.command) {
