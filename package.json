@@ -7,9 +7,15 @@
   "homepage": "https://github.com/mpolk/kresmer",
   "scripts": {
     "component:build": "npm run vite:build -w kresmer",
+    "component:lint": "pnpm -C packages/core-component run lint",
     "app:dev": "npm run app:dev -w e-kresmer",
     "app:preview": "npm run app:preview -w e-kresmer",
     "app:build": "npm run app:build -w e-kresmer",
+    "app:lint": "pnpm -C packages/electron-app run lint",
+    "brext:chrome": "pnpm -C packages/browser-extension run build:chrome",
+    "brext:firefox": "pnpm -C packages/browser-extension run build:firefox",
+    "brext:build": "pnpm run brext:chrome && pnpm run brext:firefox",
+    "brext:lint": "pnpm -C packages/browser-extension run lint",
     "test": "npm run test -w kresmer",
     "cypress:run": "npm run cypress:run -w kresmer",
     "cypress:open": "npm run cypress:open -w kresmer",
@@ -17,10 +23,7 @@
     "i18n": "npm run i18n -w e-kresmer",
     "lint-all": "pnpm run -r --no-bail lint",
     "lint": "echo There is nothing to lint in the root directory. Run lint-all instead",
-    "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts",
-    "brext:chrome": "pnpm -C packages/browser-extension run build:chrome",
-    "brext:firefox": "pnpm -C packages/browser-extension run build:firefox",
-    "brext": "pnpm run brext:chrome && pnpm run brext:firefox"
+    "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts"
   },
   "workspaces": [
     "./packages/*"

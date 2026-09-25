@@ -97,6 +97,7 @@ browser.webRequest.onHeadersReceived.addListener(
 
 
 // Prevent browser from downloading our file
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (browser.downloads as any).onDeterminingFilename?.addListener(
     (downloadItem: browser.Downloads.DownloadItem, suggest: ()=>void) => 
     {

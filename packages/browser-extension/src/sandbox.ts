@@ -18,6 +18,7 @@ export const kresmer = new Kresmer("#kresmer", {
     },
 });
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function onMount(kresmer: Kresmer) {
     window.parent.postMessage({ message: 'kresmer-mounted' }, '*'); 
 }//onMount
@@ -41,19 +42,21 @@ async function onLibraryImportRequested(libraryName: string, fileName?: string|u
 
 window.addEventListener("message", (event) => {
     switch (event.data.command) {
-        case 'load-drawing':
-            const drawingData = event.data.drawingData;
-            if (drawingData) {
-                kresmer.loadDrawing(drawingData);
-            } else {
-                console.warn('No drawing data received.');
+        case 'load-drawing': {
+                const drawingData = event.data.drawingData;
+                if (drawingData) {
+                    kresmer.loadDrawing(drawingData);
+                } else {
+                    console.warn('No drawing data received.');
+                }
+                break;
             }
-            break;
-        case 'resize':
-            const mountingBox = event.data.mountingBox as DOMRect;
-            kresmer.mountingWidth = mountingBox.width;
-            kresmer.mountingHeight = mountingBox.height;
-            break;
+        case 'resize': {
+                const mountingBox = event.data.mountingBox as DOMRect;
+                kresmer.mountingWidth = mountingBox.width;
+                kresmer.mountingHeight = mountingBox.height;
+                break;
+            }
         case "toggle-grid":
             kresmer.showGrid = !kresmer.showGrid;
             break;

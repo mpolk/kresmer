@@ -33,13 +33,11 @@ if (!drawingUrl) {
     document.title = fileName;
 }//if
 
-let sandboxIsMounted = false;
 
 const sandboxIframe = document.getElementById('sandbox') as HTMLIFrameElement;
 window.addEventListener('message', (event) => {
     switch (event.data.message) {
         case 'kresmer-mounted':
-            sandboxIsMounted = true;
             if (drawingData !== undefined || !isLocalFileInFirefox) 
                 sendDrawingDataToSandbox();
             resizeSandboxToWindow();

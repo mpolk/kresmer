@@ -269,7 +269,7 @@ export default abstract class Vertex {
         const successor = this.nextNeighbour;
         const sucPos = successor?.coords;
 
-        let newAnchor: VertexAnchor|null = null;
+        let newAnchor: VertexAnchor|null;
         if (!predecessor && !successor) {
             newAnchor = null;
         } else if (!predecessor) {
