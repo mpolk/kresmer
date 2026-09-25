@@ -133,7 +133,7 @@
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
     "concurrently": "^10.0.5",
-    "electron": "^43.7.5",
+    "electron": "^44.4.5",
     "electron-builder": "^26.15.3",
     "eslint": "^10.11.0",
     "eslint-plugin-vue": "^10.11.1",
