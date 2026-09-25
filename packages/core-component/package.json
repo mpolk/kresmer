@@ -45,32 +45,33 @@
     ]
   },
   "dependencies": {
-    "postcss": "^8.5.26",
-    "uuid": "^14.0.1",
-    "vue": "^3.5.41"
+    "postcss": "^8.5.28",
+    "uuid": "^14.0.2",
+    "vue": "^3.5.43"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@rushstack/eslint-patch": "^1.16.1",
-    "@types/node": "^26.2.0",
+    "@types/node": "^26.6.2",
     "@types/uuid": "^10.0.0",
-    "@typescript-eslint/eslint-plugin": "^8.67.0",
-    "@vitejs/plugin-vue": "^6.0.8",
+    "@typescript-eslint/eslint-plugin": "^8.70.1",
+    "@typescript-eslint/parser": "^8.70.1",
+    "@vitejs/plugin-vue": "^6.0.9",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
     "chai-colors": "^1.0.1",
-    "cypress": "^15.20.1",
+    "cypress": "^15.21.1",
     "diff-js-xml": "^1.0.8",
-    "eslint": "^10.8.1",
-    "eslint-plugin-vue": "^10.10.0",
-    "globals": "^17.11.0",
+    "eslint": "^10.11.0",
+    "eslint-plugin-vue": "^10.11.1",
+    "globals": "^17.12.0",
     "npm-run-all": "^4.1.5",
-    "sass": "^1.102.0",
+    "sass": "^1.105.0",
     "typescript": "^6.0.3",
-    "vite": "^8.2.1",
+    "vite": "^8.3.0",
     "vite-plugin-css-injected-by-js": "^5.0.2",
-    "vite-plugin-dts": "^5.0.3",
+    "vite-plugin-dts": "^5.1.1",
     "vue-eslint-parser": "^10.4.1",
-    "vue-tsc": "^3.3.10"
+    "vue-tsc": "^3.3.11"
   }
 }
