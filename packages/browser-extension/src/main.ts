@@ -16,6 +16,11 @@ const isFirefox = typeof browser.runtime.getBrowserInfo === 'function';
 // file:// URL directly - not even with "Access local files" granted
 const isLocalFileInFirefox = isFirefox && drawingUrl?.startsWith('file:');
 
+let libraryPaths = ["lib"];
+try {
+    ({libraryPaths} = await browser.storage.local.get("libraryPaths") as {libraryPaths: string[]});
+} catch  {/* ignore */}
+
 let drawingData: string | undefined;
 if (drawingUrl && !isLocalFileInFirefox) {
     try {
@@ -65,22 +70,29 @@ async function importLibrary(libraryName: string, fileName?: string|undefined)
     if (!fileName) {
         fileName = `${libraryName}.krel`;
     }//if
-    const filePath = `lib/${fileName}`;
 
     const libraryUrl = new URL(drawingUrl!);
-    libraryUrl.pathname = libraryUrl.pathname.replace(/[^/]*$/, filePath);
     let libraryData: string | undefined;
-    try {
-        const response = await fetch(libraryUrl);
-        libraryData = await response.text();
-    } catch (error) {
-        console.error('Could not load library:', error);
-    }//catch
+    const stem = libraryUrl.pathname.replace(/[^/]*$/, '');
+
+    for (const path of libraryPaths) {
+        const filePath = `${path}/${fileName}`;
+        libraryUrl.pathname = `${stem}/${filePath}`;
+        try {
+            const response = await fetch(libraryUrl);
+            libraryData = await response.text();
+            break;
+        } catch { /* continue */ }
+    }//for
     
-    sandboxIframe.contentWindow!.postMessage({
-        message: "library-import-response",
-        libraryData,
-    }, '*');
+    if (!libraryData) {
+        console.error(`Could not load the library "${libraryName}" from any of the paths: ${libraryPaths.join(', ')}`);
+    } else {
+        sandboxIframe.contentWindow!.postMessage({
+            message: "library-import-response",
+            libraryData,
+        }, '*');
+    }//if
 }//importLibrary
 
 
