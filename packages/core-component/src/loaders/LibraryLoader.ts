@@ -78,7 +78,10 @@ export default class LibraryLoader
             } else if (element instanceof StyleLibNode) {
                 if (!this.kresmer.globalStyles.has(element.name) || this.kresmer.globalStyles.get(element.name)!.version < element.version) {
                     this.kresmer.globalStyles.set(element.name, 
-                        {data: this.scopeStyles(element.data, undefined, false), version: element.version, sourceCode: element.sourceCode});
+                        {
+                            data: this.scopeStyles(element.data, undefined, false), 
+                            version: element.version, origin: element.origin, sourceCode: element.sourceCode
+                        });
                 }//if
 
             } else if (element instanceof ImportStatement) {
@@ -195,7 +198,10 @@ export default class LibraryLoader
             } else if (element instanceof StyleLibNode) {
                 if (this.shouldOverrideWithEmbedded(this.kresmer.globalStyles.get(element.name), element)) {
                     this.kresmer.globalStyles.set(element.name, 
-                        {data: this.scopeStyles(element.data, undefined, false), version: element.version, sourceCode: element.sourceCode});
+                        {
+                            data: this.scopeStyles(element.data, undefined, false), 
+                            version: element.version, origin: element.origin, sourceCode: element.sourceCode
+                        });
                 }//if
 
             } else {

@@ -144,11 +144,11 @@ export default class Kresmer extends KresmerEventHooks {
     /** A symbolic key for the Kresmer instance injection */
     static readonly ikKresmer = Symbol() as InjectionKey<Kresmer>;
     /** Global SVG Defs */
-    public readonly globalDefs = reactive(new Map<string, {data: Template, version: number, sourceCode: string}>());
+    public readonly globalDefs = reactive(new Map<string, GlobalSVGDef>());
     // /** SVG Defs collected from drawing element classes */
     // public readonly classDefs: Template[] = [];
     /** CSS styles collected from drawing element classes */
-    public globalStyles = reactive(new Map<string, {data: PostCSSRoot, version: number, sourceCode: string}>());
+    public globalStyles = reactive(new Map<string, GlobalStyle>());
     /** CSS styles collected from drawing element classes */
     public classStyles: PostCSSRoot[] = reactive([]);
 
@@ -1928,6 +1928,12 @@ export const enum LibDataPriority {
     preferEmbedded = "preferEmbedded",
     useVersioning = "useVersioning",
 }//LibDataPriority
+
+/** A data structure for storing a global SVG definition */
+export type GlobalSVGDef = {data: Template, version: number, origin: string|undefined, sourceCode: string};
+
+/** A data structure for storing a global CSS style */
+export type GlobalStyle = {data: PostCSSRoot, version: number, origin: string|undefined, sourceCode: string};
 
 // Re-export child classes to API
 export {default as KresmerVue} from "./Kresmer.vue";

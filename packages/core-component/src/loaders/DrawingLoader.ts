@@ -170,8 +170,10 @@ export default class DrawingLoader {
 
         if (this.kresmer.embedLibDataInDrawing) {
             this.libraryToXML(formatter);
-            formatter.addLine();
+        } else {
+            this.libraryImportsToXML(formatter);
         }//if
+        formatter.addLine();
 
         for (const area of this.kresmer.areas.sorted.values()) {
             area.toXML(formatter);
@@ -244,6 +246,43 @@ export default class DrawingLoader {
         return formatter;
     }//libraryToXML
 
+
+    private libraryImportsToXML(formatter: XMLFormatter): XMLFormatter
+    {
+        const libNames = new Set<string>();
+
+        for (const def of this.kresmer.globalDefs.values()) {
+            const origin = def.origin;
+            origin && libNames.add(origin);
+        }//for
+
+        for (const style of this.kresmer.globalStyles.values()) {
+            const origin = style.origin;
+            origin && libNames.add(origin);
+        }//for
+        
+        for (const controller of this.kresmer.networkComponents.values()) {
+            const origin = controller.component.getClass().origin;
+            origin && libNames.add(origin);
+        }//for
+
+        for (const link of this.kresmer.links.values()) {
+            const origin = link.getClass().origin;
+            origin && libNames.add(origin);
+        }//for
+
+        for (const area of this.kresmer.areas.values()) {
+            const origin = area.getClass().origin;
+            origin && libNames.add(origin);
+        }//for
+
+        for (const libName of libNames) {
+            const importTag = new XMLTag("import", ["library", libName]);
+            formatter.addTag(importTag);
+        }//for
+
+        return formatter;
+    }//libraryImportsToXML
 
     public saveLibraryData(indentLevel?: number): string
     {

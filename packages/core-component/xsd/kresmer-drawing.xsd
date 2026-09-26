@@ -15,6 +15,13 @@
             <xs:sequence>
                 <xs:element name="library" xmlns="kresmer-library" type="library" minOccurs="0"/>
                 <xs:choice maxOccurs="unbounded">
+            
+                    <xs:element name="import">
+                        <xs:complexType>
+                            <xs:attribute name="library" use="required"/>
+                            <xs:attribute name="file-name"/>
+                        </xs:complexType>
+                    </xs:element>
 
                     <xs:element name="component">
                         <xs:complexType>
