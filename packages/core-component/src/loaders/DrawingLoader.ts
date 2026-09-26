@@ -12,6 +12,9 @@ import NetworkComponentController from "../NetworkComponent/NetworkComponentCont
 import NetworkLink from "../NetworkLink/NetworkLink";
 import DrawingArea from "../DrawingArea/DrawingArea";
 import XMLFormatter, { XMLTag } from "../XMLFormatter";
+import { ImportStatement } from "./LibraryParser";
+import { LibraryImportException } from "../KresmerException";
+import LibraryLoader from "./LibraryLoader";
 
 
 export default class DrawingLoader {
@@ -111,6 +114,23 @@ export default class DrawingLoader {
                     await this.kresmer.backendConnection?.onDrawingAreaLoaded(area);
                 }//if
                 this.kresmer.addArea(area);
+
+            } else if (element instanceof ImportStatement) {
+                if (!this.kresmer.isLibraryLoaded(element.libName)) {
+                    const importHandler = (libName: string, libFile: string | undefined) => 
+                        this.kresmer.emit("library-import-requested", libName, libFile);
+                    const translationHandler = (libName: string, language: string) => 
+                        this.kresmer.emit("library-translation-requested", libName, language);
+
+                    const importedLibData = await importHandler(element.libName, element.fileName);
+                    if (!importedLibData)
+                        this.kresmer.raiseError(new LibraryImportException({libName: element.libName, fileName: element.fileName}));
+                    else {
+                        const loader = new LibraryLoader(this.kresmer);
+                        await loader._loadLibrary(importedLibData, importHandler, translationHandler);
+                        console.debug(`  Library "${element.libName}" - imported`);
+                    }//if
+                }//if
             } else {
                 this.kresmer.raiseError(element);
                 wereErrors = true;

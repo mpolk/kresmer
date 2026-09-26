@@ -39,7 +39,7 @@ export default class LibraryLoader
     }//loadLibrary
 
 
-    private async _loadLibrary(libData: string, 
+    public async _loadLibrary(libData: string, 
                                importHandler: (libName: string, fileName?: string) 
                                     => Promise<string|string[]|undefined>,
                                translationHandler: (libName: string, language: string, fileName?: string) 

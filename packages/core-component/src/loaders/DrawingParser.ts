@@ -20,6 +20,7 @@ import KresmerException, { KresmerExceptionSeverity, ParsingException } from "..
 import {toCamelCase} from "../Utils";
 import LinkBundle from "../NetworkLink/LinkBundle";
 import LibraryLoader from "./LibraryLoader";
+import { ImportStatement } from "./LibraryParser";
 import DrawingArea, { AreaBorderInitParams } from '../DrawingArea/DrawingArea';
 import DrawingAreaClass from '../DrawingArea/DrawingAreaClass';
 import { AreaVertexGeometry, AreaVertexInitParams } from "../DrawingArea/AreaVertex";
@@ -68,6 +69,13 @@ export default class DrawingParser {
         for (let i = 0; i < root.children.length; i++) {
             const node = root.children[i];
             switch (node.nodeName) {
+                case "import":
+                    if (node.hasAttribute("library"))
+                        yield new ImportStatement(node.getAttribute("library")!, node.getAttribute("file-name") ?? undefined);
+                    else
+                        yield new DrawingParsingException(
+                            `Import statement without a "library" attribute`);
+                break;
                 case "library": {
                         const libraryLoader = new LibraryLoader(this.kresmer);
                         libraryLoader.loadEmbeddedLibrary(node);
@@ -643,11 +651,12 @@ export class DrawingHeaderData {
 }//DrawingHeaderData
 
 export type ParsedNode = 
-    DrawingHeaderData |
-    NetworkComponentController |
-    NetworkLink |
-    DrawingArea |
-    ParsingException
+    | DrawingHeaderData
+    | ImportStatement
+    | NetworkComponentController
+    | NetworkLink
+    | DrawingArea
+    | ParsingException
     ;
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
