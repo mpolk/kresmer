@@ -215,6 +215,40 @@ export default abstract class DrawingElementClass {
     }//toXML
 
 
+    /** Collects the origins of the libraries used by this class and its descendants */
+    collectLibraryOrigins(libNames: Set<string>): void
+    {
+        for (const embedded of this.referencedClasses) {
+            embedded.collectLibraryOrigins(libNames);
+        }//for
+        if (this.baseClass)
+            this.baseClass.collectLibraryOrigins(libNames);
+        if (this.styleBaseClasses) {
+            for (const base of this.styleBaseClasses) {
+                base.collectLibraryOrigins(libNames);
+            }//for
+        }//if
+        if (this.propsBaseClasses) {
+            for (const base of this.propsBaseClasses) {
+                base.collectLibraryOrigins(libNames);
+            }//for
+        }//if
+        if (this.computedPropsBaseClasses) {
+            for (const base of this.computedPropsBaseClasses) {
+                base.collectLibraryOrigins(libNames);
+            }//for
+        }//if
+        if (this.functionsBaseClasses) {
+            for (const base of this.functionsBaseClasses) {
+                base.collectLibraryOrigins(libNames);
+            }//for
+        }//if
+
+        if (this.origin)
+            libNames.add(this.origin);
+    }//collectLibraryOrigins
+
+
     public applyTranslation(translation: DrawingElementClassTranslation)
     {
         if (translation.name)

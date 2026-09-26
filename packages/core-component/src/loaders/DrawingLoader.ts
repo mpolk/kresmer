@@ -260,20 +260,17 @@ export default class DrawingLoader {
             const origin = style.origin;
             origin && libNames.add(origin);
         }//for
-        
+
         for (const controller of this.kresmer.networkComponents.values()) {
-            const origin = controller.component.getClass().origin;
-            origin && libNames.add(origin);
+            controller.component.getClass().collectLibraryOrigins(libNames);
         }//for
 
         for (const link of this.kresmer.links.values()) {
-            const origin = link.getClass().origin;
-            origin && libNames.add(origin);
+            link.getClass().collectLibraryOrigins(libNames);
         }//for
 
         for (const area of this.kresmer.areas.values()) {
-            const origin = area.getClass().origin;
-            origin && libNames.add(origin);
+            area.getClass().collectLibraryOrigins(libNames);
         }//for
 
         for (const libName of libNames) {
