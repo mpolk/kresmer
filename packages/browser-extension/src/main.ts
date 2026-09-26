@@ -65,7 +65,7 @@ async function importLibrary(libraryName: string, fileName?: string|undefined)
     if (!fileName) {
         fileName = `${libraryName}.krel`;
     }//if
-    const filePath = `home/mpolk/kresmer/lib/${fileName}`;
+    const filePath = `lib/${fileName}`;
 
     const libraryUrl = new URL(drawingUrl!);
     libraryUrl.pathname = libraryUrl.pathname.replace(/[^/]*$/, filePath);
