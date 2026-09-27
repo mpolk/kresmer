@@ -46,4 +46,5 @@ export default defineManifest({
           use_dynamic_url: false
         }
     ],
+    options_page: "src/options/options.html",
 });
