@@ -14,9 +14,6 @@
     "outDir": "dist",
     "allowSyntheticDefaultImports": true,
     "types": ["webextension-polyfill"],
-    // "paths": {
-    //   "kresmer": ["../core-component/dist"],
-    // }
   },
   "include": ["src/**/*"],
   "references": [
