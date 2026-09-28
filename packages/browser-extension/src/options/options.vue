@@ -9,6 +9,7 @@
 <script lang="ts">
     import { reactive, onMounted } from "vue";
     import browser from "webextension-polyfill";
+    import { loadLibraryPaths } from "./options";
 
     export default {
         name: "ExtensionOptions",
@@ -16,17 +17,22 @@
 </script>
 
 <script setup lang="ts">
+    const libraryPaths = reactive<string[]>([]);
 
-    const libraryPaths = reactive<string[]>(["lib"]);
+    onMounted(loadOptions);
 
-    onMounted(async () => {
+    async function loadOptions() {
+        libraryPaths.length = 0;
+        libraryPaths.push(...await loadLibraryPaths());
+    }//loadOptions
+
+    async function saveOptions() {
         try {
-            const result = await browser.storage.local.get("libraryPaths") as {libraryPaths: string[]};
-            libraryPaths.length = 0;
-            for (const path of result.libraryPaths)
-                libraryPaths.push(path);
-        } catch  {/* ignore */}
-    });
+            await browser.storage.local.set({libraryPaths: libraryPaths});
+        } catch  {
+            console.error("Failed to save options");
+        }
+    }//saveOptions
 </script>
 
 <template>
@@ -35,17 +41,23 @@
         <h2>Library paths:</h2>
         <p>
             The list of URLs where the extension will look for library files.
-            The paths may be relative to the currently opened file location or absolute URLs
+            The paths may be relative to the currently opened drawing location or absolute URLs.
             Each path may contain a protocol (http:, https:, file:). If no protocol
             is specified, the protocol of the current page will be used.
         </p>
         <table border="0">
             <tr v-for="(path, index) in libraryPaths" :key="index">
-                <td><input v-model="libraryPaths[index]" style="width: 100%;"/></td>
+                <td style="width: 100%;"><input v-model="libraryPaths[index]" style="width: 100%;"/></td>
                 <td><button @click="libraryPaths.splice(index, 1)">Remove</button></td>
             </tr>
             <tr>
-                <td colspan="2"><button @click="libraryPaths.push('')">Add Path</button></td>
+                <td colspan="2">
+                    <button @click="libraryPaths.push('')">Add Path</button>
+                    <div display="inline-block" style="float: right;">
+                        <button @click="loadOptions()">Reset</button>&nbsp;
+                        <button @click="saveOptions()">Save Options</button>
+                    </div>
+                </td>
             </tr>
         </table>
     </div>
@@ -54,9 +66,8 @@
 <style scoped lang="scss">
     .options {
         font-family: Arial, sans-serif;
-        font-size: 1rem;
         padding: 1rem 2rem;
-        width: 50%;
+        width: 30rem;
     }
 
     h1 {

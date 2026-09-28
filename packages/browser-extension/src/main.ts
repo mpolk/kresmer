@@ -8,6 +8,7 @@
 
 import browser from 'webextension-polyfill';
 import { CSSDims } from 'kresmer';
+import { loadLibraryPaths } from './options/options';
 
 const urlParams = new URLSearchParams(window.location.search);
 const drawingUrl = urlParams.get('file');
@@ -16,10 +17,7 @@ const isFirefox = typeof browser.runtime.getBrowserInfo === 'function';
 // file:// URL directly - not even with "Access local files" granted
 const isLocalFileInFirefox = isFirefox && drawingUrl?.startsWith('file:');
 
-let libraryPaths = ["lib"];
-try {
-    ({libraryPaths} = await browser.storage.local.get("libraryPaths") as {libraryPaths: string[]});
-} catch  {/* ignore */}
+const libraryPaths = await loadLibraryPaths();
 
 let drawingData: string | undefined;
 if (drawingUrl && !isLocalFileInFirefox) {
@@ -71,13 +69,25 @@ async function importLibrary(libraryName: string, fileName?: string|undefined)
         fileName = `${libraryName}.krel`;
     }//if
 
-    const libraryUrl = new URL(drawingUrl!);
+    const baseUrl = new URL(drawingUrl!);
     let libraryData: string | undefined;
-    const stem = libraryUrl.pathname.replace(/[^/]*$/, '');
+    baseUrl.pathname = baseUrl.pathname.replace(/[^/]*$/, '');
 
     for (const path of libraryPaths) {
         const filePath = `${path}/${fileName}`;
-        libraryUrl.pathname = `${stem}/${filePath}`;
+        let libraryUrl: URL;
+        try {
+            libraryUrl = new URL(filePath);
+        } catch {
+            try {
+                libraryUrl = new URL(filePath, baseUrl);
+            } catch {
+                console.debug(`Invalid library path: ${filePath}`);
+                continue;
+            }//try
+        }//try
+
+        console.debug(`Trying to load library "${libraryName}" from: ${libraryUrl.href}`);
         try {
             const response = await fetch(libraryUrl);
             libraryData = await response.text();

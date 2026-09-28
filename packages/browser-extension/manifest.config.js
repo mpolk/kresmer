@@ -21,7 +21,8 @@ export default defineManifest({
         "webRequest",
         "tabs",
         "downloads",
-        "webNavigation"
+        "webNavigation",
+        "storage",
     ],
     host_permissions: [
         "<all_urls>",
