@@ -7,7 +7,7 @@
  <   ******************************************************************** -->
 
 <script lang="ts">
-    import { reactive, onMounted } from "vue";
+    import { reactive, ref, onMounted, toRaw } from "vue";
     import browser from "webextension-polyfill";
     import { loadLibraryPaths } from "./options";
 
@@ -17,6 +17,7 @@
 </script>
 
 <script setup lang="ts">
+    const isDirty = ref(false);
     const libraryPaths = reactive<string[]>([]);
 
     onMounted(loadOptions);
@@ -24,20 +25,22 @@
     async function loadOptions() {
         libraryPaths.length = 0;
         libraryPaths.push(...await loadLibraryPaths());
+        isDirty.value = false;
     }//loadOptions
 
     async function saveOptions() {
         try {
-            await browser.storage.local.set({libraryPaths: libraryPaths});
-        } catch  {
-            console.error("Failed to save options");
+            await browser.storage.local.set({libraryPaths: toRaw(libraryPaths)});
+            isDirty.value = false;
+        } catch (exc)  {
+            console.error("Failed to save options", exc);
         }
     }//saveOptions
 </script>
 
 <template>
     <div class="options">
-        <h1>KresMer Options</h1>
+        <h1>KresMer Options <span v-if="isDirty" class="dirty-indicator" title="Unsaved changes">*</span></h1>
         <h2>Library paths:</h2>
         <p>
             The list of URLs where the extension will look for library files.
@@ -47,12 +50,14 @@
         </p>
         <table border="0">
             <tr v-for="(path, index) in libraryPaths" :key="index">
-                <td style="width: 100%;"><input v-model="libraryPaths[index]" style="width: 100%;"/></td>
-                <td><button @click="libraryPaths.splice(index, 1)">Remove</button></td>
+                <td style="width: 100%;">
+                    <input v-model="libraryPaths[index]" style="width: 100%;" @input="isDirty = true"/>
+                </td>
+                <td><button @click="libraryPaths.splice(index, 1); isDirty = true;">Remove</button></td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button @click="libraryPaths.push('')">Add Path</button>
+                    <button @click="libraryPaths.push(''); isDirty = true;">Add Path</button>
                     <div display="inline-block" style="float: right;">
                         <button @click="loadOptions()">Reset</button>&nbsp;
                         <button @click="saveOptions()">Save Options</button>
@@ -82,5 +87,11 @@
     th, td {
         padding: 8px;
         text-align: left;
+    }
+
+    .dirty-indicator {
+        color: red;
+        font-weight: bold;
+        cursor: default;
     }
 </style>
