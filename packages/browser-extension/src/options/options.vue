@@ -53,14 +53,20 @@
                 <td style="width: 100%;">
                     <input v-model="libraryPaths[index]" style="width: 100%;" @input="isDirty = true"/>
                 </td>
-                <td><button @click="libraryPaths.splice(index, 1); isDirty = true;">Remove</button></td>
+                <td>
+                    <button @click="libraryPaths.splice(index, 1); isDirty = true;" title="Remove this path">
+                        <div class="material-symbols-outlined">delete</div>
+                    </button>
+                </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button @click="libraryPaths.push(''); isDirty = true;">Add Path</button>
+                    <button @click="libraryPaths.push(''); isDirty = true;" title="Add a new library path">
+                        <div class="material-symbols-outlined">add</div>
+                    </button>
                     <div display="inline-block" style="float: right;">
-                        <button @click="loadOptions()">Reset</button>&nbsp;
-                        <button @click="saveOptions()">Save Options</button>
+                        <button @click="loadOptions()" title="Reset to default values">Reset</button>&nbsp;
+                        <button @click="saveOptions()" title="Save current options">Save Options</button>
                     </div>
                 </td>
             </tr>
@@ -85,7 +91,7 @@
     }
 
     th, td {
-        padding: 8px;
+        padding: 0.25rem 0.5rem;
         text-align: left;
     }
 
@@ -93,5 +99,28 @@
         color: red;
         font-weight: bold;
         cursor: default;
+    }
+
+    // Include Material Design Icons
+    @font-face {
+        font-family: 'Material Symbols Outlined';
+        src: url("../fonts/MaterialSymbolsOutlined.woff2") format("woff2");
+    }
+
+    .material-symbols-outlined {
+        font-family: 'Material Symbols Outlined';
+        font-variation-settings:
+            'FILL' 0,
+            'wght' 400,
+            'GRAD' 200,
+            'opsz' 48;
+
+        &.filled {
+            font-variation-settings:
+                'FILL' 1,
+                'wght' 400,
+                'GRAD' 200,
+                'opsz' 48;
+        }
     }
 </style>
