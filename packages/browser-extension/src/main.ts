@@ -80,7 +80,11 @@ async function importLibrary(libraryName: string, fileName?: string|undefined)
             libraryUrl = new URL(filePath);
         } catch {
             try {
-                libraryUrl = new URL(filePath, baseUrl);
+                if (path.startsWith('/')) {
+                    libraryUrl = new URL(filePath, baseUrl.origin);
+                } else {
+                    libraryUrl = new URL(filePath, baseUrl);
+                }//if
             } catch {
                 console.debug(`Invalid library path: ${filePath}`);
                 continue;
@@ -90,6 +94,10 @@ async function importLibrary(libraryName: string, fileName?: string|undefined)
         console.debug(`Trying to load library "${libraryName}" from: ${libraryUrl.href}`);
         try {
             const response = await fetch(libraryUrl);
+            if (!response.ok) {
+                console.debug(`Failed to load library "${libraryName}" from: ${libraryUrl.href} (HTTP ${response.status})`);
+                continue;
+            }//if
             libraryData = await response.text();
             break;
         } catch { /* continue */ }

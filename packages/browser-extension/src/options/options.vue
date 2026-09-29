@@ -36,6 +36,32 @@
             console.error("Failed to save options", exc);
         }
     }//saveOptions
+
+    function onDragStart(event: DragEvent, index: number) {
+        if (event.dataTransfer) {
+            event.dataTransfer.effectAllowed = 'move';
+            event.dataTransfer.setData('text/plain', index.toString());
+            const rowRect =(event.target as HTMLElement).getBoundingClientRect();
+            const buttonRect =(event.currentTarget as HTMLElement).getBoundingClientRect();
+            event.dataTransfer.setDragImage(event.currentTarget as Element, 
+                rowRect.left - buttonRect.left + event.offsetX, 
+                buttonRect.top - rowRect.top + event.offsetY);
+        }//if
+    }//onDragStart
+
+    function onDragOver(event: DragEvent) {
+        event.preventDefault();
+    }//onDragOver
+
+    function onDrop(event: DragEvent, index: number) {
+        event.preventDefault();
+        const fromIndex = parseInt(event.dataTransfer?.getData('text/plain') || '-1');
+        if (fromIndex !== -1 && fromIndex !== index) {
+            const movedPath = libraryPaths.splice(fromIndex, 1)[0];
+            libraryPaths.splice(index, 0, movedPath);
+            isDirty.value = true;
+        }
+    }//onDrop
 </script>
 
 <template>
@@ -48,14 +74,20 @@
             Each path may contain a protocol (http:, https:, file:). If no protocol
             is specified, the protocol of the current page will be used.
         </p>
+        <form @submit.prevent="saveOptions()">
         <table border="0">
-            <tr v-for="(path, index) in libraryPaths" :key="index">
+            <tr v-for="(path, index) in libraryPaths" :key="index" 
+                @dragstart="onDragStart($event, index)" 
+                @dragover="onDragOver($event)" @drop="onDrop($event, index)">
                 <td style="width: 100%;">
                     <input v-model="libraryPaths[index]" style="width: 100%;" @input="isDirty = true"/>
                 </td>
-                <td>
+                <td nowrap style="width: 1%;">
+                    <button title="Move this path" draggable="true">
+                        <div class="material-symbols-outlined" style="display: inline-block;">open_with</div>
+                    </button>&nbsp;
                     <button @click="libraryPaths.splice(index, 1); isDirty = true;" title="Remove this path">
-                        <div class="material-symbols-outlined">delete</div>
+                        <div class="material-symbols-outlined" style="display: inline-block;">delete</div>
                     </button>
                 </td>
             </tr>
@@ -65,12 +97,13 @@
                         <div class="material-symbols-outlined">add</div>
                     </button>
                     <div display="inline-block" style="float: right;">
-                        <button @click="loadOptions()" title="Reset to default values">Reset</button>&nbsp;
-                        <button @click="saveOptions()" title="Save current options">Save Options</button>
+                        <button @click="loadOptions()" :disabled="!isDirty" title="Reset to default values">Reset</button>&nbsp;
+                        <button type="submit" @click="saveOptions()" :disabled="!isDirty" title="Save current options">Save Options</button>
                     </div>
                 </td>
             </tr>
         </table>
+        </form>
     </div>
 </template>
 
