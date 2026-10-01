@@ -6,12 +6,13 @@
  *          Browser extension manifest generation configuration
  ***************************************************************************/
 
-import { defineManifest } from '@crxjs/vite-plugin'
+import { defineManifest } from '@crxjs/vite-plugin';
+import pkg from './package.json' with { type: 'json' };
 
 export default defineManifest({
     manifest_version: 3,
-    name: "Kresmer",
-    version: "0.0.1",
+    name: "kresmer",
+    version: pkg.version,
     icons: {
         "256": "logo.png",
     },

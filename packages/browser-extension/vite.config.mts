@@ -10,6 +10,7 @@ import { defineConfig } from 'vite';
 import vue from '@vitejs/plugin-vue';
 import { crx } from '@crxjs/vite-plugin';
 import manifest from './manifest.config.js';
+import zip from 'vite-plugin-zip-pack';
 // import i18nextLoader from 'vite-plugin-i18next-loader';
 
 const fixManifestPlugin = (targetBrowser: string) => {
@@ -43,6 +44,11 @@ export default defineConfig({
     vue(),
     crx({manifest}),
     fixManifestPlugin(targetBrowser),
+    zip({
+      inDir: `dist/${targetBrowser}`,
+      outFileName: `kresmer-${targetBrowser}.zip`,
+      outDir: `dist/${targetBrowser}`,
+    }),
     // i18nextLoader({
     //   paths: ['./locales'], 
     //   namespaceResolution: 'basename',

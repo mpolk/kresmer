@@ -9,6 +9,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:chrome": "vite",
+    "dev:firefox": "cross-env TARGET_BROWSER=firefox vite",
     "build": "tsc -b && vite build",
     "build:chrome": "tsc -b && vite build",
     "build:firefox": "tsc -b && cross-env TARGET_BROWSER=firefox vite build",
@@ -35,6 +37,7 @@
     "globals": "^17.12.0",
     "typescript": "^6.0.3",
     "vite": "^8.3.1",
+    "vite-plugin-zip-pack": "^1.2.4",
     "vue-eslint-parser": "^10.4.1",
     "vue-tsc": "^3.3.11"
   }
