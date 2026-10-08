@@ -10,6 +10,7 @@ import { createApp } from "vue";
 import Options from "./options.vue";
 import browser from "webextension-polyfill";
 
+document.title = browser.i18n.getMessage("kresmer_options");
 createApp(Options).mount("#options-root");
 
 export async function loadLibraryPaths() {

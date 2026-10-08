@@ -13,6 +13,7 @@ export default defineManifest({
     manifest_version: 3,
     name: "kresmer",
     version: pkg.version,
+    default_locale: "en",
     icons: {
         "256": "logo.png",
     },

@@ -66,13 +66,10 @@
 
 <template>
     <div class="options">
-        <h1>KresMer Options <span v-if="isDirty" class="dirty-indicator" title="Unsaved changes">*</span></h1>
-        <h2>Library paths:</h2>
+        <h1>{{browser.i18n.getMessage("kresmer_options")}} <span v-if="isDirty" class="dirty-indicator" title="Unsaved changes">*</span></h1>
+        <h2>{{browser.i18n.getMessage("library_paths")}}</h2>
         <p>
-            The list of URLs where the extension will look for library files.
-            The paths may be relative to the currently opened drawing location or absolute URLs.
-            Each path may contain a protocol (http:, https:, file:). If no protocol
-            is specified, the protocol of the current page will be used.
+            {{browser.i18n.getMessage("library_paths_description")}}
         </p>
         <form @submit.prevent="saveOptions()">
         <table border="0">
