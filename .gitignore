@@ -46,3 +46,5 @@ network-core.svg
 
 # Generated docs
 docs/**
+# Generated i18n files
+packages/browser-extension/_locales

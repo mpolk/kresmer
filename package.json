@@ -14,7 +14,7 @@
     "app:lint": "pnpm -C packages/electron-app run lint",
     "brext:chrome": "pnpm -C packages/browser-extension run build:chrome",
     "brext:firefox": "pnpm -C packages/browser-extension run build:firefox",
-    "brext:build": "pnpm run brext:chrome && pnpm run brext:firefox",
+    "brext:build": "pnpm -C packages/browser-extension run build",
     "brext:lint": "pnpm -C packages/browser-extension run lint",
     "test": "npm run test -w kresmer",
     "cypress:run": "npm run cypress:run -w kresmer",
@@ -26,7 +26,7 @@
     "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts"
   },
   "workspaces": [
-    "./packages/*"
+    "packages/*"
   ],
   "devDependencies": {
     "typedoc": "^0.28.20"

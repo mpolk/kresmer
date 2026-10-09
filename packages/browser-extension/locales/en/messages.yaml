@@ -1,0 +1,8 @@
+kresmer_options: 
+    message: KresMer Options
+library_paths: 
+    message: "Library paths:"
+library_paths_description:
+    message: The list of URLs where the extension will look for library files. 
+             The paths may be relative to the currently opened drawing location 
+             or absolute URLs.
