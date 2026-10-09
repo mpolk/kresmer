@@ -65,7 +65,7 @@
             <computed-prop name="title">tf$.kre$streetAddress({street: props.street, buildingNumber: props.buildingNumber})</computed-prop>
         </computed-props>
         <style>
-            .building { stroke: #bf6731; fill: #f4a615; stroke-width: "2px"; }
+            .building { stroke: #bf6731; fill: #f4a615; stroke-width: 2px; }
             .building.wood { fill: #fad46b }
             .building.number { fill: #393432; stroke: none; }
             .building.number.c, .building.number.c1, .building.number.c2, .building.number.m 
