@@ -6,3 +6,17 @@ library_paths_description:
     message: The list of URLs where the extension will look for library files. 
              The paths may be relative to the currently opened drawing location 
              or absolute URLs.
+move_path:
+    message: Drag this path up or down in the list
+remove_path:
+    message: Remove this path
+add_path:
+    message: Add a new path
+reset_options:
+    message: Reset all options to their default values
+reset:
+    message: Reset
+save_options:
+    message: Save options
+save:
+    message: Save

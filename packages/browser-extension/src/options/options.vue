@@ -80,22 +80,28 @@
                     <input v-model="libraryPaths[index]" style="width: 100%;" @input="isDirty = true"/>
                 </td>
                 <td nowrap style="width: 1%;">
-                    <button title="Move this path" draggable="true">
+                    <button :title="browser.i18n.getMessage('move_path')" draggable="true">
                         <div class="material-symbols-outlined" style="display: inline-block;">open_with</div>
                     </button>&nbsp;
-                    <button @click="libraryPaths.splice(index, 1); isDirty = true;" title="Remove this path">
+                    <button @click="libraryPaths.splice(index, 1); isDirty = true;" :title="browser.i18n.getMessage('remove_path')">
                         <div class="material-symbols-outlined" style="display: inline-block;">delete</div>
                     </button>
                 </td>
             </tr>
             <tr>
                 <td colspan="2">
-                    <button @click="libraryPaths.push(''); isDirty = true;" title="Add a new library path">
+                    <button @click="libraryPaths.push(''); isDirty = true;" :title="browser.i18n.getMessage('add_path')">
                         <div class="material-symbols-outlined">add</div>
                     </button>
                     <div display="inline-block" style="float: right;">
-                        <button @click="loadOptions()" :disabled="!isDirty" title="Reset to default values">Reset</button>&nbsp;
-                        <button type="submit" @click="saveOptions()" :disabled="!isDirty" title="Save current options">Save Options</button>
+                        <button @click="loadOptions()" :disabled="!isDirty" 
+                            :title="browser.i18n.getMessage('reset_options')">
+                            {{ browser.i18n.getMessage('reset') }}
+                        </button>&nbsp;
+                        <button type="submit" @click="saveOptions()" :disabled="!isDirty" 
+                            :title="browser.i18n.getMessage('save_options')">
+                            {{ browser.i18n.getMessage('save') }}
+                        </button>
                     </div>
                 </td>
             </tr>
