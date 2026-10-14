@@ -45,15 +45,15 @@
     ]
   },
   "dependencies": {
-    "postcss": "^8.5.29",
+    "postcss": "^8.5.30",
     "uuid": "^14.0.3",
-    "vue": "^3.5.43"
+    "vue": "^3.5.44"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@rushstack/eslint-patch": "^1.16.1",
     "@types/node": "^26.6.5",
-    "@typescript-eslint/eslint-plugin": "^8.71.1",
+    "@typescript-eslint/eslint-plugin": "^8.71.2",
     "@vitejs/plugin-vue": "^6.0.10",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
