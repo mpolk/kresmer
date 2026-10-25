@@ -27,7 +27,7 @@
     "build-watch": "vite build --watch",
     "type-check": "vue-tsc --noEmit",
     "vite:dev": "vite --port ${npm_package_config_port}",
-    "vite:build": "run-p type-check build-only",
+    "vite:build": "pnpm type-check && pnpm build-only",
     "vite:preview": "vite preview --port ${npm_package_config_port}",
     "cypress:open": "cypress open --component >/dev/null 2>&1 &",
     "cypress:run": "cypress run --component",
