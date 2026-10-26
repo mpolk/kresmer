@@ -31,11 +31,7 @@
     "app:build": "electron-builder -lw",
     "preapp:preview": "pnpm _prebuild",
     "app:preview": "electron . -- ${npm_package_config_args}",
-    "i18n": "i18next-cli extract -c i18next.main.config.ts && i18next -c i18next-parser.renderer.config.mjs",
-    "version:minor": "npm version minor --workspaces --include-workspace-root",
-    "postversion:minor": "export TAG=$(git tag --sort=v:refname | tail -1) && git commit -a --amend -m $TAG && git tag -f $TAG",
-    "version:patch": "npm version patch --workspaces --include-workspace-root",
-    "postversion:patch": "export TAG=$(git tag --sort=v:refname | tail -1) && git commit -a --amend -m $TAG && git tag -f $TAG"
+    "i18n": "i18next-cli extract -c i18next.main.config.ts && i18next -c i18next-parser.renderer.config.mjs"
   },
   "build": {
     "extraMetadata": {
