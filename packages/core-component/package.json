@@ -47,28 +47,28 @@
   "dependencies": {
     "postcss": "^8.5.32",
     "uuid": "^14.0.3",
-    "vue": "^3.5.44"
+    "vue": "^3.5.45"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "@rushstack/eslint-patch": "^1.16.1",
     "@types/node": "^26.6.6",
-    "@typescript-eslint/eslint-plugin": "^8.72.1",
-    "@vitejs/plugin-vue": "^6.0.10",
+    "@typescript-eslint/eslint-plugin": "^8.72.2",
+    "@vitejs/plugin-vue": "^6.0.11",
     "@vue/eslint-config-typescript": "^14.9.0",
     "@vue/tsconfig": "^0.9.1",
     "chai-colors": "^1.0.1",
-    "cypress": "^16.2.1",
+    "cypress": "^16.3.0",
     "diff-js-xml": "^1.0.8",
     "eslint": "^10.14.0",
-    "eslint-plugin-vue": "^10.12.0",
+    "eslint-plugin-vue": "^10.12.1",
     "globals": "^17.14.0",
-    "sass": "^1.107.1",
+    "sass": "^1.108.2",
     "typescript": "^6.0.3",
-    "vite": "^8.3.5",
+    "vite": "^8.3.8",
     "vite-plugin-css-injected-by-js": "^5.0.3",
     "vite-plugin-dts": "^5.1.2",
-    "vue-eslint-parser": "^10.4.1",
+    "vue-eslint-parser": "^10.4.2",
     "vue-tsc": "^3.3.14"
   }
 }
