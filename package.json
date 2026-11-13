@@ -21,8 +21,7 @@
     "cypress:open": "pnpm -C packages/core-component run cypress:open",
     "cypress:debug": "pnpm -C packages/core-component run cypress:debug",
     "i18n": "pnpm -C packages/electron-app run i18n",
-    "lint-all": "pnpm run -r --no-bail lint",
-    "lint": "echo There is nothing to lint in the root directory. Run lint-all instead",
+    "lint": "pnpm run -r --no-bail lint",
     "typedoc": "typedoc --tsconfig packages/core-component/tsconfig.json packages/core-component/src/Kresmer.ts"
   },
   "workspaces": [
